@@ -20,6 +20,7 @@ content:
   #- url: https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang.git
   #  start_path: docs
   #  branches: HEAD
+  #  edit_url: '{web_url}/edit/{refname}/{path}'
 asciidoc:
   attributes:
     page-pagination: ''
