@@ -1,13 +1,23 @@
 = AsciiDoc Language
 
-This project maintains the specification, Technology Compatiblity Kit (TCK), and documentation for the AsciiDoc language and its APIs.
-The AsciiDoc Language Specification describes the syntax, grammar, and APIs for the AsciiDoc Language.
+This project maintains the AsciiDoc Language Specification, Technology Compatibility Kit (TCK), and end user documentation.
+The AsciiDoc Language Specification describes the syntax, grammar, and APIs for the AsciiDoc language.
 
-== Build the Documentation
+== Build the End User Documentation
 
-The source files under [.path]_docs/_ are organized into a documentation component as identified by the [.path]_antora.yml_ file.
+The source files under the [.path]_docs/_ folder are organized into a documentation component as identified by the [.path]_antora.yml_ file.
 To learn how to build this documentation using the playbook file [.path]_local-antora-playbook.yml_ with Antora, see the https://docs.antora.org/antora/latest/install-and-run-quickstart/[Install and Run Antora Quickstart].
+
+== Licenses
+
+The AsciiDoc Language and the accompanying materials are made available under the terms of the Eclipse Public License v 2.0 (EPL-2.0).
+See link:LICENSE[] to find the full license text.
+
+The end user documentation for the AsciiDoc Language, located in the [.path]_docs/_ folder, is made available under the terms of a https://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License] (CC-BY-4.0).
+
+See xref:NOTICE.adoc[NOTICE] for additional license and copyright information.
 
 == Trademarks
 
-AsciiDoc is a Trademark of the Eclipse Foundation, Inc.
+AsciiDoc and AsciiDoc Language are trademarks of the Eclipse Foundation.
+Eclipse and the Eclipse Logo are registered trademarks of the Eclipse Foundation.
