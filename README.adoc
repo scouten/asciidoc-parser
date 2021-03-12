@@ -1,7 +1,9 @@
-= AsciiDoc Language
+= AsciiDoc Language Project
 
-This project maintains the AsciiDoc Language Specification, Technology Compatibility Kit (TCK), and end user documentation.
-The AsciiDoc Language Specification describes the syntax, grammar, and APIs for the AsciiDoc language.
+This project maintains the AsciiDoc Language Specification, Technology Compatibility Kit (TCK), end user documentation, and their related materials.
+The AsciiDoc Language Specification describes the syntax and grammar, Abstract Semantic Graph (ASG), Document Object Model (DOM), referencing system, and APIs for processing, converting, and extending the language.
+The TCK is used to verify and certify that an AsciiDoc processor implementation is compatible with this specification.
+For further details, see the xref:process/scope.adoc[project's approved scope].
 
 == Build the End User Documentation
 

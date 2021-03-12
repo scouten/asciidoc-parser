@@ -1,0 +1,42 @@
+= AsciiDoc Language Project Scope
+
+The AsciiDoc language project scope was approved as part of the https://projects.eclipse.org/proposals/asciidoc-language[project proposal] on July 27, 2020 by the AsciiDoc Working Group Steering Committee.
+The AsciiDoc WG Steering Committee acts as the Specification Committee as stated in the https://www.eclipse.org/org/workinggroups/asciidoc-charter.php[working group's charter].
+
+== Approved scope
+
+The AsciiDoc language project defines and maintains the AsciiDoc Language Specification and Technology Compatibility Kit (TCK), its artifacts, and the corresponding language and API documentation.
+The AsciiDoc Language Specification describes the syntax and grammar, Abstract Semantic Graph (ASG), Document Object Model (DOM), referencing system, and APIs for processing, converting, and extending the language.
+The TCK is used to verify and certify that an AsciiDoc processor implementation is compatible with this specification.
+
+Specifically, the project scope includes the:
+
+* AsciiDoc language syntax and grammar (e.g., EBNF, PEG, ANTLR4, etc.)
+** doctype-specific structures and required elements
+** designated extension points
+* ASG: an encoded form of the parsed document for use in developing a language-agnostic TCK (e.g., JSON)
+* TCK: Technology Compatibility Kit for verifying compliance of an AsciiDoc language processor
+* DOM API: in-memory semantic representation of the encoded information in the AsciiDoc document
+* Processor API (load, convert)
+** Converter API
+* Extension API
+** Extended syntax processors (e.g., custom block or macro)
+** Resolvers (e.g., path and attribute resolvers, ID generator)
+** Parse events and lifecycle interceptors (e.g., input processor, output processor, tree processor)
+** Integration adapters: syntax highlighter, STEM, bibliography, docinfo
+* Expected converter behaviors (e.g., toc, ID generation, icon type, safe mode)
+* Internal and external referencing system: (e.g., xrefs, includes, images)
+* Reference converter and output format (e.g., HTML with reference stylesheet and/or DocBook)
+* Built-in attribute names, values, and behaviors and reserved attribute namespaces
+* AsciiDoc media type (MIME) and .adoc file extension
+
+The project also provides the:
+
+* AsciiDoc language documentation for writers
+* AsciiDoc API documentation
+
+NOTE: The project scope is also published on the https://projects.eclipse.org/projects/technology.asciidoc/governance[Governance page] of the project site.
+
+== Scope changes
+
+Any revisions to the project scope, with the exception of minor corrections that don't change semantic meanings or intent, require a https://www.eclipse.org/projects/dev_process/#6_3_8_Restructuring_Review[restructuring review] and approval by a super-majority of the Steering Committee.
