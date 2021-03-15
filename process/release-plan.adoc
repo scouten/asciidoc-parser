@@ -1,0 +1,30 @@
+= AsciiDoc Language Specification Release Plan
+
+The https://projects.eclipse.org/proposals/asciidoc-language[project proposal] serves as the release plan for the first release of the AsciiDoc Language Specification.
+The completion of the https://projects.eclipse.org/projects/technology.asciidoc/reviews/creation-review[creation review] and acceptance of the project by the Steering Committee kicked off the first release cycle of the specification.
+This release cycle's <<goal,goal>> and <<schedule,project schedule>> were approved as part of the project proposal by the Steering Committee on July 27, 2020.
+
+[#goal]
+== Goal
+
+The goal of the first, stable version of the specification is to match the AsciiDoc language as described by Asciidoctor 2.0.x as best as possible to minimize syntax and structure impacts on active AsciiDoc documents, but not propagate deprecations.
+
+[#schedule]
+== Project scheduling
+
+In the project proposal, the scheduling was described as follows:
+
+[quote]
+The initial contributions are expected to be ready in Q2 2020.
+Once the initial contributions are accepted and the project infrastructure and team process established, the plan is to iterate on the specification and TCK in coordination with projects that are working to provide a compatible implementation.
+
+=== Initial contribution timeline [Done]
+
+* [x] The Asciidoctor project prepared the end user documentation for AsciiDoc to serve as the initial contribution.
+* [x] The initial contribution for the AsciiDoc Language was submitted to Eclipse for IP review on November 16, 2020.
+* [x] The initial contribution received IP clearance on January 6, 2021.
+* [x] The initial contribution was merged into the https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang[asciidoc-lang repository] on February 16, 2021.
+
+== Release plan changes
+
+The Steering Committee must be notified of any progress or release review date changes after a release plan is approved.
