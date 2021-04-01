@@ -1,0 +1,45 @@
+Subject: Initial assessment
+
+This is a bootstrap issue.
+It's purpose is to assess the objective of first release and identify areas of initial focus to get us moving towards that goal.
+One we determine an area of focus, it should be spawned as a dedicated issue.
+A portion of those issues will be siphoned off into milestone releases, and that scheduling process will continue throughout the 1.0.0 release cycle.
+Once the first milestone has been identified, and all substantial topics raised in this issue have either been filed as a dedicated issue or deferred, this issue should be closed.
+
+Since the purpose of the language specification is to comprehend/parse text into a structured document, I think we should start by looking at the document structure at a high level.
+Here's an extremely crude sketch to seed the discussion around it.
+
+ Document        ::= (Header?,Preamble?,Section*)
+ Header          ::= (Title,(AuthorInfo,RevisionInfo?)?,AttributeEntry*)
+ AuthorInfo      ::= (FirstName,(MiddleName?,LastName)?,Autolink?)
+ RevisionInfo    ::= (RevisionNumber?,RevisionDate,RevisionRemark?)
+ Preamble        ::= (Block*)
+ Section         ::= (Title,Block*,Section*)
+ Block           ::= (BlockTitle?,BlockAttributeList*,(Paragraph|DelimitedBlock|List|Table|BlockMacro))
+ DelimitedBlock  ::= (Admonition|Sidebar|Example|Blockquote|Listing|Literal|Open)
+ List            ::= ...
+
+// List            ::= (UnorderedList|OrderedList|DescriptionList|CalloutList)
+// UnorderedList   ::= (ListItem)+
+// OrderedList     ::= (ListItem)+
+// CalloutList     ::= (ListItem)+
+// DescriptionList ::= (ListEntry)+
+// ListEntry       ::= (ListTerms,ListItem)
+// ListTerms       ::= (ListTerm+)
+// ListItem        ::= (ItemText,Block*)
+
+For each item in the blueprint, we'll need to look at the terminology, grammar, AST, and DOM.
+So we could have up to 4 issues for each element/node in the structure.
+
+We're also looking for topics that we know we'll need to address, either right up front or further down the line leading up to 1.0.0.
+Here are a few topics that have come up already for which we know we need issues:
+
+* ADR: What grammar language / framework should we use to describe the AsciiDoc syntax?
+* ADR: What format should we use for the ASG?
+* ADR: What will be the schema of the ASG?
+* ADR: How will we define the DOM in a language-independent way?
+* How is the relationship between the preprocessor and parser going to defined? How will we decouple them? (or can we?)
+* How are space characters in the source going to be handled? What space characters are permitted?
+* What are the rules for nesting blocks?
+* Propose the nestable / standard format open block
+* ...
