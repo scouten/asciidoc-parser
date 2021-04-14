@@ -1,0 +1,142 @@
+= Release and Progress Reviews for Specification Versions
+
+This document summarizes the purpose and requirements of progress and release reviews to help orient team members not familiar with Eclipse Foundation processes.
+The project team is responsible for conducting the applicable reviews during a release cycle as specified by the https://www.eclipse.org/projects/efsp/[Eclipse Foundation Specification Process] (EFSP) and the project's current release plan.
+
+== Specification versioning and release cycles
+
+The AsciiDoc Language Specification uses semantic versioning.
+Each release is versioned *major.minor.patch*.
+
+Major::
+Major releases (e.g., 1.0.0) occur when there are substantial changes in functionality or when new functionality breaks backwards compatibility.
+
+Minor::
+Minor releases (e.g., 1.1.0) add new features, improve existing features, and fix bugs while maintaining backwards compatibility."
+
+[[patch]]Patch::
+Patch releases (e.g., 1.1.1) fix bugs and make minor clarifications while maintaining backwards compatibility.
+They don't include new features or breaking changes.
+Patch releases map to Eclipse's definition of a https://www.eclipse.org/projects/efsp/#efsp-releases-service[service release].
+
+Milestone build::
+A milestone build (e.g., 1.0.0-alpha.1, 1.0.0-beta.3, 1.0.0-rc.1) is a prerelease meant for early adopters to test.
+It isn't a final release and isn't to be distributed for official or general usage.
+At least one milestone build must be produced prior to the release of a major or minor version.
+
+Each major and minor version of the specification must satisfy the EFSP release cycle's plan and release review requirements.
+The release cycle for a major or minor specification version starts with the approval of a release plan.
+It ends with the completion of a release review that results in the approval of the specification version's final build and the official release and distribution of its artifacts.
+If a release cycle has lasted more than 12 months without a release or progress review, the project team must produce a milestone build and initiate a progress review in order to extend the release cycle.
+
+A patch version of the specification (i.e., https://www.eclipse.org/projects/efsp/#efsp-releases-service[EFSP service release]) doesn't require an independent release cycle.
+It does need to meet all of the following requirements to be considered for release as a patch version of the specification:
+
+* The patch version must meet the scope of a <<patch,patch>>.
+* The major or minor version the release is patching must have completed a <<release-review,successful release review>>.
+* The patch version must complete its own release review successful before it can be released and distributed for general usage.
+
+See the EFPS for complete descriptions of the https://www.eclipse.org/projects/efsp/#efsp-version-lifecycle[specification version release cycle] and https://www.eclipse.org/projects/efsp/#efsp-milestones[milestone builds].
+
+=== Pre-1.0.0 versioning
+
+Prior to creating feature complete milestone builds in preparation for the final specification release, the project will release milestone builds labeled as _0.x.y_ (e.g., 0.1.5, 0.2.0).
+These builds are one of the ways the project will mark and celebrate achievements on our path to feature complete milestone builds.
+
+These milestone builds will use a zero in the first position (i.e., 0.x.y).
+The x will increment when a significant feature is added to the specification or its TCK (e.g., 0.3.0. 0.4.0).
+The y will increment when the build only contains improvements, changes, or fixes to existing features (e.g., 0.3.2. 0.4.1).
+These milestone builds will likely include breaking changes from one build to the next and will not be backwards compatible.
+These builds are not official, are not for general usage, and should not be considered feature complete.
+
+Once the project team determines that the specification is approaching feature completeness, the _0.x.y_ pattern will cease being used. At that time, all future milestone builds will use semantic versioning as the project team prepares for releasing version 1.0.0 of the specification (e.g., 1.0.0-alpha.1).
+This subsection should be removed from this document at the start of the subsequent release cycle.
+
+== Release and progress reviews
+
+Progress and release reviews describe a specification version's major changes and provide persistent artifacts that demonstrate these changes to the community, Steering Committee, Project Management Chain (PMC), and Eclipse Management Organization (EMO) for evaluation and feedback.
+A release review corresponds to the final build of a major, minor, or patch specification version that, if approved, is released for general availability and distributed.
+If a progress review is conducted, it must be paired with a milestone build of a specification version.
+
+=== Team responsibilities for reviews
+
+Project Team::
+* The https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang/-/project_members[project team] must prepare at least one milestone build or one final release build of a specification version within a 12 month period.
+* A project team member can volunteer to manage a review.
+This team member is then responsible for coordinating a review's documentation and supporting materials, submitting it to the required groups, and posting notifications and updates as needed.
+* The project team must complete all the necessary due diligence according to the https://www.eclipse.org/org/documents/Eclipse_IP_Policy.pdf[Eclipse IP Policy] before starting a review.
+
+Project Leads::
+* The project leads are responsible for initiating the appropriate review based on the release cycle stage, release plan, and EFPS requirements.
+* The project leads are responsible for managing a scheduled review unless another team member has volunteered to coordinate it.
+
+[#release-review]
+=== Release review requirements
+
+A release review must be conducted for every major, minor, and patch release of a specification version.
+
+. A project lead or team member volunteers to be the review coordinator for a release review.
+. If the review is for a major or minor release, the review coordinator confirms that a milestone build was produced and available to early adopters for a minimum of 14 days prior to the final build of the release being staged.
+. If the review is for a patch release, the review coordinator confirms that the patch release:
+.. Meets the scope of a <<patch,patch>>.
+.. That the major or minor version the release is patching has completed a successful release review.
+. The project team stages the final build of the specification version's artifacts.
+These artifacts must be persistent for public record and can't be changed once the review process starts.
+. The review coordinator assembles the release review's documentation.
+The review documentation:
+.. Summarizes the specification version's major accomplishments, changes, and removals/deprecations.
+.. Provides links to the persistent artifacts or directly includes the artifacts when delivered.
+.. Shows evidence that the specification version's TCK has sufficient coverage to confidently validate compatible implementations.
+.. Shows evidence that one or more compatible implementations meet all of the TCK's requirements and optional aspects.
+. The review coordinator delivers the review documentation and artifacts to the PMC and requests a review be initiated.
+. When the PMC approves the review documentation and that the review can proceed, the review coordinator delivers the review documentation and artifacts to the EMO and asks the EMO to schedule the review.
+. The review coordinator delivers the review documentation and artifacts to the Steering Committee.
+. The release review is complete when it's approved by the EMO and the Steering Committee.
+. At the successful completion of a release review, the specification version's artifacts are released for general availability and distributed.
+
+NOTE: This document only focuses on progress and release reviews.
+There are other types of reviews, such as https://www.eclipse.org/projects/efsp/#efsp-reviews-plan[plan reviews] and https://www.eclipse.org/projects/dev_process/#6_3_8_Restructuring_Review[restructuring reviews].
+
+=== Progress review requirements
+
+A progress review can be undertaken during the release cycle voluntarily as the team sees fit.
+It's only required when the current release cycle has gone on for 12 months without a release or progress review.
+A milestone build must accompany a progress review.
+
+. A project lead or team member volunteers to be the review coordinator for a progress review.
+. The project team stages the milestone build's artifacts.
+These artifacts must be persistent for public record and can't be changed once the review process starts.
+. The review coordinator assembles the progress review's documentation.
+The review documentation:
+.. Concisely describes the major changes that have been committed since the last progress or release review.
+.. Lists any architectural, functional, compatibility, or performance issues that still need to be addressed in order to satisfy the current release plan.
+.. Provides links to the persistent artifacts or directly includes the artifacts when delivered.
+. The review coordinator delivers the review documentation and artifacts to the PMC and requests a review be initiated.
+. When the PMC approves the review documentation and that the review can proceed, the review coordinator delivers the review documentation and artifacts to the EMO and asks the EMO to schedule the review.
+. The review coordinator delivers the review documentation and artifacts to the Steering Committee.
+. The progress review is complete when it's approved by the EMO and the Steering Committee.
+
+WARNING: A progress review can't be combined or overlap with a release review.
+
+== Reference materials
+
+The content in this document borrows heavily from the process documentation published by the Eclipse Foundation.
+The steps listed in the above sections are an amalgamation of the review and release cycle information presented in the EFSP, Eclipse Development Process (EDP), and Eclipse Handbook.
+Specifically, see:
+
+.Release cycle and versioning
+* https://www.eclipse.org/projects/efsp/#efsp-version-lifecycle[Specification version lifecycle (EFSP)].
+* https://www.eclipse.org/projects/handbook/#specifications-development[Specification development cycle (Handbook)].
+* Releases and versions as described by the https://www.eclipse.org/projects/efsp/#efsp-releases[EFSP], the https://www.eclipse.org/projects/dev_process/#6_4_Releases[EDP], and the https://www.eclipse.org/projects/handbook/#release[Handbook].
+** More information about https://www.eclipse.org/projects/handbook/#release-milestones[milestone and release candidates (Handbook)].
+
+.Reviews (process overview)
+* General review information as described by the https://www.eclipse.org/projects/efsp/#efsp-reviews[EFSP] and the https://www.eclipse.org/projects/handbook/#specification-project-reviews[Handbook].
+* Overview of https://www.eclipse.org/projects/handbook/#release-review[progress and release reviews (Handbook)].
+
+.Release reviews
+* Release reviews as described by the https://www.eclipse.org/projects/efsp/#efsp-reviews-release[EFSP], the https://www.eclipse.org/projects/dev_process/#6_3_3_Release_Review[EDP], and the https://www.eclipse.org/projects/handbook/#specifications-release-review[Handbook (for specifications)].
+* More information about https://www.eclipse.org/projects/handbook/#pmi-releases[release and review records (Handbook)].
+
+.Progress reviews
+* Progress reviews as described by the https://www.eclipse.org/projects/efsp/#efsp-reviews-progress[EFSP], the https://www.eclipse.org/projects/dev_process/#6_3_5_Progress_Review[EDP], and the https://www.eclipse.org/projects/handbook/#specifications-progress-review[Handbook].
