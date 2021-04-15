@@ -1,0 +1,167 @@
+= Contributing to the AsciiDoc Language Project
+:url-dev-list: https://accounts.eclipse.org/mailing-list/asciidoc-lang-dev
+
+Welcome to the AsciiDoc Language project!
+We're excited that you're interested in helping to make AsciiDoc the best lightweight markup language it can be.
+We welcome contributions of all kinds, not just code.
+This includes user scenarios and requirements, testing, documentation, infrastructure automation, and more.
+Read on to learn about how we work and how to get involved.
+
+== Communication
+
+We use public mailing lists and issue trackers to communicate.
+
+{url-dev-list}[Development mailing list]:: This list is where you can ask questions, raise concerns, hold general discussions, and float ideas about the development of the AsciiDoc language, its specification, grammar, and TCK.
+Announcements about the project's status and other community activities are also posted to this mailing list.
+
+https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang/-/issues[Project issue tracker]:: The project issue tracker lives alongside the repository on Eclipse's GitLab instance.
+Use the issue tracker to file bug reports, specification additions and clarification requests, and user documentation issues.
+The issue tracker is also where the project team manages milestone and release development.
+
+https://accounts.eclipse.org/mailing-list/asciidoc-wg[AsciiDoc WG mailing list]:: This specification project is affiliated with the https://projects.eclipse.org/working-group/asciidoc[AsciiDoc Working Group].
+This list is where updates and discussions about the vision, scope, governance, and advocacy of the AsciiDoc projects at Eclipse and the ecosystem as a whole are posted.
+
+== Code of conduct
+
+The AsciiDoc language project and its project spaces are governed by the https://www.eclipse.org/org/documents/Community_Code_of_Conduct.php[Eclipse Community Code of Conduct].
+By participating, you're expected to uphold this code.
+See the project's governance process for more information on our xref:process/governance.adoc#values[values and community conduct].
+Let's work together to make this a welcoming, professional, inclusive, and safe environment for everyone.
+
+[#legal]
+== Legal considerations
+
+Before submitting your first merge request (MR), complete the following steps:
+
+. Sign up for an https://accounts.eclipse.org/[Eclipse Foundation account].
+If you've posted to the development or WG mailing lists, you've already set up an account.
+.. Be sure to register with the same email address that you intend to use when you commit to the project's repository.
+.. Your Eclipse Foundation account login also logs you into the https://gitlab.eclipse.org[Eclipse GitLab instance].
+
+. Electronically sign the https://www.eclipse.org/legal/ECA.php[Eclipse Contributor Agreement (ECA)].
+.. To see if you've already signed the ECA, https://accounts.eclipse.org/user/login/[log in to your Eclipse account] and go to your profile page.
+Look for the *Status* sidebar in the top-right corner of your profile page.
+If there's a green check mark next to *Eclipse Contributor Agreement*, you're all set.
+
+For more information about Eclipse Foundation Accounts and the ECA, see https://www.eclipse.org/projects/handbook/#contributing[Contributing to an Eclipse Project] in the Eclipse Handbook.
+
+== Contributing to the specification and TCK
+
+This project maintains the AsciiDoc Language Specification, its Technology Compatibility Kit (TCK), and their related materials.
+The specification and TCK are for developers creating implementations, extensions, and other tools that process AsciiDoc.
+This project follows the https://www.eclipse.org/projects/efsp/[Eclipse Foundation Specification Process] (EFSP) and is subject to the https://www.eclipse.org/org/documents/Eclipse_IP_Policy.pdf[Eclipse IP Policy].
+
+=== Specification scope and release plan
+
+Before contributing to this project, make sure you're familiar with the project's xref:process/scope.adoc[approved scope] and xref:process/release-plan.adoc[current release plan].
+Issues and MRs must fit the project's scope and help meet the current release plan's goals and milestones.
+Reach out to the project team on the {url-dev-list}[development mailing list] if you aren't sure an idea is within the project's scope or aligned with the release plan.
+
+=== Specification issues
+
+Actionable issue reports are specific and comprehensive.
+We encourage you to post to the {url-dev-list}[development mailing list] first if you need to gather input and feedback to help you prepare to file an issue.
+Keep in mind, though, that the mailing list is not where final decisions are made.
+Rather, that's the role of the issue tracker.
+Once an issue has been filed, discussion about that topic should stay in the https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang/-/issues[issue tracker].
+
+Listed below are a few of the broad issue categories and the information they should provide.
+
+Bug reports (kind|bug):: Bug reports should describe the syntax, feature, or behavior that seems incorrect, the result you got, and the result you expected.
+The more details you can provide, the faster the team can attempt to reproduce the bug.
+
+Specification updates (kind|feature):: Specification updates, such as new feature requests, improvements, clarifications, and removals, that may have significant impacts on compatible implementations, extensions, users, or other areas of the AsciiDoc ecosystem should describe the problematic or desired scenario, the possible pathways for fixing or achieving the scenario, and the positive and negative impacts the change will have on the compatible implementations, users, and AsciiDoc ecosystem.
+Such issues will require assessment by the group that maintains the related specification area prior to accepting the proposed solution.
+
+Specification formalization (kind|formalization):: A specification formalization issue identifies an existing feature that needs to be defined and described in the specification document.
+Unlike significant feature additions or updates that have ambiguous or problematic parameters or behavior, these features are relatively uncontested and clearly understood.
+
+Terminology and naming (area/naming-and-terminology):: Issues that involve defining, clarifying, or changing specification terms, term definitions, names, and naming patterns should provide the current state of the term or name, the proposed change, and the reason for the change.
+Terminology and naming must consider a number of factors, such as user and developer mental models, inclusive language, use case commonality, reserved word conflicts, and usability (e.g., keyboard layout, localization, accessibility).
+Such issues may require assessment by the group that maintains the related specification area.
+
+==== Issue workflow
+
+The https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang/-/project_members[project team] will add https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang/-/labels[labels] to an issue during the triage process.
+When an issue is worked on depends on the bug severity, current release plan and milestones, and the availability of project team members that maintain the relevant specification area.
+An issue that doesn't have the label *triage|accepted* hasn't been accepted by the project.
+Issues are evaluated and accepted by the project according to the project's xref:process/governance.adoc#decision-process[decision process].
+
+=== Specification merge request guidelines
+
+* A merge request (MR) should address exactly one issue that's filed in the issue tracker.
+** Exceptions are MRs for typos, small grammar and sentence structure changes, and formatting fixes.
+* [[issue-open]]Issues that are labeled *triage|accepted* are ready for a MR.
+* Assign yourself to the issue the MR will resolve.
+Don't assign yourself to an issue that's currently assigned to someone else unless you've discussed it with them or the project team.
+* MRs that make major changes to core specification concepts, features, or behavior and/or have significant consequences for the AsciiDoc ecosystem require review and approval by at least two team committers.
+* All other MRs must be reviewed and approved by at least one team committer.
+When an MR gets reviewed depends on the availability of a team member with the applicable expertise and the current release cycle stage.
+
+An MR won't be approved until the changes are complete, correct, and well-formed (meaning it passes all automated and manual tests, linting, team reviews, etc.).
+We cannot expect someone to come behind and fix the shortcomings knowingly introduced by an MR later, because later often means never.
+If there's a contested part of the MR that's blocking the merge, that part can be extracted into a new MR so the remainder can be moved through the review/merge process.
+
+We encourage you to open a MR early when you're implementing a complex feature or making a change that impacts several areas of the specification.
+Prefix the MR title with WIP: (Work in Progress) or Draft: manually or using the MR interface.
+This allows the team to start providing feedback before you finalize the MR, and helps create a better end product.
+
+For step-by-step MR instructions, see the <<repository-setup,local repository setup>> and <<mr-workflow,MR workflow>> sections.
+
+[#repository-setup]
+== Namespace and local repository setup
+
+You must complete the following steps prior to preparing your first MR.
+If you're new to git, see https://gitlab.eclipse.org/help/topics/git/index.md[GitLab's git help topics] for a list of learning resources.
+
+. Make sure you've set up your <<legal,Eclipse Account and signed the ECA>>.
+. Go to the https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang[AsciiDoc language repository] and fork it to your personal namespace.
+The project doesn't accept MRs that don't come from a dedicated branch in a fork.
+. Clone the repository onto your machine and configure your remote path.
+. _Recommended but optional._ If you plan to contribute often to the project, we recommend associating your GPG key with your local repository and GitLab account so that you can sign your commits with it.
+.. See https://gitlab.eclipse.org/help/user/project/repository/gpg_signed_commits/index.md[Signing commits with GPG] to learn how to generate a GPG key and configure your local repository to automatically sign your commits.
+If you have trouble setting up a GPG key or associating it with your account, reach out to the project team on the {url-dev-list}[development mailing list].
+
+[#mr-workflow]
+== Merge request workflow steps
+
+Follow the steps below each time you work on a new solution for an issue.
+
+. Is the change you want to submit the solution to an issue in the issue tracker (as it should be in almost all cases)?
+If yes:
+.. Make sure the issue is <<issue-open,ready for an MR>>.
+.. Assign yourself to the issue.
+Type the quick action `/assign me` in a comment on the issue and submit it.
+
+. When you're ready to make your changes, update the issue's status to active.
+.. Type the quick action `/label ~status::active` in a comment on the issue and submit it.
+Any previous status label will be automatically removed.
+
+. In your local repository, create a new branch where you'll work on your changes (never submit an MR from your main branch).
+.. Name your branch using the issue number it solves along with a short textual hint, e.g., `issue-2-short-description`.
+This will make your MR easier to review.
+
+. If the change is small, such as a typo or formatting fix, and therefore doesn't require an issue, create a new branch in your local repository where you'll work on your changes.
+.. The branch name should be a short textual hint, e.g., `fix-short-description`.
+
+. Make your changes in your new branch.
+.. Don't refactor, reformat, or clean up code or content that isn't directly related to the issue the MR resolves.
+
+. Commit your changes.
+.. Commit messages should be short yet specific.
+The message should reference the issue it addresses using a https://gitlab.eclipse.org/help/user/project/issues/managing_issues.md#closing-issues-automatically[closing pattern] and provide a brief description, e.g., `fixes #1 short description`, `resolves #1 short description`, or `closes #1 short description`.
+This will make your MR easier to review and approve.
+.. Only create more than one commit per MR when individual significant changes should be called out in the repository's log.
+.. Squash or amend your commits when you iterate over the files multiple times, forgot to add a change or file, etc.
+
+. Push the branch to your remote fork.
+. Submit the branch as a MR using the GitLab interface or URL displayed in your terminal after you push your branch.
+.. Like the commit message, the MR title should reference the issue it addresses using a https://gitlab.eclipse.org/help/user/project/issues/managing_issues.md#closing-issues-automatically[closing pattern] and provide a short description, e.g., `fixes #1 short description`, `resolves #1 short description`, or `closes #1 short description`.
+This will make your MR easier to review.
+.. If you’re still working on your MR and want feedback on it before it's complete, prefix the MR title with WIP: (e.g., `WIP: resolves #2 add build test`) or Draft:.
+When the MR is ready for final review, remove WIP: or Draft: from the MR title.
+
+. A member of the project team will review your MR.
+During the review, they may request changes to your MR.
+.. An MR won't be approved until the changes are complete, correct, and well-formed (meaning it passes all automated and manual tests, linting, team reviews, etc.).
+. The reviewer may ask you to squash or amend your commits prior to approving and merging your MR.
