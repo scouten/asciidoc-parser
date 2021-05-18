@@ -1,0 +1,66 @@
+= Project Governance
+
+== Project Team
+
+As defined by the EFDP, the Project Team is the collective of committers with responsibilities and privileges on this project.
+
+[#values]
+== Values and Conduct
+
+As part of being an Eclipse Foundation project, this project community is expected to follow and uphold the https://www.eclipse.org/org/documents/Community_Code_of_Conduct.php[Eclipse Community Code of Conduct].
+We, as the project community, pledge to uphold this code to foster a professional, respectful, and welcoming environment.
+
+Participants that use passive-aggressive, disrespectful, or dismissive language or tones, act unprofessionally, or otherwise violate the Code of Conduct will receive a warning from the Project Team informing them that their actions are not acceptable.
+If a second incident occurs, the Project Team may ask the individual to voluntarily leave the community for a period of time and/or send a mailto:codeofconduct@eclipse.org[code of conduct report to the Eclipse Foundation].
+
+Any community member can submit a code of conduct report to Eclipse.
+An individual doesn't need to wait for the Project Team to take action.
+Nor does that individual need to inform the Project Team that they are filing a code of conduct report.
+
+[#decision-process]
+== Decision process
+
+Technical, editorial, and governance decisions are made using the following methods.
+
+=== Silent consensus
+
+Silent consensus is the default decision mechanism for this project.
+When an issue is filed, a Project Team member will review it for completeness and assign labels to it.
+Issues and merge requests (MRs) that aren't flagged for architectural review, a request for changes, or a request for more information, can be accepted by silent consensus.
+*Silent consensus cannot be reached until the issue or MR has been available for comment for at least 72 hours.*
+This allows everyone to have enough time to evaluate and respond to the issue or MR.
+Additionally, MRs must be reviewed and approved by at least one Project Team member (aka committer).
+A team member cannot review their own MR.
+If no one <<objections,objects>> by the end of the silent consensus period (72 hours), the issue or MR is accepted by the project.
+
+=== Architectural reviews
+
+When an issue is flagged for an architectural review, a self-selecting group of two to four community members, which must include at least one Project Team member (aka committer), works with the submitter to evaluate the proposal and address any concerns about its completeness, scope, feasibility, impacts, etc.
+Once the architecture group reaches consensus on the proposal, the updated proposal is then subject to silent consensus.
+In some cases, a draft MR may be submitted during an architecture review to refine possible solutions and discover obstacles.
+The issue is accepted and a MR implementing the proposal can be submitted if no one objects during the consensus period.
+
+When the corresponding MR is finished, at least two members of the architecture group, one which is a Project Team member, must review and approve the final MR.
+
+[#objections]
+=== Objections
+
+Any objections to an issue or MR must include a clear reason for that objection, and, where possible, provide a set of actionable steps alongside the objection.
+The objector must remain responsive for further discussion about the issue or MR until their concerns are resolved or they withdraw their objection.
+If the objector isn't responsive for 7 days after they raised the objection or they're unable to clarify their objection if asked for further information by the Project Team, the Project Team can dismiss the objection.
+
+If consensus can't be reached, but a decision one way or the other must be made, any team member may call for a vote.
+
+=== Voting
+
+Proposals that introduce breaking changes, changes to the project's governance, or when a Project Team member calls for a vote, must be voted on by all members of the Project Team and must secure approval by a simple majority before being accepted.
+
+A vote must be open for at least seven days.
+The end date should be clearly stated in the call to vote.
+A vote can be closed early if enough votes have been submitted so that further votes cannot change the final decision.
+
+Votes are performed electronically using a yes/no/abstain reply system, where +1 is yes, -1 is not, and 0 is obstain.
+No other responses are recognized.
+
+Except for governance changes, a majority of the Project Team must vote in favor (yes) for the proposal to be approved.
+A super-majority (at least two thirds) of the Project Team must vote in favor (yes) of a governance change for it to be approved.
