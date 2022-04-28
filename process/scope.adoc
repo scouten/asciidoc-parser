@@ -35,7 +35,7 @@ The project also provides the:
 * AsciiDoc language documentation for writers
 * AsciiDoc API documentation
 
-NOTE: The project scope is also published on the https://projects.eclipse.org/projects/technology.asciidoc/governance[Governance page] of the project site.
+NOTE: The project scope is also published on the https://projects.eclipse.org/projects/asciidoc.asciidoc-lang/governance[Governance page] of the project site.
 
 == Scope changes
 
