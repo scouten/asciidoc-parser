@@ -797,7 +797,7 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 == Marked text
 
 * A span of text enclosed in a pair of semantic marks.
-* In the past, this has been refered to as "text formatting" or "formatted text" (though formatted text are not limited to this group of syntax).
+* In the past, this has been referred to as "text formatting" or "formatted text" (though formatted text are not limited to this group of syntax).
 * Which marks are used determine the variant (e.g., strong, emphasis).
 * All marked spans support a preceding boxed attrlist; only shorthand attributes are recognized.
 
@@ -932,8 +932,8 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 == Resources and references
 
 * The AsciiDoc language provides an addressing / referencing system.
-* The referencing system consists of referencable locations (references identified by ID), a catalog of references, internal references to another location in the same document (xrefs), and external references to other resources.
-* References are referencable locations within a document.
+* The referencing system consists of referenceable locations (references identified by ID), a catalog of references, internal references to another location in the same document (xrefs), and external references to other resources.
+* References are referenceable locations within a document.
 * Resources are assets to which an AsciiDoc document refers (e.g., an image or another document).
 
 == IDs / Reference names
@@ -1058,7 +1058,7 @@ TODO
 === Resource resolver
 
 * the return value of the resource resolver is the address of the resource to be used by the converter (e.g., the href)
- ** or should it be an object that contains a) the referencable location, b) the concrete location, c) a resource reader
+ ** or should it be an object that contains a) the referenceable location, b) the concrete location, c) a resource reader
 * as of right now, there's no required syntax for interpreting and resolving a resource reference
 * the resource resolver must have access to the context/type of resource being resolved (e.g., include, image, xref, video, etc)
 * the resource resolver can filter the resources it chooses to resolve; it can override the behavior for certain contexts and allow the default behavior to be used for others (a filter)
