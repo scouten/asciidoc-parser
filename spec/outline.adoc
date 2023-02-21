@@ -1,0 +1,1100 @@
+= AsciiDoc Language Specification Outline
+Dan Allen; Sarah White
+:doctype: book
+:partnums:
+:part-signifier: Part
+:toc:
+:toclevels: 4
+
+== Specification Goals
+
+The goal of the AsciiDoc Language Specification is to describe a deterministic (definitive?) and parsable grammar for the AsciiDoc syntax.
+The focus at this stage is on being able to identify the structure of an AsciiDoc document and to parse its contents into a node model.
+The grammar will be documented in technical sections using a grammar expression that best suits the language (e.g., PEG).
+The specification is not guaranteed to result in a single, unified grammar (as it may not even be possible to do so).
+Additionally, the specification should state expectations for converters given the information provided in the node model.
+
+Specify the AsciiDoc language with an eye towards readability, writer-friendliness, consistency, and efficiency.
+Since an AsciiDoc language processor will be used to process large amounts of content, the language must be specified in such a way that it can be parsed efficiently.
+The language is designed to degrade gracefully, when possible.
+If a grammar rule can't be matched, and it's safe to do so, the processor should fall back to treating the line or run of text as uninterpreted.
+It's also vital to be able to extract information from an AsciiDoc document, so it should be possible to model the document's entire structure.
+When there are conflicts in the interpretation of the syntax, the most intuitive behavior should be chosen.
+
+== AsciiDoc Language introduction and purpose
+//== What is AsciiDoc?
+
+AsciiDoc is a lightweight markup language.
+Specifically, AsciiDoc is a lightweight markup language that is predominantly line-oriented and left-aligned.
+That means AsciiDoc is a Unicode-compliant textual (not binary) language with conventions and special/reserved markup that must be interpreted by a processor.
+All reserved markup characters are selected from the ASCII character set (hence its name).
+
+The purpose of the language is to focus on encoding explanatory or literary information in a clear and concise way, thus keeping content separate from presentation (with the exception of sensible presentation hints in the form of roles and options).
+The conventions and markup give the document an inherent structure.
+A processor is responsible for identifying and extracting that structure from the document.
+In a lightweight markup language, all sequences of characters are valid unless they explicitly create unbalanced boundaries / invalid combinations or references.
+Some sequences of characters have special meaning.
+It's up to the processor to identify these.
+
+= Fundamentals
+
+== Lexicon, concepts, and common patterns
+
+// quick flyover; non-normative
+.Lexicon and concepts
+* document
+* block vs inline (vertical vs horizontal markup)
+* element
+* text
+* attribute / metadata
+* processor (parser / converter)
+* input
+* output / output format
+
+.Patterns
+* markers
+* headings
+* attrlist / boxed attrlist
+* (preprocessor) directives
+* delimiter lines
+
+== Characters
+
+* An AsciiDoc document is a continuous, uncompressed sequence of characters (text), aka character data
+* A character is a single codepoint of text
+* Any text or code editor can read and display an AsciiDoc file
+* Some characters have a visible glyph, others do not
+* Any sequence of characters is valid; certain uses of characters have special meaning; when one of those designated uses/sequences is found, it may activate additional rules, such as a matching block delimiter line.
+
+=== Unicode support
+
+* A character in AsciiDoc can be any character defined by Unicode.
+* An AsciiDoc document may contain any Unicode character.
+ ** Control characters and other characters which don't occupy space should be avoided.
+* An AsciiDoc document is assumed to have UTF-8 encoding.
+ ** Processors may support other encodings, but the input must be re-encoded to UTF-8 before parsing.
+
+=== Reserved characters
+
+* A reserved character is a character selected from the ASCII character set and is most often a punctuation character (macro names are an exception).
+
+=== Spacing characters
+
+* An AsciiDoc document may use tab or space characters for spacing, though the inline syntax primarily only considers space characters.
+* A spacing character is a space, tab, or line ending (e.g., newline).
+* Other spacing characters are permitted in the document, but will not be interpreted as such.
+* Newline characters create separate lines, which are often treated specially in AsciiDoc.
+* Two consecutive line endings creates an empty line.
+* Except in verbatim or raw content or block metadata, an empty line is interpreted as a block boundary.
+* Leading spacing characters makes an indented line.
+* Trailing spacing characters are insignificant and may be dropped by the processor.
+* The one exception is a non-AsciiDoc include file with lines that include trailing spacing characters; these characters must be preserved.
+
+=== Wordy characters
+
+* AsciiDoc often uses words and word boundaries to determine what markup is valid.
+* However, the term "`word`" in this context is not well-defined.
+* Furthermore, the term "`word`" traditionally includes the underscore character, which is a reserved character in the AsciiDoc markup.
+* Thus, AsciiDoc defines the term "`wordy`" to mean a word-like (but not strictly word) character.
+* A wordy is an alphabetic character (as defined by Unicode) or an Arabic number.
+For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
+* An example where the wordy character has meaning in the AsciiDoc syntax is that constrained markup must not be bounded on either side by a wordy character.
+
+=== Character references
+
+* A character reference is a special escape sequence that identifies a character by its name, decimal, or hexadecimal representation.
+* A named character reference is sometimes referred to as an entity.
+* Although AsciiDoc is not bound to HTML or XML, it adopts the character reference syntax from XML.
+* These character references will be identified by the parser and the processor will have a chance to replace them during conversion to the output format.
+
+== Lines
+
+* AsciiDoc is a line-oriented language.
+* Therefore, lines can be significant in the AsciiDoc language.
+* An AsciiDoc document may use universal/Unix (`\n`) or Windows (`\r\n`) line endings, though the line feed (`\n`) is preferred.
+* Line breaks are not significant between adjacent lines in a paragraph.
+ ** A converter may choose to replace these line endings with the space character; however, they must be maintained in the parse tree.
+* Block boundaries and block metadata are always defined on their own line.
+* When lines are not contiguous (separated by an empty line), that may signal a transition from one block to another.
+* A line ending must be preserved during parse; may not always need to be preserved when converted.
+
+=== Indentation
+
+* AsciiDoc is a left-aligned language.
+* Being left-aligned makes moving content around easier, avoids the problem of excessive/compound indentation, and encourages the author to be more explicit about nesting.
+* That means, with certain exceptions, spacing characters at the start of a line (an indented line) are significant.
+* The key exception are list markers, which may be indented without meaning.
+* A line with leading spacing characters at a block boundary is makes a literal paragraph.
+* Spaces are recommended for indentation, but tabs may also be used.
+
+=== Empty and interrupting lines
+
+* Empty lines may have significance.
+* In verbatim content, empty lines are preserved.
+* In general, empty lines are used to separate blocks.
+* The absence of an empty line between paragraphs will cause the lines to be fused together as a single paragraph.
+* Except in the case where empty lines are preserved, multiple successive empty lines are equivalent to a single empty line.
+* Empty lines between and after block metadata lines are insignificant.
+* Empty lines between two simple list items are ignored. (though we may say that two empty lines break the list)
+* Empty lines in all other places serve as the boundary between two blocks.
+* For block elements that do not have explicit boundaries (e.g., a delimited block), the block will end when an interrupting line is encountered
+* An empty line is an interrupting line, but not the only one.
+* A block attribute line (a line that contains a boxed attrlist) is also an interrupting line.
+* The closing block delimiter (if used in a place that it can match the opening block delimiter) is an interrupting line.
+* A list continuation line ends an attached block (but does not end the list; rather, it attaches the ensuing block to the list item)
+* Inside a list, a list item is an interrupting line; either starts a new list item or nested list, depending on the marker
+* Empty lines may be omitted when the language makes the separation between block elements unambiguous (such as when an interrupting line is encounter), though the use empty lines to keep blocks apart is strongly recommended.
+* The first and last line of the document is implicitly bounded on the outer edge by an empty line.
+
+//Q: Metadata and skipped lines?? or too soon?
+
+== Document structure
+
+* An AsciiDoc document is a composition of all the elements it contains.
+* It's inherently a tree structure (DAG) wherein each node is an element representing a segment of the document.
+* This document model represents a parsed document as a logical tree.
+* Every node in this tree has a context, which identifies its primary function (e.g., `admonition`).
+* Nodes may be grouped by type (e.g., `macro`).
+* Nodes may have a variant to distinguish between variations on its context (e.g., `strong`).
+
+=== Elements
+
+* An *element* is an identifiable, addressable, and composable chunk of content in a document.
+* The elements in a document form a mostly, left-aligned nested hierarchy of element types and subtypes, where an element type represents a major set of traits, e.g. block macro, and an element subtype represents a specialization of the element type, e.g., a block image macro, and shares many of the traits of that element type
+* There are two primary elements: block elements and inline elements.
+
+==== Block elements
+
+* Block elements form the main structure of the document.
+* A block element is stacked vertically by line above or below other block elements.
+* There are two primary types of block elements: simple blocks and compound blocks.
+* A *simple block* can only contain inline nodes (elements and uninterpreted text).
+* A *compound block* can only contain other blocks; those blocks in the compound block may contain inline elements unless they themselves are compound blocks.
+* Except for block titles, simple blocks are delineated from other block elements by an empty line separator, but they can have interrupters (boundaries).
+* Most compound blocks are delineated from other block elements by delimiter lines.
+* Block elements include implicit blocks, such as sections, paragraphs, and block macros, and delimited blocks, such as examples, verses, and sidebars.
+
+==== Inline elements
+
+* An *inline element*, a subset of *inlines*, is a span of content within a simple block.
+* Inline elements include formatted text (emphasis, strong, etc.), inline macros, and element references; what fills in the gap between these elements is uninterpreted text.
+
+=== Macros
+
+* Macros are a sort of function call in AsciiDoc.
+* There are block and inline macros.
+* Most macros are entered using the *named macro form*: `<name>::?<target>?[<attrlist>?]`.
+** In the named macro form, the macro name is followed by a macro name delimiter followed by a target followed by a boxed attrlist.
+** In the named macro form, a macro name is always required.
+** The macro name delimiter is `::` for block macros and `:` for inline macros.
+** For some macros, the target is optional or forbidden (e.g., `toc::[]`).
+** For some macros, the attrlist is optional or forbidden.
+** For some macros, the attrlist is only a single attribute value, often written as `<text>`.
+* A few macros have a shorthand form in addition to a named form (e.g., `+<<target>>+` and `+xref:target[attrlist]+` ).
+* A few macros are entered using a form unique to them (e.g., thematic break macro, autolinks, etc.).
+* Some syntax, such as inline passthroughs and include or conditional directives, may use the form of a macro but aren't actually macros.
+
+=== Uninterpreted text
+
+* *Uninterpreted text* (i.e., plain text) is text for which all inline grammar rules fail to match.
+* Thus, uninterpreted text is all the text between inline elements (at any level of nesting).
+* Text may be uninterpreted because it does not make use of reserved markup characters, because it only matches a grammar rule partially (an opening mark without a closing mark), or because it has been enclosed in a passthrough region/span.
+
+= Documents, Document Metadata, and Document Attributes
+// Define what a document is programmatically, what it can contain, and its relationship to what it contains.
+
+== Document
+
+* A *document* is the root compound block element.
+* A document can have an optional header and zero or more block elements.
+* An empty document has no block elements and no header.
+* All elements have reference to document object.
+* Has an intrinsic outline that consists of the section hierarchy.
+
+=== Document types
+
+* Article
+* Book
+* Manpage
+
+== Document header
+
+* A *document header* contains optional document title, author, and revision lines, document metadata, and document attribute entries.
+
+=== Header structure
+
+* The document header only accepts some AsciiDoc syntax, such as implicit metadata lines, attribute entries, and comment lines.
+* The document header may not contain interrupting lines.
+* The document title line is optional, but required for using implicit author and revision lines.
+
+=== Document title
+
+=== Implicit metadata lines
+
+* Author line
+* Revision line
+
+== Document attributes
+// Use content from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/ and https://docs.asciidoctor.org/asciidoc/latest/attributes/attribute-entries/
+
+* *Document attributes* are entities, global options, and document metadata.
+* They are set and assigned a value in the document header using an attribute entry.
+* An attribute entry takes the form `:<key-name>: <value>?`.
+* Each attribute entry must be entered on its own line.
+* *Built-in document attributes* add, configure, and control common features in a document.
+Many built-in attributes only take effect when defined in the document header with an attribute entry.
+** Some built-in document attributes are booleans.
+These attributes act as a switch, and their sole function is to turn on or turn off a feature.
+If a boolean attribute is defined, but not given a value (i.e., set), it's in the "on" state.
+When set, a boolean attribute typically has an empty value.
+// Should we standardize the typed value true as well?
+If the attribute is not defined (i.e., not set), it's in the "off" state.
+* A *user-defined document attribute* is any attribute that the user or an extension sets that isn’t reserved by the AsciiDoc language or an extension.
+These attributes allow the user to define named, reusable content.
+
+=== Attribute entries
+
+=== Attribute references
+
+=== Attribute overrides and precedence
+
+=== Attribute naming conventions
+
+=== Built-in attributes
+
+=== Global block attributes and options
+
+= Blocks
+
+== Document body
+
+* The document body consists of all of the content in the document except for the document header.
+* The document body is partitioned into blocks.
+* The document itself acts as a single enclosing section block when no sections are present.
+
+== Block structure and variations
+// Defines a block element and introduces its parts and variations.
+// It lays down the common structural rules that are fundamental to blocks.
+
+* A *block element*, referred to as a *block*, is a discrete, linewise element in the document structure.
+A block is either a simple block or a compound block.
+* Compound blocks can only contain other blocks.
+* Simple blocks can only contain inline elements and uninterpreted text.
+* A block always starts and ends on a whole line (starts at beginning of a line or effective beginning and ends at the end of the same or different line.
+* A block may have two to three source features: metadata, a body, and an enclosure.
+* The parent of a block is always another block (if nested, the parent block; if not nested, the parent section or document if not in a section).
+* The body of a block may have an enclosure that is formed by delimiter lines.
+* A block's content model (e.g., `simple`, `compound`, `verbatim`) determines what kind of content the block can have (if any) and how it is parsed.
+* A block's context and optional style modifier determines how it is converted.
+* Block element parsing takes precedence over inline element parsing.
+
+=== Block types
+
+=== Block metadata
+// Defines the block metadata, its purpose, and how it affects a block.
+// It provides the fundamental structure and rules for the common items found in the block metadata.
+
+* *Block metadata* is a superset of properties of the block that contains block attributes; the metadata includes specialized attributes such as ID, title, and style; also context, etc.
+* All blocks accommodate zero or more lines of explicit metadata stacked linewise directly on top of the block content and, if applicable, the opening delimiter line.
+** The optional metadata lines include: zero or more block attribute lines (which populate the block’s attributes), block attrlist (inside block attribute line), the block attributes, optional block anchor line, optional block title line (many blocks also support a corresponding caption).
+* The shared (but optional) block attributes include: ID, style, set of roles, set options, title, and reftext.
+
+=== Block attributes
+
+* Used to store the block metadata.
+* Only available directly on the block.
+* Do not affect document attributes.
+* The only relationship between block attributes and document attributes is that document attributes are sometimes used as fallbacks for an absent block attribute (this needs to be clarified / tightened).
+* Block options are block attributes that end in `-option`; hence, `-option` is a reserved suffix.
+* All block attributes that start with `data-` should be passed through to the output format; in HTML output, these map 1-to-1 with HTML data attributes on the corresponding tag.
+
+=== Block title
+
+* The block title is a satellite of a block.
+* It shares some commonalities of a block in that it can be defined on its own line and can have inlines; however, it is a subordinate of a block.
+* The block title is the implicit reftext of a block if reftext is not specified.
+* The block title may be displayed above or below the primary contents depending on the block context / publishing conventions.
+* In certain cases, when the block title acts as a caption, it will be prefixed with the value of the corresponding caption attribute (e.g., `example-caption`) and an auto-generated number.
+// ** TODO: can we rename/remap `-caption` attributes to `-caption-signifier`? (e.g., `example-caption-signifier`)?
+** We avoid the term label since label is used by other publishing systems to mean the ID of an element.
+
+=== Implicit Blocks
+// Defines a non-delimited block and lays down the common structural parts and rules governing a non-delimited block.
+// block delineation?
+
+* *Implicit blocks* are blocks that do not have explicit boundaries, unlike delimited blocks.
+An implicit block ends when it encounters an interrupting line such as the start of another implicit block, the opening or closing line of a delimited block, or an empty line.
+* Implicit blocks include sections, discrete headings, paragraphs, literal paragraphs, simple admonitions, simple blockquotes, block macros, lists / list items, and the document itself.
+* Block metadata lines also have implicit boundaries (a single line), but are not themselves blocks.
+
+=== Delimited blocks / Structural containers
+//Defines a delimited block and lays down the common structural parts and rules governing a delimited block.
+
+* A *delimited block* is a compound block bounded by explicit boundaries called delimiter lines.
+* A delimited block only ends when the delimiter line that started the block is found again at the same level (as opposed to creating a nested block).
+* Delimited blocks must be balanced; if there is an opening delimiter line, there must be a corresponding closing delimiter line; otherwise, a warning must be issued by the processor
+* A delimited block creates new parsing context (current block must end before ending ancestor block).
+* If the child block is a delimited block, it starts a new delimited block parsing context; when the child delimited block ends, the previous delimited block parsing context is restored.
+* A delimited block may not contain sections; any headings in a delimited block are implicitly converted to discrete headings.
+Delimited blocks include: example, listing, literal, source, stem, quote, verse, and table blocks.
+
+=== Interrupting lines
+
+* For block elements that do not have explicit boundaries (e.g., a delimited block), the block will end when an interrupting line is encountered.
+* Which lines interrupt a block may vary based on context.
+* An empty line (that remains after any preprocessor directives are evaluated) always ends an implicit block (e.g., paragraph, list, etc.).
+* A closing block delimiter can interrupt any non-delimited block.
+* A block attribute line always ends an implicit block (except when following adjacent block attribute lines).
+* Only a closing block delimiter line is interrupting (must be currently inside that block).
+* A list continuation line ends an implicit block, but does not end the list; instead, it attaches the ensuing block to the list item.
+* Inside a list, a list item is an interrupting line; either starts a new list item or nested list, depending on the marker.
+
+=== Block macros
+// Defines a block macro and introduces its parts and variations.
+// It lays down the common structural rules that are fundamental to block macros.
+
+* A block macro is entered on its own line in the source and displayed on its own line in the output.
+* It doesn't have contents (i.e., inlines), only metadata.
+* It's always parsed.
+* Most block macros follow the named block macro form, `name::<target>?[<attrlist>?]`, except for page breaks and thematic breaks.
+* Most block macros can have block metadata lines.
+* The block macros include: image, video, audio, toc, page break, and thematic break.
+
+== Sections
+
+* A *section block*, referred to as a *section*, is a compound block element denoted by an atx-style heading marker (``=+ ``) and no discrete style.
+* The section includes all content that follows the section heading line until the next sibling or parent section heading or the document boundary.
+* A section heading line must be proceeded by an empty line, ending block delimiter line, or block metadata.
+* The section heading marker designates the hierarchical level of the section (level 0 (`=`) - level n).
+** Section levels cannot be skipped because in some output formats levels are determined by hierarchy.
+* Section markers in adjacent paragraph lines are not recognized.
+* The section heading is a block title (a single line that contains inlines).
+* If the first block in document is a level-0 section, it's designated as the document title / header.
+* Only the book doctype permits level-0 sections in the document body.
+* Sections are not permitted inside non-section blocks.
+
+=== Section IDs
+
+=== Section numbering
+
+* Signifier attributes (e.g., `part-signifier`) control the label that precedes the number for certain section types.
+
+=== Special sections
+
+=== Intrinsic Table of Contents
+
+* A table of contents (TOC) is an index of section titles in an AsciiDoc document.
+* The TOC is the document outline; includes all sections (parts, chapters, regular sections, and special sections).
+* When the `toc` document attribute is enabled, the AsciiDoc processor automatically generates the TOC from the document’s structure and inserts it into the output document.
+* The TOC position, levels displayed, title, and CSS class name can be controlled with document attributes.
+
+=== Preamble
+
+== Paragraphs
+// Defines a paragraph, its structure, and the rules that govern it.
+
+* A *paragraph* is a simple, implicit block consisting of a discrete set of contiguous (non-empty) lines that can contain inline elements and uninterpreted text.
+* Paragraphs are a foundational structure in AsciiDoc.
+* Aside from section and block titles, all non-verbatim leaf block elements are paragraphs.
+* If a line is not recognized as a specific element, it's assumed to be a paragraph.
+* Unrecognized syntax or syntax not allowed inside a paragraph, is  treated as regular text (not dropped).
+
+== Literal paragraphs
+// This section defines a literal paragraph, its structure, and the rules that govern it.
+
+== Discrete headings
+// This section defines a discrete heading, its structure, and the rules that govern it.
+
+== Lists
+
+* A *list* is a compound implicit block that contains one or more list items.
+* The start of a list is defined by the first list item.
+* Lists can be nested to any depth and can be a mix of list types.
+* The supported list types include: unordered, checklist (variation of unordered), ordered, and callout.
+* A *list item* is a compound implicit block initiated by a list marker.
+* List markers include `+*+` (unordered), `.` (ordered), `\d+.` (ordered), `-` (unordered), and `<(\d+|\.)>` (callout)
+** The `+*+` and `.`  list markers can be repeated infinitely.
+* A list item can have a boxed attrlist.
+** A boxed attrlist must start after the list marker and not have anything else on the line.
+** List markers may be indented, however, the wrapped lines may not be indented because AsciiDoc is left-aligned.
+* The end of a list is defined by an interrupter line.
+* Interruption of the list can be avoided using a list continuation, which attaches the adjacent block to the list item.
+* The list mark (bullet) or numeration is controlled using the list style.
+
+=== List anatomy
+
+==== List markers and depth
+
+==== Primary text
+
+// here we could introduce the syntax for designating a block attribute line to a list item
+
+==== Combining lists
+
+==== List continuation
+
+==== List affinity / boundaries
+// cover how to force lists apart
+// justify why adjacent block attribute line does not start a new list
+
+=== Unordered lists
+
+==== Supported styles
+// are the "bullets", "marks", "output markers", or something else? we need to nail down the term
+
+=== Checklists
+
+=== Ordered lists
+
+==== Automatic numbering
+// cover the start attribute here (value must always be a 1-based number)
+// cover the reverse option here
+
+==== Supported styles
+// "numerations"
+
+=== Callout lists
+
+==== Relationship to callout numbers
+
+== Description lists
+// Define term and description individually once we agree on the right model
+
+* A description list (dlist) is a variation of a list, but its list items have a fundamentally different structure.
+* A *description list* is a compound implicit block that contains one or more list items.
+* A description list can be nested to any depth and mixed with other list types.
+* The start of a description list is defined by the first list item.
+* A *description list item* consists of one or more terms and a description.
+* A list item is initiated by at least one term followed by a term delimiter.
+* Term delimiters include `::`, `:::`, `::::`, and `;;`.
+* Terms may be indented.
+* List continuations work the same for attaching blocks as for lists.
+
+=== Description list anatomy
+
+==== Terms, delimiters, and depth
+// term also called subject
+// clarify that an entry can have multiple terms
+// perhaps drop the semicolon as a delimiter
+
+==== Primary text
+
+==== Description
+
+=== Orientation
+// horizontal
+// Q: does this really need to be specified? perhaps this should be an attribute or option, like orientation=horizontal or %horizontal
+
+=== With marker
+// ordered and unordered
+// stacked and not stacked
+// subject stop
+
+==== Q & A
+// shorthand for ordered and stacked, but with different style on term/subject
+
+== Tables
+
+* A table is a compound delimited block that contains one or more cells.
+
+=== Formats (psv, dsv, csv)
+
+* "delimiter-separated values"
+* psv = pipe-separated values; csv = comma-separated (or tab-separated values); dsv = data-separated values
+* each format has slightly different parsing rules / constraints
+* default format is psv
+* format can be specified either using format attribute or by using the dedicated block delimiter (,=== and :===)
+* csv is primarily intended for including data from a CSV file, not for authoring in the AsciiDoc document; loosely based on RFC 4180
+//* Q: do we drop dsv?
+
+=== Cell-based structure
+
+* cell arrangement and delimiters
+ ** cells are discovered then distributed into a rows based on number of columns
+* explain how cells get organized into rows and cols
+* technically, newlines are not required; only cell delimiters matter as boundaries; but some features require the use of newlines
+* precedence of delimiter and how to escape it
+* cell separator can be customized using separator attribute; must be a single character
+* head(er)/body/foot(er)
+* how are columns determined implicitly?
+* how is header determined implicitly?
+* describe what happens if number of cells does match number of expected cells
+
+=== columns / colspecs
+
+* columns attribute can specify how many columns
+* if numeric, uses default colspec
+* columns attribute can specify colspec for each column; colspecs are separated by comma or semicolon
+* colspec controls style, alignment, and width ratio of each column
+* all parts of colspec are optional
+* width can be specified as auto
+* colspec can have a repeater (shorthand for specifying multiple times)
+
+=== Cells
+
+==== Content model
+
+* content model of a cell is a paragraph (leaf, no block content)
+* AsciiDoc table cell changes content model of cell to a compound block; only supported in psv format
+* An AsciiDoc table cell is essentially a separate document (need to clarify this relationship)
+* Only an AsciiDoc table cell can accommodate a nested table
+
+==== Styles
+
+* default (d), strong (s), emphasis (e), monospace (m), literal (l), asciidoc (a)
+
+==== cellspec
+
+* in psv, cellspec is specified directly in front of cell delimiter
+* by default, cell inherits properties from column
+* cellspec can be specified on cell to override most inherited properties; only supported in psv
+* colspec controls style, alignment, span (row and column) (cannot change width)
+// Q: should we drop cell duplication?
+
+==== Metadata / attributes (proposed)
+
+* in psv, a cell can have a boxed attrlist (cell metadata)
+* boxed attrlist must start directly after cell delimiter and not have anything else on that line of the cell; can have multiple contiguous metadata lines?
+// Q: should we allow row to have boxed attrlist too?
+
+=== Table width and column ratios
+
+* By default, widths are distributed across the page (100%) according to ratio values on columns
+* The width of a table can be reduced by specifying the width attribute; value is a percentage (maximum 100%)
+* Adding autowidth option to table allows content to determine width of table (fit content)
+* If no ratios are specified, width is distributed evenly
+* Column widths are only a hint; content can focus widths to be allocated differently (we could suggest using a fixed table layout to enforce)
+* If column is specified as autowidth, then its width will solely be determined by content (no allocated width)
+* By setting autowidth option and stretch role, the table will stretch the width of the page but the width of columns will be determined by content
+* A table whose width is < 100% can be configured to float to the left or right using the float attribute
+
+=== Decoration (frame, grid, stripes)
+
+* The table decorations can be controlled using the `frame`, `grid`, and `stripes` attributes.
+* By default, a table will have all frame and grid (all borders).
+* `frame` values: all, ends, sides, none
+* `grid` values: all, rows, cols, none
+* `stripes` values: none, even, odd, all, hover (where this interaction can be supported)
+* These properties can be controlled globally using document attributes prefixed with table- (e.g., `table-stripes`).
+
+=== Orientation
+
+* Tables can be rotated (where supported) by adding `rotate` option
+* Table orientation can be specified explicitly using `orientation` attribute (portrait or landscape).
+
+=== Nested tables
+
+* a table can be nested in the cell of a parent table
+* only one level of nesting is supported
+* the parent cell must have the `a` table style (AsciiDoc)
+* the nested table must use the delimiter line `!===` and a different cell separator (default `!`)
+* all the rules of the AsciiDoc table cell apply here
+
+== Admonitions
+
+* `====` block delimiter
+* required block style selected from the following list: `NOTE`, `TIP`, `WARNING`, `CAUTION`, `IMPORTANT`
+* content model: compound
+
+== Examples
+
+* `====` block delimiter
+* no style
+* content model: compound
+
+== Sidebars
+
+* `+****+` block delimiter
+* no style
+* content model: compound
+
+== Quotes and verses
+
+* `+____+` block delimiter
+* Quote: no style or `quote` style
+* Verse: `verse` style
+* Epigraph: `epigraph` style
+* content model: compound for Quote, simple for Verse and Epigraph
+
+== Code
+
+* `+----+` (listing/source) or `+....+` (literal) block delimiter
+* Listing: `listing` style or no style if `source-language` document attribute is not set
+* Source: `source` style or no style if `source-language` document attribute is set
+* Literal: no style
+* style must be specified if alternate block delimiter is used
+* literal block is intended to be used for diagram source when a diagram integration is enabled
+* content model: verbatim
+
+== STEM
+
+* `pass:[++++]` block delimiter
+* `stem` style if `stem` document attribute is set and has a value, otherwise `latexmath` or `asciimath`
+* content model: pass, with some processing as required by STEM adapter
+
+== Open
+
+* `+~~~~+` (proposed) or `--` (legacy) block delimiter
+* no style
+* style is often used for custom block
+* content model: compount
+
+== Collapsible
+
+* `====` block delimiter
+* `collapsible` style (proposed) or `%collapsible` option (legacy)
+* content model: compount
+
+== Image macro (block)
+
+* The block image macro inserts images and figures into a document.
+* Constructed using the named block macro form `image::<target>[<attrlist>?]`.
+** Required macro name is `image`.
+** A target is required.
+*** The target may be a relative path, absolute path or URL.
+*** The target may contain space characters; these characters are URL encoded (`%20`) in HTML output.
+*** The target is interpreted depending on the processor settings and/or output format.
+*** If the converter generates output that references the image, the path must be relative to the published document.
+*** If the converter embeds the image in the output document (e.g., `data-uri` is set, converting to PDF directly), the target must be resolvable at convert time; in this case, a URL will only be resolved if the security settings on the processor allows it (e.g., `allow-uri-read`).
+* The boxed attrlist can be empty or specify a comma-separated list of optional attributes.
+
+=== Optional attributes
+
+* `alt` (first position)
+* `width` (second position)
+* `height` (third position)
+* `link`
+* `fallback`; values: path relative to `imagesdir`, absolute path or URL
+** target must be SVG and `opts=interactive`
+* `format`
+** Only necessary when target doesn't end in file extension or can't otherwise be detected.
+* `caption`
+* `window`; values: `_blank`
+* `scale` (DocBook only)
+* `scaledwidth` (DocBook and PDF only)
+* `pdfwidth` (PDF only)
+* `align`; values: left, center, right
+* `float`; values: left, right
+* built-in `role` values: left, right, th, thumb, related, rel
+* built-in `opts` values: none, nofollow, noopener, inline (SVG only), interactive (SVG only)
+
+//** The role shorthand can't be used in a macro attribute list.
+
+=== Optional title and caption label
+
+* The optional block title is prefixed by the caption label *Figure* and numbered automatically.
+* The label is controlled by the `figure-caption` document attribute or `caption` at the individual block level.
+
+== Video macro
+
+* Constructed using the named block macro form `video::<target>[<attrlist>?]`.
+** Required macro name is `video`.
+** A target is required.
+
+=== Optional attributes
+
+== Audio macro
+
+* Constructed using the named block macro form `audio::<target>[<attrlist>?]`.
+** Required macro name is `audio`.
+** A target is required.
+
+=== Optional attributes
+
+== Table of Contents macro
+
+* Inserts the intrinsic table of contents at the location of the macro.
+* Constructed using the formal block macro form `toc::[]`.
+** Required macro name is `toc`.
+** A target and attributes are forbidden.
+
+== Page break macro
+
+* The page break macro isn't specified using the formal block macro form, instead, it's specified as three less-than characters (`++<<<++`).
+* The macro must be offset from the preceding and following blocks by at least one empty line.
+* It inserts a page break for page-oriented / printable output formats such as DocBook, PDF, and HTML in print mode.
+* The macro is ignored if falls at top of empty page; this behavior can be overridden by setting the `always` option on the macro in a block attribute line.
+* Some converters support additional options on the page break macro.
+
+== Thematic break macro
+
+* The thematic break macro isn't specified using the formal block macro form, instead, it's specified as three single quotation marks (`++'''++`).
+* The macro must be offset from the preceding and following blocks by at least one empty line.
+* It inserts a thematic break (horizontal rule) in the output.
+
+== Passthroughs
+
+= Inlines
+
+== Inline structure
+
+* Regular text (such as a paragraph) may contain markup that is interpreted.
+* Markup is additional characters added to the content either to add semantics or to specify formatting; these characters are processor hints.
+* Markup is in the form of marked text, macros, or lookup references.
+* When regular text is interpreted, it produces a collection of nodes (i.e., `node*`) referred to as "inline nodes" or simply "inlines".
+ ** This can be a nested structure (some inlines may contain other inlines).
+* Inline parsing can be broken down into four general categories: text, spans (strong, emphasis, etc.), macros (extrapolated content), and replacements (attribute refs, typographic replacements, special characters, hard line breaks).
+* The parser will attempt to match designated inline syntax, such as a pair of span/formatting marks.
+* If syntax fails to match (such as when the parser encounters an unbalanced mark), the parser silently fails and moves on to the next rule.
+* If no grammar rules can be matched in a run of characters, that text is treated as plain, uninterpreted text; no warning is issued by the processor.
+
+== Inline types
+
+* There are several types of inlines: text, span, macro, charref, raw.
+* A non-element represents plain text, such as text, charref, raw, hard line break.
+* An inline element is an inline node with properties.
+* An inline element can be a leaf (e.g., image) or a non-leaf (e.g., span).
+  ** A non-leaf inline element contain inlines.
+* Span is a "run of markup"; specifically, it's enclosed/bounded text (we're migrating away from the term "quoted text").
+ ** In the grammar, we may refer to this as marked text; in node model, it's a span
+* Span and macro are elements, which means they can have attributes and, in many cases, inlines (children).
+* Properties of text: type, value
+* Common properties of span: type, context, variant, (source) form, attributes (includes id and roles)
+* Common properties of macro: type, context, (source) form, attributes (includes ID and roles).
+ ** Refer to macros expressed using non-named syntax as a shorthand macro; still a macro, just not expressed that way
+* All formatted text is a span; but not all spans are formatted text.
+//* NOTE: we're considering renaming the monospace variant to code (as in "code span")
+* Not mandating a typing system, but the processor/converter has to be able to distinguish the context of different inlines.
+
+== From substitutions to inline parsing
+
+* One of the most problematic aspects of the AsciiDoc language is that it relies on search and replace for processing inlines.
+* This original processing method for inlines doesn't produce a tree and the interpretation is often coupled to and intertwined with the output format and the substitution order.
+* Not only does it cause many unexpected behaviors, it cannot be accurately described; it also makes it impossible to extract a structure, and the information it stores, from the document.
+* The spec is graduating from the use of substitutions to an inline parsing grammar.
+* In doing so, we will aim to match the behavior of the substitution model as closely as possible so existing content can be interpreted in the same way or, when that is not possible, interpreted in such a way that information is not lost.
+* Proposals with different approaches will be put forth on how to resolve this section.
+
+=== Inline preprocessor
+
+* In order to achieve compatibility with the original substitution model, inline parsing will need to be done in two phases.
+* In the first phase, passthrough content is identified and/or extracted and attribute references are expanded.
+** The simplest way to handle passthroughs are to extract them and leave a placeholder behind; passthrough text must be restored to the location of the placeholder during second parsing phase.
+* An inline preprocessor is the only way to allow attribute references to introduce inline syntax in the way they can today.
+* The inline preprocessor must track the original positions of all characters so that inlines can be traced back to their source.
+* All characters introduced by an attribute reference should be attributed to the left-most position of the attribute reference (in other words, they don't occupy space).
+* Once the first phase is complete, the conversion from input text to a parse tree may begin.
+
+=== Inline parsing
+
+* In the second phase, the expanded input is parsed into a tree of inlines (the root of that tree is the parent of the top-level inlines).
+* The parser should track the location (offset, line, and column) of every inline node.
+** The parser must use the information provided by the inline preprocessor to map the node back to the location in the original source, not the expanded source.
+
+== Passthroughs
+
+* Passthroughs are specified using the single plus, double plus, triple plus, and pass macro.
+* Passthroughs prevent text from being interpreted (including attribute references).
+* The triple plus and pass macro pass through text raw (no special character replacement).
+
+== Attribute references
+
+* Refers to the name of a document attribute.
+* An attribute reference is replaced with the value of the document attribute as is.
+* If the document attribute cannot be defined, the `attribute-missing` document attribute determines what to do.
+* By default, an attribute reference to a missing attribute is dropped and a warning is reported.
+
+== Marked text
+
+* A span of text enclosed in a pair of semantic marks.
+* In the past, this has been refered to as "text formatting" or "formatted text" (though formatted text are not limited to this group of syntax).
+* Which marks are used determine the variant (e.g., strong, emphasis).
+* All marked spans support a preceding boxed attrlist; only shorthand attributes are recognized.
+
+=== Constrained vs unconstrained
+
+* constrained markup can only be used if certain conditions are met
+ ** must not be bounded on either side by a wordy character and contents must not start or end with space
+* constrained markup is intended to prevent unwanted matches of formatting marks; though it can still sometimes form an unexpected match
+* unconstrained markup can be used anywhere; less concise
+* unconstrained takes precedence over constrained if both would match
+* constrained inside unconstrained of the same variant cannot start with unconstrained (the unconstrained mark wins out and closes the span)
+
+=== Strong (Bold)
+
+=== Emphasis (Italic)
+
+=== Code (Monospace)
+
+=== Double-quoted (Smart double-quoted)
+
+=== Single-quoted (Smart single-quoted)
+
+=== Superscript
+
+=== Subscript
+
+=== General (Highlighted, custom formatted, or unformatted)
+
+== Inline macros
+// Defines an inline macro and introduces its parts and variations.
+//It lays down the common structural rules that are fundamental to inline macros.
+
+* Can be entered in the flow of text and other inline elements; is displayed in the flow of content if that is where it was entered.
+// Q: has no body?
+* Usually follows the named inline macro form, `name:<target>?[<attrlist>?]`, except for some link and cross reference macros.
+* The `<attrlist>` is not interpreted the same way for all macros; it may be treated as inline content only; it may be a hybrid of inline content and an attribute list; it may have a complete custom interpretation
+* The pass macro is not a macro; it's an inline passthrough that uses the macro form.
+// Maybe call it an inline pass directive?
+* Aside from preprocessor directives, text in the target of a macro is not interpreted.
+
+// TODO we need to list these in parse/precedence order
+// TODO define "macro shorthand" or "macro expression"?
+.Supported inline macros
+* image
+* icon
+* kbd (keyboard)
+* menu
+* btn (button)
+* stem (currently behaves as a specialized inline passthrough with macro syntax; we may not want to list it here)
+* autolinks (don't follow the named macro structure)
+* links (URL macro, link macro, mailto macro)
+* cross references (xref macro, xref shorthand)
+* footnote
+* index terms (indexterm, indexterm2, index term shorthands)
+
+=== Image macro (inline)
+
+=== Icon macro
+
+=== Keyboard macro
+
+=== Menu macro
+
+* Uses named inline macro form, `+menu:<target>[<attrlist>]+`.
+* Required macro name is `menu`.
+** Target only accepts user-defined text of one menu item.
+** Optional attrlist only accepts user-defined text.
+*** Each item in attrlist is separated by a greater-than character `>` with a space on each side, `+menu:Code[Folding > Expand to Level > 3]+`.
+* Text of an item may contain space.
+
+////
+.Proposals:
+* Remove shorthand structure, e.g., `+"Code > Folding > Expand to Level > 3"+`
+* make target forbidden to align menu with other UI macros
+////
+
+=== Button macro
+
+* Uses named inline macro form, `+btn:[<attrlist>]+`.
+* Required name is `btn`.
+* Target is forbidden.
+* attrlist only accepts user-defined text.
+
+=== Autolinks (URLs and email addresses)
+
+=== Link and URL macros
+
+=== Cross reference macros
+
+=== STEM macro
+
+=== Footnote macro
+
+=== Index term macros
+
+== Hard line breaks
+
+== Character references
+
+== Escaping mechanism / Backslash escaping
+
+* to prevent markup from being interpreted, it may be preceded by a backslash
+* the backslash deactivates the markup sequence that directly follows it
+* using a backslash may cause a different markup sequence to be matched; that sequence then must be escaped separately
+* there is no harm in over-escaping; a backslash in front of a reserved markup character will be removed, regardless of whether the text would have been interpreted or not
+* to write a backslash character into the output (perhaps only if it preceded a reserved markup character), it must be written as two backslash characters
+* backslash escaping should be either any markup character (including macro prefix?) or any punctuation (like commonmark)
+* we can't do universal backslash escaping as that would mangle Windows paths in existing documents
+ ** or would it if we say that only a backslash that precedes a reserved markup character has to be escaped?
+
+== Replacements
+
+=== Typographic replacement
+
+* For convenience, AsciiDoc supports numerous typographic replacement.
+* The author writes the shorthand equivalent and the processor replaces these sequences with typographic marks.
+* A typical example is that three dots are replaced with an ellipsis.
+* This conversion is applied using search and replace to the text nodes in the inlines during conversion.
+//* Q: #should we include these replacement spans in the parse tree?#
+
+=== Special character replacement
+
+* Some output formats require that certain characters be escaped in order to be presented literally.
+* For example, HTML requires at least < and & to be escaped as character references (and customarily > as well).
+* For man pages, many more characters must be escaped using the groff escaping system.
+* Not all output formats understand character references, so those must be converted to the equivalent Unicode characters.
+* It's the responsibility of the converter to escape these special characters, and which characters to escape is dictated by the output.
+* The converter should not escape characters in a raw text node, as the intention is to pass that content through as is.
+
+= Referencing System
+
+== Resources and references
+
+* The AsciiDoc language provides an addressing / referencing system.
+* The referencing system consists of referencable locations (references identified by ID), a catalog of references, internal references to another location in the same document (xrefs), and external references to other resources.
+* References are referencable locations within a document.
+* Resources are assets to which an AsciiDoc document refers (e.g., an image or another document).
+
+== IDs / Reference names
+
+* any element node in the document can define an ID (aka a reference name), which can be used to refer to that node
+* the ID also acts as an anchor to the location of that node in the rendered output (just like in HTML)
+* anchor and ID are synonymous; ID is technically the name of the anchor and anchor is the location of that ID (the node, the node's position, etc)
+* it's also possible to define arbitrary/contentless/floating anchors using an inline
+* by default, the processor automatically generates and assigns an ID to all headings (can be toggled using `sectids` document attribute)
+* a processor must provide automatic ID generation for headings; this routine should be pluggable (aka an extension point)
+* ID names are stored in the references catalog using the ID value as the key and the node (the reference node or ref) as the value
+* IDs must be unique within a document
+
+== xrefs
+
+* AsciiDoc content can make forward and backward references to these IDs (this is called an xref)
+* if the output format supports it, the anchor points should also be public so they can be referred to from the outside using a fragment identifier (such as the fragment in a URL)
+ ** such a fragment can be added to the end of a resource reference to refer to an ID from another document; this is called a deep interdocument xref
+* if link text is not specified at the point of an xref, the xreftext from the node should be used
+* by default, the node's title is used as the xreftext (the link text that replaces the xref)
+ ** this title may be enhanced to match publishing standards
+ ** refsig attributes (e.g., `chapter-refsig`) control labels used in the xreftext
+ ** NOTE: we have to think about how this impacts inlines; are they cloned into this spot?
+* if the reftext attribute is set on the node, that value is used instead of the title
+* if an xref points to an ID which is not found, that should be considered an unresolved (i.e.., broken) reference and a warning/error should be issued by the processor
+* xrefs should not be checked/validated until the entire document is parsed, though a processor may choose to eagerly validate references it already knows about as an optimization
+* bibliographic entries are also stored in the same reference catalog; however, how they are defined differs
+
+== Resource references
+
+* any reference to a location outside the current document is a resource reference
+* often times, a resource reference looks like a path; however, the processor must not assume this
+* rather, any resource reference must pass through a resource resolver
+* some relative resource references have a predefined prefix; for example, image references that are relative start from the value of the `imagesdir` attribute
+* however, if no resource resolver is specified, the processor should assume the reference is a path; in this case,
+ ** an absolute path should be taken as is
+ ** a relative path should be resolved from the `docdir` (directory of the outer-most document), not from the directory of the current include file
+ ** the exception is include targets, which are resolved relative to the current include file
+ ** access to paths outside of the jail (typically the `docdir`) may be restricted depending on the safe mode
+* xref distinguishes between internal and external reference based on leading `#` (always internal) or existence of file extension in target
+
+= Preprocessor
+
+NOTE: We are considering different models for how to define the preprocessor such that it makes AsciiDoc more parsable.
+Possible solutions include: pure, priority (nesting restrictions), hybrid (header=priority, body=pure).
+
+* AsciiDoc provides directives that can add or remove lines from the source text before the text is parsed
+* Technically, AsciiDoc's preprocessor is not a true preprocessor, but rather a contextual, priority processor
+* The preprocessor has access to the document attributes defined at each line, but is not aware of the document's block structure
+* The preprocessor handles the following (make sections for these):
+ ** line normalization
+ ** attribute entries (does not consume them)
+ ** conditional directives
+ ** include directive
+ ** comments <= to what degree?
+* directives share the same syntax as a block macro (but are not themselves block macros)
+ ** there are conditional directives and the include directive
+ ** directives are aware of any document attributes defined up to that point
+
+== Line normalization
+
+* Force the encoding to UTF-8 (An AsciiDoc processor always assumes the content is UTF-8 encoded)
+* Strip trailing spaces from each line (including any end of line character); or ignore them in grammar rules
+* Change Windows line ending to universal/Unix line ending
+
+== Preprocessor directives
+
+* Special lines that are processed by the preprocessor that are no impacted by the current context of the document
+* Preprocessor directives can appear anywhere in the document
+* A preprocessor directive must be escaped with a backslash in order for it not to be interpreted, even in a verbatim block
+* A preprocessor directive shares the syntax of a block macro, but is not itself a macro
+
+== Relationship to document attributes
+
+* Preprocessor directives must be able to see any document attributes that are defined up to the point of the directive line
+* The preprocessor can see the effect of an attribute entry, but does not itself consume the attribute entry
+* Preprocessor directives can use attribute references
+
+== Conditional directives
+
+* shared closing directive: endif
+* ifdef / ifndef
+* ifeval
+
+== Include directive
+
+== Comments
+
+* line
+* block
+
+////
+= Docinfo
+
+TODO
+////
+
+= Extension Points
+
+* The AsciiDoc language affords the author the ability to extend the syntax and interpretation of the syntax within a set of boundaries.
+* Since the AsciiDoc language may be processed by any language, this extension system can only be defined in pseudo-code.
+* A processor is expected to provide these extension points by providing TCK adapters to demonstrate that they are honored.
+
+////
+== Lifecycle extensions
+
+* Preprocessor (this is controversial and may have to be rethought)
+* IncludeProcessor (may be replaced by resource resolver)
+* TreeProcessor
+* Postprocessor
+* DocinfoProcessor
+////
+
+== Syntax extensions
+
+=== Custom block
+
+=== Custom block macro
+
+=== Custom inline macro
+
+=== Resource resolver
+
+* the return value of the resource resolver is the address of the resource to be used by the converter (e.g., the href)
+ ** or should it be an object that contains a) the referencable location, b) the concrete location, c) a resource reader
+* as of right now, there's no required syntax for interpreting and resolving a resource reference
+* the resource resolver must have access to the context/type of resource being resolved (e.g., include, image, xref, video, etc)
+* the resource resolver can filter the resources it chooses to resolve; it can override the behavior for certain contexts and allow the default behavior to be used for others (a filter)
+* the resource resolver must be provided the context from which to resolve the resource; this may be information the resource resolver has stored on the document for its own use
+
+== ID generator
+
+* generates the IDs for headings
+
+= Compliance / TCK
+
+== TCK introduction
+
+* Validates that an implementation is compliant
+* Agnostic to implementation language / platform (doctest-oriented)
+* Currently focuses on language parsing / interpretation
+
+== ASG / Node model
+
+* the TCK works by verifying that an implementation can produce an expected ASG
+* ASG is abstract semantic graph, which is essentially a semantic parse tree
+* in order to verify the ASG, implementations are expected to produce a node model
+* the node model is a JSON-representation of the ASG
+* the TCK will compare its node model against the node model produced by the implementation
+* the ASG will mandate at least enough source location (sourcemap) implementation to verify that document was correctly parsed; won't go overboard
+
+== Self-certification process
+
+* describe the self-certification process here
+
+////
+[appendix]
+= Proposed Appendices
+
+* built-in / reserved document attributes
+* grammars
+* parsing strategy
+* converters
+////
