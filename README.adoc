@@ -21,5 +21,4 @@ See xref:NOTICE.adoc[NOTICE] for additional license and copyright information.
 
 == Trademarks
 
-AsciiDoc and AsciiDoc Language are trademarks of the Eclipse Foundation.
-Eclipse and the Eclipse Logo are registered trademarks of the Eclipse Foundation.
+AsciiDoc(R) and AsciiDoc Language(TM) are trademarks of the Eclipse Foundation, Inc.
