@@ -11,7 +11,8 @@ Dan Allen; Sarah White
 The goal of the AsciiDoc Language Specification is to describe a deterministic (definitive?) and parsable grammar for the AsciiDoc syntax.
 The focus at this stage is on being able to identify the structure of an AsciiDoc document and to parse its contents into a node model.
 The grammar will be documented in technical sections using a grammar expression that best suits the language (e.g., PEG).
-The specification is not guaranteed to result in a single, unified grammar (as it may not even be possible to do so).
+From a purely technical perspective, the specification may not define a single grammar that can be used with a parser generator (as it may not even be possible to do so).
+However, effectively, the specification will define grammars that, when working together, will describe how to parse an AsciiDoc document.
 Additionally, the specification should state expectations for converters given the information provided in the node model.
 
 Specify the AsciiDoc language with an eye towards readability, writer-friendliness, consistency, and efficiency.
@@ -25,7 +26,7 @@ When there are conflicts in the interpretation of the syntax, the most intuitive
 //== What is AsciiDoc?
 
 AsciiDoc is a lightweight markup language.
-Specifically, AsciiDoc is a lightweight markup language that is predominantly line-oriented and left-aligned.
+Specifically, AsciiDoc is a lightweight markup language that is predominantly line-oriented and start margin-aligned (i.e., left-aligned in ltr).
 That means AsciiDoc is a Unicode-compliant textual (not binary) language with conventions and special/reserved markup that must be interpreted by a processor.
 All reserved markup characters are selected from the ASCII character set (hence its name).
 
@@ -44,6 +45,7 @@ It's up to the processor to identify these.
 .Lexicon and concepts
 * document
 * block vs inline (vertical vs horizontal markup)
+ ** blocks are always defined from top to bottom (vertical), whereas inline markup can be thought of as horizontal (considering wrapped lines as part of the same logical line). We're just painting a picture here, but be careful not to overgeneralize the concept.
 * element
 * text
 * attribute / metadata
@@ -84,7 +86,7 @@ It's up to the processor to identify these.
 * A spacing character is a space, tab, or line ending (e.g., newline).
 * Other spacing characters are permitted in the document, but will not be interpreted as such.
 * Newline characters create separate lines, which are often treated specially in AsciiDoc.
-* Two consecutive line endings creates an empty line.
+* Two consecutive line endings creates an empty line; consecutive empty lines in non-verbatim content are semantically equivalent to a single empty line
 * Except in verbatim or raw content or block metadata, an empty line is interpreted as a block boundary.
 * Leading spacing characters makes an indented line.
 * Trailing spacing characters are insignificant and may be dropped by the processor.
@@ -113,15 +115,16 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * Therefore, lines can be significant in the AsciiDoc language.
 * An AsciiDoc document may use universal/Unix (`\n`) or Windows (`\r\n`) line endings, though the line feed (`\n`) is preferred.
 * Line breaks are not significant between adjacent lines in a paragraph.
- ** A converter may choose to replace these line endings with the space character; however, they must be maintained in the parse tree.
-* Block boundaries and block metadata are always defined on their own line.
+ ** A converter may choose to replace these line endings with the space character; however, they must be preserved in the parse tree.
+ ** Preserving line endings in the parse tree makes it easier to express scenarios in the TCK; this requirement is still being debated
+* Block boundaries and block metadata are always defined on their own line and occupy the whole line.
 * When lines are not contiguous (separated by an empty line), that may signal a transition from one block to another.
 * A line ending must be preserved during parse; may not always need to be preserved when converted.
 
 === Indentation
 
-* AsciiDoc is a left-aligned language.
-* Being left-aligned makes moving content around easier, avoids the problem of excessive/compound indentation, and encourages the author to be more explicit about nesting.
+* AsciiDoc is a start margin-aligned (i.e., left-aligned in ltr) language.
+* Using the start margin as an anchor point in the syntax makes moving content around easier, avoids the problem of excessive/compound indentation, encourages the author to be more explicit about nesting, and makes the language easier to parse.
 * That means, with certain exceptions, spacing characters at the start of a line (an indented line) are significant.
 * The key exception are list markers, which may be indented without meaning.
 * A line with leading spacing characters at a block boundary is makes a literal paragraph.
@@ -160,7 +163,7 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 === Elements
 
 * An *element* is an identifiable, addressable, and composable chunk of content in a document.
-* The elements in a document form a mostly, left-aligned nested hierarchy of element types and subtypes, where an element type represents a major set of traits, e.g. block macro, and an element subtype represents a specialization of the element type, e.g., a block image macro, and shares many of the traits of that element type
+* The elements in a document form a predominantly start margin-aligned, nested hierarchy of element types and subtypes, where an element type represents a major set of traits, e.g. block macro, and an element subtype represents a specialization of the element type, e.g., a block image macro, and shares many of the traits of that element type
 * There are two primary elements: block elements and inline elements.
 
 ==== Block elements
@@ -184,13 +187,13 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * Macros are a sort of function call in AsciiDoc.
 * There are block and inline macros.
 * Most macros are entered using the *named macro form*: `<name>::?<target>?[<attrlist>?]`.
-** In the named macro form, the macro name is followed by a macro name delimiter followed by a target followed by a boxed attrlist.
+** In the named macro form, the macro name is followed by a macro name delimiter followed by a target followed by a boxed attrlist (or boxed content).
 ** In the named macro form, a macro name is always required.
 ** The macro name delimiter is `::` for block macros and `:` for inline macros.
 ** For some macros, the target is optional or forbidden (e.g., `toc::[]`).
 ** For some macros, the attrlist is optional or forbidden.
 ** For some macros, the attrlist is only a single attribute value, often written as `<text>`.
-* A few macros have a shorthand form in addition to a named form (e.g., `+<<target>>+` and `+xref:target[attrlist]+` ).
+* A few macros have a shorthand form/notation in addition to a named form (e.g., `+<<target>>+` and `+xref:target[attrlist]+` ).
 * A few macros are entered using a form unique to them (e.g., thematic break macro, autolinks, etc.).
 * Some syntax, such as inline passthroughs and include or conditional directives, may use the form of a macro but aren't actually macros.
 
@@ -416,7 +419,8 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 ** The `+*+` and `.`  list markers can be repeated infinitely.
 * A list item can have a boxed attrlist.
 ** A boxed attrlist must start after the list marker and not have anything else on the line.
-** List markers may be indented, however, the wrapped lines may not be indented because AsciiDoc is left-aligned.
+** List markers may be indented.
+** Wrapped lines may be indented, but this indentation is normalized as having the equivalent semantics of a single space.
 * The end of a list is defined by an interrupter line.
 * Interruption of the list can be avoided using a list continuation, which attaches the adjacent block to the list item.
 * The list mark (bullet) or numeration is controlled using the list style.
@@ -751,7 +755,7 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * Properties of text: type, value
 * Common properties of span: type, context, variant, (source) form, attributes (includes id and roles)
 * Common properties of macro: type, context, (source) form, attributes (includes ID and roles).
- ** Refer to macros expressed using non-named syntax as a shorthand macro; still a macro, just not expressed that way
+ ** Refer to macros expressed using non-named syntax as a shorthand macro (or shorthand notation); still a macro, just not expressed that way
 * All formatted text is a span; but not all spans are formatted text.
 //* NOTE: we're considering renaming the monospace variant to code (as in "code span")
 * Not mandating a typing system, but the processor/converter has to be able to distinguish the context of different inlines.
@@ -849,9 +853,9 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * stem (currently behaves as a specialized inline passthrough with macro syntax; we may not want to list it here)
 * autolinks (don't follow the named macro structure)
 * links (URL macro, link macro, mailto macro)
-* cross references (xref macro, xref shorthand)
+* cross references (xref macro, xref shorthand notation)
 * footnote
-* index terms (indexterm, indexterm2, index term shorthands)
+* index terms (indexterm, indexterm2, index term shorthand notations)
 
 === Image macro (inline)
 
@@ -907,6 +911,10 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * backslash escaping should be either any markup character (including macro prefix?) or any punctuation (like commonmark)
 * we can't do universal backslash escaping as that would mangle Windows paths in existing documents
  ** or would it if we say that only a backslash that precedes a reserved markup character has to be escaped?
+
+Q: does backslash escape a grammar rule match or does it just deactivate the immediate character?
+
+ from *\*foo**, do we get <strong>*foo*</strong> or <strong>*foo</strong>* ?
 
 == Replacements
 
@@ -1023,6 +1031,7 @@ Possible solutions include: pure, priority (nesting restrictions), hybrid (heade
 == Comments
 
 * line
+ ** lines that do not have a reserved designation (a delimiter line or a block attribute line) may have a trailing line comment; we are considering whether this can be loosened to all non-verbatim lines (proposed)
 * block
 
 ////
