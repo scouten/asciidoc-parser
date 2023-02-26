@@ -1,14 +1,35 @@
 = AsciiDoc Language Project
 
-This project maintains the AsciiDoc Language Specification, Technology Compatibility Kit (TCK), end user documentation, and their related materials.
+This project maintains the AsciiDoc Language Specification, Technology Compatibility Kit (TCK), user documentation, and their related materials.
 The AsciiDoc Language Specification describes the syntax and grammar, Abstract Semantic Graph (ASG), Document Object Model (DOM), referencing system, and APIs for processing, converting, and extending the language.
 The TCK is used to verify and certify that an AsciiDoc processor implementation is compatible with this specification.
 For further details, see the xref:process/scope.adoc[project's approved scope].
 
-== Build the End User Documentation
+== User Documentation
+
+In addition to the AsciiDoc Language Specification, this project maintains the user documentation for the AsciiDoc language.
+The [.path]_docs_ folder in this repository contains the source of this documentation.
+
+=== About this Documentation
+
+In it's current state, the user documentation is the initial contribution from the Asciidoctor project that describes AsciiDoc as interpreted by Asciidoctor.
+*The user documentation is not itself the AsciiDoc Language Specification.*
+Rather, it serves as the reference material from which the AsciiDoc Language Specification will be developed.
+
+While the user documentation is mostly accurate, it's not a technical specification and still reflects many idiosyncrasies of how AsciiDoc is interpreted by Asciidoctor.
+A key goal of the AsciiDoc Language project is to develop a technical specification for the AsciiDoc language (which includes grammar rules and required behavior) that's independent of any implementation.
+
+Once the first version of the specification is complete, the user documentation will be updated to reflect any refinements or changes that were made to the language.
+At that time, the user documentation will likely be slimmed down to focus exclusively on using AsciiDoc rather than defining it.
+In other words, it will continue to serve as a companion to the specification, intended for those who want to learn how to use AsciiDoc.
+
+=== Online Preview
 
 This repository is a registered content source in the https://github.com/asciidoctor/docs.asciidoctor.org/blob/main/antora-playbook.yml[playbook file for docs.asciidoctor.org].
 The source files under the [.path]_docs/_ folder are organized into a documentation component as identified by the [.path]_antora.yml_ file.
+You can view the published version online at https://docs.asciidoctor.org/asciidoc/latest.
+
+=== Local Preview
 
 To build and preview the documentation locally, follow the instructions in the file link:local-antora-playbook.yml[] at the root of this repository.
 To learn more about how to build a documentation site with Antora, see the https://docs.antora.org/antora/latest/install-and-run-quickstart/[Install and Run Antora Quickstart].
@@ -18,7 +39,7 @@ To learn more about how to build a documentation site with Antora, see the https
 The AsciiDoc Language and the accompanying materials are made available under the terms of the Eclipse Public License v 2.0 (EPL-2.0).
 See link:LICENSE[] to find the full license text.
 
-The end user documentation for the AsciiDoc Language, located in the [.path]_docs/_ folder, is made available under the terms of a https://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License] (CC-BY-4.0).
+The user documentation for the AsciiDoc Language, located in the [.path]_docs/_ folder, is made available under the terms of a https://creativecommons.org/licenses/by/4.0/[Creative Commons Attribution 4.0 International License] (CC-BY-4.0).
 
 See xref:NOTICE.adoc[NOTICE] for additional license and copyright information.
 
