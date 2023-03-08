@@ -172,6 +172,12 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * Every node in this tree has a context, which identifies its primary function (e.g., `admonition`).
 * Nodes may be grouped by type (e.g., `macro`).
 * Nodes may have a variant to distinguish between variations on its context (e.g., `strong`).
+* 5 conceptual node types
+ ** block parent (element)
+ ** block terminal (element)
+ ** inline parent (element)
+ ** inline terminal (element)
+ ** inline literal (naturally a non-element terminal)
 
 === Elements
 
