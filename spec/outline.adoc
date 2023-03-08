@@ -60,6 +60,19 @@ It's up to the processor to identify these.
 * (preprocessor) directives
 * delimiter lines
 
+.Characteristics
+* Document encoding is assumed to be Unicode; all Unicode characters are permitted
+* Reserved markup is selected from the ASCII character set
+* Syntax is oriented around lines that are aligned to the start margin (left-aligned in ltr)
+* Block syntax does not backtrace; if a delimited block is opened, it must be closed
+* Block boundaries in the syntax are a mix of explicit and implicit
+* Blocks can be nested in blocks if delimiters aren't ambiguous; you can't nest like in like, but can nest like as a grandchild of like
+* For block syntax, a line which doesn't fully match a recognized pattern is treated the same as paragraph text
+* Inline syntax is assumed to be (uninterpreted) text interspersed with interpreted markup
+* For inline syntax, the left-hand side of a markup pattern is assumed to be valid until it isn't; if it isn't, it reverts to the next alternative or uninterpreted text
+* Spacing characters, particularly empty lines, are often significant, but not always
+* ...
+
 == Characters
 
 * An AsciiDoc document is a continuous, uncompressed sequence of characters (text), aka character data
