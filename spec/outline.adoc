@@ -1098,6 +1098,13 @@ TODO
 * Agnostic to implementation language / platform (doctest-oriented)
 * Currently focuses on language parsing / interpretation
 
+....
+        input         input
+|engine| <-> |adapter| <-> |impl|
+      actual ASG        actual ASG
+= expected ASG
+....
+
 == ASG / Node model
 
 * the TCK works by verifying that an implementation can produce an expected ASG
