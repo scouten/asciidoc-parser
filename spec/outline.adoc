@@ -43,6 +43,7 @@ It's up to the processor to identify these.
 
 // quick flyover; non-normative
 .Lexicon and concepts
+* markup character / character sequence
 * document
 * block vs inline (vertical vs horizontal markup)
  ** blocks are always defined from top to bottom (vertical), whereas inline markup can be thought of as horizontal (considering wrapped lines as part of the same logical line). We're just painting a picture here, but be careful not to overgeneralize the concept.
@@ -99,6 +100,7 @@ It's up to the processor to identify these.
 * A spacing character is a space, tab, or line ending (e.g., newline).
 * Other spacing characters are permitted in the document, but will not be interpreted as such.
 * Newline characters create separate lines, which are often treated specially in AsciiDoc.
+* Empty lines are often treated as significant when analying the block structure of an AsciiDoc document
 * Two consecutive line endings creates an empty line; consecutive empty lines in non-verbatim content are semantically equivalent to a single empty line
 * Except in verbatim or raw content or block metadata, an empty line is interpreted as a block boundary.
 * Leading spacing characters makes an indented line.
@@ -209,9 +211,11 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 ** In the named macro form, the macro name is followed by a macro name delimiter followed by a target followed by a boxed attrlist (or boxed content).
 ** In the named macro form, a macro name is always required.
 ** The macro name delimiter is `::` for block macros and `:` for inline macros.
+** A block macro can only be used in a block context; an inline macro can only be used in an inline context.
 ** For some macros, the target is optional or forbidden (e.g., `toc::[]`).
 ** For some macros, the attrlist is optional or forbidden.
 ** For some macros, the attrlist is only a single attribute value, often written as `<text>`.
+** The box of a macro can be contents, attrlist, or contents followed by optional attrlist (but what about kbd?)
 * A few macros have a shorthand form/notation in addition to a named form (e.g., `+<<target>>+` and `+xref:target[attrlist]+` ).
 * A few macros are entered using a form unique to them (e.g., thematic break macro, autolinks, etc.).
 * Some syntax, such as inline passthroughs and include or conditional directives, may use the form of a macro but aren't actually macros.
