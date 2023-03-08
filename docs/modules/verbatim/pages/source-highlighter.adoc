@@ -73,8 +73,14 @@ In other words, the `source-highlighter` attribute means "`use this syntax highl
 To apply highlighting to a block of source code, you must specify a source language.
 If the block is a literal block or paragraph, you must also specify the `source` style.
 
-The available source language values are defined by the syntax highlighter library.
-In most cases, the source language value is the proper name of the language in lowercase (e.g., `ruby`, `java`).
+The AsciiDoc language does not specify the list of valid source language values.
+Instead, the available source language values are defined by the syntax highlighter library.
+
+TIP: You can find the list of available languages supported by Rouge in the https://github.com/rouge-ruby/rouge/blob/master/docs/Languages.md[Rouge documentation].
+You can print a list of available languages supported by Pygments by running `pygmentize -L formatters`.
+The available languages supported by highlight.js depends on which bundle of highlight.js you are using.
+
+Typically, the source language value is the proper name of the language in lowercase (e.g., `ruby`, `java`).
 Most syntax highlighters also accept using the source file extension (e.g., `js`, `rb`), though it's important to be consistent.
 If the syntax highlighter doesn't recognize or support the source language, the block will not be highlighted.
 

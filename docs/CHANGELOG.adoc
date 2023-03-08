@@ -6,6 +6,9 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 == Published Q1 2023
 
+Added::
+* Add tip for how to find list of supported source languages for the various syntax highlighters
+
 Changed::
 * Clarify that superscript and subscript formatting is neither constrained nor unconstrained, but rather a specialty hybrid
 * Clarify that first menu item must start with word character or character reference
