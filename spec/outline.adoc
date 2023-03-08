@@ -1120,6 +1120,10 @@ TODO
 * the TCK will compare its node model against the node model produced by the implementation
 * the ASG will mandate at least enough source location (sourcemap) implementation to verify that document was correctly parsed; won't go overboard
 
+// IDEA: each entry in attributes resolves to attribute object, which holds value, location, history
+// another idea is to have a separate attributesdefs collection which captures this information
+// from this information, we can tell where a block starts; though we may want to reserve a dedicated property for that instead
+
 == Self-certification process
 
 * describe the self-certification process here
