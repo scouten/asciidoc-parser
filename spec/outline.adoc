@@ -22,6 +22,25 @@ If a grammar rule can't be matched, and it's safe to do so, the processor should
 It's also vital to be able to extract information from an AsciiDoc document, so it should be possible to model the document's entire structure.
 When there are conflicts in the interpretation of the syntax, the most intuitive behavior should be chosen.
 
+=== Outline purpose and notations
+
+This outline serves two purposes:
+
+. It provides the overall structure and organization of the topics that will be addressed in the specification document.
+. It acts as catalog of questions, clarifications, and issues that need to be discussed and resolved during the development of the specification.
+
+The following abbreviations are entered next to select items in this outline to ensure that we attend to them during development:
+
+FI:: *FI* is the notation for *Future Issue*.
+A proposal, decision, or clarification marked with *FI* needs to be addressed by an issue that will be filed in the future when the appropriate domain or topic has risen to imminent discussion and development in the specification or TCK.
+
+#<issue-number>:: The number of an issue (linked to itself in the issue tracker) that addresses a proposal, decision, or clarification stated in the outline.
+The issue number replaces the *FI* notation on an item.
+
+SDR:: *SDR* is the notation for *Specification Document Requirement*.
+Items marked with this notation are usually terms that we need to define within the context of the specification document and then use consistently within the document hence forth.
+Such items may need an issue to resolve their name or definition, but most are likely to be confirmed during a related technical discussion.
+
 == AsciiDoc Language introduction and purpose
 //== What is AsciiDoc?
 
@@ -85,8 +104,8 @@ It's up to the processor to identify these.
 === Unicode support
 
 * A character in AsciiDoc can be any character defined by Unicode.
-* An AsciiDoc document may contain any Unicode character.
  ** Control characters and other characters which don't occupy space should be avoided.
+* *FI* Will any, all, or select Unicode escape sequences be recognized?
 * An AsciiDoc document is assumed to have UTF-8 encoding.
  ** Processors may support other encodings, but the input must be re-encoded to UTF-8 before parsing.
 
@@ -96,11 +115,12 @@ It's up to the processor to identify these.
 
 === Spacing characters
 
+* *FI* How are space characters in the source going to be handled? What space characters are permitted? How are they going to be preserved?
 * An AsciiDoc document may use tab or space characters for spacing, though the inline syntax primarily only considers space characters.
 * A spacing character is a space, tab, or line ending (e.g., newline).
 * Other spacing characters are permitted in the document, but will not be interpreted as such.
 * Newline characters create separate lines, which are often treated specially in AsciiDoc.
-* Empty lines are often treated as significant when analying the block structure of an AsciiDoc document
+* Empty lines are often treated as significant when analyzing the block structure of an AsciiDoc document
 * Two consecutive line endings creates an empty line; consecutive empty lines in non-verbatim content are semantically equivalent to a single empty line
 * Except in verbatim or raw content or block metadata, an empty line is interpreted as a block boundary.
 * Leading spacing characters makes an indented line.
@@ -112,6 +132,7 @@ It's up to the processor to identify these.
 * AsciiDoc often uses words and word boundaries to determine what markup is valid.
 * However, the term "`word`" in this context is not well-defined.
 * Furthermore, the term "`word`" traditionally includes the underscore character, which is a reserved character in the AsciiDoc markup.
+** *FI* Should the underscore no longer be treated as a word character and be treated as a syntax token only?
 * Thus, AsciiDoc defines the term "`wordy`" to mean a word-like (but not strictly word) character.
 * A wordy is an alphabetic character (as defined by Unicode) or an Arabic number.
 For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
@@ -131,7 +152,8 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * An AsciiDoc document may use universal/Unix (`\n`) or Windows (`\r\n`) line endings, though the line feed (`\n`) is preferred.
 * Line breaks are not significant between adjacent lines in a paragraph.
  ** A converter may choose to replace these line endings with the space character; however, they must be preserved in the parse tree.
- ** Preserving line endings in the parse tree makes it easier to express scenarios in the TCK; this requirement is still being debated
+ ** Preserving line endings in the parse tree makes it easier to express scenarios in the TCK; *FI* this requirement is still being debated.
+ ** *FI* Should we declare line normalization; trailing space is insignificant, but not mandatory to remove it? (TCK would be ambiguous)
 * Block boundaries and block metadata are always defined on their own line and occupy the whole line.
 * When lines are not contiguous (separated by an empty line), that may signal a transition from one block to another.
 * A line ending must be preserved during parse; may not always need to be preserved when converted.
@@ -258,6 +280,8 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 === Implicit metadata lines
 
 * Author line
+** State guidelines for author names, keeping internationalization in mind
+** Some scenarios may not be possible using the author line; in such cases the attributes will need to be explicitly set
 * Revision line
 
 == Document attributes
@@ -273,12 +297,22 @@ Many built-in attributes only take effect when defined in the document header wi
 These attributes act as a switch, and their sole function is to turn on or turn off a feature.
 If a boolean attribute is defined, but not given a value (i.e., set), it's in the "on" state.
 When set, a boolean attribute typically has an empty value.
-// Should we standardize the typed value true as well?
 If the attribute is not defined (i.e., not set), it's in the "off" state.
+*** *FI* Should we standardized the boolean document attribute typed value `true`?
 * A *user-defined document attribute* is any attribute that the user or an extension sets that isn’t reserved by the AsciiDoc language or an extension.
 These attributes allow the user to define named, reusable content.
+* *FI* Should we drop the `experimental` attribute all together or keep it as a flag for experimental features?
+(Note that promoting the UI macros to fully supported is a separate decision).
 
 === Attribute entries
+
+* *FI* Should we drop the normalization of attribute names (i.e., allow attribute names to have mixed letter casing)? (This means the name would no longer be translated / automatically converted from "phrase" to name in the attribute definition.)
+* *FI* Should we disallow spaces in attribute names in an attribute entry?
+* *FI* Should we allow document attributes to be set inside a delimited block?
+* *FI* Should we drop `++{set:...}++` ?
+* *FI* Should we allow dot notation to access property of attribute with an object value?
+* *FI* Should we preserve newlines in the value of an attribute entry if line ends with double backslash (`++\\++`)?
+- *FI* Should we choose `\` or `+` as character to continue an attribute value?
 
 === Attribute references
 
@@ -323,6 +357,7 @@ A block is either a simple block or a compound block.
 * *Block metadata* is a superset of properties of the block that contains block attributes; the metadata includes specialized attributes such as ID, title, and style; also context, etc.
 * All blocks accommodate zero or more lines of explicit metadata stacked linewise directly on top of the block content and, if applicable, the opening delimiter line.
 ** The optional metadata lines include: zero or more block attribute lines (which populate the block’s attributes), block attrlist (inside block attribute line), the block attributes, optional block anchor line, optional block title line (many blocks also support a corresponding caption).
+** *SDR* Confirm the terms and their definitions for what we should use to refer to the list of attributes in raw versus parsed form.
 * The shared (but optional) block attributes include: ID, style, set of roles, set options, title, and reftext.
 
 === Block attributes
@@ -341,7 +376,7 @@ A block is either a simple block or a compound block.
 * The block title is the implicit reftext of a block if reftext is not specified.
 * The block title may be displayed above or below the primary contents depending on the block context / publishing conventions.
 * In certain cases, when the block title acts as a caption, it will be prefixed with the value of the corresponding caption attribute (e.g., `example-caption`) and an auto-generated number.
-// ** TODO: can we rename/remap `-caption` attributes to `-caption-signifier`? (e.g., `example-caption-signifier`)?
+** *FI* Propose renaming and remapping `-caption` attributes to `-caption-signifier`? (e.g., `example-caption-signifier`).
 ** We avoid the term label since label is used by other publishing systems to mean the ID of an element.
 
 === Implicit Blocks
@@ -358,9 +393,10 @@ An implicit block ends when it encounters an interrupting line such as the start
 
 * A *delimited block* is a compound block bounded by explicit boundaries called delimiter lines.
 * A delimited block only ends when the delimiter line that started the block is found again at the same level (as opposed to creating a nested block).
-* Delimited blocks must be balanced; if there is an opening delimiter line, there must be a corresponding closing delimiter line; otherwise, a warning must be issued by the processor
+* Delimited blocks must be balanced; if there is an opening delimiter line, there must be a corresponding closing delimiter line; otherwise, a warning must be issued by the processor.
 * A delimited block creates new parsing context (current block must end before ending ancestor block).
 * If the child block is a delimited block, it starts a new delimited block parsing context; when the child delimited block ends, the previous delimited block parsing context is restored.
+** State the nesting rules and limits for delimited blocks.
 * A delimited block may not contain sections; any headings in a delimited block are implicitly converted to discrete headings.
 Delimited blocks include: example, listing, literal, source, stem, quote, verse, and table blocks.
 
@@ -392,9 +428,12 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * The section includes all content that follows the section heading line until the next sibling or parent section heading or the document boundary.
 * A section heading line must be proceeded by an empty line, ending block delimiter line, or block metadata.
 * The section heading marker designates the hierarchical level of the section (level 0 (`=`) - level n).
+** *FI* Should we allow section levels to be infinite?
+It would be up to converter to normalize levels it cannot manage.
 ** Section levels cannot be skipped because in some output formats levels are determined by hierarchy.
 * Section markers in adjacent paragraph lines are not recognized.
 * The section heading is a block title (a single line that contains inlines).
+** *FI* Should we standardize on the `%notitle` option to hide a section title? (currently Asciidoctor only supports `%untitled`)
 * If the first block in document is a level-0 section, it's designated as the document title / header.
 * Only the book doctype permits level-0 sections in the document body.
 * Sections are not permitted inside non-section blocks.
@@ -403,7 +442,7 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 
 === Section numbering
 
-* Signifier attributes (e.g., `part-signifier`) control the label that precedes the number for certain section types.
+* Signifier attributes (e.g., `part-signifier`) control the signifier that precedes the number for certain section types.
 
 === Special sections
 
@@ -423,7 +462,7 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * Paragraphs are a foundational structure in AsciiDoc.
 * Aside from section and block titles, all non-verbatim leaf block elements are paragraphs.
 * If a line is not recognized as a specific element, it's assumed to be a paragraph.
-* Unrecognized syntax or syntax not allowed inside a paragraph, is  treated as regular text (not dropped).
+* Unrecognized syntax or syntax not allowed inside a paragraph, is treated as regular text (not dropped).
 
 == Literal paragraphs
 // This section defines a literal paragraph, its structure, and the rules that govern it.
@@ -500,9 +539,10 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 === Description list anatomy
 
 ==== Terms, delimiters, and depth
-// term also called subject
-// clarify that an entry can have multiple terms
-// perhaps drop the semicolon as a delimiter
+
+* A term is also called a subject.
+* An entry can have multiple terms.
+* *FI* Should we drop the semicolon as a delimiter and make the dlist markers consistent (`::`, `:::`, `::::`, `:::::`) (not `;;`)?
 
 ==== Primary text
 
@@ -510,7 +550,10 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 
 === Orientation
 // horizontal
-// Q: does this really need to be specified? perhaps this should be an attribute or option, like orientation=horizontal or %horizontal
+
+* *FI* Does the dlist `horizontal` orientation need to be specified?
+Perhaps it should be an attribute or option, like `orientation=horizontal` or `%horizontal`.
+It seems that horizontal being an option (`%horizontal`) rather than a style may fit the model best; then it can be used like a true style such as `glossary`.
 
 === With marker
 // ordered and unordered
@@ -528,11 +571,12 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 
 * "delimiter-separated values"
 * psv = pipe-separated values; csv = comma-separated (or tab-separated values); dsv = data-separated values
+** *FI* Can and/or should we drop the `dsv` table data format?
 * each format has slightly different parsing rules / constraints
+* *FI* Clarify and refine how tables are parsed (so line comments are processed with respect to enclosing context such as in a verbatim block in an AsciiDoc table cell or inside CSV/DSV data).
 * default format is psv
 * format can be specified either using format attribute or by using the dedicated block delimiter (,=== and :===)
 * csv is primarily intended for including data from a CSV file, not for authoring in the AsciiDoc document; loosely based on RFC 4180
-//* Q: do we drop dsv?
 
 === Cell-based structure
 
@@ -576,13 +620,14 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * by default, cell inherits properties from column
 * cellspec can be specified on cell to override most inherited properties; only supported in psv
 * colspec controls style, alignment, span (row and column) (cannot change width)
-// Q: should we drop cell duplication?
+* *FI* Should we drop cell duplication?
 
 ==== Metadata / attributes (proposed)
 
 * in psv, a cell can have a boxed attrlist (cell metadata)
-* boxed attrlist must start directly after cell delimiter and not have anything else on that line of the cell; can have multiple contiguous metadata lines?
-// Q: should we allow row to have boxed attrlist too?
+* boxed attrlist must start directly after cell delimiter and not have anything else on that line of the cell
+* *FI* Can a cell have multiple contiguous metadata lines?
+* *FI* Should we allow a row to have a boxed attrlist?
 
 === Table width and column ratios
 
@@ -662,15 +707,18 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 == Open
 
 * `+~~~~+` (proposed) or `--` (legacy) block delimiter
+** *FI* Propose the nestable open block using the standard block delimiter length  (`+~~~~+`).
 * no style
 * style is often used for custom block
-* content model: compount
+* content model: compound
 
 == Collapsible
 
 * `====` block delimiter
 * `collapsible` style (proposed) or `%collapsible` option (legacy)
-* content model: compount
+** *FI* Propose that `collapsible` be a style for example blocks.
+Should it be an allowed style on any other blocks?
+* content model: compound
 
 == Image macro (block)
 
@@ -709,7 +757,7 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 
 === Optional title and caption label
 
-* The optional block title is prefixed by the caption label *Figure* and numbered automatically.
+* The optional block title is prefixed by the caption signifier *Figure* and numbered automatically.
 * The label is controlled by the `figure-caption` document attribute or `caption` at the individual block level.
 
 == Video macro
@@ -780,7 +828,6 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * Common properties of macro: type, context, (source) form, attributes (includes ID and roles).
  ** Refer to macros expressed using non-named syntax as a shorthand macro (or shorthand notation); still a macro, just not expressed that way
 * All formatted text is a span; but not all spans are formatted text.
-//* NOTE: we're considering renaming the monospace variant to code (as in "code span")
 * Not mandating a typing system, but the processor/converter has to be able to distinguish the context of different inlines.
 
 == From substitutions to inline parsing
@@ -843,6 +890,8 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 
 === Code (Monospace)
 
+* *FI* Propose renaming the monospace variant to code (as in "code span").
+
 === Double-quoted (Smart double-quoted)
 
 === Single-quoted (Smart single-quoted)
@@ -886,6 +935,8 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 
 === Keyboard macro
 
+* *FI* Fully support the UI macros, therefore, `experimental` will no longer be needed to activate them.
+
 === Menu macro
 
 * Uses named inline macro form, `+menu:<target>[<attrlist>]+`.
@@ -894,12 +945,8 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 ** Optional attrlist only accepts user-defined text.
 *** Each item in attrlist is separated by a greater-than character `>` with a space on each side, `+menu:Code[Folding > Expand to Level > 3]+`.
 * Text of an item may contain space.
-
-////
-.Proposals:
-* Remove shorthand structure, e.g., `+"Code > Folding > Expand to Level > 3"+`
-* make target forbidden to align menu with other UI macros
-////
+* *FI* Propose removing the shorthand structure, e.g., `+"Code > Folding > Expand to Level > 3"+`.
+* *FI* Make target forbidden to align menu with other UI macros.
 
 === Button macro
 
@@ -918,7 +965,12 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 
 === Footnote macro
 
+* *FI* Should we always remove the leading space before a footnote by default?
+This may need a special syntax to create a left-hand boundary for a macro, like an extra colon, empty `{}`, etc. (e.g., `+:footnote:[note]+`).
+
 === Index term macros
+
+* *FI* Propose that we merge `indexterm2` into `indexterm` and add `visible` or `show` (maybe as target?) to reproduce `indexterm2` behavior?
 
 == Hard line breaks
 
@@ -947,7 +999,7 @@ Q: does backslash escape a grammar rule match or does it just deactivate the imm
 * The author writes the shorthand equivalent and the processor replaces these sequences with typographic marks.
 * A typical example is that three dots are replaced with an ellipsis.
 * This conversion is applied using search and replace to the text nodes in the inlines during conversion.
-//* Q: #should we include these replacement spans in the parse tree?#
+* *FI* Should we include these replacement spans in the parse tree?
 
 === Special character replacement
 
@@ -986,7 +1038,7 @@ Q: does backslash escape a grammar rule match or does it just deactivate the imm
 * if link text is not specified at the point of an xref, the xreftext from the node should be used
 * by default, the node's title is used as the xreftext (the link text that replaces the xref)
  ** this title may be enhanced to match publishing standards
- ** refsig attributes (e.g., `chapter-refsig`) control labels used in the xreftext
+ ** refsig attributes (e.g., `chapter-refsig`) control the signifiers used in the xreftext
  ** NOTE: we have to think about how this impacts inlines; are they cloned into this spot?
 * if the reftext attribute is set on the node, that value is used instead of the title
 * if an xref points to an ID which is not found, that should be considered an unresolved (i.e.., broken) reference and a warning/error should be issued by the processor
@@ -1048,13 +1100,14 @@ Possible solutions include: pure, priority (nesting restrictions), hybrid (heade
 * shared closing directive: endif
 * ifdef / ifndef
 * ifeval
+* *FI* Should we allow `else` for ifdef/ifndef/ifeval? (see https://github.com/asciidoctor/asciidoctor/issues/514)
 
 == Include directive
 
 == Comments
 
 * line
- ** lines that do not have a reserved designation (a delimiter line or a block attribute line) may have a trailing line comment; we are considering whether this can be loosened to all non-verbatim lines (proposed)
+ ** *FI* Propose that lines that do not have a reserved designation (a delimiter line or a block attribute line) may have a trailing line comment; we are considering whether this can be loosened to all non-verbatim lines.
 * block
 
 ////
@@ -1068,6 +1121,7 @@ TODO
 * The AsciiDoc language affords the author the ability to extend the syntax and interpretation of the syntax within a set of boundaries.
 * Since the AsciiDoc language may be processed by any language, this extension system can only be defined in pseudo-code.
 * A processor is expected to provide these extension points by providing TCK adapters to demonstrate that they are honored.
+* *FI* How will syntax extensions be described in the grammar?
 
 ////
 == Lifecycle extensions
@@ -1123,6 +1177,7 @@ TODO
 * the node model is a JSON-representation of the ASG
 * the TCK will compare its node model against the node model produced by the implementation
 * the ASG will mandate at least enough source location (sourcemap) implementation to verify that document was correctly parsed; won't go overboard
+* *FI* How will we define the APIs (including the DOM) in a language-independent way (e.g., IDL from XML DOM Core, UML, etc; see https://en.wikipedia.org/wiki/Language-independent_specification)?
 
 // IDEA: each entry in attributes resolves to attribute object, which holds value, location, history
 // another idea is to have a separate attributesdefs collection which captures this information
@@ -1141,3 +1196,10 @@ TODO
 * parsing strategy
 * converters
 ////
+
+[appendix]
+== Deprecation process
+
+* *FI* Define the deprecation process for syntax, capabilities, etc. that was defined in the first version of the specification.
+* *FI* List any syntax, behavior, etc. that existed in Asciidoctor that was not defined in the first version of the specification and is therefore deprecated.
+We may decide in that issue to also list the syntax in an Appendix of the specification document or simply maintain it as an issue or in some other form.
