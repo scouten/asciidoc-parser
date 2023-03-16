@@ -173,16 +173,18 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * In verbatim content, empty lines are preserved.
 * In general, empty lines are used to separate blocks.
 * The absence of an empty line between paragraphs will cause the lines to be fused together as a single paragraph.
-* Except in the case where empty lines are preserved, multiple successive empty lines are equivalent to a single empty line.
+* Except in the case where empty lines are preserved (such as in verbatim content), multiple successive empty lines are equivalent to a single empty line.
+* Empty lines at the start and end of a verbatim block are dropped. <= need to clarify this behavior
 * Empty lines between and after block metadata lines are insignificant.
-* Empty lines between two simple list items are ignored. (though we may say that two empty lines break the list)
+* Empty lines between two simple list items are ignored. <= we may say that two empty lines break the list
 * Empty lines in all other places serve as the boundary between two blocks.
 * For block elements that do not have explicit boundaries (e.g., a delimited block), the block will end when an interrupting line is encountered
-* An empty line is an interrupting line, but not the only one.
+* An empty line is often an interrupting line, but not the only one.
 * A block attribute line (a line that contains a boxed attrlist) is also an interrupting line.
 * The closing block delimiter (if used in a place that it can match the opening block delimiter) is an interrupting line.
 * A list continuation line ends an attached block (but does not end the list; rather, it attaches the ensuing block to the list item)
 * Inside a list, a list item is an interrupting line; either starts a new list item or nested list, depending on the marker
+ ** A block attribute line above a list is not interrupting if directly adjacent to the content of the previous list item (the lack of an empty line acts as an implicit list continuation)
 * Empty lines may be omitted when the language makes the separation between block elements unambiguous (such as when an interrupting line is encounter), though the use empty lines to keep blocks apart is strongly recommended.
 * The first and last line of the document is implicitly bounded on the outer edge by an empty line.
 
@@ -463,6 +465,7 @@ It would be up to converter to normalize levels it cannot manage.
 * Aside from section and block titles, all non-verbatim leaf block elements are paragraphs.
 * If a line is not recognized as a specific element, it's assumed to be a paragraph.
 * Unrecognized syntax or syntax not allowed inside a paragraph, is treated as regular text (not dropped).
+* In order to parse the inline markup in a paragraph, all the lines of the paragraph have to first be identified (since inline markup can span multiple lines).
 
 == Literal paragraphs
 // This section defines a literal paragraph, its structure, and the rules that govern it.
@@ -479,6 +482,7 @@ It would be up to converter to normalize levels it cannot manage.
 * A *list item* is a compound implicit block initiated by a list marker.
 * List markers include `+*+` (unordered), `.` (ordered), `\d+.` (ordered), `-` (unordered), and `<(\d+|\.)>` (callout)
 ** The `+*+` and `.`  list markers can be repeated infinitely.
+* A list item takes precedence over a description list item (namely the discovery of a description list term)
 * A list item can have a boxed attrlist.
 ** A boxed attrlist must start after the list marker and not have anything else on the line.
 ** List markers may be indented.
@@ -1101,6 +1105,8 @@ Possible solutions include: pure, priority (nesting restrictions), hybrid (heade
 * ifeval
 * *FI* Should we allow `else` for ifdef/ifndef/ifeval? (see https://github.com/asciidoctor/asciidoctor/issues/514)
 
+Q: If an unmatched `endif::[]` is found, should it be treated as regular text? or should the processor warn?
+
 == Include directive
 
 == Comments
@@ -1172,6 +1178,7 @@ TODO
 
 * the TCK works by verifying that an implementation can produce an expected ASG
 * ASG is abstract semantic graph, which is essentially a semantic parse tree
+* an ASG only contains concrete nodes; it does not contain non-semantic empty lines; those are implied
 * in order to verify the ASG, implementations are expected to produce a node model
 * the node model is a JSON-representation of the ASG
 * the TCK will compare its node model against the node model produced by the implementation
