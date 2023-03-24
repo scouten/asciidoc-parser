@@ -465,7 +465,32 @@ Perhaps use the syntax `== <<<` or `== !` or even `>>>` (though that doesn't set
 
 === Special sections
 
-* *FI* Propose that an abstract title in an article be defined as a special section just like preface?
+* Built-in styles for specialized front matter and back matter sections are referred to as *special sections*.
+* The document type determines which section styles are available for use.
+* Note that "part" and "chapter" are implied by the location of the section in the document and are thus not special sections.
+* *FI* Propose adding author attributes per book part when doctype is book; possibly per chapter?
+* *FI* There is some complicated section level requirements per each special section + doctype + if parts are present (e.g., why does glossary have to be level 1 when the doctype is article or there aren't any book parts, why couldn't it be a level 2?)
+
+.Book
+* abstract (becomes a chapter)
+* colophon
+* dedication
+* acknowledgments
+* preface
+* partintro (must be first child of part)
+* appendix
+* glossary
+** *FI* Does the `glossary` block style have to be set on the dlist when the section is marked as a glossary (this doesn't mean we want to deprecate the `glossary` block style, we just want to make things drier)?
+* bibliography
+* index
+
+.Article
+* abstract
+** *FI* Propose that an abstract title in an article be defined as a special section just like preface?
+* appendix
+* glossary
+* bibliography
+* index
 
 === Intrinsic Table of Contents
 
@@ -475,6 +500,11 @@ Perhaps use the syntax `== <<<` or `== !` or even `>>>` (though that doesn't set
 * The TOC position, levels displayed, title, and CSS class name can be controlled with document attributes.
 
 === Preamble
+
+* Content between the end of the document header and the first section title in the document body is the preamble.
+* *Q* (maybe FI): Clarify whether the preamble is effectively an untitled section or a block style?
+Does it only occur when the doctype is article, when the doctype is book but there are no parts?
+Does it occur if there are parts? (Only after the title of the book, after ever part where there is content between the part title and the next section title if that content isn't explicitly assigned `partintro`?)
 
 == Paragraphs
 // Defines a paragraph, its structure, and the rules that govern it.
