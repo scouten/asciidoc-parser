@@ -5,6 +5,7 @@ Dan Allen; Sarah White
 :part-signifier: Part
 :toc:
 :toclevels: 4
+:url-issues: https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/issues
 
 == Specification Goals
 
@@ -42,7 +43,6 @@ Items marked with this notation are usually terms that we need to define within 
 Such items may need an issue to resolve their name or definition, but most are likely to be confirmed during a related technical discussion.
 
 == AsciiDoc Language introduction and purpose
-//== What is AsciiDoc?
 
 AsciiDoc is a lightweight markup language.
 Specifically, AsciiDoc is a lightweight markup language that is predominantly line-oriented and start margin-aligned (i.e., left-aligned in ltr).
@@ -91,7 +91,6 @@ It's up to the processor to identify these.
 * Inline syntax is assumed to be (uninterpreted) text interspersed with interpreted markup
 * For inline syntax, the left-hand side of a markup pattern is assumed to be valid until it isn't; if it isn't, it reverts to the next alternative or uninterpreted text
 * Spacing characters, particularly empty lines, are often significant, but not always
-* ...
 
 == Characters
 
@@ -117,6 +116,7 @@ It's up to the processor to identify these.
 
 * An AsciiDoc document may use tab or space characters for spacing, though the inline syntax primarily only considers space characters.
 * A spacing character is a space, tab, or line ending (e.g., newline).
+ ** *FI* Precisely, what space characters are permitted (e.g., space, tab, newline) or restricted? (For example, `\s` includes no-break space (`\u00a0`) in JavaScript, but not in Ruby.)
  ** *FI* How are trailing space characters in the source going to be handled?
 * Other spacing characters are permitted in the document, but will not be interpreted as such.
 * Newline characters create separate lines, which are often treated specially in AsciiDoc.
@@ -198,7 +198,7 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * Every node in this tree has a context, which identifies its primary function (e.g., `admonition`).
 * Nodes may be grouped by type (e.g., `macro`).
 * Nodes may have a variant to distinguish between variations on its context (e.g., `strong`).
-* 5 conceptual node types
+* Five conceptual node types
  ** block parent (element)
  ** block terminal (element)
  ** inline parent (element)
@@ -208,7 +208,7 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 === Elements
 
 * An *element* is an identifiable, addressable, and composable chunk of content in a document.
-* The elements in a document form a predominantly start margin-aligned, nested hierarchy of element types and subtypes, where an element type represents a major set of traits, e.g. block macro, and an element subtype represents a specialization of the element type, e.g., a block image macro, and shares many of the traits of that element type
+* The elements in a document form a predominantly start-margin-aligned, nested hierarchy of element types and subtypes, where an element type represents a major set of traits, e.g. block macro, and an element subtype represents a specialization of the element type, e.g., a block image macro, and shares many of the traits of that element type
 * There are two primary elements: block elements and inline elements.
 
 ==== Block elements
@@ -369,7 +369,10 @@ A block is either a simple block or a compound block.
 * Do not affect document attributes.
 * The only relationship between block attributes and document attributes is that document attributes are sometimes used as fallbacks for an absent block attribute (this needs to be clarified / tightened).
 * Block options are block attributes that end in `-option`; hence, `-option` is a reserved suffix.
-* All block attributes that start with `data-` should be passed through to the output format; in HTML output, these map 1-to-1 with HTML data attributes on the corresponding tag.
+* *FI* Propose / Confirm that all block attributes that start with `data-` should be passed through to the output format; in HTML output, these map 1-to-1 with HTML data attributes on the corresponding tag.
+* *FI* Propose syntax to unset a block attribute (e.g., `[!id]`).
+* *FI* Propose using `+[[id,reftext]style.role]+` where `+[id,reftext]+` must come first (or last?) as a way to unify the block attribute line and block anchor line.
+* *FI* Propose that an invalid block anchor should not be treated as paragraph text (still consume as block anchor, just don't set ID)?
 
 === Block title
 
@@ -378,8 +381,14 @@ A block is either a simple block or a compound block.
 * The block title is the implicit reftext of a block if reftext is not specified.
 * The block title may be displayed above or below the primary contents depending on the block context / publishing conventions.
 * In certain cases, when the block title acts as a caption, it will be prefixed with the value of the corresponding caption attribute (e.g., `example-caption`) and an auto-generated number.
-** *FI* Propose renaming and remapping `-caption` attributes to `-caption-signifier`? (e.g., `example-caption-signifier`).
-** We avoid the term label since label is used by other publishing systems to mean the ID of an element.
+** *SDR* Caption is poorly defined in AsciiDoc.
+Fix the terminology by decomposing all parts of the caption and using it in the appropriate context.
+*** The `<block>-caption` doesn't map 1-to-1 with a typical caption and therefore it hinders efforts to customize the parts of a caption such as the caption's signifier, reference number/letter and separator.
+*** caption = reference signifier + reference numeral/letter + ": " + title, where reference signifier + reference number + ": " is prefix.
+*** We avoid the term label since label is used by other publishing systems to mean the ID of an element.
+** [[caption-fi]] *FI* Propose renaming and remapping `-caption` attributes to `-caption-signifier`? (e.g., `example-caption-signifier`).
+** *FI* Propose ability to customize the separator between reference numeral/letter and title?
+** *FI* Propose ability to number resources by chapter?
 
 === Implicit Blocks
 // Defines a non-delimited block and lays down the common structural parts and rules governing a non-delimited block.
@@ -399,8 +408,9 @@ An implicit block ends when it encounters an interrupting line such as the start
 * A delimited block creates new parsing context (current block must end before ending ancestor block).
 * If the child block is a delimited block, it starts a new delimited block parsing context; when the child delimited block ends, the previous delimited block parsing context is restored.
 ** State the nesting rules and limits for delimited blocks.
-* A delimited block may not contain sections; any headings in a delimited block are implicitly converted to discrete headings.
+* A delimited block may not contain sections.
 Delimited blocks include: example, listing, literal, source, stem, quote, verse, and table blocks.
+* *FI* Propose that any headings in a delimited block are implicitly converted to discrete headings.
 
 === Interrupting lines
 
@@ -430,23 +440,32 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * The section includes all content that follows the section heading line until the next sibling or parent section heading or the document boundary.
 * A section heading line must be proceeded by an empty line, ending block delimiter line, or block metadata.
 * The section heading marker designates the hierarchical level of the section (level 0 (`=`) - level n).
+** Section levels cannot be skipped because in some output formats levels are determined by hierarchy.
 ** *FI* Should we allow section levels to be infinite?
 It would be up to converter to normalize levels it cannot manage.
-** Section levels cannot be skipped because in some output formats levels are determined by hierarchy.
+*** Using aria metadata might solve our HTML issue: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/heading_role.
+*** Might also consider using nested `<section>` tags with `<title>` once it goes past h6.
+** *FI* Is more than one space permitted after a section heading marker?
 * Section markers in adjacent paragraph lines are not recognized.
 * The section heading is a block title (a single line that contains inlines).
-** *FI* Should we standardize on the `%notitle` option to hide a section title?
 * If the first block in document is a level-0 section, it's designated as the document title / header.
 * Only the book doctype permits level-0 sections in the document body.
+* *FI* Should we use 1-based levels for sections?
 * Sections are not permitted inside non-section blocks.
+* *FI* Propose syntax to create an anonymous section (i.e., a section that has no visible title).
+Perhaps use the syntax `== <<<` or `== !` or even `>>>` (though that doesn't set level).
+* *FI* Should we standardize on the `%notitle` option to hide a section title?
 
 === Section IDs
 
 === Section numbering
 
 * Signifier attributes (e.g., `part-signifier`) control the signifier that precedes the number for certain section types.
+ ** See <<caption-fi,signifier FI>>.
 
 === Special sections
+
+* *FI* Propose that an abstract title in an article be defined as a special section just like preface?
 
 === Intrinsic Table of Contents
 
@@ -466,12 +485,27 @@ It would be up to converter to normalize levels it cannot manage.
 * If a line is not recognized as a specific element, it's assumed to be a paragraph.
 * Unrecognized syntax or syntax not allowed inside a paragraph, is treated as regular text (not dropped).
 * In order to parse the inline markup in a paragraph, all the lines of the paragraph have to first be identified (since inline markup can span multiple lines).
+* A paragraph may have a block style; some block styles correspond to the name of a delimited block (e.g., example, quote, etc.)
+Currently, the parsing rules for styled paragraphs are different from their delimited forms (if they have one).
+** *FI* Should the content be parsed as a paragraph, then wrapped in the respective block, or should the parsing rules for a paragraph assigned with a delimited block name be aligned with its delimited namesake (i.e., the style is just shorthand for a delimited block with a single paragraph)?
+*** *FI* If there is a parent, is a role on the artificial enclosure or on the paragraph?
+*** *FI* Depending on the parsing rules we select, how do we handle verbatim paragraphs; should the lines be processed differently?
+*** *FI* What about literal paragraphs that are marked up by simply indenting the text (not named or delimited)? Do they have their own rules or should they follow the delimited equivalent or styled paragraph rules?
+*** *FI* What about paragraph styles that don't have an explicit delimited block equivalent (e.g., `abstract`, `preamble`)?
+What are their boundary rules and how do we parse them?
+(Note that these should not get confused with common paragraph roles such as `lead` and `normal`.)
 
 == Literal paragraphs
 // This section defines a literal paragraph, its structure, and the rules that govern it.
 
+* All lines in literal paragraph must be indented by at least one space; first line that isn't ends literal paragraph.
+
 == Discrete headings
 // This section defines a discrete heading, its structure, and the rules that govern it.
+
+* *FI* Propose that any headings in a delimited block are implicitly converted to discrete headings.
+* *FI* Should we allow `[heading]` as alternative to `[discrete]` for a non-section heading?
+* The terms "float" or "floating" should not be used to markup or describe the discrete heading syntax as these terms refer to the layout / positioning of an element in certain output formats.
 
 == Lists
 
@@ -481,27 +515,37 @@ It would be up to converter to normalize levels it cannot manage.
 * The supported list types include: unordered, checklist (variation of unordered), ordered, and callout.
 * A *list item* is a compound implicit block initiated by a list marker.
 * List markers include `+*+` (unordered), `.` (ordered), `\d+.` (ordered), `-` (unordered), and `<(\d+|\.)>` (callout)
-** The `+*+` and `.`  list markers can be repeated infinitely.
+ ** The `+*+` and `.`  list markers can be repeated infinitely.
+* The list mark (bullet) or numeration is controlled using the list style.
+* List markers may be indented.
+ ** *FI* Do we want to enforce that the first level marker must not be indented (i.e., should we require that top-level list be flush to left (start) margin)?
+ ** Wrapped lines may be indented, but this indentation is normalized as having the equivalent semantics of a single space.
 * A list item takes precedence over a description list item (namely the discovery of a description list term)
 * A list item can have a boxed attrlist.
 ** A boxed attrlist must start after the list marker and not have anything else on the line.
-** List markers may be indented.
-** Wrapped lines may be indented, but this indentation is normalized as having the equivalent semantics of a single space.
 * The end of a list is defined by an interrupter line.
 * Interruption of the list can be avoided using a list continuation, which attaches the adjacent block to the list item.
-* The list mark (bullet) or numeration is controlled using the list style.
 
 === List anatomy
 
 ==== List markers and depth
 
-==== Primary text
+* *FI* Is more than one space permitted after a list marker?
 
+==== Primary text
 // here we could introduce the syntax for designating a block attribute line to a list item
+
+* *FI* In the principal text of a list item, can we have a block attribute line?
+* *FI* Can a list item have a role?
+* *FI* Can a list item have multiple contiguous metadata lines or should a list item be restricted to one block attribute line?
 
 ==== Combining lists
 
 ==== List continuation
+
+* *FI* Should a styled paragraph (such as `[NOTE]` or `[example]` over a paragraph) break a list if it's not preceded by a continuation line?
+Asciidoctor and AsciiDoc Python implement this rule differently.
+* *FI* Should we infer a list item continuation when a delimited block is directly adjacent to the principal text?
 
 ==== List affinity / boundaries
 // cover how to force lists apart
@@ -510,9 +554,12 @@ It would be up to converter to normalize levels it cannot manage.
 === Unordered lists
 
 ==== Supported styles
-// are the "bullets", "marks", "output markers", or something else? we need to nail down the term
+
+* *SDR* Clarify the term we're using: "bullets", "marks", "output markers", or something else?
 
 === Checklists
+
+* *FI* Propose supporting native checklists, such as `+[ ] todo+` (without leading marker), if possible, and identify any other ways we may be able to standardize them according to commonly used models.
 
 === Ordered lists
 
@@ -535,18 +582,19 @@ It would be up to converter to normalize levels it cannot manage.
 * A description list can be nested to any depth and mixed with other list types.
 * The start of a description list is defined by the first list item.
 * A *description list item* consists of one or more terms and a description.
-* A list item is initiated by at least one term followed by a term delimiter.
-* Term delimiters include `::`, `:::`, `::::`, and `;;`.
-* Terms may be indented.
 * List continuations work the same for attaching blocks as for lists.
 
 === Description list anatomy
 
 ==== Terms, delimiters, and depth
 
+* A list item is initiated by at least one term followed by a term delimiter.
 * A term is also called a subject.
 * An entry can have multiple terms.
+* Term delimiters include `::`, `:::`, `::::`, and `;;`.
+* Terms may be indented.
 * *FI* Should we drop the semicolon as a delimiter and make the dlist markers consistent (`::`, `:::`, `::::`, `:::::`) (not `;;`)?
+* *FI* Should we allow dlist item nesting to any depth?
 
 ==== Primary text
 
@@ -591,6 +639,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * precedence of delimiter and how to escape it
 * cell separator can be customized using separator attribute; must be a single character
 * head(er)/body/foot(er)
+ ** *SDR* Clarify if it is table `head` or `header; `foot` or `footer`.
 * how are columns determined implicitly?
 * how is header determined implicitly?
 * describe what happens if number of cells does match number of expected cells
@@ -604,6 +653,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * all parts of colspec are optional
 * width can be specified as auto
 * colspec can have a repeater (shorthand for specifying multiple times)
+* *FI* Clarify the relationship between colspan and colspecs on a table; when there is a colspan, how should colspec entries be mapped?
 
 === Cells
 
@@ -628,10 +678,12 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 ==== Metadata / attributes (proposed)
 
-* in psv, a cell can have a boxed attrlist (cell metadata)
-* boxed attrlist must start directly after cell delimiter and not have anything else on that line of the cell
+* In psv, a cell can have a boxed attrlist (cell metadata)
+* The boxed attrlist must start directly after cell delimiter and not have anything else on that line of the cell.
+* *FI* Should a cell be able to have a role?
 * *FI* Can a cell have multiple contiguous metadata lines?
 * *FI* Should we allow a row to have a boxed attrlist?
+* *FI* Should a row be able to have a role?
 
 === Table width and column ratios
 
@@ -670,7 +722,8 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 * `====` block delimiter
 * required block style selected from the following list: `NOTE`, `TIP`, `WARNING`, `CAUTION`, `IMPORTANT`
-* content model: compound
+** *FI* Propose only allowing a space, not a tab, after the colon separating the admonition name from the text.
+* Content model: compound
 
 == Examples
 
@@ -690,7 +743,9 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Quote: no style or `quote` style
 * Verse: `verse` style
 * Epigraph: `epigraph` style
-* content model: compound for Quote, simple for Verse and Epigraph
+* Content model: compound for Quote, simple for Verse and Epigraph
+* *FI* Can / should we use the verse block to create an address element?
+* *FI* Propose renaming citetite to citation or just cite?
 
 == Code
 
@@ -710,18 +765,20 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 == Open
 
-* `+~~~~+` (proposed) or `--` (legacy) block delimiter
-** *#27* Proposes the nestable open block using the standard block delimiter length (`+~~~~+`).
-* no style
-* style is often used for custom block
-* content model: compound
+* `+~~~~+` (proposed) or `--` (legacy) block delimiter.
+** {url-issues}/27[#27] Propose the nestable open block using the standard block delimiter length  (`+~~~~+`).
+* Has no style.
+* Style is often used for custom block.
+* Content model: compound
 
 == Collapsible
 
-* `====` block delimiter
+* `====` block delimiter or `>===` (proposed) as block delimiter
 * `collapsible` style (proposed) or `%collapsible` option (legacy)
 ** *FI* Propose that `collapsible` be a style for example blocks.
-* content model: compound
+*** Should we name it `disclosure` instead?
+*** Could we use `>===` as block delimiter??
+* Content model: compound
 
 == Image macro (block)
 
@@ -762,6 +819,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 * The optional block title is prefixed by the caption signifier *Figure* and numbered automatically.
 * The label is controlled by the `figure-caption` document attribute or `caption` at the individual block level.
+ ** See <<caption-fi,signifier FI>>.
 
 == Video macro
 
@@ -863,6 +921,8 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Passthroughs are specified using the single plus, double plus, triple plus, and pass macro.
 * Passthroughs prevent text from being interpreted (including attribute references).
 * The triple plus and pass macro pass through text raw (no special character replacement).
+* *FI* Do we support boxed attrlist on passthrough spans?
+* *FI* Should we permit nested passthroughs? (this affects how we specify the inline preprocessor)
 
 == Attribute references
 
@@ -886,6 +946,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * unconstrained markup can be used anywhere; less concise
 * unconstrained takes precedence over constrained if both would match
 * constrained inside unconstrained of the same variant cannot start with unconstrained (the unconstrained mark wins out and closes the span)
+* *FI* Should we allow nested span of same context? (unconstrained strong inside of constrained strong and vice versa?)
 
 === Strong (Bold)
 
@@ -966,10 +1027,13 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 === STEM macro
 
+* *FI* Should we repurpose `$$` as shorthand for the stem macro?
+
 === Footnote macro
 
 * *FI* Should we always remove the leading space before a footnote by default?
 This may need a special syntax to create a left-hand boundary for a macro, like an extra colon, empty `{}`, etc. (e.g., `+:footnote:[note]+`).
+* *FI* Scope footnotes that are immediately below table to the current table?
 
 === Index term macros
 
@@ -986,11 +1050,37 @@ This may need a special syntax to create a left-hand boundary for a macro, like 
 * using a backslash may cause a different markup sequence to be matched; that sequence then must be escaped separately
 * there is no harm in over-escaping; a backslash in front of a reserved markup character will be removed, regardless of whether the text would have been interpreted or not
 * to write a backslash character into the output (perhaps only if it preceded a reserved markup character), it must be written as two backslash characters
-* backslash escaping should be either any markup character (including macro prefix?) or any punctuation (like commonmark)
-* we can't do universal backslash escaping as that would mangle Windows paths in existing documents
- ** or would it if we say that only a backslash that precedes a reserved markup character has to be escaped?
 
-Q: does backslash escape a grammar rule match or does it just deactivate the immediate character?
+* {url-issues}/25[#25] Which markup characters to define as reserved?
+Should we say that all symbol/punctuation characters in the ASCII charset can be escaped, or limit it to just the ASCII characters that the AsciiDoc syntax currently uses?
+For reference, CommonMark allows escaping all ASCII punctuation.
+Here are the reserved markup characters identified thus far:
++
+----
+\ ` _ * # ~ ^ : [ < ( {
+----
++
+Note that it shouldn't be necessary to have to escape the closing bracket of a markup element, hence why those characters are not listed here as reserved.
+
+* {url-issues}/25[#25] How to escape unconstrained marked text?
+Currently, AsciiDoc requires that the opening unconstrained mark be double escaped (`+\\**stars**+`).
+However, this is both context-dependent and ambiguous (as escaping a backslash should make a literal backslash).
+Therefore, we may have to change this rule to be (`+\*\*stars**+`).
+This will introduce a slight incompatibility, but one that is reasonable to explain and to justify with the goal of making backslash escaping stable.
+
+* {url-issues}/25[#25] For block-level constructs, are we interpreting the backslash because it's at the beginning of the line, or because it is escaping a character?
+I think we should consider it because it's used at the beginning of the line.
+(I think this would translate to removing the backslash at the beginning of a paragraph).
+That reduces how much markup we have to designate as reserved.
+It should be considered for the following block-level constructs:
+
+** preprocessor directive (`\include::target[]`)
+** block macro (`\image::target[]`)
+** list item (`\* is an asterisk`)
+** dlist term (`App\:: is a Ruby namespace`) (or should it be `\App:: is a Ruby namespace`?)
+** heading (`\= is an equals sign`)
+
+* *Is this addressed by {url-issues}/25[#25]? Q: does backslash escape a grammar rule match or does it just deactivate the immediate character?
 
  from *\*foo**, do we get <strong>*foo*</strong> or <strong>*foo</strong>* ?
 
@@ -1042,9 +1132,10 @@ Q: does backslash escape a grammar rule match or does it just deactivate the imm
 * by default, the node's title is used as the xreftext (the link text that replaces the xref)
  ** this title may be enhanced to match publishing standards
  ** refsig attributes (e.g., `chapter-refsig`) control the signifiers used in the xreftext
- ** NOTE: we have to think about how this impacts inlines; are they cloned into this spot?
-* if the reftext attribute is set on the node, that value is used instead of the title
-* if an xref points to an ID which is not found, that should be considered an unresolved (i.e.., broken) reference and a warning/error should be issued by the processor
+ ** *FI* We have to think about how this impacts inlines; are they cloned into this spot?
+* if the `reftext` attribute is set on the node, that value is used instead of the title
+* if an xref points to an ID which is not found, that should be considered an unresolved (i.e., broken) reference and a warning/error should be issued by the processor
+* [[xref-macro-fi]] *FI* Propose / Confirm that the xref macro is a general purpose macro for referencing other AsciiDoc documents; the shorthand should be restricted to in-page anchors?
 * xrefs should not be checked/validated until the entire document is parsed, though a processor may choose to eagerly validate references it already knows about as an optimization
 * bibliographic entries are also stored in the same reference catalog; however, how they are defined differs
 
@@ -1056,10 +1147,11 @@ Q: does backslash escape a grammar rule match or does it just deactivate the imm
 * some relative resource references have a predefined prefix; for example, image references that are relative start from the value of the `imagesdir` attribute
 * however, if no resource resolver is specified, the processor should assume the reference is a path; in this case,
  ** an absolute path should be taken as is
- ** a relative path should be resolved from the `docdir` (directory of the outer-most document), not from the directory of the current include file
+ ** a relative path should be resolved from the `docdir` (directory of the outermost document), not from the directory of the current include file
  ** the exception is include targets, which are resolved relative to the current include file
  ** access to paths outside of the jail (typically the `docdir`) may be restricted depending on the safe mode
 * xref distinguishes between internal and external reference based on leading `#` (always internal) or existence of file extension in target
+ ** See <<xref-macro-fi,FI for clarification>>.
 
 = Preprocessor
 
@@ -1109,6 +1201,8 @@ Q: If an unmatched `endif::[]` is found, should it be treated as regular text? o
 
 == Include directive
 
+* *FI* Should we add indir/infile for include, if possible; or some way for targets to be resolved from current include?
+
 == Comments
 
 * line
@@ -1149,9 +1243,9 @@ TODO
 === Resource resolver
 
 * the return value of the resource resolver is the address of the resource to be used by the converter (e.g., the href)
- ** or should it be an object that contains a) the referenceable location, b) the concrete location, c) a resource reader
+ ** *FI* Or should it be an object that contains a) the referenceable location, b) the concrete location, c) a resource reader
 * as of right now, there's no required syntax for interpreting and resolving a resource reference
-* the resource resolver must have access to the context/type of resource being resolved (e.g., include, image, xref, video, etc)
+* the resource resolver must have access to the context/type of resource being resolved (e.g., include, image, xref, video, etc.)
 * the resource resolver can filter the resources it chooses to resolve; it can override the behavior for certain contexts and allow the default behavior to be used for others (a filter)
 * the resource resolver must be provided the context from which to resolve the resource; this may be information the resource resolver has stored on the document for its own use
 
