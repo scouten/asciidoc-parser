@@ -458,6 +458,16 @@ Perhaps use the syntax `== <<<` or `== !` or even `>>>` (though that doesn't set
 
 === Section IDs
 
+* IDs are auto-generated for section titles and discrete headings
+* The ID is generated from the joined text values of all inline nodes in the parsed title
+** *FI* How will inline macros be handled; will alt text of an image be considered, for example?
+** Invalid characters are then removed
+** Spaces are replaced with the value of the `idseparator` attribute, which is `_` by default
+** The ID is prefixed with the value of the `idprefix` attribute, which is `_` by default
+** If the generated ID is already in use in the document, a count is appended, offset by the value of the `idseparator` attribute, until a unique ID is found.
+* ID generation on section titles and discrete headings can be turned off by unsetting the built-in `sectids` attribute
+* Processors are expected to allow the ID generation routine to be replaced with user code
+
 === Section numbering
 
 * Signifier attributes (e.g., `part-signifier`) control the signifier that precedes the number for certain section types.
