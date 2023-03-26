@@ -290,7 +290,9 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 // Use content from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/ and https://docs.asciidoctor.org/asciidoc/latest/attributes/attribute-entries/
 
 * *Document attributes* are entities, global options, and document metadata.
-* They are set and assigned a value in the document header using an attribute entry.
+* They are set and assigned a value in the document header or body using an attribute entry.
+* If an attribute is set, it has a non-null (non-undefined) value; if an attribute is unset, it is absent; an attribute cannot be set and have a null/undefined value
+* When set in the document header, they are referred to as document header attributes.
 * An attribute entry takes the form `:<key-name>: <value>?`.
 * Each attribute entry must be entered on its own line.
 * *Built-in document attributes* add, configure, and control common features in a document.
@@ -315,6 +317,9 @@ These attributes allow the user to define named, reusable content.
 * *FI* Should we allow dot notation to access property of attribute with an object value?
 * *FI* Should we preserve newlines in the value of an attribute entry if line ends with double backslash (`++\\++`)?
 * *FI* Should we choose `\` or `+` as character to continue an attribute value?
+
+* the value of document attributes set in the body must be available when the node they precede is accessed in the parsed document
+//getAttr (getDocumentAttribute) is a proxy that first considers in-flow attributes, then delegates to previous proxy
 
 === Attribute references
 
@@ -1317,6 +1322,7 @@ TODO
 * the node model is a JSON-representation of the ASG
 * the TCK will compare its node model against the node model produced by the implementation
 * the ASG will mandate at least enough source location (sourcemap) implementation to verify that document was correctly parsed; won't go overboard
+ ** location end for block is last column of last line; not first column of next line
 * *FI* How will we define the APIs (including the DOM) in a language-independent way (e.g., IDL from XML DOM Core, UML, etc; see https://en.wikipedia.org/wiki/Language-independent_specification)?
 
 // IDEA: each entry in attributes resolves to attribute object, which holds value, location, history
