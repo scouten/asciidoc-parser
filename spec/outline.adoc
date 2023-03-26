@@ -72,6 +72,7 @@ It's up to the processor to identify these.
 * processor (parser / converter)
 * input
 * output / output format
+* context (the place/environment where something is used)
 
 .Patterns
 * markers
@@ -195,21 +196,22 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * An AsciiDoc document is a composition of all the elements it contains.
 * It's inherently a tree structure (DAG) wherein each node is an element representing a segment of the document.
 * This document model represents a parsed document as a logical tree.
-* Every node in this tree has a context, which identifies its primary function (e.g., `admonition`).
-* Nodes may be grouped by type (e.g., `macro`).
-* Nodes may have a variant to distinguish between variations on its context (e.g., `strong`).
+* Every node in this tree has a name, which identifies its primary function (e.g., `admonition`).
+* Nodes may be grouped by type (e.g., `block` or `inline`).
+* Nodes may have a variant to distinguish between variations on its name (e.g., `strong` for `span`).
+* Nodes may have a form to indicate how they are structured/expressed in the source (e.g., `macro`, `unconstrained`, etc).
 * Five conceptual node types
  ** block parent (element)
  ** block terminal (element)
  ** inline parent (element)
  ** inline terminal (element)
- ** inline literal (naturally a non-element terminal)
+ ** inline literal/string (naturally a non-element terminal)
 
 === Elements
 
 * An *element* is an identifiable, addressable, and composable chunk of content in a document.
 * The elements in a document form a predominantly start-margin-aligned, nested hierarchy of element types and subtypes, where an element type represents a major set of traits, e.g. block macro, and an element subtype represents a specialization of the element type, e.g., a block image macro, and shares many of the traits of that element type
-* There are two primary elements: block elements and inline elements.
+* There are two primary element groups: block elements and inline elements.
 
 ==== Block elements
 
@@ -246,9 +248,9 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 
 === Uninterpreted text
 
-* *Uninterpreted text* (i.e., plain text) is text for which all inline grammar rules fail to match.
-* Thus, uninterpreted text is all the text between inline elements (at any level of nesting).
-* Text may be uninterpreted because it does not make use of reserved markup characters, because it only matches a grammar rule partially (an opening mark without a closing mark), or because it has been enclosed in a passthrough region/span.
+* *Uninterpreted text* (i.e., plain text) is text (character data) for which all inline grammar rules fail to match.
+* Thus, uninterpreted text is effectively all the text between inline elements (at any level of nesting).
+* Text may be uninterpreted because it does not make use of reserved markup characters, because it only matches a grammar rule partially (an opening mark without a closing mark), or because it has been escaped or otherwise enclosed in a passthrough region/span.
 
 = Documents, Document Metadata, and Document Attributes
 // Define what a document is programmatically, what it can contain, and its relationship to what it contains.
@@ -323,9 +325,22 @@ These attributes allow the user to define named, reusable content.
 
 === Attribute references
 
+* Document attributes can be used within the content of document using an attribute reference.
+* An attribute reference is markup recognized by the inline preprocessor.
+* See <<inline-attribute-references>> for details.
+
 === Attribute overrides and precedence
 
+* An attribute entry can be used to redefine a document attribute.
+* A document attribute can not be redefined if it is locked.
+* A document attribute is locked by setting or unsetting it from the API (or, by correlation, the CLI).
+* It's possible to set or unset an attribute from the API without locking it (soft set/unset) by appending `@` to the attribute name (or to the value, those the name is the preferred way)
+
 === Attribute naming conventions
+
+* Attribute names must be at least one character, must start with a letter, number, or underscore, and may contain any amount of letters, numbers, undercores, or hyphens beyond the first character.
+* Attribute names should only contain lowercase letters, though uppercase characters are permitted.
+* The casing of attribute names is not modified.
 
 === Built-in attributes
 
@@ -352,16 +367,23 @@ A block is either a simple block or a compound block.
 * The parent of a block is always another block (if nested, the parent block; if not nested, the parent section or document if not in a section).
 * The body of a block may have an enclosure that is formed by delimiter lines.
 * A block's content model (e.g., `simple`, `compound`, `verbatim`) determines what kind of content the block can have (if any) and how it is parsed.
-* A block's context and optional style modifier determines how it is converted.
+* A block's name and optional style modifier determines how it is converted.
 * Block element parsing takes precedence over inline element parsing.
 
-=== Block types
+=== Block names
+
+* Each block has a name (e.g., image, sidebar, etc).
+* A name identifies the primary function of the element.
+* The name often implies the content model.
+* Each block name provides semantics not covered by any other block name.
+* The block name may be implicit or explicit.
+* If a block name is not specified, it is inferred by its source form (e.g., block delimiter, marker, implicit boundaries).
 
 === Block metadata
 // Defines the block metadata, its purpose, and how it affects a block.
 // It provides the fundamental structure and rules for the common items found in the block metadata.
 
-* *Block metadata* is a superset of properties of the block that contains block attributes; the metadata includes specialized attributes such as ID, title, and style; also context, etc.
+* *Block metadata* is a superset of properties of the block that contains block attributes; the metadata includes specialized attributes such as ID, title, and style; also name, etc.
 * All blocks accommodate zero or more lines of explicit metadata stacked linewise directly on top of the block content and, if applicable, the opening delimiter line.
 ** The optional metadata lines include: zero or more block attribute lines (which populate the block’s attributes), block attrlist (inside block attribute line), the block attributes, optional block anchor line, optional block title line (many blocks also support a corresponding caption).
 ** *SDR* Confirm the terms and their definitions for what we should use to refer to the list of attributes in raw versus parsed form. (attrlist, boxed attrlist, attributes)
@@ -384,7 +406,7 @@ A block is either a simple block or a compound block.
 * The block title is a satellite of a block.
 * It shares some commonalities of a block in that it can be defined on its own line and can have inlines; however, it is a subordinate of a block.
 * The block title is the implicit reftext of a block if reftext is not specified.
-* The block title may be displayed above or below the primary contents depending on the block context / publishing conventions.
+* The block title may be displayed above or below the primary contents depending on the block name / publishing conventions.
 * In certain cases, when the block title acts as a caption, it will be prefixed with the value of the corresponding caption attribute (e.g., `example-caption`) and an auto-generated number.
 ** *SDR* Caption is poorly defined in AsciiDoc.
 Fix the terminology by decomposing all parts of the caption and using it in the appropriate context.
@@ -471,7 +493,7 @@ Perhaps use the syntax `== <<<` or `== !` or even `>>>` (though that doesn't set
 ** The ID is prefixed with the value of the `idprefix` attribute, which is `_` by default
 ** If the generated ID is already in use in the document, a count is appended, offset by the value of the `idseparator` attribute, until a unique ID is found.
 * ID generation on section titles and discrete headings can be turned off by unsetting the built-in `sectids` attribute
-* Processors are expected to allow the ID generation routine to be replaced with user code
+* Processors are expected to allow the <<id-generator,ID generation routine>> to be replaced with user code
 
 === Section numbering
 
@@ -543,14 +565,18 @@ What are their boundary rules and how do we parse them?
 == Literal paragraphs
 // This section defines a literal paragraph, its structure, and the rules that govern it.
 
-* All lines in literal paragraph must be indented by at least one space; first line that isn't ends literal paragraph.
+* A literal paragraph is a block that begins with at least one space character (space, tab) followed by at least one non-space character.
+* All lines in literal paragraph must be indented by at least one space character; the first line that isn't (it's left-align or empty) ends the literal paragraph.
+* A literal paragraph can be interpreted just like a paragraph.
+* A literal paragraph creates a literal block element.
+* A literal paragraph in a list item starts with an implicit list continuation (though it can still be attached using one).
 
 == Discrete headings
 // This section defines a discrete heading, its structure, and the rules that govern it.
 
 * *FI* Propose that any headings in a delimited block are implicitly converted to discrete headings.
 * *FI* Should we allow `[heading]` as alternative to `[discrete]` for a non-section heading?
-* The terms "float" or "floating" should not be used to markup or describe the discrete heading syntax as these terms refer to the layout / positioning of an element in certain output formats.
+* The terms "float" or "floating" should not be used to markup or describe the discrete heading syntax as these terms already have a reserved meaning in the AsciiDoc syntax (they refer to the layout / positioning of an element in certain output formats).
 
 == Lists
 
@@ -643,6 +669,9 @@ Asciidoctor and AsciiDoc Python implement this rule differently.
 * *FI* Should we allow dlist item nesting to any depth?
 
 ==== Primary text
+
+* The text that follows the term, either on the same line or the next adjacent line.
+* The primary text of a dlist item can start on the next line, unlike for regular lists.
 
 ==== Description
 
@@ -907,6 +936,11 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 == Passthroughs
 
+* Demarcates raw content that should be passed through to the output as is (or interpreted by the converter as raw codes)
+* A passthrough block is an escape hatch for leaving the AsciiDoc syntax and embedding content which is not otherwise interpreted.
+* May be used by a block extension to parser or otherwise interpret the content in a different way (such as embedded Markdown or LaTeX).
+* Passthroughs should be use sparingly as they can compromise the portability of an AsciiDoc document.
+
 = Inlines
 
 == Inline structure
@@ -921,9 +955,12 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * If syntax fails to match (such as when the parser encounters an unbalanced mark), the parser silently fails and moves on to the next rule.
 * If no grammar rules can be matched in a run of characters, that text is treated as plain, uninterpreted text; no warning is issued by the processor.
 
-== Inline types
+== Inline names
 
-* There are several types of inlines: text, span, macro, charref, raw.
+* There are two types of inline nodes: inline and string
+* There are several inline names: text, charref, raw, span (or marked), ref, image, etc.
+* The variant further specializes the name: strong for span, xref for ref, etc.
+* The inline may also have a form to indicate how it is structured/expressed in the source (e.g., macro, unconstrained, etc)
 * A non-element represents plain text, such as text, charref, raw, hard line break.
 * An inline element is an inline node with properties.
 * An inline element can be a leaf (e.g., image) or a non-leaf (e.g., span).
@@ -931,11 +968,11 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Span is a "run of markup"; specifically, it's enclosed/bounded text (we're migrating away from the term "quoted text").
  ** In the grammar, we may refer to this as marked text; in node model, it's a span
 * Span and macro are elements, which means they can have attributes and, in many cases, inlines (children).
-* Properties of text: type, value
-* Common properties of span: type, context, variant, (source) form, attributes (includes id and roles)
-* Common properties of macro: type, context, (source) form, attributes (includes ID and roles).
+* Properties of text: type=string, name=text, value
+* Common properties of span: type=inline, name, variant, (source) form, attributes (includes id and roles)
+* Common properties of macro: type=inline, name, (source) form, attributes (includes ID and roles).
  ** Refer to macros expressed using non-named syntax as a shorthand macro (or shorthand notation); still a macro, just not expressed that way
-* All formatted text is a span; but not all spans are formatted text.
+* All formatted text is a span; but not all spans are formatted text <= is this still true?
 * Not mandating a typing system, but the processor/converter has to be able to distinguish the context of different inlines.
 
 == From substitutions to inline parsing
@@ -965,18 +1002,25 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 == Passthroughs
 
+* Inline passthroughs have a similar purpose as block passthroughs, but for an inline context.
+* Inline passthroughs are processed by the inline preprocessor; thus they are not seen by the inline parser.
 * Passthroughs are specified using the single plus, double plus, triple plus, and pass macro.
 * Passthroughs prevent text from being interpreted (including attribute references).
-* The triple plus and pass macro pass through text raw (no special character replacement).
+* The triple plus and pass macro forms pass through text raw (no special character replacement in converter).
+* The single (constrained) and double (unconstrained) plus forms pass through text uninterpreted, but not raw (converter will apply special character replacement).
 * *FI* Do we support boxed attrlist on passthrough spans?
 * Nested passthroughs are forbidden / not recognized.
 
+[#inline-attribute-references]
 == Attribute references
 
-* Refers to the name of a document attribute.
-* An attribute reference is replaced with the value of the document attribute as is.
-* If the document attribute cannot be defined, the `attribute-missing` document attribute determines what to do.
-* By default, an attribute reference to a missing attribute is dropped and a warning is reported.
+* The value of a document attribute is referenced using an attribute reference; the reference is to a document attribute.
+* An attribute reference has the form `+{name}+`, where `name` is the name of the attribute name.
+* The attribute reference is replaced by the value of the specified attribute by the inline parser (specifically the inline preprocessor).
+** No processing is done on the value when inserted; it is inserted as is.
+* An attribute reference is permitted anywhere that inline markup is interpreted.
+* If the document attribute is not set, the `attribute-missing` document attribute determines what to do.
+** Under normal operation, if the referenced attribute is missing (not set), the reference is dropped and a warning is issued.
 
 == Marked text
 
@@ -1011,7 +1055,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 === Subscript
 
-=== General (Highlighted, custom formatted, or unformatted)
+=== Open (Highlighted, formatted with custom role, or unformatted)
 
 == Inline macros
 // Defines an inline macro and introduces its parts and variations.
@@ -1292,13 +1336,15 @@ TODO
 * the return value of the resource resolver is the address of the resource to be used by the converter (e.g., the href)
  ** *FI* Or should it be an object that contains a) the referenceable location, b) the concrete location, c) a resource reader
 * as of right now, there's no required syntax for interpreting and resolving a resource reference
-* the resource resolver must have access to the context/type of resource being resolved (e.g., include, image, xref, video, etc.)
-* the resource resolver can filter the resources it chooses to resolve; it can override the behavior for certain contexts and allow the default behavior to be used for others (a filter)
+* the resource resolver must have access to the name of resource being resolved (e.g., include, image, xref, video, etc.)
+* the resource resolver can filter the resources it chooses to resolve; it can override the behavior for certain names and allow the default behavior to be used for others (a filter)
 * the resource resolver must be provided the context from which to resolve the resource; this may be information the resource resolver has stored on the document for its own use
 
+[#id-generator]
 == ID generator
 
-* generates the IDs for headings
+* generates the IDs for headings (section titles and discrete headings)
+* called if the `sectids` attribute is set on the document and the element does not have an explicit ID
 
 = Compliance / TCK
 
