@@ -560,7 +560,7 @@ What are their boundary rules and how do we parse them?
 * The supported list types include: unordered, checklist (variation of unordered), ordered, and callout.
 * A *list item* is a compound implicit block initiated by a list marker.
 * List markers include `+*+` (unordered), `.` (ordered), `\d+.` (ordered), `-` (unordered), and `<(\d+|\.)>` (callout)
- ** The `+*+` and `.`  list markers can be repeated infinitely.
+ ** The `+*+` and `.` list markers can be repeated infinitely.
 * The list mark (bullet) or numeration is controlled using the list style.
 * List markers may be indented.
  ** *FI* Do we want to enforce that the first level marker must not be indented (i.e., should we require that top-level list be flush to left (start) margin)?
@@ -580,8 +580,7 @@ What are their boundary rules and how do we parse them?
 ==== Primary text
 // here we could introduce the syntax for designating a block attribute line to a list item
 
-* *FI* In the principal text of a list item, can we have a block attribute line?
-* *FI* Can a list item have a role?
+* *FI* In the principal text of a list item, can we have a block attribute line to assign attributes to a list item?
 * *FI* Can a list item have multiple contiguous metadata lines or should a list item be restricted to one block attribute line?
 
 ==== Combining lists
@@ -604,7 +603,9 @@ Asciidoctor and AsciiDoc Python implement this rule differently.
 
 === Checklists
 
-* *FI* Propose supporting native checklists, such as `+[ ] todo+` (without leading marker), if possible, and identify any other ways we may be able to standardize them according to commonly used models.
+* A specialization of an unordered list
+* Implicit created if at least one item in the unordered list is a checklist item
+* A checklist item is recognized if the principal text begins with a ballot box, `[ ]` (unchecked), `[x]` (checked), or `[*]` (checked).
 
 === Ordered lists
 
@@ -633,12 +634,12 @@ Asciidoctor and AsciiDoc Python implement this rule differently.
 
 ==== Terms, delimiters, and depth
 
-* A list item is initiated by at least one term followed by a term delimiter.
+* A list item is initiated by at least one term followed by a dlist marker (aka term delimiter).
 * A term is also called a subject.
 * An entry can have multiple terms.
-* Term delimiters include `::`, `:::`, `::::`, and `;;`.
+* Dlist markers include `::`, `:::`, `::::`, and `;;`.
 * Terms may be indented.
-* *FI* Should we drop the semicolon as a delimiter and make the dlist markers consistent (`::`, `:::`, `::::`, `:::::`) (not `;;`)?
+* *FI* Should we drop the semicolon as a marker and make the dlist markers consistent (`::`, `:::`, `::::`, `:::::`) (not `;;`)?
 * *FI* Should we allow dlist item nesting to any depth?
 
 ==== Primary text
@@ -812,8 +813,8 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 * `+~~~~+` (proposed) or `--` (legacy) block delimiter.
 ** {url-issues}/27[#27] Propose the nestable open block using the standard block delimiter length  (`+~~~~+`).
-* Has no style.
-* Style is often used for custom block.
+* Cannot masquerade as another built-in block.
+* Style may be used to create a custom block.
 * Content model: compound
 
 == Collapsible
@@ -822,7 +823,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * `collapsible` style (proposed) or `%collapsible` option (legacy)
 ** *FI* Propose that `collapsible` be a style for example blocks.
 *** Should we name it `disclosure` instead?
-*** Could we use `>===` as block delimiter??
+*** Could we use `>===` as block delimiter? (the argument against is that we want to avoid introducing new block delimiters)
 * Content model: compound
 
 == Image macro (block)
@@ -967,7 +968,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Passthroughs prevent text from being interpreted (including attribute references).
 * The triple plus and pass macro pass through text raw (no special character replacement).
 * *FI* Do we support boxed attrlist on passthrough spans?
-* *FI* Should we permit nested passthroughs? (this affects how we specify the inline preprocessor)
+* Nested passthroughs are forbidden / not recognized.
 
 == Attribute references
 
@@ -1180,7 +1181,7 @@ It should be considered for the following block-level constructs:
  ** *FI* We have to think about how this impacts inlines; are they cloned into this spot?
 * if the `reftext` attribute is set on the node, that value is used instead of the title
 * if an xref points to an ID which is not found, that should be considered an unresolved (i.e., broken) reference and a warning/error should be issued by the processor
-* [[xref-macro-fi]] *FI* Propose / Confirm that the xref macro is a general purpose macro for referencing other AsciiDoc documents; the shorthand should be restricted to in-page anchors?
+* [[xref-macro-fi]] *FI* Propose / Confirm that the xref macro is a general purpose macro for referencing other AsciiDoc documents; should the shorthand form be restricted to in-page anchors?
 * xrefs should not be checked/validated until the entire document is parsed, though a processor may choose to eagerly validate references it already knows about as an optimization
 * bibliographic entries are also stored in the same reference catalog; however, how they are defined differs
 
