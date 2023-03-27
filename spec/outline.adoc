@@ -1346,6 +1346,16 @@ TODO
 * generates the IDs for headings (section titles and discrete headings)
 * called if the `sectids` attribute is set on the document and the element does not have an explicit ID
 
+= Conversion and Expected Behaviors
+
+When writing in AsciiDoc, it's understood that the content will be converted to a publishable format.
+Writing in AsciiDoc has the benefit of writing in a presentation-agnostic input format and being able to publish to multiple formats (e.g., HTML, PDF, manpage, etc).
+The purpose of a processor is to both parse/interpret the AsciiDoc content into a document model, then convert that document model to an output format.
+The converter is not yet part of this specification (likely a companion specification).
+However, this specification does identify expectations of the published document that are controlled by the AsciiDoc source (e.g., the table of contents).
+This section explains the conversion process at a high level and catalogs those expectations.
+Not all output formats can satisfy all expectations, but they should cover as many as is feasible.
+
 = Compliance / TCK
 
 == TCK introduction
