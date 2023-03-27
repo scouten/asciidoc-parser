@@ -23,8 +23,8 @@ If a grammar rule can't be matched, and it's safe to do so, the processor should
 It's also vital to be able to extract information from an AsciiDoc document, so it should be possible to model the document's entire structure.
 When there are conflicts in the interpretation of the syntax, the most intuitive behavior should be chosen.
 
-=== Outline purpose and notations
-
+.Outline purpose and notations
+****
 This outline serves two purposes:
 
 . It provides the overall structure and organization of the topics that will be addressed in the specification document.
@@ -41,10 +41,11 @@ The issue number replaces the *FI* notation on an item.
 SDR:: *SDR* is the notation for *Specification Document Requirement*.
 Items marked with this notation are usually terms that we need to define within the context of the specification document and then use consistently within the document hence forth.
 Such items may need an issue to resolve their name or definition, but most are likely to be confirmed during a related technical discussion.
+****
 
 == AsciiDoc Language introduction and purpose
 
-AsciiDoc is a lightweight markup language.
+AsciiDoc is a lightweight markup language for writing.
 Specifically, AsciiDoc is a lightweight markup language that is predominantly line-oriented and start margin-aligned (i.e., left-aligned in ltr).
 That means AsciiDoc is a Unicode-compliant textual (not binary) language with conventions and special/reserved markup that must be interpreted by a processor.
 All reserved markup characters are selected from the ASCII character set (hence its name).
@@ -113,6 +114,7 @@ It's up to the processor to identify these.
 
 * A reserved character is a character selected from the ASCII character set and is most often a punctuation character (macro names are an exception).
 
+// or should we use the term "Space characters"?
 === Spacing characters
 
 * An AsciiDoc document may use tab or space characters for spacing, though the inline syntax primarily only considers space characters.
@@ -189,7 +191,14 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * Empty lines may be omitted when the language makes the separation between block elements unambiguous (such as when an interrupting line is encounter), though the use empty lines to keep blocks apart is strongly recommended.
 * The first and last line of the document is implicitly bounded on the outer edge by an empty line.
 
-//Q: Metadata and skipped lines?? or too soon?
+=== Block and document metadata, block delimiter, and skipped lines
+
+* Not all non-empty lines contribute to the document's content.
+* A line may provide metadata for an ensuing element (a block attribute line) or for the document (an attribute entry).
+* A line may delimit the boundaries of a block (though not all blocks have explicit delimiters).
+* A line is skipped if it's a comment line or within a comment block.
+* A line may contain a preprocessor directive, which adds or removes lines to the source.
+* Some, but not all, non-content lines are interrupting lines.
 
 == Document structure
 
@@ -210,7 +219,8 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 === Elements
 
 * An *element* is an identifiable, addressable, and composable chunk of content in a document.
-* The elements in a document form a predominantly start-margin-aligned, nested hierarchy of element types and subtypes, where an element type represents a major set of traits, e.g. block macro, and an element subtype represents a specialization of the element type, e.g., a block image macro, and shares many of the traits of that element type
+* The elements in a document form a predominantly start-margin-aligned, nested hierarchy of elements
+//* Elements are distinguished by name, where a name represents a major set of traits (e.g., an image), which may be specialized by a variant that shares many traits of the element name.
 * There are two primary element groups: block elements and inline elements.
 
 ==== Block elements
@@ -231,6 +241,7 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 
 === Macros
 
+* Macros are a special form of a block or inline element.
 * Macros are a sort of function call in AsciiDoc.
 * There are block and inline macros.
 * Most macros are entered using the *named macro form*: `<name>::?<target>?[<attrlist>?]`.
@@ -265,52 +276,64 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 
 === Document types
 
-* Article
-* Book
-* Manpage
+* A document type (abbreviated doctype) determines which block elements are permitted and/or required, and the order in which they are allowed to appear.
+* There are three built-in document types: article, book, manpage
+* The default doctype is article.
+* The book doctype covers books with and without parts; a book with parts is called a multi-part book.
 
 == Document header
 
 * A *document header* contains optional document title, author, and revision lines, document metadata, and document attribute entries.
 
-=== Header structure
+=== Document header structure
 
 * The document header only accepts some AsciiDoc syntax, such as implicit metadata lines, attribute entries, and comment lines.
 * The document header may not contain interrupting lines.
 * The document title line is optional, but required for using implicit author and revision lines.
 
-=== Document title
+=== Document title (aka doctitle)
+
+* A level-0 heading.
+* Since the document header must be at the start of the document, we can deduce that the doctitle is the first level-0 heading of the document.
+* May be above, below, or in between any number of attribute entries and comment lines.
+* Must proceed the implicit metadata lines.
 
 === Implicit metadata lines
 
 * Author line
 ** State guidelines for author names, keeping internationalization in mind
-** Some name forms may not be recognized using the author line; in such cases the attributes will need to be explicitly set
-* Revision line
+** Some name forms may not be recognized using the author line; in such cases the attributes will need to be explicitly set.
+* Revision line; must come after author line (thus requires author line to be present).
+* This metadata can be defined explicitly using attribute entries; the implicit lines are merely a shorthand form.
 
 == Document attributes
 // Use content from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/ and https://docs.asciidoctor.org/asciidoc/latest/attributes/attribute-entries/
 
-* *Document attributes* are entities, global options, and document metadata.
-* They are set and assigned a value in the document header or body using an attribute entry.
-* If an attribute is set, it has a non-null (non-undefined) value; if an attribute is unset, it is absent; an attribute cannot be set and have a null/undefined value
-* When set in the document header, they are referred to as document header attributes.
-* An attribute entry takes the form `:<key-name>: <value>?`.
-* Each attribute entry must be entered on its own line.
+* *Document attributes* are entities (in the XML lexicon), global options, and document metadata.
+* They are set and optionally assigned a value or unset in the document header or body using an attribute entry.
+* They can also be passed in to the processor through its API using the option named `attributes`.
+* If an attribute is set on the document, it has a non-null (non-undefined) value.
+* If an attribute is unset, it is absent.
+* An attribute cannot be set and have a null/undefined value.
+* When set in the document header, the attribute is is referred to as document header attribute.
+// Q: should we remove built-in and user-defined to own section(s)?
 * *Built-in document attributes* add, configure, and control common features in a document.
-Many built-in attributes only take effect when defined in the document header with an attribute entry.
-** Some built-in document attributes are booleans.
+Many built-in attributes only take effect when defined in the document header (either using an attribute entry or passed in via the API).
+* Some document attributes are booleans.
 These attributes act as a switch, and their sole function is to turn on or turn off a feature.
 If a boolean attribute is defined, but not given a value (i.e., set), it's in the "on" state.
 When set, a boolean attribute typically has an empty value.
 If the attribute is not defined (i.e., not set), it's in the "off" state.
-*** *FI* Should we standardize the boolean document attribute typed value `true` to mean set (as alternative to empty string)?
+** *FI* Should we standardize the boolean document attribute typed value `true` to mean set (as alternative to empty string)?
 * A *user-defined document attribute* is any attribute that the user or an extension sets that isn’t reserved by the AsciiDoc language or an extension.
-These attributes allow the user to define named, reusable content.
-* *FI* Should we drop the `experimental` attribute all together or keep it as a flag for experimental features?
+These attributes allow the user to define named, reusable content or to act as switched for preprocessor conditionals or extensions.
+* *FI* Should we drop the `experimental` attribute as a built-in attribute or keep it as a flag for experimental features?
 (Note that promoting the UI macros to fully supported is a separate decision).
 
 === Attribute entries
+
+* An attribute entry takes the form `:<key-name>: <value>?` or `:!<key-name>:`.
+* Each attribute entry must be entered on its own line.
 
 * *FI* Should we drop the normalization of attribute names (i.e., allow attribute names to have mixed letter casing)? (This means the name would no longer be translated / automatically converted from "phrase" to name in the attribute definition.)
 * *FI* Should we disallow spaces in attribute names in an attribute entry? (and remove the automatic translation?)
@@ -323,28 +346,37 @@ These attributes allow the user to define named, reusable content.
 * the value of document attributes set in the body must be available when the node they precede is accessed in the parsed document
 //getAttr (getDocumentAttribute) is a proxy that first considers in-flow attributes, then delegates to previous proxy
 
+=== Attribute overrides and precedence
+
+* Hard vs soft (un)set.
+* An attribute entry can be used to redefine a document attribute.
+* A document attribute can not be redefined if it is locked.
+* A document attribute is locked by setting or unsetting it from the API (or, by correlation, the CLI).
+* It's possible to set or unset an attribute from the API without locking it (soft set/unset) by appending `@` to the attribute name (or to the value, those the name is the preferred way)
+* Attributes set via the API can have the value `false` or `null` (or equivalent for the programming language, such as `nil` or `undefined`).
+ ** The value `false` means to soft unset the attribute on the document.
+ ** The value `null` means to hard unset the attribute on the document.
+
+=== Built-in attributes
+
+* Reserved attribute names; may not be repurposed for user-defined contexts (reusable text or by conditionals).
+* Control or configure common features in a document (e.g., `toc`).
+* Provide a means to populating document metadata (e.g., `author`).
+
+==== Global block attributes and options
+
+=== Attribute naming conventions
+// define naming conventions for built-in attributes; identify reserved and recommended prefixes
+
+* Attribute names must be at least one character, must start with a letter, number, or underscore, and may contain any amount of letters, numbers, underscores, or hyphens beyond the first character.
+* Attribute names should only contain lowercase letters, though uppercase characters are permitted.
+* The casing of attribute names is not modified.
+
 === Attribute references
 
 * Document attributes can be used within the content of document using an attribute reference.
 * An attribute reference is markup recognized by the inline preprocessor.
 * See <<inline-attribute-references>> for details.
-
-=== Attribute overrides and precedence
-
-* An attribute entry can be used to redefine a document attribute.
-* A document attribute can not be redefined if it is locked.
-* A document attribute is locked by setting or unsetting it from the API (or, by correlation, the CLI).
-* It's possible to set or unset an attribute from the API without locking it (soft set/unset) by appending `@` to the attribute name (or to the value, those the name is the preferred way)
-
-=== Attribute naming conventions
-
-* Attribute names must be at least one character, must start with a letter, number, or underscore, and may contain any amount of letters, numbers, undercores, or hyphens beyond the first character.
-* Attribute names should only contain lowercase letters, though uppercase characters are permitted.
-* The casing of attribute names is not modified.
-
-=== Built-in attributes
-
-=== Global block attributes and options
 
 = Blocks
 
@@ -358,7 +390,7 @@ These attributes allow the user to define named, reusable content.
 // Defines a block element and introduces its parts and variations.
 // It lays down the common structural rules that are fundamental to blocks.
 
-* A *block element*, referred to as a *block*, is a discrete, linewise element in the document structure.
+* A *block element*, referred to as a *block*, is a discrete, line-wise element in the document structure.
 A block is either a simple block or a compound block.
 * Compound blocks can only contain other blocks.
 * Simple blocks can only contain inline elements and uninterpreted text.
@@ -384,7 +416,7 @@ A block is either a simple block or a compound block.
 // It provides the fundamental structure and rules for the common items found in the block metadata.
 
 * *Block metadata* is a superset of properties of the block that contains block attributes; the metadata includes specialized attributes such as ID, title, and style; also name, etc.
-* All blocks accommodate zero or more lines of explicit metadata stacked linewise directly on top of the block content and, if applicable, the opening delimiter line.
+* All blocks accommodate zero or more lines of explicit metadata stacked line-wise directly on top of the block content and, if applicable, the opening delimiter line.
 ** The optional metadata lines include: zero or more block attribute lines (which populate the block’s attributes), block attrlist (inside block attribute line), the block attributes, optional block anchor line, optional block title line (many blocks also support a corresponding caption).
 ** *SDR* Confirm the terms and their definitions for what we should use to refer to the list of attributes in raw versus parsed form. (attrlist, boxed attrlist, attributes)
 * The shared (but optional) block attributes include: ID, style, set of roles, set options, title, and reftext.
@@ -536,7 +568,10 @@ Perhaps use the syntax `== <<<` or `== !` or even `>>>` (though that doesn't set
 * When the `toc` document attribute is enabled, the AsciiDoc processor automatically generates the TOC from the document’s structure and inserts it into the output document.
 * The TOC position, levels displayed, title, and CSS class name can be controlled with document attributes.
 
+NOTE: The TOC must be represented in the ASG so that we can validate the the processor correctly identified entries and their titles and filled it in to the specified number of levels.
+
 === Preamble
+// NOTE preamble in a multi-part book is implicitly a preface
 
 * Content between the end of the document header and the first section title in the document body is the preamble.
 * *Q* (maybe FI): Clarify whether the preamble is effectively an untitled section or a block style?
@@ -648,6 +683,7 @@ Asciidoctor and AsciiDoc Python implement this rule differently.
 
 == Description lists
 // Define term and description individually once we agree on the right model
+// When we use the term "any list", it includes description lists; but when we say "list" (or regular/standard list), it excludes the description list
 
 * A description list (dlist) is a variation of a list, but its list items have a fundamentally different structure.
 * A *description list* is a compound implicit block that contains one or more list items.
@@ -719,7 +755,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * how is header determined implicitly?
 * describe what happens if number of cells does match number of expected cells
 
-=== columns / colspecs
+=== Columns and colspecs
 
 * columns attribute can specify how many columns
 * if numeric, uses default colspec
@@ -823,7 +859,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * *FI* Can / should we use the verse block to create an address element?
 * *FI* Propose renaming citetite to citation or just cite?
 
-== Code
+== Code (Listing, Source, Literal)
 
 * `+----+` (listing/source) or `+....+` (literal) block delimiter
 * Listing: `listing` style or no style if `source-language` document attribute is not set
@@ -857,6 +893,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Content model: compound
 
 == Image macro (block)
+// Q: should we name this block "figure" instead of "image"?
 
 * The block image macro inserts images and figures into a document.
 * Constructed using the named block macro form `image::<target>[<attrlist>?]`.
@@ -1000,17 +1037,6 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * The parser should track the location (offset, line, and column) of every inline node.
 ** The parser must use the information provided by the inline preprocessor to map the node back to the location in the original source, not the expanded source.
 
-== Passthroughs
-
-* Inline passthroughs have a similar purpose as block passthroughs, but for an inline context.
-* Inline passthroughs are processed by the inline preprocessor; thus they are not seen by the inline parser.
-* Passthroughs are specified using the single plus, double plus, triple plus, and pass macro.
-* Passthroughs prevent text from being interpreted (including attribute references).
-* The triple plus and pass macro forms pass through text raw (no special character replacement in converter).
-* The single (constrained) and double (unconstrained) plus forms pass through text uninterpreted, but not raw (converter will apply special character replacement).
-* *FI* Do we support boxed attrlist on passthrough spans?
-* Nested passthroughs are forbidden / not recognized.
-
 [#inline-attribute-references]
 == Attribute references
 
@@ -1021,6 +1047,17 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * An attribute reference is permitted anywhere that inline markup is interpreted.
 * If the document attribute is not set, the `attribute-missing` document attribute determines what to do.
 ** Under normal operation, if the referenced attribute is missing (not set), the reference is dropped and a warning is issued.
+
+== Passthroughs
+
+* Inline passthroughs have a similar purpose as block passthroughs, but for an inline context.
+* Inline passthroughs are processed by the inline preprocessor; thus they are not seen by the inline parser.
+* Passthroughs are specified using the single plus, double plus, triple plus, and pass macro.
+* Passthroughs prevent text from being interpreted (including attribute references).
+* The triple plus and pass macro forms pass through text raw (no special character replacement in converter).
+* The single (constrained) and double (unconstrained) plus forms pass through text uninterpreted, but not raw (converter will apply special character replacement).
+* *FI* Do we support boxed attrlist on passthrough spans?
+* Nested passthroughs are forbidden / not recognized.
 
 == Marked text
 
@@ -1136,10 +1173,12 @@ This may need a special syntax to create a left-hand boundary for a macro, like 
 
 == Escaping mechanism / Backslash escaping
 
+// NOTE this applies to block-level elements too, so perhaps it needs to be repeated in Blocks or put outside of Blocks and Inlines
+
 * to prevent markup from being interpreted, it may be preceded by a backslash
 * the backslash deactivates the markup sequence that directly follows it
 * using a backslash may cause a different markup sequence to be matched; that sequence then must be escaped separately
-* there is no harm in over-escaping; a backslash in front of a reserved markup character will be removed, regardless of whether the text would have been interpreted or not
+* there's no harm in over-escaping; a backslash in front of a reserved markup character will be removed, regardless of whether the text would have been interpreted or not
 * to write a backslash character into the output (perhaps only if it preceded a reserved markup character), it must be written as two backslash characters
 
 * {url-issues}/25[#25] Which markup characters to define as reserved?
@@ -1214,7 +1253,7 @@ It should be considered for the following block-level constructs:
 * ID names are stored in the references catalog using the ID value as the key and the node (the reference node or ref) as the value
 * IDs must be unique within a document
 
-== xrefs
+== Cross references (xrefs)
 
 * AsciiDoc content can make forward and backward references to these IDs (this is called an xref)
 * if the output format supports it, the anchor points should also be public so they can be referred to from the outside using a fragment identifier (such as the fragment in a URL)
@@ -1266,7 +1305,8 @@ Possible solutions include: pure, priority (nesting restrictions), hybrid (heade
 
 * Force the encoding to UTF-8 (An AsciiDoc processor always assumes the content is UTF-8 encoded)
 * Strip trailing spaces from each line (including any end of line character); or ignore them in grammar rules
-* Change Windows line ending to universal/Unix line ending
+ ** We may decide removing trailing space characters is not necessary, or that it can be handled by the preprocessor
+* Change Windows line ending to universal/Unix line ending (or match Windows line endings in the same way as universal line endings)
 
 == Preprocessor directives
 
@@ -1312,10 +1352,15 @@ TODO
 * Since the AsciiDoc language may be processed by any language, this extension system can only be defined in pseudo-code.
 * A processor is expected to provide these extension points by providing TCK adapters to demonstrate that they are honored.
 * *FI* How will syntax extensions be described in the grammar?
+We may have to rethink the relationship between parsing and extensions; it may not work on the same model as the one used in Asciidoctor.
 
-////
 == Lifecycle extensions
 
+* *FI* Can we continue to support lifecycle extensions? If so, how will they be integrated with parsing and which ones can we support?
+It's not clear if we can match what we've done in the past.
+* Ones that we can likely support: tree processor, postprocessor, and docinfo processor.
+
+////
 * Preprocessor (this is controversial and may have to be rethought)
 * IncludeProcessor (may be replaced by resource resolver)
 * TreeProcessor
