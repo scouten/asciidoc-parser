@@ -9,12 +9,15 @@ Dan Allen; Sarah White
 
 == Specification Goals
 
-The goal of the AsciiDoc Language Specification is to describe a deterministic (definitive?) and parsable grammar for the AsciiDoc syntax.
+The goal of the AsciiDoc Language Specification is to describe a definitive, comprehensive, and parsable grammar for the AsciiDoc syntax.
 The focus at this stage is on being able to identify the structure of an AsciiDoc document and to parse its contents into a node model.
 The grammar will be documented in technical sections using a grammar expression that best suits the language (e.g., PEG).
+The specification will be clear about what parts of the syntax are handled by the preprocessor(s), which parts are handled by the core structure parser, and what information from the document must be captured and recorded in the Abstract Syntax Graph (ASG).
+Additionally, the specification must state expectations for converters given the information provided in the node model.
+
 From a purely technical perspective, the specification may not define a single grammar that can be used with a parser generator (as it may not even be possible to do so).
 However, effectively, the specification will define grammars that, when working together, will describe how to parse an AsciiDoc document.
-Additionally, the specification should state expectations for converters given the information provided in the node model.
+How the grammars are defined will be resolved as the first version of the specification is developed.
 
 Specify the AsciiDoc language with an eye towards readability, writer-friendliness, consistency, and efficiency.
 Since an AsciiDoc language processor will be used to process large amounts of content, the language must be specified in such a way that it can be parsed efficiently.
