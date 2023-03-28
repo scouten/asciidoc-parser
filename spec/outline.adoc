@@ -84,7 +84,9 @@ It's up to the processor to identify these.
 * headings
 * attrlist / boxed attrlist
 * (preprocessor) directives
+* macros
 * delimiter lines
+* marked text (text enclosed in a pair of marks, usually congruent)
 
 .Characteristics
 * Document encoding is assumed to be Unicode; all Unicode characters are permitted
@@ -116,7 +118,8 @@ It's up to the processor to identify these.
 
 === Reserved characters
 
-* A reserved character is a character selected from the ASCII character set and is most often a punctuation character (macro names are an exception).
+* A reserved character is a character selected from the ASCII character set used for markup in the AsciiDoc syntax
+* Reserved characters are almost always a punctuation character or symbol (macro names being one exception).
 
 === Space characters
 
@@ -203,6 +206,57 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * A line may contain a preprocessor directive, which adds or removes lines to the source.
 * Some, but not all, non-content lines are interrupting lines.
 
+== Macros
+
+* Macros are a sort of function call in AsciiDoc; often used to create a block or inline element.
+* There are block and inline macros.
+* Most macros are entered using the *named macro form*: `<name>::?<target>?[<attrlist>?]`.
+** In the named macro form, the macro name is followed by a macro name delimiter followed by a target followed by a boxed attrlist (or boxed content).
+** In the named macro form, a macro name is always required.
+** The macro name delimiter is `::` for block macros and `:` for inline macros.
+** A block macro can only be used in a block context; an inline macro can only be used in an inline context.
+** For some macros, the target is optional or forbidden (e.g., `toc::[]`).
+** For some macros, the attrlist is optional or forbidden.
+** For some macros, the attrlist is only a single attribute value, often written as `<text>`.
+** The box of a macro can be contents, attrlist, or contents followed by optional attrlist (but what about kbd?)
+* A few macros have a shorthand form/notation in addition to a named form (e.g., `+<<target>>+` and `+xref:target[attrlist]+` ).
+* A few macros are entered using a form unique to them (e.g., thematic break macro, autolinks, etc.).
+* Some syntax, such as inline passthroughs and include or conditional directives, may use the form of a macro but aren't actually macros.
+
+== Escaping mechanism
+//== Backslash escaping
+
+* to prevent markup from being interpreted, it may be preceded by a backslash (i.e., the beginning of a syntax rule)
+* the backslash deactivates the markup sequence that directly follows it
+* using a backslash may cause a different markup sequence to be matched; that sequence then must be escaped separately
+* there's no harm in over-escaping; a backslash in front of a reserved markup character will be removed, regardless of whether the text would have been interpreted or not
+* to write a backslash character into the output (perhaps only if it preceded a reserved markup character), it must be written as two backslash characters
+* markup can also be escaped by enclosing it in a passthrough block, inline passthrough span, or inline passthrough macro
+* a passthrough is also a way to pass through text raw to the converted output
+
+* {url-issues}/25[#25] Which markup characters to define as reserved?
+Should we say that all symbol/punctuation characters in the ASCII charset can be escaped, or limit it to just the ASCII characters that the AsciiDoc syntax currently uses?
+For reference, CommonMark allows escaping all ASCII punctuation.
+Here are the reserved markup characters identified thus far:
++
+----
+\ ` _ * # ~ ^ : [ < ( {
+----
++
+Note that it shouldn't be necessary to have to escape the closing bracket of a markup element, hence why those characters are not listed here as reserved.
+
+* {url-issues}/25[#25] For block-level constructs, are we interpreting the backslash because it's at the beginning of the line, or because it is escaping a character?
+I think we should consider it because it's used at the beginning of the line.
+(I think this would translate to removing the backslash at the beginning of a paragraph).
+That reduces how much markup we have to designate as reserved.
+It should be considered for the following block-level constructs:
+
+** preprocessor directive (`\include::target[]`)
+** block macro (`\image::target[]`)
+** list item (`\* is an asterisk`)
+** dlist term (`App\:: is a Ruby namespace`) (or should it be `\App:: is a Ruby namespace`?)
+** heading (`\= is an equals sign`)
+
 == Document structure
 
 * An AsciiDoc document is a composition of all the elements it contains.
@@ -246,24 +300,6 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 ** What fills in the gap between these elements is uninterpreted text and character references (non-elements).
 // TODO Define marked text as related to formatted text.
 // Attribute references are markup elements (essentially a grammar rule) expanded by the inline preprocessor, but not nodes in the parsed document
-
-=== Macros
-
-* Macros are a special form of a block or inline element.
-* Macros are a sort of function call in AsciiDoc.
-* There are block and inline macros.
-* Most macros are entered using the *named macro form*: `<name>::?<target>?[<attrlist>?]`.
-** In the named macro form, the macro name is followed by a macro name delimiter followed by a target followed by a boxed attrlist (or boxed content).
-** In the named macro form, a macro name is always required.
-** The macro name delimiter is `::` for block macros and `:` for inline macros.
-** A block macro can only be used in a block context; an inline macro can only be used in an inline context.
-** For some macros, the target is optional or forbidden (e.g., `toc::[]`).
-** For some macros, the attrlist is optional or forbidden.
-** For some macros, the attrlist is only a single attribute value, often written as `<text>`.
-** The box of a macro can be contents, attrlist, or contents followed by optional attrlist (but what about kbd?)
-* A few macros have a shorthand form/notation in addition to a named form (e.g., `+<<target>>+` and `+xref:target[attrlist]+` ).
-* A few macros are entered using a form unique to them (e.g., thematic break macro, autolinks, etc.).
-* Some syntax, such as inline passthroughs and include or conditional directives, may use the form of a macro but aren't actually macros.
 
 === Uninterpreted text
 
@@ -1208,44 +1244,16 @@ This may need a special syntax to create a left-hand boundary for a macro, like 
 
 == Character references
 
-== Escaping mechanism / Backslash escaping
+== Backslash escaping and passthroughs
 
-// NOTE this applies to block-level elements too, so perhaps it needs to be repeated in Blocks or put outside of Blocks and Inlines
-
-* to prevent markup from being interpreted, it may be preceded by a backslash
-* the backslash deactivates the markup sequence that directly follows it
-* using a backslash may cause a different markup sequence to be matched; that sequence then must be escaped separately
-* there's no harm in over-escaping; a backslash in front of a reserved markup character will be removed, regardless of whether the text would have been interpreted or not
-* to write a backslash character into the output (perhaps only if it preceded a reserved markup character), it must be written as two backslash characters
-
-* {url-issues}/25[#25] Which markup characters to define as reserved?
-Should we say that all symbol/punctuation characters in the ASCII charset can be escaped, or limit it to just the ASCII characters that the AsciiDoc syntax currently uses?
-For reference, CommonMark allows escaping all ASCII punctuation.
-Here are the reserved markup characters identified thus far:
-+
-----
-\ ` _ * # ~ ^ : [ < ( {
-----
-+
-Note that it shouldn't be necessary to have to escape the closing bracket of a markup element, hence why those characters are not listed here as reserved.
+* markup characters can be neutralized using a preceding backlash
+* passthroughs are a way to brute force / blanket / bulk escape markup without having to individually escape characters (perhaps the text needs to be kept together without being modified)
 
 * {url-issues}/25[#25] How to escape unconstrained marked text?
 Currently, AsciiDoc requires that the opening unconstrained mark be double escaped (`+\\**stars**+`).
 However, this is both context-dependent and ambiguous (as escaping a backslash should make a literal backslash).
 Therefore, we may have to change this rule to be (`+\*\*stars**+`).
 This will introduce a slight incompatibility, but one that is reasonable to explain and to justify with the goal of making backslash escaping stable.
-
-* {url-issues}/25[#25] For block-level constructs, are we interpreting the backslash because it's at the beginning of the line, or because it is escaping a character?
-I think we should consider it because it's used at the beginning of the line.
-(I think this would translate to removing the backslash at the beginning of a paragraph).
-That reduces how much markup we have to designate as reserved.
-It should be considered for the following block-level constructs:
-
-** preprocessor directive (`\include::target[]`)
-** block macro (`\image::target[]`)
-** list item (`\* is an asterisk`)
-** dlist term (`App\:: is a Ruby namespace`) (or should it be `\App:: is a Ruby namespace`?)
-** heading (`\= is an equals sign`)
 
 * The following question should be tested in the TCK to guide the escaping rules. Q: Does backslash escape a grammar rule match or does it just deactivate the immediate character?
 
