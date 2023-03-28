@@ -117,7 +117,6 @@ It's up to the processor to identify these.
 
 * A reserved character is a character selected from the ASCII character set and is most often a punctuation character (macro names are an exception).
 
-// or should we use the term "Space characters"?
 === Space characters
 
 * An AsciiDoc document may use tabs or spaces as space characters, though the inline syntax primarily only considers spaces.
