@@ -20,6 +20,7 @@ However, effectively, the specification will define grammars that, when working 
 How the grammars are defined will be resolved as the first version of the specification is developed.
 
 Specify the AsciiDoc language with an eye towards readability, writer-friendliness, consistency, and efficiency.
+With AsciiDoc, we aim to strike a balance between minimal markup and maximum semantics.
 Since an AsciiDoc language processor will be used to process large amounts of content, the language must be specified in such a way that it can be parsed efficiently.
 The language is designed to degrade gracefully, when possible.
 If a grammar rule can't be matched, and it's safe to do so, the processor should fall back to treating the line or run of text as uninterpreted.
@@ -230,7 +231,7 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * Block elements form the main structure of the document.
 * A block element is stacked vertically by line above or below other block elements.
 * There are two primary node types of block elements: simple/terminal blocks and compound/parent blocks.
-** These node types are further described by their content model (e.g., simple may be verbatim, raw, regular/prose/paragraph, or empty; compound may be section or non-section).
+** These node types are further described by their content model (e.g., simple may be verbatim, raw, regular/prose/paragraph, or empty; compound may be section or non-section); a content model equates to the grammar rule for the contents of the block.
 * A *simple block* can only contain inline nodes (elements and uninterpreted text).
 * A *compound block* can only contain other blocks; those blocks in the compound block may contain inline elements unless they themselves are compound blocks.
 * Except for block titles, simple blocks are delineated from other block elements by an empty line separator, but they can have interrupters (boundaries).
