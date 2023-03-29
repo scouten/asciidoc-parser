@@ -1,0 +1,52 @@
+= SDR 001: Add Standard Length Delimiter Form for Open Block
+
+== Accepted decision
+
+The specification will add a standard length delimiter line consisting of four tildes (`+~~~~+`) to the AsciiDoc language to demarcate a delimited open block.
+
+== Decision summary
+
+The open block is the only delimited block that uses a delimiter line consisting of only two characters instead of the standard four characters.
+The non-standard delimiter consisting of two hyphens (`--`) prevents the open block from being directly nested in another open block because the delimiter can't be extended to four hyphens (`----`) as four hyphens is the delimiter line for a listing block.
+Being able to nest open blocks is important; they're useful for representing hierarchical elements not supported inherently in AsciiDoc, such as supporting custom layouts for landing pages without resorting to embedded HTML or allowing an extension to repurpose an open block as a custom block while retaining the ability for the user of that block to use an open block within it.
+
+The four tildes (`+~~~~+`) was selected as the delimiter line because the tilde is typically present on keyboards and the characters sit in the middle of the line, making it easier to discern as a delimiter line.
+
+To view the complete discussion leading to this decision, including additional reasoning, requirement, questions, and discarded alternatives, see https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/issues/27[issue #27].
+
+== Language change examples
+
+Below is an example an open block that's represented using the four tildes delimiter line (`+~~~~+`).
+
+[,asciidoc]
+----
+~~~~
+This is an open block delimited using the new standard length delimiter line.
+~~~~
+----
+
+In the next example, two open blocks are directly nested in a parent open block.
+
+[,asciidoc]
+----
+~~~~
+Here are some boxes:
+
+~~~~~~
+Box A
+
+This is a nested open block.
+~~~~~~
+
+~~~~~~
+Box B
+
+This is another nested open block.
+~~~~~~
+~~~~
+----
+
+== Backwards compatibility
+
+The non-standard open block delimiter line consisting of two hyphens (`--`) will be marked as deprecated in the AsciiDoc language.
+However, the grammar will have to allow for the `--` delimiter line for backwards compatibility.
