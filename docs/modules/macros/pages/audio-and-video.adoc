@@ -218,7 +218,7 @@ Therefore, the value must be enclosed in double quotes.
 Only applies to YouTube videos.
 
 |`options` (`opts`)
-|`autoplay`, `loop`, `modest`, `nocontrols`, `nofullscreen`
+|`autoplay`, `loop`, `modest`, `nocontrols`, `nofullscreen`, `muted`
 |`opts="autoplay,loop"`
 |The controls are enabled by default.
 The `modest` option enables modest branding for a YouTube video.
