@@ -13,6 +13,6 @@ includes stated goals, introduction, list of terminology and shared patterns, ma
 
 === Changed
 
-* Revised the scope of the project (#11)
-* Resynchronized the AsciiDoc user documentation from the initial contribution repository
-* Reconfigured this repository as the official source of the AsciiDoc user documentation
+* Revise scope of project (#11)
+* Resynchronize AsciiDoc user documentation from the initial contribution repository
+* Reconfigure repository as the official source of the AsciiDoc user documentation
