@@ -16,3 +16,4 @@ includes stated goals, introduction, list of terminology and shared patterns, ma
 * Revise scope of project (#11)
 * Resynchronize AsciiDoc user documentation from the initial contribution repository
 * Reconfigure repository as the official source of the AsciiDoc user documentation
+* Change version of user documentation from latest to pre-spec to accurately reflect its state (#30)

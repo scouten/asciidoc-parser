@@ -10,6 +10,7 @@ Added::
 * Add tip for how to find list of supported source languages for the various syntax highlighters
 
 Changed::
+* Change docs version from latest to pre-spec (#30)
 * Clarify that superscript and subscript formatting is neither constrained nor unconstrained, but rather a specialty hybrid
 * Clarify that first menu item must start with word character or character reference
 * Emphasize that the shorthand syntax for menu is not on a standards track
