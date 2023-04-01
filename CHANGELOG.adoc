@@ -1,0 +1,18 @@
+= AsciiDoc Language Project Changelog
+:url-repo: https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang
+
+This document provides a summary of notable changes to the AsciiDoc Language project by milestone or release.
+For a detailed view of what's changed, refer to the {url-repo}/-/commits/main[commit history] for this repository.
+
+== Unreleased
+
+=== Added
+
+* Create an initial outline for the specification document;
+includes stated goals, introduction, list of terminology and shared patterns, major sections and key points, TCK introduction and purpose of ASG, and open questions/issues to address (#5)
+
+=== Changed
+
+* Revised the scope of the project (#11)
+* Resynchronized the AsciiDoc user documentation from the initial contribution repository
+* Reconfigured this repository as the official source of the AsciiDoc user documentation
