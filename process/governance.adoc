@@ -27,7 +27,7 @@ Technical, editorial, and governance decisions are made using the following meth
 Silent consensus is the default decision mechanism for this project.
 When an issue is filed, a project team member will review it for completeness and assign labels to it.
 Issues that have passed triage (`triage: passed` label) and merge requests (MRs) that aren't flagged for an assessment review, a request for changes, or a request for more information, can be accepted by silent consensus.
-*Silent consensus cannot be reached until the issue or MR has been available for comment for at least 48 business hours.*
+*Silent consensus cannot be reached until the issue or MR has been available for comment for at least 48 hours (not counting weekends or holidays).*
 This allows everyone to have enough time to evaluate and respond to the issue or MR.
 Additionally, MRs should be reviewed by at least one project team member.
 A team member cannot review their own MR.
