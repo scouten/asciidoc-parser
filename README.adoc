@@ -5,6 +5,15 @@ The AsciiDoc Language Specification describes the syntax and grammar, Abstract S
 The TCK is used to verify and certify that an AsciiDoc processor implementation is compatible with this specification.
 For further details, see the xref:process/scope.adoc[project's approved scope].
 
+== Specification
+
+Development of the specification takes place in the [.path]_spec_ folder as well as in the issue tracker.
+
+== Process Documents
+
+This project adheres to the Eclipse Foundation Specification Process (EFSP), which extends the Eclipse Foundation Development Process (EFDP).
+A summary of this process, as well as specific details that pertain to this project, can be found in the [.path]_process_ folder.
+
 == User Documentation
 
 In addition to the AsciiDoc Language Specification, this project maintains the user documentation for the AsciiDoc language.
