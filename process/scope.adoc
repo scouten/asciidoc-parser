@@ -1,42 +1,44 @@
 = AsciiDoc Language Project Scope
 
 The AsciiDoc language project scope was approved as part of the https://projects.eclipse.org/proposals/asciidoc-language[project proposal] on July 27, 2020 by the AsciiDoc Working Group Steering Committee.
+The scope was later tightened and approved on November 16, 2022 as part of the first progress review, which is summarized in https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/issues/11[issue #11].
 The AsciiDoc WG Steering Committee acts as the Specification Committee as stated in the https://www.eclipse.org/org/workinggroups/asciidoc-charter.php[working group's charter].
 
 == Approved scope
 
-The AsciiDoc language project defines and maintains the AsciiDoc Language Specification and Technology Compatibility Kit (TCK), its artifacts, and the corresponding language and API documentation.
-The AsciiDoc Language Specification describes the syntax and grammar, Abstract Semantic Graph (ASG), Document Object Model (DOM), referencing system, and APIs for processing, converting, and extending the language.
-The TCK is used to verify and certify that an AsciiDoc processor implementation is compatible with this specification.
+The AsciiDoc language project defines and maintains the AsciiDoc Language Specification and Technology Compatibility Kit (TCK), its artifacts, and a writer-oriented language guide.
+The AsciiDoc Language Specification describes the syntax and grammar, Abstract Semantic Graph (ASG), Document Object Model (DOM) interfaces, referencing system, designated extension points, processing phases, and required integrations and behaviors.
+The TCK is used to verify and self-certify that an AsciiDoc processor implementation is compatible with this specification.
 
-Specifically, the project scope includes the:
+Specifically, the project scope includes the following matters:
 
-* AsciiDoc language syntax and grammar (e.g., EBNF, PEG, ANTLR4, etc.)
-** doctype-specific structures and required elements
-** designated extension points
+* AsciiDoc language syntax / grammar (i.e., EBNF, ANTLR4, or similar)
+** Lexicon
+** Preliminaries / primitives (e.g., line-oriented, block, inline, macro, preprocessor directive, etc.)
+** Doctype-specific structures and required elements
+** Built-in attributes and reserved attribute namespaces
+** Designated file extension (.adoc)
+** Escaping mechanism
+* TCK: Technology Compatibility Kit for verifying and self-certifying compliance of an AsciiDoc language processor
 * ASG: an encoded form of the parsed document for use in developing a language-agnostic TCK (e.g., JSON)
-* TCK: Technology Compatibility Kit for verifying compliance of an AsciiDoc language processor
-* DOM API: in-memory semantic representation of the encoded information in the AsciiDoc document
-* Processor API (load, convert)
-** Converter API
-* Extension API
-** Extended syntax processors (e.g., custom block or macro)
+* DOM API (interfaces only): language-agnostic, semantic representation of the structure, metadata, and content in the AsciiDoc document
+* Parsing strategy / processing phases (preprocess, parse, convert)
+* Extension Facility
+** Syntax extension points (e.g., custom block or macro)
 ** Resolvers (e.g., path and attribute resolvers, ID generator)
-** Parse events and lifecycle interceptors (e.g., input processor, output processor, tree processor)
-** Integration adapters: syntax highlighter, STEM, bibliography, docinfo
-* Expected converter behaviors (e.g., toc, ID generation, icon type, safe mode)
+** Lifecycle interceptors (e.g., preprocessor, output processor, tree processor)
 * Internal and external referencing system: (e.g., xrefs, includes, images)
-* Reference converter and output format (e.g., HTML with reference stylesheet and/or DocBook)
-* Built-in attribute names, values, and behaviors and reserved attribute namespaces
-* AsciiDoc media type (MIME) and .adoc file extension
+* Mandatory integration adapters: syntax highlighter, STEM, docinfo, icons
+* Expected converter behaviors (e.g., toc, ID generation, caption numbering, collapsible blocks)
 
-The project also provides the:
+In addition to the specification document and TCK, the project also provides the following:
 
-* AsciiDoc language documentation for writers
-* AsciiDoc API documentation
+* AsciiDoc Language guide for writers
+* ASG schema for the TCK
+* API documentation for the DOM
 
 NOTE: The project scope is also published on the https://projects.eclipse.org/projects/asciidoc.asciidoc-lang/governance[Governance page] of the project site.
 
 == Scope changes
 
-Any revisions to the project scope, with the exception of minor corrections that don't change semantic meanings or intent, require a https://www.eclipse.org/projects/dev_process/#6_3_8_Restructuring_Review[restructuring review] and approval by a super-majority of the Steering Committee.
+Any revisions to the project scope, with the exception of minor corrections that don't change semantic meanings or intent, require a https://www.eclipse.org/projects/dev_process/#6_3_8_Restructuring_Review[restructuring review] and approval by a majority of the Steering Committee.
