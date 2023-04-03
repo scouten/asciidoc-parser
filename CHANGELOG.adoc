@@ -4,7 +4,7 @@
 This document provides a summary of notable changes to the AsciiDoc Language project by milestone or release.
 For a detailed view of what's changed, refer to the {url-repo}/-/commits/main[commit history] for this repository.
 
-== Unreleased
+== 0.1.0 (milestone build)
 
 === Added
 
