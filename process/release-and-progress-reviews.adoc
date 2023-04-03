@@ -30,7 +30,7 @@ It ends with the completion of a release review that results in the approval of 
 If a release cycle has lasted more than 12 months without a release or progress review, the project team must produce a milestone build and initiate a progress review in order to extend the release cycle.
 
 A patch version of the specification (i.e., https://www.eclipse.org/projects/efsp/#efsp-releases-service[EFSP service release]) doesn't require an independent release cycle.
-It does need to meet all of the following requirements to be considered for release as a patch version of the specification:
+It does need to meet all the following requirements to be considered for release as a patch version of the specification:
 
 * The patch version must meet the scope of a <<patch,patch>>.
 * The major or minor version the release is patching must have completed a <<release-review,successful release review>>.
@@ -40,16 +40,17 @@ See the EFPS for complete descriptions of the https://www.eclipse.org/projects/e
 
 === Pre-1.0.0 versioning
 
-Prior to creating feature complete milestone builds in preparation for the final specification release, the project will release milestone builds labeled as _0.x.y_ (e.g., 0.1.5, 0.2.0).
+Prior to creating feature complete milestone builds in preparation for the final specification release, the project will release milestone builds labeled as _0.y.z_ (e.g., 0.1.5, 0.2.0).
 These builds are one of the ways the project will mark and celebrate achievements on our path to feature complete milestone builds.
 
-These milestone builds will use a zero in the first position (i.e., 0.x.y).
-The x will increment when a significant feature is added to the specification or its TCK (e.g., 0.3.0. 0.4.0).
-The y will increment when the build only contains improvements, changes, or fixes to existing features (e.g., 0.3.2. 0.4.1).
+These milestone builds will use a zero in the first position (i.e., 0.y.z).
+The _y_ will increment when a significant feature is added to the specification or its TCK (e.g., 0.3.0. 0.4.0).
+The _z_ will increment when the build only contains improvements, changes, or fixes to existing features (e.g., 0.3.2. 0.4.1).
 These milestone builds will likely include breaking changes from one build to the next and will not be backwards compatible.
 These builds are not official, are not for general usage, and should not be considered feature complete.
 
-Once the project team determines that the specification is approaching feature completeness, the _0.x.y_ pattern will cease being used. At that time, all future milestone builds will use semantic versioning as the project team prepares for releasing version 1.0.0 of the specification (e.g., 1.0.0-alpha.1).
+Once the project team determines that the specification is approaching feature completeness, the _0.y.z_ pattern will cease being used.
+At that time, all future milestone builds will use semantic versioning as the project team prepares for releasing version 1.0.0 of the specification (e.g., 1.0.0-alpha.1).
 This subsection should be removed from this document at the start of the subsequent release cycle.
 
 == Release and progress reviews
@@ -87,7 +88,7 @@ The review documentation:
 .. Summarizes the specification version's major accomplishments, changes, and removals/deprecations.
 .. Provides links to the persistent artifacts or directly includes the artifacts when delivered.
 .. Shows evidence that the specification version's TCK has sufficient coverage to confidently validate compatible implementations.
-.. Shows evidence that one or more compatible implementations meet all of the TCK's requirements and optional aspects.
+.. Shows evidence that one or more compatible implementations meet all the TCK's requirements and optional aspects.
 . The review coordinator delivers the review documentation and artifacts to the PMC and requests a review be initiated.
 . When the PMC approves the review documentation and that the review can proceed, the review coordinator delivers the review documentation and artifacts to the EMO and asks the EMO to schedule the review.
 . The review coordinator delivers the review documentation and artifacts to the Steering Committee.

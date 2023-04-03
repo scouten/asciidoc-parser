@@ -2,7 +2,7 @@
 
 == Project Team
 
-As defined by the EFDP, the Project Team is the collective of committers with responsibilities and privileges on this project.
+The project team is the collective of active committers with responsibilities and privileges on this project.
 
 [#values]
 == Values and Conduct
@@ -25,42 +25,36 @@ Technical, editorial, and governance decisions are made using the following meth
 === Silent consensus
 
 Silent consensus is the default decision mechanism for this project.
-When an issue is filed, a Project Team member will review it for completeness and assign labels to it.
-Issues and merge requests (MRs) that aren't flagged for architectural review, a request for changes, or a request for more information, can be accepted by silent consensus.
-*Silent consensus cannot be reached until the issue or MR has been available for comment for at least 72 hours.*
+When an issue is filed, a project team member will review it for completeness and assign labels to it.
+Issues that have passed triage (`triage: passed` label) and merge requests (MRs) that aren't flagged for an assessment review, a request for changes, or a request for more information, can be accepted by silent consensus.
+*Silent consensus cannot be reached until the issue or MR has been available for comment for at least 48 business hours.*
 This allows everyone to have enough time to evaluate and respond to the issue or MR.
-Additionally, MRs must be reviewed and approved by at least one Project Team member (aka committer).
+Additionally, MRs should be reviewed by at least one project team member.
 A team member cannot review their own MR.
-If no one <<objections,objects>> by the end of the silent consensus period (72 hours), the issue or MR is accepted by the project.
+If no one <<objections,objects>> by the end of the silent consensus period, the issue or MR is accepted by the project.
 
-=== Architectural reviews
+=== Assessments
 
-When an issue is flagged for an architectural review, a self-selecting group of two to four community members, which must include at least one Project Team member (aka committer), works with the submitter to evaluate the proposal and address any concerns about its completeness, scope, feasibility, impacts, etc.
-Once the architecture group reaches consensus on the proposal, the updated proposal is then subject to silent consensus.
-In some cases, a draft MR may be submitted during an architecture review to refine possible solutions and discover obstacles.
+When an issue is flagged for an assessment review, a self-selecting group of community members will work with the issue submitter to evaluate the proposal and address any concerns about its completeness, scope, feasibility, impacts, etc.
+Once the group reaches consensus on the proposal, the updated proposal is then subject to silent consensus.
+In some cases, a draft MR may be submitted during an assessment review to refine possible solutions and discover obstacles.
 The issue is accepted and a MR implementing the proposal can be submitted if no one objects during the consensus period.
-
-When the corresponding MR is finished, at least two members of the architecture group, one which is a Project Team member, must review and approve the final MR.
 
 [#objections]
 === Objections
 
 Any objections to an issue or MR must include a clear reason for that objection, and, where possible, provide a set of actionable steps alongside the objection.
 The objector must remain responsive for further discussion about the issue or MR until their concerns are resolved or they withdraw their objection.
-If the objector isn't responsive for 7 days after they raised the objection or they're unable to clarify their objection if asked for further information by the Project Team, the Project Team can dismiss the objection.
-
-If consensus can't be reached, but a decision one way or the other must be made, any team member may call for a vote.
+If the objector isn't responsive for 7 days after they raised the objection or they're unable to clarify their objection if asked for further information by the project team, the project team can dismiss the objection.
 
 === Voting
 
-Proposals that introduce breaking changes, changes to the project's governance, or when a Project Team member calls for a vote, must be voted on by all members of the Project Team and must secure approval by a simple majority before being accepted.
+If consensus can't be reached on an issue or MR that introduces significant breaking changes, but a decision one way or the other must be made, a team member may call for a vote.
 
-A vote must be open for at least seven days.
+A vote must be open for at least five days or until a majority of active project members have voted when further votes won't change the final decision.
 The end date should be clearly stated in the call to vote.
-A vote can be closed early if enough votes have been submitted so that further votes cannot change the final decision.
 
-Votes are performed electronically using a yes/no/abstain reply system, where +1 is yes, -1 is not, and 0 is obstain.
+Votes are performed electronically using a yes/no/abstain reply system, where +1 is yes, -1 is not, and 0 is abstain.
 No other responses are recognized.
 
-Except for governance changes, a majority of the Project Team must vote in favor (yes) for the proposal to be approved.
-A super-majority (at least two thirds) of the Project Team must vote in favor (yes) of a governance change for it to be approved.
+When a vote is called on an issue or MR, a majority of active project team members must vote in favor (yes) for a proposal to be approved.
