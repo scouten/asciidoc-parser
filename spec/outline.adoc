@@ -838,7 +838,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * AsciiDoc table cell changes content model of cell to a compound block; only supported in psv format
 * An AsciiDoc table cell is essentially a separate document (need to clarify this relationship)
 * Only an AsciiDoc table cell can accommodate a nested table
-* *FI* Does an AsciiDoc table cell need to be marked on the cell itself in order to full honor the semantics of the preprocessor; in other words, when marked on the colspec, it will be parsed as a normal cell, then promoted to an AsciiDoc table cell; thus, the behavior could be different
+* *FI* Does an AsciiDoc cell style (i.e., `a|`) need to be marked on the cell itself in order to fully honor the semantics of the preprocessor; in other words, when marked on the colspec, it will be parsed as a normal cell, then promoted to an AsciiDoc table cell; thus, the behavior could be different
 
 ==== Styles
 
