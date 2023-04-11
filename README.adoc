@@ -1,6 +1,6 @@
 = AsciiDoc Language Project
 
-This project maintains the AsciiDoc Language Specification, Technology Compatibility Kit (TCK), user documentation, and their related materials.
+This project maintains the AsciiDoc Language Specification, Technology Compatibility Kit (TCK) (separate repository), user documentation, and their related materials.
 The AsciiDoc Language Specification describes the syntax and grammar, Abstract Semantic Graph (ASG), Document Object Model (DOM), referencing system, and APIs for processing, converting, and extending the language.
 The TCK is used to verify and certify that an AsciiDoc processor implementation is compatible with this specification.
 For further details, see the xref:process/scope.adoc[project's approved scope].
@@ -13,6 +13,13 @@ Development of the specification takes place in the [.path]_spec_ folder as well
 
 This project adheres to the Eclipse Foundation Specification Process (EFSP), which extends the Eclipse Foundation Development Process (EFDP).
 A summary of this process, as well as specific details that pertain to this project, can be found in the [.path]_process_ folder.
+
+== TCK
+
+Although part of the same project, the TCK (both harness and tests) is maintained in a separate repository.
+See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-tck.
+
+The schema for the ASG, however, is maintained in this repository.
 
 == User Documentation
 
