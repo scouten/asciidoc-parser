@@ -1,9 +1,9 @@
 = Hide Special Section Titles
 
-If supported by the converter, the title of a xref:styles.adoc[special section], such as the Dedication, can be turned off by setting the `untitled` option (e.g., `%untitled` or `opts=untitled`) on the section.
+If supported by the converter, the title of a xref:styles.adoc[special section], such as the Dedication, can be turned off by setting the `notitle` option (e.g., `%notitle` or `opts=notitle`) (previously `untitled`) on the section.
 
 ----
-[dedication%untitled]
+[dedication%notitle]
 == Dedication
 
 include::example$dedication.adoc[tag=body]
