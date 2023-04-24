@@ -21,6 +21,7 @@ a|
 a|
 * The `highlight` attribute is defined on the block.
 * The CSS to support line highlighting is supplied by docinfo.
+(Needed even if `rouge-css=style`).
 
 |`pygments`
 a|* The `highlight` attribute is defined on the block.
@@ -109,6 +110,10 @@ pre.rouge .hll * {
 }
 </style>
 ----
+
+Note that this supplemental CSS is needed even when `rouge-css=style`.
+The Rouge integration does not embed the CSS for highlighting lines into the style attribute of the tag for each line.
+Instead, it sets the `hll` class on the tag (e.g., `<span class="hll">`).
 
 === Pygments
 
