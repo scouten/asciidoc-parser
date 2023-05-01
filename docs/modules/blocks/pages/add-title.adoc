@@ -6,6 +6,7 @@ You can assign a title to a block, whether it's styled using its style name or d
 
 A block title is defined on its own line directly above the block's attribute list, opening delimiter, or block content--which ever comes first.
 As shown in <<ex-basic>>, the line must begin with a dot (`.`) and immediately be followed by the text of the title.
+The block title must only occupy a single line and thus cannot be wrapped.
 
 .Block title syntax
 [#ex-basic]
