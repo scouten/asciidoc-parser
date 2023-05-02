@@ -13,7 +13,7 @@ It will, however, account for the lines when mapping line numbers back to the so
 
 AsciiDoc supports two styles of comments, line and block.
 A line comment is for making comments line-by-line (i.e., comment line).
-A block comment is for enclosing an arbtrary range of lines as a comment (i.e., comment block).
+A block comment is for enclosing an arbitrary range of lines as a comment (i.e., comment block).
 
 [#comment-lines]
 == Comment lines
@@ -116,4 +116,4 @@ Notice the cell has the "a" (AsciiDoc) style.
 |===
 ----
 
-Comment blocks can be very effective for commenting out sections of the document that are not ready for publishing or that provide backgrond material or an outline for the text being drafted.
+Comment blocks can be very effective for commenting out sections of the document that are not ready for publishing or that provide background material or an outline for the text being drafted.

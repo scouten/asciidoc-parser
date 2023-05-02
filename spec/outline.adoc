@@ -921,7 +921,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Epigraph: `epigraph` style
 * Content model: compound for Quote, simple for Verse and Epigraph
 * *FI* Can / should we use the verse block to create an address element?
-* *FI* Propose renaming citetite to citation or just cite?
+* *FI* Propose renaming citetitle to citation or just cite?
 
 == Code (Listing, Source, Literal)
 

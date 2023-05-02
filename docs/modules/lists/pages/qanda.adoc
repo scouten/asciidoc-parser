@@ -2,7 +2,7 @@
 :keywords: qanda, Q & A, Q and A
 
 A question and answer (qanda) list is a special form of a description list that renders as an ordered list.
-The entries are numbered using arabic numerals starting at 1.
+The entries are numbered using Arabic numerals starting at 1.
 
 == Question and answer list syntax
 

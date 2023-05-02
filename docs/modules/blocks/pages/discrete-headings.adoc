@@ -35,4 +35,4 @@ Alternately, you may use the `float` attribute to identify a discrete heading.
 In this context, the term "`float`" does not refer to a layout.
 Rather, it means not bound to the section hierarchy.
 The term comes from an older version of AsciiDoc, in which discrete headings were called Floating Titles.
-DocBook refers to a discreting heading as a bridgehead, or free-floating heading.
+DocBook refers to a discrete heading as a bridgehead, or free-floating heading.

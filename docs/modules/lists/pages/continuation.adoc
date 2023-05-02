@@ -211,4 +211,4 @@ include::example$complex.adoc[tag=complex-grandparent]
 On this page, you learned that the principal text of a list item can span multiple contiguous lines, and that those lines can be indented for readability without affecting the output.
 You learned that you can attach any type of block content to a list item using the list continuation.
 You also learned that using this feature in combination with the open block makes it easier to create list items with complex content, to attach blocks to a parent list, or to drop the principal text.
-Finally, you learned that you can use the ancestor list continution to attach blocks to the current item in an ancestor list, and the risks with doing so.
+Finally, you learned that you can use the ancestor list continuation to attach blocks to the current item in an ancestor list, and the risks with doing so.

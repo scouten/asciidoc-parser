@@ -1,5 +1,5 @@
 = Align Content by Column
-// Using wikipedia's names for the operators. For reference, see https://en.wikipedia.org/wiki/Less-than_sign
+// Using Wikipedia's names for the operators. For reference, see https://en.wikipedia.org/wiki/Less-than_sign
 
 The alignment operators allow you to horizontally and vertically align a column's content.
 They're applied to a column specifier and xref:add-columns.adoc#cols-attribute[assigned to the cols attribute].

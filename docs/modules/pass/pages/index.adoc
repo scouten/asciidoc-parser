@@ -9,7 +9,7 @@ The xref:pass-block.adoc[block form] of the passthrough is represented either by
 The main use of the block form is to pass a chunk of non-AsciiDoc content directly through to the output.
 For example, you can use the passthrough block to pass raw HTML to the HTML output.
 However, by doing so, you're coupling your AsciiDoc content to an output format, thus making it less portable.
-It's best either to leave the use of the passthough block up to an extension, or enclose it in a preprocessor conditional.
+It's best either to leave the use of the passthrough block up to an extension, or enclose it in a preprocessor conditional.
 
 The xref:pass-macro.adoc[inline form] of the passthrough comes in more forms and thus has more uses.
 An inline passthrough is represented by the `+pass:[]+` macro or by pairs of one to three pluses.

@@ -56,7 +56,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
 [style,second-positional,named="value of named"]
 ----
 
-WARNING: The opening line of a paragraph may inadvertanly match the syntax of a block attribute line.
+WARNING: The opening line of a paragraph may inadvertently match the syntax of a block attribute line.
 If this happens, append `+{empty}+` to the end of the line to disrupt the syntax match.
 
 For *block and inline macros*, the attribute list is placed between the square brackets of the macro.

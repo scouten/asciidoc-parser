@@ -103,5 +103,5 @@ See <<heading>>.
 ----
 
 Assigning an explicit ID and reftext to a heading will prevent substitutions from being applied before the heading is rendered, hence allowing the footnote macros to be processed in document order.
-This workaround will also prevent the footnote number from reappearaing in the text of an xref.
+This workaround will also prevent the footnote number from reappearing in the text of an xref.
 However, you also have to avoid using any attribute references in the heading, as that also causes substitutions to be applied eagerly, which may result in the footnotes being processed out of document order.

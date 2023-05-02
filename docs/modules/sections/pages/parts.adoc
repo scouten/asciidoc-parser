@@ -61,7 +61,7 @@ This is the preface for the whole book.
 Chinchillas rule the world.
 ----
 
-Read on to find out how to use special sections as part sibings.
+Read on to find out how to use special sections as part siblings.
 
 == Special sections as part siblings
 

@@ -39,7 +39,7 @@ The result of <<ex-curved-quotes>> is rendered below.
 include::example$text.adoc[tag=c-quote]
 ====
 
-There's no uncontrained equivalent for producing double and single curved quotation marks.
+There's no unconstrained equivalent for producing double and single curved quotation marks.
 In that case, it's necessary to input the curved quotation marks directly using the characters kbd:[‘], kbd:[’], kbd:[“], and kbd:[”].
 
 == Apostrophe syntax
