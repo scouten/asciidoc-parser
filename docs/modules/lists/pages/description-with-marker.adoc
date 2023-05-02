@@ -56,7 +56,7 @@ To make an ordered list instead, change the block style to `ordered`.
 ----
 [ordered]
 &:: ampersand
->:: grea
+>:: greater than
 ----
 
 Here's how this syntax will appear, where supported:
