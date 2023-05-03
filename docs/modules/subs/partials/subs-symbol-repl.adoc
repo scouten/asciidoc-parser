@@ -28,12 +28,13 @@
 |Only replaced if between two word characters, between a word character and a line boundary, or flanked by spaces.
 
 When flanked by space characters (e.g., `+a -- b+`), the normal spaces are replaced by thin spaces (\&#8201;).
+Otherwise, the em dash is followed by a zero-width space (\&#8203;) to provide a break opportunity.
 
-|Ellipses
+|Ellipsis
 |+...+
 |+&#8230;+
 |...
-|
+|The ellipsis is followed by a zero-width space (\&#8203;) to provide a break opportunity.
 
 |Single right arrow
 |+->+

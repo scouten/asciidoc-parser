@@ -8,6 +8,7 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 Changed::
 * Clarify that footnotes in headings are not officially supported
+* Document the use of the zero-width space character in the em dash and ellipsis replacements
 
 == Published Q1 2023
 
