@@ -372,6 +372,7 @@ It should be considered for the following block-level constructs:
 
 * *FI* Should we drop the normalization of attribute names (i.e., allow attribute names to have mixed letter casing)? (This means the name would no longer be translated / automatically converted from "phrase" to name in the attribute definition.)
 * *FI* Should we disallow spaces in attribute names in an attribute entry? (and remove the automatic translation?)
+ ** In general, we need to define what a valid attribute name is; is the attribute entry only recognized if the name is valid?
 * *FI* Should we permit document attributes to be set inside a delimited block?
 * *FI* Should we drop `++{set:...}++`?
 //* *FI* Should we allow dot notation to access property of attribute with an object value?
@@ -380,6 +381,7 @@ It should be considered for the following block-level constructs:
 * The value of document attributes set in the body must be available when the node they precede is accessed in the parsed document.
 // Does this mean that attribute entries are block terminal non-elements?
 // getAttr (getDocumentAttribute) is a proxy that first considers in-flow attributes, then delegates to previous proxy
+* Attribute entries cannot be interleaved with block metadata lines
 
 === Attribute overrides and precedence
 
@@ -548,6 +550,7 @@ Delimited blocks include: example, listing, literal, source, stem, quote, verse,
 * Most block macros follow the named block macro form, `name::<target>?[<attrlist>?]`, except for page breaks and thematic breaks.
 * Most block macros can have block metadata lines.
 * The block macros include: image, video, audio, toc, page break, and thematic break.
+* The target of a block macro can't start with space to disambiguate it from the start of a dlist item.
 
 == Sections
 
@@ -931,12 +934,14 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Literal: no style
 * style must be specified if alternate block delimiter is used
 * literal block is intended to be used for diagram source when a diagram integration is enabled
+* if block is empty, content should be empty string (not null)
 * content model: verbatim
 
 == STEM
 
 * `pass:[++++]` block delimiter
 * `stem` style if `stem` document attribute is set and has a value, otherwise `latexmath` or `asciimath`
+* if block is empty, content should be empty string (not null)
 * content model: pass, with some processing as required by STEM adapter
 
 == Open
