@@ -457,6 +457,9 @@ When set, a boolean attribute typically has an empty value.
 * A block's content model (e.g., `simple`, `compound`, `verbatim`) determines what kind of content the block can have (if any) and how it is parsed.
 * A block's name and optional style modifier determines how it is converted.
 * Block element parsing takes precedence over inline element parsing.
+For example, an inline passthrough cannot enclose a line that would end the block, such as a block delimiter or list continuation.
+The block boundary is determined first, then the inline parsing happens within those bounds.
+(Q: Does this mean backslash escaping cannot be used in an inline passthrough?)
 
 === Block name
 
