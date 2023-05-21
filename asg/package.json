@@ -10,7 +10,7 @@
     "./schema.js": "./schema.js"
   },
   "scripts": {
-    "test": "node test/schema-test.js",
+    "test": "node --test test/*-test.js",
     "validate": "find $npm_config_dir -name '*-output.json' -exec node bin/validate-asg.js {} \\;"
   },
   "dependencies": {
