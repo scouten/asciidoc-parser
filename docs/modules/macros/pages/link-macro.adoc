@@ -128,4 +128,5 @@ link:file:///home/username[Your files]
 
 == Final word
 
-The general rule of thumb is that you should only use the link macro if it becomes necessary because, otherwise, it just adds verbosity.
+The general rule of thumb is that you should only put the `link:` macro prefix in front of the target if the target is _not_ a URL.
+Otherwise, the prefix just adds verbosity.
