@@ -484,6 +484,8 @@ The block boundary is determined first, then the inline parsing happens within t
 === Block attributes
 
 * Used to store the block metadata.
+* Can be positional or named.
+* Positional attributes use a 1-based index; index assignment skips over any named attributes (i.e., named attributes don't affect position).
 * Only available directly on the block.
 * Do not affect document attributes.
 * The only relationship between block attributes and document attributes is that document attributes are sometimes used as fallbacks for an absent block attribute (this needs to be clarified / tightened).
