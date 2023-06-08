@@ -335,7 +335,7 @@ It should be considered for the following block-level constructs:
 * The document header only accepts some AsciiDoc syntax, such as implicit metadata lines, attribute entries, and comment lines.
 * The document header may not contain interrupting lines
 ** *FI* Can the document header contain empty lines? If so, what defines the end of the document header?
-* The document title line is optional, but required for using implicit author and revision lines.
+* The document title line is optional, but required for using implicit author and revision lines (i.e., author info and revision info lines).
 
 === Document title (aka doctitle)
 
