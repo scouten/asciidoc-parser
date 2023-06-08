@@ -460,6 +460,7 @@ When set, a boolean attribute typically has an empty value.
 For example, an inline passthrough cannot enclose a line that would end the block, such as a block delimiter or list continuation.
 The block boundary is determined first, then the inline parsing happens within those bounds.
 (Q: Does this mean backslash escaping cannot be used in an inline passthrough?)
+* Syntax should be parsed in the order it appears in the document (this may need to be defined more specifically, or exceptions listed)
 
 === Block name
 
