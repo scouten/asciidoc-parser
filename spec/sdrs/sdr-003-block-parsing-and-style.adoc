@@ -1,0 +1,105 @@
+= SDR-3: Reframe Block Style as Parsing Transformation
+
+== Accepted decision
+
+The style on a block should not influence the block parsing model.
+Instead, block parsing is performed first based on the grammar rules for the structural form (e.g., paragraph, literal paragraph, structural container, etc).
+The style then impacts how that result is interpreted and transformed into a DOM/ASG node.
+
+== Decision summary
+
+In pre-spec AsciiDoc, the block style became interwoven with the block parsing rules.
+This coupling makes it impractical to define a formal grammar for the language.
+We have decided to reframe the block style so it functions as originally intended.
+The style merely influences how the parsed block is interpreted and transformed into a node.
+
+In AsciiDoc, there are various structural forms, such as paragraph and structural container.
+These structures include a paragraph, a literal paragraph, a list item, a heading, a block macro, and a delimited block.
+These structures are recognized by the parser based on the grammar rule that they match.
+Once the parser identifies what the structure is, it follows certain rules for how to identify the lines that comprise it and how to process any leading markers or surrounding delimiter lines.
+The block style should not influence how the parser identifies the block structure.
+In other words, the block parser should identify the block and its boundaries without considering any of the block metadata.
+The one exception to this rule is the discrete style on a heading. The discrete style should cause the heading to be parsed as a leaf block rather than a parent block.
+
+Once the block is parsed by the block parser, the style can influence what happens next.
+The style may:
+
+* instruct the parser to run the inline parser on the lines
+* instruct the parser to not run the inlie parser on the lines
+* instruct the parser to only run some mode of the inline preprocessor on the lines
+* instruct the parser to change the block from one type to another (e.g., from a paragraph to a sidebar that contains that paragraph).
+
+Let's consider an example.
+We'll look at the case when the `normal` style is declared on a literal paragraph structure.
+
+[,asciidoc]
+----
+[normal]
+ [[idname]]https://example.org[]
+----
+
+This block will be parsed as a literal paragraph since it's written using the indented form of a paragraph.
+Then, the `normal` style will be applied, transforming the block into a normal paragraph.
+The application of that style happens in the action for the rule.
+The indentation is first stripped away, then the inline parser is run on those lines.
+This allows the author to leverage the literal paragraph structure, but still have the text in the paragraph interpreted as though it had been defined as a normal paragraph.
+
+We'll now look at the case when the `sidebar` style is declared on a paragraph structure.
+
+[,asciidoc]
+----
+[sidebar]
+Just an aside.
+----
+
+This block will be parsed as a paragraph since it's not indented.
+Then, the `sidebar` style will be applied, transforming the block into a sidebar.
+The application of that style happens in the action for the rule.
+The rule action will create a synthetic sidebar block and attach the paragraph as a child of that block.
+Any metadata associated with the block will be promoted to the sidebar block, perhaps with some exceptions such as the `hardbreaks` option.
+The action will then return the sidebar block, which contains the paragraph from the source document.
+
+This parsing strategy will be the basis for how the subs attribute is interpreted and how block extensions will work.
+The block parsing always happens first, then the metadata can influence how that result is handled.
+In the case the `subs` attribute is defined on the block, it informs the parser how to perform inline parsing, if any.
+The `subs` attribute does not impact how the block is identified.
+Block extensions will run in the rule action, when the parsed result is interpreted and transformed into an ASG node.
+
+By applying this parsing strategy to the `subs` attribute, these two blocks would be roughly equivalent:
+
+[,asciidoc]
+----
+[pass]
+Pass this on.
+
+[subs=none]
+Pass this on.
+----
+
+It's not fully clear yet the degree to which the `subs` attribute can be honored, but this parsing strategy is the first step to understanding how to model it.
+
+== Backwards compatibility
+
+By not applying the block style until after the block parsing is done, it's possible that certain styled paragraphs will end up matching more or less lines than in pre-spec AsciiDoc.
+For example, the following AsciiDoc would no longer produce a literal block, but rather a list (maybe with the literal bullet style?):
+
+[,asciidoc]
+----
+[literal]
+* This is just a list
+----
+
+However, we anticipate these situations to be rare and easily corrected.
+This behavior was also inconsistent, since the following would already produce a list instead of a sidebar.
+But now it will produce a list inside of a sidebar since the sidebar style is a block name, not a bullet style.
+
+[,asciidoc]
+----
+[sidebar]
+* This is a list in a sidebar
+----
+
+The influence of the style should be consistent, which is to act as a parsing transformation, not as a structural form.
+
+There will definitely be an impact on how block extensions work since block parsing will now happen up front.
+However, the topic of syntax extensions and how they are processed is for another SDR.
