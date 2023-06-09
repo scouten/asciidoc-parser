@@ -355,6 +355,7 @@
       "discriminator": { "propertyName": "name" },
       "oneOf": [
         { "$ref": "#/$defs/inlineSpan" },
+        { "$ref": "#/$defs/inlineRef" },
         { "$ref": "#/$defs/inlineLiteral" }
       ]
     },
@@ -387,6 +388,25 @@
         "form": {
           "type": "string",
           "enum": ["constrained", "unconstrained"]
+        }
+      }
+    },
+    "inlineRef": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/abstractParentInline" }],
+      "unevaluatedProperties": false,
+      "required": ["name", "variant", "target"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "ref"
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["link", "xref"]
+        },
+        "target": {
+          "type": "string"
         }
       }
     },
