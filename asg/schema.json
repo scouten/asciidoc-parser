@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.asciidoc.org/asg/1-0-0/draft-01",
-  "title": "AsciiDoc Abstract Semantic Graph",
+  "title": "AsciiDoc Abstract Semantic Graph (ASG)",
   "description": "A structured representation of the semantics in an AsciiDoc document, primarily used for validating the compliance of an AsciiDoc processor.",
   "type": "object",
   "required": ["name", "type"],
