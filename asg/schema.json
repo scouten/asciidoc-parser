@@ -109,7 +109,8 @@
     },
     "block": {
       "oneOf": [
-        { "$ref": "#/$defs/anyList" },
+        { "$ref": "#/$defs/list" },
+        { "$ref": "#/$defs/dlist" },
         { "$ref": "#/$defs/heading" },
         { "$ref": "#/$defs/break" },
         { "$ref": "#/$defs/blockMacro" },
@@ -117,49 +118,47 @@
         { "$ref": "#/$defs/parentBlock" }
       ]
     },
-    "anyList": {
+    "list": {
       "type": "object",
-      "allOf": [
-        { "$ref": "#/$defs/abstractBlock" },
-        {
-          "if": {
-            "properties": { "name": { "const": "list" } }
-          },
-          "then": {
-            "required": ["variant", "items"],
-            "properties": {
-              "variant": {
-                "type": "string",
-                "enum": ["callout", "ordered", "unordered"]
-              },
-              "items": {
-                "type": "array",
-                "items": { "$ref": "#/$defs/listItem" },
-                "minItems": 1
-              }
-            }
-          },
-          "else": {
-            "required": ["items"],
-            "properties": {
-              "items": {
-                "type": "array",
-                "items": { "$ref": "#/$defs/dlistItem" },
-                "minItems": 1
-              }
-            }
-          }
-        }
-      ],
-      "required": ["name", "marker"],
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
       "unevaluatedProperties": false,
+      "required": ["name", "marker", "variant", "items"],
       "properties": {
         "name": {
           "type": "string",
-          "enum": ["list", "dlist"]
+          "const": "list"
         },
         "marker": {
           "type": "string"
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["callout", "ordered", "unordered"]
+        },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/listItem" },
+          "minItems": 1
+        }
+      }
+    },
+    "dlist": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "unevaluatedProperties": false,
+      "required": ["name", "marker", "items"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "dlist"
+        },
+        "marker": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/dlistItem" },
+          "minItems": 1
         }
       }
     },
