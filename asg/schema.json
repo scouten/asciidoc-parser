@@ -293,7 +293,7 @@
     },
     "blockMetadata": {
       "type": "object",
-      "defaults": { "attributes": {}, "options": [] },
+      "defaults": { "attributes": {}, "options": [], "roles": [] },
       "additionalProperties": false,
       "properties": {
         "attributes": {
@@ -306,6 +306,12 @@
           }
         },
         "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "roles": {
           "type": "array",
           "items": {
             "type": "string"
