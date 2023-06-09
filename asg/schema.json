@@ -51,7 +51,11 @@
           "type": "string",
           "const": "block"
         },
+        "id": {
+          "type": "string"
+        },
         "title": { "$ref": "#/$defs/inlines" },
+        "reftext": { "$ref": "#/$defs/inlines" },
         "metadata": { "$ref": "#/$defs/blockMetadata" },
         "location": { "$ref": "#/$defs/location" }
       }
