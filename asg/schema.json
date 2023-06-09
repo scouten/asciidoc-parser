@@ -254,8 +254,8 @@
                 "type": "string"
               }
             }
-           }
-         }
+          }
+        }
       ],
       "unevaluatedProperties": false,
       "required": ["name"],
