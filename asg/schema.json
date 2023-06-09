@@ -358,12 +358,8 @@
     },
     "abstractParentInline": {
       "type": "object",
-      "required": ["name", "type", "inlines"],
+      "required": ["type", "inlines"],
       "properties": {
-        "name": {
-          "type": "string",
-          "enum": ["span"]
-        },
         "type": {
           "type": "string",
           "const": "inline"
@@ -376,7 +372,7 @@
       "type": "object",
       "allOf": [{ "$ref": "#/$defs/abstractParentInline" }],
       "unevaluatedProperties": false,
-      "required": ["variant", "form"],
+      "required": ["name", "variant", "form"],
       "properties": {
         "name": {
           "type": "string",
