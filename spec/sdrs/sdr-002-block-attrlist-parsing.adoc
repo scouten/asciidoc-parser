@@ -1,0 +1,309 @@
+= SDR-2: Define Parsing Rules for attrlist in Block Attribute Line
+
+== Context
+
+The attrlist contained within a block attribute line requires special parsing rules, and there are numerous ways these rules can be defined.
+This SDR documents the decision that was made to define these rules and their boundary conditions in the context of a formal grammar.
+
+The same parsing rules will be used for the attrlist in a block macro, minus the shorthand attributes in the first positional attribute when in the left-most position.
+
+== Accepted decision
+
+The specification will define how the attrlist in a block attribute line should be parsed according to the rules specified in the decision summary.
+These rules will deal with boundaries, attribute references, positional and named attributes, shorthand attributes, accrued attributes, content attributes and inline parsing, backslash escaping, merging attributes from multiple block attribute lines, and mapping the data and locations to the ASG.
+It will also address backwards compatibility and chronicle rejected alternatives.
+
+== Decision summary
+
+The attrlist refers to the source text between the opening `[` and closing `]` characters of a block attribute line.
+By definition, a block attribute line is a boxed attrlist.
+The attrlist is parsed into a map of attributes that are associated with the node for the block.
+A block may have multiple block attribute lines, and these lines must precede the start of the block.
+The following sections document how the attrlist in this context must be parsed.
+
+=== Boundaries and parsing strategy
+
+The attrlist must not begin or end with a space character.
+The attrlist should be parsed once the block attribute line is found using an inner parsing step.
+This parsing step is performed by the attrlist parser, which is backed by a discrete grammar.
+This confines the attrlist to the block attribute line and thus prevents the parser from breaching its boundaries.
+
+The attrlist in each sequential block attribute line should be parsed in document order.
+
+While it may seem like the attrlist rule could be integrated into the grammar that matches the block attribute line, the requirement to preprocess attribute references in the attrlist makes this approach unrealistic.
+The attrlist parser must be a discrete parser from the block parser.
+
+=== Attribute references
+
+Before the attrlist parser can be run on the attrlist, the attrlist must be preprocessed.
+This preprocessing step must resolve any document attribute references in the attrlist regardless of where they appear in the attrlist.
+In this mode, the inline preprocessor should not consider the boundaries of any inline passthroughs.
+At this stage, it should only look for attribute references and replace them.
+Note that the same inline preprocessor mode will be used to resolve attribute references in the value of attribute entry.
+Once the inline preprocessor resolves attribute references, the attrlist is ready to be parsed.
+
+In order for the locations of inlines to be accurately recorded in the value of content attributes, the offsets introduced by resolving attribute references should be tracked.
+The location range of the resolved text should be the start and end of the attribute reference.
+
+=== Positional and named attributes
+
+The attrlist consists of a set of named and positional attributes.
+Each entry is separated by a comma, which may itself be surrounded by spaces (e.g., `id=idname, role=rolename`).
+
+A named attribute consists of a name and value.
+The name is separated from the value in the source by an equals sign, which may itself be surrounded by spaces (e.g., `name=value`).
+The value of a named attribute is assigned to a key in the attribute map using its name.
+
+A positional attribute is an unnamed attribute.
+In other words, a positional attribute is an entry that has not been assigned a name, meaning it consists only of a value.
+A positional attribute is assigned a sequential numeric index in the attributes map starting at 1 and prefixed with $ (e.g., `"$1": "sidebar"`).
+The positional index increments each time a positional attribute is found.
+If the positional attribute value is empty, it counts as a positional attribute, meaning it causes the index to be incremented, but it's not stored in the attributes map.
+
+Interspersed named attributes do not impact the positional index value.
+In other words, they do not cause the positional index to be incremented.
+For example:
+
+ [positional 1,foo=bar,positional 2,yin=yang,positional 3]
+
+Any named attribute is permitted as long as the name is valid according to the grammar.
+Every node shares a set of reserved attribute names.
+These are as follows:
+
+* id
+* opts (and its alias, options)
+* reftext
+* role (and its alias, roles)
+
+Additionally, block nodes have the following reserved attribute names:
+
+* caption
+* style
+* title
+
+As the specification evolves, specialized blocks may define additional reserved names (e.g., `cols` for a table block).
+This SDR does not attempt to account for all future possibilities.
+It's just providing an outline.
+
+There are two aliases for named attributes: 1) `roles` is an alias for `role` and 2) `options` is an alias for `opts`.
+
+=== Quoted values
+
+The attribute value may be enclosed in a pair of single or double quotes (e.g., `"value"` or `'value'`).
+The enclosure is removed from the value when the value is stored in the attributes map.
+
+Enclosing the value in quotes allows the value to contain a comma, which would otherwise be treated as a separator between attributes.
+Note that it's not possible to escape a comma using a backslash, hence why the quoted value is needed.
+
+All spaces inside a quoted value are preserved, including spaces directly on the inside of the enclosure.
+(In contrast, only inner spaces are preserved in a value which is not quoted).
+If the value contains the enclosing quote character, that character must be escaped.
+
+A comma in an attribute value can only be escaped by quoting the attribute value in either a pair of single or double quotes.
+
+=== Shorthand attributes
+
+Shorthand attributes are permitted in the first positional attribute when the first positional attribute is the first entry (in the left-most position) of the attrlist.
+When this condition is met, these shorthand attributes should be recognized and parsed.
+Shorthand attributes define multiple named attributes in a single entry using a shorthand notation.
+The fully expressed syntax for shorthand attributes in the first positional attribute location is as follows:
+
+ [idname,reference text]stylename#idname.rolename1.rolename2%optionname1%optionname2
+
+All shorthand attributes are optional.
+The name assignments are as follows:
+
+* idname => id
+* reference text => reftext (parsed for inlines)
+* stylename => style
+* rolename1 rolename2 => role (accrued)
+* optionname1,optionname2 => opts (accured)
+
+The ID shorthand has two forms, the anchor notation and the hash notation.
+The anchor notation must always come first.
+The hash notation takes precedence if both are present in the same attribute value, meaning the last always wins.
+The style, represented by `stylename` in the example, must always follow the anchor notation and precede any other shorthands.
+The remaining shorthands can be in any order (e.g., `%optionname1.rolename1#idname`).
+
+It's worth pointing out that the addition of the anchor notation in the first positional attribute allows the block anchor line and block attribute lines from Asciidoctor to be unified.
+In other words, `+[[idname,reference text]]+` is merely a block attribute line that uses the anchor shorthand in the first positional attribute.
+
+The reference text is parsed in a way similar to a single-quoted value, so a comma is treated as part of the value.
+If the reference text contains a `]` character, that character must be escaped.
+It is not necessary to enclose the reference text in quotes if it contains a comma.
+If the value is enclosed in quotes, the quotes are considered as part of the value, unlike a quoted attribute value.
+
+== Accrued attributes
+
+If a block attribute is defined again, the attribute is overwritten in the attributes map.
+As a consequence, the last occurrence in document order always wins.
+There are two exceptions to this rule, `role` and `opts`.
+The value of these attributes are accrued each time they are used.
+For example, `role=a,role=b` is interpreted the same as becomes `role=a b`.
+And `opts=option1,opts=options2` is interpreted the same as `opts="option1,option2"`.
+
+When accruing roles, the value is trimmed and split on one or more spaces to extract the role names.
+When accruing options, the value is trimmed and split on one or more spaces or on a comma optionally surrounded by spaces to extract the option names.
+In both cases, each entry in the array will not have any spaces.
+Duplicates are filtered out.
+
+== Content attributes and inline parsing
+
+The value of most attributes is saved as a string.
+The exception to this rule are content attributes.
+Content attributes are attributes that contain displayable content, but which are defined in the source as block attributes.
+
+The list of content attributes are as follows:
+
+* title
+* reftext
+* caption
+* citetitle
+* attribution
+
+The value of a content attribute is always converted to an array of inlines.
+If the value is enclosed in single quotes, the inline parser is used to parse it into an array of inlines, thus interpreting any inline markup.
+If the value is not enclosed in single quotes, the value is converted to a text node and wrapped in an array.
+It gets treated as though the text had been enclosed in an inline passthrough.
+The unparsed value should be saved in order to restore it later in the attributes map.
+
+In the case the inline parser is used, the inline preprocessor should only extract inline passthroughs.
+This is the only time inline passthroughs are recognized in the attrlist, and are confined to the boundaries of the quoted value.
+The attrlist parser should not resolve attribute references as this would cause attribute references to be resolved twice.
+The inline passthroughs should be restored once inline parsing is completed.
+
+If the implementation tracks locations, the location of each inline node should be recorded.
+The location does not have to be tracked for non-content attributes (i.e., string values).
+
+== Backslash escaping
+
+Using a backslash to escape syntax (aka backslash escaping) is handled differently in an attrlist then when inline syntax is parsed.
+Except when inlines are parsed in the value of a content attribute, all syntax in an attrlist is escaped syntactically.
+That means that the backslash must proceed an atomic syntax element such as an attribute reference, not just any symbol.
+
+These are the cases where backslashes are processed in an attrlist:
+
+* preceding an attribute reference
+* preceding the quote character in a quoted attribute value when the quote character is the same
+* preceding the right square bracket in the reftext portion of an anchor
+* as defined by the inline grammar in any single-quoted value of a content attribute
+
+For example, the following syntax will escape an attribute reference in the attrlist:
+
+ \{escaped}
+
+The result after preprocessing will be:
+
+ {escaped}
+
+The location of the left curly brace should be attributed to the backslash to account for its removal.
+
+Wherever backslash escaping is permitted, there must be a way to represent a literal backslash at that location.
+Thus, the attrlist parser has to process all sequential backslashes leading up to an escapable character or form.
+The rules for processing these attributes are as follows:
+
+* An even number of backslashes gets resolved to half the number of backslashes and does not escape the character or form that follows.
+* An odd number of backslashes gets resolved to half of one less the number of backslashes and the final backslash escapes the character or form that follows.
+
+This processing will affect the number of backslashes that remain when the inline parser runs on the value of a content attribute.
+Therefore, it may be necessary to use additional backslashes in certain edge cases.
+Consider the case when you need to place a literal backslash in front of text enclosed in single smart quotes in a content attribute.
+
+ title='\\\\\'`text in curly quotes`\''
+
+What the inline parser will see is:
+
+ \\'`text in curly quotes`'
+
+Fortunately, these cases are quite rare.
+
+== Merging attributes
+
+The attributes parsed from an attrlist should be merged into the attributes parsed from any preceding block attribute lines associated with the same block.
+If the same named or positional attribute is defined, the last wins, with the exception of role and opts, which are accrued.
+If the positional attribute entry in a line is empty, it does not replace a positional attribute already defined at that index.
+
+Note that merging does not prevent content attributes that are replaced from being parsed.
+The parsed result is just lost.
+
+== Mapping data and locations to ASG
+
+After the attrlist in all block attribute lines associated with a block have been parsed, the result is a map of attributes.
+That map is assigned to the `metadata.attributes` property on the node in the ASG.
+The value of the `role` attribute, if present, is converted to an array and stored on the `metadata.roles` property.
+The value of the `opts` attribute, if present, is converted to an array and stored on the `metadata.options` property.
+If the `id` attribute is present, the value is stored on the `id` property on the node.
+
+All content attributes are promoted to properties on the node.
+At this point, the unparsed value is resaved in the attribute map.
+This ensures that the value of every attribute in the map is a string.
+
+The location property on the metadata, if set by the implementation, should start at the first character of the first attibute line and end at the last character before the line that starts the block.
+In other words, it encapsulates all the block attribute lines.
+The location property on the node itself should be the first line of the block, not including any block attribute lines.
+By setting it up this way, it's possible to see where the block begins both with and without the block attribute lines.
+
+== Backwards compatibility
+
+The parsing rules defined by this SDR were derived from the behavior of Asciidoctor and remain mostly true to it.
+However, there are some differences worth noting:
+
+* The inline parser is only run on a single quoted value of a content attribute; enabling this behavior for any single-quoted value is rarely needed and, more times than not, produces non-nonsensical behavior, like parsing an ID; it's unlikely this restriction will affect existing documents
+* Backslash escaping is now consistent and reliable; in Asciidoctor, a backslash in front of escapable syntax would always be treated as an escape character, and thus there would be no way to represent a literal backslash at that location; as a result of this change, additional backslashes may need to be added in certain cases
+* Attribute references in the attrlist are only processed once, by the inline preprocessor; in Asciidoctor, if the value of an attribute reference in the attrlist contains an attribute reference, the attribute reference in the resolved attrlist would also be resolved within a single-quoted value; that was a loophole; the parser should not resolve attribute references in the resolved attrlist
+
+== Rejected alternatives
+
+=== Resolve attribute references in preprocessor
+
+One alternative that was considered is to have the line preprocessor resolve attribute references in the attrlist.
+The advantage of this approach is that the attrlist parsing rules can be integrated directly into the block grammar.
+However, there's a major implication that prevents this alternative from being viable.
+In the case that an attribute value contains multiple lines, it would cause the preprocessor to produce a result that would no longer be recognized as block attribute line by the block parser and may alter the parsing of the document.
+The attrlist cannot breach the boundaries of a line.
+Thus, this strategy was rejected.
+
+=== Run inline parser on any single-quoted attribute value
+
+Asciidoctor applies normal substitutions to any single-quoted attribute value in a block attrlist.
+In the AsciiDoc Language specification, this is equivalent to running the inline parser on the value.
+Allowing the user to enable this functionality for any attribute causes significant problems for the implementation.
+
+By allowing any value to be parsed for inlines, it means that the parser has to potentially store an array of inlines for any attribute.
+In the case when the client code needs the unparsed value instead, that has to be stored as well.
+The implementation / client code then needs to check whether the attribute value has this data structure and choose which value it wants.
+The parser also ends up doing more work than it needs to do to store the information to support this capability.
+This work includes running the inline parser unnecessarily and tracking locations.
+
+A majority of the time this capability is activated, it's unnecessary or unintended (i.e., parsing the value of the role, opts, or id attribute is non-nonsensical).
+Thus, we decided instead to only allow this feature for known content attributes, thus treating them specially from other attributes.
+The parsed value gets promoted to the node and the unparsed value is stored in the attributes map for informational purposes.
+
+We can expand the list of content attributes in the future, if necessary.
+
+=== Avoid inline passthroughs when resolving attribute references
+
+We could have considered running the full inline preprocessor on the attrlist first, then parsing the attrlist into attributes.
+However, this idea was quickly rejected upon examination for several reasons.
+First, it would mean that the inline passthroughs would work anywhere in the attrlist, which they currently do not.
+It would also put a huge burden on the implementation to go back and replace passthrough placeholders since they could appear anywhere in the attributes map, including in the keys.
+If, instead, the inline passthroughs were avoided, but not replaced, it would mean that inline passthrough marks would get left behind in parts of the attrlist that don't get run through the inline parser.
+In other words, it would just make a mess of things.
+Most important, it would be completely different from how attrlist parsing works in AsciiDoc prior to the specification.
+
+The most consistent way to deal with attribute references in an attrlist is to define a special mode that resolves them up front without considering any inline passthroughs, so that is the strategy we decided on.
+
+=== Basic backslash escaping
+
+One of the goals of the specification is to make backslash escaping consistent and reliable.
+However, we considered making an exception to that goal for the attrlist.
+
+One idea was to use primitive backslash escaping here, which only considers whether the character that immediately precedes an escapable character or form is a backslash, and treat it as an escape.
+This strategy is the closest to how Asciidoctor is implemented and would also avoid the compounding of backslashes that can happen in a run leading up to escapable syntax.
+In the end, we decided that if we're going to get backslash escaping right elsewhere, it should be done here too.
+
+Another idea was to apply backslash escaping to the attrlist lexically rather than syntactically.
+This is certainly a tempting alternative since it would match more closely to how it works in paragraph text.
+However, this would make the syntax rules drastically different from how they are in pre-spec AsciiDoc as backslashes would now be recognized in many more places in the attrlist.
+It would also make it harder on the implementation to track the offsets left behind for location tracking and raise new questions about how to handle backslashes in front of commas, equals signs, and quotes.
+In the end, we felt that this would be too big of a change and that using syntactically backslash escaping offers a reasonable compromise in terms of both ease of use and compatibility.
