@@ -56,6 +56,17 @@
         "location": { "$ref": "#/$defs/location" }
       }
     },
+    "abstractHeading": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "required": ["title", "level"],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
     "abstractListItem": {
       "type": "object",
       "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
@@ -84,18 +95,14 @@
     },
     "section": {
       "type": "object",
-      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "allOf": [{ "$ref": "#/$defs/abstractHeading" }],
       "unevaluatedProperties": false,
-      "required": ["name", "title", "level"],
+      "required": ["name"],
       "defaults": { "blocks": [] },
       "properties": {
         "name": {
           "type": "string",
           "const": "section"
-        },
-        "level": {
-          "type": "integer",
-          "minimum": 0
         },
         "blocks": { "$ref": "#/$defs/sectionBody" }
       }
@@ -187,17 +194,13 @@
     },
     "heading": {
       "type": "object",
-      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "allOf": [{ "$ref": "#/$defs/abstractHeading" }],
       "unevaluatedProperties": false,
-      "required": ["name", "title", "level"],
+      "required": ["name"],
       "properties": {
         "name": {
           "type": "string",
           "const": "heading"
-        },
-        "level": {
-          "type": "integer",
-          "minimum": 0
         }
       }
     },
