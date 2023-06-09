@@ -87,6 +87,7 @@
     "sectionBody": {
       "type": "array",
       "items": {
+        "type": "object",
         "oneOf": [
           { "$ref": "#/$defs/block" },
           { "$ref": "#/$defs/section" }
@@ -112,6 +113,7 @@
       }
     },
     "block": {
+      "type": "object",
       "oneOf": [
         { "$ref": "#/$defs/list" },
         { "$ref": "#/$defs/dlist" },
@@ -348,6 +350,7 @@
       "items": { "$ref": "#/$defs/inline" }
     },
     "inline": {
+      "type": "object",
       "oneOf": [
         { "$ref": "#/$defs/inlineSpan" },
         { "$ref": "#/$defs/inlineLiteral" }
