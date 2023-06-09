@@ -44,25 +44,30 @@
     "required": ["attributes"]
   },
   "$defs": {
-    "abstractListItem": {
+    "abstractBlock": {
       "type": "object",
-      "required": ["name", "type", "marker"],
-      "defaults": { "blocks": [] },
+      "required": ["type"],
       "properties": {
-        "name": {
-          "type": "string",
-          "enum": ["listItem", "dlistItem"]
-        },
         "type": {
           "type": "string",
           "const": "block"
         },
+        "title": { "$ref": "#/$defs/inlines" },
+        "metadata": { "$ref": "#/$defs/blockMetadata" },
+        "location": { "$ref": "#/$defs/location" }
+      }
+    },
+    "abstractListItem": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "required": ["marker"],
+      "defaults": { "blocks": [] },
+      "properties": {
         "marker": {
           "type": "string"
         },
         "principal": { "$ref": "#/$defs/inlines" },
-        "blocks": { "$ref": "#/$defs/nonSectionBlockBody" },
-        "location": { "$ref": "#/$defs/location" }
+        "blocks": { "$ref": "#/$defs/nonSectionBlockBody" }
       }
     },
     "sectionBody": {
@@ -80,26 +85,20 @@
     },
     "section": {
       "type": "object",
-      "required": ["name", "type", "title", "level"],
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "unevaluatedProperties": false,
+      "required": ["name", "title", "level"],
       "defaults": { "blocks": [] },
-      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string",
           "const": "section"
         },
-        "type": {
-          "type": "string",
-          "const": "block"
-        },
-        "title": { "$ref": "#/$defs/inlines" },
         "level": {
           "type": "integer",
           "minimum": 0
         },
-        "metadata": { "$ref": "#/$defs/blockMetadata" },
-        "blocks": { "$ref": "#/$defs/sectionBody" },
-        "location": { "$ref": "#/$defs/location" }
+        "blocks": { "$ref": "#/$defs/sectionBody" }
       }
     },
     "block": {
@@ -113,57 +112,55 @@
     },
     "anyList": {
       "type": "object",
-      "required": ["name", "type", "marker"],
+      "allOf": [
+        { "$ref": "#/$defs/abstractBlock" },
+        {
+          "if": {
+            "properties": { "name": { "const": "list" } }
+          },
+          "then": {
+            "required": ["variant", "items"],
+            "properties": {
+              "variant": {
+                "type": "string",
+                "enum": ["callout", "ordered", "unordered"]
+              },
+              "items": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/listItem" },
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "required": ["items"],
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/dlistItem" },
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ],
+      "required": ["name", "marker"],
       "unevaluatedProperties": false,
       "properties": {
         "name": {
           "type": "string",
           "enum": ["list", "dlist"]
         },
-        "type": {
-          "type": "string",
-          "const": "block"
-        },
         "marker": {
           "type": "string"
-        },
-        "title": { "$ref": "#/$defs/inlines" },
-        "metadata": { "$ref": "#/$defs/blockMetadata" },
-        "location": { "$ref": "#/$defs/location" }
-      },
-      "if": {
-        "properties": { "name": { "const": "list" } }
-      },
-      "then": {
-        "required": ["variant", "items"],
-        "properties": {
-          "variant": {
-            "type": "string",
-            "enum": ["callout", "ordered", "unordered"]
-          },
-          "items": {
-            "type": "array",
-            "items": { "$ref": "#/$defs/listItem" },
-            "minItems": 1
-          }
-        }
-      },
-      "else": {
-        "required": ["items"],
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": { "$ref": "#/$defs/dlistItem" },
-            "minItems": 1
-          }
         }
       }
     },
     "listItem": {
       "type": "object",
-      "unevaluatedProperties": false,
       "allOf": [{ "$ref": "#/$defs/abstractListItem" }],
-      "required": ["principal"],
+      "unevaluatedProperties": false,
+      "required": ["name", "principal"],
       "properties": {
         "name": {
           "type": "string",
@@ -173,9 +170,9 @@
     },
     "dlistItem": {
       "type": "object",
-      "unevaluatedProperties": false,
       "allOf": [{ "$ref": "#/$defs/abstractListItem" }],
-      "required": ["terms"],
+      "unevaluatedProperties": false,
+      "required": ["name", "terms"],
       "properties": {
         "name": {
           "type": "string",
@@ -190,37 +187,29 @@
     },
     "break": {
       "type": "object",
-      "required": ["name", "type", "form", "variant"],
-      "additionalProperties": false,
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "unevaluatedProperties": false,
+      "required": ["name", "variant"],
       "properties": {
         "name": {
           "type": "string",
           "const": "break"
         },
-        "type": {
-          "type": "string",
-          "const": "block"
-        },
         "variant": {
           "type": "string",
           "enum": ["page", "thematic"]
-        },
-        "metadata": { "$ref": "#/$defs/blockMetadata" },
-        "location": { "$ref": "#/$defs/location" }
+        }
       }
     },
     "blockMacro": {
       "type": "object",
-      "required": ["name", "type", "form"],
-      "additionalProperties": false,
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "unevaluatedProperties": false,
+      "required": ["name", "form"],
       "properties": {
         "name": {
           "type": "string",
           "enum": ["audio", "video", "image", "toc"]
-        },
-        "type": {
-          "type": "string",
-          "const": "block"
         },
         "form": {
           "type": "string",
@@ -228,61 +217,70 @@
         },
         "target": {
           "type": "string"
-        },
-        "title": { "$ref": "#/$defs/inlines" },
-        "metadata": { "$ref": "#/$defs/blockMetadata" },
-        "location": { "$ref": "#/$defs/location" }
+        }
       }
     },
     "leafBlock": {
       "type": "object",
-      "required": ["name", "type"],
-      "defaults": { "inlines": [] },
+      "allOf": [
+        { "$ref": "#/$defs/abstractBlock" },
+        {
+          "if": {
+            "required": ["form"],
+            "properties": { "form": { "const": "delimited" } }
+          },
+          "then": {
+            "required": ["delimiter"],
+            "properties": {
+              "delimiter": {
+                "type": "string"
+              }
+            }
+           }
+         }
+      ],
       "unevaluatedProperties": false,
+      "required": ["name"],
+      "defaults": { "inlines": [] },
       "properties": {
         "name": {
           "type": "string",
           "enum": ["listing", "literal", "paragraph", "pass", "stem", "verse"]
         },
-        "type": {
-          "type": "string",
-          "const": "block"
-        },
         "form": {
           "type": "string",
-          "enum": ["delimited", "literalParagraph", "paragraph"]
+          "enum": ["delimited", "indented", "paragraph"]
         },
-        "title": { "$ref": "#/$defs/inlines" },
-        "metadata": { "$ref": "#/$defs/blockMetadata" },
-        "inlines": { "$ref": "#/$defs/inlines" },
-        "location": { "$ref": "#/$defs/location" }
-      },
-      "if": {
-        "properties": { "form": { "const": "delimited" } },
-        "required": ["form"]
-      },
-      "then": {
-        "required": ["delimiter"],
-        "properties": {
-          "delimiter": {
-            "type": "string"
-          }
-        }
+        "inlines": { "$ref": "#/$defs/inlines" }
       }
     },
     "parentBlock": {
       "type": "object",
-      "required": ["name", "type"],
-      "defaults": { "blocks": [] },
+      "allOf": [
+        { "$ref": "#/$defs/abstractBlock" },
+        {
+          "if": {
+            "required": ["name"],
+            "properties": { "name": { "const": "admonition" } }
+          },
+          "then": {
+            "required": ["variant"],
+            "properties": {
+              "variant": {
+                "type": "string",
+                "enum": ["caution", "important", "note", "tip", "warning"]
+              }
+            }
+          }
+        }
+      ],
       "unevaluatedProperties": false,
+      "required": ["name", "form", "delimiter"],
+      "defaults": { "blocks": [] },
       "properties": {
         "name": {
           "type": "string",
           "enum": ["admonition", "example", "sidebar", "open", "quote"]
-        },
-        "type": {
-          "type": "string",
-          "const": "block"
         },
         "form": {
           "type": "string",
@@ -291,22 +289,7 @@
         "delimiter": {
           "type": "string"
         },
-        "title": { "$ref": "#/$defs/inlines" },
-        "metadata": { "$ref": "#/$defs/blockMetadata" },
-        "blocks": { "$ref": "#/$defs/nonSectionBlockBody" },
-        "location": { "$ref": "#/$defs/location" }
-      },
-      "if": {
-        "properties": { "name": { "const": "admonition" } }
-      },
-      "then": {
-        "required": ["variant"],
-        "properties": {
-          "variant": {
-            "type": "string",
-            "enum": ["caution", "important", "note", "tip", "warning"]
-          }
-        }
+        "blocks": { "$ref": "#/$defs/nonSectionBlockBody" }
       }
     },
     "blockMetadata": {
@@ -360,8 +343,8 @@
     },
     "inlineSpan": {
       "type": "object",
-      "unevaluatedProperties": false,
       "allOf": [{ "$ref": "#/$defs/abstractParentInline" }],
+      "unevaluatedProperties": false,
       "required": ["variant", "form"],
       "properties": {
         "name": {
