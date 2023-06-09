@@ -259,7 +259,7 @@
         }
       }
     },
-    "baseListItem": {
+    "abstractListItem": {
       "type": "object",
       "required": ["name", "type", "marker"],
       "defaults": { "blocks": [] },
@@ -283,7 +283,7 @@
     "listItem": {
       "type": "object",
       "unevaluatedProperties": false,
-      "allOf": [{ "$ref": "#/$defs/baseListItem" }],
+      "allOf": [{ "$ref": "#/$defs/abstractListItem" }],
       "required": ["principal"],
       "properties": {
         "name": {
@@ -295,7 +295,7 @@
     "dlistItem": {
       "type": "object",
       "unevaluatedProperties": false,
-      "allOf": [{ "$ref": "#/$defs/baseListItem" }],
+      "allOf": [{ "$ref": "#/$defs/abstractListItem" }],
       "required": ["terms"],
       "properties": {
         "name": {
@@ -342,7 +342,7 @@
         { "$ref": "#/$defs/inlineLiteral" }
       ]
     },
-    "baseInlineParent": {
+    "abstractInlineParent": {
       "type": "object",
       "required": ["name", "type", "inlines"],
       "properties": {
@@ -361,7 +361,7 @@
     "inlineSpan": {
       "type": "object",
       "unevaluatedProperties": false,
-      "allOf": [{ "$ref": "#/$defs/baseInlineParent" }],
+      "allOf": [{ "$ref": "#/$defs/abstractInlineParent" }],
       "required": ["variant", "form"],
       "properties": {
         "name": {
