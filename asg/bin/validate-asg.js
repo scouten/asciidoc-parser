@@ -11,7 +11,7 @@ const options = {
   'validate-schema': { type: 'boolean', desc: 'validate the schema' },
 }
 const { positionals, values } = parseArgs({ args: process.argv.slice(2), options, allowPositionals: true, strict: true })
-const ajv = new Ajv({ allErrors: false, keywords: [defaultsKeyword()] })
+const ajv = new Ajv({ allErrors: false, discriminator: true, keywords: [defaultsKeyword()] })
 const schema = JSON.parse(fs.readFileSync('schema.json'))
 if (values['validate-schema']) ajv.validateSchema(schema)
 const validate = ajv.compile(schema)

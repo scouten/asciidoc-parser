@@ -12,7 +12,7 @@ describe('asg schema', () => {
   let fixturesDir = ospath.join(ospath.dirname(fileURLToPath(import.meta.url)), 'fixtures')
 
   before(() => {
-    ajv = new Ajv({ allErrors: false, keywords: [defaultsKeyword()] })
+    ajv = new Ajv({ allErrors: false, discriminator: true, keywords: [defaultsKeyword()] })
   })
 
   it('should be valid', () => {

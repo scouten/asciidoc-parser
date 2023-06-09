@@ -114,6 +114,7 @@
     },
     "block": {
       "type": "object",
+      "discriminator": { "propertyName": "name" },
       "oneOf": [
         { "$ref": "#/$defs/list" },
         { "$ref": "#/$defs/dlist" },
@@ -351,6 +352,7 @@
     },
     "inline": {
       "type": "object",
+      "discriminator": { "propertyName": "name" },
       "oneOf": [
         { "$ref": "#/$defs/inlineSpan" },
         { "$ref": "#/$defs/inlineLiteral" }
