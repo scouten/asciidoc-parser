@@ -103,6 +103,7 @@
     "block": {
       "oneOf": [
         { "$ref": "#/$defs/anyList" },
+        { "$ref": "#/$defs/heading" },
         { "$ref": "#/$defs/break" },
         { "$ref": "#/$defs/blockMacro" },
         { "$ref": "#/$defs/leafBlock" },
@@ -181,6 +182,22 @@
           "type": "array",
           "items": { "$ref": "#/$defs/inlines" },
           "minItems": 1
+        }
+      }
+    },
+    "heading": {
+      "type": "object",
+      "allOf": [{ "$ref": "#/$defs/abstractBlock" }],
+      "unevaluatedProperties": false,
+      "required": ["name", "title", "level"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "const": "heading"
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     },
