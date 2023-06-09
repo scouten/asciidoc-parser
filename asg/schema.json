@@ -27,7 +27,6 @@
     },
     "header": {
       "type": "object",
-      "required": ["title"],
       "additionalProperties": false,
       "properties": {
         "title": { "$ref": "#/$defs/inlines" },
