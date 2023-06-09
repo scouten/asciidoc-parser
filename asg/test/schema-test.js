@@ -23,10 +23,24 @@ describe('asg schema', () => {
     assert.doesNotThrow(() => ajv.compile(schema))
   })
 
-  it('should validate sample data', () => {
+  it('should validate sample data with list', () => {
     const fixturePath = ospath.join(fixturesDir, 'sample-1.json')
     const data = JSON.parse(fs.readFileSync(fixturePath))
     const validate = ajv.getSchema(schema.$id) || ajv.compile(schema)
     assert.ok(validate(data))
+  })
+
+  it('should validate sample data with header and paragraph', () => {
+    const fixturePath = ospath.join(fixturesDir, 'sample-2.json')
+    const data = JSON.parse(fs.readFileSync(fixturePath))
+    const validate = ajv.getSchema(schema.$id) || ajv.compile(schema)
+    assert.ok(validate(data))
+  })
+
+  it('should validate sample data with unknown property', () => {
+    const fixturePath = ospath.join(fixturesDir, 'sample-3.json')
+    const data = JSON.parse(fs.readFileSync(fixturePath))
+    const validate = ajv.getSchema(schema.$id) || ajv.compile(schema)
+    assert.ok(!validate(data))
   })
 })
