@@ -44,6 +44,27 @@
     "required": ["attributes"]
   },
   "$defs": {
+    "abstractListItem": {
+      "type": "object",
+      "required": ["name", "type", "marker"],
+      "defaults": { "blocks": [] },
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["listItem", "dlistItem"]
+        },
+        "type": {
+          "type": "string",
+          "const": "block"
+        },
+        "marker": {
+          "type": "string"
+        },
+        "principal": { "$ref": "#/$defs/inlines" },
+        "blocks": { "$ref": "#/$defs/nonSectionBlockBody" },
+        "location": { "$ref": "#/$defs/location" }
+      }
+    },
     "sectionBody": {
       "type": "array",
       "items": {
@@ -257,27 +278,6 @@
             "minItems": 1
           }
         }
-      }
-    },
-    "abstractListItem": {
-      "type": "object",
-      "required": ["name", "type", "marker"],
-      "defaults": { "blocks": [] },
-      "properties": {
-        "name": {
-          "type": "string",
-          "enum": ["listItem", "dlistItem"]
-        },
-        "type": {
-          "type": "string",
-          "const": "block"
-        },
-        "marker": {
-          "type": "string"
-        },
-        "principal": { "$ref": "#/$defs/inlines" },
-        "blocks": { "$ref": "#/$defs/nonSectionBlockBody" },
-        "location": { "$ref": "#/$defs/location" }
       }
     },
     "listItem": {
