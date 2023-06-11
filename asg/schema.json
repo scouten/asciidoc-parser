@@ -118,7 +118,7 @@
       "oneOf": [
         { "$ref": "#/$defs/list" },
         { "$ref": "#/$defs/dlist" },
-        { "$ref": "#/$defs/heading" },
+        { "$ref": "#/$defs/discreteHeading" },
         { "$ref": "#/$defs/break" },
         { "$ref": "#/$defs/blockMacro" },
         { "$ref": "#/$defs/leafBlock" },
@@ -198,7 +198,7 @@
         }
       }
     },
-    "heading": {
+    "discreteHeading": {
       "type": "object",
       "allOf": [{ "$ref": "#/$defs/abstractHeading" }],
       "unevaluatedProperties": false,
