@@ -197,7 +197,7 @@ The result after preprocessing will be:
 
  {escaped}
 
-The location of the left curly brace should be attributed to the backslash to account for its removal.
+The location of the left curly brace should be attributed to the location of the backslash to account for its absence.
 
 Wherever backslash escaping is permitted, there must be a way to represent a literal backslash at that location.
 Thus, the attrlist parser has to process all sequential backslashes leading up to an escapable character or form.
@@ -217,6 +217,9 @@ What the inline parser will see is:
  \\'`text in curly quotes`'
 
 Fortunately, these cases are quite rare.
+
+When tracking locations, the start location of the value with a leading backslash should be the start of the value (the first backslash) and the end location of the value with a trailing escaped backslash should be the location of the escaped backslash (the last backslash).
+In other words, the location should span the whole range of the original value, before the backslashes are processed.
 
 == Merging attributes
 
