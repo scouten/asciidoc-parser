@@ -94,12 +94,13 @@ The enclosure is removed from the value when the value is stored in the attribut
 
 Enclosing the value in quotes allows the value to contain a comma, which would otherwise be treated as a separator between attributes.
 Note that it's not possible to escape a comma using a backslash, hence why the quoted value is needed.
+A comma in an attribute value can only be escaped by quoting the attribute value in either a pair of single or double quotes.
 
 All spaces inside a quoted value are preserved, including spaces directly on the inside of the enclosure.
 (In contrast, only inner spaces are preserved in a value which is not quoted).
 If the value contains the enclosing quote character, that character must be escaped.
 
-A comma in an attribute value can only be escaped by quoting the attribute value in either a pair of single or double quotes.
+If an attribue value starts or ends with a quote character, and there is no match for the quote character on the opposing side of the value (i.e., the quotes are unbalanced), then the value is not considered quoted and the quote character is interpreted as part of the value.
 
 === Shorthand attributes
 
@@ -249,6 +250,7 @@ The parsing rules defined by this SDR were derived from the behavior of Asciidoc
 However, there are some differences worth noting:
 
 * The inline parser is only run on a single quoted value of a content attribute; enabling this behavior for any single-quoted value is rarely needed and, more times than not, produces non-nonsensical behavior, like parsing an ID; it's unlikely this restriction will affect existing documents
+* The inline parser is only run on the value of the title attribute if the value is enclosed in single quotes; this differs from the pre-spec version of AsciiDoc, which always runs the inline parser on the value of the title attribute regardless
 * Backslash escaping is now consistent and reliable; in Asciidoctor, a backslash in front of escapable syntax would always be treated as an escape character, and thus there would be no way to represent a literal backslash at that location; as a result of this change, additional backslashes may need to be added in certain cases
 * Attribute references in the attrlist are only processed once, by the inline preprocessor; in Asciidoctor, if the value of an attribute reference in the attrlist contains an attribute reference, the attribute reference in the resolved attrlist would also be resolved within a single-quoted value; that was a loophole; the parser should not resolve attribute references in the resolved attrlist
 
