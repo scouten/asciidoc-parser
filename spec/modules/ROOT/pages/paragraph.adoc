@@ -1,0 +1,76 @@
+= Paragraph
+
+== Description
+
+Paragraphs are a foundational structure in AsciiDoc.
+A *paragraph* is a simple, implicit block consisting of a run of contiguous non-interrupting lines that can contain inline elements and uninterpreted text.
+If a line isn't recognized as another block element or structural form, it's assumed to be a paragraph.
+Unrecognized syntax or syntax not allowed inside a paragraph is treated as text and isn't dropped.
+
+=== Source examples
+
+[,asciidoc]
+----
+Include examples from TCK
+----
+
+== Context
+
+A paragraph can be used in the following contexts:
+
+* As a child of Document
+* As a child of Compound Block
+* As a child of List Item
+* As a child of Table Cell
+
+== Content model
+
+A paragraph is a Simple Block.
+
+A paragraph must accept:
+
+* Text
+* Inline markup
+
+////
+* Text
+* Inline elements
+** Character references
+* Inline preprocessor markup
+** Inline passthroughs
+** Attribute references
+////
+
+A paragraph must not be empty.
+It may parse to empty in the case it contains an inline preprocessor directive that resolves to empty.
+
+A paragraph must be interrupted by:
+
+* Empty line
+* Block Attribute Line
+* Block Delimiter Line
+* List Continuation Line (in list only)
+* Table Cell Delimiter (in table only, anywhere in line)
+* End of Document
+
+=== Attributes and metadata
+
+A paragraph must accept the following attributes and metadata:
+
+* Block title (title line and named attribute)
+* id (named and shorthand forms)
+* reftext
+* role(s) (named and shorthand forms)
+//** lead (move to expected converter behavior)
+* style
+** attributes applicable to style
+* options
+
+// == Grammar / Grammar rules
+
+== ASG and DOM
+
+----
+Include applicable part from ASG.
+Include applicable part from DOM using a tabbed interface.
+----
