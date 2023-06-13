@@ -134,7 +134,7 @@ If the reference text contains a `]` character, that character must be escaped.
 It is not necessary to enclose the reference text in quotes if it contains a comma.
 If the value is enclosed in quotes, the quotes are considered as part of the value, unlike a quoted attribute value.
 
-== Accrued attributes
+=== Accrued attributes
 
 If a block attribute is defined again, the attribute is overwritten in the attributes map.
 As a consequence, the last occurrence in document order always wins.
@@ -148,7 +148,7 @@ When accruing options, the value is trimmed and split on one or more spaces or o
 In both cases, each entry in the array will not have any spaces.
 Duplicates are filtered out.
 
-== Content attributes and inline parsing
+=== Content attributes and inline parsing
 
 The value of most attributes is saved as a string.
 The exception to this rule are content attributes.
@@ -176,7 +176,7 @@ The inline passthroughs should be restored once inline parsing is completed.
 If the implementation tracks locations, the location of each inline node should be recorded.
 The location does not have to be tracked for non-content attributes (i.e., string values).
 
-== Backslash escaping
+=== Backslash escaping
 
 Using a backslash to escape syntax (aka backslash escaping) is handled differently in an attrlist then when inline syntax is parsed.
 Except when inlines are parsed in the value of a content attribute, all syntax in an attrlist is escaped syntactically.
@@ -221,7 +221,7 @@ Fortunately, these cases are quite rare.
 When tracking locations, the start location of the value with a leading backslash should be the start of the value (the first backslash) and the end location of the value with a trailing escaped backslash should be the location of the escaped backslash (the last backslash).
 In other words, the location should span the whole range of the original value, before the backslashes are processed.
 
-== Merging attributes
+=== Merging attributes
 
 The attributes parsed from an attrlist should be merged into the attributes parsed from any preceding block attribute lines associated with the same block.
 If the same named or positional attribute is defined, the last wins, with the exception of role and opts, which are accrued.
@@ -230,7 +230,7 @@ If the positional attribute entry in a line is empty, it does not replace a posi
 Note that merging does not prevent content attributes that are replaced from being parsed.
 The parsed result is just lost.
 
-== Mapping data and locations to ASG
+=== Mapping data and locations to ASG
 
 After the attrlist in all block attribute lines associated with a block have been parsed, the result is a map of attributes.
 That map is assigned to the `metadata.attributes` property on the node in the ASG.
