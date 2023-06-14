@@ -1,8 +1,12 @@
 = SDR-2: Define Parsing Rules for attrlist in Block Attribute Line
 
+[horizontal]
+Related issues::
+* https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/issues/33[asciidoc-lang#33]
+
 == Context
 
-The attrlist contained within a block attribute line requires special parsing rules, and there are numerous ways these rules can be defined.
+The attrlist contained within a block attribute line requires dedicated parsing rules, and there are numerous ways these rules can be defined.
 This SDR documents the decision that was made to define these rules and their boundary conditions in the context of a formal grammar.
 
 The same parsing rules will be used for the attrlist in a block macro, minus the shorthand attributes in the first positional attribute when in the left-most position.
