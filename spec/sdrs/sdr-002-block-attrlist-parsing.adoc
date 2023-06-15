@@ -53,6 +53,7 @@ The location range of the resolved text should be the start and end of the attri
 
 The attrlist consists of a set of named and positional attributes.
 Each entry is separated by a comma, which may itself be surrounded by spaces (e.g., `id=idname, role=rolename`).
+If the value is enclosed in quotes, one or more spaces may be used the separated the attribute from the one that follows (comma is not required).
 
 A named attribute consists of a name and value.
 The name is separated from the value in the source by an equals sign, which may itself be surrounded by spaces (e.g., `name=value`).
@@ -94,6 +95,7 @@ There are two aliases for named attributes: 1) `roles` is an alias for `role` an
 === Quoted values
 
 The attribute value may be enclosed in a pair of single or double quotes (e.g., `"value"` or `'value'`).
+The closing quote must be followed by a comma, space, or the end of the attrlist.
 The enclosure is removed from the value when the value is stored in the attributes map.
 
 Enclosing the value in quotes allows the value to contain a comma, which would otherwise be treated as a separator between attributes.
