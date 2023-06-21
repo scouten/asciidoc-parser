@@ -1,0 +1,54 @@
+= Strong Span
+
+== Description
+
+Text marked up as strong indicates that the content has greater importance or seriousness compared to the surrounding content.
+A *strong span* is an inline element comprised of a sequence of characters that contain text and inline markup, such as other inline elements, inline preprocessor directives, character references, etc.
+When converted to HTML, this element will likely be represented using a `<strong>` tag.
+Document viewers and browsers typically render a strong span using a bold font type.
+
+// Insert xrefs to constrained/unconstrained rules once they're added to the spec.
+Constrained text is marked as strong by enclosing it in a single pair of asterisks (`+*text*+`).
+Unconstrained text is marked as strong by enclosing it in a pair of double asterisks (e.g., `+t**e**xt+`).
+
+=== Source examples
+
+[,asciidoc]
+----
+Include examples from TCK
+----
+
+== Form, content model and context
+
+[cols="2h,4"]
+|===
+|Element type |Inline
+|Source form |Constrained, Unconstrained
+|Content model |Span
+|Variant |Strong
+|Permitted content |Text, Inline elements, Inline strings, Boxed attribute list with an attrlist, Inline preprocessor markup
+|Interrupting lines and syntax |Closing strong mark of a balanced markup pair
+|Permitted parents |Basic block, Block title, Block content attribute value, Principle text, Table cell, Nested inline markup
+|===
+
+If the inline parser cannot match the grammar rules for a strong span within a sequence of characters, the parser moves on and no warning is issued.
+For example, if the parser matches one asterisk (`*`), i.e., a potential opening strong mark, in a sequence of characters but eventually encounters an empty line without matching a second (closing) strong mark, the asterisk in the character sequence is then treated as plain, uninterpreted text.
+
+A strong span cannot be empty.
+It can parse to empty if it contains only inline preprocessor directives that all resolve to empty.
+
+=== Attributes and metadata
+
+A strong span can accept the following attributes:
+
+* id (shorthand form)
+* role(s) (shorthand form)
+
+// == Grammar / Grammar rules
+
+== ASG and DOM
+
+----
+Include applicable part from ASG.
+Include applicable part from DOM using a tabbed interface.
+----
