@@ -110,8 +110,10 @@ If an attribue value starts or ends with a quote character, and there is no matc
 
 === Shorthand attributes
 
-Shorthand attributes are permitted in the first positional attribute when the first positional attribute is the first entry (in the left-most position) of the attrlist.
+Shorthand attributes are permitted in the first positional attribute when the first positional attribute is the first entry (before any named attributes) of the attrlist.
 When this condition is met, these shorthand attributes should be recognized and parsed.
+These shorthands are parsed and extracted from each line in which they reside rather than after all attrlists have been parsed.
+
 Shorthand attributes define multiple named attributes in a single entry using a shorthand notation.
 The fully expressed syntax for shorthand attributes in the first positional attribute location is as follows:
 
@@ -144,7 +146,10 @@ If the value is enclosed in quotes, the quotes are considered as part of the val
 
 If a block attribute is defined again, the attribute is overwritten in the attributes map.
 As a consequence, the last occurrence in document order always wins.
-There are two exceptions to this rule, `role` and `opts`.
+For example, if the first positional attribute is non-empty in two consecutive block attribute lines, the value in the map will be the one from the second line.
+The shorthand attributes in first positional attribute are parsed and stored eagerly, so each occurrence will contribute to the attributes in the map, rather than just the last occurrence.
+
+There are two exceptions to the override rule, `role` and `opts`.
 The value of these attributes are accrued each time they are used.
 For example, `role=a,role=b` is interpreted the same as becomes `role=a b`.
 And `opts=option1,opts=options2` is interpreted the same as `opts="option1,option2"`.
@@ -169,7 +174,7 @@ The list of content attributes are as follows:
 * attribution
 
 The value of a content attribute is always converted to an array of inlines.
-If the value is enclosed in single quotes, the inline parser is used to parse it into an array of inlines, thus interpreting any inline markup.
+If the value is enclosed in single quotes, the inline parser is used to parse it into an array of inlines, thus interpreting any inline markup, including inline passthroughs.
 If the value is not enclosed in single quotes, the value is converted to a text node and wrapped in an array.
 It gets treated as though the text had been enclosed in an inline passthrough.
 The unparsed value should be saved in order to restore it later in the attributes map.
@@ -235,6 +240,15 @@ If the positional attribute entry in a line is empty, it does not replace a posi
 
 Note that merging does not prevent content attributes that are replaced from being parsed.
 The parsed result is just lost.
+
+=== Named positional attributes
+
+AsciiDoc supports a feature in which positional attributes are mapped onto named attributes if the block provides this mapping.
+One such example is the alt text, width and height attributes on the block macro.
+In these cases, the positional attribute acts as though it has an implicit name part to save the writer from having to type it.
+These are known as named positional attributes, or posattrs for short.
+
+How and when named positional attributes are processed will be addressed in a separate SDR.
 
 === Mapping data and locations to ASG
 
