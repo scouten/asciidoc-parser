@@ -128,6 +128,11 @@ The name assignments are as follows:
 * rolename1 rolename2 => role (accrued)
 * optionname1,optionname2 => opts (accured)
 
+The shorthand text may not be enclosed in quotes.
+The value of a shorthand may not be empty.
+Except in the reference text, the shorthand text may not contain spaces.
+If any of these conditions are not met, the shorthands are not parsed and the value is stored as entered.
+
 The ID shorthand has two forms, the anchor notation and the hash notation.
 The anchor notation must always come first.
 The hash notation takes precedence if both are present in the same attribute value, meaning the last always wins.
