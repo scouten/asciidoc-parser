@@ -1,5 +1,9 @@
 = SDR-3: Reframe Block Style as Parsing Transformation
 
+[horizontal]
+Related issues::
+* https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/issues/31[asciidoc-lang#31]
+
 == Accepted decision
 
 The style on a block should not influence the block parsing model.
