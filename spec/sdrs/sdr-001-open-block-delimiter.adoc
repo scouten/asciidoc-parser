@@ -1,5 +1,9 @@
 = SDR-1: Add Variable-length Delimiter Form for Open Block
 
+[horizontal]
+Related issues::
+* https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/issues/27[asciidoc-lang#27]
+
 == Accepted decision
 
 The specification will introduce a new structural container (i.e., a block form) for the open block that uses variable-length delimiters.
