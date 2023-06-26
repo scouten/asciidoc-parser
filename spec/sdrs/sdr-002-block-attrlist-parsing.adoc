@@ -9,7 +9,7 @@ Related issues::
 The attrlist contained within a block attribute line requires dedicated parsing rules, and there are numerous ways these rules can be defined.
 This SDR documents the decision that was made to define these rules and their boundary conditions in the context of a formal grammar.
 
-The same parsing rules will be used for the attrlist in a block macro, minus the shorthand attributes in the first positional attribute when in the left-most position.
+The same parsing rules will be used for the attrlist in a block macro, minus the shorthand attributes in the first positional attribute.
 
 == Accepted decision
 
@@ -49,38 +49,31 @@ Once the inline preprocessor resolves attribute references, the attrlist is read
 In order for the locations of inlines to be accurately recorded in the value of content attributes, the offsets introduced by resolving attribute references should be tracked.
 The location range of the resolved text should be the start and end of the attribute reference.
 
-=== Positional and named attributes
+=== attrlist entries
 
-The attrlist consists of a set of named and positional attributes.
+The attrlist consists of a set of named and positional attribute entries.
 Each entry is separated by a comma, which may itself be surrounded by spaces (e.g., `id=idname, role=rolename`).
+Named and positional attributes may be interwoven, but the recommended style is for named attributes to always follow positional attributes.
 If the value is enclosed in quotes, one or more spaces may be used the separated the attribute from the one that follows (comma is not required).
+
+==== Named attributes
 
 A named attribute consists of a name and value.
 The name is separated from the value in the source by an equals sign, which may itself be surrounded by spaces (e.g., `name=value`).
 The value of a named attribute is assigned to a key in the attribute map using its name.
 
-A positional attribute is an unnamed attribute.
-In other words, a positional attribute is an entry that has not been assigned a name, meaning it consists only of a value.
-A positional attribute is assigned a sequential numeric index in the attributes map starting at 1 and prefixed with $ (e.g., `"$1": "sidebar"`).
-The positional index increments each time a positional attribute is found.
-If the positional attribute value is empty, it counts as a positional attribute, meaning it causes the index to be incremented, but it's not stored in the attributes map.
-
-Interspersed named attributes do not impact the positional index value.
-In other words, they do not cause the positional index to be incremented.
-For example:
-
- [positional 1,foo=bar,positional 2,yin=yang,positional 3]
-
-Any named attribute is permitted as long as the name is valid according to the grammar.
+Any attribute name is permitted as long as the name is valid according to the grammar.
 Every node shares a set of reserved attribute names.
 These are as follows:
 
 * id
-* opts (and its alias, options)
+* opts
 * reftext
-* role (and its alias, roles)
+* role
 
-Additionally, block nodes have the following reserved attribute names:
+There are two aliases for named attributes: 1) `roles` is an alias for `role` and 2) `options` is an alias for `opts`.
+
+Additionally, all block nodes have the following reserved attribute names:
 
 * caption
 * style
@@ -90,7 +83,29 @@ As the specification evolves, specialized blocks may define additional reserved 
 This SDR does not attempt to account for all future possibilities.
 It's just providing an outline.
 
-There are two aliases for named attributes: 1) `roles` is an alias for `role` and 2) `options` is an alias for `opts`.
+==== Positional attributes
+
+A positional attribute is an unnamed attribute.
+In other words, a positional attribute only consists of a value.
+A positional attribute is indexed according to its 1-based position in the attrlist.
+The reasoning for indexing positional attributes this way is as follows:
+
+* It's a lot easier for an author to reason about how the index is assigned; just count the position in the attrlist.
+* It prevents the index from shifting if a positional attribute that precedes it is changed to a named attribute.
+* No special condition is needed to identify the positional attribute that hosts the shorthand attributes; it's always the first positional attribute by definition.
+
+However, authors are strongly encouraged to write documents such that named attributes always follow positional attributes.
+
+When the positional attribute is stored in the attributes map, it get assigned to a string key that consists of the numeric index prefixed with $1 (e.g., `"$1": "sidebar"`).
+If the positional attribute value is empty, it's not stored in the attributes map.
+If named attributes are intermingled with named attributes, the named attributes will impact the positional index.
+
+It's possible that there are gaps in the positional attribute keys in the attributes map.
+For example:
+
+ [positional 1,,foo=bar,positional 2,yin=yang,positional 3]
+
+In this case, the positional attribute keys are $1, $4, and $6.
 
 === Quoted values
 
@@ -106,11 +121,11 @@ All spaces inside a quoted value are preserved, including spaces directly on the
 (In contrast, only inner spaces are preserved in a value which is not quoted).
 If the value contains the enclosing quote character, that character must be escaped.
 
-If an attribue value starts or ends with a quote character, and there is no match for the quote character on the opposing side of the value (i.e., the quotes are unbalanced), then the value is not considered quoted and the quote character is interpreted as part of the value.
+If an attribute value starts or ends with a quote character, and there is no match for the quote character on the opposing side of the value (i.e., the quotes are unbalanced), then the value is not considered quoted and the quote character is interpreted as part of the value.
 
 === Shorthand attributes
 
-Shorthand attributes are permitted in the first positional attribute when the first positional attribute is the first entry (before any named attributes) of the attrlist.
+Shorthand attributes are permitted in the first positional attribute of any attrlist in a block attribute line.
 When this condition is met, these shorthand attributes should be recognized and parsed.
 These shorthands are parsed and extracted from each line in which they reside rather than after all attrlists have been parsed.
 
@@ -292,6 +307,21 @@ However, there's a major implication that prevents this alternative from being v
 In the case that an attribute value contains multiple lines, it would cause the preprocessor to produce a result that would no longer be recognized as block attribute line by the block parser and may alter the parsing of the document.
 The attrlist cannot breach the boundaries of a line.
 Thus, this strategy was rejected.
+
+=== Index positional attributes by occurrence
+
+An alternative to positional attribute indexing is to number them by occurrence.
+In this scenario, named attributes are skipped and the indexing is incremented at occurrence of a positional attribute.
+
+At first, this seems logical since named attributes are not positional attributes.
+However, indexing positional attributes this way introduces other complexity.
+
+First, it allows the first positional attribute to float away from the left-most position if preceded by a named attribute.
+If that happens, then it becomes necessary to explain that shorthand attributes are only recognized in the first positional attribute in the left-most position, and the parser has to account for that.
+Second, it becomes harder to identify the position of a positional attribute since its not the position in the list, but rather an effective position after excluding named attributes.
+Finally, the index of the positional attribute can shift if the positional attribute that precedes it is changed to a named attribute.
+
+Ultimately, this alternative was rejected because it makes the behavior and permutations more difficult to explain and understand.
 
 === Run inline parser on any single-quoted attribute value
 
