@@ -658,14 +658,27 @@ Does it occur if there are parts? (Only after the title of the book, after ever 
 * If a line is not recognized as a specific element, it's assumed to be a paragraph.
 * Unrecognized syntax or syntax not allowed inside a paragraph, is treated as regular text (not dropped).
 * In order to parse the inline markup in a paragraph, all the lines of the paragraph have to first be identified (since inline markup can span multiple lines).
-* A paragraph may have a block style; some block styles correspond to the name of a delimited block (e.g., example, quote, etc.)
-Currently, the parsing rules for paragraphs with a block style are different from their delimited forms (if they have one).
-** *FI* Should the content of a paragraph with a block style be parsed as a regular (non-styled) paragraph, then wrapped in the respective block, or should the parsing rules be aligned with its delimited namesake (i.e., the style is just shorthand for a delimited block with a single paragraph)? If there is a parent, is a role on the artificial enclosure or on the paragraph?
-*** *FI* Depending on the parsing rules we select, how do we handle verbatim paragraphs; should the lines be processed differently?
-*** *FI* What about literal paragraphs that are marked up by simply indenting the text (not named or delimited)? Do they have their own rules or should they follow the delimited equivalent or styled paragraph rules? The best way to write a shorthand source block would be to add the source style on a literal paragraph.
-*** *FI* What about paragraph styles that don't have an explicit delimited block equivalent (e.g., `abstract`, `preamble`)?
+
+== Styled paragraphs
+
+* A paragraph may have a block style (e.g., example, quote, etc.).
+* The style on a paragraph does not influence the block parsing model, meaning how a structural form is matched.
+Instead, block parsing is conducted by testing grammar rules of various structural forms (e.g., paragraph, indented lines, structural container, etc) to find a match.
+* Then the style impacts how the result of matching a grammar rule (the AST node) is interpreted and transformed into a node in the ASG.
+* For detailed information when writing the specification, see {url-issues}/31[#31] and the resulting https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-003-block-parsing-and-style.adoc[SDR-3: Reframe Block Style as Parsing Transformation].
+* *FI* What about paragraph styles that don't have a delimited block equivalent (e.g., `abstract`, `preamble`)?
 What are their boundary rules and how do we parse them?
 (Note that these should not get confused with common paragraph roles such as `lead` and `normal`.)
+
+.Issues filed and resolved
+****
+* {url-issues}/31[#31] Should the content of a paragraph with a block style be parsed as a regular (non-styled) paragraph, then wrapped in the respective block, or should the parsing rules be aligned with its delimited namesake (i.e., the style is just shorthand for a delimited block with a single paragraph)? If there is a parent, is a role on the artificial enclosure or on the paragraph?
+* {url-issues}/31[#31] What about literal paragraphs that are marked up by simply indenting the text (not named or delimited)? Do they have their own rules or should they follow the delimited equivalent or styled paragraph rules? The best way to write a shorthand source block would be to add the source style on a literal paragraph.
+* {url-issues}/31[#31] Depending on the parsing rules we select, how do we handle verbatim paragraphs; should the lines be processed differently?
+** The questions above ended up having a lot of nuance packed into it when considering different content models and forms.
+The bullet points above this sidebar have been updated to reflect the decisions made in response to this issue.
+To learn the answers to all the questions above, see {url-issues}/31[#31] and https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-003-block-parsing-and-style.adoc[SDR-3: Reframe Block Style as Parsing Transformation].
+****
 
 == Literal paragraphs
 // This section defines a literal paragraph, its structure, and the rules that govern it.
@@ -678,6 +691,10 @@ What are their boundary rules and how do we parse them?
 == Discrete headings
 // This section defines a discrete heading, its structure, and the rules that govern it.
 
+* Typically, the block parser identifies a block and its boundaries without considering any of the block metadata.
+The one exception to this rule is the discrete style on a heading.
+* The discrete style causes the heading to be parsed as a leaf block rather than a parent block.
+** This exception is necessary since sections and discrete headings have the same structural form, yet only sections are permitted to have children.
 * *FI* Propose that any headings in a delimited block are implicitly converted to discrete headings.
 * *FI* Should we allow `[heading]` as alternative to `[discrete]` for a non-section heading?
 * The terms "float" or "floating" should not be used to markup or describe the discrete heading syntax as these terms already have a reserved meaning in the AsciiDoc syntax (they refer to the layout / positioning of an element in certain output formats).
