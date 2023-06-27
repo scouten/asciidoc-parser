@@ -1,7 +1,7 @@
 {
   "name": "document",
   "type": "block",
-  "attributes": {},
+  "attributes": { "set-attribute": "foo", "unset-attribute": false },
   "header": {
     "title": [
       {
