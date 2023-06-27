@@ -30,6 +30,11 @@
       "additionalProperties": false,
       "properties": {
         "title": { "$ref": "#/$defs/inlines" },
+        "authors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/author" },
+          "minItems": 1
+        },
         "location": { "$ref": "#/$defs/location" }
       }
     },
@@ -427,6 +432,30 @@
           "type": "string"
         },
         "location": { "$ref": "#/$defs/location" }
+      }
+    },
+    "author": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fullname": {
+          "type": "string"
+        },
+        "initials": {
+          "type": "string"
+        },
+        "firstname": {
+          "type": "string"
+        },
+        "middlename": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        }
       }
     },
     "location": {
