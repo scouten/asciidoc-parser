@@ -44,6 +44,7 @@ Here's a summary of the role the block style plays in parsing:
 
 Let's consider an example.
 We'll look at the case when the `normal` style is declared above an indented line.
+(Note that the `normal` style is an alias for `paragraph`, retained for backwards compatibility).
 
 [,asciidoc]
 ----
@@ -73,6 +74,23 @@ The rule action will create a synthetic sidebar block and attach the paragraph a
 Any metadata associated with the block will be promoted to the sidebar block, perhaps with some exceptions such as the `hardbreaks` option.
 The action will then return the sidebar block, which contains the paragraph from the source document.
 The ASG node will record the form of this sidebar block as `paragraph` to track how it was defined.
+
+Now let's consider the case when the `sidebar` style is used above indented lines.
+
+[,asciidoc]
+----
+[sidebar]
+ [[idname]]https://example.org[]
+----
+
+This block will be parsed as verbatim since it's written using the indented form.
+What happens next may be a somewhat unexpected, but necessary for compatibility with pre-spec AsciiDoc.
+The block is first transformed into a paragraph, as though the `normal` style was specified, as in the first example..
+Then, the `sidebar` style will be applied, transforming the paragraph into a sidebar as in the previous example.
+It acts as though the block has two styles, `normal` and `sidebar`.
+The action will then return the sidebar block, which contains the indented lines transformed into a paragraph from the source document.
+The ASG node will record the form of this sidebar block as `indented` to track how it was defined.
+If the language were being defined anew, we might have said that parser would create a sidebar block with a literal block, but we've determined that we must retain backwards-compatibility in this case.
 
 This parsing strategy will be the basis for how the `subs` attribute is interpreted and how block extensions will work.
 The block parsing always happens first, then the metadata can influence how that result is handled.
