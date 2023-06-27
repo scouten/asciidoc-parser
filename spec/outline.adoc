@@ -970,8 +970,10 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 
 == Open
 
-* `+~~~~+` (proposed) or `--` (legacy) block delimiter.
+* `+~~~~+` or `--` (legacy) block delimiter.
 ** {url-issues}/27[#27] Propose the nestable open block using the standard block delimiter length  (`+~~~~+`).
+*Accepted*.
+See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-001-open-block-delimiter.adoc[SDR-1: Add Variable-length Delimiter Form for Open Block].
 * Cannot masquerade as another built-in block.
 * Style may be used to create a custom block.
 * Content model: compound
