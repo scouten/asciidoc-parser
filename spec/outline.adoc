@@ -39,7 +39,7 @@ The following abbreviations are entered next to select items in this outline to 
 FI:: *FI* is the notation for *Future Issue*.
 A proposal, decision, or clarification marked with *FI* needs to be addressed by an issue that will be filed in the future when the appropriate domain or topic has risen to imminent discussion and development in the specification or TCK.
 
-#<issue-number>:: The number of an issue (linked to itself in the issue tracker) that addresses a proposal, decision, or clarification stated in the outline.
+#<issue-number>:: The number of an active issue (linked to itself in the issue tracker) that addresses a proposal, decision, or clarification stated in the outline.
 The issue number replaces the *FI* notation on an item.
 
 SDR:: *SDR* is the notation for *Specification Document Requirement*.
@@ -670,19 +670,6 @@ Instead, block parsing is conducted by testing grammar rules of various structur
 *** *FI* Are certain options, such as `hardbreaks` an exception to this rule or does the paragraph steal them or duplicate the roles?
 * For detailed information when writing the specification, see {url-issues}/31[#31] and the resulting https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-003-block-parsing-and-style.adoc[SDR-3: Reframe Block Style as Parsing Transformation].
 
-.Issues filed and resolved
-****
-* {url-issues}/31[#31] Should the content of a paragraph with a block style be parsed as a regular (non-styled) paragraph, then wrapped in the respective block, or should the parsing rules be aligned with its delimited namesake (i.e., the style is just shorthand for a delimited block with a single paragraph)? If there is a parent, is a role on the artificial enclosure or on the paragraph?
-* {url-issues}/31[#31] What about literal paragraphs that are marked up by simply indenting the text (not named or delimited)? Do they have their own rules or should they follow the delimited equivalent or styled paragraph rules? The best way to write a shorthand source block would be to add the source style on a literal paragraph.
-* {url-issues}/31[#31] Depending on the parsing rules we select, how do we handle verbatim paragraphs; should the lines be processed differently?
-* {url-issues}/31[#31] What about paragraph styles that don't have a delimited block equivalent (e.g., `abstract`, `preamble`)?
-What are their boundary rules and how do we parse them?
-(Note that these should not get confused with common paragraph roles such as `lead` and `normal`.)
-** The questions above ended up having a lot of nuance packed into it when considering different content models and forms.
-The bullet points above this sidebar have been updated to reflect the decisions made in response to this issue.
-To learn the answers to all the questions above, see {url-issues}/31[#31] and https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-003-block-parsing-and-style.adoc[SDR-3: Reframe Block Style as Parsing Transformation].
-****
-
 == Literal paragraphs
 // This section defines a literal paragraph, its structure, and the rules that govern it.
 
@@ -974,9 +961,6 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 == Open
 
 * `+~~~~+` or `--` (legacy) block delimiter.
-** {url-issues}/27[#27] Propose the nestable open block using the standard block delimiter length  (`+~~~~+`).
-*Accepted*.
-See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-001-open-block-delimiter.adoc[SDR-1: Add Variable-length Delimiter Form for Open Block].
 * Cannot masquerade as another built-in block.
 * Style may be used to create a custom block.
 * Content model: compound
@@ -1121,11 +1105,11 @@ See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/s
 * Not only does it cause many unexpected behaviors, it cannot be accurately described; it also makes it impossible to extract a structure, and the information it stores, from the document.
 * The spec is graduating from the use of substitutions to an inline parsing grammar.
 * In doing so, we will aim to match the behavior of the substitution model as closely as possible so existing content can be interpreted in the same way or, when that is not possible, interpreted in such a way that information is not lost.
-* Proposals with different approaches will be put forth on how to resolve this section; see {url-issues}/16[#16].
+* The accepted inline parsing approach is described in  https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-005-formal-grammar-for-inline-syntax.adoc[SDR-5: Describe Inline Syntax using Formal Grammar].
 
 === Inline preprocessor
 
-* In order to achieve compatibility with the original substitution model, inline parsing will need to be done in two phases; see {url-issues}/22[#22].
+* In order to achieve compatibility with the original substitution model, inline parsing will need to be done in two phases; see  https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-005-formal-grammar-for-inline-syntax.adoc[SDR-5: Describe Inline Syntax using Formal Grammar].
 * In the first phase, passthrough content is identified and/or extracted and attribute references are expanded.
 ** The simplest way to handle passthroughs are to extract them and leave a placeholder behind; passthrough text must be restored to the location of the placeholder during second parsing phase.
 * An inline preprocessor is the only way to allow attribute references to introduce inline syntax in the way they can today.
