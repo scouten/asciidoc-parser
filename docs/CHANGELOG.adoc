@@ -6,10 +6,16 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 == Published Q2 2023
 
+Added::
+* Document muted option on video macro (!10)
+
 Changed::
 * Clarify that footnotes in headings are not officially supported
 * Document the use of the zero-width space character in the em dash and ellipsis replacements
 * Clarify that spaces are not permitted in the target of the link macro and thus must be escaped or encoded
+
+Fixed::
+* Fixed numerous typos and spelling errors (!14)
 
 == Published Q1 2023
 

@@ -4,6 +4,23 @@
 This document provides a summary of notable changes to the AsciiDoc Language project by milestone or release.
 For a detailed view of what's changed, refer to the {url-repo}/-/commits/main[commit history] for this repository.
 
+== 0.2.0 (milestone build)
+
+=== Added
+
+* Selected JSON as the format for the ASG used by the TCK (#7)
+* Create initial draft of JSON schema for the ASG; resides in the asg folder (#28)
+* SDR-1: Introduce variable-length delimiter form for open block (#27)
+* SDR-2: Define parsing and aggregation rules for attrlist in block attribute line (and block macros) (#33)
+* SDR-3: Clarify that block style does not influence parsing model, but is rather a parsing transformation (#31)
+* SDR-4: Select PEG as the grammar formalism for describing the AsciiDoc language (#8)
+* SDR-5: Transition the inline syntax to a formal grammar from a substitutions step; introduce an inline preprocessor (#16, #22)
+
+=== Changed
+
+* Clarify that a block delimiter acts as an interrupting line (#29)
+* Update the spec outline to clarify how styled paragraphs are parsed
+
 == 0.1.0 (milestone build)
 
 === Added
