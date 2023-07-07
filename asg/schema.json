@@ -200,7 +200,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "const": "listItem"
+          "const": "dlistItem"
         },
         "terms": {
           "type": "array",
