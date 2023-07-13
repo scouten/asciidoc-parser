@@ -33,7 +33,7 @@ Robyn:Indestructible:Dance
 // end::s-dsv[]
 
 // tag::i-csv[]
-|===
+,===
 \include::customers.csv[]
-|===
+,===
 // end::i-csv[]

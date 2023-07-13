@@ -945,7 +945,7 @@ include::tables:example$data.adoc[tag=csv]
 include::tables:example$data.adoc[tag=csv]
 ====
 
-.Table from CSV data in file
+.Table from CSV data included from file
 [#ex-csv-include]
 ----
 include::tables:example$data.adoc[tag=i-csv]
