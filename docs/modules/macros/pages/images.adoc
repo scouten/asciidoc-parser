@@ -88,7 +88,7 @@ The inline image macro is almost identical to the block image macro, except its 
 ----
 Click image:play.png[] to get the party started. <.>
 
-Click image:pause.png[title="Pause"] when you need a break. <.>
+Click image:pause.png[title=Pause] when you need a break. <.>
 ----
 <.> In the flow of an element, enter the macro name and a single colon (`+image:+`), followed by the image target.
 Complete the macro with a pair of square brackets (`+[]+`).

@@ -37,9 +37,10 @@ Default value is empty.
 
 |`title`
 |User defined text
-|`title="A mountain sunset"` +
-(or `.A mountain sunset` above block macro)
-|Blocks: title displayed below image; Inline: title displayed as tooltip
+|in attrlist: `title="A mountain sunset"` (enclosing quotes only required if value contains a comma) +
+above block macro: `.A mountain sunset`
+|Blocks: title displayed below image +
+Inline: title displayed as tooltip
 
 |`format`
 |The format of the image, specified as a sub-MIME type (except in the case of an SVG, which is specified as `svg`).

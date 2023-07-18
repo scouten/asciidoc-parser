@@ -47,13 +47,13 @@ image::https://asciidoctor.org/images/octocat.jpg[GitHub mascot]
 // tag::inline[]
 Click image:play.png[] to get the party started.
 
-Click image:pause.png[title="Pause"] when you need a break.
+Click image:pause.png[title=Pause] when you need a break.
 // end::inline[]
 
 // tag::qr-inline[]
 Click image:macros:play.png[] to get the party started.
 
-Click image:macros:pause.png[title="Pause"] when you need a break.
+Click image:macros:pause.png[title=Pause] when you need a break.
 // end::qr-inline[]
 
 // tag::in-role[]
