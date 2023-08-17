@@ -7,6 +7,7 @@ You can adjust the depth of section levels that are displayed in the table of co
 
 By default, the TOC displays level 1 (`==`) and level 2 (`===`) section titles.
 You can assign a different level depth with the `toclevels` attribute.
+Accepted values are the integers 1 through 5.
 
 .Define toclevels value
 [source#ex-levels]
