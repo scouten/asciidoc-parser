@@ -9,8 +9,13 @@ Nested section levels must be sequential.
 
 A section title marks the beginning of a section and also acts as the heading for that section.
 The section title must be prefixed with a section marker, which indicates the section level.
+The number of equal signs in the marker represents the section level using a 0-based index (e.g., two equal signs represents level 1).
 A section marker can range from two to six equal signs and must be followed by a space.
-The number of equal signs in the marker represents the nesting level (using a 0-based index) of the section.
+
+In the HTML output, the section title is represented by a heading tag.
+The number of the heading tag is one more than the section level (e.g., section level 1 becomes an h2 tag).
+The section level ranges from 0-5.
+This limit was established primarily due to the fact that HTML only provides heading tags from h1 to h6 (making level 5 the upper limit).
 
 .Section titles available in an article doctype
 [source]
