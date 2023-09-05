@@ -79,6 +79,8 @@ After the ID, add a comma and then enter the custom text you want the cross refe
 include::example$xref.adoc[tag=text]
 ----
 
+In this case, the target will be assumed to be an ID within the same document even if it contains a dot (`.`).
+
 You can also use the inline xref macro as an alternative to the xref shorthand.
 
 .Inline xref macro
@@ -88,6 +90,9 @@ include::example$xref.adoc[tag=xref-macro]
 ----
 
 However, it's best to reserve the use of the xref macro for creating interdocument cross references.
+
+When using the xref macro, if the target contains a dot (`.`), it will be treated as a reference to another document, not an ID within the same document.
+If the intention is to link to an ID within the same document, the target must be proceeded by a hash (`#`).
 
 === Natural cross reference
 

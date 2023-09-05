@@ -11,6 +11,7 @@ Added::
 
 Changed::
 * Clarify that an open block can only masquarade as other paragraph or delimited blocks
+* Clarify how a dot is handled in an xref target by the shorthand xref and the xref macro
 
 == Published Q2 2023
 
