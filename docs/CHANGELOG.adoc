@@ -9,6 +9,9 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 Added::
 * Added clarification for why section levels are limited to 5
 
+Changed::
+* Clarify that an open block can only masquarade as other paragraph or delimited blocks
+
 == Published Q2 2023
 
 Added::

@@ -17,7 +17,7 @@ The result of <<ex-open>> is displayed below.
 
 include::example$open.adoc[tag=base]
 
-An open block can act as any other block, with the exception of _pass_ and _table_.
+An open block can act as any other paragraph or delimited block, with the exception of _pass_ and _table_.
 For instance, in <<ex-open-sidebar>> an open block is acting as a sidebar.
 
 .Open block masquerading as a sidebar
