@@ -1,15 +1,21 @@
 = Hard Line Breaks
 
-Since adjacent lines of text in AsciiDoc are combined into a single paragraph when converted, it means you can wrap paragraph text or put each sentence or phrase on a separate line.
-The line breaks won't appear in the output.
-
-However, if you want the line breaks in a paragraph to be preserved, you can use a space followed by a plus sign (`{plus}`) or set the `hardbreaks` option on the paragraph.
-All of the line breaks in paragraphs for an entire document can be preserved with the `hardbreaks-option` document attribute.
-
-To insert an empty line somewhere in a paragraph, you can use the syntax `\{empty} \{plus}`.
-This allows you to insert space between lines in the output without creating separate paragraphs.
+Adjacent lines of regular text in AsciiDoc are combined into a single paragraph when converted.
+That means you can wrap paragraph text in the source document, either at a specific column or by putting each sentence or phrase on its own line.
+The line breaks separating adjacent lines won't appear in the output.
+Instead, the line break will be converted to a single space.
+(In fact, all repeating space characters are reduced to a single space, just like in HTML.)
 
 TIP: Hard line breaks are automatically retained in xref:verbatim:literal-blocks.adoc[literal], xref:verbatim:listing-blocks.adoc[listing], xref:verbatim:source-blocks.adoc[source], and xref:verses.adoc[verse] blocks and paragraphs.
+
+If you want line breaks in a paragraph to be preserved, there are several techniques you can use.
+For any single line, you can terminate it with a space followed by a plus sign (i.e., [.pre-wrap]`{empty}\{plus}`).
+This syntax signals to the processor to end the line in the output with a hard line break.
+To add this behavior to every line in the paragraph, set the `hardbreaks` option on the paragraph instead.
+Alternately, you can tell the processor to preserve all line breaks in every paragraph in the document by setting the `hardbreaks-option` document attribute, though this option should be used wisely.
+
+To insert an empty line somewhere in a paragraph, you can use the hard line break syntax (i.e., `\{empty}\{plus}`) on a line by itself.
+This allows you to insert space between lines in the output without introducing separate paragraphs.
 
 [#per-line]
 == Inline line break syntax
