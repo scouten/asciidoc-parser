@@ -212,3 +212,23 @@ include::example$ordered.adoc[tag=num]
 
 IMPORTANT: The `start` attribute must be a number, even when using a different numeration style.
 For instance, to start an alphabetic list at letter "c", set the numeration style to loweralpha and the start attribute to 3.
+
+== Escaping the list marker
+
+If you have paragraph text that begins with a list marker, but you don't intend it to be a list item, you need to escape that marker by using the attribute reference to disrupt the pattern.
+
+Consider the case when the line starts with a P.O. box reference:
+
+----
+P. O. Box
+----
+
+In order to prevent this paragraph from being parsed as an ordered list, you need to replace the first space with `\{empty}`.
+
+----
+P.{empty}O. Box
+----
+
+Now the paragraph will remain as a paragraph.
+
+In the future, it will be possible to escape an ordered list marker using a backslash, but that is not currently possible.
