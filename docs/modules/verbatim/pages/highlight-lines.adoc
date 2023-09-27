@@ -104,6 +104,7 @@ You can do so by storing the required line highlighting CSS in a docinfo file, t
 <style>
 pre.rouge .hll {
   background-color: #ffc;
+  display: block;
 }
 pre.rouge .hll * {
   background-color: initial;
