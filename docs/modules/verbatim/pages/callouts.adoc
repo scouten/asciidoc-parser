@@ -36,7 +36,7 @@ That way, the callout numbers won't get copied.
 On the other side of the coin, you don't want the callout annotations or CSS messing up your raw source code either.
 You can tuck your callouts neatly behind line comments.
 When font-based icons are enabled (e.g., `icons=font`), the AsciiDoc processor will recognize the line comments characters in front of a callout number--optionally offset by a space--and remove them when converting the document.
-But even when font-based icons aren't enabled, the callout numbers still remain hidden by the line comment.
+When font-based icons aren't enabled, the line comment characters are not removed so that the callout numbers remain hidden by the line comment.
 
 Here are the line comments that are supported:
 
