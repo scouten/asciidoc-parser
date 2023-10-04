@@ -20,7 +20,7 @@ The results of <<ex-built-in>> are displayed below.
 include::example$text.adoc[tag=css]
 ====
 
-Although built-in roles such as `big` and `small` are supported by most AsciiDoc processors, it's really better to define your own semantic role names and map styles to them accordingly.
+Although xref:text-span-built-in-roles.adoc#built-in[built-in roles] such as `big` and `small` are supported by most AsciiDoc processors, it's really better to define your own semantic role names and map styles to them accordingly.
 
 Here's how you can assign a custom role to text so you can apply your own styles to it.
 
