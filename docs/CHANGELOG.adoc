@@ -4,6 +4,14 @@ This document summarizes the changes introduced to the AsciiDoc Language Documen
 For a detailed view of what's changed, refer to the repository's
 https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
+== Published Q4 2023
+
+Added::
+* Document the `encoding` attribute on the include directive and when to use it
+
+Changed::
+* Clarify that line normalization is only applied to include files that are AsciiDoc
+
 == Published Q3 2023
 
 Added::

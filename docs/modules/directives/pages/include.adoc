@@ -30,7 +30,7 @@ An include directive must be placed on a line by itself with the following synta
 
 [listing,subs=+quotes]
 ----
-\include::target[leveloffset=__offset__,lines=__ranges__,tag(s)=__name(s)__,indent=__depth__,opts=optional]
+\include::target[leveloffset=__offset__,lines=__ranges__,tag(s)=__name(s)__,indent=__depth__,encoding=__encoding__,opts=optional]
 ----
 
 The target is required.
@@ -41,11 +41,14 @@ An absolute or relative path outside the directory of the outermost document wil
 A URL target will only be resolved if the security settings on the processor allows it (e.g., `allow-uri-read`).
 See xref:include-uri.adoc[].
 
-The leveloffset, lines, tag(s), indent, and opts attributes are optional, thus reducing the simplest case to the following:
+The leveloffset, lines, tag(s), indent, encoding, and opts attributes are optional, thus reducing the simplest case to the following:
 
 ----
 \include::partial.adoc[]
 ----
+
+Specifying the encoding is essential if the include file is not encoded in UTF-8.
+If the include file is already encoded in UTF-8 (or contains a BOM), this attribute is unnecessary.
 
 When using consecutive include directives, you should always separate them by an empty line unless your intention is to adjoin the content in the include files so it becomes contiguous.
 
@@ -154,17 +157,23 @@ If a path violates the security restrictions, it may be truncated.
 
 The include directive performs a simple file merge, so it works with any text file.
 // NOTE this point about normalization should probably be moved to an earlier section
-The content of all included content is normalized.
-This means that the encoding is forced to UTF-8 (or converted from UTF-16 to UTF-8 if the file contains a BOM) and trailing whitespace and endlines are removed from each line and replaced with a Unix line feed.
-This normalization is important to how an AsciiDoc processor works.
+The content of all included content goes through some form of normalization.
 
-If the file is recognized as an AsciiDoc file (i.e., it has one of the following extensions: `.asciidoc`, `.adoc`, `.ad`, `.asc`, or `.txt`), the AsciiDoc processor runs the preprocessor on the lines, looking for and interpreting the following directives:
+The content of each include file is encoded to UTF-8.
+If the encoding attribute is specified on the include directive, the content is reencoded from that encoding to UTF-8.
+If the encoding attribute is not specified, the processor will look for the presence of a BOM and reencode the content from that encoding to UTF-8 accordingly.
+If neither of those conditions are met, the encoding is forced to UTF-8.
+
+If the file is recognized as an AsciiDoc file (i.e., it has one of the following extensions: `.asciidoc`, `.adoc`, `.ad`, `.asc`, or `.txt`) additional normalization and processing is performed.
+First, all trailing whitespace and endlines are removed from each line and replaced with a Unix line feed.
+This normalization is important to how an AsciiDoc processor works.
+Next, the AsciiDoc processor runs the preprocessor on the lines, looking for and interpreting the following directives:
 
 * includes
 * preprocessor conditionals (e.g., `ifdef`)
 //* front matter (if enabled)
 
-This allows includes to be nested, and provides lot of flexibility in constructing radically different documents with a single primary document and a few command line attributes.
+Running the preprocessor on the included content allows includes to be nested, thus provides lot of flexibility in constructing radically different documents with a single primary document and a few command line attributes.
 
 Including non-AsciiDoc files is normally done to merge output from other programs or populate table data:
 
