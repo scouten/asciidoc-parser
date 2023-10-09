@@ -48,6 +48,7 @@ The leveloffset, lines, tag(s), indent, encoding, and opts attributes are option
 ----
 
 Specifying the encoding is essential if the include file is not encoded in UTF-8.
+The value of this attribute must be an encoding recognized by Ruby (e.g., utf-8, iso-8859-1, windows-1252, etc), case insenstive.
 If the include file is already encoded in UTF-8 (or contains a BOM), this attribute is unnecessary.
 
 When using consecutive include directives, you should always separate them by an empty line unless your intention is to adjoin the content in the include files so it becomes contiguous.
