@@ -4,9 +4,15 @@ An AsciiDoc processor is only required to provide limited support for validating
 Validation occurs when a cross reference is first visited.
 Since there are still some references aren't stored in the parse tree (such as an anchor in the middle of a paragraph), which can lead to false positives, these validations are hidden behind a flag.
 
-You can enable validation of cross references from the CLI by passing the `-v` and from the API by setting the `$VERBOSE` variable to `true`.
-This puts the processor in pedantic mode.
+When using Asciidoctor, you can enable validation of cross references in several ways:
+
+* when using the CLI, passing the `-v` CLI option
+* when using the API, setting the global variable `$VERBOSE` to the value `true`
+* when using the API, setting the level on the global logger to INFO (i.e., `Asciidoctor::LoggerManager.logger.level = :info`)
+
+All of these adjustments put the processor into pedantic mode.
 In this mode, the parser will immediately validate cross references, issuing a warning message if the reference is not valid.
+If you set the global variable `$VERBOSE` to `true`, it will also enable warnings in Ruby, which may not be what you want.
 
 Consider the following example:
 
