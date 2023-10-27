@@ -22,6 +22,7 @@ The include directive is useful when you want to:
 * Populate tables with output, such as CSV data, from other programs.
 * Create document variants by combining the include directive with xref:conditionals.adoc[conditional preprocessor directives].
 * Reuse content snippets and boilerplate content, such as term definitions, disclaimers, etc., multiple times within the same document.
+* Define a common set of attributes across multiple documents (typically included into the document header).
 
 [#include-syntax]
 == Include directive syntax
