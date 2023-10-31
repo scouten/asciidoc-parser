@@ -3,9 +3,7 @@
 The keyboard macro allows to create a reference to a key or key sequence on a keyboard.
 You can use this macro when you need to communicate to a reader what key or key sequence to press to perform a function.
 
-IMPORTANT: In order to use the keyboard macro, you must set the `experimental` document attribute.
-Although this attribute is named `experimental`, the keyboard macro is considered a stable feature of the AsciiDoc language.
-The requirement to specify the attribute is merely an optimization for the processor.
+include::partial$ui-macro-disclaimer.adoc[]
 
 == Keyboard macro syntax
 
