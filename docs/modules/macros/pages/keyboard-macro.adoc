@@ -3,7 +3,7 @@
 The keyboard macro allows to create a reference to a key or key sequence on a keyboard.
 You can use this macro when you need to communicate to a reader what key or key sequence to press to perform a function.
 
-include::partial$ui-macro-disclaimer.adoc[]
+include::partial$ui-macros-disclaimer.adoc[]
 
 == Keyboard macro syntax
 
