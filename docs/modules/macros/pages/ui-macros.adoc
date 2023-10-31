@@ -3,6 +3,7 @@
 IMPORTANT: In order to use the UI macros, you must set the `experimental` document attribute.
 Although this attribute is named `experimental`, the UI macros are considered a stable feature of the AsciiDoc language.
 The requirement to specify the attribute is merely an optimization for the processor.
+If the specification committee determines that an attribute is still necessary, the name of the attribute will likely change to better reflect that the macros are integral to the language.
 
 == Button macro syntax
 
