@@ -6,8 +6,8 @@ Project home: https://projects.eclipse.org/projects/technology.asciidoc
 
 == Trademarks
 
-AsciiDoc and AsciiDoc Language are trademarks of the Eclipse Foundation.
-Eclipse and the Eclipse Logo are registered trademarks of the Eclipse Foundation.
+AsciiDoc(R) and AsciiDoc Language(TM) are trademarks of the Eclipse Foundation, Inc.
+Eclipse and the Eclipse Logo are registered trademarks of the Eclipse Foundation, Inc.
 
 == Copyright
 
