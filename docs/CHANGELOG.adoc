@@ -8,6 +8,7 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 Added::
 * Document the `encoding` attribute on the include directive and when to use it
+* Document the `link` attribute and friends on the image macros
 
 Changed::
 * Clarify that line normalization is only applied to include files that are AsciiDoc

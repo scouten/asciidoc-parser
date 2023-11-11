@@ -21,6 +21,7 @@
 ** xref:images-directory.adoc[]
 ** xref:image-url.adoc[]
 ** xref:image-position.adoc[]
+** xref:image-link.adoc[]
 ** xref:image-size.adoc[]
 ** xref:image-format.adoc[]
 ** xref:image-svg.adoc[]
