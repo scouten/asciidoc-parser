@@ -51,7 +51,7 @@ You've built a delimited block.
 == Build a block from a paragraph
 
 In some cases, you can style a block using the style's name.
-If the content is contiguous (not interrupted by empty lines), you can assign the block style's name in an attribute list placed above the content.
+If the content is contiguous (not interrupted by empty lines or comment lines), you can assign the block style's name in an attribute list placed above the content.
 This format is often used for single-line listings:
 
 [source]
@@ -64,6 +64,10 @@ or single-line quotes:
 ----
 include::example$block.adoc[tag=quote-name]
 ----
+
+However, note that the lines of a styled paragraph are first parsed like a paragraph, then promoted to the specified block type.
+That means that line comments will be dropped, which can impact verbatim blocks such as a listing block.
+Thus, the delimited block form is preferred, especially when creating a verbatim block.
 
 == Summary of built-in blocks
 // This section is just hanging here for the moment, it's not its final destination, I just didn't want to comment it out.
