@@ -1437,6 +1437,8 @@ It's not clear if we can match what we've done in the past.
 
 === Custom block
 
+Q: should a custom block or block macro be able to start a new section?
+
 === Custom block macro
 
 === Custom inline macro
