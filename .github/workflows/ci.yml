@@ -91,7 +91,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Dry-run of crate publish
-        run: cargo publish -p asciidoc_parser --dry-run
+        run: cargo publish -p asciidoc-parser --dry-run
 
   clippy_check:
     name: Clippy

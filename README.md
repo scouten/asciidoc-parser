@@ -8,7 +8,7 @@ You're welcome to follow along and contribute with the understanding that I may 
 
 ## License
 
-The `asciidoc_parser` crate is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
+The `asciidoc-parser` crate is distributed under the terms of both the MIT license and the Apache License (Version 2.0).
 
 See [LICENSE-APACHE](./LICENSE-APACHE) and [LICENSE-MIT](./LICENSE-MIT).
 
