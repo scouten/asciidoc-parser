@@ -146,14 +146,14 @@ mod cow_str {
     use crate::strings::*;
 
     #[test]
-    fn cowstr_size() {
+    fn size() {
         let size = std::mem::size_of::<CowStr>();
         let word_size = std::mem::size_of::<isize>();
         assert_eq!(3 * word_size, size);
     }
 
     #[test]
-    fn cowstr_char_to_string() {
+    fn char_to_string() {
         let c = '藏';
         let smort: CowStr = c.into();
         let owned: String = smort.to_string();
