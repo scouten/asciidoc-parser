@@ -275,4 +275,42 @@ mod cow_str {
 )"#
         );
     }
+
+    #[test]
+    fn impl_hash() {
+        use std::{
+            collections::hash_map::DefaultHasher,
+            hash::{Hash, Hasher},
+        };
+
+        let mut hasher = DefaultHasher::new();
+        "🍔".hash(&mut hasher);
+        let expected = hasher.finish();
+
+        let s: CowStr = '🍔'.into();
+        if let CowStr::Inlined(_) = s {
+        } else {
+            panic!("Expected Inlined case");
+        }
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        let actual = hasher.finish();
+        assert_eq!(expected, actual);
+
+        let s = CowStr::Borrowed("🍔");
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        let actual = hasher.finish();
+        assert_eq!(expected, actual);
+
+        let s = "🍔".to_owned();
+        let s: CowStr = s.into();
+        if let CowStr::Boxed(_) = s {
+        } else {
+            panic!("Expected Boxed case");
+        }
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        assert_eq!(expected, actual);
+    }
 }
