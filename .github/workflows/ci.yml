@@ -1,0 +1,260 @@
+name: CI
+
+on:  
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: main
+
+jobs:
+  tests:
+    name: Unit tests
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        rust_version: [stable, 1.72.0]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust_version }}
+          components: llvm-tools-preview
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Generate code coverage
+        run: cargo llvm-cov --all-features --lcov --ignore-filename-regex tests --output-path lcov.info
+
+      - name: Upload code coverage results
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          verbose: true
+
+  test-direct-minimal-versions:
+    name: Unit tests with minimum versions of direct dependencies
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: llvm-tools-preview
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run tests
+        run: cargo +nightly test -Z direct-minimal-versions --all-targets --all-features
+
+  publish-preflight:
+    name: Preflight crate publish
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        rust_version: [stable]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust_version }}
+          components: llvm-tools-preview
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Dry-run of crate publish
+        run: cargo publish -p asciidoc_parser --dry-run
+
+  clippy_check:
+    name: Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install clippy
+        run: rustup component add clippy
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Cargo clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features --all-targets -- -D warnings
+        env:
+          RUST_BACKTRACE: "1"
+
+  cargo_fmt:
+    name: Enforce Rust code format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
+
+      - name: Check format
+        run: cargo +nightly fmt --all -- --check
+
+  docs_rs:
+    name: Preflight docs.rs build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install nightly Rust toolchain
+        # Nightly is used here because the docs.rs build
+        # uses nightly and we use doc_cfg features that are
+        # not in stable Rust as of this writing (Rust 1.74).
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Run cargo docs
+        # This is intended to mimic the docs.rs build
+        # environment. The goal is to fail PR validation
+        # if the subsequent release would result in a failed
+        # documentation build on docs.rs.
+        run: cargo +nightly doc --all-features --no-deps
+        env:
+          RUSTDOCFLAGS: --cfg docsrs
+          DOCS_RS: 1
+
+  cargo-deny:
+    name: License / vulnerability audit
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        checks:
+          - advisories
+          - bans licenses sources
+
+    # Prevent sudden announcement of a new advisory from failing CI:
+    continue-on-error: ${{ matrix.checks == 'advisories' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Audit crate dependencies
+        uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check ${{ matrix.checks }}
+
+  unused_deps:
+    name: Check for unused dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Run cargo-udeps
+        uses: aig787/cargo-udeps-action@v1
+        with:
+          version: latest
+          args: --all-targets --all-features
+
+  version_bump:
+    name: Ensure (MAJOR) tag is used when making an API breaking change
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Get latest existing tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        id: get-latest-tag
+
+      - name: Set new version
+        uses: paulhatch/semantic-version@v5.2.1
+        id: set-version
+        with:
+          tag_prefix: "v"
+          version_format: "${major}.${minor}.${patch}"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+
+      - name: Generate changelog since last tag
+        run: |
+          {
+            echo 'changelog<<EOF'
+            git log --format="* %s" ${{ steps.get-latest-tag.outputs.tag }}..HEAD | { grep -v "(IGNORE)" || :; }
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: "Bump crate version (NOTE: Not pushed back to repo!)"
+        continue-on-error: true # If no change to crate version, ignore git commit error
+        run: |
+          sed -i "s/^version = \"[^\"]*\"$/version = \"$VERSION\"/;" Cargo.toml
+          git config user.email "nobody@example.com"
+          git config --global user.name "PR validation bot"
+          git add .
+          git commit -m "DO NOT PUSH BACK TO PR: Bump crate version"
+        env:
+          VERSION: ${{ steps.set-version.outputs.version }}
+
+      - name: If this step fails, change title of the PR to include (MAJOR) tag
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+        with:
+          package: xmp_toolkit
+
+  read_xmp_example:
+    name: ReadXMP example
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run example
+        run: cargo run --example read_xmp src/tests/fixtures/Purple\ Square.psd
