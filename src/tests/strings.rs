@@ -24,16 +24,102 @@ use std::{borrow::Cow, ops::Deref};
 
 use crate::strings::*;
 
-#[test]
-fn inlinestr_ascii() {
-    let s: InlineStr = 'a'.into();
-    assert_eq!("a", s.deref());
+mod string_too_long_err {
+    use crate::strings::StringTooLongError;
+
+    #[test]
+    fn impl_debug() {
+        let e = StringTooLongError;
+        assert_eq!(format!("{e:#?}"), "StringTooLongError");
+    }
 }
 
-#[test]
-fn inlinestr_unicode() {
-    let s: InlineStr = '🍔'.into();
-    assert_eq!("🍔", s.deref());
+mod inline_str {
+    use std::ops::Deref;
+
+    use crate::strings::*;
+
+    #[test]
+    fn from_ascii() {
+        let s: InlineStr = 'a'.into();
+        assert_eq!("a", s.deref());
+    }
+
+    #[test]
+    fn from_unicode() {
+        let s: InlineStr = '🍔'.into();
+        assert_eq!("🍔", s.deref());
+    }
+
+    #[test]
+    fn impl_debug() {
+        let s: InlineStr = 'a'.into();
+        assert_eq!(
+            format!("{s:#?}"),
+            r#"InlineStr {
+    inner: [
+        97,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ],
+    len: 1,
+}"#
+        );
+    }
+
+    #[test]
+    fn impl_hash() {
+        use std::{
+            collections::hash_map::DefaultHasher,
+            hash::{Hash, Hasher},
+        };
+
+        let mut hasher = DefaultHasher::new();
+        "🍔".hash(&mut hasher);
+        let expected = hasher.finish();
+
+        let s: InlineStr = '🍔'.into();
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        let actual = hasher.finish();
+
+        let s: InlineStr = 'a'.into();
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        let mismatch = hasher.finish();
+
+        assert_eq!(expected, actual);
+        assert_ne!(expected, mismatch);
+    }
+
+    #[test]
+    fn impl_partial_eq() {
+        let s1: InlineStr = '🍔'.into();
+        let s2: InlineStr = '🍔'.into();
+        let s3: InlineStr = 'a'.into();
+
+        assert_eq!(s1, s2);
+        assert_ne!(s1, s3);
+    }
 }
 
 #[test]
