@@ -1,15 +1,10 @@
 # Asciidoc parser for Rust
 
-TO DO: Write description, add CI/CD status badges, etc.
+This is an effort to write a semantic parser for the [Asciidoc language](https://docs.asciidoctor.org/asciidoc/latest/). 
 
-## Usage
+The project is in its infancy as of December 2023 and in **no way ready to use.**
 
-Add this to your `Cargo.toml`:
-
-```toml
-[dependencies]
-asciidoc_parser = "0.1.0"
-```
+You're welcome to follow along and contribute with the understanding that I may or may not drive this project a mature (1.0) release.
 
 ## License
 
