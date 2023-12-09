@@ -236,4 +236,43 @@ mod cow_str {
     fn variant_eq<T>(a: &T, b: &T) -> bool {
         std::mem::discriminant(a) == std::mem::discriminant(b)
     }
+
+    #[test]
+    fn impl_debug() {
+        let c = '藏';
+        let s: CowStr = c.into();
+
+        assert_eq!(
+            format!("{s:#?}"),
+            r#"Inlined(
+    InlineStr {
+        inner: [
+            232,
+            151,
+            143,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        ],
+        len: 3,
+    },
+)"#
+        );
+    }
 }
