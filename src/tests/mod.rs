@@ -14,3 +14,4 @@ fn it_works() {
 }
 
 mod fixtures;
+mod strings;
