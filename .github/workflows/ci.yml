@@ -112,7 +112,7 @@ jobs:
       - name: Cargo clippy
         uses: actions-rs/clippy-check@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CLIPPY_ACCESS }}
           args: --all-features --all-targets -- -D warnings
         env:
           RUST_BACKTRACE: "1"
