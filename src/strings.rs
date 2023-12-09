@@ -94,7 +94,7 @@ impl Deref for InlineStr {
 
     fn deref(&self) -> &str {
         let len = self.len as usize;
-        from_utf8(&self.inner[..len]).unwrap()
+        from_utf8(&self.inner[..len]).unwrap_or_default()
     }
 }
 

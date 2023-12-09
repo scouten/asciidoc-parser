@@ -53,6 +53,7 @@ fn cowstr_char_to_string() {
 }
 
 #[test]
+#[allow(clippy::assertions_on_constants)]
 fn max_inline_str_len_atleast_four() {
     // we need 4 bytes to store a char
     assert!(MAX_INLINE_STR_LEN >= 4);
