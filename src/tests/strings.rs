@@ -141,7 +141,7 @@ mod inline_str {
 }
 
 mod cow_str {
-    use std::borrow::Cow;
+    use std::{borrow::Cow, ops::Deref};
 
     use crate::strings::*;
 
@@ -312,5 +312,17 @@ mod cow_str {
         let mut hasher = DefaultHasher::new();
         s.hash(&mut hasher);
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn impl_from_str() {
+        let s = "xyz";
+        let s: CowStr = s.into();
+        assert_eq!(s.deref(), "xyz");
+
+        if let CowStr::Borrowed(_) = s {
+        } else {
+            panic!("Expected Borrowed case");
+        }
     }
 }
