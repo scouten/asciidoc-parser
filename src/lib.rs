@@ -5,11 +5,6 @@
 #![deny(warnings)]
 #![doc = include_str!("../README.md")]
 
-/// TEMPORARY demo function
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
-
 pub mod strings;
 
 #[cfg(test)]
