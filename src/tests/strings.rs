@@ -141,7 +141,10 @@ mod inline_str {
 }
 
 mod cow_str {
-    use std::{borrow::Cow, ops::Deref};
+    use std::{
+        borrow::{Borrow, Cow},
+        ops::Deref,
+    };
 
     use crate::strings::*;
 
@@ -377,5 +380,50 @@ mod cow_str {
         } else {
             panic!("Expected Borrowed case");
         }
+    }
+
+    #[test]
+    fn impl_borrow() {
+        let s: CowStr = "xyz".into();
+        let s: &str = s.borrow();
+        assert_eq!(s, "xyz");
+    }
+
+    #[test]
+    fn into_string_boxed() {
+        let s = "this string won't fit in a box".to_owned();
+        let s: CowStr = s.into();
+        if let CowStr::Boxed(_) = s {
+        } else {
+            panic!("Expected Boxed case");
+        }
+
+        let s2 = s.into_string();
+        assert_eq!(&s2, "this string won't fit in a box");
+    }
+
+    #[test]
+    fn into_string_borrowed() {
+        let s = "this long string is borrowed";
+        let s: CowStr = s.into();
+        if let CowStr::Borrowed(_) = s {
+        } else {
+            panic!("Expected Borrowed case");
+        }
+
+        let s2 = s.into_string();
+        assert_eq!(&s2, "this long string is borrowed");
+    }
+
+    #[test]
+    fn into_string_inlined() {
+        let s: CowStr = 's'.into();
+        if let CowStr::Inlined(_) = s {
+        } else {
+            panic!("Expected Inlined case");
+        }
+
+        let s2 = s.into_string();
+        assert_eq!(&s2, "s");
     }
 }
