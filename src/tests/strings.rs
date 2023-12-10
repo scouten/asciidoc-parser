@@ -277,6 +277,59 @@ mod cow_str {
     }
 
     #[test]
+    fn impl_clone_boxed_long() {
+        let s = "this string won't fit in a box".to_owned();
+        let s: CowStr = s.into();
+        if let CowStr::Boxed(_) = s {
+        } else {
+            panic!("Expected Boxed case");
+        }
+
+        let s2 = s.clone();
+        assert_eq!(s.deref(), s2.deref());
+
+        if let CowStr::Boxed(_) = s2 {
+        } else {
+            panic!("Expected Boxed clone");
+        }
+    }
+
+    #[test]
+    fn impl_clone_borrowed() {
+        let s = "this long string is borrowed";
+        let s: CowStr = s.into();
+        if let CowStr::Borrowed(_) = s {
+        } else {
+            panic!("Expected Borrowed case");
+        }
+
+        let s2 = s.clone();
+        assert_eq!(s.deref(), s2.deref());
+
+        if let CowStr::Borrowed(_) = s2 {
+        } else {
+            panic!("Expected Borrowed clone");
+        }
+    }
+
+    #[test]
+    fn impl_clone_inlined() {
+        let s: CowStr = 's'.into();
+        if let CowStr::Inlined(_) = s {
+        } else {
+            panic!("Expected Inlined case");
+        }
+
+        let s2 = s.clone();
+        assert_eq!(s.deref(), s2.deref());
+
+        if let CowStr::Inlined(_) = s2 {
+        } else {
+            panic!("Expected Inlined clone");
+        }
+    }
+
+    #[test]
     fn impl_hash() {
         use std::{
             collections::hash_map::DefaultHasher,
