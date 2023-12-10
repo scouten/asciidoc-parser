@@ -141,19 +141,22 @@ mod inline_str {
 }
 
 mod cow_str {
-    use std::borrow::Cow;
+    use std::{
+        borrow::{Borrow, Cow},
+        ops::Deref,
+    };
 
     use crate::strings::*;
 
     #[test]
-    fn cowstr_size() {
+    fn size() {
         let size = std::mem::size_of::<CowStr>();
         let word_size = std::mem::size_of::<isize>();
         assert_eq!(3 * word_size, size);
     }
 
     #[test]
-    fn cowstr_char_to_string() {
+    fn char_to_string() {
         let c = '藏';
         let smort: CowStr = c.into();
         let owned: String = smort.to_string();
@@ -235,5 +238,192 @@ mod cow_str {
 
     fn variant_eq<T>(a: &T, b: &T) -> bool {
         std::mem::discriminant(a) == std::mem::discriminant(b)
+    }
+
+    #[test]
+    fn impl_debug() {
+        let c = '藏';
+        let s: CowStr = c.into();
+
+        assert_eq!(
+            format!("{s:#?}"),
+            r#"Inlined(
+    InlineStr {
+        inner: [
+            232,
+            151,
+            143,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+        ],
+        len: 3,
+    },
+)"#
+        );
+    }
+
+    #[test]
+    fn impl_clone_boxed_long() {
+        let s = "this string won't fit in a box".to_owned();
+        let s: CowStr = s.into();
+        if let CowStr::Boxed(_) = s {
+        } else {
+            panic!("Expected Boxed case");
+        }
+
+        let s2 = s.clone();
+        assert_eq!(s.deref(), s2.deref());
+
+        if let CowStr::Boxed(_) = s2 {
+        } else {
+            panic!("Expected Boxed clone");
+        }
+    }
+
+    #[test]
+    fn impl_clone_borrowed() {
+        let s = "this long string is borrowed";
+        let s: CowStr = s.into();
+        if let CowStr::Borrowed(_) = s {
+        } else {
+            panic!("Expected Borrowed case");
+        }
+
+        let s2 = s.clone();
+        assert_eq!(s.deref(), s2.deref());
+
+        if let CowStr::Borrowed(_) = s2 {
+        } else {
+            panic!("Expected Borrowed clone");
+        }
+    }
+
+    #[test]
+    fn impl_clone_inlined() {
+        let s: CowStr = 's'.into();
+        if let CowStr::Inlined(_) = s {
+        } else {
+            panic!("Expected Inlined case");
+        }
+
+        let s2 = s.clone();
+        assert_eq!(s.deref(), s2.deref());
+
+        if let CowStr::Inlined(_) = s2 {
+        } else {
+            panic!("Expected Inlined clone");
+        }
+    }
+
+    #[test]
+    fn impl_hash() {
+        use std::{
+            collections::hash_map::DefaultHasher,
+            hash::{Hash, Hasher},
+        };
+
+        let mut hasher = DefaultHasher::new();
+        "🍔".hash(&mut hasher);
+        let expected = hasher.finish();
+
+        let s: CowStr = '🍔'.into();
+        if let CowStr::Inlined(_) = s {
+        } else {
+            panic!("Expected Inlined case");
+        }
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        let actual = hasher.finish();
+        assert_eq!(expected, actual);
+
+        let s = CowStr::Borrowed("🍔");
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        let actual = hasher.finish();
+        assert_eq!(expected, actual);
+
+        let s = "🍔".to_owned();
+        let s: CowStr = s.into();
+        if let CowStr::Boxed(_) = s {
+        } else {
+            panic!("Expected Boxed case");
+        }
+        let mut hasher = DefaultHasher::new();
+        s.hash(&mut hasher);
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn impl_from_str() {
+        let s = "xyz";
+        let s: CowStr = s.into();
+        assert_eq!(s.deref(), "xyz");
+
+        if let CowStr::Borrowed(_) = s {
+        } else {
+            panic!("Expected Borrowed case");
+        }
+    }
+
+    #[test]
+    fn impl_borrow() {
+        let s: CowStr = "xyz".into();
+        let s: &str = s.borrow();
+        assert_eq!(s, "xyz");
+    }
+
+    #[test]
+    fn into_string_boxed() {
+        let s = "this string won't fit in a box".to_owned();
+        let s: CowStr = s.into();
+        if let CowStr::Boxed(_) = s {
+        } else {
+            panic!("Expected Boxed case");
+        }
+
+        let s2 = s.into_string();
+        assert_eq!(&s2, "this string won't fit in a box");
+    }
+
+    #[test]
+    fn into_string_borrowed() {
+        let s = "this long string is borrowed";
+        let s: CowStr = s.into();
+        if let CowStr::Borrowed(_) = s {
+        } else {
+            panic!("Expected Borrowed case");
+        }
+
+        let s2 = s.into_string();
+        assert_eq!(&s2, "this long string is borrowed");
+    }
+
+    #[test]
+    fn into_string_inlined() {
+        let s: CowStr = 's'.into();
+        if let CowStr::Inlined(_) = s {
+        } else {
+            panic!("Expected Inlined case");
+        }
+
+        let s2 = s.into_string();
+        assert_eq!(&s2, "s");
     }
 }
