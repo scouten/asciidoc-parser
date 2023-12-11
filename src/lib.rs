@@ -5,6 +5,9 @@
 #![deny(warnings)]
 #![doc = include_str!("../README.md")]
 
+mod error;
+pub use error::{Error, ParseResult};
+
 pub(crate) mod primitives;
 pub mod strings;
 
