@@ -16,7 +16,7 @@ impl<'a> SimpleBlock<'a> {
     /// Returns a tuple of the remaining input and the simple block.
     #[allow(dead_code)] // TEMPORARY
     pub fn from_str(i: &'a str) -> IResult<&str, Self> {
-        let (i, inlines) = many1(non_empty_line)(i).map_err(|e| e.into())?;
+        let (i, inlines) = many1(non_empty_line)(i)?;
 
         Ok((i, Self { inlines }))
     }
