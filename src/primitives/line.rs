@@ -1,4 +1,7 @@
-use nom::{bytes::complete::take_till, IResult};
+use nom::{
+    bytes::complete::{take_till, take_till1},
+    IResult,
+};
 
 /// Return a single line from the source.
 ///
@@ -25,6 +28,36 @@ pub(crate) fn normalized_line(input: &str) -> IResult<&str, &str> {
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
         .map(trim_trailing_spaces)
+}
+
+/// Return a single _normalized, non-empty_ line from the source.
+///
+/// A line is terminated by end-of-input or a single `\n` character
+/// or a single `\r\n` sequence. The end of line sequence is consumed
+/// but not included in the returned line.
+///
+/// All trailing spaces are removed from the line.
+///
+/// Returns an error if the line becomes empty after trailing spaces have been
+/// removed.
+#[allow(dead_code)] // TEMPORARY
+pub(crate) fn non_empty_line(input: &str) -> IResult<&str, &str> {
+    use nom::{
+        error::{Error, ErrorKind},
+        Err,
+    };
+
+    take_till1(|c| c == '\n')(input)
+        .map(|ri| trim_rem_start_matches(ri, '\n'))
+        .map(|ri| trim_rem_end_matches(ri, '\r'))
+        .map(trim_trailing_spaces)
+        .and_then(|(rem, inp)| {
+            if inp.is_empty() {
+                Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
+            } else {
+                Ok((rem, inp))
+            }
+        })
 }
 
 #[allow(dead_code)] // TEMPORARY
