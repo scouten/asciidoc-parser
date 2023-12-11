@@ -6,4 +6,5 @@
 #![allow(clippy::unwrap_used)]
 
 mod fixtures;
+mod primitives;
 mod strings;
