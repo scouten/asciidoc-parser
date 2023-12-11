@@ -5,6 +5,7 @@
 #![deny(warnings)]
 #![doc = include_str!("../README.md")]
 
+pub(crate) mod primitives;
 pub mod strings;
 
 #[cfg(test)]
