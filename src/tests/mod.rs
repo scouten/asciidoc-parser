@@ -5,6 +5,7 @@
 #![allow(clippy::panic)]
 #![allow(clippy::unwrap_used)]
 
+mod blocks;
 mod fixtures;
 mod primitives;
 mod strings;
