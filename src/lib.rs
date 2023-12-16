@@ -10,6 +10,8 @@ pub mod blocks;
 mod error;
 pub use error::{Error, ParseResult};
 
+pub mod input;
+
 pub(crate) mod primitives;
 pub mod strings;
 

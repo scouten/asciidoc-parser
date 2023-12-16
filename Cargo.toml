@@ -11,4 +11,5 @@ rust-version = "1.72.0"
 
 [dependencies]
 nom = "7.1"
+nom-span = "0.1.1"
 thiserror = "1.0.50"

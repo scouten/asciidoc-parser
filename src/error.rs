@@ -2,6 +2,9 @@ use nom::{
     error::{ErrorKind, FromExternalError, ParseError},
     IResult,
 };
+use nom_span::Spanned;
+
+// use crate::input::Input;
 
 /// The error type for AsciiDoc parsing operations.
 #[non_exhaustive]
@@ -17,11 +20,22 @@ pub enum Error {
 }
 
 impl<'a> ParseError<&'a str> for Error {
+    // TEMPORARY
     fn from_error_kind(_input: &'a str, kind: ErrorKind) -> Self {
         Error::NomError(kind)
     }
 
     fn append(_input: &'a str, kind: ErrorKind, _other: Self) -> Self {
+        Error::NomError(kind)
+    }
+}
+
+impl<'a> ParseError<Spanned<&'a str>> for Error {
+    fn from_error_kind(_input: Spanned<&'a str>, kind: ErrorKind) -> Self {
+        Error::NomError(kind)
+    }
+
+    fn append(_input: Spanned<&'a str>, kind: ErrorKind, _other: Self) -> Self {
         Error::NomError(kind)
     }
 }
