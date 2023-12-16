@@ -4,8 +4,6 @@ use nom::{
 };
 use nom_span::Spanned;
 
-// use crate::input::Input;
-
 /// The error type for AsciiDoc parsing operations.
 #[non_exhaustive]
 #[derive(Clone, Debug, thiserror::Error, PartialEq, Eq)]
