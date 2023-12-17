@@ -3,5 +3,4 @@
 
 mod line;
 #[allow(unused_imports)]
-pub(crate) use line::{line, normalized_line};
-// ... non_empty_line
+pub(crate) use line::{line, non_empty_line, normalized_line};
