@@ -38,6 +38,16 @@ impl<'a> ParseError<Spanned<&'a str>> for Error {
     }
 }
 
+impl<'a> ParseError<&'a Spanned<&'a str>> for Error {
+    fn from_error_kind(_input: &'a Spanned<&'a str>, kind: ErrorKind) -> Self {
+        Error::NomError(kind)
+    }
+
+    fn append(_input: &'a Spanned<&'a str>, kind: ErrorKind, _other: Self) -> Self {
+        Error::NomError(kind)
+    }
+}
+
 impl From<nom::Err<Error>> for Error {
     fn from(e: nom::Err<Error>) -> Self {
         match e {
