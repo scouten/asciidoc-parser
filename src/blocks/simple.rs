@@ -1,13 +1,13 @@
 use nom::{multi::many1, IResult};
 
-use crate::primitives::non_empty_line;
+use crate::{input::Input, primitives::non_empty_line};
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SimpleBlock<'a> {
     /// Lines that were found.
-    pub inlines: Vec<&'a str>,
+    pub inlines: Vec<Input<'a>>,
 }
 
 impl<'a> SimpleBlock<'a> {
@@ -15,7 +15,7 @@ impl<'a> SimpleBlock<'a> {
     ///
     /// Returns a tuple of the remaining input and the simple block.
     #[allow(dead_code)] // TEMPORARY
-    pub fn from_str(i: &'a str) -> IResult<&str, Self> {
+    pub(crate) fn parse(i: Input<'a>) -> IResult<Input, Self> {
         let (i, inlines) = many1(non_empty_line)(i)?;
 
         Ok((i, Self { inlines }))
