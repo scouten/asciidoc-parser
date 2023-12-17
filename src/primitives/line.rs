@@ -12,7 +12,7 @@ use crate::input::Input;
 /// or a single `\r\n` sequence. The end of line sequence is consumed
 /// but not included in the returned line.
 #[allow(dead_code)] // TEMPORARY
-pub(crate) fn line<'a>(input: Input<'a>) -> IResult<Input, Input> {
+pub(crate) fn line(input: Input<'_>) -> IResult<Input, Input> {
     take_till(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches((ri.0, ri.1), '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
@@ -26,7 +26,7 @@ pub(crate) fn line<'a>(input: Input<'a>) -> IResult<Input, Input> {
 ///
 /// All trailing spaces are removed from the line.
 #[allow(dead_code)] // TEMPORARY
-pub(crate) fn normalized_line<'a>(input: Input<'a>) -> IResult<Input, Input> {
+pub(crate) fn normalized_line(input: Input<'_>) -> IResult<Input, Input> {
     take_till(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
@@ -44,7 +44,7 @@ pub(crate) fn normalized_line<'a>(input: Input<'a>) -> IResult<Input, Input> {
 /// Returns an error if the line becomes empty after trailing spaces have been
 /// removed.
 #[allow(dead_code)] // TEMPORARY
-pub(crate) fn non_empty_line<'a>(input: Input<'a>) -> IResult<Input, Input> {
+pub(crate) fn non_empty_line(input: Input<'_>) -> IResult<Input, Input> {
     take_till1(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
