@@ -17,33 +17,12 @@ pub enum Error {
     NomError(ErrorKind),
 }
 
-impl<'a> ParseError<&'a str> for Error {
-    // TEMPORARY
-    fn from_error_kind(_input: &'a str, kind: ErrorKind) -> Self {
-        Error::NomError(kind)
-    }
-
-    fn append(_input: &'a str, kind: ErrorKind, _other: Self) -> Self {
-        Error::NomError(kind)
-    }
-}
-
 impl<'a> ParseError<Spanned<&'a str>> for Error {
     fn from_error_kind(_input: Spanned<&'a str>, kind: ErrorKind) -> Self {
         Error::NomError(kind)
     }
 
     fn append(_input: Spanned<&'a str>, kind: ErrorKind, _other: Self) -> Self {
-        Error::NomError(kind)
-    }
-}
-
-impl<'a> ParseError<&'a Spanned<&'a str>> for Error {
-    fn from_error_kind(_input: &'a Spanned<&'a str>, kind: ErrorKind) -> Self {
-        Error::NomError(kind)
-    }
-
-    fn append(_input: &'a Spanned<&'a str>, kind: ErrorKind, _other: Self) -> Self {
         Error::NomError(kind)
     }
 }
