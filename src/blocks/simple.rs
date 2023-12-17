@@ -11,9 +11,6 @@ pub struct SimpleBlock<'a> {
 }
 
 impl<'a> SimpleBlock<'a> {
-    /// Parse a byte-slice as a simple AsciiDoc block.
-    ///
-    /// Returns a tuple of the remaining input and the simple block.
     #[allow(dead_code)] // TEMPORARY
     pub(crate) fn parse(i: Input<'a>) -> IResult<Input, Self> {
         let (i, inlines) = many1(non_empty_line)(i)?;
