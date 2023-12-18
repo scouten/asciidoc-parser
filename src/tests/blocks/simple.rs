@@ -3,22 +3,22 @@ use nom::{
     Err,
 };
 
-use crate::{blocks::simple::SimpleBlock, input::Input};
+use crate::{blocks::simple::SimpleBlock, Span};
 
 #[test]
 fn empty_source() {
-    let expected_err = Err::Error(Error::new(Input::new("", true), ErrorKind::TakeTill1));
+    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
 
-    let actual_err = SimpleBlock::parse(Input::new("", true)).unwrap_err();
+    let actual_err = SimpleBlock::parse(Span::new("", true)).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn only_spaces() {
-    let expected_err = Err::Error(Error::new(Input::new("    ", true), ErrorKind::TakeTill1));
+    let expected_err = Err::Error(Error::new(Span::new("    ", true), ErrorKind::TakeTill1));
 
-    let actual_err = SimpleBlock::parse(Input::new("    ", true)).unwrap_err();
+    let actual_err = SimpleBlock::parse(Span::new("    ", true)).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
@@ -26,10 +26,10 @@ fn only_spaces() {
 #[test]
 fn single_line() {
     let expected = SimpleBlock {
-        inlines: vec![Input::new("abc", true)],
+        inlines: vec![Span::new("abc", true)],
     };
 
-    let (rem, block) = SimpleBlock::parse(Input::new("abc", true)).unwrap();
+    let (rem, block) = SimpleBlock::parse(Span::new("abc", true)).unwrap();
 
     assert_eq!(rem.line(), 1);
     assert_eq!(rem.col(), 4);
@@ -40,7 +40,7 @@ fn single_line() {
 
 #[test]
 fn multiple_lines() {
-    let (rem, block) = SimpleBlock::parse(Input::new("abc\ndef", true)).unwrap();
+    let (rem, block) = SimpleBlock::parse(Span::new("abc\ndef", true)).unwrap();
 
     assert_eq!(rem.line(), 2);
     assert_eq!(rem.col(), 4);

@@ -7,6 +7,5 @@
 
 mod blocks;
 mod fixtures;
-mod input;
 mod primitives;
 mod strings;

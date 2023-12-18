@@ -10,9 +10,8 @@ pub mod blocks;
 mod error;
 pub use error::{Error, ParseResult};
 
-pub mod input;
-
 pub(crate) mod primitives;
+pub use primitives::Span;
 pub mod strings;
 
 #[cfg(test)]
