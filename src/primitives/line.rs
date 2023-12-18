@@ -14,7 +14,7 @@ use crate::Span;
 #[allow(dead_code)] // TEMPORARY
 pub(crate) fn line(input: Span<'_>) -> IResult<Span, Span> {
     take_till(|c| c == '\n')(input)
-        .map(|ri| trim_rem_start_matches((ri.0, ri.1), '\n'))
+        .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
 }
 
