@@ -1,7 +1,10 @@
 use nom::{
     bytes::complete::{take_till, take_till1},
-    IResult,
+    error::{Error, ErrorKind},
+    Err, IResult, Slice,
 };
+
+use crate::Span;
 
 /// Return a single line from the source.
 ///
@@ -9,7 +12,7 @@ use nom::{
 /// or a single `\r\n` sequence. The end of line sequence is consumed
 /// but not included in the returned line.
 #[allow(dead_code)] // TEMPORARY
-pub(crate) fn line(input: &str) -> IResult<&str, &str> {
+pub(crate) fn line(input: Span<'_>) -> IResult<Span, Span> {
     take_till(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
@@ -23,7 +26,7 @@ pub(crate) fn line(input: &str) -> IResult<&str, &str> {
 ///
 /// All trailing spaces are removed from the line.
 #[allow(dead_code)] // TEMPORARY
-pub(crate) fn normalized_line(input: &str) -> IResult<&str, &str> {
+pub(crate) fn normalized_line(input: Span<'_>) -> IResult<Span, Span> {
     take_till(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
@@ -40,13 +43,7 @@ pub(crate) fn normalized_line(input: &str) -> IResult<&str, &str> {
 ///
 /// Returns an error if the line becomes empty after trailing spaces have been
 /// removed.
-#[allow(dead_code)] // TEMPORARY
-pub(crate) fn non_empty_line(input: &str) -> IResult<&str, &str> {
-    use nom::{
-        error::{Error, ErrorKind},
-        Err,
-    };
-
+pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
     take_till1(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
@@ -60,18 +57,19 @@ pub(crate) fn non_empty_line(input: &str) -> IResult<&str, &str> {
         })
 }
 
-#[allow(dead_code)] // TEMPORARY
-fn trim_rem_start_matches<'a>(rem_inp: (&'a str, &'a str), c: char) -> (&'a str, &'a str) {
+fn trim_rem_start_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
     if let Some(rem) = rem_inp.0.strip_prefix(c) {
+        let prefix_len = rem_inp.0.len() - rem.len();
+        let rem = rem_inp.0.slice(prefix_len..);
         (rem, rem_inp.1)
     } else {
         rem_inp
     }
 }
 
-#[allow(dead_code)] // TEMPORARY
-fn trim_rem_end_matches<'a>(rem_inp: (&'a str, &'a str), c: char) -> (&'a str, &'a str) {
+fn trim_rem_end_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
     if let Some(inp) = rem_inp.1.strip_suffix(c) {
+        let inp = rem_inp.1.slice(0..inp.len());
         (rem_inp.0, inp)
     } else {
         rem_inp
@@ -79,6 +77,8 @@ fn trim_rem_end_matches<'a>(rem_inp: (&'a str, &'a str), c: char) -> (&'a str, &
 }
 
 #[allow(dead_code)] // TEMPORARY
-fn trim_trailing_spaces<'a>(rem_inp: (&'a str, &'a str)) -> (&'a str, &'a str) {
-    (rem_inp.0, rem_inp.1.trim_end_matches(' '))
+fn trim_trailing_spaces<'a>(rem_inp: (Span<'a>, Span<'a>)) -> (Span<'a>, Span<'a>) {
+    let inp = rem_inp.1.trim_end_matches(' ');
+    let inp = rem_inp.1.slice(0..inp.len());
+    (rem_inp.0, inp)
 }

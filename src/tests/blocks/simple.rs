@@ -3,22 +3,22 @@ use nom::{
     Err,
 };
 
-use crate::blocks::simple::SimpleBlock;
+use crate::{blocks::simple::SimpleBlock, Span};
 
 #[test]
 fn empty_source() {
-    let expected_err: Err<Error<&str>> = Err::Error(Error::new("", ErrorKind::TakeTill1));
+    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
 
-    let actual_err = SimpleBlock::from_str("").unwrap_err();
+    let actual_err = SimpleBlock::parse(Span::new("", true)).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn only_spaces() {
-    let expected_err: Err<Error<&str>> = Err::Error(Error::new("   ", ErrorKind::TakeTill1));
+    let expected_err = Err::Error(Error::new(Span::new("    ", true), ErrorKind::TakeTill1));
 
-    let actual_err = SimpleBlock::from_str("   ").unwrap_err();
+    let actual_err = SimpleBlock::parse(Span::new("    ", true)).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
@@ -26,20 +26,33 @@ fn only_spaces() {
 #[test]
 fn single_line() {
     let expected = SimpleBlock {
-        inlines: vec!["abc"],
+        inlines: vec![Span::new("abc", true)],
     };
 
-    assert_eq!(SimpleBlock::from_str("abc"), Ok(("", expected)));
+    let (rem, block) = SimpleBlock::parse(Span::new("abc", true)).unwrap();
+
+    assert_eq!(rem.line(), 1);
+    assert_eq!(rem.col(), 4);
+    assert_eq!(*rem.data(), "");
+
+    assert_eq!(block, expected);
 }
 
 #[test]
 fn multiple_lines() {
-    let expected = SimpleBlock {
-        inlines: vec!["abc", "def"],
-    };
+    let (rem, block) = SimpleBlock::parse(Span::new("abc\ndef", true)).unwrap();
 
-    assert_eq!(
-        SimpleBlock::from_str("abc\ndef\n\nghi"),
-        Ok(("\nghi", expected))
-    );
+    assert_eq!(rem.line(), 2);
+    assert_eq!(rem.col(), 4);
+    assert_eq!(*rem.data(), "");
+
+    assert_eq!(block.inlines.len(), 2);
+
+    assert_eq!(block.inlines[0].line(), 1);
+    assert_eq!(block.inlines[0].col(), 1);
+    assert_eq!(*block.inlines[0].data(), "abc");
+
+    assert_eq!(block.inlines[1].line(), 2);
+    assert_eq!(block.inlines[1].col(), 1);
+    assert_eq!(*block.inlines[1].data(), "def");
 }
