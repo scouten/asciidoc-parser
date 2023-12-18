@@ -43,7 +43,6 @@ pub(crate) fn normalized_line(input: Span<'_>) -> IResult<Span, Span> {
 ///
 /// Returns an error if the line becomes empty after trailing spaces have been
 /// removed.
-#[allow(dead_code)] // TEMPORARY
 pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
     take_till1(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
@@ -58,7 +57,6 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
         })
 }
 
-#[allow(dead_code)] // TEMPORARY
 fn trim_rem_start_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
     if let Some(rem) = rem_inp.0.strip_prefix(c) {
         let prefix_len = rem_inp.0.len() - rem.len();
@@ -69,7 +67,6 @@ fn trim_rem_start_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'
     }
 }
 
-#[allow(dead_code)] // TEMPORARY
 fn trim_rem_end_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
     if let Some(inp) = rem_inp.1.strip_suffix(c) {
         let inp = rem_inp.1.slice(0..inp.len());
