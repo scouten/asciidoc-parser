@@ -15,6 +15,10 @@ pub enum Error {
     /// Error from nom parsing framework.
     #[error("nom error: {0:?}")]
     NomError(ErrorKind),
+
+    /// Error with location info.
+    #[error("temporary error from nom: {0:?}")]
+    TemporaryError(String),
 }
 
 impl<'a> ParseError<Spanned<&'a str>> for Error {
@@ -32,6 +36,17 @@ impl From<nom::Err<Error>> for Error {
         match e {
             nom::Err::Incomplete(n) => Self::Incomplete(n),
             nom::Err::Error(e) | nom::Err::Failure(e) => e,
+        }
+    }
+}
+
+impl From<nom::Err<nom::error::Error<Spanned<&str>>>> for Error {
+    fn from(e: nom::Err<nom::error::Error<Spanned<&str>>>) -> Self {
+        match e {
+            nom::Err::Incomplete(n) => Self::Incomplete(n),
+            nom::Err::Error(e) | nom::Err::Failure(e) => {
+                Self::TemporaryError(format!("TEMPORARY: {e:#?}"))
+            } // TO DO: Find better solution for error lifetime issues.
         }
     }
 }

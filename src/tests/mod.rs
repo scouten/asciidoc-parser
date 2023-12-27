@@ -6,6 +6,7 @@
 #![allow(clippy::unwrap_used)]
 
 mod blocks;
+mod document;
 mod fixtures;
 mod primitives;
 mod strings;
