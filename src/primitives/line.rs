@@ -73,6 +73,21 @@ pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
     }
 }
 
+/// Consumes zero or more empty lines.
+///
+/// Returns the original input if any error occurs or no empty lines are found.
+#[allow(dead_code)]
+pub(crate) fn consume_empty_lines(mut input: Span<'_>) -> Span {
+    while !input.data().is_empty() {
+        match empty_line(input) {
+            Ok((rem, _)) => input = rem,
+            Err(_) => break,
+        }
+    }
+
+    input
+}
+
 fn trim_rem_start_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
     if let Some(rem) = rem_inp.0.strip_prefix(c) {
         let prefix_len = rem_inp.0.len() - rem.len();

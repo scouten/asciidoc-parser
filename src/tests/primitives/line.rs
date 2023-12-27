@@ -445,3 +445,91 @@ mod empty_line {
         assert_eq!(expected_err, actual_err);
     }
 }
+
+mod consume_empty_lines {
+    use crate::{primitives::consume_empty_lines, Span};
+
+    #[test]
+    fn empty_source() {
+        let rem = consume_empty_lines(Span::new("", true));
+        assert_eq!(rem, Span::new("", true));
+    }
+
+    #[test]
+    fn consumes_empty_line() {
+        let rem = consume_empty_lines(Span::new("\nabc", true));
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "abc");
+    }
+
+    #[test]
+    fn doesnt_consume_non_empty_line() {
+        let rem = consume_empty_lines(Span::new("abc", true));
+        assert_eq!(rem, Span::new("abc", true));
+    }
+
+    #[test]
+    fn doesnt_consume_leading_space() {
+        let rem = consume_empty_lines(Span::new("   abc", true));
+        assert_eq!(rem, Span::new("   abc", true));
+    }
+
+    #[test]
+    fn consumes_line_with_only_spaces() {
+        let rem = consume_empty_lines(Span::new("   \nabc", true));
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "abc");
+    }
+
+    #[test]
+    fn consumes_spaces_and_tabs() {
+        let rem = consume_empty_lines(Span::new(" \t \nabc", true));
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "abc");
+    }
+
+    #[test]
+    fn consumes_multiple_lines() {
+        let rem = consume_empty_lines(Span::new("\n  \t \n\nabc", true));
+
+        assert_eq!(rem.line(), 4);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "abc");
+    }
+
+    #[test]
+    fn consumes_crlf() {
+        // Should consume \r\n sequence.
+
+        let rem = consume_empty_lines(Span::new("  \r\ndef", true));
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "def");
+    }
+
+    #[test]
+    fn doesnt_consume_lfcr() {
+        // Should consume \n but not a subsequent \r.
+
+        let rem = consume_empty_lines(Span::new("   \n\rdef", true));
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "\rdef");
+    }
+
+    #[test]
+    fn standalone_cr_doesnt_end_line() {
+        // A "line" with \r and no immediate \n is not considered empty.
+
+        let rem = consume_empty_lines(Span::new("   \rdef", true));
+        assert_eq!(rem, Span::new("   \rdef", true));
+    }
+}
