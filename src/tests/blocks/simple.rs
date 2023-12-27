@@ -56,3 +56,18 @@ fn multiple_lines() {
     assert_eq!(block.inlines[1].col(), 1);
     assert_eq!(*block.inlines[1].data(), "def");
 }
+
+#[test]
+fn consumes_blank_lines_after() {
+    let expected = SimpleBlock {
+        inlines: vec![Span::new("abc", true)],
+    };
+
+    let (rem, block) = SimpleBlock::parse(Span::new("abc\n\ndef", true)).unwrap();
+
+    assert_eq!(rem.line(), 3);
+    assert_eq!(rem.col(), 1);
+    assert_eq!(*rem.data(), "def");
+
+    assert_eq!(block, expected);
+}
