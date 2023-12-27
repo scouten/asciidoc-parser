@@ -57,6 +57,22 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
         })
 }
 
+/// Consumes an empty line.
+///
+/// An empty line may contain any number of white space characters.
+///
+/// Returns an error if the line contains any non-white-space characters.
+#[allow(dead_code)]
+pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
+    let (i, line) = line(input)?;
+
+    if line.data().bytes().all(nom::character::is_space) {
+        Ok((i, line))
+    } else {
+        Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
+    }
+}
+
 fn trim_rem_start_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
     if let Some(rem) = rem_inp.0.strip_prefix(c) {
         let prefix_len = rem_inp.0.len() - rem.len();

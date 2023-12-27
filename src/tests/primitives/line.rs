@@ -321,3 +321,127 @@ mod non_empty_line {
         assert_eq!(*line.data(), "abc   \rdef");
     }
 }
+
+mod empty_line {
+    use nom::{
+        error::{Error, ErrorKind},
+        Err,
+    };
+
+    use crate::{primitives::empty_line, Span};
+
+    #[test]
+    fn empty_source() {
+        let (rem, line) = empty_line(Span::new("", true)).unwrap();
+
+        assert_eq!(rem, Span::new("", true));
+        assert_eq!(line, Span::new("", true));
+    }
+
+    #[test]
+    fn simple_line() {
+        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
+            Err::Error(Error::new(Span::new("abc", true), ErrorKind::NonEmpty));
+
+        let actual_err = empty_line(Span::new("abc", true)).unwrap_err();
+
+        assert_eq!(expected_err, actual_err);
+    }
+
+    #[test]
+    fn leading_space() {
+        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
+            Err::Error(Error::new(Span::new("  abc", true), ErrorKind::NonEmpty));
+
+        let actual_err = empty_line(Span::new("  abc", true)).unwrap_err();
+
+        assert_eq!(expected_err, actual_err);
+    }
+
+    #[test]
+    fn consumes_spaces() {
+        // Should consume a source containing only spaces.
+
+        let (rem, line) = empty_line(Span::new("     ", true)).unwrap();
+
+        assert_eq!(rem.line(), 1);
+        assert_eq!(rem.col(), 6);
+        assert_eq!(*rem.data(), "");
+
+        assert_eq!(line.line(), 1);
+        assert_eq!(line.col(), 1);
+        assert_eq!(*line.data(), "     ");
+    }
+
+    #[test]
+    fn consumes_spaces_and_tabs() {
+        // Should consume a source containing only spaces.
+
+        let (rem, line) = empty_line(Span::new("  \t  ", true)).unwrap();
+
+        assert_eq!(rem.line(), 1);
+        assert_eq!(rem.col(), 6);
+        assert_eq!(*rem.data(), "");
+
+        assert_eq!(line.line(), 1);
+        assert_eq!(line.col(), 1);
+        assert_eq!(*line.data(), "  \t  ");
+    }
+
+    #[test]
+    fn consumes_lf() {
+        // Should consume but not return \n.
+
+        let (rem, line) = empty_line(Span::new("   \ndef", true)).unwrap();
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "def");
+
+        assert_eq!(line.line(), 1);
+        assert_eq!(line.col(), 1);
+        assert_eq!(*line.data(), "   ");
+    }
+
+    #[test]
+    fn consumes_crlf() {
+        // Should consume but not return \r\n.
+
+        let (rem, line) = empty_line(Span::new("   \r\ndef", true)).unwrap();
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "def");
+
+        assert_eq!(line.line(), 1);
+        assert_eq!(line.col(), 1);
+        assert_eq!(*line.data(), "   ");
+    }
+
+    #[test]
+    fn doesnt_consume_lfcr() {
+        // Should consume \n but not a subsequent \r.
+
+        let (rem, line) = empty_line(Span::new("   \n\rdef", true)).unwrap();
+
+        assert_eq!(rem.line(), 2);
+        assert_eq!(rem.col(), 1);
+        assert_eq!(*rem.data(), "\rdef");
+
+        assert_eq!(line.line(), 1);
+        assert_eq!(line.col(), 1);
+        assert_eq!(*line.data(), "   ");
+    }
+
+    #[test]
+    fn standalone_cr_doesnt_end_line() {
+        // A "line" with \r and no immediate \n is not considered empty.
+
+        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
+            Err::Error(Error::new(Span::new("   \rdef", true), ErrorKind::NonEmpty));
+
+        let actual_err = empty_line(Span::new("   \rdef", true)).unwrap_err();
+
+        assert_eq!(expected_err, actual_err);
+    }
+}
