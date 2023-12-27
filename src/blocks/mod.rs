@@ -8,4 +8,8 @@
 //! in turn, in document order, converting it to a corresponding chunk of
 //! output.
 
-pub(crate) mod simple;
+mod block;
+pub use block::Block;
+
+mod simple;
+pub use simple::SimpleBlock;

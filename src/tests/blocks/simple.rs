@@ -3,7 +3,7 @@ use nom::{
     Err,
 };
 
-use crate::{blocks::simple::SimpleBlock, Span};
+use crate::{blocks::SimpleBlock, Span};
 
 #[test]
 fn empty_source() {
