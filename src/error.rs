@@ -1,5 +1,5 @@
 use nom::{
-    error::{ErrorKind, FromExternalError, ParseError},
+    error::{ErrorKind, ParseError},
     IResult,
 };
 use nom_span::Spanned;
@@ -48,12 +48,6 @@ impl From<nom::Err<nom::error::Error<Spanned<&str>>>> for Error {
                 Self::TemporaryError(format!("TEMPORARY: {e:#?}"))
             } // TO DO: Find better solution for error lifetime issues.
         }
-    }
-}
-
-impl<I, E> FromExternalError<I, E> for Error {
-    fn from_external_error(_input: I, kind: ErrorKind, _e: E) -> Error {
-        Error::NomError(kind)
     }
 }
 
