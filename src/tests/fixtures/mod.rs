@@ -1,5 +1,8 @@
 use std::{env, path::PathBuf};
 
+mod tspan;
+pub(crate) use tspan::TSpan;
+
 #[allow(dead_code)] // TEMPORARY while bootstrapping
 pub(crate) fn fixture_path(name: &str) -> String {
     let root_dir = &env::var("CARGO_MANIFEST_DIR").unwrap();

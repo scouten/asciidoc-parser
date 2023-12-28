@@ -1,38 +1,79 @@
 mod fn_line {
-    use crate::{primitives::line, Span};
+    use crate::{primitives::line, tests::fixtures::TSpan, Span};
 
     #[test]
     fn empty_source() {
         let (rem, line) = line(Span::new("", true)).unwrap();
 
-        assert_eq!(rem, Span::new("", true));
-        assert_eq!(line, Span::new("", true));
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn simple_line() {
         let (rem, line) = line(Span::new("abc", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 4);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn trailing_space() {
         let (rem, line) = line(Span::new("abc ", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 5);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc ");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -41,13 +82,25 @@ mod fn_line {
 
         let (rem, line) = line(Span::new("abc\ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -56,13 +109,25 @@ mod fn_line {
 
         let (rem, line) = line(Span::new("abc\r\ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 5
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -71,13 +136,25 @@ mod fn_line {
 
         let (rem, line) = line(Span::new("abc\n\rdef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "\rdef");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "\rdef",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -86,64 +163,129 @@ mod fn_line {
 
         let (rem, line) = line(Span::new("abc\rdef", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 8);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc\rdef");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc\rdef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 }
 
 mod normalized_line {
-    use crate::{primitives::normalized_line, Span};
+    use crate::{primitives::normalized_line, tests::fixtures::TSpan, Span};
 
     #[test]
     fn empty_source() {
         let (rem, line) = normalized_line(Span::new("", true)).unwrap();
 
-        assert_eq!(rem, Span::new("", true));
-        assert_eq!(line, Span::new("", true));
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn simple_line() {
         let (rem, line) = normalized_line(Span::new("abc", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 4);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn discards_trailing_space() {
         let (rem, line) = normalized_line(Span::new("abc ", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 5);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn discards_multiple_trailing_spaces() {
         let (rem, line) = normalized_line(Span::new("abc   ", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 7);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 7,
+                offset: 6
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -152,13 +294,25 @@ mod normalized_line {
 
         let (rem, line) = normalized_line(Span::new("abc  \ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 6
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -167,13 +321,25 @@ mod normalized_line {
 
         let (rem, line) = normalized_line(Span::new("abc  \r\ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 7
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -182,13 +348,25 @@ mod normalized_line {
 
         let (rem, line) = normalized_line(Span::new("abc  \n\rdef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "\rdef");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "\rdef",
+                line: 2,
+                col: 1,
+                offset: 6
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -197,13 +375,25 @@ mod normalized_line {
 
         let (rem, line) = normalized_line(Span::new("abc   \rdef", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 11);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc   \rdef");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc   \rdef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 }
 
@@ -213,7 +403,7 @@ mod non_empty_line {
         Err,
     };
 
-    use crate::{primitives::non_empty_line, Span};
+    use crate::{primitives::non_empty_line, tests::fixtures::TSpan, Span};
 
     #[test]
     fn empty_source() {
@@ -239,26 +429,50 @@ mod non_empty_line {
     fn simple_line() {
         let (rem, line) = non_empty_line(Span::new("abc", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 4);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn discards_trailing_space() {
         let (rem, line) = non_empty_line(Span::new("abc ", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 5);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -267,13 +481,25 @@ mod non_empty_line {
 
         let (rem, line) = non_empty_line(Span::new("abc  \ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 6
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -282,13 +508,25 @@ mod non_empty_line {
 
         let (rem, line) = non_empty_line(Span::new("abc  \r\ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 7
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -297,13 +535,25 @@ mod non_empty_line {
 
         let (rem, line) = non_empty_line(Span::new("abc  \n\rdef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "\rdef");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "\rdef",
+                line: 2,
+                col: 1,
+                offset: 6
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -312,13 +562,25 @@ mod non_empty_line {
 
         let (rem, line) = non_empty_line(Span::new("abc   \rdef", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 11);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "abc   \rdef");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc   \rdef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 }
 
@@ -328,14 +590,31 @@ mod empty_line {
         Err,
     };
 
-    use crate::{primitives::empty_line, Span};
+    use crate::{primitives::empty_line, tests::fixtures::TSpan, Span};
 
     #[test]
     fn empty_source() {
         let (rem, line) = empty_line(Span::new("", true)).unwrap();
 
-        assert_eq!(rem, Span::new("", true));
-        assert_eq!(line, Span::new("", true));
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -364,13 +643,25 @@ mod empty_line {
 
         let (rem, line) = empty_line(Span::new("     ", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 6);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 6,
+                offset: 5
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "     ");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "     ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -379,13 +670,25 @@ mod empty_line {
 
         let (rem, line) = empty_line(Span::new("  \t  ", true)).unwrap();
 
-        assert_eq!(rem.line(), 1);
-        assert_eq!(rem.col(), 6);
-        assert_eq!(*rem.data(), "");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 6,
+                offset: 5
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "  \t  ");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "  \t  ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -394,13 +697,25 @@ mod empty_line {
 
         let (rem, line) = empty_line(Span::new("   \ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "   ");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "   ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -409,13 +724,25 @@ mod empty_line {
 
         let (rem, line) = empty_line(Span::new("   \r\ndef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 5
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "   ");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "   ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -424,13 +751,25 @@ mod empty_line {
 
         let (rem, line) = empty_line(Span::new("   \n\rdef", true)).unwrap();
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "\rdef");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "\rdef",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
 
-        assert_eq!(line.line(), 1);
-        assert_eq!(line.col(), 1);
-        assert_eq!(*line.data(), "   ");
+        assert_eq!(
+            line,
+            TSpan {
+                data: "   ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
@@ -447,7 +786,7 @@ mod empty_line {
 }
 
 mod consume_empty_lines {
-    use crate::{primitives::consume_empty_lines, Span};
+    use crate::{primitives::consume_empty_lines, tests::fixtures::TSpan, Span};
 
     #[test]
     fn empty_source() {
@@ -459,48 +798,90 @@ mod consume_empty_lines {
     fn consumes_empty_line() {
         let rem = consume_empty_lines(Span::new("\nabc", true));
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "abc");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "abc",
+                line: 2,
+                col: 1,
+                offset: 1
+            }
+        );
     }
 
     #[test]
     fn doesnt_consume_non_empty_line() {
         let rem = consume_empty_lines(Span::new("abc", true));
-        assert_eq!(rem, Span::new("abc", true));
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn doesnt_consume_leading_space() {
         let rem = consume_empty_lines(Span::new("   abc", true));
-        assert_eq!(rem, Span::new("   abc", true));
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "   abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 
     #[test]
     fn consumes_line_with_only_spaces() {
         let rem = consume_empty_lines(Span::new("   \nabc", true));
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "abc");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "abc",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
     }
 
     #[test]
     fn consumes_spaces_and_tabs() {
         let rem = consume_empty_lines(Span::new(" \t \nabc", true));
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "abc");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "abc",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
     }
 
     #[test]
     fn consumes_multiple_lines() {
         let rem = consume_empty_lines(Span::new("\n  \t \n\nabc", true));
 
-        assert_eq!(rem.line(), 4);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "abc");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "abc",
+                line: 4,
+                col: 1,
+                offset: 7
+            }
+        );
     }
 
     #[test]
@@ -509,9 +890,15 @@ mod consume_empty_lines {
 
         let rem = consume_empty_lines(Span::new("  \r\ndef", true));
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "def");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
     }
 
     #[test]
@@ -520,9 +907,15 @@ mod consume_empty_lines {
 
         let rem = consume_empty_lines(Span::new("   \n\rdef", true));
 
-        assert_eq!(rem.line(), 2);
-        assert_eq!(rem.col(), 1);
-        assert_eq!(*rem.data(), "\rdef");
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "\rdef",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
     }
 
     #[test]
@@ -530,6 +923,15 @@ mod consume_empty_lines {
         // A "line" with \r and no immediate \n is not considered empty.
 
         let rem = consume_empty_lines(Span::new("   \rdef", true));
-        assert_eq!(rem, Span::new("   \rdef", true));
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "   \rdef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
     }
 }
