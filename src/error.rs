@@ -1,5 +1,5 @@
 use nom::{
-    error::{ErrorKind, FromExternalError, ParseError},
+    error::{ErrorKind, ParseError},
     IResult,
 };
 use nom_span::Spanned;
@@ -15,6 +15,10 @@ pub enum Error {
     /// Error from nom parsing framework.
     #[error("nom error: {0:?}")]
     NomError(ErrorKind),
+
+    /// Error with location info.
+    #[error("temporary error from nom: {0:?}")]
+    TemporaryError(String),
 }
 
 impl<'a> ParseError<Spanned<&'a str>> for Error {
@@ -36,9 +40,14 @@ impl From<nom::Err<Error>> for Error {
     }
 }
 
-impl<I, E> FromExternalError<I, E> for Error {
-    fn from_external_error(_input: I, kind: ErrorKind, _e: E) -> Error {
-        Error::NomError(kind)
+impl From<nom::Err<nom::error::Error<Spanned<&str>>>> for Error {
+    fn from(e: nom::Err<nom::error::Error<Spanned<&str>>>) -> Self {
+        match e {
+            nom::Err::Incomplete(n) => Self::Incomplete(n),
+            nom::Err::Error(e) | nom::Err::Failure(e) => {
+                Self::TemporaryError(format!("TEMPORARY: {e:#?}"))
+            } // TO DO: Find better solution for error lifetime issues.
+        }
     }
 }
 
