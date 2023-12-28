@@ -1,6 +1,6 @@
 use std::slice::Iter;
 
-use nom::{Finish, IResult};
+use nom::IResult;
 
 use crate::{blocks::Block, primitives::consume_empty_lines, Error, Span};
 
@@ -29,14 +29,7 @@ impl<'a> Document<'a> {
         // TO DO: Look for document header.
         // TO DO: Add option for best-guess parsing?
 
-        let _ = parse_blocks(i).finish();
-
-        let blocks = match parse_blocks(i) {
-            Ok((_, blocks)) => blocks,
-            Err(e) => {
-                return Err(e.into());
-            }
-        };
+        let (_rem, blocks) = parse_blocks(i)?;
 
         // let blocks: Vec<Block<'a>> = vec![]; // TEMPORARY
         Ok(Self { source, blocks })
