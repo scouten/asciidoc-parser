@@ -24,7 +24,7 @@ impl<'a> Document<'a> {
     /// necessarily has the same lifetime as the source.
     pub fn parse(source: &'a str) -> Result<Self, Error> {
         let source = Span::new(source, true);
-        let i = source.clone();
+        let i = source;
 
         // TO DO: Look for document header.
         // TO DO: Add option for best-guess parsing?
