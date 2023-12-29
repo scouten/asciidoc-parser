@@ -27,7 +27,7 @@ fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) ->
         .iter()
         .zip(simple_block.inlines.iter())
     {
-        if &tsb_line != &sb_line {
+        if tsb_line != sb_line {
             return false;
         }
     }
