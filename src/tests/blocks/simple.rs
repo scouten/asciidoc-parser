@@ -3,7 +3,7 @@ use nom::{
     Err,
 };
 
-use crate::{blocks::SimpleBlock, Span};
+use crate::{blocks::SimpleBlock, tests::fixtures::TSpan, Span};
 
 #[test]
 fn empty_source() {
@@ -31,9 +31,15 @@ fn single_line() {
 
     let (rem, block) = SimpleBlock::parse(Span::new("abc", true)).unwrap();
 
-    assert_eq!(rem.line(), 1);
-    assert_eq!(rem.col(), 4);
-    assert_eq!(*rem.data(), "");
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 4,
+            offset: 3
+        }
+    );
 
     assert_eq!(block, expected);
 }
@@ -42,19 +48,37 @@ fn single_line() {
 fn multiple_lines() {
     let (rem, block) = SimpleBlock::parse(Span::new("abc\ndef", true)).unwrap();
 
-    assert_eq!(rem.line(), 2);
-    assert_eq!(rem.col(), 4);
-    assert_eq!(*rem.data(), "");
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 2,
+            col: 4,
+            offset: 7
+        }
+    );
 
     assert_eq!(block.inlines.len(), 2);
 
-    assert_eq!(block.inlines[0].line(), 1);
-    assert_eq!(block.inlines[0].col(), 1);
-    assert_eq!(*block.inlines[0].data(), "abc");
+    assert_eq!(
+        block.inlines[0],
+        TSpan {
+            data: "abc",
+            line: 1,
+            col: 1,
+            offset: 0
+        }
+    );
 
-    assert_eq!(block.inlines[1].line(), 2);
-    assert_eq!(block.inlines[1].col(), 1);
-    assert_eq!(*block.inlines[1].data(), "def");
+    assert_eq!(
+        block.inlines[1],
+        TSpan {
+            data: "def",
+            line: 2,
+            col: 1,
+            offset: 4
+        }
+    );
 }
 
 #[test]
@@ -65,9 +89,15 @@ fn consumes_blank_lines_after() {
 
     let (rem, block) = SimpleBlock::parse(Span::new("abc\n\ndef", true)).unwrap();
 
-    assert_eq!(rem.line(), 3);
-    assert_eq!(rem.col(), 1);
-    assert_eq!(*rem.data(), "def");
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "def",
+            line: 3,
+            col: 1,
+            offset: 5
+        }
+    );
 
     assert_eq!(block, expected);
 }

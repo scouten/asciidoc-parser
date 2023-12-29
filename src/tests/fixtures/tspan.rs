@@ -27,6 +27,12 @@ impl<'a> PartialEq<TSpan> for Span<'a> {
     }
 }
 
+impl<'a> PartialEq<TSpan> for &Span<'a> {
+    fn eq(&self, other: &TSpan) -> bool {
+        tspan_eq(other, self)
+    }
+}
+
 fn tspan_eq(tspan: &TSpan, span: &Span) -> bool {
     &tspan.data == span.data()
         && tspan.line == span.line()
