@@ -5,6 +5,7 @@
 #![allow(clippy::panic)]
 #![allow(clippy::unwrap_used)]
 
+mod asciidoc_lang;
 mod blocks;
 mod document;
 pub(crate) mod fixtures;
