@@ -3,7 +3,11 @@ use nom::{
     Err,
 };
 
-use crate::{blocks::SimpleBlock, tests::fixtures::TSpan, Span};
+use crate::{
+    blocks::SimpleBlock,
+    tests::fixtures::{blocks::TSimpleBlock, TSpan},
+    Span,
+};
 
 #[test]
 fn empty_source() {
@@ -25,10 +29,6 @@ fn only_spaces() {
 
 #[test]
 fn single_line() {
-    let expected = SimpleBlock {
-        inlines: vec![Span::new("abc", true)],
-    };
-
     let (rem, block) = SimpleBlock::parse(Span::new("abc", true)).unwrap();
 
     assert_eq!(
@@ -41,7 +41,17 @@ fn single_line() {
         }
     );
 
-    assert_eq!(block, expected);
+    assert_eq!(
+        block,
+        TSimpleBlock {
+            inlines: vec![TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }],
+        }
+    );
 }
 
 #[test]
@@ -58,35 +68,29 @@ fn multiple_lines() {
         }
     );
 
-    assert_eq!(block.inlines.len(), 2);
-
     assert_eq!(
-        block.inlines[0],
-        TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0
-        }
-    );
-
-    assert_eq!(
-        block.inlines[1],
-        TSpan {
-            data: "def",
-            line: 2,
-            col: 1,
-            offset: 4
+        block,
+        TSimpleBlock {
+            inlines: vec![
+                TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                TSpan {
+                    data: "def",
+                    line: 2,
+                    col: 1,
+                    offset: 4,
+                }
+            ],
         }
     );
 }
 
 #[test]
 fn consumes_blank_lines_after() {
-    let expected = SimpleBlock {
-        inlines: vec![Span::new("abc", true)],
-    };
-
     let (rem, block) = SimpleBlock::parse(Span::new("abc\n\ndef", true)).unwrap();
 
     assert_eq!(
@@ -99,5 +103,15 @@ fn consumes_blank_lines_after() {
         }
     );
 
-    assert_eq!(block, expected);
+    assert_eq!(
+        block,
+        TSimpleBlock {
+            inlines: vec![TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }],
+        }
+    );
 }

@@ -1,5 +1,7 @@
 use std::{env, path::PathBuf};
 
+pub(crate) mod blocks;
+
 mod tspan;
 pub(crate) use tspan::TSpan;
 
