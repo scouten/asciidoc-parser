@@ -2,8 +2,8 @@ use std::{env, path::PathBuf};
 
 pub(crate) mod blocks;
 
-mod tspan;
-pub(crate) use tspan::TSpan;
+mod span;
+pub(crate) use span::TSpan;
 
 #[allow(dead_code)] // TEMPORARY while bootstrapping
 pub(crate) fn fixture_path(name: &str) -> String {
