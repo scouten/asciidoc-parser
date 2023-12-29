@@ -13,3 +13,6 @@ rust-version = "1.72.0"
 nom = "7.1"
 nom-span = "0.1.1"
 thiserror = "1.0.50"
+
+[dev-dependencies]
+pretty_assertions_sorted = "1.2.3"

@@ -1,4 +1,4 @@
-use std::cmp::PartialEq;
+use std::{cmp::PartialEq, fmt};
 
 use crate::{
     tests::fixtures::{blocks::TBlock, TSpan},
@@ -10,10 +10,22 @@ use crate::{
 //
 // Primary difference is that the data members are public
 // so we can declare them inline.
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Eq, PartialEq)]
 pub(crate) struct TDocument {
     pub blocks: Vec<TBlock>,
     pub source: TSpan,
+}
+
+impl fmt::Debug for TDocument {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Intentionally mimic the output of nom_span::Spanned
+        // so diffs point the unit test author to the important
+        // differences.
+        f.debug_struct("Document")
+            .field("blocks", &self.blocks)
+            .field("source", &self.source)
+            .finish()
+    }
 }
 
 impl<'a> PartialEq<Document<'a>> for TDocument {

@@ -1,4 +1,6 @@
 mod fn_line {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{primitives::line, tests::fixtures::TSpan, Span};
 
     #[test]
@@ -186,6 +188,8 @@ mod fn_line {
 }
 
 mod normalized_line {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{primitives::normalized_line, tests::fixtures::TSpan, Span};
 
     #[test]
@@ -402,6 +406,7 @@ mod non_empty_line {
         error::{Error, ErrorKind},
         Err,
     };
+    use pretty_assertions_sorted::assert_eq;
 
     use crate::{primitives::non_empty_line, tests::fixtures::TSpan, Span};
 
@@ -589,6 +594,7 @@ mod empty_line {
         error::{Error, ErrorKind},
         Err,
     };
+    use pretty_assertions_sorted::assert_eq;
 
     use crate::{primitives::empty_line, tests::fixtures::TSpan, Span};
 
@@ -786,6 +792,8 @@ mod empty_line {
 }
 
 mod consume_empty_lines {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{primitives::consume_empty_lines, tests::fixtures::TSpan, Span};
 
     #[test]
