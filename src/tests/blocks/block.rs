@@ -6,7 +6,10 @@ mod simple {
 
     use crate::{
         blocks::{Block, SimpleBlock},
-        tests::fixtures::TSpan,
+        tests::fixtures::{
+            blocks::{TBlock, TSimpleBlock},
+            TSpan,
+        },
         Span,
     };
 
@@ -29,10 +32,8 @@ mod simple {
 
         assert_eq!(e.code, ErrorKind::TakeTill1);
 
-        let span = e.input;
-
         assert_eq!(
-            span,
+            e.input,
             TSpan {
                 data: "",
                 line: 1,
@@ -58,6 +59,18 @@ mod simple {
                 col: 4,
                 offset: 3
             }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inlines: vec![TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }]
+            })
         );
 
         assert_eq!(block, expected);

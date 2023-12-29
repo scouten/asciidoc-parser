@@ -1,5 +1,4 @@
 use crate::{
-    blocks::Block,
     tests::fixtures::{
         blocks::{TBlock, TSimpleBlock},
         TSpan,
@@ -39,7 +38,7 @@ fn only_spaces() {
         }
     );
 
-    let mut blocks: std::slice::Iter<'_, Block<'_>> = doc.blocks();
+    let mut blocks = doc.blocks();
     assert!(blocks.next().is_none());
 }
 
@@ -57,7 +56,7 @@ fn one_simple_block() {
         }
     );
 
-    let mut blocks: std::slice::Iter<'_, Block<'_>> = doc.blocks();
+    let mut blocks = doc.blocks();
 
     assert_eq!(
         blocks.next().unwrap(),
@@ -88,7 +87,7 @@ fn two_simple_blocks() {
         }
     );
 
-    let mut blocks: std::slice::Iter<'_, Block<'_>> = doc.blocks();
+    let mut blocks = doc.blocks();
 
     assert_eq!(
         blocks.next().unwrap(),
