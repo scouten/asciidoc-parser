@@ -12,6 +12,7 @@ use crate::{blocks::Block, primitives::consume_empty_lines, Error, Span};
 /// block itself, but contributes metadata to the document, such as the document
 /// title and document attributes.
 #[allow(dead_code)] // TEMPORARY while building
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Document<'a> {
     blocks: Vec<Block<'a>>,
     source: Span<'a>,
