@@ -1,4 +1,4 @@
-use std::cmp::PartialEq;
+use std::{cmp::PartialEq, fmt};
 
 use crate::Span;
 
@@ -7,12 +7,27 @@ use crate::Span;
 //
 // Primary difference is that the data members are public
 // so we can declare them inline.
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Eq, PartialEq)]
 pub(crate) struct TSpan {
     pub data: &'static str,
     pub line: usize,
     pub col: usize,
     pub offset: usize,
+}
+
+impl fmt::Debug for TSpan {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Intentionally mimic the output of nom_span::Spanned
+        // so diffs point the unit test author to the important
+        // differences.
+        f.debug_struct("Spanned")
+            .field("data", &self.data)
+            .field("line", &self.line)
+            .field("col", &self.col)
+            .field("offset", &self.offset)
+            .field("handle_utf8", &true)
+            .finish()
+    }
 }
 
 impl<'a> PartialEq<Span<'a>> for TSpan {

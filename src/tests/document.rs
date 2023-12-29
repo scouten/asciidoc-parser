@@ -1,3 +1,5 @@
+use pretty_assertions_sorted::assert_eq;
+
 use crate::{
     tests::fixtures::{
         blocks::{TBlock, TSimpleBlock},

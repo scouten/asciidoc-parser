@@ -3,6 +3,7 @@ mod simple {
         error::{Error, ErrorKind},
         Err,
     };
+    use pretty_assertions_sorted::assert_eq;
 
     use crate::{
         blocks::Block,

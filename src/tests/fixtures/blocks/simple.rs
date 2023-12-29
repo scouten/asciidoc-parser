@@ -1,8 +1,21 @@
+use std::fmt;
+
 use crate::{blocks::SimpleBlock, tests::fixtures::TSpan};
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Eq, PartialEq)]
 pub(crate) struct TSimpleBlock {
     pub inlines: Vec<TSpan>,
+}
+
+impl fmt::Debug for TSimpleBlock {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Intentionally mimic the output of nom_span::Spanned
+        // so diffs point the unit test author to the important
+        // differences.
+        f.debug_struct("SimpleBlock")
+            .field("inlines", &self.inlines)
+            .finish()
+    }
 }
 
 impl<'a> PartialEq<SimpleBlock<'a>> for TSimpleBlock {
