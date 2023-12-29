@@ -1,7 +1,10 @@
 use crate::{
-    blocks::{Block, SimpleBlock},
-    tests::fixtures::TSpan,
-    Document, Span,
+    blocks::Block,
+    tests::fixtures::{
+        blocks::{TBlock, TSimpleBlock},
+        TSpan,
+    },
+    Document,
 };
 
 #[test]
@@ -56,10 +59,17 @@ fn one_simple_block() {
 
     let mut blocks: std::slice::Iter<'_, Block<'_>> = doc.blocks();
 
-    let expected = Block::Simple(SimpleBlock {
-        inlines: vec![Span::new("abc", true)],
-    });
-    assert_eq!(blocks.next(), Some(&expected));
+    assert_eq!(
+        blocks.next().unwrap(),
+        &TBlock::Simple(TSimpleBlock {
+            inlines: vec![TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },],
+        })
+    );
 
     assert!(blocks.next().is_none());
 }
@@ -80,22 +90,28 @@ fn two_simple_blocks() {
 
     let mut blocks: std::slice::Iter<'_, Block<'_>> = doc.blocks();
 
-    let expected = Block::Simple(SimpleBlock {
-        inlines: vec![Span::new("abc", true)],
-    });
-    assert_eq!(blocks.next(), Some(&expected));
-
-    let Block::Simple(def_block) = blocks.next().unwrap();
-    // else ... error
+    assert_eq!(
+        blocks.next().unwrap(),
+        &TBlock::Simple(TSimpleBlock {
+            inlines: vec![TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },],
+        })
+    );
 
     assert_eq!(
-        def_block.inlines.first().unwrap(),
-        TSpan {
-            data: "def",
-            line: 3,
-            col: 1,
-            offset: 5
-        }
+        blocks.next().unwrap(),
+        &TBlock::Simple(TSimpleBlock {
+            inlines: vec![TSpan {
+                data: "def",
+                line: 3,
+                col: 1,
+                offset: 5,
+            },],
+        })
     );
 
     assert!(blocks.next().is_none());
