@@ -7,6 +7,6 @@
 
 mod blocks;
 mod document;
-mod fixtures;
+pub(crate) mod fixtures;
 mod primitives;
 mod strings;

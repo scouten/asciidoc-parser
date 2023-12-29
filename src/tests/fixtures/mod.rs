@@ -1,5 +1,13 @@
 use std::{env, path::PathBuf};
 
+pub(crate) mod blocks;
+
+mod document;
+pub(crate) use document::TDocument;
+
+mod span;
+pub(crate) use span::TSpan;
+
 #[allow(dead_code)] // TEMPORARY while bootstrapping
 pub(crate) fn fixture_path(name: &str) -> String {
     let root_dir = &env::var("CARGO_MANIFEST_DIR").unwrap();
