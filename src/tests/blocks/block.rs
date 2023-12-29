@@ -5,7 +5,7 @@ mod simple {
     };
 
     use crate::{
-        blocks::{Block, SimpleBlock},
+        blocks::Block,
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
             TSpan,
@@ -45,10 +45,6 @@ mod simple {
 
     #[test]
     fn single_line() {
-        let expected = Block::Simple(SimpleBlock {
-            inlines: vec![Span::new("abc", true)],
-        });
-
         let (rem, block) = Block::parse(Span::new("abc", true)).unwrap();
 
         assert_eq!(
@@ -72,8 +68,6 @@ mod simple {
                 }]
             })
         );
-
-        assert_eq!(block, expected);
     }
 
     #[test]
@@ -90,40 +84,29 @@ mod simple {
             }
         );
 
-        let Block::Simple(block) = block;
-        // else { // ADD THIS ONCE WE HAVE OTHER BLOCK TYPES
-        //panic!("Expected a SimpleBlock: {block:#?}");
-        //};
-
-        assert_eq!(block.inlines.len(), 2);
-
         assert_eq!(
-            block.inlines[0],
-            TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0
-            }
-        );
-
-        assert_eq!(
-            block.inlines[1],
-            TSpan {
-                data: "def",
-                line: 2,
-                col: 1,
-                offset: 4
-            }
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inlines: vec![
+                    TSpan {
+                        data: "abc",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    TSpan {
+                        data: "def",
+                        line: 2,
+                        col: 1,
+                        offset: 4,
+                    },
+                ],
+            })
         );
     }
 
     #[test]
     fn consumes_blank_lines_after() {
-        let expected = SimpleBlock {
-            inlines: vec![Span::new("abc", true)],
-        };
-
         let (rem, block) = Block::parse(Span::new("abc\n\ndef", true)).unwrap();
 
         assert_eq!(
@@ -136,11 +119,16 @@ mod simple {
             }
         );
 
-        let Block::Simple(block) = block;
-        // else { // ADD THIS ONCE WE HAVE OTHER BLOCK TYPES
-        //panic!("Expected a SimpleBlock: {block:#?}");
-        //};
-
-        assert_eq!(block, expected);
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inlines: vec![TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+            })
+        );
     }
 }
