@@ -11,7 +11,6 @@ use crate::Span;
 /// A line is terminated by end-of-input or a single `\n` character
 /// or a single `\r\n` sequence. The end of line sequence is consumed
 /// but not included in the returned line.
-#[allow(dead_code)] // TEMPORARY
 pub(crate) fn line(input: Span<'_>) -> IResult<Span, Span> {
     take_till(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
@@ -62,7 +61,6 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
 /// An empty line may contain any number of white space characters.
 ///
 /// Returns an error if the line contains any non-white-space characters.
-#[allow(dead_code)]
 pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
     let (i, line) = line(input)?;
 
@@ -76,7 +74,6 @@ pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
 /// Consumes zero or more empty lines.
 ///
 /// Returns the original input if any error occurs or no empty lines are found.
-#[allow(dead_code)]
 pub(crate) fn consume_empty_lines(mut input: Span<'_>) -> Span {
     while !input.data().is_empty() {
         match empty_line(input) {
