@@ -1,2 +1,2 @@
-mod document;
-pub(crate) use document::TDocument;
+mod tdocument;
+pub(crate) use tdocument::TDocument;
