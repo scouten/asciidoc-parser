@@ -1,11 +1,12 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    document::Document,
     tests::fixtures::{
         blocks::{TBlock, TSimpleBlock},
-        TDocument, TSpan,
+        document::TDocument,
+        TSpan,
     },
-    Document,
 };
 
 #[test]

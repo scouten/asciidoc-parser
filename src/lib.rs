@@ -7,8 +7,7 @@
 
 pub mod blocks;
 
-mod document;
-pub use document::Document;
+pub mod document;
 
 mod error;
 pub use error::{Error, ParseResult};
