@@ -4,7 +4,7 @@ use crate::{
     document::Document,
     tests::fixtures::{
         blocks::{TBlock, TSimpleBlock},
-        document::TDocument,
+        document::{TDocument, THeader},
         TSpan,
     },
 };
@@ -22,6 +22,7 @@ fn empty_source() {
     assert_eq!(
         Document::parse("").unwrap(),
         TDocument {
+            header: None,
             source: TSpan {
                 data: "",
                 line: 1,
@@ -38,6 +39,7 @@ fn only_spaces() {
     assert_eq!(
         Document::parse("    ").unwrap(),
         TDocument {
+            header: None,
             source: TSpan {
                 data: "    ",
                 line: 1,
@@ -54,6 +56,7 @@ fn one_simple_block() {
     assert_eq!(
         Document::parse("abc").unwrap(),
         TDocument {
+            header: None,
             source: TSpan {
                 data: "abc",
                 line: 1,
@@ -83,6 +86,7 @@ fn two_simple_blocks() {
     assert_eq!(
         Document::parse("abc\n\ndef").unwrap(),
         TDocument {
+            header: None,
             source: TSpan {
                 data: "abc\n\ndef",
                 line: 1,
@@ -119,6 +123,65 @@ fn two_simple_blocks() {
                     }
                 }),
             ],
+        }
+    );
+}
+
+#[test]
+fn two_blocks_and_title() {
+    assert_eq!(
+        Document::parse("= Example Title\n\nabc\n\ndef").unwrap(),
+        TDocument {
+            header: Some(THeader {
+                title: Some(TSpan {
+                    data: "Example Title",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                }),
+                source: TSpan {
+                    data: "= Example Title\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }),
+            blocks: vec![
+                TBlock::Simple(TSimpleBlock {
+                    inlines: vec![TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },],
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    }
+                }),
+                TBlock::Simple(TSimpleBlock {
+                    inlines: vec![TSpan {
+                        data: "def",
+                        line: 5,
+                        col: 1,
+                        offset: 22,
+                    },],
+                    source: TSpan {
+                        data: "def",
+                        line: 5,
+                        col: 1,
+                        offset: 22,
+                    }
+                }),
+            ],
+            source: TSpan {
+                data: "= Example Title\n\nabc\n\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            },
         }
     );
 }

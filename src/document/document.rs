@@ -4,7 +4,9 @@ use std::slice::Iter;
 
 use nom::IResult;
 
-use crate::{blocks::Block, primitives::consume_empty_lines, Error, HasSpan, Span};
+use crate::{
+    blocks::Block, document::Header, primitives::consume_empty_lines, Error, HasSpan, Span,
+};
 
 /// A document represents the top-level block element in AsciiDoc. It consists
 /// of an optional document header and either a) one or more sections preceded
@@ -13,9 +15,9 @@ use crate::{blocks::Block, primitives::consume_empty_lines, Error, HasSpan, Span
 /// The document can be configured using a document header. The header is not a
 /// block itself, but contributes metadata to the document, such as the document
 /// title and document attributes.
-#[allow(dead_code)] // TEMPORARY while building
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Document<'a> {
+    header: Option<Header<'a>>,
     blocks: Vec<Block<'a>>,
     source: Span<'a>,
 }
@@ -26,16 +28,30 @@ impl<'a> Document<'a> {
     /// Note that the document references the underlying source string and
     /// necessarily has the same lifetime as the source.
     pub fn parse(source: &'a str) -> Result<Self, Error> {
-        let source = Span::new(source, true);
-        let i = source;
-
-        // TO DO: Look for document header.
         // TO DO: Add option for best-guess parsing?
+
+        let source = Span::new(source, true);
+        let i = consume_empty_lines(source);
+
+        let (i, header) = if i.starts_with("= ") {
+            let (i, header) = Header::parse(i)?;
+            (i, Some(header))
+        } else {
+            (i, None)
+        };
 
         let (_rem, blocks) = parse_blocks(i)?;
 
-        // let blocks: Vec<Block<'a>> = vec![]; // TEMPORARY
-        Ok(Self { source, blocks })
+        Ok(Self {
+            header,
+            blocks,
+            source,
+        })
+    }
+
+    /// Return the document header if there is one.
+    pub fn header(&'a self) -> Option<&'a Header<'a>> {
+        self.header.as_ref()
     }
 
     /// Return an iterator over the blocks in this document.

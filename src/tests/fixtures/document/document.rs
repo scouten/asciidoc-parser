@@ -1,5 +1,6 @@
 use std::{cmp::PartialEq, fmt};
 
+use super::THeader;
 use crate::{
     document::Document,
     tests::fixtures::{blocks::TBlock, TSpan},
@@ -13,6 +14,7 @@ use crate::{
 // so we can declare them inline.
 #[derive(Eq, PartialEq)]
 pub(crate) struct TDocument {
+    pub header: Option<THeader>,
     pub blocks: Vec<TBlock>,
     pub source: TSpan,
 }
@@ -23,6 +25,7 @@ impl fmt::Debug for TDocument {
         // so diffs point the unit test author to the important
         // differences.
         f.debug_struct("Document")
+            .field("header", &self.header)
             .field("blocks", &self.blocks)
             .field("source", &self.source)
             .finish()
@@ -50,6 +53,16 @@ impl<'a> PartialEq<TDocument> for &Document<'a> {
 fn tdocument_eq(tdocument: &TDocument, document: &Document) -> bool {
     if &tdocument.source != document.span() {
         return false;
+    }
+
+    if tdocument.header.is_some() != document.header().is_some() {
+        return false;
+    } else if let Some(ref td_header) = tdocument.header {
+        if let Some(d_header) = document.header() {
+            if td_header != d_header {
+                return false;
+            }
+        }
     }
 
     if tdocument.blocks.len() != document.blocks().len() {
