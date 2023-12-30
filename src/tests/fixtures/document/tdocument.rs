@@ -1,8 +1,8 @@
 use std::{cmp::PartialEq, fmt};
 
 use crate::{
+    document::Document,
     tests::fixtures::{blocks::TBlock, TSpan},
-    Document,
 };
 
 // Approximate mock of Document type that we can use

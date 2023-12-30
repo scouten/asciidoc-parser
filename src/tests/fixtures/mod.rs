@@ -1,9 +1,7 @@
 use std::{env, path::PathBuf};
 
 pub(crate) mod blocks;
-
-mod document;
-pub(crate) use document::TDocument;
+pub(crate) mod document;
 
 mod span;
 pub(crate) use span::TSpan;

@@ -1,3 +1,5 @@
+//! Describes the top-level document structure.
+
 use std::slice::Iter;
 
 use nom::IResult;
