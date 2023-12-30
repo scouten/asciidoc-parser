@@ -25,9 +25,9 @@ pub(crate) fn trim_input_for_rem<'a>(inp: Span<'a>, rem: Span<'a>) -> Span<'a> {
     let ilen = inp.len();
 
     if rlen >= ilen {
-        return inp.slice(0..0);
+        inp.slice(0..0)
+    } else {
+        let trim_len = ilen - rlen;
+        inp.slice(0..trim_len)
     }
-
-    let trim_len = ilen - rlen;
-    inp.slice(0..trim_len)
 }
