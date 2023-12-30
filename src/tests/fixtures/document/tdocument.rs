@@ -3,6 +3,7 @@ use std::{cmp::PartialEq, fmt};
 use crate::{
     document::Document,
     tests::fixtures::{blocks::TBlock, TSpan},
+    HasSpan,
 };
 
 // Approximate mock of Document type that we can use

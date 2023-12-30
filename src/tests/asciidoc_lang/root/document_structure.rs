@@ -54,6 +54,12 @@ mod documents {
                         col: 1,
                         offset: 0,
                     },],
+                    source: TSpan {
+                        data: "This is a basic AsciiDoc document.\n",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }
                 })],
             }
         );
@@ -97,6 +103,12 @@ mod documents {
                             col: 1,
                             offset: 0,
                         },],
+                        source: TSpan {
+                            data: "This is a basic AsciiDoc document.\n",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }
                     }),
                     TBlock::Simple(TSimpleBlock {
                         inlines: vec![TSpan {
@@ -105,6 +117,12 @@ mod documents {
                             col: 1,
                             offset: 36,
                         },],
+                        source: TSpan {
+                            data: "This document contains two paragraphs.\n",
+                            line: 3,
+                            col: 1,
+                            offset: 36,
+                        }
                     })
                 ],
             }

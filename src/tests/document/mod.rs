@@ -59,6 +59,12 @@ fn one_simple_block() {
                     col: 1,
                     offset: 0,
                 },],
+                source: TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
             })],
         }
     );
@@ -83,6 +89,12 @@ fn two_simple_blocks() {
                         col: 1,
                         offset: 0,
                     },],
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }
                 }),
                 TBlock::Simple(TSimpleBlock {
                     inlines: vec![TSpan {
@@ -91,6 +103,12 @@ fn two_simple_blocks() {
                         col: 1,
                         offset: 5,
                     },],
+                    source: TSpan {
+                        data: "def",
+                        line: 3,
+                        col: 1,
+                        offset: 5,
+                    }
                 }),
             ],
         }
