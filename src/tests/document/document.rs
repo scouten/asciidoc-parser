@@ -10,6 +10,14 @@ use crate::{
 };
 
 #[test]
+fn impl_clone() {
+    // Silly test to mark the #[derive(...)] line as covered.
+    let doc1 = Document::parse("").unwrap();
+    let doc2 = doc1.clone();
+    assert_eq!(doc1, doc2);
+}
+
+#[test]
 fn empty_source() {
     assert_eq!(
         Document::parse("").unwrap(),
