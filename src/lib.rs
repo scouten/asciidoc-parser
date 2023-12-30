@@ -12,6 +12,9 @@ pub mod document;
 mod error;
 pub use error::{Error, ParseResult};
 
+mod has_span;
+pub use has_span::HasSpan;
+
 pub(crate) mod primitives;
 pub use primitives::Span;
 pub mod strings;

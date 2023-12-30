@@ -4,7 +4,7 @@ use std::slice::Iter;
 
 use nom::IResult;
 
-use crate::{blocks::Block, primitives::consume_empty_lines, Error, Span};
+use crate::{blocks::Block, primitives::consume_empty_lines, Error, HasSpan, Span};
 
 /// A document represents the top-level block element in AsciiDoc. It consists
 /// of an optional document header and either a) one or more sections preceded
@@ -38,14 +38,15 @@ impl<'a> Document<'a> {
         Ok(Self { source, blocks })
     }
 
-    /// Return a [`Span`] describing the entire document as parsed.
-    pub fn span(&'a self) -> &'a Span<'a> {
-        &self.source
-    }
-
     /// Return an iterator over the blocks in this document.
     pub fn blocks(&'a self) -> Iter<'a, Block<'a>> {
         self.blocks.iter()
+    }
+}
+
+impl<'a> HasSpan<'a> for Document<'a> {
+    fn span(&'a self) -> &'a Span<'a> {
+        &self.source
     }
 }
 
