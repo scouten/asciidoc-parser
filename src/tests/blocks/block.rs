@@ -11,7 +11,7 @@ mod simple {
             blocks::{TBlock, TSimpleBlock},
             TSpan,
         },
-        Span,
+        HasSpan, Span,
     };
 
     #[test]
@@ -75,6 +75,16 @@ mod simple {
                 }
             })
         );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -116,6 +126,16 @@ mod simple {
                 }
             })
         );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "abc\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -148,6 +168,16 @@ mod simple {
                     offset: 0,
                 },
             })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "abc\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
         );
     }
 }

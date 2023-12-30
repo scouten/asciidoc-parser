@@ -1,7 +1,7 @@
 use nom::IResult;
 
 use super::SimpleBlock;
-use crate::{primitives::consume_empty_lines, Span};
+use crate::{primitives::consume_empty_lines, HasSpan, Span};
 
 /// Block elements form the main structure of an AsciiDoc document, starting
 /// with the document itself.
@@ -20,7 +20,6 @@ pub enum Block<'a> {
 }
 
 impl<'a> Block<'a> {
-    #[allow(dead_code)]
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
@@ -31,5 +30,13 @@ impl<'a> Block<'a> {
         // Later we'll start to try to discern other block types.
         let (rem, simple_block) = SimpleBlock::parse(i)?;
         Ok((rem, Self::Simple(simple_block)))
+    }
+}
+
+impl<'a> HasSpan<'a> for Block<'a> {
+    fn span(&'a self) -> &'a Span<'a> {
+        match self {
+            Self::Simple(b) => b.span(),
+        }
     }
 }
