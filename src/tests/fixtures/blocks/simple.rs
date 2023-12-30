@@ -1,10 +1,11 @@
 use std::fmt;
 
-use crate::{blocks::SimpleBlock, tests::fixtures::TSpan};
+use crate::{blocks::SimpleBlock, tests::fixtures::TSpan, HasSpan};
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TSimpleBlock {
     pub inlines: Vec<TSpan>,
+    pub source: TSpan,
 }
 
 impl fmt::Debug for TSimpleBlock {
@@ -14,6 +15,7 @@ impl fmt::Debug for TSimpleBlock {
         // differences.
         f.debug_struct("SimpleBlock")
             .field("inlines", &self.inlines)
+            .field("source", &self.source)
             .finish()
     }
 }
@@ -32,6 +34,10 @@ impl<'a> PartialEq<TSimpleBlock> for SimpleBlock<'a> {
 
 fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) -> bool {
     if tsimple_block.inlines.len() != simple_block.inlines.len() {
+        return false;
+    }
+
+    if &tsimple_block.source != simple_block.span() {
         return false;
     }
 
