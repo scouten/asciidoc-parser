@@ -1,7 +1,10 @@
 use nom::{
     bytes::complete::{take_till, take_till1},
+    combinator::recognize,
     error::{Error, ErrorKind},
-    Err, IResult, Slice,
+    multi::many0,
+    sequence::pair,
+    Err, IResult, Parser, Slice,
 };
 
 use crate::Span;
@@ -53,6 +56,51 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
                 Ok((rem, inp))
             }
         })
+}
+
+/// Return a normalized, non-empty line that may be continued onto subsequent
+/// lines with an explicit continuation marker.
+///
+/// A line is terminated by end-of-input or a single `\n` character
+/// or a single `\r\n` sequence. The end of line sequence is consumed
+/// but not included in the returned line.
+///
+/// A line is _not_ terminated by `\n` when preceded by a `+` character.
+///
+/// SPEC QUESTION: Is it allowed to have a `+` character followed by
+/// white space? For now, I'm saying yes.
+///
+/// Trailing white spaces are removed from the final line and are not
+/// removed from any lines with continuations.
+///
+/// Returns an error if the line becomes empty after trailing spaces have been
+/// removed.
+#[allow(dead_code)]
+pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
+    recognize(pair(
+        many0(one_line_with_continuation),
+        take_till(|c| c == '\n'),
+    ))
+    .parse(input)
+    .map(|ri| trim_rem_start_matches(ri, '\n'))
+    .map(|ri| trim_rem_end_matches(ri, '\r'))
+    .map(trim_trailing_spaces)
+    .and_then(|(rem, inp)| {
+        if inp.is_empty() {
+            Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
+        } else {
+            Ok((rem, inp))
+        }
+    })
+}
+
+fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
+    let (rem, line) = normalized_line(input)?;
+    if line.ends_with('+') {
+        Ok((rem, line))
+    } else {
+        Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
+    }
 }
 
 /// Consumes an empty line.
