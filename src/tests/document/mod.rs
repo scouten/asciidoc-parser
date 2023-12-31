@@ -3,3 +3,5 @@
 // circumstance.
 #[allow(clippy::module_inception)]
 mod document;
+
+mod header;

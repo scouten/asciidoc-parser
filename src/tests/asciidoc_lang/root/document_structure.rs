@@ -41,6 +41,7 @@ mod documents {
         assert_eq!(
             Document::parse("This is a basic AsciiDoc document.\n").unwrap(),
             TDocument {
+                header: None,
                 source: TSpan {
                     data: "This is a basic AsciiDoc document.\n",
                     line: 1,
@@ -89,6 +90,7 @@ mod documents {
             )
             .unwrap(),
             TDocument {
+                header: None,
                 source: TSpan {
                     data: "This is a basic AsciiDoc document.\n\nThis document contains two paragraphs.\n",
                     line: 1,
