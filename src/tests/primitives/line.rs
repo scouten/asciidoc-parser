@@ -775,6 +775,131 @@ mod line_with_continuation {
             }
         );
     }
+
+    #[test]
+    fn simple_continuation() {
+        let (rem, line) = line_with_continuation(Span::new("abc +\ndef", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 4,
+                offset: 9
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc +\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn simple_continuation_with_crlf() {
+        let (rem, line) = line_with_continuation(Span::new("abc +\r\ndef", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 4,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc +\r\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn continuation_with_trailing_space() {
+        let (rem, line) = line_with_continuation(Span::new("abc +   \ndef", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 4,
+                offset: 12
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc +   \ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn multiple_continuations() {
+        let (rem, line) = line_with_continuation(Span::new("abc +\ndef+\nghi", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 4,
+                offset: 14
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc +\ndef+\nghi",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn terminates_on_line_without_plus() {
+        let (rem, line) = line_with_continuation(Span::new("abc +\ndef  \nghi", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "ghi",
+                line: 3,
+                col: 1,
+                offset: 12
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "abc +\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
 }
 
 mod empty_line {
