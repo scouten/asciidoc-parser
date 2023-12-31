@@ -7,11 +7,6 @@ use crate::{
     HasSpan,
 };
 
-// Approximate mock of Document type that we can use
-// to declare expected values for easier test writing.
-//
-// Primary difference is that the data members are public
-// so we can declare them inline.
 #[derive(Eq, PartialEq)]
 pub(crate) struct TDocument {
     pub header: Option<THeader>,
@@ -21,9 +16,6 @@ pub(crate) struct TDocument {
 
 impl fmt::Debug for TDocument {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // Intentionally mimic the output of nom_span::Spanned
-        // so diffs point the unit test author to the important
-        // differences.
         f.debug_struct("Document")
             .field("header", &self.header)
             .field("blocks", &self.blocks)

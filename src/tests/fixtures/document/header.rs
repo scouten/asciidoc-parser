@@ -2,11 +2,6 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::{document::Header, tests::fixtures::TSpan, HasSpan};
 
-// Approximate mock of Header type that we can use
-// to declare expected values for easier test writing.
-//
-// Primary difference is that the data members are public
-// so we can declare them inline.
 #[derive(Eq, PartialEq)]
 pub(crate) struct THeader {
     pub title: Option<TSpan>,
@@ -15,9 +10,6 @@ pub(crate) struct THeader {
 
 impl fmt::Debug for THeader {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // Intentionally mimic the output of nom_span::Spanned
-        // so diffs point the unit test author to the important
-        // differences.
         f.debug_struct("Header")
             .field("title", &self.title)
             .field("source", &self.source)
