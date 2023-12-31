@@ -8,7 +8,6 @@ use crate::{
 /// An AsciiDoc document may begin with a document header. The document header
 /// encapsulates the document title, author and revision information,
 /// document-wide attributes, and other document metadata.
-#[allow(dead_code)] // TEMPORARY while building
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Header<'a> {
     title: Option<Span<'a>>,
@@ -16,7 +15,6 @@ pub struct Header<'a> {
 }
 
 impl<'a> Header<'a> {
-    #[allow(dead_code)] // TEMPORARY
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
         let source = consume_empty_lines(i);
 

@@ -2,11 +2,6 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::Span;
 
-// Approximate mock of Span type that we can use
-// to declare expected values for easier test writing.
-//
-// Primary difference is that the data members are public
-// so we can declare them inline.
 #[derive(Eq, PartialEq)]
 pub(crate) struct TSpan {
     pub data: &'static str,
@@ -17,9 +12,6 @@ pub(crate) struct TSpan {
 
 impl fmt::Debug for TSpan {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // Intentionally mimic the output of nom_span::Spanned
-        // so diffs point the unit test author to the important
-        // differences.
         f.debug_struct("Spanned")
             .field("data", &self.data)
             .field("line", &self.line)

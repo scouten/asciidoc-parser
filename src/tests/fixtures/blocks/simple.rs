@@ -10,9 +10,6 @@ pub(crate) struct TSimpleBlock {
 
 impl fmt::Debug for TSimpleBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // Intentionally mimic the output of nom_span::Spanned
-        // so diffs point the unit test author to the important
-        // differences.
         f.debug_struct("SimpleBlock")
             .field("inlines", &self.inlines)
             .field("source", &self.source)

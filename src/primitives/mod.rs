@@ -18,7 +18,6 @@ pub type Span<'a> = nom_span::Spanned<&'a str>;
 /// of the first, return the first input trimmed to exclude the second.
 ///
 /// Note that the trailing remainder condition is not enforced.
-#[allow(dead_code)] // TEMPORARY
 pub(crate) fn trim_input_for_rem<'a>(inp: Span<'a>, rem: Span<'a>) -> Span<'a> {
     // Sanity check: If rem is longer than inp, we can't trim.
     let rlen = rem.len();

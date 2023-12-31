@@ -1,3 +1,4 @@
+#![allow(clippy::module_inception)]
 #![deny(clippy::expect_used)]
 #![deny(clippy::panic)]
 #![deny(clippy::unwrap_used)]
