@@ -18,7 +18,7 @@ mod documents {
         document::Document,
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
-            document::TDocument,
+            document::{TAttribute, TAttributeValue, TDocument, THeader},
             TSpan,
         },
     };
@@ -131,26 +131,115 @@ mod documents {
         );
     }
 
-    // An AsciiDoc document may begin with a document header.
-    // Although the document header is optional, it's often used because it
-    // allows you to specify the document title and to set document-wide
-    // configuration and reusable text in the form of document attributes.
+    #[test]
+    fn header() {
+        // An AsciiDoc document may begin with a document header.
+        // Although the document header is optional, it's often used because it
+        // allows you to specify the document title and to set document-wide
+        // configuration and reusable text in the form of document attributes.
 
-    // [source]
-    // ----
-    // = Document Title
-    // :reproducible:
+        // [source]
+        // ----
+        // = Document Title
+        // :reproducible:
 
-    // This is a basic AsciiDoc document by {author}.
+        // This is a basic AsciiDoc document by {author}.
 
-    // This document contains two paragraphs.
-    // It also has a header that specifies the document title.
-    // ----
+        // This document contains two paragraphs.
+        // It also has a header that specifies the document title.
+        // ----
 
-    // Almost any combination of blocks constitutes a valid AsciiDoc document
-    // (with some structural requirements dictated by the
-    // xref:document:doctypes.adoc[document type]). Documents can range from
-    // a single sentence to a multi-part book.
+        // Almost any combination of blocks constitutes a valid AsciiDoc document
+        // (with some structural requirements dictated by the
+        // xref:document:doctypes.adoc[document type]). Documents can range from
+        // a single sentence to a multi-part book.
+
+        assert_eq!(
+            Document::parse(
+                "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title."
+            )
+            .unwrap(),
+            TDocument {
+                header: Some(
+                    THeader {
+                        title: Some(
+                            TSpan {
+                                data: "Document Title",
+                                line: 1,
+                                col: 3,
+                                offset: 2,
+                            },
+                        ),
+                        attributes: vec![
+                            TAttribute {
+                                name: TSpan {
+                                    data: "reproducible",
+                                    line: 2,
+                                    col: 2,
+                                    offset: 18,
+                                },
+                                value: TAttributeValue::Set,
+                                source: TSpan {
+                                    data: ":reproducible:\n",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 17,
+                                },
+                            },
+                        ],
+                        source: TSpan {
+                            data: "= Document Title\n:reproducible:\n",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                ),
+
+                blocks: vec![
+                    TBlock::Simple(TSimpleBlock {
+                        inlines: vec![TSpan {
+                            data: "This is a basic AsciiDoc document by {author}.",
+                            line: 4,
+                            col: 1,
+                            offset: 33,
+                        },],
+                        source: TSpan {
+                            data: "This is a basic AsciiDoc document by {author}.\n",
+                            line: 4,
+                            col: 1,
+                            offset: 33,
+                        }
+                    }),
+                    TBlock::Simple(TSimpleBlock {
+                        inlines: vec![TSpan {
+                            data: "This document contains two paragraphs.",
+                            line: 6,
+                            col: 1,
+                            offset: 81,
+                        },TSpan {
+                            data: "It also has a header that specifies the document title.",
+                            line: 7,
+                            col: 1,
+                            offset: 120,
+                        }],
+                        source: TSpan {
+                            data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
+                            line: 6,
+                            col: 1,
+                            offset: 81,
+                        }
+                    })
+                ],
+                source: TSpan {
+                    data: "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title.",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                },
+            }
+        );
+    }
 }
 
 // == Lines

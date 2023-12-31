@@ -1,10 +1,15 @@
 use std::{cmp::PartialEq, fmt};
 
-use crate::{document::Header, tests::fixtures::TSpan, HasSpan};
+use crate::{
+    document::Header,
+    tests::fixtures::{document::TAttribute, TSpan},
+    HasSpan,
+};
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct THeader {
     pub title: Option<TSpan>,
+    pub attributes: Vec<TAttribute>,
     pub source: TSpan,
 }
 
@@ -12,6 +17,7 @@ impl fmt::Debug for THeader {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Header")
             .field("title", &self.title)
+            .field("attributes", &self.attributes)
             .field("source", &self.source)
             .finish()
     }
@@ -49,6 +55,16 @@ fn theader_eq(theader: &THeader, header: &Header) -> bool {
             if th_title != h_title {
                 return false;
             }
+        }
+    }
+
+    if theader.attributes.len() != header.attributes().len() {
+        return false;
+    }
+
+    for (th_attribute, attribute) in theader.attributes.iter().zip(header.attributes()) {
+        if th_attribute != attribute {
+            return false;
         }
     }
 

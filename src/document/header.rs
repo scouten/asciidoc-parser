@@ -1,7 +1,10 @@
-use nom::{bytes::complete::tag, character::complete::space0, IResult};
+use std::slice::Iter;
+
+use nom::{bytes::complete::tag, character::complete::space0, multi::many0, IResult};
 
 use crate::{
-    primitives::{consume_empty_lines, non_empty_line, trim_input_for_rem},
+    document::Attribute,
+    primitives::{consume_empty_lines, empty_line, non_empty_line, trim_input_for_rem},
     HasSpan, Span,
 };
 
@@ -11,6 +14,7 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Header<'a> {
     title: Option<Span<'a>>,
+    attributes: Vec<Attribute<'a>>,
     source: Span<'a>,
 }
 
@@ -20,12 +24,17 @@ impl<'a> Header<'a> {
 
         // TEMPORARY: Titles are optional, but we're not prepared for that yet.
         let (rem, title) = parse_title(source)?;
+        let (rem, attributes) = many0(Attribute::parse)(rem)?;
+
+        // Header must be followed by an empty line.
+        let (_, _) = empty_line(rem)?;
 
         let source = trim_input_for_rem(source, rem);
         Ok((
-            rem,
+            consume_empty_lines(rem),
             Self {
                 title: Some(title),
+                attributes,
                 source,
             },
         ))
@@ -34,6 +43,11 @@ impl<'a> Header<'a> {
     /// Return a [`Span`] describing the document title, if there was one.
     pub fn title(&'a self) -> Option<Span<'a>> {
         self.title
+    }
+
+    /// Return an iterator over the attributes in this header.
+    pub fn attributes(&'a self) -> Iter<'a, Attribute<'a>> {
+        self.attributes.iter()
     }
 }
 
