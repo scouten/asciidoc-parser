@@ -3,7 +3,6 @@ use std::cmp::PartialEq;
 use crate::{document::AttributeValue, tests::fixtures::TSpan};
 
 #[derive(Debug, Eq, PartialEq)]
-#[allow(dead_code)] // TEMPORARY
 pub(crate) enum TAttributeValue {
     Value(TSpan),
     Set,
