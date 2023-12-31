@@ -50,7 +50,7 @@ fn tattribute_eq(tattribute: &TAttribute, attribute: &Attribute) -> bool {
         return false;
     }
 
-    if &tattribute.value != attribute.value() {
+    if &tattribute.value != attribute.raw_value() {
         return false;
     }
 

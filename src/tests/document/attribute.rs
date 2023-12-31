@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     document::Attribute,
     tests::fixtures::{
-        document::{TAttribute, TRawAttributeValue},
+        document::{TAttribute, TAttributeValue, TRawAttributeValue},
         TSpan,
     },
     Span,
@@ -19,7 +19,7 @@ fn impl_clone() {
 
 #[test]
 fn simple_value() {
-    let (rem, block) = Attribute::parse(Span::new(":foo: bar\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo: bar\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -32,7 +32,7 @@ fn simple_value() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -54,11 +54,13 @@ fn simple_value() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Value("bar"));
 }
 
 #[test]
 fn no_value() {
-    let (rem, block) = Attribute::parse(Span::new(":foo:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo:\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -71,7 +73,7 @@ fn no_value() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -88,11 +90,13 @@ fn no_value() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Set);
 }
 
 #[test]
 fn unset_prefix() {
-    let (rem, block) = Attribute::parse(Span::new(":!foo:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":!foo:\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -105,7 +109,7 @@ fn unset_prefix() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -122,11 +126,13 @@ fn unset_prefix() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Unset);
 }
 
 #[test]
 fn unset_postfix() {
-    let (rem, block) = Attribute::parse(Span::new(":foo!:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo!:\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -139,7 +145,7 @@ fn unset_postfix() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -156,6 +162,8 @@ fn unset_postfix() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Unset);
 }
 
 #[test]
@@ -248,7 +256,7 @@ fn err_invalid_ident3() {
 
 #[test]
 fn value_with_continuation() {
-    let (rem, block) = Attribute::parse(Span::new(":foo: bar +\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo: bar +\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -261,7 +269,7 @@ fn value_with_continuation() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -283,4 +291,6 @@ fn value_with_continuation() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Value("bar\nblah"));
 }

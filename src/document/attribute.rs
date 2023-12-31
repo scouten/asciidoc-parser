@@ -10,6 +10,7 @@ use nom::{
 
 use crate::{
     primitives::{line_with_continuation, trim_input_for_rem},
+    strings::CowStr,
     HasSpan, Span,
 };
 
@@ -75,9 +76,14 @@ impl<'a> Attribute<'a> {
         &self.name
     }
 
-    /// Return the attribute's value.
-    pub fn value(&'a self) -> &'a RawAttributeValue<'a> {
+    /// Return the attribute's raw value.
+    pub fn raw_value(&'a self) -> &'a RawAttributeValue<'a> {
         &self.value
+    }
+
+    /// Return the attribute's interpolated value.
+    pub fn value(&'a self) -> AttributeValue<'a> {
+        self.value.as_attribute_value()
     }
 }
 
@@ -88,13 +94,62 @@ impl<'a> HasSpan<'a> for Attribute<'a> {
 }
 
 /// The raw value of an [`Attribute`].
-/// 
+///
 /// If the value contains a textual value, this value will
 /// contain continuation markers.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum RawAttributeValue<'a> {
     /// A custom value, described by its accompanying [`Span`].
     Value(Span<'a>),
+
+    /// No explicit value. This is typically interpreted as either
+    /// boolean `true` or a default value for a built-in attribute.
+    Set,
+
+    /// Explicitly unset. This is typically interpreted as boolean 'false'.
+    Unset,
+}
+
+impl<'a> RawAttributeValue<'a> {
+    /// Convert this to an [`AttributeValue`], resolving any interpolation
+    /// necessary if the value contains a textual value.
+    pub fn as_attribute_value(&self) -> AttributeValue<'a> {
+        match self {
+            Self::Value(span) => {
+                let data = span.data();
+                if data.contains('\n') {
+                    let value: Vec<&str> = data
+                        .lines()
+                        .map(|line| {
+                            line.trim_start_matches('\r')
+                                .trim_end_matches(' ')
+                                .trim_end_matches('+')
+                                .trim_end_matches(' ')
+                        })
+                        .collect();
+
+                    let value = value.join("\n");
+                    AttributeValue::Value(CowStr::from(value))
+                } else {
+                    AttributeValue::Value(CowStr::Borrowed(data))
+                }
+            }
+
+            Self::Set => AttributeValue::Set,
+            Self::Unset => AttributeValue::Unset,
+        }
+    }
+}
+
+/// The interpreted value of an [`Attribute`].
+///
+/// If the value contains a textual value, this value will
+/// have any continuation markers resolved, but will no longer
+/// contain a reference to the [`Span`] that contains the value.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum AttributeValue<'a> {
+    /// A custom value with all necessary interpolations applied.
+    Value(CowStr<'a>),
 
     /// No explicit value. This is typically interpreted as either
     /// boolean `true` or a default value for a built-in attribute.

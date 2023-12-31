@@ -41,7 +41,6 @@ fn tattribute_value_eq(
         }
 
         TRawAttributeValue::Set => attribute_value == &RawAttributeValue::Set,
-
         TRawAttributeValue::Unset => attribute_value == &RawAttributeValue::Unset,
     }
 }
