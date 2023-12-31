@@ -157,3 +157,91 @@ fn unset_postfix() {
         }
     );
 }
+
+#[test]
+fn err_unset_prefix_and_postfix() {
+    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
+        Attribute::parse(Span::new(":!foo!:\nblah", true)).unwrap_err();
+
+    if let nom::Err::Error(e) = err {
+        assert_eq!(
+            e.input,
+            TSpan {
+                data: "!:",
+                line: 1,
+                col: 6,
+                offset: 5,
+            }
+        );
+
+        assert_eq!(e.code, nom::error::ErrorKind::Tag);
+    } else {
+        panic!("Unexpected error: {err:#?}");
+    }
+}
+
+#[test]
+fn err_invalid_ident1() {
+    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
+        Attribute::parse(Span::new(":@invalid:\nblah", true)).unwrap_err();
+
+    if let nom::Err::Error(e) = err {
+        assert_eq!(
+            e.input,
+            TSpan {
+                data: "@invalid:",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(e.code, nom::error::ErrorKind::Tag);
+    } else {
+        panic!("Unexpected error: {err:#?}");
+    }
+}
+
+#[test]
+fn err_invalid_ident2() {
+    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
+        Attribute::parse(Span::new(":invalid@:\nblah", true)).unwrap_err();
+
+    if let nom::Err::Error(e) = err {
+        assert_eq!(
+            e.input,
+            TSpan {
+                data: "@:",
+                line: 1,
+                col: 9,
+                offset: 8,
+            }
+        );
+
+        assert_eq!(e.code, nom::error::ErrorKind::Tag);
+    } else {
+        panic!("Unexpected error: {err:#?}");
+    }
+}
+
+#[test]
+fn err_invalid_ident3() {
+    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
+        Attribute::parse(Span::new(":-invalid:\nblah", true)).unwrap_err();
+
+    if let nom::Err::Error(e) = err {
+        assert_eq!(
+            e.input,
+            TSpan {
+                data: "-invalid:",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(e.code, nom::error::ErrorKind::Tag);
+    } else {
+        panic!("Unexpected error: {err:#?}");
+    }
+}
