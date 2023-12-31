@@ -7,6 +7,14 @@ use crate::{
 };
 
 #[test]
+fn impl_clone() {
+    // Silly test to mark the #[derive(...)] line as covered.
+    let h1 = Header::parse(Span::new("= Title", true)).unwrap();
+    let h2 = h1.clone();
+    assert_eq!(h1, h2);
+}
+
+#[test]
 fn only_title() {
     let (rem, block) = Header::parse(Span::new("= Just the Title", true)).unwrap();
 
