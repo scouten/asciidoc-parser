@@ -18,7 +18,7 @@ mod documents {
         document::Document,
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
-            document::{TAttribute, TAttributeValue, TDocument, THeader},
+            document::{TAttribute, TDocument, THeader, TRawAttributeValue},
             TSpan,
         },
     };
@@ -178,7 +178,7 @@ mod documents {
                                     col: 2,
                                     offset: 18,
                                 },
-                                value: TAttributeValue::Set,
+                                value: TRawAttributeValue::Set,
                                 source: TSpan {
                                     data: ":reproducible:\n",
                                     line: 2,
@@ -249,7 +249,7 @@ mod lines {
         document::Attribute,
         primitives::line,
         tests::fixtures::{
-            document::{TAttribute, TAttributeValue},
+            document::{TAttribute, TRawAttributeValue},
             TSpan,
         },
         Span,
@@ -326,7 +326,7 @@ mod lines {
                     col: 2,
                     offset: 1,
                 },
-                value: TAttributeValue::Value(TSpan {
+                value: TRawAttributeValue::Value(TSpan {
                     data: "value",
                     line: 1,
                     col: 8,

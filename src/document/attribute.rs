@@ -20,7 +20,7 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Attribute<'a> {
     name: Span<'a>,
-    value: AttributeValue<'a>,
+    value: RawAttributeValue<'a>,
     source: Span<'a>,
 }
 
@@ -51,12 +51,12 @@ impl<'a> Attribute<'a> {
 
         let value = if unset {
             // Ensure line is now empty except for comment.
-            AttributeValue::Unset
+            RawAttributeValue::Unset
         } else if line.is_empty() {
-            AttributeValue::Set
+            RawAttributeValue::Set
         } else {
             let (value, _) = space0(line)?;
-            AttributeValue::Value(value)
+            RawAttributeValue::Value(value)
         };
 
         let source = trim_input_for_rem(source, rem);
@@ -76,7 +76,7 @@ impl<'a> Attribute<'a> {
     }
 
     /// Return the attribute's value.
-    pub fn value(&'a self) -> &'a AttributeValue<'a> {
+    pub fn value(&'a self) -> &'a RawAttributeValue<'a> {
         &self.value
     }
 }
@@ -87,9 +87,12 @@ impl<'a> HasSpan<'a> for Attribute<'a> {
     }
 }
 
-/// The value of an [`Attribute`].
+/// The raw value of an [`Attribute`].
+/// 
+/// If the value contains a textual value, this value will
+/// contain continuation markers.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum AttributeValue<'a> {
+pub enum RawAttributeValue<'a> {
     /// A custom value, described by its accompanying [`Span`].
     Value(Span<'a>),
 

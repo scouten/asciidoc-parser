@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     document::Attribute,
     tests::fixtures::{
-        document::{TAttribute, TAttributeValue},
+        document::{TAttribute, TRawAttributeValue},
         TSpan,
     },
     Span,
@@ -40,7 +40,7 @@ fn simple_value() {
                 col: 2,
                 offset: 1,
             },
-            value: TAttributeValue::Value(TSpan {
+            value: TRawAttributeValue::Value(TSpan {
                 data: "bar",
                 line: 1,
                 col: 7,
@@ -79,7 +79,7 @@ fn no_value() {
                 col: 2,
                 offset: 1,
             },
-            value: TAttributeValue::Set,
+            value: TRawAttributeValue::Set,
             source: TSpan {
                 data: ":foo:\n",
                 line: 1,
@@ -113,7 +113,7 @@ fn unset_prefix() {
                 col: 3,
                 offset: 2,
             },
-            value: TAttributeValue::Unset,
+            value: TRawAttributeValue::Unset,
             source: TSpan {
                 data: ":!foo:\n",
                 line: 1,
@@ -147,7 +147,7 @@ fn unset_postfix() {
                 col: 2,
                 offset: 1,
             },
-            value: TAttributeValue::Unset,
+            value: TRawAttributeValue::Unset,
             source: TSpan {
                 data: ":foo!:\n",
                 line: 1,
@@ -269,7 +269,7 @@ fn value_with_continuation() {
                 col: 2,
                 offset: 1,
             },
-            value: TAttributeValue::Value(TSpan {
+            value: TRawAttributeValue::Value(TSpan {
                 data: "bar +\nblah",
                 line: 1,
                 col: 7,
