@@ -242,43 +242,74 @@ mod documents {
     }
 }
 
-// == Lines
+mod lines {
+    use pretty_assertions_sorted::assert_eq;
 
-// The line is a significant construct in AsciiDoc.
-// A line is defined as text that's separated on either side by either a newline
-// character or the boundary of the document. Many aspects of the syntax must
-// occupy a whole line. That's why we say AsciiDoc is a line-oriented language.
+    use crate::{primitives::line, tests::fixtures::TSpan, Span};
 
-// For example, a section title must be on a line by itself.
-// The same is true for an attribute entry, a block title, a block attribute
-// list, a block macro, a list item, a block delimiter, and so forth.
+    #[test]
+    fn section_title() {
+        // == Lines
 
-// .Example of a section title, which must occupy a single line
-// [source]
-// ----
-// == Section Title
-// ----
+        // The line is a significant construct in AsciiDoc.
+        // A line is defined as text that's separated on either side by either a newline
+        // character or the boundary of the document. Many aspects of the syntax must
+        // occupy a whole line. That's why we say AsciiDoc is a line-oriented language.
 
-// .Example of an attribute entry, which must also occupy at least one line
-// [source]
-// -----
-// :name: value
-// -----
+        // For example, a section title must be on a line by itself.
+        // The same is true for an attribute entry, a block title, a block attribute
+        // list, a block macro, a list item, a block delimiter, and so forth.
 
-// .Example of an attribute entry that extends to two lines
-// [source]
-// -----
-// :name: value \
-// more value
-// -----
+        // .Example of a section title, which must occupy a single line
+        // [source]
+        // ----
+        // == Section Title
+        // ----
 
-// Empty lines can also be significant.
-// A single empty line separates the header from the body.
-// Many blocks are also separated by an empty line, as you saw in the two
-// paragraph example earlier.
+        let (rem, line) = line(Span::new("== Section Title\n", true)).unwrap();
 
-// In contrast, lines within paragraph content are insignificant.
-// Keep these points in mind as you're learning about the AsciiDoc syntax.
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 1,
+                offset: 17
+            }
+        );
+
+        assert_eq!(
+            line,
+            TSpan {
+                data: "== Section Title",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    // .Example of an attribute entry, which must also occupy at least one line
+    // [source]
+    // -----
+    // :name: value
+    // -----
+
+    // .Example of an attribute entry that extends to two lines
+    // [source]
+    // -----
+    // :name: value \
+    // more value
+    // -----
+
+    // Empty lines can also be significant.
+    // A single empty line separates the header from the body.
+    // Many blocks are also separated by an empty line, as you saw in the two
+    // paragraph example earlier.
+
+    // In contrast, lines within paragraph content are insignificant.
+    // Keep these points in mind as you're learning about the AsciiDoc syntax.
+}
 
 // == Blocks
 
