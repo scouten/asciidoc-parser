@@ -17,7 +17,6 @@ use crate::{
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in
 /// attributes, and also allows the author (or extensions) to define additional
 /// document attributes, which may replace built-in attributes when permitted.
-#[allow(dead_code)] // TEMPORARY while building
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Attribute<'a> {
     name: Span<'a>,
@@ -26,7 +25,6 @@ pub struct Attribute<'a> {
 }
 
 impl<'a> Attribute<'a> {
-    #[allow(dead_code)] // TEMPORARY
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let (rem, line) = normalized_line(source)?;
 

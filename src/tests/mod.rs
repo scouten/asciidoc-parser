@@ -8,6 +8,7 @@
 mod asciidoc_lang;
 mod blocks;
 mod document;
+mod error;
 pub(crate) mod fixtures;
 mod primitives;
 mod strings;

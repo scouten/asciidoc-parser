@@ -11,6 +11,14 @@ use crate::{
 };
 
 #[test]
+fn impl_clone() {
+    // Silly test to mark the #[derive(...)] line as covered.
+    let (_, b1) = SimpleBlock::parse(Span::new("abc", true)).unwrap();
+    let b2 = b1.clone();
+    assert_eq!(b1, b2);
+}
+
+#[test]
 fn empty_source() {
     let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
 

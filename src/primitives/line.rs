@@ -24,7 +24,6 @@ pub(crate) fn line(input: Span<'_>) -> IResult<Span, Span> {
 /// but not included in the returned line.
 ///
 /// All trailing spaces are removed from the line.
-#[allow(dead_code)] // TEMPORARY
 pub(crate) fn normalized_line(input: Span<'_>) -> IResult<Span, Span> {
     take_till(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
@@ -104,7 +103,6 @@ fn trim_rem_end_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>
     }
 }
 
-#[allow(dead_code)] // TEMPORARY
 fn trim_trailing_spaces<'a>(rem_inp: (Span<'a>, Span<'a>)) -> (Span<'a>, Span<'a>) {
     let inp = rem_inp.1.trim_end_matches(' ');
     let inp = rem_inp.1.slice(0..inp.len());
