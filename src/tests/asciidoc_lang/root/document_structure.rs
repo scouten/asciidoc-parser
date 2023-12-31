@@ -245,7 +245,15 @@ mod documents {
 mod lines {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{primitives::line, tests::fixtures::TSpan, Span};
+    use crate::{
+        document::Attribute,
+        primitives::line,
+        tests::fixtures::{
+            document::{TAttribute, TAttributeValue},
+            TSpan,
+        },
+        Span,
+    };
 
     #[test]
     fn section_title() {
@@ -289,11 +297,50 @@ mod lines {
         );
     }
 
-    // .Example of an attribute entry, which must also occupy at least one line
-    // [source]
-    // -----
-    // :name: value
-    // -----
+    #[test]
+    fn one_line_attribute() {
+        // .Example of an attribute entry, which must also occupy at least one line
+        // [source]
+        // -----
+        // :name: value
+        // -----
+
+        let (rem, attr) = Attribute::parse(Span::new(":name: value\n", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 1,
+                offset: 13
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TAttribute {
+                name: TSpan {
+                    data: "name",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+                value: TAttributeValue::Value(TSpan {
+                    data: "value",
+                    line: 1,
+                    col: 8,
+                    offset: 7,
+                }),
+                source: TSpan {
+                    data: ":name: value\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+    }
 
     // .Example of an attribute entry that extends to two lines
     // [source]
