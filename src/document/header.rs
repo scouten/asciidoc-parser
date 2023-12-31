@@ -45,7 +45,7 @@ impl<'a> HasSpan<'a> for Header<'a> {
     }
 }
 
-fn parse_title<'a>(i: Span<'a>) -> IResult<Span, Span<'a>> {
+fn parse_title(i: Span<'_>) -> IResult<Span, Span<'_>> {
     let (rem, line) = non_empty_line(i)?;
 
     let (title, _) = tag("= ")(line)?;
