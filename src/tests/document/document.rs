@@ -139,6 +139,7 @@ fn two_blocks_and_title() {
                     col: 3,
                     offset: 2,
                 }),
+                attributes: vec![],
                 source: TSpan {
                     data: "= Example Title\n",
                     line: 1,
