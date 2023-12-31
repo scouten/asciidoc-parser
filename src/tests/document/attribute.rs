@@ -245,3 +245,42 @@ fn err_invalid_ident3() {
         panic!("Unexpected error: {err:#?}");
     }
 }
+
+#[test]
+fn value_with_continuation() {
+    let (rem, block) = Attribute::parse(Span::new(":foo: bar +\nblah", true)).unwrap();
+
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 2,
+            col: 5,
+            offset: 16
+        }
+    );
+
+    assert_eq!(
+        block,
+        TAttribute {
+            name: TSpan {
+                data: "foo",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+            value: TAttributeValue::Value(TSpan {
+                data: "bar +\nblah",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }),
+            source: TSpan {
+                data: ":foo: bar +\nblah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        }
+    );
+}

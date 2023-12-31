@@ -9,7 +9,7 @@ use nom::{
 };
 
 use crate::{
-    primitives::{normalized_line, trim_input_for_rem},
+    primitives::{line_with_continuation, trim_input_for_rem},
     HasSpan, Span,
 };
 
@@ -26,7 +26,7 @@ pub struct Attribute<'a> {
 
 impl<'a> Attribute<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (rem, line) = normalized_line(source)?;
+        let (rem, line) = line_with_continuation(source)?;
 
         let mut unset = false;
         let (mut line, _) = tag(":")(line)?;
