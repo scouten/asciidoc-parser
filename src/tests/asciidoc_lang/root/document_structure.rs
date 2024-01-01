@@ -390,6 +390,9 @@ mod lines {
 
         assert_eq!(attr.value(), TAttributeValue::Value("value more value"));
     }
+
+    // No test cases:
+
     // Empty lines can also be significant.
     // A single empty line separates the header from the body.
     // Many blocks are also separated by an empty line, as you saw in the two
@@ -399,57 +402,72 @@ mod lines {
     // Keep these points in mind as you're learning about the AsciiDoc syntax.
 }
 
-// == Blocks
+mod blocks {
+    // No test cases:
 
-// Blocks in an AsciiDoc document lay down the document structure.
-// Some blocks may contain other blocks, so the document structure is inherently
-// hierarchical (i.e., a tree structure). You can preview this section
-// structure, for example, by enabling the automatic table of contents. Examples
-// of blocks include paragraphs, sections, lists, delimited blocks, tables, and
-// block macros.
+    // == Blocks
 
-// Blocks are easy to identify because they're usually offset from other blocks
-// by an empty line (though not always required). Blocks always start on a new
-// line, terminate at the end of a line, and are aligned to the left margin.
+    // Blocks in an AsciiDoc document lay down the document structure.
+    // Some blocks may contain other blocks, so the document structure is
+    // inherently hierarchical (i.e., a tree structure). You can preview
+    // this section structure, for example, by enabling the automatic table
+    // of contents. Examples of blocks include paragraphs, sections, lists,
+    // delimited blocks, tables, and block macros.
 
-// Every block can have one or more lines of block metadata.
-// This metadata can be in the form of block attributes, a block anchor, or a
-// block title. These metadata lines must be above and directly adjacent to the
-// block itself.
+    // Blocks are easy to identify because they're usually offset from other
+    // blocks by an empty line (though not always required). Blocks always
+    // start on a new line, terminate at the end of a line, and are aligned
+    // to the left margin.
 
-// Sections, non-verbatim delimited blocks, and AsciiDoc table cells may contain
-// other blocks. Despite the fact that blocks form a hierarchy, even nested
-// blocks start at the left margin. By requiring blocks to start at the left
-// margin, it avoids the tedium of having to track and maintain levels of
-// indentation and makes the content more reusable.
+    // Every block can have one or more lines of block metadata.
+    // This metadata can be in the form of block attributes, a block anchor, or
+    // a block title. These metadata lines must be above and directly
+    // adjacent to the block itself.
 
-// == Text and inline elements
+    // Sections, non-verbatim delimited blocks, and AsciiDoc table cells may
+    // contain other blocks. Despite the fact that blocks form a hierarchy,
+    // even nested blocks start at the left margin. By requiring blocks to
+    // start at the left margin, it avoids the tedium of having to track and
+    // maintain levels of indentation and makes the content more reusable.
+}
 
-// Surrounded by the markers, delimiters, and metadata lines is the text.
-// The text is the main focus of a document and the reason the AsciiDoc syntax
-// gives it so much room to breathe. Text is most often found in the lines of a
-// block (e.g., paragraph), the block title (e.g., section title), and in list
-// items, though there are other places where it can exist.
+mod text_and_inline_elements {
+    // No test cases:
 
-// Text is subject to substitutions.
-// Substitutions interpret markup as text formatting, replace macros with text
-// or non-text elements, expand attribute references, and perform other sorts of
-// text replacement.
+    // == Text and inline elements
 
-// Normal text is subject to all substitutions, unless specified otherwise.
-// Verbatim text is subject to a minimal set of substitutions to allow it to be
-// displayed in the output as it appears in the source. It's also possible to
-// disable all substitutions in order to pass the text through to the output
-// unmodified (i.e., raw). The parsing of text ends up being a mix of inline
-// elements and other forms of transformations.
+    // Surrounded by the markers, delimiters, and metadata lines is the text.
+    // The text is the main focus of a document and the reason the AsciiDoc
+    // syntax gives it so much room to breathe. Text is most often found in
+    // the lines of a block (e.g., paragraph), the block title (e.g.,
+    // section title), and in list items, though there are other places
+    // where it can exist.
 
-// == Encodings and AsciiDoc files
+    // Text is subject to substitutions.
+    // Substitutions interpret markup as text formatting, replace macros with
+    // text or non-text elements, expand attribute references, and perform
+    // other sorts of text replacement.
 
-// An AsciiDoc file is a text file that has the _.adoc_ file extension (e.g.,
-// [.path]_document.adoc_). Most AsciiDoc processors assume the text in the file
-// uses UTF-8 encoding. UTF-16 encodings are supported only if the file starts
-// with a BOM.
+    // Normal text is subject to all substitutions, unless specified otherwise.
+    // Verbatim text is subject to a minimal set of substitutions to allow it to
+    // be displayed in the output as it appears in the source. It's also
+    // possible to disable all substitutions in order to pass the text
+    // through to the output unmodified (i.e., raw). The parsing of text
+    // ends up being a mix of inline elements and other forms of
+    // transformations.
+}
 
-// An AsciiDoc processor can process AsciiDoc from a string (i.e., character
-// sequence). However, most of the time you'll save your AsciiDoc documents to a
-// file.
+mod encodings_and_asciidoc_files {
+    // == Encodings and AsciiDoc files
+
+    // An AsciiDoc file is a text file that has the _.adoc_ file extension
+    // (e.g., [.path]_document.adoc_). Most AsciiDoc processors assume the
+    // text in the file uses UTF-8 encoding. .[line-through]#UTF-16
+    // encodings are supported only if the file starts with a BOM.#
+    // *UNSUPPORTED: The UTF-16 encoding is not directly supported by the
+    // `asciidoc-parser` crate.*
+
+    // An AsciiDoc processor can process AsciiDoc from a string (i.e., character
+    // sequence). However, most of the time you'll save your AsciiDoc documents
+    // to a file.
+}
