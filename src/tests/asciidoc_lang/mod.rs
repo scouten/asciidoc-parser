@@ -2,6 +2,9 @@
 //! with the intent of verifying, line-by-line, compliance with
 //! that documentation.
 //!
+//! This documentation is not considered by its authors to be a formal language
+//! specification (and I agree), but it's as close as is available at this time.
+//!
 //! The quoted documentation can be found in rendered form here:
 //! https://docs.asciidoctor.org/asciidoc/latest/
 //!
