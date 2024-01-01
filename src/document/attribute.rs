@@ -118,17 +118,23 @@ impl<'a> RawAttributeValue<'a> {
             Self::Value(span) => {
                 let data = span.data();
                 if data.contains('\n') {
-                    let value: Vec<&str> = data
-                        .lines()
-                        .map(|line| {
+                    let value: Vec<&str> = (0..)
+                        .zip(data.lines())
+                        .map(|(count, line)| {
+                            let line = if count > 0 {
+                                line.trim_start_matches(' ')
+                            } else {
+                                line
+                            };
+
                             line.trim_start_matches('\r')
                                 .trim_end_matches(' ')
-                                .trim_end_matches('+')
+                                .trim_end_matches('\\')
                                 .trim_end_matches(' ')
                         })
                         .collect();
 
-                    let value = value.join("\n");
+                    let value = value.join(" ");
                     AttributeValue::Value(CowStr::from(value))
                 } else {
                     AttributeValue::Value(CowStr::Borrowed(data))

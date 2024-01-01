@@ -256,15 +256,15 @@ fn err_invalid_ident3() {
 
 #[test]
 fn value_with_continuation() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo: bar +\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo: bar \\\n blah", true)).unwrap();
 
     assert_eq!(
         rem,
         TSpan {
             data: "",
             line: 2,
-            col: 5,
-            offset: 16
+            col: 6,
+            offset: 17
         }
     );
 
@@ -278,13 +278,13 @@ fn value_with_continuation() {
                 offset: 1,
             },
             value: TRawAttributeValue::Value(TSpan {
-                data: "bar +\nblah",
+                data: "bar \\\n blah",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
             source: TSpan {
-                data: ":foo: bar +\nblah",
+                data: ":foo: bar \\\n blah",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -292,5 +292,5 @@ fn value_with_continuation() {
         }
     );
 
-    assert_eq!(attr.value(), TAttributeValue::Value("bar\nblah"));
+    assert_eq!(attr.value(), TAttributeValue::Value("bar blah"));
 }
