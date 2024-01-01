@@ -96,7 +96,7 @@ pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
 
 fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
     let (rem, line) = normalized_line(input)?;
-    if line.ends_with('+') {
+    if line.ends_with('\\') {
         Ok((rem, line))
     } else {
         Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
