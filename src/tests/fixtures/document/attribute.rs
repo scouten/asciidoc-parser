@@ -2,14 +2,14 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::{
     document::Attribute,
-    tests::fixtures::{document::TAttributeValue, TSpan},
+    tests::fixtures::{document::TRawAttributeValue, TSpan},
     HasSpan,
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TAttribute {
     pub name: TSpan,
-    pub value: TAttributeValue,
+    pub value: TRawAttributeValue,
     pub source: TSpan,
 }
 
@@ -50,7 +50,7 @@ fn tattribute_eq(tattribute: &TAttribute, attribute: &Attribute) -> bool {
         return false;
     }
 
-    if &tattribute.value != attribute.value() {
+    if &tattribute.value != attribute.raw_value() {
         return false;
     }
 

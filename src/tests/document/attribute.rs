@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     document::Attribute,
     tests::fixtures::{
-        document::{TAttribute, TAttributeValue},
+        document::{TAttribute, TAttributeValue, TRawAttributeValue},
         TSpan,
     },
     Span,
@@ -19,7 +19,7 @@ fn impl_clone() {
 
 #[test]
 fn simple_value() {
-    let (rem, block) = Attribute::parse(Span::new(":foo: bar\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo: bar\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -32,7 +32,7 @@ fn simple_value() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -40,7 +40,7 @@ fn simple_value() {
                 col: 2,
                 offset: 1,
             },
-            value: TAttributeValue::Value(TSpan {
+            value: TRawAttributeValue::Value(TSpan {
                 data: "bar",
                 line: 1,
                 col: 7,
@@ -54,11 +54,13 @@ fn simple_value() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Value("bar"));
 }
 
 #[test]
 fn no_value() {
-    let (rem, block) = Attribute::parse(Span::new(":foo:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo:\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -71,7 +73,7 @@ fn no_value() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -79,7 +81,7 @@ fn no_value() {
                 col: 2,
                 offset: 1,
             },
-            value: TAttributeValue::Set,
+            value: TRawAttributeValue::Set,
             source: TSpan {
                 data: ":foo:\n",
                 line: 1,
@@ -88,11 +90,13 @@ fn no_value() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Set);
 }
 
 #[test]
 fn unset_prefix() {
-    let (rem, block) = Attribute::parse(Span::new(":!foo:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":!foo:\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -105,7 +109,7 @@ fn unset_prefix() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -113,7 +117,7 @@ fn unset_prefix() {
                 col: 3,
                 offset: 2,
             },
-            value: TAttributeValue::Unset,
+            value: TRawAttributeValue::Unset,
             source: TSpan {
                 data: ":!foo:\n",
                 line: 1,
@@ -122,11 +126,13 @@ fn unset_prefix() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Unset);
 }
 
 #[test]
 fn unset_postfix() {
-    let (rem, block) = Attribute::parse(Span::new(":foo!:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo!:\nblah", true)).unwrap();
 
     assert_eq!(
         rem,
@@ -139,7 +145,7 @@ fn unset_postfix() {
     );
 
     assert_eq!(
-        block,
+        attr,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -147,7 +153,7 @@ fn unset_postfix() {
                 col: 2,
                 offset: 1,
             },
-            value: TAttributeValue::Unset,
+            value: TRawAttributeValue::Unset,
             source: TSpan {
                 data: ":foo!:\n",
                 line: 1,
@@ -156,6 +162,8 @@ fn unset_postfix() {
             }
         }
     );
+
+    assert_eq!(attr.value(), TAttributeValue::Unset);
 }
 
 #[test]
@@ -244,4 +252,45 @@ fn err_invalid_ident3() {
     } else {
         panic!("Unexpected error: {err:#?}");
     }
+}
+
+#[test]
+fn value_with_continuation() {
+    let (rem, attr) = Attribute::parse(Span::new(":foo: bar \\\n blah", true)).unwrap();
+
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 2,
+            col: 6,
+            offset: 17
+        }
+    );
+
+    assert_eq!(
+        attr,
+        TAttribute {
+            name: TSpan {
+                data: "foo",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+            value: TRawAttributeValue::Value(TSpan {
+                data: "bar \\\n blah",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }),
+            source: TSpan {
+                data: ":foo: bar \\\n blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        }
+    );
+
+    assert_eq!(attr.value(), TAttributeValue::Value("bar blah"));
 }

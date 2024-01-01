@@ -1,10 +1,10 @@
 use std::cmp::PartialEq;
 
-use crate::{document::AttributeValue, tests::fixtures::TSpan};
+use crate::document::AttributeValue;
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) enum TAttributeValue {
-    Value(TSpan),
+    Value(&'static str),
     Set,
     Unset,
 }
@@ -34,14 +34,13 @@ fn tattribute_value_eq(
     match tattribute_value {
         TAttributeValue::Value(ref v) => {
             if let AttributeValue::Value(ref av) = attribute_value {
-                v == av
+                v == &av.as_ref()
             } else {
                 false
             }
         }
 
         TAttributeValue::Set => attribute_value == &AttributeValue::Set,
-
         TAttributeValue::Unset => attribute_value == &AttributeValue::Unset,
     }
 }

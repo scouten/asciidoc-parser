@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     document::Header,
     tests::fixtures::{
-        document::{TAttribute, TAttributeValue, THeader},
+        document::{TAttribute, THeader, TRawAttributeValue},
         TSpan,
     },
     Span,
@@ -152,7 +152,7 @@ fn title_and_attribute() {
                     col: 2,
                     offset: 18,
                 },
-                value: TAttributeValue::Value(TSpan {
+                value: TRawAttributeValue::Value(TSpan {
                     data: "bar",
                     line: 2,
                     col: 7,
