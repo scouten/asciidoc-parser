@@ -249,7 +249,7 @@ mod lines {
         document::Attribute,
         primitives::line,
         tests::fixtures::{
-            document::{TAttribute, TRawAttributeValue},
+            document::{TAttribute, TAttributeValue, TRawAttributeValue},
             TSpan,
         },
         Span,
@@ -342,13 +342,54 @@ mod lines {
         );
     }
 
-    // .Example of an attribute entry that extends to two lines
-    // [source]
-    // -----
-    // :name: value \
-    // more value
-    // -----
+    #[test]
+    fn two_line_attribute() {
+        // .Example of an attribute entry that extends to two lines
+        // [source]
+        // -----
+        // :name: value \
+        // more value
+        // -----
 
+        let (rem, attr) =
+            Attribute::parse(Span::new(":name: value \\\nmore value\n", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 1,
+                offset: 26
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TAttribute {
+                name: TSpan {
+                    data: "name",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+                value: TRawAttributeValue::Value(TSpan {
+                    data: "value \\\nmore value",
+                    line: 1,
+                    col: 8,
+                    offset: 7,
+                }),
+                source: TSpan {
+                    data: ":name: value \\\nmore value\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(attr.value(), TAttributeValue::Value("value more value"));
+    }
     // Empty lines can also be significant.
     // A single empty line separates the header from the body.
     // Many blocks are also separated by an empty line, as you saw in the two
