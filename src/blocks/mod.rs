@@ -11,5 +11,8 @@
 mod block;
 pub use block::Block;
 
+mod r#macro;
+pub use r#macro::MacroBlock;
+
 mod simple;
 pub use simple::SimpleBlock;
