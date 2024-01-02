@@ -27,6 +27,12 @@ impl<'a> Document<'a> {
     ///
     /// Note that the document references the underlying source string and
     /// necessarily has the same lifetime as the source.
+    ///
+    /// **IMPORTANT:** The AsciiDoc language documentation states that UTF-16
+    /// encoding is allowed if a byte-order-mark (BOM) is present at the
+    /// start of a file. This format is not directly supported by the
+    /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
+    /// UTF-8 prior to parsing.
     pub fn parse(source: &'a str) -> Result<Self, Error> {
         // TO DO: Add option for best-guess parsing?
 
