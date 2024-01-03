@@ -189,3 +189,342 @@ mod simple {
         );
     }
 }
+
+mod r#macro {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::Block,
+        tests::fixtures::{
+            blocks::{TBlock, TMacroBlock, TSimpleBlock},
+            TSpan,
+        },
+        HasSpan, Span,
+    };
+
+    // NOTE: The "error" cases from the MacroBlock parser are not
+    // necessarily error cases here because we can reparse as SimpleBlock.
+
+    #[test]
+    fn err_inline_syntax() {
+        let (rem, block) = Block::parse(Span::new("foo:bar[]", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 10,
+                offset: 9
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inlines: vec![TSpan {
+                    data: "foo:bar[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+                source: TSpan {
+                    data: "foo:bar[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "foo:bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn err_no_attr_list() {
+        let (rem, block) = Block::parse(Span::new("foo::bar", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 9,
+                offset: 8
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inlines: vec![TSpan {
+                    data: "foo::bar",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+                source: TSpan {
+                    data: "foo::bar",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "foo::bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn err_attr_list_not_closed() {
+        let (rem, block) = Block::parse(Span::new("foo::bar[blah", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 14,
+                offset: 13
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inlines: vec![TSpan {
+                    data: "foo::bar[blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+                source: TSpan {
+                    data: "foo::bar[blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "foo::bar[blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn err_unexpected_after_attr_list() {
+        let (rem, block) = Block::parse(Span::new("foo::bar[blah]bonus", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 20,
+                offset: 19
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inlines: vec![TSpan {
+                    data: "foo::bar[blah]bonus",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+                source: TSpan {
+                    data: "foo::bar[blah]bonus",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "foo::bar[blah]bonus",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn simplest_block_macro() {
+        let (rem, block) = Block::parse(Span::new("foo::[]", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Macro(TMacroBlock {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: None,
+                attrlist: None,
+                source: TSpan {
+                    data: "foo::[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "foo::[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn has_target() {
+        let (rem, block) = Block::parse(Span::new("foo::bar[]", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Macro(TMacroBlock {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 6,
+                    offset: 5,
+                }),
+                attrlist: None,
+                source: TSpan {
+                    data: "foo::bar[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "foo::bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn has_target_and_attrlist() {
+        let (rem, block) = Block::parse(Span::new("foo::bar[blah]", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 15,
+                offset: 14
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Macro(TMacroBlock {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 6,
+                    offset: 5,
+                }),
+                attrlist: Some(TSpan {
+                    data: "blah",
+                    line: 1,
+                    col: 10,
+                    offset: 9,
+                }),
+
+                source: TSpan {
+                    data: "foo::bar[blah]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            })
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "foo::bar[blah]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+}
