@@ -1,5 +1,5 @@
 use asciidoc_parser::Document;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use codspeed_criterion_compat::{black_box, criterion_group, criterion_main, Criterion};
 
 const TWO_BLOCKS_AND_TITLE: &str = "= Example Title\n\nabc\n\ndef";
 
