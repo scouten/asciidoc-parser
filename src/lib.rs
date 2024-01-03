@@ -9,6 +9,7 @@
 pub mod blocks;
 
 pub mod document;
+pub use document::Document;
 
 mod error;
 pub use error::{Error, ParseResult};

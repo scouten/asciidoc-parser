@@ -15,4 +15,9 @@ nom-span = "0.1.1"
 thiserror = "1.0.50"
 
 [dev-dependencies]
+criterion = "0.3"
 pretty_assertions_sorted = "1.2.3"
+
+[[bench]]
+name = "simple_parse"
+harness = false
