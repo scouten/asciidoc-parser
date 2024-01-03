@@ -1,6 +1,8 @@
-# Asciidoc parser for Rust
+# AsciiDoc parser for Rust
 
-This is an effort to write a semantic parser for the [Asciidoc language](https://docs.asciidoctor.org/asciidoc/latest/). 
+[![CI](https://github.com/scouten/asciidoc-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/scouten/asciidoc-parser/actions/workflows/ci.yml) [![Codecov](https://codecov.io/gh/scouten/asciidoc-parser/graph/badge.svg?token=ULDZN1IUR9)](https://codecov.io/gh/scouten/asciidoc-parser) [![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/scouten/asciidoc-parser)
+
+This is an effort to write a semantic parser for the [AsciiDoc language](https://docs.asciidoctor.org/asciidoc/latest/). 
 
 The project is in its infancy as of December 2023 and in **no way ready to use.**
 
