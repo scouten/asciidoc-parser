@@ -9,6 +9,7 @@ targets = [
     { triple = "x86_64-pc-windows-msvc" },
     { triple = "aarch64-apple-darwin" },
 ]
+exclude-dev = true
 
 # Deny all advisories unless explicitly ignored.
 [advisories]
