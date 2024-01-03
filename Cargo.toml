@@ -16,7 +16,7 @@ thiserror = "1.0.50"
 
 [dev-dependencies]
 codspeed-criterion-compat = "2.3.3"
-criterion = "0.3"
+criterion = "0.5"
 pretty_assertions_sorted = "1.2.3"
 
 [[bench]]
