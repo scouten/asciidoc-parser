@@ -117,12 +117,65 @@ mod macros {
     // to the term macro. A macro is a syntax for representing non-text
     // elements or syntax that expands into text using the provided metadata. See https://en.wikipedia.org/wiki/Macro_(computer_science)[macro^] to learn more about the meaning of this term.
 
-    // Here's an example of a block macro:
+    use pretty_assertions_sorted::assert_eq;
 
-    // [source]
-    // ----
-    // image::sunset.jpg[Sunset]
-    // ----
+    use crate::{
+        document::Document,
+        tests::fixtures::{
+            blocks::{TBlock, TMacroBlock},
+            document::TDocument,
+            TSpan,
+        },
+    };
+
+    #[test]
+    fn block_macro() {
+        // Here's an example of a block macro:
+
+        // [source]
+        // ----
+        // image::sunset.jpg[Sunset]
+        // ----
+
+        assert_eq!(
+            Document::parse("image::sunset.jpg[Sunset]\n").unwrap(),
+            TDocument {
+                header: None,
+                blocks: vec![TBlock::Macro(TMacroBlock {
+                    name: TSpan {
+                        data: "image",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    target: Some(TSpan {
+                        data: "sunset.jpg",
+                        line: 1,
+                        col: 8,
+                        offset: 7,
+                    }),
+                    attrlist: Some(TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 19,
+                        offset: 18,
+                    }),
+                    source: TSpan {
+                        data: "image::sunset.jpg[Sunset]\n",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }
+                })],
+                source: TSpan {
+                    data: "image::sunset.jpg[Sunset]\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                },
+            }
+        );
+    }
 
     // Here's an example of an inline macro:
 
