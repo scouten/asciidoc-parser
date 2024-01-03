@@ -22,3 +22,6 @@ pretty_assertions_sorted = "1.2.3"
 [[bench]]
 name = "simple_parse"
 harness = false
+
+[package.metadata.cargo-udeps.ignore]
+development = ["criterion"]
