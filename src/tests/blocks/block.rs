@@ -9,6 +9,7 @@ mod simple {
         blocks::Block,
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
+            inlines::TInline,
             TSpan,
         },
         HasSpan, Span,
@@ -68,20 +69,12 @@ mod simple {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                inlines: vec![TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }],
-                source: TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            })
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            })))
         );
 
         assert_eq!(
@@ -111,28 +104,28 @@ mod simple {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                inlines: vec![
-                    TSpan {
+            TBlock::Simple(TSimpleBlock(TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
                         data: "abc",
                         line: 1,
                         col: 1,
                         offset: 0,
-                    },
-                    TSpan {
+                    }),
+                    TInline::Uninterpreted(TSpan {
                         data: "def",
                         line: 2,
                         col: 1,
                         offset: 4,
-                    },
+                    }),
                 ],
-                source: TSpan {
+                TSpan {
                     data: "abc\ndef",
                     line: 1,
                     col: 1,
                     offset: 0,
                 }
-            })
+            )))
         );
 
         assert_eq!(
@@ -162,26 +155,18 @@ mod simple {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                inlines: vec![TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }],
-                source: TSpan {
-                    data: "abc\n",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-            })
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            })))
         );
 
         assert_eq!(
             block.span(),
             TSpan {
-                data: "abc\n",
+                data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -197,6 +182,7 @@ mod r#macro {
         blocks::Block,
         tests::fixtures::{
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
+            inlines::TInline,
             TSpan,
         },
         HasSpan, Span,
@@ -221,20 +207,12 @@ mod r#macro {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                inlines: vec![TSpan {
-                    data: "foo:bar[]",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }],
-                source: TSpan {
-                    data: "foo:bar[]",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            })
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "foo:bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }))),
         );
 
         assert_eq!(
@@ -264,20 +242,12 @@ mod r#macro {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                inlines: vec![TSpan {
-                    data: "foo::bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }],
-                source: TSpan {
-                    data: "foo::bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            })
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "foo::bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }))),
         );
 
         assert_eq!(
@@ -307,20 +277,12 @@ mod r#macro {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                inlines: vec![TSpan {
-                    data: "foo::bar[blah",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }],
-                source: TSpan {
-                    data: "foo::bar[blah",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            })
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "foo::bar[blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            })))
         );
 
         assert_eq!(
@@ -350,20 +312,12 @@ mod r#macro {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                inlines: vec![TSpan {
-                    data: "foo::bar[blah]bonus",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }],
-                source: TSpan {
-                    data: "foo::bar[blah]bonus",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            })
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "foo::bar[blah]bonus",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }))),
         );
 
         assert_eq!(

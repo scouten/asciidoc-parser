@@ -75,7 +75,6 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
 ///
 /// Returns an error if the line becomes empty after trailing spaces have been
 /// removed.
-#[allow(dead_code)]
 pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
     recognize(pair(
         many0(one_line_with_continuation),

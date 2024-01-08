@@ -25,7 +25,6 @@ pub struct MacroBlock<'a> {
 }
 
 impl<'a> MacroBlock<'a> {
-    #[allow(dead_code)]
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let (rem, line) = normalized_line(source)?;
 

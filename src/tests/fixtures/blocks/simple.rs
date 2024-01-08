@@ -1,19 +1,13 @@
 use std::fmt;
 
-use crate::{blocks::SimpleBlock, tests::fixtures::TSpan, HasSpan};
+use crate::{blocks::SimpleBlock, tests::fixtures::inlines::TInline};
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TSimpleBlock {
-    pub inlines: Vec<TSpan>,
-    pub source: TSpan,
-}
+pub(crate) struct TSimpleBlock(pub TInline);
 
 impl fmt::Debug for TSimpleBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("SimpleBlock")
-            .field("inlines", &self.inlines)
-            .field("source", &self.source)
-            .finish()
+        f.debug_struct("SimpleBlock").field("0", &self.0).finish()
     }
 }
 
@@ -30,23 +24,5 @@ impl<'a> PartialEq<TSimpleBlock> for SimpleBlock<'a> {
 }
 
 fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) -> bool {
-    if tsimple_block.inlines.len() != simple_block.inlines.len() {
-        return false;
-    }
-
-    if &tsimple_block.source != simple_block.span() {
-        return false;
-    }
-
-    for (tsb_line, sb_line) in tsimple_block
-        .inlines
-        .iter()
-        .zip(simple_block.inlines.iter())
-    {
-        if tsb_line != sb_line {
-            return false;
-        }
-    }
-
-    true
+    &tsimple_block.0 == simple_block.inline()
 }
