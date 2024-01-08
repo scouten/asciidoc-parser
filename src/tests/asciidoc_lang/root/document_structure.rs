@@ -19,6 +19,7 @@ mod documents {
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
             document::{TAttribute, TDocument, THeader, TRawAttributeValue},
+            inlines::TInline,
             TSpan,
         },
     };
@@ -48,20 +49,14 @@ mod documents {
                     col: 1,
                     offset: 0
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
-                    inlines: vec![TSpan {
+                blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                    TSpan {
                         data: "This is a basic AsciiDoc document.",
                         line: 1,
                         col: 1,
                         offset: 0,
-                    },],
-                    source: TSpan {
-                        data: "This is a basic AsciiDoc document.\n",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }
-                })],
+                    },
+                )))]
             }
         );
     }
@@ -98,36 +93,22 @@ mod documents {
                     offset: 0
                 },
                 blocks: vec![
-                    TBlock::Simple(TSimpleBlock {
-                        inlines: vec![TSpan {
+                    TBlock::Simple(
+                        TSimpleBlock(
+                           TInline::Uninterpreted(TSpan {
                             data: "This is a basic AsciiDoc document.",
                             line: 1,
                             col: 1,
                             offset: 0,
-                        },],
-                        source: TSpan {
-                            data: "This is a basic AsciiDoc document.\n",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }
-                    }),
-                    TBlock::Simple(TSimpleBlock {
-                        inlines: vec![TSpan {
+                        }))),
+                    TBlock::Simple(TSimpleBlock(
+                        TInline::Uninterpreted(TSpan {
                             data: "This document contains two paragraphs.",
                             line: 3,
                             col: 1,
                             offset: 36,
-                        },],
-                        source: TSpan {
-                            data: "This document contains two paragraphs.\n",
-                            line: 3,
-                            col: 1,
-                            offset: 36,
-                        }
-                    })
-                ],
-            }
+                        })))]
+                     }
         );
     }
 
@@ -197,39 +178,37 @@ mod documents {
                 ),
 
                 blocks: vec![
-                    TBlock::Simple(TSimpleBlock {
-                        inlines: vec![TSpan {
+                    TBlock::Simple(
+                        TSimpleBlock(
+                            TInline::Uninterpreted(TSpan {
                             data: "This is a basic AsciiDoc document by {author}.",
                             line: 4,
                             col: 1,
                             offset: 33,
-                        },],
-                        source: TSpan {
-                            data: "This is a basic AsciiDoc document by {author}.\n",
-                            line: 4,
-                            col: 1,
-                            offset: 33,
-                        }
-                    }),
-                    TBlock::Simple(TSimpleBlock {
-                        inlines: vec![TSpan {
+                        }))),
+                    TBlock::Simple(
+                        TSimpleBlock(
+                            TInline::Sequence(
+                                vec![
+                                    TInline::Uninterpreted(TSpan {
                             data: "This document contains two paragraphs.",
                             line: 6,
                             col: 1,
                             offset: 81,
-                        },TSpan {
+                        }),
+                        TInline::Uninterpreted(TSpan {
                             data: "It also has a header that specifies the document title.",
                             line: 7,
                             col: 1,
                             offset: 120,
-                        }],
-                        source: TSpan {
+                        })],
+                        TSpan {
                             data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                             line: 6,
                             col: 1,
                             offset: 81,
-                        }
-                    })
+                        })
+                    ))
                 ],
                 source: TSpan {
                     data: "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title.",

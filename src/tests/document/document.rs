@@ -5,6 +5,7 @@ use crate::{
     tests::fixtures::{
         blocks::{TBlock, TSimpleBlock},
         document::{TDocument, THeader},
+        inlines::TInline,
         TSpan,
     },
 };
@@ -63,20 +64,14 @@ fn one_simple_block() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
-                inlines: vec![TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },],
-                source: TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                TSpan {
                     data: "abc",
                     line: 1,
                     col: 1,
                     offset: 0,
                 }
-            })],
+            )))]
         }
     );
 }
@@ -94,34 +89,18 @@ fn two_simple_blocks() {
                 offset: 0
             },
             blocks: vec![
-                TBlock::Simple(TSimpleBlock {
-                    inlines: vec![TSpan {
-                        data: "abc",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },],
-                    source: TSpan {
-                        data: "abc\n",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }
-                }),
-                TBlock::Simple(TSimpleBlock {
-                    inlines: vec![TSpan {
-                        data: "def",
-                        line: 3,
-                        col: 1,
-                        offset: 5,
-                    },],
-                    source: TSpan {
-                        data: "def",
-                        line: 3,
-                        col: 1,
-                        offset: 5,
-                    }
-                }),
+                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }))),
+                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                    data: "def",
+                    line: 3,
+                    col: 1,
+                    offset: 5,
+                })))
             ],
         }
     );
@@ -148,34 +127,18 @@ fn two_blocks_and_title() {
                 }
             }),
             blocks: vec![
-                TBlock::Simple(TSimpleBlock {
-                    inlines: vec![TSpan {
-                        data: "abc",
-                        line: 3,
-                        col: 1,
-                        offset: 17,
-                    },],
-                    source: TSpan {
-                        data: "abc\n",
-                        line: 3,
-                        col: 1,
-                        offset: 17,
-                    }
-                }),
-                TBlock::Simple(TSimpleBlock {
-                    inlines: vec![TSpan {
-                        data: "def",
-                        line: 5,
-                        col: 1,
-                        offset: 22,
-                    },],
-                    source: TSpan {
-                        data: "def",
-                        line: 5,
-                        col: 1,
-                        offset: 22,
-                    }
-                }),
+                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 17,
+                }))),
+                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                    data: "def",
+                    line: 5,
+                    col: 1,
+                    offset: 22,
+                })))
             ],
             source: TSpan {
                 data: "= Example Title\n\nabc\n\ndef",
