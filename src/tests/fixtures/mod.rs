@@ -2,6 +2,7 @@ use std::{env, path::PathBuf};
 
 pub(crate) mod blocks;
 pub(crate) mod document;
+pub(crate) mod inlines;
 
 mod span;
 pub(crate) use span::TSpan;

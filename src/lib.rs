@@ -14,6 +14,8 @@ pub use document::Document;
 mod error;
 pub use error::{Error, ParseResult};
 
+pub mod inlines;
+
 mod has_span;
 pub use has_span::HasSpan;
 

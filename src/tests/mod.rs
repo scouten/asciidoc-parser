@@ -10,5 +10,6 @@ mod blocks;
 mod document;
 mod error;
 pub(crate) mod fixtures;
+mod inlines;
 mod primitives;
 mod strings;
