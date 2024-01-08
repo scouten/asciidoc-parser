@@ -21,6 +21,6 @@ impl<'a> SimpleBlock<'a> {
 
 impl<'a> HasSpan<'a> for SimpleBlock<'a> {
     fn span(&'a self) -> &'a Span<'a> {
-        &self.0.span()
+        self.0.span()
     }
 }
