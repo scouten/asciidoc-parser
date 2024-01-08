@@ -21,7 +21,6 @@ pub enum Inline<'a> {
 impl<'a> Inline<'a> {
     /// Parse a span (typically a line) of any type and return an `Inline` that
     /// describes it.
-    #[allow(dead_code)]
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
         // TEMPORARY: Naive approach ... everything is a plain span.
         // Assuming for now that it's a line.
@@ -32,7 +31,6 @@ impl<'a> Inline<'a> {
 
     /// Parse a sequence of non-empty lines as a single `Inline` that
     /// describes it.
-    #[allow(dead_code)]
     pub(crate) fn parse_lines(i: Span<'a>) -> IResult<Span, Self> {
         let (rem, first_line) = Self::parse(i)?;
 
