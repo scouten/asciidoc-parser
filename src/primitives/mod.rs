@@ -40,7 +40,7 @@ pub(crate) fn trim_input_for_rem<'a>(inp: Span<'a>, rem: Span<'a>) -> Span<'a> {
 ///
 /// NOTE: The concept of "identifier" is not crisply defined in the Asciidoc
 /// documentation, so – for now – we're borrowing the definition from Rust.
-pub(crate) fn ident<'a>(i: Span<'a>) -> IResult<Span, Span> {
+pub(crate) fn ident(i: Span<'_>) -> IResult<Span, Span> {
     recognize(pair(
         alt((alphanumeric1, tag("_"))),
         many0(alt((alphanumeric1, tag("_"), tag("-")))),
