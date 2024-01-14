@@ -1,4 +1,7 @@
-use nom::Slice;
+use nom::{
+    branch::alt, bytes::complete::tag, character::complete::alphanumeric1, combinator::recognize,
+    multi::many0, sequence::pair, IResult, Parser, Slice,
+};
 
 mod line;
 #[allow(unused_imports)]
@@ -31,4 +34,16 @@ pub(crate) fn trim_input_for_rem<'a>(inp: Span<'a>, rem: Span<'a>) -> Span<'a> {
         let trim_len = ilen - rlen;
         inp.slice(0..trim_len)
     }
+}
+
+/// Recognize an identifier at the beginning of the current source.
+///
+/// NOTE: The concept of "identifier" is not crisply defined in the Asciidoc
+/// documentation, so – for now – we're borrowing the definition from Rust.
+pub(crate) fn ident(i: Span<'_>) -> IResult<Span, Span> {
+    recognize(pair(
+        alt((alphanumeric1, tag("_"))),
+        many0(alt((alphanumeric1, tag("_"), tag("-")))),
+    ))
+    .parse(i)
 }

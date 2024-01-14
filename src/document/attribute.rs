@@ -1,15 +1,7 @@
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{alphanumeric1, space0},
-    combinator::recognize,
-    multi::many0,
-    sequence::pair,
-    IResult, Parser, Slice,
-};
+use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
 
 use crate::{
-    primitives::{line_with_continuation, trim_input_for_rem},
+    primitives::{ident, line_with_continuation, trim_input_for_rem},
     strings::CowStr,
     HasSpan, Span,
 };
@@ -37,11 +29,7 @@ impl<'a> Attribute<'a> {
             line = line.slice(1..);
         }
 
-        let (mut line, name) = recognize(pair(
-            alt((alphanumeric1, tag("_"))),
-            many0(alt((alphanumeric1, tag("_"), tag("-")))),
-        ))
-        .parse(line)?;
+        let (mut line, name) = ident(line)?;
 
         if line.starts_with('!') && !unset {
             unset = true;
