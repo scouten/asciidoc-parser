@@ -8,10 +8,10 @@ use crate::{primitives::trim_input_for_rem, HasSpan, Span};
 /// An inline macro can be used in an inline context to create new inline
 /// content.
 ///
-/// This struct is returned when the block form of a *named macro* is detected.
+/// This struct is returned when the inline form of a *named macro* is detected.
 ///
 /// ```ignore
-/// <name>::<target>?[<attrlist>?].
+/// <name>:<target>?[<attrlist>?].
 /// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InlineMacro<'a> {
