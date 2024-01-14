@@ -3,3 +3,6 @@
 
 mod inline;
 pub use inline::Inline;
+
+mod r#macro;
+pub use r#macro::InlineMacro;
