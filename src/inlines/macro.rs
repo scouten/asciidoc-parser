@@ -3,7 +3,10 @@ use nom::{
     IResult,
 };
 
-use crate::{primitives::trim_input_for_rem, HasSpan, Span};
+use crate::{
+    primitives::{ident, trim_input_for_rem},
+    HasSpan, Span,
+};
 
 /// An inline macro can be used in an inline context to create new inline
 /// content.
@@ -24,7 +27,7 @@ pub struct InlineMacro<'a> {
 impl<'a> InlineMacro<'a> {
     #[allow(dead_code)]
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (i, name) = take_until1(":")(source)?;
+        let (i, name) = ident(source)?;
         let (i, _) = tag(":")(i)?;
 
         let (i, target) = if i.starts_with('[') {

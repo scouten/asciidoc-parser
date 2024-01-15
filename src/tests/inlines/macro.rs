@@ -21,7 +21,7 @@ fn impl_clone() {
 
 #[test]
 fn empty_source() {
-    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeUntil));
+    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::Tag));
 
     let actual_err = InlineMacro::parse(Span::new("", true)).unwrap_err();
 
@@ -30,9 +30,21 @@ fn empty_source() {
 
 #[test]
 fn only_spaces() {
-    let expected_err = Err::Error(Error::new(Span::new("    ", true), ErrorKind::TakeUntil));
+    let expected_err = Err::Error(Error::new(Span::new("    ", true), ErrorKind::Tag));
 
     let actual_err = InlineMacro::parse(Span::new("    ", true)).unwrap_err();
+
+    assert_eq!(expected_err, actual_err);
+}
+
+#[test]
+fn err_not_ident() {
+    let err_span = Span::new("foo^xyz:bar[]", true);
+    let (err_span, _) = take::<usize, Span, Error<Span>>(3)(err_span).unwrap();
+
+    let expected_err = Err::Error(Error::new(err_span, ErrorKind::Tag));
+
+    let actual_err = InlineMacro::parse(Span::new("foo^xyz:bar[]", true)).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }

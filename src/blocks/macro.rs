@@ -5,7 +5,7 @@ use nom::{
 };
 
 use crate::{
-    primitives::{consume_empty_lines, normalized_line, trim_input_for_rem},
+    primitives::{consume_empty_lines, ident, normalized_line, trim_input_for_rem},
     HasSpan, Span,
 };
 
@@ -28,7 +28,7 @@ impl<'a> MacroBlock<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let (rem, line) = normalized_line(source)?;
 
-        let (line, name) = take_until1("::")(line)?;
+        let (line, name) = ident(line)?;
         let (line, _) = tag("::")(line)?;
 
         let (line, target) = if line.starts_with('[') {
