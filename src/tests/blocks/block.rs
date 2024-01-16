@@ -182,7 +182,7 @@ mod r#macro {
         blocks::Block,
         tests::fixtures::{
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
-            inlines::TInline,
+            inlines::{TInline, TInlineMacro},
             TSpan,
         },
         HasSpan, Span,
@@ -207,11 +207,26 @@ mod r#macro {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "foo:bar[]",
-                line: 1,
-                col: 1,
-                offset: 0,
+            TBlock::Simple(TSimpleBlock(TInline::Macro(TInlineMacro {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },),
+                attrlist: None,
+                source: TSpan {
+                    data: "foo:bar[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
             }))),
         );
 
@@ -312,12 +327,48 @@ mod r#macro {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "foo::bar[blah]bonus",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }))),
+            TBlock::Simple(TSimpleBlock(TInline::Sequence(
+                vec![
+                    TInline::Macro(TInlineMacro {
+                        name: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        target: Some(TSpan {
+                            data: ":bar",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },),
+                        attrlist: Some(TSpan {
+                            data: "blah",
+                            line: 1,
+                            col: 10,
+                            offset: 9,
+                        },),
+                        source: TSpan {
+                            data: "foo::bar[blah]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },),
+                    TInline::Uninterpreted(TSpan {
+                        data: "bonus",
+                        line: 1,
+                        col: 15,
+                        offset: 14,
+                    },),
+                ],
+                TSpan {
+                    data: "foo::bar[blah]bonus",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            )))
         );
 
         assert_eq!(

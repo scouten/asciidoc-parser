@@ -1,9 +1,13 @@
-use crate::{inlines::Inline, tests::fixtures::span::TSpan};
+use crate::{
+    inlines::Inline,
+    tests::fixtures::{inlines::TInlineMacro, span::TSpan},
+};
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) enum TInline {
     Uninterpreted(TSpan),
     Sequence(Vec<Self>, TSpan),
+    Macro(TInlineMacro),
 }
 
 impl<'a> PartialEq<Inline<'a>> for TInline {
@@ -39,6 +43,11 @@ fn tinline_eq(tinline: &TInline, inline: &Inline) -> bool {
 
                 tspan == span
             }
+            _ => false,
+        },
+
+        TInline::Macro(ref tinline_macro) => match inline {
+            Inline::Macro(ref inline_macro) => tinline_macro == inline_macro,
             _ => false,
         },
     }
