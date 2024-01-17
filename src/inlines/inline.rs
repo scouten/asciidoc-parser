@@ -92,16 +92,7 @@ fn parse_uninterpreted<'a>(i: Span<'a>) -> IResult<Span, Span> {
     let mut rem = i.clone();
     let mut at_word_boundary = true;
 
-    let mut count = 0usize;
-
     loop {
-        count = count + 1;
-        if count > 100 {
-            panic!("WHAT???");
-        }
-
-        dbg!(&rem);
-
         let mut iter = rem.iter_elements();
         let Some(c) = iter.next() else {
             break;
@@ -115,7 +106,6 @@ fn parse_uninterpreted<'a>(i: Span<'a>) -> IResult<Span, Span> {
 
         at_word_boundary = matches!(c, ' ' | '\t');
         let (rem2, c) = rem.take_split(1);
-        dbg!(&c);
         if let Some(c) = c.data().chars().next() {
             at_word_boundary = matches!(c, ' ' | '\t');
         }
