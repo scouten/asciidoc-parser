@@ -48,6 +48,7 @@ impl<'a> Inline<'a> {
         }
 
         if inlines.len() == 1 {
+            #[allow(clippy::panic)]
             if let Some(first) = inlines.into_iter().next() {
                 Ok((rem, first))
             } else {
