@@ -27,7 +27,6 @@ impl<'a> Inline<'a> {
     /// describes it.
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
         let (rem, mut span) = non_empty_line(i)?;
-
         let mut inlines: Vec<Self> = vec![];
 
         loop {
