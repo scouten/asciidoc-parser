@@ -26,9 +26,6 @@ impl<'a> Inline<'a> {
     /// Parse a span (typically a line) of any type and return an `Inline` that
     /// describes it.
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        // TEMPORARY: Naive approach ... everything is a plain span.
-        // Assuming for now that it's a line.
-
         let (rem, mut span) = non_empty_line(i)?;
 
         let mut inlines: Vec<Self> = vec![];
