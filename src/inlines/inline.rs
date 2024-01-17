@@ -87,8 +87,8 @@ impl<'a> HasSpan<'a> for Inline<'a> {
 // Parse the largest possible block of "uninterpreted" text.
 // Remainder is either empty span or first span that requires
 // special interpretation.
-fn parse_uninterpreted<'a>(i: Span<'a>) -> IResult<Span, Span> {
-    let mut rem = i.clone();
+fn parse_uninterpreted(i: Span<'_>) -> IResult<Span, Span> {
+    let mut rem = i;
     let mut at_word_boundary = true;
 
     loop {
@@ -97,10 +97,8 @@ fn parse_uninterpreted<'a>(i: Span<'a>) -> IResult<Span, Span> {
             break;
         };
 
-        if at_word_boundary {
-            if InlineMacro::parse(rem).is_ok() {
-                break;
-            }
+        if at_word_boundary && InlineMacro::parse(rem).is_ok() {
+            break;
         }
 
         at_word_boundary = matches!(c, ' ' | '\t');
@@ -116,6 +114,6 @@ fn parse_uninterpreted<'a>(i: Span<'a>) -> IResult<Span, Span> {
 }
 
 // Parse the block as a special "interpreted" inline sequence or error out.
-fn parse_interpreted<'a>(i: Span<'a>) -> IResult<Span, Inline<'a>> {
+fn parse_interpreted(i: Span<'_>) -> IResult<Span, Inline<'_>> {
     InlineMacro::parse(i).map(|(rem, x)| (rem, Inline::Macro(x)))
 }
