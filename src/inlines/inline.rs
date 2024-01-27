@@ -27,11 +27,20 @@ impl<'a> Inline<'a> {
     /// describes it.
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
         let (rem, mut span) = non_empty_line(i)?;
+
+        // Special-case optimization: If the entire span is one
+        // uninterpreted block, just return that without the allocation
+        // overhead of the Vec of inlines.
+
+        let (mut span2, mut uninterp) = parse_uninterpreted(span)?;
+
+        if span2.is_empty() {
+            return Ok((rem, Self::Uninterpreted(uninterp)));
+        }
+
         let mut inlines: Vec<Self> = vec![];
 
         loop {
-            let (span2, uninterp) = parse_uninterpreted(span)?;
-
             if !uninterp.is_empty() {
                 inlines.push(Self::Uninterpreted(uninterp));
             }
@@ -41,22 +50,20 @@ impl<'a> Inline<'a> {
                 break;
             }
 
-            let (span2, interp) = parse_interpreted(span)?;
+            let (span3, interp) = parse_interpreted(span)?;
+
+            if span3.is_empty() && inlines.is_empty() {
+                return Ok((rem, interp));
+            }
+
             inlines.push(interp);
 
-            span = span2;
+            span = span3;
+
+            (span2, uninterp) = parse_uninterpreted(span)?;
         }
 
-        if inlines.len() == 1 {
-            #[allow(clippy::panic)]
-            if let Some(first) = inlines.into_iter().next() {
-                Ok((rem, first))
-            } else {
-                panic!("I'm confused. len() == 1, but next() returned None");
-            }
-        } else {
-            Ok((rem, Self::Sequence(inlines, trim_input_for_rem(i, rem))))
-        }
+        Ok((rem, Self::Sequence(inlines, trim_input_for_rem(i, rem))))
     }
 
     /// Parse a sequence of non-empty lines as a single `Inline` that
