@@ -45,17 +45,6 @@ pub(crate) fn normalized_line(input: Span<'_>) -> IResult<Span, Span> {
 /// Returns an error if the line becomes empty after trailing spaces have been
 /// removed.
 pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
-    if !input.contains('\n') {
-        let rem = input.slice(input.len()..);
-        let (_, line) = trim_trailing_spaces((rem, input));
-
-        if line.is_empty() {
-            return Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)));
-        } else {
-            return Ok((rem, line));
-        }
-    }
-
     take_till1(|c| c == '\n')(input)
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
