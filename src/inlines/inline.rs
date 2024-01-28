@@ -99,6 +99,13 @@ fn parse_uninterpreted(i: Span<'_>) -> IResult<Span, Span> {
     let mut rem = i;
     let mut at_word_boundary = true;
 
+    // Optimization: If line doesn't contain special markup chars,
+    // then it's all uninterpreted.
+
+    if !rem.contains(':') {
+        return Ok((trim_input_for_rem(i, rem), rem));
+    }
+
     loop {
         let mut iter = rem.iter_elements();
         let Some(c) = iter.next() else {
