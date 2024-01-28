@@ -7,7 +7,6 @@ use nom::{
     Err, IResult, Parser, Slice,
 };
 
-use super::trim_input_for_rem;
 use crate::Span;
 
 /// Return a single line from the source.
@@ -48,8 +47,7 @@ pub(crate) fn normalized_line(input: Span<'_>) -> IResult<Span, Span> {
 pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
     if !input.contains('\n') {
         let rem = input.slice(input.len()..);
-
-        let (_, line) = trim_trailing_spaces((trim_input_for_rem(input, input), input));
+        let (_, line) = trim_trailing_spaces((rem, input));
 
         if line.is_empty() {
             return Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)));
