@@ -20,6 +20,10 @@ criterion = "0.5.1"
 pretty_assertions_sorted = "1.2.3"
 
 [[bench]]
+name = "inline_macro"
+harness = false
+
+[[bench]]
 name = "simple_parse"
 harness = false
 

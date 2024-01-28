@@ -1,6 +1,7 @@
-use nom::{multi::many1, IResult};
+use nom::{multi::many1, IResult, InputTake};
 
 use crate::{
+    inlines::InlineMacro,
     primitives::{non_empty_line, trim_input_for_rem},
     HasSpan, Span,
 };
@@ -16,17 +17,53 @@ pub enum Inline<'a> {
 
     /// A sequence of other inline blocks.
     Sequence(Vec<Self>, Span<'a>),
+
+    /// An inline macro.
+    Macro(InlineMacro<'a>),
 }
 
 impl<'a> Inline<'a> {
     /// Parse a span (typically a line) of any type and return an `Inline` that
     /// describes it.
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        // TEMPORARY: Naive approach ... everything is a plain span.
-        // Assuming for now that it's a line.
+        let (rem, mut span) = non_empty_line(i)?;
 
-        let (rem, span) = non_empty_line(i)?;
-        Ok((rem, Self::Uninterpreted(span)))
+        // Special-case optimization: If the entire span is one
+        // uninterpreted block, just return that without the allocation
+        // overhead of the Vec of inlines.
+
+        let (mut span2, mut uninterp) = parse_uninterpreted(span)?;
+
+        if span2.is_empty() {
+            return Ok((rem, Self::Uninterpreted(uninterp)));
+        }
+
+        let mut inlines: Vec<Self> = vec![];
+
+        loop {
+            if !uninterp.is_empty() {
+                inlines.push(Self::Uninterpreted(uninterp));
+            }
+
+            span = span2;
+            if span.is_empty() {
+                break;
+            }
+
+            let (span3, interp) = parse_interpreted(span)?;
+
+            if span3.is_empty() && inlines.is_empty() {
+                return Ok((rem, interp));
+            }
+
+            inlines.push(interp);
+
+            span = span3;
+
+            (span2, uninterp) = parse_uninterpreted(span)?;
+        }
+
+        Ok((rem, Self::Sequence(inlines, trim_input_for_rem(i, rem))))
     }
 
     /// Parse a sequence of non-empty lines as a single `Inline` that
@@ -50,6 +87,40 @@ impl<'a> HasSpan<'a> for Inline<'a> {
         match self {
             Self::Uninterpreted(i) => i,
             Self::Sequence(_, i) => i,
+            Self::Macro(m) => m.span(),
         }
     }
+}
+
+// Parse the largest possible block of "uninterpreted" text.
+// Remainder is either empty span or first span that requires
+// special interpretation.
+fn parse_uninterpreted(i: Span<'_>) -> IResult<Span, Span> {
+    let mut rem = i;
+    let mut at_word_boundary = true;
+
+    // Optimization: If line doesn't contain special markup chars,
+    // then it's all uninterpreted.
+
+    if !rem.contains(':') {
+        return Ok((trim_input_for_rem(i, rem), rem));
+    }
+
+    loop {
+        if (at_word_boundary && InlineMacro::parse(rem).is_ok()) || rem.is_empty() {
+            break;
+        }
+
+        let (rem2, c) = rem.take_split(1);
+        at_word_boundary = matches!(c.data().chars().next(), Some(' ') | Some('\t'));
+
+        rem = rem2;
+    }
+
+    Ok((rem, trim_input_for_rem(i, rem)))
+}
+
+// Parse the block as a special "interpreted" inline sequence or error out.
+fn parse_interpreted(i: Span<'_>) -> IResult<Span, Inline<'_>> {
+    InlineMacro::parse(i).map(|(rem, x)| (rem, Inline::Macro(x)))
 }
