@@ -1,4 +1,4 @@
-use nom::{multi::many1, IResult, InputIter, InputTake};
+use nom::{multi::many1, IResult, InputTake};
 
 use crate::{
     inlines::InlineMacro,
@@ -107,20 +107,12 @@ fn parse_uninterpreted(i: Span<'_>) -> IResult<Span, Span> {
     }
 
     loop {
-        let mut iter = rem.iter_elements();
-        let Some(c) = iter.next() else {
-            break;
-        };
-
-        if at_word_boundary && InlineMacro::parse(rem).is_ok() {
+        if (at_word_boundary && InlineMacro::parse(rem).is_ok()) || rem.is_empty() {
             break;
         }
 
-        at_word_boundary = matches!(c, ' ' | '\t');
         let (rem2, c) = rem.take_split(1);
-        if let Some(c) = c.data().chars().next() {
-            at_word_boundary = matches!(c, ' ' | '\t');
-        }
+        at_word_boundary = matches!(c.data().chars().next(), Some(' ') | Some('\t'));
 
         rem = rem2;
     }
