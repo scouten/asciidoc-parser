@@ -122,8 +122,9 @@ mod macros {
     use crate::{
         document::Document,
         tests::fixtures::{
-            blocks::{TBlock, TMacroBlock},
+            blocks::{TBlock, TMacroBlock, TSimpleBlock},
             document::TDocument,
+            inlines::{TInline, TInlineMacro},
             TSpan,
         },
     };
@@ -177,25 +178,108 @@ mod macros {
         );
     }
 
-    // Here's an example of an inline macro:
+    #[test]
+    fn inline_macro() {
+        // Here's an example of an inline macro:
 
-    // [source]
-    // ----
-    // Click the button with the image:star.png[Star] to favorite the project.
-    // ----
+        // [source]
+        // ----
+        // Click the button with the image:star.png[Star] to favorite the project.
+        // ----
 
-    // You can think of a macro like a function.
-    // A syntax of macro follows the form of a name, a target which is sometimes
-    // optional, and an attribute list consisting of zero or more element
-    // attributes enclosed in square brackets.
+        assert_eq!(
+            Document::parse(
+                "Click the button with the image:star.png[Star] to favorite the project.\n"
+            )
+            .unwrap(),
+            TDocument {
+                header: None,
+                    blocks: vec![
+                            TBlock::Simple(
+                                TSimpleBlock(
+                                    TInline::Sequence(
+                                        vec![
+                                            TInline::Uninterpreted(
+                                                TSpan {
+                                                    data: "Click the button with the ",
+                                                    line: 1,
+                                                    col: 1,
+                                                    offset: 0,
+                                                },
+                                            ),
+                                            TInline::Macro(
+                                                TInlineMacro {
+                                                    name: TSpan {
+                                                        data: "image",
+                                                        line: 1,
+                                                        col: 27,
+                                                        offset: 26,
+                                                    },
+                                                    target: Some(
+                                                        TSpan {
+                                                            data: "star.png",
+                                                            line: 1,
+                                                            col: 33,
+                                                            offset: 32,
+                                                        },
+                                                    ),
+                                                    attrlist: Some(
+                                                        TSpan {
+                                                            data: "Star",
+                                                            line: 1,
+                                                            col: 42,
+                                                            offset: 41,
+                                                        },
+                                                    ),
+                                                    source: TSpan {
+                                                        data: "image:star.png[Star]",
+                                                        line: 1,
+                                                        col: 27,
+                                                        offset: 26,
+                                                    },
+                                                },
+                                            ),
+                                            TInline::Uninterpreted(
+                                                TSpan {
+                                                    data: " to favorite the project.",
+                                                    line: 1,
+                                                    col: 47,
+                                                    offset: 46,
+                                                },
+                                            ),
+                                        ],
+                                        TSpan {
+                                            data: "Click the button with the image:star.png[Star] to favorite the project.\n",
+                                            line: 1,
+                                            col: 1,
+                                            offset: 0,
+                                        },
+                                    ),
+                                ),
+                            ),
+                        ],                source: TSpan {
+                    data:
+                        "Click the button with the image:star.png[Star] to favorite the project.\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                },
+            }
+        );
 
-    // There are two variations of a macro: block and inline.
-    // In a block macro, the name and target are separated by two colons (`::`)
-    // and it must reside on a line by itself. In an inline macro, the name
-    // and target are separated by a single colon (`:`) and it can be alongside
-    // text and other inline elements. A block macro is always parsed,
-    // whereas an inline macro is only parsed where the macros substitution is
-    // enabled.
+        // You can think of a macro like a function.
+        // A syntax of macro follows the form of a name, a target which is
+        // sometimes optional, and an attribute list consisting of zero
+        // or more element attributes enclosed in square brackets.
+
+        // There are two variations of a macro: block and inline.
+        // In a block macro, the name and target are separated by two colons
+        // (`::`) and it must reside on a line by itself. In an inline
+        // macro, the name and target are separated by a single colon
+        // (`:`) and it can be alongside text and other inline elements.
+        // A block macro is always parsed, whereas an inline macro is
+        // only parsed where the macros substitution is enabled.
+    }
 }
 
 // == Preprocessor directives
