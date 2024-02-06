@@ -6,11 +6,11 @@ What it does is provide a way to make references to the entries from the same do
 
 == Bibliography section syntax
 
-To conform to output formats, a bibliography must be its own section.
+To conform to output formats, a bibliography must be its own section at any level.
 The section must be assigned the `bibliography` section style.
 By adding the `bibliography` style to the section, you implicitly add it to each unordered list in that section.
 
-The bibliography section is defined as a level 1 section (`==`) when:
+You would define the bibliography as a level 1 section (`==`) when:
 
 * the doctype is `article`
 * the doctype is `book` and the book doesn't contain any parts
@@ -21,6 +21,8 @@ The bibliography section is defined as a level 1 section (`==`) when:
 [bibliography]
 == Bibliography
 ----
+
+You can also define it as a deeper section, in which case the doctype doesn't matter and it's scoped to the parent section.
 
 If the book has parts, and the bibliography is for the whole book, the section is defined as a level 0 section (`=`).
 
