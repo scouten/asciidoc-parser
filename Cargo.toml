@@ -7,7 +7,7 @@ edition = "2021"
 authors = ["Eric Scouten <git@scouten.me>"]
 keywords = ["asciidoc", "parser"]
 repository = "https://github.com/scouten/asciidoc-parser"
-rust-version = "1.72.0"
+rust-version = "1.74.0"
 
 [dependencies]
 nom = "7.1"
