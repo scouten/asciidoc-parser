@@ -50,7 +50,7 @@ impl<'a> Block<'a> {
         Ok((rem, Self::Simple(simple_block)))
     }
 
-    /// Returns the [ContentModel](content model) for this block.
+    /// Returns the [ContentModel] for this block.
     pub fn content_model(&self) -> ContentModel {
         match self {
             Self::Simple(_) => ContentModel::Simple,
@@ -70,7 +70,6 @@ impl<'a> HasSpan<'a> for Block<'a> {
 
 /// The content model of a block determines what kind of content the block can
 /// have (if any) and how that content is processed.
-
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 #[allow(dead_code)] // TO DO: Remove once all content models are referenced.
 pub enum ContentModel {

@@ -80,7 +80,7 @@ impl<'a> MacroBlock<'a> {
         self.attrlist.as_ref()
     }
 
-    /// Returns the [ContentModel](content model) for this block.
+    /// Returns the [ContentModel] for this block.
     pub fn content_model(&self) -> ContentModel {
         // TO DO: We'll probably want different macro types
         // to provide different content models. For now, just
