@@ -6,7 +6,7 @@ mod simple {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::Block,
+        blocks::{Block, ContentModel},
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
             inlines::TInline,
@@ -86,6 +86,8 @@ mod simple {
                 offset: 0,
             }
         );
+
+        assert_eq!(block.content_model(), ContentModel::Simple);
     }
 
     #[test]
@@ -179,7 +181,7 @@ mod r#macro {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::Block,
+        blocks::{Block, ContentModel},
         tests::fixtures::{
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
             inlines::{TInline, TInlineMacro},
@@ -425,6 +427,8 @@ mod r#macro {
                 offset: 0,
             }
         );
+
+        assert_eq!(block.content_model(), ContentModel::Simple,);
     }
 
     #[test]
@@ -531,5 +535,17 @@ mod r#macro {
                 offset: 0,
             }
         );
+    }
+}
+
+mod content_model {
+    use crate::blocks::ContentModel;
+
+    #[test]
+    fn impl_copy() {
+        // Silly test to mark the #[derive(...)] line as covered.
+        let c1 = ContentModel::Simple;
+        let c2 = c1;
+        assert_eq!(c1, c2);
     }
 }

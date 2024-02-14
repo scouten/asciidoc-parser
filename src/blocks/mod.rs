@@ -9,7 +9,7 @@
 //! output.
 
 mod block;
-pub use block::Block;
+pub use block::{Block, ContentModel};
 
 mod r#macro;
 pub use r#macro::MacroBlock;
