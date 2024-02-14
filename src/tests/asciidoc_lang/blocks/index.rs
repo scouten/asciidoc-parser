@@ -54,28 +54,77 @@ fn block_forms() {
     todo!("Redundant: Covered by content_model test below.");
 }
 
-// == Content model
-//
-// The content model of a block determines what kind of content the block can
-// have (if any) and how that content is processed. The content models of blocks
-// in AsciiDoc are as follows:
-//
-// compound:: a block that may only contain other blocks (e.g., a section)
-// simple:: a block that's treated as contiguous lines of paragraph text (and
-// subject to normal substitutions) (e.g., a paragraph block) verbatim:: a block
-// that holds verbatim text (displayed "`as is`") (and subject to verbatim
-// substitutions) (e.g., a listing block) raw:: a block that holds unprocessed
-// content passed directly through to the output with no substitutions applied
-// (e.g., a passthrough block) empty:: a block that has no content (e.g., an
-// image block) table:: a special content model reserved for tables that
-// enforces a fixed structure
-//
-// The content model is inferred for all built-in syntax (as determined by the
-// context), but can be configured for custom blocks. Blocks may also support
-// different content models under different circumstances. The circumstance is
-// determined by the context and style, and in the case of a delimited block,
-// the structural container as well.
-//
+mod content_model {
+    use crate::{
+        blocks::{Block, ContentModel},
+        Span,
+    };
+
+    // == Content model
+    //
+    // The content model of a block determines what kind of content the block can
+    // have (if any) and how that content is processed. The content models of blocks
+    // in AsciiDoc are as follows:
+
+    #[ignore]
+    #[test]
+    fn compound() {
+        // compound:: a block that may only contain other blocks (e.g., a section)
+        todo!("Add test once a compound block is supported");
+    }
+
+    #[test]
+    fn simple() {
+        // simple:: a block that's treated as contiguous lines of paragraph text (and
+        // subject to normal substitutions) (e.g., a paragraph block)
+
+        let (_rem, block) = Block::parse(Span::new("abc", true)).unwrap();
+        assert_eq!(block.content_model(), ContentModel::Simple);
+    }
+
+    #[ignore]
+    #[test]
+    fn verbatim() {
+        // verbatim:: a block that holds verbatim text (displayed "`as is`") (and
+        // subject to verbatim substitutions) (e.g., a listing block)
+        todo!("Add test once a verbatim block is supported");
+    }
+
+    #[ignore]
+    #[test]
+    fn raw() {
+        // raw:: a block that holds unprocessed content passed directly through to the
+        // output with no substitutions applied (e.g., a passthrough block)
+        todo!("Add test once a raw block is supported");
+    }
+
+    #[ignore]
+    #[test]
+    fn empty() {
+        // empty:: a block that has no content (e.g., an image block)
+        todo!("Add test once an empty block is supported");
+    }
+
+    #[ignore]
+    #[test]
+    fn table() {
+        // table:: a special content model reserved for tables that
+        // enforces a fixed structure
+        todo!("Add test once a table block is supported");
+    }
+
+    #[ignore]
+    #[test]
+    fn custom() {
+        // The content model is inferred for all built-in syntax (as determined by the
+        // context), but can be configured for custom blocks. Blocks may also support
+        // different content models under different circumstances. The circumstance is
+        // determined by the context and style, and in the case of a delimited block,
+        // the structural container as well.
+        todo!("Add test once custom blocks are supported");
+    }
+}
+
 // == Context
 //
 // You may often hear a block referred to by a name, such as an example block, a
