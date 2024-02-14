@@ -49,6 +49,14 @@ impl<'a> Block<'a> {
         let (rem, simple_block) = SimpleBlock::parse(i)?;
         Ok((rem, Self::Simple(simple_block)))
     }
+
+    /// Returns the [ContentModel] for this block.
+    pub fn content_model(&self) -> ContentModel {
+        match self {
+            Self::Simple(_) => ContentModel::Simple,
+            Self::Macro(m) => m.content_model(),
+        }
+    }
 }
 
 impl<'a> HasSpan<'a> for Block<'a> {
@@ -58,4 +66,32 @@ impl<'a> HasSpan<'a> for Block<'a> {
             Self::Macro(b) => b.span(),
         }
     }
+}
+
+/// The content model of a block determines what kind of content the block can
+/// have (if any) and how that content is processed.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[allow(dead_code)] // TO DO: Remove once all content models are referenced.
+pub enum ContentModel {
+    /// A block that may only contain other blocks (e.g., a section)
+    Compound,
+
+    /// A block that's treated as contiguous lines of paragraph text (and
+    /// subject to normal substitutions) (e.g., a paragraph block)
+    Simple,
+
+    /// A block that holds verbatim text (displayed "`as is`") (and subject to
+    /// verbatim substitutions) (e.g., a listing block)
+    Verbatim,
+
+    /// A block that holds unprocessed content passed directly through to the
+    /// output with no substitutions applied (e.g., a passthrough block)
+    Raw,
+
+    /// Ablock that has no content (e.g., an image block)
+    Empty,
+
+    /// A special content model reserved for tables that enforces a fixed
+    /// structure
+    Table,
 }
