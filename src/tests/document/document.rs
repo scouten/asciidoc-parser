@@ -1,6 +1,7 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    blocks::{ContentModel, IsBlock},
     document::Document,
     tests::fixtures::{
         blocks::{TBlock, TSimpleBlock},
@@ -20,8 +21,12 @@ fn impl_clone() {
 
 #[test]
 fn empty_source() {
+    let doc = Document::parse("").unwrap();
+
+    assert_eq!(doc.content_model(), ContentModel::Compound);
+
     assert_eq!(
-        Document::parse("").unwrap(),
+        doc,
         TDocument {
             header: None,
             source: TSpan {

@@ -88,6 +88,7 @@ mod simple {
         );
 
         assert_eq!(block.content_model(), ContentModel::Simple);
+        assert_eq!(block.nested_blocks().next(), None);
     }
 
     #[test]
@@ -428,7 +429,8 @@ mod r#macro {
             }
         );
 
-        assert_eq!(block.content_model(), ContentModel::Simple,);
+        assert_eq!(block.content_model(), ContentModel::Simple);
+        assert_eq!(block.nested_blocks().next(), None);
     }
 
     #[test]

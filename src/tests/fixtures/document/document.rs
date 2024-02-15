@@ -2,6 +2,7 @@ use std::{cmp::PartialEq, fmt};
 
 use super::THeader;
 use crate::{
+    blocks::IsBlock,
     document::Document,
     tests::fixtures::{blocks::TBlock, TSpan},
     HasSpan,
@@ -57,11 +58,11 @@ fn tdocument_eq(tdocument: &TDocument, document: &Document) -> bool {
         }
     }
 
-    if tdocument.blocks.len() != document.blocks().len() {
+    if tdocument.blocks.len() != document.nested_blocks().len() {
         return false;
     }
 
-    for (td_block, block) in tdocument.blocks.iter().zip(document.blocks()) {
+    for (td_block, block) in tdocument.blocks.iter().zip(document.nested_blocks()) {
         if td_block != block {
             return false;
         }

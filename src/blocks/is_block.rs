@@ -1,6 +1,6 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, slice::Iter};
 
-use crate::HasSpan;
+use crate::{blocks::Block, HasSpan};
 
 /// Block elements form the main structure of an AsciiDoc document, starting
 /// with the document itself.
@@ -18,6 +18,16 @@ use crate::HasSpan;
 pub trait IsBlock<'a>: HasSpan<'a> + Clone + Debug + Eq + PartialEq {
     /// Returns the [ContentModel] for this block.
     fn content_model(&self) -> ContentModel;
+
+    /// Returns an iterator over the nested blocks contained within
+    /// this block.
+    ///
+    /// Many block types do not have nested blocks so the default implementation
+    /// returns an empty iterator.
+    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
+        const NO_BLOCKS: &[Block<'static>] = &[];
+        NO_BLOCKS.iter()
+    }
 }
 
 /// The content model of a block determines what kind of content the block can
