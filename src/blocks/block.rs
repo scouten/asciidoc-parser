@@ -28,9 +28,6 @@ pub enum Block<'a> {
     /// A block macro is a syntax for representing non-text elements or syntax
     /// that expands into text using the provided metadata.
     Macro(MacroBlock<'a>),
-
-    /// A custom block is defined by a client of this crate.
-    Custom(Box<dyn IsBlock<'a> + 'a>),
 }
 
 impl<'a> Block<'a> {
