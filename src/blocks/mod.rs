@@ -7,9 +7,26 @@
 //! blocks, so we say that blocks can be nested. The converter visits each block
 //! in turn, in document order, converting it to a corresponding chunk of
 //! output.
+//!
+//! ## Design discussion
+//!
+//! There are two data structures that express blocks in the asciidoc-parser
+//! crate:
+//!
+//! * [Block] is an enum that contains the common built-in block types
+//!   understood by this parser
+//! * [IsBlock] is a trait that describes the common properties of a block data
+//!   structure that might be provided outside of this crate
+//!
+//! This duality exists because we sought to avoid the overhead of `Box<dyn
+//! Block>` throughout the codebase, but also needed to provide for
+//! externally-described block types.
 
 mod block;
-pub use block::{Block, ContentModel};
+pub use block::Block;
+
+mod is_block;
+pub use is_block::{ContentModel, IsBlock};
 
 mod r#macro;
 pub use r#macro::MacroBlock;

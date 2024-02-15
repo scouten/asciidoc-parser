@@ -6,7 +6,7 @@ mod simple {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{Block, ContentModel},
+        blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
             inlines::TInline,
@@ -181,7 +181,7 @@ mod r#macro {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{Block, ContentModel},
+        blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
             inlines::{TInline, TInlineMacro},
