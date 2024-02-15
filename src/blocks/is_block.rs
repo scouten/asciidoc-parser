@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use crate::HasSpan;
 
 /// Block elements form the main structure of an AsciiDoc document, starting
@@ -10,8 +12,10 @@ use crate::HasSpan;
 /// in turn, in document order, converting it to a corresponding chunk of
 /// output.
 ///
-/// This trait implements many of the same core methods as the [Block](crate::blocks::Block) enum but provides a mechanism for third-party code to extend the behavior of blocks.
-pub trait IsBlock<'a>: HasSpan<'a> {
+/// This trait implements many of the same core methods as the
+/// [Block](crate::blocks::Block) enum but provides a mechanism for third-party
+/// code to extend the behavior of blocks.
+pub trait IsBlock<'a>: HasSpan<'a> + Clone + Debug + Eq + PartialEq {
     /// Returns the [ContentModel] for this block.
     fn content_model(&self) -> ContentModel;
 }
