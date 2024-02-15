@@ -1,3 +1,5 @@
+use std::slice::Iter;
+
 use nom::IResult;
 
 use crate::{
@@ -58,7 +60,14 @@ impl<'a> IsBlock<'a> for Block<'a> {
     fn content_model(&self) -> ContentModel {
         match self {
             Self::Simple(_) => ContentModel::Simple,
-            Self::Macro(m) => m.content_model(),
+            Self::Macro(b) => b.content_model(),
+        }
+    }
+
+    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
+        match self {
+            Self::Simple(b) => b.nested_blocks(),
+            Self::Macro(b) => b.nested_blocks(),
         }
     }
 }
