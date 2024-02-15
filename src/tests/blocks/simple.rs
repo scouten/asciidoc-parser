@@ -5,7 +5,7 @@ use nom::{
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    blocks::SimpleBlock,
+    blocks::{ContentModel, IsBlock, SimpleBlock},
     tests::fixtures::{blocks::TSimpleBlock, inlines::TInline, TSpan},
     Span,
 };
@@ -39,6 +39,8 @@ fn only_spaces() {
 #[test]
 fn single_line() {
     let (rem, block) = SimpleBlock::parse(Span::new("abc", true)).unwrap();
+
+    assert_eq!(block.content_model(), ContentModel::Simple);
 
     assert_eq!(
         rem,

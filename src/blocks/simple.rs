@@ -1,5 +1,6 @@
 use nom::IResult;
 
+use super::{ContentModel, IsBlock};
 use crate::{inlines::Inline, primitives::consume_empty_lines, HasSpan, Span};
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
@@ -16,6 +17,12 @@ impl<'a> SimpleBlock<'a> {
     /// Return the inline content of this block.
     pub fn inline(&self) -> &Inline<'a> {
         &self.0
+    }
+}
+
+impl<'a> IsBlock<'a> for SimpleBlock<'a> {
+    fn content_model(&self) -> ContentModel {
+        ContentModel::Simple
     }
 }
 

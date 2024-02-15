@@ -6,7 +6,7 @@ use nom::{
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    blocks::MacroBlock,
+    blocks::{ContentModel, IsBlock, MacroBlock},
     tests::fixtures::{blocks::TMacroBlock, TSpan},
     Span,
 };
@@ -20,7 +20,7 @@ fn impl_clone() {
 }
 
 #[test]
-fn empty_source() {
+fn err_empty_source() {
     let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::Tag));
 
     let actual_err = MacroBlock::parse(Span::new("", true)).unwrap_err();
@@ -29,7 +29,7 @@ fn empty_source() {
 }
 
 #[test]
-fn only_spaces() {
+fn err_only_spaces() {
     let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::Tag));
 
     let actual_err = MacroBlock::parse(Span::new("    ", true)).unwrap_err();
@@ -101,6 +101,8 @@ fn err_unexpected_after_attr_list() {
 #[test]
 fn simplest_block_macro() {
     let (rem, block) = MacroBlock::parse(Span::new("foo::[]", true)).unwrap();
+
+    assert_eq!(block.content_model(), ContentModel::Simple);
 
     assert_eq!(
         rem,

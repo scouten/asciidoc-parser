@@ -1,7 +1,7 @@
 use nom::IResult;
 
 use crate::{
-    blocks::{MacroBlock, SimpleBlock},
+    blocks::{ContentModel, IsBlock, MacroBlock, SimpleBlock},
     primitives::{consume_empty_lines, normalized_line},
     HasSpan, Span,
 };
@@ -15,6 +15,9 @@ use crate::{
 /// blocks, so we say that blocks can be nested. The converter visits each block
 /// in turn, in document order, converting it to a corresponding chunk of
 /// output.
+///
+/// This enum represents all of the block types that are understood directly by
+/// this parser and also implements the [`IsBlock`] trait.
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum Block<'a> {
@@ -49,9 +52,10 @@ impl<'a> Block<'a> {
         let (rem, simple_block) = SimpleBlock::parse(i)?;
         Ok((rem, Self::Simple(simple_block)))
     }
+}
 
-    /// Returns the [ContentModel] for this block.
-    pub fn content_model(&self) -> ContentModel {
+impl<'a> IsBlock<'a> for Block<'a> {
+    fn content_model(&self) -> ContentModel {
         match self {
             Self::Simple(_) => ContentModel::Simple,
             Self::Macro(m) => m.content_model(),
@@ -66,32 +70,4 @@ impl<'a> HasSpan<'a> for Block<'a> {
             Self::Macro(b) => b.span(),
         }
     }
-}
-
-/// The content model of a block determines what kind of content the block can
-/// have (if any) and how that content is processed.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-#[allow(dead_code)] // TO DO: Remove once all content models are referenced.
-pub enum ContentModel {
-    /// A block that may only contain other blocks (e.g., a section)
-    Compound,
-
-    /// A block that's treated as contiguous lines of paragraph text (and
-    /// subject to normal substitutions) (e.g., a paragraph block)
-    Simple,
-
-    /// A block that holds verbatim text (displayed "`as is`") (and subject to
-    /// verbatim substitutions) (e.g., a listing block)
-    Verbatim,
-
-    /// A block that holds unprocessed content passed directly through to the
-    /// output with no substitutions applied (e.g., a passthrough block)
-    Raw,
-
-    /// Ablock that has no content (e.g., an image block)
-    Empty,
-
-    /// A special content model reserved for tables that enforces a fixed
-    /// structure
-    Table,
 }

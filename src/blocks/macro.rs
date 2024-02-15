@@ -5,7 +5,7 @@ use nom::{
 };
 
 use crate::{
-    blocks::ContentModel,
+    blocks::{ContentModel, IsBlock},
     primitives::{consume_empty_lines, ident, normalized_line, trim_input_for_rem},
     HasSpan, Span,
 };
@@ -79,9 +79,10 @@ impl<'a> MacroBlock<'a> {
     pub fn attrlist(&'a self) -> Option<&Span<'a>> {
         self.attrlist.as_ref()
     }
+}
 
-    /// Returns the [ContentModel] for this block.
-    pub fn content_model(&self) -> ContentModel {
+impl<'a> IsBlock<'a> for MacroBlock<'a> {
+    fn content_model(&self) -> ContentModel {
         // TO DO: We'll probably want different macro types
         // to provide different content models. For now, just
         // default to "simple."
