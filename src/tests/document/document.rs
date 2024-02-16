@@ -156,6 +156,44 @@ fn two_blocks_and_title() {
 }
 
 #[test]
+fn extra_space_before_title() {
+    assert_eq!(
+        Document::parse("=   Example Title\n\nabc").unwrap(),
+        TDocument {
+            header: Some(THeader {
+                title: Some(TSpan {
+                    data: "Example Title",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                }),
+                attributes: vec![],
+                source: TSpan {
+                    data: "=   Example Title\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }),
+            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                }
+            )))],
+            source: TSpan {
+                data: "=   Example Title\n\nabc",
+                line: 1,
+                col: 1,
+                offset: 0
+            },
+        }
+    );
+}
+
+#[test]
 fn bad_header() {
     let err = Document::parse("= Title\nnot an attribute\n").unwrap_err();
     dbg!(&err); // cover the #[derive] line
