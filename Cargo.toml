@@ -24,6 +24,10 @@ name = "inline_macro"
 harness = false
 
 [[bench]]
+name = "section_with_two_blocks"
+harness = false
+
+[[bench]]
 name = "simple_parse"
 harness = false
 
