@@ -624,6 +624,8 @@ mod section {
                 },
             })
         );
+
+        assert_eq!(block.nested_blocks().next(), None);
     }
 
     #[test]
@@ -668,6 +670,20 @@ mod section {
                 },
             })
         );
+
+        let mut nested_blocks = block.nested_blocks();
+
+        assert_eq!(
+            nested_blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 3,
+                col: 1,
+                offset: 18,
+            })))
+        );
+
+        assert_eq!(nested_blocks.next(), None);
     }
 
     // TO DO: Add more test cases here as SectionBlock is finalized.
