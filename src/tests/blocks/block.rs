@@ -545,6 +545,7 @@ mod section {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
+        has_span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             inlines::TInline,
@@ -552,6 +553,41 @@ mod section {
         },
         Span,
     };
+
+    #[test]
+    fn err_missing_space_before_title() {
+        let (rem, block) = Block::parse(Span::new("=blah blah", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            })))
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
 
     #[test]
     fn simplest_section_block() {
