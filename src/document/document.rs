@@ -5,7 +5,10 @@ use std::slice::Iter;
 use nom::IResult;
 
 use crate::{
-    blocks::Block, document::Header, primitives::consume_empty_lines, Error, HasSpan, Span,
+    blocks::{Block, ContentModel, IsBlock},
+    document::Header,
+    primitives::consume_empty_lines,
+    Error, HasSpan, Span,
 };
 
 /// A document represents the top-level block element in AsciiDoc. It consists
@@ -59,9 +62,14 @@ impl<'a> Document<'a> {
     pub fn header(&'a self) -> Option<&'a Header<'a>> {
         self.header.as_ref()
     }
+}
 
-    /// Return an iterator over the blocks in this document.
-    pub fn blocks(&'a self) -> Iter<'a, Block<'a>> {
+impl<'a> IsBlock<'a> for Document<'a> {
+    fn content_model(&self) -> ContentModel {
+        ContentModel::Compound
+    }
+
+    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
         self.blocks.iter()
     }
 }
@@ -73,11 +81,11 @@ impl<'a> HasSpan<'a> for Document<'a> {
 }
 
 fn parse_blocks<'a>(mut i: Span<'a>) -> IResult<Span, Vec<Block<'a>>> {
+    // TO DO: See if we can share code with Section's parse_blocks fn.
     let mut blocks: Vec<Block<'a>> = vec![];
     i = consume_empty_lines(i);
 
     while !i.data().is_empty() {
-        // TO DO: Handle other kinds of blocks.
         let (i2, block) = Block::parse(i)?;
         i = i2;
         blocks.push(block);

@@ -1,6 +1,7 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    blocks::{ContentModel, IsBlock},
     document::Document,
     tests::fixtures::{
         blocks::{TBlock, TSimpleBlock},
@@ -20,8 +21,12 @@ fn impl_clone() {
 
 #[test]
 fn empty_source() {
+    let doc = Document::parse("").unwrap();
+
+    assert_eq!(doc.content_model(), ContentModel::Compound);
+
     assert_eq!(
-        Document::parse("").unwrap(),
+        doc,
         TDocument {
             header: None,
             source: TSpan {
@@ -142,6 +147,44 @@ fn two_blocks_and_title() {
             ],
             source: TSpan {
                 data: "= Example Title\n\nabc\n\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            },
+        }
+    );
+}
+
+#[test]
+fn extra_space_before_title() {
+    assert_eq!(
+        Document::parse("=   Example Title\n\nabc").unwrap(),
+        TDocument {
+            header: Some(THeader {
+                title: Some(TSpan {
+                    data: "Example Title",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                }),
+                attributes: vec![],
+                source: TSpan {
+                    data: "=   Example Title\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }),
+            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                }
+            )))],
+            source: TSpan {
+                data: "=   Example Title\n\nabc",
                 line: 1,
                 col: 1,
                 offset: 0

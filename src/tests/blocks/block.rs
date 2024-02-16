@@ -6,7 +6,7 @@ mod simple {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{Block, ContentModel},
+        blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
             inlines::TInline,
@@ -24,7 +24,7 @@ mod simple {
     }
 
     #[test]
-    fn empty_source() {
+    fn err_empty_source() {
         let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
 
         let actual_err = Block::parse(Span::new("", true)).unwrap_err();
@@ -33,7 +33,7 @@ mod simple {
     }
 
     #[test]
-    fn only_spaces() {
+    fn err_only_spaces() {
         let err = Block::parse(Span::new("    ", true)).unwrap_err();
 
         let Err::Error(e) = err else {
@@ -88,6 +88,7 @@ mod simple {
         );
 
         assert_eq!(block.content_model(), ContentModel::Simple);
+        assert_eq!(block.nested_blocks().next(), None);
     }
 
     #[test]
@@ -181,7 +182,7 @@ mod r#macro {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{Block, ContentModel},
+        blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
             inlines::{TInline, TInlineMacro},
@@ -190,7 +191,7 @@ mod r#macro {
         HasSpan, Span,
     };
 
-    // NOTE: The "error" cases from the MacroBlock parser are not
+    // NOTE: The "error" cases from the MacroBlock parser test suite are not
     // necessarily error cases here because we can reparse as SimpleBlock.
 
     #[test]
@@ -428,7 +429,8 @@ mod r#macro {
             }
         );
 
-        assert_eq!(block.content_model(), ContentModel::Simple,);
+        assert_eq!(block.content_model(), ContentModel::Simple);
+        assert_eq!(block.nested_blocks().next(), None);
     }
 
     #[test]
@@ -536,6 +538,165 @@ mod r#macro {
             }
         );
     }
+}
+
+mod section {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::{Block, ContentModel, IsBlock},
+        has_span::HasSpan,
+        tests::fixtures::{
+            blocks::{TBlock, TSectionBlock, TSimpleBlock},
+            inlines::TInline,
+            TSpan,
+        },
+        Span,
+    };
+
+    #[test]
+    fn err_missing_space_before_title() {
+        let (rem, block) = Block::parse(Span::new("=blah blah", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            })))
+        );
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn simplest_section_block() {
+        let (rem, block) = Block::parse(Span::new("== Section Title", true)).unwrap();
+
+        assert_eq!(block.content_model(), ContentModel::Compound);
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 17,
+                offset: 16
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Section(TSectionBlock {
+                level: 1,
+                title: TSpan {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                blocks: vec![],
+                source: TSpan {
+                    data: "== Section Title",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            })
+        );
+
+        assert_eq!(block.nested_blocks().next(), None);
+    }
+
+    #[test]
+    fn has_child_block() {
+        let (rem, block) = Block::parse(Span::new("== Section Title\n\nabc", true)).unwrap();
+
+        assert_eq!(block.content_model(), ContentModel::Compound);
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 4,
+                offset: 21
+            }
+        );
+
+        assert_eq!(
+            block,
+            TBlock::Section(TSectionBlock {
+                level: 1,
+                title: TSpan {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                    TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    }
+                )))],
+                source: TSpan {
+                    data: "== Section Title\n\nabc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            })
+        );
+
+        let mut nested_blocks = block.nested_blocks();
+
+        assert_eq!(
+            nested_blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 3,
+                col: 1,
+                offset: 18,
+            })))
+        );
+
+        assert_eq!(nested_blocks.next(), None);
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "== Section Title\n\nabc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    // TO DO: Add more test cases here as SectionBlock is finalized.
 }
 
 mod content_model {
