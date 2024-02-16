@@ -31,5 +31,8 @@ pub use is_block::{ContentModel, IsBlock};
 mod r#macro;
 pub use r#macro::MacroBlock;
 
+mod section;
+pub use section::SectionBlock;
+
 mod simple;
 pub use simple::SimpleBlock;
