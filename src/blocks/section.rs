@@ -12,6 +12,9 @@ use crate::{
 /// implicit enclosure. Each section begins with a title and ends at the next
 /// sibling section, ancestor section, or end of document. Nested section levels
 /// must be sequential.
+///
+/// WARNING: This is a very preliminary implementation. There are many TO DO
+/// items in this code.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SectionBlock<'a> {
     level: usize,
