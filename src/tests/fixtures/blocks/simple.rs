@@ -7,7 +7,7 @@ pub(crate) struct TSimpleBlock(pub TInline);
 
 impl fmt::Debug for TSimpleBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("SimpleBlock").field("0", &self.0).finish()
+        f.debug_tuple("SimpleBlock").field(&self.0).finish()
     }
 }
 
