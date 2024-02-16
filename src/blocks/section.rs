@@ -1,54 +1,53 @@
-use nom::{
-    bytes::complete::{tag, take_until1},
-    error::{Error, ErrorKind},
-    Err, IResult,
-};
+use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count, IResult};
 
 use crate::{
     blocks::{Block, ContentModel, IsBlock},
-    primitives::{consume_empty_lines, ident, normalized_line, trim_input_for_rem},
+    primitives::{consume_empty_lines, non_empty_line},
     HasSpan, Span,
 };
 
-/// Sections partition the document into a content hierarchy. A section is an implicit enclosure. Each section begins with a title and ends at the next sibling section, ancestor section, or end of document. Nested section levels must be sequential.
+/// Sections partition the document into a content hierarchy. A section is an
+/// implicit enclosure. Each section begins with a title and ends at the next
+/// sibling section, ancestor section, or end of document. Nested section levels
+/// must be sequential.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SectionBlock<'a> {
-    level: u8,
+    level: usize,
     title: Span<'a>,
     blocks: Vec<Block<'a>>,
     source: Span<'a>,
 }
 
 impl<'a> SectionBlock<'a> {
+    #[allow(dead_code)]
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let i = consume_empty_lines(source);
+        let source = consume_empty_lines(source);
 
-        // TO DO: Use nom::multi::many1_count to count the '=' tokens
-        // then follow the pattern used in doc header title parsing
+        let (rem, (level, title)) = parse_title_line(source)?;
 
-        let (i, header) = if i.starts_with("= ") {
-            let (i, header) = Header::parse(i)?;
-            (i, Some(header))
-        } else {
-            (i, None)
-        };
+        let (rem, blocks) = parse_blocks(rem)?;
 
-        let (_rem, blocks) = parse_blocks(i)?;
-
-        Ok(Self {
-            header,
-            blocks,
-            source,
-        })
-
+        Ok((
+            rem,
+            Self {
+                level,
+                title,
+                blocks,
+                source,
+            },
+        ))
     }
 
     /// Return the section's level.
-    /// 
-    /// The section title must be prefixed with a section marker, which indicates the section level. The number of equal signs in the marker represents the section level using a 0-based index (e.g., two equal signs represents level 1). A section marker can range from two to six equal signs and must be followed by a space.
-    /// 
+    ///
+    /// The section title must be prefixed with a section marker, which
+    /// indicates the section level. The number of equal signs in the marker
+    /// represents the section level using a 0-based index (e.g., two equal
+    /// signs represents level 1). A section marker can range from two to six
+    /// equal signs and must be followed by a space.
+    ///
     /// This function will return an integer between 1 and 5.
-    pub fn level(&self) -> u8 {
+    pub fn level(&self) -> usize {
         self.level
     }
 
@@ -68,6 +67,16 @@ impl<'a> HasSpan<'a> for SectionBlock<'a> {
     fn span(&'a self) -> &'a Span<'a> {
         &self.source
     }
+}
+
+fn parse_title_line<'a>(source: Span<'a>) -> IResult<Span<'a>, (usize, Span<'a>)> {
+    let (rem, line) = non_empty_line(source)?;
+
+    // TO DO: Also support Markdown-style `#` markers.
+    let (space_title, count) = many1_count(tag("="))(line)?;
+    let (_, title) = space1(space_title)?;
+
+    Ok((rem, (count - 1, title)))
 }
 
 fn parse_blocks<'a>(mut i: Span<'a>) -> IResult<Span, Vec<Block<'a>>> {
