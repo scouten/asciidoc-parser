@@ -1,6 +1,6 @@
 use std::slice::Iter;
 
-use nom::{bytes::complete::tag, character::complete::space0, multi::many0, IResult};
+use nom::{bytes::complete::tag, character::complete::space1, multi::many0, IResult};
 
 use crate::{
     document::Attribute,
@@ -60,8 +60,8 @@ impl<'a> HasSpan<'a> for Header<'a> {
 fn parse_title(i: Span<'_>) -> IResult<Span, Span<'_>> {
     let (rem, line) = non_empty_line(i)?;
 
-    let (title, _) = tag("= ")(line)?;
-    let (title, _) = space0(title)?;
+    let (title, _) = tag("=")(line)?;
+    let (title, _) = space1(title)?;
 
     Ok((rem, title))
 }
