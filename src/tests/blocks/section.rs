@@ -56,6 +56,18 @@ fn err_not_section() {
 }
 
 #[test]
+fn err_missing_space_before_title() {
+    let err_span: nom_span::Spanned<&str> = Span::new("=blah blah", true);
+    let (err_span, _) = take::<usize, Span, Error<Span>>(1)(err_span).unwrap();
+
+    let expected_err = Err::Error(Error::new(err_span, ErrorKind::Space));
+
+    let actual_err = SectionBlock::parse(Span::new("=blah blah", true)).unwrap_err();
+
+    assert_eq!(expected_err, actual_err);
+}
+
+#[test]
 fn simplest_section_block() {
     let (rem, block) = SectionBlock::parse(Span::new("== Section Title", true)).unwrap();
 

@@ -3,7 +3,7 @@ use std::slice::Iter;
 use nom::IResult;
 
 use crate::{
-    blocks::{ContentModel, IsBlock, MacroBlock, SimpleBlock},
+    blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
     primitives::{consume_empty_lines, normalized_line},
     HasSpan, Span,
 };
@@ -30,6 +30,10 @@ pub enum Block<'a> {
     /// A block macro is a syntax for representing non-text elements or syntax
     /// that expands into text using the provided metadata.
     Macro(MacroBlock<'a>),
+
+    /// A section helps to partition the document into a content hierarchy.
+    /// May also be a part, chapter, or special section.
+    Section(SectionBlock<'a>),
 }
 
 impl<'a> Block<'a> {
@@ -48,6 +52,13 @@ impl<'a> Block<'a> {
 
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
+        } else if line.starts_with('=') {
+            if let Ok((rem, section_block)) = SectionBlock::parse(i) {
+                return Ok((rem, Self::Section(section_block)));
+            }
+
+            // A line starting with `=` might be some other kind of block, so we
+            // don't automatically error out on a parse failure.
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
@@ -61,6 +72,7 @@ impl<'a> IsBlock<'a> for Block<'a> {
         match self {
             Self::Simple(_) => ContentModel::Simple,
             Self::Macro(b) => b.content_model(),
+            Self::Section(_) => ContentModel::Compound,
         }
     }
 
@@ -68,6 +80,7 @@ impl<'a> IsBlock<'a> for Block<'a> {
         match self {
             Self::Simple(b) => b.nested_blocks(),
             Self::Macro(b) => b.nested_blocks(),
+            Self::Section(b) => b.nested_blocks(),
         }
     }
 }
@@ -77,6 +90,7 @@ impl<'a> HasSpan<'a> for Block<'a> {
         match self {
             Self::Simple(b) => b.span(),
             Self::Macro(b) => b.span(),
+            Self::Section(b) => b.span(),
         }
     }
 }

@@ -1,12 +1,13 @@
 use crate::{
     blocks::Block,
-    tests::fixtures::blocks::{TMacroBlock, TSimpleBlock},
+    tests::fixtures::blocks::{TMacroBlock, TSectionBlock, TSimpleBlock},
 };
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) enum TBlock {
     Simple(TSimpleBlock),
     Macro(TMacroBlock),
+    Section(TSectionBlock),
 }
 
 impl<'a> PartialEq<Block<'a>> for TBlock {
@@ -30,6 +31,11 @@ fn tblock_eq(tblock: &TBlock, block: &Block) -> bool {
 
         TBlock::Macro(ref tmacro_block) => match block {
             Block::Macro(ref macro_block) => tmacro_block == macro_block,
+            _ => false,
+        },
+
+        TBlock::Section(ref tsection_block) => match block {
+            Block::Section(ref section_block) => tsection_block == section_block,
             _ => false,
         },
     }
