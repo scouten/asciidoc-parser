@@ -78,7 +78,7 @@ impl<'a> HasSpan<'a> for SectionBlock<'a> {
     }
 }
 
-fn parse_title_line<'a>(source: Span<'a>) -> IResult<Span<'a>, (usize, Span<'a>)> {
+fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
     let (rem, line) = non_empty_line(source)?;
 
     // TO DO: Also support Markdown-style `#` markers.
