@@ -23,6 +23,9 @@ impl<'a> SectionBlock<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let i = consume_empty_lines(source);
 
+        // TO DO: Use nom::multi::many1_count to count the '=' tokens
+        // then follow the pattern used in doc header title parsing
+
         let (i, header) = if i.starts_with("= ") {
             let (i, header) = Header::parse(i)?;
             (i, Some(header))
