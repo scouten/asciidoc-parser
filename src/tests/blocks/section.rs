@@ -5,7 +5,15 @@ use nom::{
 };
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{blocks::SectionBlock, Span};
+use crate::{
+    blocks::{ContentModel, IsBlock, SectionBlock},
+    tests::fixtures::{
+        blocks::{TBlock, TSectionBlock, TSimpleBlock},
+        inlines::TInline,
+        TSpan,
+    },
+    Span,
+};
 
 #[test]
 fn impl_clone() {
@@ -47,102 +55,86 @@ fn err_not_section() {
     assert_eq!(expected_err, actual_err);
 }
 
-// #[test]
-// fn err_inline_syntax() {
-//     let err_span = Span::new("foo:bar[]", true);
-//     let (err_span, _) = take::<usize, Span,
-// Error<Span>>(3)(err_span).unwrap();
+#[test]
+fn simplest_section_block() {
+    let (rem, block) = SectionBlock::parse(Span::new("== Section Title", true)).unwrap();
 
-//     let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-//         Err::Error(Error::new(err_span, ErrorKind::Tag));
+    assert_eq!(block.content_model(), ContentModel::Compound);
 
-//     let actual_err = SectionBlock::parse(Span::new("foo:bar[]",
-// true)).unwrap_err();
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 17,
+            offset: 16
+        }
+    );
 
-//     assert_eq!(expected_err, actual_err);
-// }
+    assert_eq!(
+        block,
+        TSectionBlock {
+            level: 1,
+            title: TSpan {
+                data: "Section Title",
+                line: 1,
+                col: 4,
+                offset: 3,
+            },
+            blocks: vec![],
+            source: TSpan {
+                data: "== Section Title",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
 
-// #[test]
-// fn err_no_attr_list() {
-//     let err_span = Span::new("foo::bar", true);
-//     let (err_span, _) = take::<usize, Span,
-// Error<Span>>(5)(err_span).unwrap();
+#[test]
+fn has_child_block() {
+    let (rem, block) = SectionBlock::parse(Span::new("== Section Title\n\nabc", true)).unwrap();
 
-//     let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-//         Err::Error(Error::new(err_span, ErrorKind::TakeUntil));
+    assert_eq!(block.content_model(), ContentModel::Compound);
 
-//     let actual_err = SectionBlock::parse(Span::new("foo::bar",
-// true)).unwrap_err();
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 4,
+            offset: 21
+        }
+    );
 
-//     assert_eq!(expected_err, actual_err);
-// }
-
-// #[test]
-// fn err_attr_list_not_closed() {
-//     let err_span = Span::new("foo::bar[blah", true);
-//     let (err_span, _) = take::<usize, Span,
-// Error<Span>>(9)(err_span).unwrap();
-
-//     let expected_err = Err::Error(Error::new(err_span,
-// ErrorKind::TakeUntil));
-
-//     let actual_err = SectionBlock::parse(Span::new("foo::bar[blah",
-// true)).unwrap_err();
-
-//     assert_eq!(expected_err, actual_err);
-// }
-
-// #[test]
-// fn err_unexpected_after_attr_list() {
-//     let err_span = Span::new("foo::bar[blah]bonus", true);
-//     let (err_span, _) = take::<usize, Span,
-// Error<Span>>(14)(err_span).unwrap();
-
-//     let expected_err = Err::Error(Error::new(err_span, ErrorKind::NonEmpty));
-
-//     let actual_err = SectionBlock::parse(Span::new("foo::bar[blah]bonus",
-// true)).unwrap_err();
-
-//     assert_eq!(expected_err, actual_err);
-// }
-
-// #[test]
-// fn simplest_block_section() {
-//     let (rem, block) = SectionBlock::parse(Span::new("foo::[]",
-// true)).unwrap();
-
-//     assert_eq!(block.content_model(), ContentModel::Simple);
-
-//     assert_eq!(
-//         rem,
-//         TSpan {
-//             data: "",
-//             line: 1,
-//             col: 8,
-//             offset: 7
-//         }
-//     );
-
-//     assert_eq!(
-//         block,
-//         TSectionBlock {
-//             name: TSpan {
-//                 data: "foo",
-//                 line: 1,
-//                 col: 1,
-//                 offset: 0,
-//             },
-//             target: None,
-//             attrlist: None,
-//             source: TSpan {
-//                 data: "foo::[]",
-//                 line: 1,
-//                 col: 1,
-//                 offset: 0,
-//             },
-//         }
-//     );
-// }
+    assert_eq!(
+        block,
+        TSectionBlock {
+            level: 1,
+            title: TSpan {
+                data: "Section Title",
+                line: 1,
+                col: 4,
+                offset: 3,
+            },
+            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                }
+            )))],
+            source: TSpan {
+                data: "== Section Title\n\nabc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
 
 // #[test]
 // fn has_target() {

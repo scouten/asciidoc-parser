@@ -1,3 +1,5 @@
+use std::slice::Iter;
+
 use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count, IResult};
 
 use crate::{
@@ -61,6 +63,10 @@ impl<'a> IsBlock<'a> for SectionBlock<'a> {
     fn content_model(&self) -> ContentModel {
         ContentModel::Compound
     }
+
+    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
+        self.blocks.iter()
+    }
 }
 
 impl<'a> HasSpan<'a> for SectionBlock<'a> {
@@ -73,8 +79,10 @@ fn parse_title_line<'a>(source: Span<'a>) -> IResult<Span<'a>, (usize, Span<'a>)
     let (rem, line) = non_empty_line(source)?;
 
     // TO DO: Also support Markdown-style `#` markers.
+    // TO DO: Enforce maximum of 6 `=` or `#` markers.
+    // TO DO: Disallow empty title.
     let (space_title, count) = many1_count(tag("="))(line)?;
-    let (_, title) = space1(space_title)?;
+    let (title, _) = space1(space_title)?;
 
     Ok((rem, (count - 1, title)))
 }
