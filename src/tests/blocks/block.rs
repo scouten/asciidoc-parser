@@ -684,6 +684,16 @@ mod section {
         );
 
         assert_eq!(nested_blocks.next(), None);
+
+        assert_eq!(
+            block.span(),
+            TSpan {
+                data: "== Section Title\n\nabc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     // TO DO: Add more test cases here as SectionBlock is finalized.
