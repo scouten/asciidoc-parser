@@ -4,7 +4,6 @@ use crate::{blocks::Block, primitives::consume_empty_lines, Span};
 
 /// Parse blocks until end of input or a pre-determined stop condition is
 /// reached.
-#[allow(dead_code)] // TEMPORARY while building
 pub(crate) fn parse_blocks_until<'a, F>(mut i: Span<'a>, f: F) -> IResult<Span, Vec<Block<'a>>>
 where
     F: Fn(&Span<'a>) -> bool,
