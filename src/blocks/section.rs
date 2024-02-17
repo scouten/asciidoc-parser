@@ -97,7 +97,7 @@ fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
     Ok((rem, (count - 1, title)))
 }
 
-fn peer_or_ancestor_section<'a>(i: Span<'a>, level: usize) -> bool {
+fn peer_or_ancestor_section(i: Span<'_>, level: usize) -> bool {
     if let Ok((_, (new_level, _))) = parse_title_line(i) {
         new_level <= level
     } else {
