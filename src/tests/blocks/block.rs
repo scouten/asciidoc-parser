@@ -1,4 +1,6 @@
 mod simple {
+    use std::ops::Deref;
+
     use nom::{
         error::{Error, ErrorKind},
         Err,
@@ -88,6 +90,7 @@ mod simple {
         );
 
         assert_eq!(block.content_model(), ContentModel::Simple);
+        assert_eq!(block.context().deref(), "paragraph");
         assert_eq!(block.nested_blocks().next(), None);
     }
 
@@ -179,6 +182,8 @@ mod simple {
 }
 
 mod r#macro {
+    use std::ops::Deref;
+
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
@@ -430,6 +435,7 @@ mod r#macro {
         );
 
         assert_eq!(block.content_model(), ContentModel::Simple);
+        assert_eq!(block.context().deref(), "paragraph");
         assert_eq!(block.nested_blocks().next(), None);
     }
 
@@ -541,6 +547,8 @@ mod r#macro {
 }
 
 mod section {
+    use std::ops::Deref;
+
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
@@ -594,6 +602,7 @@ mod section {
         let (rem, block) = Block::parse(Span::new("== Section Title", true)).unwrap();
 
         assert_eq!(block.content_model(), ContentModel::Compound);
+        assert_eq!(block.context().deref(), "section");
 
         assert_eq!(
             rem,
@@ -633,6 +642,7 @@ mod section {
         let (rem, block) = Block::parse(Span::new("== Section Title\n\nabc", true)).unwrap();
 
         assert_eq!(block.content_model(), ContentModel::Compound);
+        assert_eq!(block.context().deref(), "section");
 
         assert_eq!(
             rem,

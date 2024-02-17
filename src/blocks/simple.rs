@@ -1,7 +1,7 @@
 use nom::IResult;
 
 use super::{ContentModel, IsBlock};
-use crate::{inlines::Inline, primitives::consume_empty_lines, HasSpan, Span};
+use crate::{inlines::Inline, primitives::consume_empty_lines, strings::CowStr, HasSpan, Span};
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
@@ -23,6 +23,10 @@ impl<'a> SimpleBlock<'a> {
 impl<'a> IsBlock<'a> for SimpleBlock<'a> {
     fn content_model(&self) -> ContentModel {
         ContentModel::Simple
+    }
+
+    fn context(&self) -> CowStr<'a> {
+        "paragraph".into()
     }
 }
 
