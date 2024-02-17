@@ -126,6 +126,8 @@ mod content_model {
 }
 
 mod context {
+    use std::ops::Deref;
+
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
         Span,
@@ -152,7 +154,7 @@ mod context {
         let (_rem, block) =
             Block::parse(Span::new("== Section Title\n\nContent of section.", true)).unwrap();
 
-            assert_eq!(block.context(), "section");
+        assert_eq!(block.context().deref(), "section");
     }
 
     // We often refer to this as a section (or section block), using the context
@@ -164,145 +166,196 @@ mod context {
     // explicitly in certain cases. The context is what distinguishes one
     // kind of block from another. You can think of the context as the
     // block's type.
-    //
-    // The context can be further modified using a block style to create a
-    // family of blocks that share a common type, as is the case with
-    // admonition blocks and sections. We'll cover that modifier shortly.
-    //
-    // For blocks, the context is sometimes referred to as the block name.
-    // This comes up in particular when talking about custom blocks.
-    // The block name is just another layer of abstraction.
-    // All the built-in block names map to exactly one context.
-    // But a block extension can map an arbitrary block name to one or more
-    // contexts. Which context is ultimately used depends on what is returned
-    // from the extension's process method. In the end, it's the context
-    // that determines how the block is converted.
-    //
-    // The context often determines the content model.
-    // For example, all sections implicitly have the compound content model
-    // because a section may only contain other blocks. All literal blocks
-    // implicitly have the verbatim content model because the purpose of
-    // this block is to present verbatim output.
-    //
-    // === Summary of built-in contexts
-    //
-    // Here's a list of the contexts of all the built-in blocks in AsciiDoc.
-    //
-    // NOTE: In the Asciidoctor API, the contexts are represented as symbols.
-    // In Ruby, a symbol is a name prefixed with a colon (e.g., `:listing`).
-    // This documentation will sometimes use this notation when referring to the
-    // name of a context. However, this notation is not universal.
-    // Some processors, such as Asciidoctor.js, store the context as a string
-    // instead.
-    //
-    // .Built-in contexts
-    // [#table-of-contexts,cols="1s,2"]
-    // |===
-    // |Name | Purpose
-    //
-    // |admonition
-    // |One of five admonition blocks.
-    //
-    // |audio
-    // |An audio block.
-    //
-    // |colist
-    // |A callout list.
-    //
-    // |dlist
-    // |A description list.
-    //
-    // |document
-    // |The top-level document or the document in an AsciiDoc table cell
-    //
-    // |example
-    // |An example block.
-    //
-    // |floating_title
-    // |A discrete heading.
-    //
-    // |image
-    // |An image block.
-    //
-    // |list_item
-    // |An item in an ordered, unordered, or description list (only relevant
-    // inside a list or description list block). In a description list, this
-    // block is used to represent the term and the description.
-    //
-    // |listing
-    // |A listing block.
-    //
-    // |literal
-    // |A literal block.
-    //
-    // |olist
-    // |An ordered list.
-    //
-    // |open
-    // |An open block.
-    //
-    // |page_break
-    // |A page break.
-    //
-    // |paragraph
-    // |A paragraph.
-    //
-    // |pass
-    // |A passthrough block.
-    //
-    // |preamble
-    // |The preamble of the document.
-    //
-    // |quote
-    // |A quote block (aka blockquote).
-    //
-    // |section
-    // |A section.
-    // May also be a part, chapter, or special section.
-    //
-    // |sidebar
-    // |A sidebar block.
-    //
-    // |table
-    // |A table block.
-    //
-    // |table_cell
-    // |A table cell (only relevant inside a table block).
-    //
-    // |thematic_break
-    // |A thematic break (aka horizontal rule).
-    //
-    // |toc
-    // |A TOC block (to designate custom TOC placement).
-    //
-    // |ulist
-    // |An unordered list.
-    //
-    // |verse
-    // |A verse block.
-    //
-    // |video
-    // |A video block.
-    // |===
-    //
-    // NOTE: Each inline element also has a context, but those elements are not
-    // (yet) accessible from the parsed document model.
-    //
-    // Additional contexts may be introduced through the use of the block, block
-    // macro, or inline macro extension points.
-    //
-    // === Contexts used by the converter
-    //
-    // The context is what the converter uses to dispatch to a convert method.
-    // The style is then used by the converter to apply special behavior to
-    // blocks of the same family.
-    //
-    // With two exceptions, there's a 1-to-1 mapping between the contexts and
-    // the handler methods of a converter. Those exceptions are the
-    // `list_item` and `table_cell` contexts, which are not mapped to a
-    // handler method. In the converter, these blocks must be accessed from
-    // their parent block.
-    //
+
+    #[test]
+    #[ignore]
+    fn block_style() {
+        // The context can be further modified using a block style to create a
+        // family of blocks that share a common type, as is the case with
+        // admonition blocks and sections. We'll cover that modifier shortly.
+
+        todo!("I don't understand block style yet. Will add test later.");
+    }
+
+    #[test]
+    #[ignore]
+    fn block_name() {
+        // For blocks, the context is sometimes referred to as the block name.
+        // This comes up in particular when talking about custom blocks.
+        // The block name is just another layer of abstraction.
+        // All the built-in block names map to exactly one context.
+        // But a block extension can map an arbitrary block name to one or more
+        // contexts. Which context is ultimately used depends on what is returned
+        // from the extension's process method. In the end, it's the context
+        // that determines how the block is converted.
+
+        todo!("I don't understand block names. Will add test later.");
+    }
+
+    #[test]
+    fn sections_are_compound() {
+        // The context often determines the content model.
+        // For example, all sections implicitly have the compound content model
+        // because a section may only contain other blocks.
+
+        let (_rem, block) =
+            Block::parse(Span::new("== Section Title\n\nContent of section.", true)).unwrap();
+
+        assert_eq!(block.content_model(), ContentModel::Compound);
+    }
+
+    #[test]
+    #[ignore]
+    fn literal_blocks_are_verbatim() {
+        // All literal blocks
+        // implicitly have the verbatim content model because the purpose of
+        // this block is to present verbatim output.
+
+        todo!("Literal blocks aren't supported yet. Write test when ready.");
+    }
+
+    #[test]
+    #[ignore]
+    fn built_in_contexts() {
+        // === Summary of built-in contexts
+        //
+        // Here's a list of the contexts of all the built-in blocks in AsciiDoc.
+        //
+        // NOTE: In the Asciidoctor API, the contexts are represented as symbols.
+        // In Ruby, a symbol is a name prefixed with a colon (e.g., `:listing`).
+        // This documentation will sometimes use this notation when referring to the
+        // name of a context. However, this notation is not universal.
+        // Some processors, such as Asciidoctor.js, store the context as a string
+        // instead.
+        //
+        // .Built-in contexts
+        // [#table-of-contexts,cols="1s,2"]
+        // |===
+        // |Name | Purpose
+        //
+        // |admonition
+        // |One of five admonition blocks.
+        //
+        // |audio
+        // |An audio block.
+        //
+        // |colist
+        // |A callout list.
+        //
+        // |dlist
+        // |A description list.
+        //
+        // |document
+        // |The top-level document or the document in an AsciiDoc table cell
+        //
+        // |example
+        // |An example block.
+        //
+        // |floating_title
+        // |A discrete heading.
+        //
+        // |image
+        // |An image block.
+        //
+        // |list_item
+        // |An item in an ordered, unordered, or description list (only relevant
+        // inside a list or description list block). In a description list, this
+        // block is used to represent the term and the description.
+        //
+        // |listing
+        // |A listing block.
+        //
+        // |literal
+        // |A literal block.
+        //
+        // |olist
+        // |An ordered list.
+        //
+        // |open
+        // |An open block.
+        //
+        // |page_break
+        // |A page break.
+        //
+        // |paragraph
+        // |A paragraph.
+        //
+        // |pass
+        // |A passthrough block.
+        //
+        // |preamble
+        // |The preamble of the document.
+        //
+        // |quote
+        // |A quote block (aka blockquote).
+        //
+        // |section
+        // |A section.
+        // May also be a part, chapter, or special section.
+        //
+        // |sidebar
+        // |A sidebar block.
+        //
+        // |table
+        // |A table block.
+        //
+        // |table_cell
+        // |A table cell (only relevant inside a table block).
+        //
+        // |thematic_break
+        // |A thematic break (aka horizontal rule).
+        //
+        // |toc
+        // |A TOC block (to designate custom TOC placement).
+        //
+        // |ulist
+        // |An unordered list.
+        //
+        // |verse
+        // |A verse block.
+        //
+        // |video
+        // |A video block.
+        // |===
+
+        todo!("Add coverage for built-in context types");
+    }
+
+    #[test]
+    #[ignore]
+    fn inline_context() {
+        // NOTE: Each inline element also has a context, but those elements are not
+        // (yet) accessible from the parsed document model.
+        
+        todo!("Spec doesn't yet describe what inline contexts mean.");
+    }
+
+    #[test]
+    #[ignore]
+    fn additional_contexts_via_extensions() {
+        // Additional contexts may be introduced through the use of the block, block
+        // macro, or inline macro extension points.
+
+        todo!("Extension points are not yet defined.");
+    }
+
+    #[test]
+    fn contexts_used_by_converter() {
+        // === Contexts used by the converter
+        //
+        // The context is what the converter uses to dispatch to a convert method.
+        // The style is then used by the converter to apply special behavior to
+        // blocks of the same family.
+        //
+        // With two exceptions, there's a 1-to-1 mapping between the contexts and
+        // the handler methods of a converter. Those exceptions are the
+        // `list_item` and `table_cell` contexts, which are not mapped to a
+        // handler method. In the converter, these blocks must be accessed from
+        // their parent block.
+
+        // NO-OP: This crate isn't a converter, so this part of the spec doesn't apply.
+    }
+
     // [#block-style]
     // == Block style
     //
