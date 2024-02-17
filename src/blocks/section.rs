@@ -3,7 +3,7 @@ use std::slice::Iter;
 use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count, IResult};
 
 use crate::{
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     primitives::{consume_empty_lines, non_empty_line},
     strings::CowStr,
     HasSpan, Span,
@@ -31,7 +31,8 @@ impl<'a> SectionBlock<'a> {
 
         let (rem, (level, title)) = parse_title_line(source)?;
 
-        let (rem, blocks) = parse_blocks(rem)?;
+        // TO DO: Stop when we encounter a sibling or ancestor section marker.
+        let (rem, blocks) = parse_blocks_until(rem, |_| false)?;
 
         Ok((
             rem,
@@ -93,20 +94,4 @@ fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
     let (title, _) = space1(space_title)?;
 
     Ok((rem, (count - 1, title)))
-}
-
-fn parse_blocks<'a>(mut i: Span<'a>) -> IResult<Span, Vec<Block<'a>>> {
-    // TO DO: See if we can share code with Document's parse_blocks fn.
-    // TO DO: Stop when we encounter a sibling or ancestor section marker.
-
-    let mut blocks: Vec<Block<'a>> = vec![];
-    i = consume_empty_lines(i);
-
-    while !i.data().is_empty() {
-        let (i2, block) = Block::parse(i)?;
-        i = i2;
-        blocks.push(block);
-    }
-
-    Ok((i, blocks))
 }
