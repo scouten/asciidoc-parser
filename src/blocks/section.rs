@@ -105,13 +105,10 @@ fn parse_blocks<'a>(mut i: Span<'a>, level: usize) -> IResult<Span, Vec<Block<'a
     i = consume_empty_lines(i);
 
     while !i.data().is_empty() {
-        match parse_title_line(i) {
-            Ok((_, (new_level, _))) => {
-                if new_level <= level {
-                    break;
-                }
+        if let Ok((_, (new_level, _))) = parse_title_line(i) {
+            if new_level <= level {
+                break;
             }
-            Err(_) => (),
         }
 
         let (i2, block) = Block::parse(i)?;
