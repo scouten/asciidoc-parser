@@ -12,13 +12,13 @@ where
     i = consume_empty_lines(i);
 
     while !i.data().is_empty() {
-        let (i2, block) = Block::parse(i)?;
-        i = i2;
-        blocks.push(block);
-
         if f(&i) {
             break;
         }
+
+        let (i2, block) = Block::parse(i)?;
+        i = i2;
+        blocks.push(block);
     }
 
     Ok((i, blocks))

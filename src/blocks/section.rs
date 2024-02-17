@@ -4,7 +4,7 @@ use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count,
 
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
-    primitives::{consume_empty_lines, non_empty_line},
+    primitives::{consume_empty_lines, non_empty_line, trim_input_for_rem},
     strings::CowStr,
     HasSpan, Span,
 };
@@ -31,8 +31,9 @@ impl<'a> SectionBlock<'a> {
 
         let (rem, (level, title)) = parse_title_line(source)?;
 
-        // TO DO: Stop when we encounter a sibling or ancestor section marker.
-        let (rem, blocks) = parse_blocks_until(rem, |_| false)?;
+        let (rem, blocks) = parse_blocks_until(rem, |i| peer_or_ancestor_section(*i, level))?;
+
+        let source = trim_input_for_rem(source, rem);
 
         Ok((
             rem,
@@ -94,4 +95,12 @@ fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
     let (title, _) = space1(space_title)?;
 
     Ok((rem, (count - 1, title)))
+}
+
+fn peer_or_ancestor_section<'a>(i: Span<'a>, level: usize) -> bool {
+    if let Ok((_, (new_level, _))) = parse_title_line(i) {
+        new_level <= level
+    } else {
+        false
+    }
 }
