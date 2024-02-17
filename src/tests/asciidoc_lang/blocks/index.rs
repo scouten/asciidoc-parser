@@ -355,7 +355,11 @@ mod context {
 
         // NO-OP: This crate isn't a converter, so this part of the spec doesn't apply.
     }
+}
 
+#[test]
+#[ignore]
+fn block_style() {
     // [#block-style]
     // == Block style
     //
