@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
@@ -24,6 +26,7 @@ fn empty_source() {
     let doc = Document::parse("").unwrap();
 
     assert_eq!(doc.content_model(), ContentModel::Compound);
+    assert_eq!(doc.context().deref(), "document");
 
     assert_eq!(
         doc,
