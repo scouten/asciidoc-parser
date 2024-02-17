@@ -2,10 +2,8 @@
 
 use std::slice::Iter;
 
-use nom::IResult;
-
 use crate::{
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     document::Header,
     primitives::consume_empty_lines,
     strings::CowStr,
@@ -50,7 +48,7 @@ impl<'a> Document<'a> {
             (i, None)
         };
 
-        let (_rem, blocks) = parse_blocks(i)?;
+        let (_rem, blocks) = parse_blocks_until(i, |_| false)?;
 
         Ok(Self {
             header,
@@ -83,18 +81,4 @@ impl<'a> HasSpan<'a> for Document<'a> {
     fn span(&'a self) -> &'a Span<'a> {
         &self.source
     }
-}
-
-fn parse_blocks<'a>(mut i: Span<'a>) -> IResult<Span, Vec<Block<'a>>> {
-    // TO DO: See if we can share code with Section's parse_blocks fn.
-    let mut blocks: Vec<Block<'a>> = vec![];
-    i = consume_empty_lines(i);
-
-    while !i.data().is_empty() {
-        let (i2, block) = Block::parse(i)?;
-        i = i2;
-        blocks.push(block);
-    }
-
-    Ok((i, blocks))
 }

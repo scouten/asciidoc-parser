@@ -31,6 +31,8 @@ pub use is_block::{ContentModel, IsBlock};
 mod r#macro;
 pub use r#macro::MacroBlock;
 
+pub(crate) mod parse_utils;
+
 mod section;
 pub use section::SectionBlock;
 
