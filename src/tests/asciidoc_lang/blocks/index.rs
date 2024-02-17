@@ -433,39 +433,45 @@ fn block_style() {
     // to give it special behavior or semantics.
 }
 
-// == Block commonalities
-//
-// Blocks are defined using some form of line-oriented syntax.
-// Section blocks begin with a section title line.
-// Delimited blocks are enclosed in a matching pair of delimiter lines.
-// Paragraph blocks must be contiguous lines.
-//
-// All blocks accommodate zero or more lines of metadata stacked linewise
-// directly on top of the block. These lines populate the properties of the
-// block, such as the ID, title, and options. These metadata lines are as
-// follows:
-//
-// * Zero or more block attribute lines (which populate the block's attributes)
-// * An optional block anchor line
-// * An optional block title line (many blocks also support a corresponding
-//   caption)
-// * An optional ID
-// * An optional set of roles
-// * An optional set of options
-//
-// For example, consider a sidebar block with a title and ID:
-//
-// ----
-// .Styles of music
-// [#music-styles]
-// ****
-// Go off on a tangent to describe what a style of music is.
-// ****
-// ----
-//
-// When it comes to processing content, blocks split off into different groups.
-// These groups are primarily associated with the block's content model.
-//
-// Paragraph blocks and verbatim blocks have an implicit and modifiable set of
-// xref:subs:index.adoc[substitutions]. Substitutions do not apply to compound
-// blocks (i.e., blocks that may contain nested blocks).
+#[test]
+#[ignore]
+fn block_commonalities {
+    // == Block commonalities
+    //
+    // Blocks are defined using some form of line-oriented syntax.
+    // Section blocks begin with a section title line.
+    // Delimited blocks are enclosed in a matching pair of delimiter lines.
+    // Paragraph blocks must be contiguous lines.
+    //
+    // All blocks accommodate zero or more lines of metadata stacked linewise
+    // directly on top of the block. These lines populate the properties of the
+    // block, such as the ID, title, and options. These metadata lines are as
+    // follows:
+    //
+    // * Zero or more block attribute lines (which populate the block's attributes)
+    // * An optional block anchor line
+    // * An optional block title line (many blocks also support a corresponding
+    //   caption)
+    // * An optional ID
+    // * An optional set of roles
+    // * An optional set of options
+    //
+    // For example, consider a sidebar block with a title and ID:
+    //
+    // ----
+    // .Styles of music
+    // [#music-styles]
+    // ****
+    // Go off on a tangent to describe what a style of music is.
+    // ****
+    // ----
+    //
+    // When it comes to processing content, blocks split off into different groups.
+    // These groups are primarily associated with the block's content model.
+    //
+    // Paragraph blocks and verbatim blocks have an implicit and modifiable set of
+    // xref:subs:index.adoc[substitutions]. Substitutions do not apply to compound
+    // blocks (i.e., blocks that may contain nested blocks).
+
+    todo!("Add support for block metadata");
+}
