@@ -23,4 +23,5 @@
 //! The submodules in this module are named to match the
 //! page structure as rendered on the AsciiDoctor site.
 
+mod blocks;
 mod root;
