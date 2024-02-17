@@ -1,6 +1,6 @@
 use std::{fmt::Debug, slice::Iter};
 
-use crate::{blocks::Block, HasSpan};
+use crate::{blocks::Block, strings::CowStr, HasSpan};
 
 /// Block elements form the main structure of an AsciiDoc document, starting
 /// with the document itself.
@@ -18,6 +18,21 @@ use crate::{blocks::Block, HasSpan};
 pub trait IsBlock<'a>: HasSpan<'a> + Clone + Debug + Eq + PartialEq {
     /// Returns the [ContentModel] for this block.
     fn content_model(&self) -> ContentModel;
+
+    /// Returns the context for this block.
+    ///
+    /// A block’s context is also sometimes referred to as a name, such as an
+    /// example block, a sidebar block, an admonition block, or a section.
+    ///
+    /// Every block has a context. The context is often implied by the syntax,
+    /// but can be declared explicitly in certain cases. The context is what
+    /// distinguishes one kind of block from another. You can think of the
+    /// context as the block’s type.
+    ///
+    /// For that reason, the context is not defined as an enumeration, but
+    /// rather as a string type that is optimized for the case where predefined
+    /// constants are viable.
+    fn context(&self) -> CowStr<'a>;
 
     /// Returns an iterator over the nested blocks contained within
     /// this block.

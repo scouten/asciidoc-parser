@@ -7,6 +7,7 @@ use nom::{
 use crate::{
     blocks::{ContentModel, IsBlock},
     primitives::{consume_empty_lines, ident, normalized_line, trim_input_for_rem},
+    strings::CowStr,
     HasSpan, Span,
 };
 
@@ -87,6 +88,13 @@ impl<'a> IsBlock<'a> for MacroBlock<'a> {
         // to provide different content models. For now, just
         // default to "simple."
         ContentModel::Simple
+    }
+
+    fn context(&self) -> CowStr<'a> {
+        // TO DO: We'll probably want different macro types to provide different
+        // contexts. For now, just default to "paragraph."
+
+        "paragraph".into()
     }
 }
 

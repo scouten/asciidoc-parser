@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use nom::{
     error::{Error, ErrorKind},
     Err,
@@ -41,6 +43,7 @@ fn single_line() {
     let (rem, block) = SimpleBlock::parse(Span::new("abc", true)).unwrap();
 
     assert_eq!(block.content_model(), ContentModel::Simple);
+    assert_eq!(block.context().deref(), "paragraph");
 
     assert_eq!(
         rem,

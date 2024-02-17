@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use nom::{
     bytes::complete::take,
     error::{Error, ErrorKind},
@@ -72,6 +74,7 @@ fn simplest_section_block() {
     let (rem, block) = SectionBlock::parse(Span::new("== Section Title", true)).unwrap();
 
     assert_eq!(block.content_model(), ContentModel::Compound);
+    assert_eq!(block.context().deref(), "section");
 
     assert_eq!(
         rem,
@@ -109,6 +112,7 @@ fn has_child_block() {
     let (rem, block) = SectionBlock::parse(Span::new("== Section Title\n\nabc", true)).unwrap();
 
     assert_eq!(block.content_model(), ContentModel::Compound);
+    assert_eq!(block.context().deref(), "section");
 
     assert_eq!(
         rem,

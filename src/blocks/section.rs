@@ -5,6 +5,7 @@ use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count,
 use crate::{
     blocks::{Block, ContentModel, IsBlock},
     primitives::{consume_empty_lines, non_empty_line},
+    strings::CowStr,
     HasSpan, Span,
 };
 
@@ -65,6 +66,10 @@ impl<'a> SectionBlock<'a> {
 impl<'a> IsBlock<'a> for SectionBlock<'a> {
     fn content_model(&self) -> ContentModel {
         ContentModel::Compound
+    }
+
+    fn context(&self) -> CowStr<'a> {
+        "section".into()
     }
 
     fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {

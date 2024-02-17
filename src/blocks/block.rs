@@ -5,6 +5,7 @@ use nom::IResult;
 use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
     primitives::{consume_empty_lines, normalized_line},
+    strings::CowStr,
     HasSpan, Span,
 };
 
@@ -73,6 +74,14 @@ impl<'a> IsBlock<'a> for Block<'a> {
             Self::Simple(_) => ContentModel::Simple,
             Self::Macro(b) => b.content_model(),
             Self::Section(_) => ContentModel::Compound,
+        }
+    }
+
+    fn context(&self) -> CowStr<'a> {
+        match self {
+            Self::Simple(b) => b.context(),
+            Self::Macro(b) => b.context(),
+            Self::Section(b) => b.context(),
         }
     }
 

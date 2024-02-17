@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use nom::{
     bytes::complete::take,
     error::{Error, ErrorKind},
@@ -103,6 +105,7 @@ fn simplest_block_macro() {
     let (rem, block) = MacroBlock::parse(Span::new("foo::[]", true)).unwrap();
 
     assert_eq!(block.content_model(), ContentModel::Simple);
+    assert_eq!(block.context().deref(), "paragraph");
 
     assert_eq!(
         rem,

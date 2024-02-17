@@ -8,6 +8,7 @@ use crate::{
     blocks::{Block, ContentModel, IsBlock},
     document::Header,
     primitives::consume_empty_lines,
+    strings::CowStr,
     Error, HasSpan, Span,
 };
 
@@ -67,6 +68,10 @@ impl<'a> Document<'a> {
 impl<'a> IsBlock<'a> for Document<'a> {
     fn content_model(&self) -> ContentModel {
         ContentModel::Compound
+    }
+
+    fn context(&self) -> CowStr<'a> {
+        "document".into()
     }
 
     fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
