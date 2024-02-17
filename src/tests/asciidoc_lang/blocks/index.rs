@@ -326,7 +326,7 @@ mod context {
     fn inline_context() {
         // NOTE: Each inline element also has a context, but those elements are not
         // (yet) accessible from the parsed document model.
-        
+
         todo!("Spec doesn't yet describe what inline contexts mean.");
     }
 
@@ -343,17 +343,18 @@ mod context {
     fn contexts_used_by_converter() {
         // === Contexts used by the converter
         //
-        // The context is what the converter uses to dispatch to a convert method.
-        // The style is then used by the converter to apply special behavior to
-        // blocks of the same family.
+        // The context is what the converter uses to dispatch to a convert
+        // method. The style is then used by the converter to apply
+        // special behavior to blocks of the same family.
         //
-        // With two exceptions, there's a 1-to-1 mapping between the contexts and
-        // the handler methods of a converter. Those exceptions are the
-        // `list_item` and `table_cell` contexts, which are not mapped to a
-        // handler method. In the converter, these blocks must be accessed from
-        // their parent block.
+        // With two exceptions, there's a 1-to-1 mapping between the contexts
+        // and the handler methods of a converter. Those exceptions are
+        // the `list_item` and `table_cell` contexts, which are not
+        // mapped to a handler method. In the converter, these blocks
+        // must be accessed from their parent block.
 
-        // NO-OP: This crate isn't a converter, so this part of the spec doesn't apply.
+        // NO-OP: This crate isn't a converter, so this part of the spec doesn't
+        // apply.
     }
 }
 
@@ -435,7 +436,7 @@ fn block_style() {
 
 #[test]
 #[ignore]
-fn block_commonalities {
+fn block_commonalities() {
     // == Block commonalities
     //
     // Blocks are defined using some form of line-oriented syntax.
