@@ -71,7 +71,8 @@ endif::[]
 
 == scaledwidth attribute
 
-AsciiDoc recognizes the following attributes to size images when converting to PDF using the DocBook toolchain:
+AsciiDoc recognizes the following attributes to size images when converting to DocBook or when converting to PDF using Asciidoctor PDF.
+The `scaledwidth` attribute is ignored by other converters.
 
 * `scaledwidth` - The preferred width of the image when converting to PDF using the DocBook toolchain. (Mutually exclusive with `scale`).
 * `scale` - Scales the original image size by this amount when converting to PDF using the DocBook toolchain. (Mutually exclusive with `scaledwidth`).
@@ -90,7 +91,8 @@ in:: Inches
 em:: Ems (current font size)
 % (or no units):: Percentage of the content width (area between margins)
 
-DocBook also accepts the `width` attribute if `scaledwidth` is not provided.
+The `scaledwidth` attribute in AsciiDoc is mapped to the `width` attribute on the `imagedata` tag in DocBook, whereas the `width` attribute in AsciiDoc is mapped to the `contentwidth` attribute on the `imagedata` tag in DocBook.
+If both the `width` and `scaledwidth` attributes are specified in AsciiDoc, the `scaledwidth` tags precedence, so the DocBook output will only have the `width` attribute.
 
 == Image sizing recap
 

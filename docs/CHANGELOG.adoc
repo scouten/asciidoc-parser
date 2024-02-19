@@ -9,6 +9,9 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 Added::
 * Document the `column` role on the page break macro
 
+Changed::
+* Clarify how the width and scaledwidth attributes on an image macro are translated into DocBook and when scaledwidth is ignored
+
 == Published Q4 2023
 
 Added::
