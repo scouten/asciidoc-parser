@@ -3,7 +3,7 @@
 == Description
 
 Paragraphs are a foundational structure in AsciiDoc.
-A *paragraph* is a simple, implicit block consisting of a run of contiguous, non-interrupting lines that consist of inline elements, preprocessor directives, and uninterpreted text.
+A *paragraph* is a block element comprised of a run of contiguous, non-interrupting lines that consist of inline elements, preprocessor directives, and uninterpreted text.
 If a line isn't recognized as another block element or structural form, it's assumed to be a paragraph.
 Unrecognized syntax, or syntax not allowed inside a paragraph, is treated as uninterpreted text and isn't dropped.
 
@@ -14,44 +14,20 @@ Unrecognized syntax, or syntax not allowed inside a paragraph, is treated as uni
 Include examples from TCK
 ----
 
-== Context
+== Form, content model and context
 
-A paragraph can be used in the following contexts:
-
-* As a child of Document
-* As a child of Compound Block
-* As a child of List Item
-* As a child of Table Cell
-
-== Content model
-
-A paragraph is a Simple Block.
-
-A paragraph must accept:
-
-* Text
-* Inline markup
-
-////
-* Text
-* Inline elements
-** Character references
-* Inline preprocessor markup
-** Inline passthroughs
-** Attribute references
-////
+[cols="2h,4"]
+|===
+|Element type |Block
+|Source / Structural form |Paragraph
+|Content model |Basic
+|Permitted content |Text, Inline elements, Preprocessor markup
+|Interrupting lines and syntax |Empty line, Block attribute line, Block delimiter line, List continuation line, Table cell delimiter (that occurs anywhere in a table block)
+|Permitted parents |Document (if the document has 0 sections), Preamble, Compound block, List item, Table cell
+|===
 
 A paragraph must not be empty.
 It can parse to empty if it contains an inline preprocessor directive that resolves to empty.
-
-A paragraph must be interrupted by:
-
-* Empty line
-* Block Attribute Line
-* Block Delimiter Line
-* List Continuation Line (in list only)
-* Table Cell Delimiter (in table only, anywhere in line)
-* End of Document
 
 === Attributes and metadata
 
@@ -64,7 +40,12 @@ A paragraph can accept the following attributes and metadata:
 //** lead (move to expected converter behavior)
 * style
 ** attributes applicable to style
-* options
+* options (named and shorthand forms)
+
+// The following paragraph is derived from SDR 003. We definitely shouldn't be re-describing how blocks are generally parsed in each block description, so I'm keeping this minimalistic because 1) it will be thoroughly explained in the high-level block section, and 2) we're still hardening the block parsing rules and refining the description, so we don't want to have to be contiuously updating all the different block sections because we were too verbose.
+The block parser parses a paragraph according to the rules of its source form (Paragraph) and content model (Basic) regardless of an implicit or assigned style.
+Only after the block parser completes parsing the block is the style evaluated.
+The style determines the block's name, its variant (if applicable) and how inlines should be parsed.
 
 // == Grammar / Grammar rules
 
