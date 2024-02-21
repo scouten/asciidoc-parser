@@ -3,9 +3,9 @@
 == Description
 
 Paragraphs are a foundational structure in AsciiDoc.
-A *paragraph* is a block element comprised of a run of contiguous, non-interrupting lines that consist of inline elements, preprocessor directives, and uninterpreted text.
-If a line isn't recognized as another block element or structural form, it's assumed to be a paragraph.
-Unrecognized syntax, or syntax not allowed inside a paragraph, is treated as uninterpreted text and isn't dropped.
+A *paragraph* is a block element comprised of a sequence of contiguous, non-interrupting lines that contain inline preprocessor directives, inline elements, and uninterpreted text.
+If a line isn't recognized as another block element or structural form, it's handled as a paragraph.
+Unrecognized syntax, or syntax not permitted inside a paragraph, is retained and treated as uninterpreted text.
 
 === Source examples
 
@@ -21,31 +21,42 @@ Include examples from TCK
 |Element type |Block
 |Source / Structural form |Paragraph
 |Content model |Basic
-|Permitted content |Text, Inline elements, Preprocessor markup
-|Interrupting lines and syntax |Empty line, Block attribute line, Block delimiter line, List continuation line, Table cell delimiter (that occurs anywhere in a table block)
-|Permitted parents |Document (if the document has 0 sections), Preamble, Compound block, List item, Table cell
+|Permitted content |Text, Inline elements, Inline preprocessor markup
+|Interrupting lines and syntax forms |Empty line, Block attribute line, Block delimiter line, List continuation line, Table cell delimiter (that occurs anywhere in a table block)
+|Permitted parents |Document (if document has no sections), Preamble, Compound block, List item, Table cell
 |===
 
+////
+[horizontal,labelwidth=33%]
+Element type:: Block
+Source / Structural form:: Paragraph
+Content model:: Basic
+Permitted content:: Text, Inline elements, Inline preprocessor markup
+Interrupting lines and syntax forms:: Empty line, Block attribute line, Block delimiter line, List continuation line, Table cell delimiter (that occurs anywhere in a table block)
+Permitted parents:: Document (if document has no sections), Preamble, Compound block, List item, Table cell
+////
+
 A paragraph must not be empty.
-It can parse to empty if it contains an inline preprocessor directive that resolves to empty.
+It can parse to empty if it contains only inline preprocessor directives that all resolve to empty.
 
 === Attributes and metadata
 
 A paragraph can accept the following attributes and metadata:
 
-* Block title (title line and named attribute)
+* Block title (defined as title line or named attribute)
 * id (named and shorthand forms)
-* reftext
+* reftext (named and shorthand forms)
 * role(s) (named and shorthand forms)
 //** lead (move to expected converter behavior)
-* style
-** attributes applicable to style
 * options (named and shorthand forms)
+* style (positional form)
+** attributes applicable to style
+* data- named attributes
 
 // The following paragraph is derived from SDR 003. We definitely shouldn't be re-describing how blocks are generally parsed in each block description, so I'm keeping this minimalistic because 1) it will be thoroughly explained in the high-level block section, and 2) we're still hardening the block parsing rules and refining the description, so we don't want to have to be contiuously updating all the different block sections because we were too verbose.
 The block parser parses a paragraph according to the rules of its source form (Paragraph) and content model (Basic) regardless of an implicit or assigned style.
 Only after the block parser completes parsing the block is the style evaluated.
-The style determines the block's name, its variant (if applicable) and how inlines should be parsed.
+The style determines the block's name, its variant (if applicable), and how inlines should be parsed.
 
 // == Grammar / Grammar rules
 
