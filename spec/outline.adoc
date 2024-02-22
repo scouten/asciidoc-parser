@@ -469,7 +469,7 @@ The block boundary is determined first, then the inline parsing happens within t
 * Every name is linked to a single content model.
 * Each block name provides semantics not covered by any other block name.
 * The block name may be implicit or explicit.
-* If a block name is not specified, it's inferred by its source form (e.g., block delimiter, marker, implicit boundaries).
+* If a block name is not specified, it's inferred by its structural form (e.g., block delimiter, marker, implicit boundaries).
 
 === Block metadata
 // Defines the block metadata, its purpose, and how it affects a block.
