@@ -1515,6 +1515,25 @@ This section explains the conversion process at a high level and catalogs those 
 Not all output formats can satisfy all expectations, but they should cover as many as is feasible.
 
 [appendix]
+= Removed syntax
+
+Some syntax that was supported in the initial contribution to the AsciiDoc Language is not being carried forward in the standardized definition of the language.
+That list is as follows:
+
+* Setext-style headings (section titles and discrete headings)
+* Trailing markers on Atx-style headings
+* Roman numeral list markers (can still be enabled in output using list style)
+* Markdown compatibility syntax with the exception of email-style quote blocks and thematic break variants
+* ;; as dlist marker (infinite depth of colons is permitted instead)
+* Half open callout list marker (e.g., `1>`)
+* $$ for inline passtrhough (will likely be repurposed as an inline stem shorthand instead)
+* boxed attrlist on inline passthrough spans
+* indexterm2 inline macro (functionality will be folded into indexterm macro)
+* dsv table format
+* target on endif preprocessor directive
+* float style on discrete headings (renamed to discrete, possibly with support for heading as alternative)
+
+[appendix]
 = Deprecation process
 
 * *FI* Define the deprecation process for syntax, capabilities, etc. that was defined in the first version of the specification.
