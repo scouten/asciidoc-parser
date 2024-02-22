@@ -34,12 +34,9 @@ include::example$include.adoc[tag=tag-co]
 <.> This is the start of a tagged snippet named _parse_.
 <.> This is the end of the tagged snippet named _parse_.
 
-IMPORTANT: The `tag::[]` and `end::[]` directives should be placed after a line comment as defined by the language of the source file.
-The directives must also appear at the _end_ of the line.
+IMPORTANT: The `tag::tagName[]` and `end::tagName[]` directives have to follow a word-boundary and precede a space character or the end of line. The tag name has to consist exclusively of non-whitespace characters and cannot be empty.
+Typically, the directives will be placed after a line comment as defined by the language of the source file.
 In the previous example, we choose to prefix the lines with a hash (`#`) because that's the start of a line comment in Ruby.
-
-TIP: For languages that only have circumfix comments, such as XML, you can enclose the tag and end directives in the respective circumfix comment markers.
-For example, in XML files, you can use `+<!-- tag::name[] -->+` and `+<!-- end::name[] -->+` (the spaces around the tag are required).
 
 In the next example, the tagged region named _parse_ is selected by the `include` directive.
 
