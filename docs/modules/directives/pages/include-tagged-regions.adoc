@@ -14,6 +14,13 @@ You can eliminate this requirement by using the semi-colon as the data separator
 Tags are useful when you want to identify specific regions of a file to include.
 You can then select the lines between the boundaries of the include tag/end directives to include using the `tags` attribute.
 
+In the include file, the tag directives (e.g., `tag::name[]` and `end::name[]`) must follow a word boundary and precede a space character or the end of line.
+The tag name must not be empty and must consist exclusively of non-space characters.
+
+Typically, the tag directives will be placed after a line comment as defined by the language of the source file.
+For languages that only support circumfix comments, such as XML, you can enclose the tag directives between the circumfix comment markers, offset by a space on either side.
+For example, in XML files, you can use `+<!-- tag::name[] -->+` and `+<!-- end::name[] -->+`.
+
 Including by tag includes all regions marked with that tag.
 This makes it possible to include a group of lines from different regions of the document using a single tag.
 
@@ -21,6 +28,7 @@ TIP: If the target file has tagged lines, and you just want to ignore those line
 See <<tag-filtering>> for details.
 
 The example below shows how you tag a region of content inside a file containing multiple code examples.
+The tag directives are preceded by a hash (`#`) because that's the start of a line comment in Ruby.
 
 .Tagged code snippets in a file named core.rb
 [source,ruby,subs=attributes+]
@@ -33,10 +41,6 @@ include::example$include.adoc[tag=tag-co]
 <.> Assign the name of the region you want to terminate to the `end` directive.
 <.> This is the start of a tagged snippet named _parse_.
 <.> This is the end of the tagged snippet named _parse_.
-
-IMPORTANT: The `tag::tagName[]` and `end::tagName[]` directives have to follow a word-boundary and precede a space character or the end of line. The tag name has to consist exclusively of non-whitespace characters and cannot be empty.
-Typically, the directives will be placed after a line comment as defined by the language of the source file.
-In the previous example, we choose to prefix the lines with a hash (`#`) because that's the start of a line comment in Ruby.
 
 In the next example, the tagged region named _parse_ is selected by the `include` directive.
 

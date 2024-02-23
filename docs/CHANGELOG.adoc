@@ -11,6 +11,7 @@ Added::
 
 Changed::
 * Clarify how the width and scaledwidth attributes on an image macro are translated into DocBook and when scaledwidth is ignored
+* Be more clear about where the include tag directives are permitted in an include file
 
 == Published Q4 2023
 
