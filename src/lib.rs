@@ -6,6 +6,8 @@
 #![deny(warnings)]
 #![doc = include_str!("../README.md")]
 
+pub mod attributes;
+
 pub mod blocks;
 
 pub mod document;
