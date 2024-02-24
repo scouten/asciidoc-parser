@@ -90,7 +90,7 @@ In other words, a positional attribute only consists of a value.
 A positional attribute is indexed according to its 1-based position in the attrlist.
 The reasoning for indexing positional attributes this way is as follows:
 
-* It's a lot easier for an author to reason about how the index is assigned; just count the position in the attrlist.
+* It's a lot easier for an author to reason about how the index is assigned; just identify the position (1-based index) in the attrlist.
 * It prevents the index from shifting if a positional attribute that precedes it is changed to a named attribute.
 * No special condition is needed to identify the positional attribute that hosts the shorthand attributes; it's always the first positional attribute by definition.
 
