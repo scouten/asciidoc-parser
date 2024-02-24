@@ -358,9 +358,7 @@ mod context {
     }
 }
 
-#[test]
-#[ignore]
-fn block_style() {
+mod block_style {
     // [#block-style]
     // == Block style
     //
