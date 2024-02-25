@@ -197,7 +197,7 @@ The value of a content attribute is always converted to an array of inlines.
 If the value is enclosed in single quotes, the inline parser is used to parse it into an array of inlines, thus interpreting any inline markup, including inline passthroughs.
 If the value is not enclosed in single quotes, the value is converted to a text node and wrapped in an array.
 It gets treated as though the text had been enclosed in an inline passthrough.
-The unparsed value should be saved in order to restore it later in the attributes map.
+The unparsed value should be saved (typically using a deferred function) in order to restore it later in the attributes map.
 
 In the case the inline parser is used, the inline preprocessor should only extract inline passthroughs.
 This is the only time inline passthroughs are recognized in the attrlist, and are confined to the boundaries of the quoted value.
