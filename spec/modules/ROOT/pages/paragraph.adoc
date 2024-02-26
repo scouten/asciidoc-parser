@@ -40,16 +40,16 @@ Paragraphs are separated by one or more empty lines.
 Paragraph with block title and attribute lines.
 ----
 
-== Form, content model and context
+== Form, content model, and context
 
 [cols="2h,4"]
 |===
-|Element type |Block
-|Structural form |Paragraph
-|Content model |Basic
-|Permitted content |Text, Inline elements, Inline preprocessor directives; may vary if style is specified
-|Interrupting lines and syntax forms |Empty line, Block attribute line, Block delimiter line, List continuation line (proposed), Table cell delimiter (when the paragraph occurs anywhere inside a table)
-|Permitted parents |Document (if document has no sections), Preamble, Compound block, List item, Table cell
+|Element type |block
+|Structural form |paragraph
+|Content model |basic
+|Permitted content |text, inline elements, inline preprocessor directives; may vary if style is specified
+|Interrupting lines and syntax forms |empty line, block attribute line, block delimiter line, list continuation line (proposed), table cell delimiter (when the paragraph occurs anywhere inside a table)
+|Permitted parents |document (if document has no sections), preamble, compound block, list item, table cell
 |DOM interface |Paragraph
 |===
 
