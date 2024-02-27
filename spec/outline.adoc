@@ -714,7 +714,8 @@ The one exception to this rule is the discrete style on a heading.
 
 * *FI* Is more than one space permitted after a list marker?
 
-==== Primary text
+// Q: are we calling this "principal" or "primary" text?
+==== Principal text
 // here we could introduce the syntax for designating a block attribute line to a list item
 
 * *FI* In the principal text of a list item, can we have a block attribute line to assign attributes to a list item?
@@ -785,10 +786,10 @@ When we say "list" or "standard list", we are not talking about description list
 * *FI* Should we drop the semicolon as a marker and make the dlist markers consistent (`::`, `:::`, `::::`, `:::::`) (not `;;`)?
 * *FI* Should we allow dlist item nesting to any depth?
 
-==== Primary text
+==== Principal text
 
 * The text that follows the term, either on the same line or the next adjacent line.
-* The primary text of a dlist item can start on the next line, unlike for standard lists.
+* The principal text of a dlist item can start on the next line, unlike for standard lists.
 
 ==== Description
 
