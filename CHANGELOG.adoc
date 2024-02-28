@@ -4,6 +4,25 @@
 This document provides a summary of notable changes to the AsciiDoc Language project by milestone or release.
 For a detailed view of what's changed, refer to the {url-repo}/-/commits/main[commit history] for this repository.
 
+== 0.3.0 (milestone build)
+
+=== Added
+
+* Draft section in specification for paragraph (#35)
+* Draft section in specification for strong span (#37)
+* SDR-6: Define Parsing Rules for Positional Attribute to Named Attribute Mapping (#36)
+* SDR 7: Designate List Continuation as Universal Interrupting Line (#42)
+* SDR 8: Designate List Item as Interrupting Line only for Principal Text (#42)
+
+=== Changed
+
+* Change primary text to principal text in specification outline
+
+=== Fixed
+
+* Fix type for AsciiDoc attributes in ASG from boolean to null (allowing string or null)
+* Fix expected value of name property on schema for dlistItem
+
 == 0.2.0 (milestone build)
 
 === Added
