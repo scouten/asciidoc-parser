@@ -31,6 +31,9 @@ The term "`wordy`" (aka AsciiDoc alnum) matches any alpha character defined by U
 This character group can be summarized using the regular expression `[\p{Alpha}0-9]`.
 It does not match an underscore, unlike the `\p{Word}` Unicode property.
 
+A span cannot overlap with another span (i.e., a span can only be a sibling or a child of another span).
+The beginning and end of the span must fall within the boundaries of the parent inline.
+
 === Syntax examples
 
 .A single word with constrained strong
