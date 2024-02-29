@@ -142,10 +142,11 @@ It's up to the processor to identify these.
 * However, the term "`word`" in this context is not well-defined.
 * Furthermore, the term "`word`" traditionally includes the underscore character, which is a reserved character in the AsciiDoc markup.
 ** *FI* The underscore character should no longer be treated as a word character; should be treated as a syntax token only.
-* Thus, AsciiDoc defines the term "`wordy`" to mean a word-like (but not strictly word) character.
-* A wordy is an alphabetic character (as defined by Unicode) or an Arabic number.
+* Thus, AsciiDoc defines the term "`alpha\d`" to identify a letter or number character.
+* alpha\d is an alphabetic character (as defined by Unicode) or an Arabic digit (0-9).
+It can be represented by the regular expression `+[\p{Alpha}\d]+`.
 For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
-* An example where the wordy character has meaning in the AsciiDoc syntax is that constrained markup must not be bounded on either side by a wordy character.
+* An example where the alpha\d character has meaning in the AsciiDoc syntax is that constrained markup must not be bounded on either side by an alpha\d character.
 
 === Character references
 
@@ -1155,7 +1156,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 === Constrained vs unconstrained
 
 * constrained markup can only be used if certain conditions are met
- ** must not be bounded on either side by a wordy character and contents must not start or end with space
+ ** must not be bounded on either side by an alpha\d character and contents must not start or end with space
 * constrained markup is intended to prevent unwanted matches of formatting marks; though it can still sometimes form an unexpected match
 * unconstrained markup can be used anywhere; less concise
 * unconstrained takes precedence over constrained if both would match

@@ -19,16 +19,16 @@ The first match wins.
 Whether constrained markup is matched depends on which characters are adjacent to the formatting marks.
 The constrained rule must meet the following criteria:
 
-* (assert) not wordy
+* (assert) not alpha\d
 * formatting mark (i.e., asterisk)
 * (assert) not space
 * one or more inline elements or uninterpretted characters
 * (assert) not space
 * formatting mark (i.e., asterisk)
-* (assert) not wordy
+* (assert) not alpha\d
 
-The term "`wordy`" (aka AsciiDoc alnum) matches any alpha character defined by Unicode (`+\p{Alpha}+`) as well the numbers 0 to 9 (`0-9`).
-This character group can be summarized using the regular expression `[\p{Alpha}0-9]`.
+The term "`alpha\d`" matches any alpha character defined by Unicode (`+\p{Alpha}+`) as well the numbers 0 to 9 (`\d`).
+This character group can be summarized using the regular expression `[\p{Alpha}\d]`.
 It does not match an underscore, unlike the `\p{Word}` Unicode property.
 
 A span cannot overlap with another span (i.e., a span can only be a sibling or a child of another span).
@@ -103,18 +103,18 @@ strong = unconstrained_strong / constrained_strong
 The grammar rule for an unconstrained strong span is defined as follows:
 
 // NOTE in an implementation, the unconstrained_strong rule may need to capture
-// a preceding wordy* to ensure it sees an unconstrained form that follows a
-// run of wordy and thus win out over a constrained form
+// a preceding alpha_d* to ensure it sees an unconstrained form that follows a
+// run of alpha_d and thus win out over a constrained form
 ----
 unconstrained_strong = '**' (code / emphasis / !'**' constrained_strong / open / macro / unconstrained_strong_other)+ '**'
-unconstrained_strong_other = wordy ('`' / '_' / '*' !'*' / '#') / not_mark_or_space+ (space not_mark_or_space+)* (space+ / &'**') / !'*' .
+unconstrained_strong_other = alpha_d ('`' / '_' / '*' !'*' / '#') / not_mark_or_space+ (space not_mark_or_space+)* (space+ / &'**') / !'*' .
 ----
 
 The grammar rule for a constrained strong span is defined as follows:
 
 ----
-constrained_strong = '*' !space (code / emphasis / unconstrained_strong / open / macro / '*' !wordy / constrained_strong_other) (code / emphasis / unconstrained_strong / macro / constrained_strong_other)* '*' !wordy
-constrained_strong_other = wordy* constrained_left_mark_in_strong / not_mark_or_space+ (space not_mark_or_space+)* &('*' !wordy) / space+ (!'*' / &'**' &unconstrained_strong / '*') / '*' &wordy / escaped / !(' ' / '*') .
+constrained_strong = '*' !space (code / emphasis / unconstrained_strong / open / macro / '*' !alpha_d / constrained_strong_other) (code / emphasis / unconstrained_strong / macro / constrained_strong_other)* '*' !alpha_d
+constrained_strong_other = alpha_d* constrained_left_mark_in_strong / not_mark_or_space+ (space not_mark_or_space+)* &('*' !alpha_d) / space+ (!'*' / &'**' &unconstrained_strong / '*') / '*' &alpha_d / escaped / !(' ' / '*') .
 ----
 
 NOTE: These rules do not yet account for the optional boxed attrlist that precedes the marked text.
