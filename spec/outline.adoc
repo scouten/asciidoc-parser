@@ -77,7 +77,7 @@ It's up to the processor to identify these.
 * processor (parser / converter)
 * input
 * output / output format
-* context (the place/environment where something is used)
+* context (the parent/place/environment where something is used)
 
 .Patterns
 * markers
@@ -141,7 +141,7 @@ It's up to the processor to identify these.
 * AsciiDoc often uses words and word boundaries to determine what markup is valid.
 * However, the term "`word`" in this context is not well-defined.
 * Furthermore, the term "`word`" traditionally includes the underscore character, which is a reserved character in the AsciiDoc markup.
-** *FI* The underscore character should no longer be treated as a word character; should be treated as a syntax token only.
+  ** *FI* The underscore character should no longer be treated as a word character; should be treated as a syntax token only.
 * Thus, AsciiDoc defines the term "`alpha\d`" to identify a letter or number character.
 * alpha\d is an alphabetic character (as defined by Unicode) or an Arabic numeral (0-9).
 It can be represented by the regular expression `+[\p{Alpha}\d]+`.
@@ -187,11 +187,15 @@ For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
 * Except in the case where empty lines are preserved (such as in verbatim content), multiple successive empty lines are equivalent to a single empty line.
 * Empty lines at the start and end of a verbatim block are dropped. <= need to clarify this behavior
 * Empty lines between and after block metadata lines are insignificant.
-* Empty lines between two simple list items are ignored. <= we may say that two empty lines break the list
+* Empty lines between two basic list items are ignored. <= we may say that two empty lines break the list
 * Empty lines in all other places serve as the boundary between two blocks.
 * For block elements that do not have explicit boundaries (e.g., a delimited block), the block will end when an interrupting line is encountered
 * An empty line is often an interrupting line, but not the only one.
 * A block attribute line (a line that contains a boxed attrlist) is also an interrupting line.
+** A block attribute line is a boxed attrlist defined on its own line.
+A boxed attrlist is also the syntax that follows the target of a block macro.
+So, when we are talking about something equivalent to a block attribute line for a block macro, it's a boxed attrlist.
+If we say attrlist, then we are comparing apples to oranges.
 * The closing block delimiter (if used in a place that it can match the opening block delimiter) is an interrupting line.
 * A list continuation line ends an attached block (but does not end the list; rather, it attaches the ensuing block to the list item)
 * Inside a list, a list item is an interrupting line; either starts a new list item or nested list, depending on the marker
@@ -286,18 +290,18 @@ It should be considered for the following block-level constructs:
 
 * Block elements form the main structure of the document.
 * A block element is stacked vertically by line above or below other block elements.
-* There are two primary node types of block elements: simple/terminal blocks and compound/parent blocks.
-** These node types are further described by their content model (e.g., simple may be verbatim, raw, regular/prose/paragraph, or empty; compound may be section or non-section); a content model equates to the grammar rule for the contents of the block.
-* A *simple block* can only contain inline nodes (elements and uninterpreted text).
+* There are two primary node types of block elements: basic/terminal blocks and compound/parent blocks.
+** These node types are further described by their content model; a content model equates to the grammar rule for the contents of the block.
+* A *basic block* can only contain inline nodes (elements and uninterpreted text).
 * A *compound block* can only contain other blocks; those blocks in the compound block may contain inline elements unless they themselves are compound blocks.
-* Except for block titles, simple blocks are delineated from other block elements by an empty line separator, but they can have interrupters (boundaries).
+* Except for block titles, basic blocks are delineated from other block elements by an empty line separator, but they can have interrupters (boundaries).
 * Many compound blocks are delineated from other block elements by delimiter lines.
 ** The document, sections, and lists are not delineated; all other compound blocks are.
 * Block elements may be implicit blocks, such as sections, paragraphs, and block macros, and delimited blocks, such as examples, verses, and sidebars.
 
 ==== Inline elements
 
-* An *inline element*, a subset of *inlines*, is a span of content within a simple block.
+* An *inline element*, a subset of *inlines*, is a span of content within a block.
 * Inline elements consist of marked text (emphasis, strong, etc.), inline macros, and inline shorthands.
 ** What fills in the gap between these elements is uninterpreted text and character references (non-elements).
 // TODO Define marked text as related to formatted text.
@@ -449,14 +453,11 @@ When set, a boolean attribute typically has an empty value.
 // It lays down the common structural rules that are fundamental to blocks.
 
 * A *block element*, referred to as a *block*, is a discrete, line-wise element in the document structure.
-//A block is either a simple block or a compound block.
-//* Compound blocks can only contain other blocks.
-//* Simple blocks can only contain inline elements and uninterpreted text.
 * A block always starts and ends on a whole line (starts at beginning of a line or effective beginning and ends at the end of the same or different line.
 * A block may have two to three source features: metadata, a body, and an enclosure.
 * The parent of a block is always another block (if nested, the parent block; if not nested, the parent section or document if not in a section).
 * The body of a block may have an enclosure that is formed by delimiter lines.
-* A block's content model (e.g., `simple`, `compound`, `verbatim`) determines what kind of content the block can have (if any) and how it is parsed.
+* A block's content model (e.g., `basic`, `compound`, `verbatim`) determines what kind of content the block can have (if any) and how it is parsed.
 * A block's name and optional style modifier determines how it is converted.
 * Block element parsing takes precedence over inline element parsing.
 For example, an inline passthrough cannot enclose a line that would end the block, such as a block delimiter or list continuation.
@@ -468,10 +469,9 @@ The block boundary is determined first, then the inline parsing happens within t
 
 * Each block has a name (e.g., image, sidebar, etc.).
 * A name identifies the primary specialization of the element.
-* Every name is linked to a single content model.
 * Each block name provides semantics not covered by any other block name.
 * The block name may be implicit or explicit.
-* If a block name is not specified, it's inferred by its structural form (e.g., block delimiter, marker, implicit boundaries).
+* If a block name isn't derived from a specified block style, it's inferred by its structural form (e.g., block delimiter, marker, implicit boundaries).
 
 === Block metadata
 // Defines the block metadata, its purpose, and how it affects a block.
@@ -481,13 +481,16 @@ The block boundary is determined first, then the inline parsing happens within t
 * All blocks accommodate zero or more lines of explicit metadata stacked line-wise directly on top of the block content and, if applicable, the opening delimiter line.
 ** The optional metadata lines include: zero or more block attribute lines (which populate the block’s attributes), block attrlist (inside block attribute line), the block attributes, optional block title line (many blocks also support a corresponding caption).
 ** *SDR* Confirm the terms and their definitions for what we should use to refer to the list of attributes in raw versus parsed form. (attrlist, boxed attrlist, attributes)
-* The shared (but optional) block attributes include: id, style, set of roles, set of options, title, reftext, and data- attributes.
+* The shared (but optional) block attributes include: id, style, set of roles, set of options, title, reftext, and data-attributes.
 
 === Block attributes
 
 * Used to store the block metadata.
 * Can be positional or named.
 * Positional attributes use a 1-based index; index assignment skips over any named attributes (i.e., named attributes don't affect position).
+** See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-002-block-attrlist-parsing.adoc?ref_type=heads[SDR-2: Define Parsing Rules for attrlist in Block Attribute Line]/
+** See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-006-positional-attribute-mapping.adoc?ref_type=heads[SDR-6: Define Parsing Rules for Positional Attribute to Named Attribute Mapping].
+
 * Only available directly on the block.
 * Do not affect document attributes.
 * The only relationship between block attributes and document attributes is that document attributes are sometimes used as fallbacks for an absent block attribute (this needs to be clarified / tightened).
@@ -519,16 +522,16 @@ Fix the terminology by decomposing all parts of the caption and using it in the 
 
 * *Implicit blocks* are blocks that do not have explicit boundaries, unlike delimited blocks.
 An implicit block ends when it encounters an interrupting line such as the start of another implicit block, the opening or closing line of a delimited block, or an empty line.
-* Implicit blocks include sections, discrete headings, paragraphs, literal paragraphs, simple admonitions, simple blockquotes, block macros, lists / list items, and the document itself.
+* Implicit blocks include sections, discrete headings, paragraphs, literal paragraphs, basic admonitions, basic blockquotes, block macros, lists / list items, and the document itself.
 * Block metadata lines also have implicit boundaries (a single line), but are not themselves blocks.
 
 === Delimited blocks / Structural containers
 //Defines a delimited block and lays down the common structural parts and rules governing a delimited block.
 
-* A *delimited block* is a compound block bounded by explicit boundaries called delimiter lines.
+* A *delimited block* is a block bounded by explicit boundaries called delimiter lines.
 * A delimited block only ends when the delimiter line that started the block is found again at the same level (as opposed to creating a nested block).
 * Delimited blocks must be balanced; if there's an opening delimiter line, there must be a corresponding closing delimiter line; otherwise, a warning must be issued by the processor.
-* A delimited block creates new parsing context (current block must end before ending ancestor block).
+* A delimited block creates a new parsing context (current block must end before ending ancestor block).
 * If the child block is a delimited block, it starts a new delimited block parsing context; when the child delimited block ends, the previous delimited block parsing context is restored.
 ** State the nesting rules and limits for delimited blocks.
 * A delimited block may not contain sections.
@@ -655,7 +658,7 @@ Does it occur if there are parts? (Only after the title of the book, after ever 
 == Paragraphs
 // Defines a paragraph, its structure, and the rules that govern it.
 
-* A *paragraph* is a simple, implicit block consisting of a discrete set of contiguous (non-empty) lines that can contain inline elements and uninterpreted text.
+* A *paragraph* is a basic, implicit block consisting of a discrete set of contiguous (non-empty) lines that can contain inline elements and uninterpreted text.
 * Paragraphs are a foundational structure in AsciiDoc.
 * Aside from section and block titles, all non-verbatim leaf block elements are paragraphs.
 * If a line is not recognized as a specific element, it's assumed to be a paragraph.
@@ -720,12 +723,16 @@ The one exception to this rule is the discrete style on a heading.
 ==== Principal text
 // here we could introduce the syntax for designating a block attribute line to a list item
 
+See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-008-list-item-as-interrupting-line-for-principal-text.adoc?ref_type=heads[SDR-8: Designate List Item as Interrupting Line only for Principal Text].
+
 * *FI* In the principal text of a list item, can we have a block attribute line to assign attributes to a list item?
 * *FI* Can a list item have multiple contiguous metadata lines or should a list item be restricted to one block attribute line?
 
 ==== Combining lists
 
 ==== List continuation
+
+See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-007-list-continuation-as-interrupting-line.adoc?ref_type=heads[SDR-7: Designate List Continuation as Universal Interrupting Line].
 
 * *FI* Should a styled paragraph (such as `[NOTE]` or `[example]` over a paragraph) break a list if it's not preceded by a continuation line?
 Asciidoctor and AsciiDoc Python implement this rule differently.
@@ -939,7 +946,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Quote: no style or `quote` style
 * Verse: `verse` style
 * Epigraph: `epigraph` style
-* Content model: compound for Quote, simple for Verse and Epigraph
+* Content model: compound for Quote, basic for Verse and Epigraph
 * *FI* Can / should we use the verse block to create an address element?
 * *FI* Propose renaming citetitle to citation or just cite?
 
@@ -1159,10 +1166,23 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * constrained markup can only be used if certain conditions are met
  ** must not be bounded on either side by an alpha\d character and contents must not start or end with space
 * constrained markup is intended to prevent unwanted matches of formatting marks; though it can still sometimes form an unexpected match
+* Whether constrained markup is matched depends on which characters are adjacent to the formatting marks.
+The constrained rule must meet the following criteria:
+
+** (assert) not alpha\d
+** formatting mark (i.e., asterisk)
+** (assert) not space
+** one or more inline elements or uninterpretted characters
+** (assert) not space
+** formatting mark (i.e., asterisk)
+** (assert) not alpha\d
+
+* Unconstrained markup is matched without taking into account the surrounding characters.
+The first match wins.
 * unconstrained markup can be used anywhere; less concise
 * unconstrained takes precedence over constrained if both would match
 * constrained inside unconstrained of the same variant cannot start with unconstrained (the unconstrained mark wins out and closes the span)
-* *FI* Should we forbid nested span of same variant? (unconstrained strong inside of constrained strong and vice versa?)
+* *FI* Should we forbid nested span of same variant? (unconstrained strong inside constrained strong and vice versa?)
 
 === Strong (Bold)
 
