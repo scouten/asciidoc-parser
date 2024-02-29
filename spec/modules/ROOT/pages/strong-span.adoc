@@ -27,7 +27,7 @@ The constrained rule must meet the following criteria:
 * formatting mark (i.e., asterisk)
 * (assert) not alpha\d
 
-The term "`alpha\d`" matches any alpha character defined by Unicode (`+\p{Alpha}+`) as well the numbers 0 to 9 (`\d`).
+The term "`alpha\d`" matches any alpha character defined by Unicode (`+\p{Alpha}+`) as well the Arabic numerals 0 to 9 (`\d`).
 This character group can be summarized using the regular expression `[\p{Alpha}\d]`.
 It does not match an underscore, unlike the `\p{Word}` Unicode property.
 

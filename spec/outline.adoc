@@ -143,9 +143,10 @@ It's up to the processor to identify these.
 * Furthermore, the term "`word`" traditionally includes the underscore character, which is a reserved character in the AsciiDoc markup.
 ** *FI* The underscore character should no longer be treated as a word character; should be treated as a syntax token only.
 * Thus, AsciiDoc defines the term "`alpha\d`" to identify a letter or number character.
-* alpha\d is an alphabetic character (as defined by Unicode) or an Arabic digit (0-9).
+* alpha\d is an alphabetic character (as defined by Unicode) or an Arabic numeral (0-9).
 It can be represented by the regular expression `+[\p{Alpha}\d]+`.
 For details, see https://www.unicode.org/reports/tr44/#Alphabetic.
+ ** *FI* Should the alphabetic property be restricted to +\p{L}+ or +\p{LC}+? (LC does not match letters that are ideographs)
 * An example where the alpha\d character has meaning in the AsciiDoc syntax is that constrained markup must not be bounded on either side by an alpha\d character.
 
 === Character references
