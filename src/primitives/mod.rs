@@ -53,6 +53,15 @@ pub(crate) fn ident(i: Span<'_>) -> IResult<Span, Span> {
     .parse(i)
 }
 
+/// Recognize an attribute name at the beginning of the current source.
+///
+/// An attribute name consists of a word character (letter or numeral) followed
+/// by any number of word or `-` characters (e.g., `see-also`).
+#[allow(dead_code)]
+pub(crate) fn attr_name(i: Span<'_>) -> IResult<Span, Span> {
+    recognize(pair(alphanumeric1, many0(alt((alphanumeric1, tag("-")))))).parse(i)
+}
+
 /// Recognize a quoted string. The string is read until the next unescaped
 /// matching quote.
 ///
