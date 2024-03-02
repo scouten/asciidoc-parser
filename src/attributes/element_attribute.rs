@@ -1,7 +1,10 @@
 // use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
 use nom::{bytes::complete::is_not, IResult};
 
-use crate::{primitives::trim_input_for_rem, HasSpan, Span};
+use crate::{
+    primitives::{quoted_string, trim_input_for_rem},
+    HasSpan, Span,
+};
 
 /// This struct represents a single element attribute.
 ///
@@ -58,10 +61,8 @@ impl<'a> HasSpan<'a> for ElementAttribute<'a> {
 }
 
 fn parse_value<'a>(source: Span<'a>) -> IResult<Span<'a>, Span<'a>> {
-    if source.starts_with('\'') {
-        unimplemented!();
-    } else if source.starts_with('"') {
-        unimplemented!();
+    if source.starts_with('\'') || source.starts_with('"') {
+        quoted_string(source)
     } else {
         is_not(",")(source)
     }

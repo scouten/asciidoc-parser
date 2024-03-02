@@ -11,7 +11,7 @@ pub(crate) struct TElementAttribute {
 
 impl fmt::Debug for TElementAttribute {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Attribute")
+        f.debug_struct("ElementAttribute")
             .field("name", &self.name)
             .field("value", &self.value)
             .field("source", &self.source)
