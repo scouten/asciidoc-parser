@@ -1,8 +1,11 @@
-// use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
-use nom::{bytes::complete::is_not, IResult};
+use nom::{
+    bytes::complete::{is_not, tag},
+    character::complete::space0,
+    IResult,
+};
 
 use crate::{
-    primitives::{quoted_string, trim_input_for_rem},
+    primitives::{attr_name, quoted_string, trim_input_for_rem},
     HasSpan, Span,
 };
 
@@ -25,13 +28,29 @@ impl<'a> ElementAttribute<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let i = source.clone();
 
-        let (rem, value) = parse_value(i)?;
+        let (rem, name): (Span<'a>, Option<Span<'a>>) = if let Ok((rem, name)) = attr_name(i) {
+            let (rem, _) = space0(rem)?;
+            if let Ok((rem, _)) = tag::<&str, Span<'a>, nom::error::Error<Span<'a>>>("=")(rem) {
+                let (rem, _) = space0(rem)?;
+                if rem.len() == 0 || rem.starts_with(',') {
+                    (i, None)
+                } else {
+                    (rem, Some(name))
+                }
+            } else {
+                (i, None)
+            }
+        } else {
+            (i, None)
+        };
+
+        let (rem, value) = parse_value(rem)?;
         let source = trim_input_for_rem(source, rem);
 
         Ok((
             rem,
             Self {
-                name: None,
+                name,
                 value,
                 source,
             },

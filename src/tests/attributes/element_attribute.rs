@@ -60,6 +60,8 @@ fn only_spaces() {
         }
     );
 
+    assert!(attr.name().is_none());
+
     assert_eq!(
         attr.span(),
         TSpan {
@@ -104,6 +106,8 @@ fn unquoted_and_unnamed_value() {
         }
     );
 
+    assert!(attr.name().is_none());
+
     assert_eq!(
         attr.span(),
         TSpan {
@@ -147,6 +151,8 @@ fn unquoted_stops_at_comma() {
             },
         }
     );
+
+    assert!(attr.name().is_none());
 
     assert_eq!(
         attr.span(),
@@ -223,6 +229,8 @@ mod quoted_string {
             }
         );
 
+        assert!(attr.name().is_none());
+
         assert_eq!(
             attr.span(),
             TSpan {
@@ -267,6 +275,8 @@ mod quoted_string {
             }
         );
 
+        assert!(attr.name().is_none());
+
         assert_eq!(
             attr.span(),
             TSpan {
@@ -310,6 +320,8 @@ mod quoted_string {
                 },
             }
         );
+
+        assert!(attr.name().is_none());
 
         assert_eq!(
             attr.span(),
@@ -376,6 +388,8 @@ mod quoted_string {
             }
         );
 
+        assert!(attr.name().is_none());
+
         assert_eq!(
             attr.span(),
             TSpan {
@@ -419,6 +433,8 @@ mod quoted_string {
                 },
             }
         );
+
+        assert!(attr.name().is_none());
 
         assert_eq!(
             attr.span(),
@@ -464,10 +480,350 @@ mod quoted_string {
             }
         );
 
+        assert!(attr.name().is_none());
+
         assert_eq!(
             attr.span(),
             TSpan {
                 data: "'a\"bc'",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+}
+
+mod named {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        attributes::ElementAttribute,
+        tests::fixtures::{attributes::TElementAttribute, TSpan},
+        HasSpan, Span,
+    };
+
+    #[test]
+    fn simple_named_value() {
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc=def", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                value: TSpan {
+                    data: "def",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },
+                source: TSpan {
+                    data: "abc=def",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            attr.name().unwrap(),
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            attr.span(),
+            TSpan {
+                data: "abc=def",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn ignores_spaces_around_equals() {
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc =  def", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                value: TSpan {
+                    data: "def",
+                    line: 1,
+                    col: 8,
+                    offset: 7,
+                },
+                source: TSpan {
+                    data: "abc =  def",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            attr.name().unwrap(),
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            attr.span(),
+            TSpan {
+                data: "abc =  def",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn numeric_name() {
+        let (rem, attr) = ElementAttribute::parse(Span::new("94-x =def", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 10,
+                offset: 9
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "94-x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                value: TSpan {
+                    data: "def",
+                    line: 1,
+                    col: 7,
+                    offset: 6,
+                },
+                source: TSpan {
+                    data: "94-x =def",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            attr.name().unwrap(),
+            TSpan {
+                data: "94-x",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            attr.span(),
+            TSpan {
+                data: "94-x =def",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn quoted_value() {
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc='def'g", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "g",
+                line: 1,
+                col: 10,
+                offset: 9
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                value: TSpan {
+                    data: "def",
+                    line: 1,
+                    col: 6,
+                    offset: 5,
+                },
+                source: TSpan {
+                    data: "abc='def'",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            attr.name().unwrap(),
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            attr.span(),
+            TSpan {
+                data: "abc='def'",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn fallback_if_no_value() {
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc=", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TElementAttribute {
+                name: None,
+                value: TSpan {
+                    data: "abc=",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "abc=",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(attr.name().is_none());
+
+        assert_eq!(
+            attr.span(),
+            TSpan {
+                data: "abc=",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn fallback_if_immediate_comma() {
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc=,def", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: ",def",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
+
+        assert_eq!(
+            attr,
+            TElementAttribute {
+                name: None,
+                value: TSpan {
+                    data: "abc=",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "abc=",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(attr.name().is_none());
+
+        assert_eq!(
+            attr.span(),
+            TSpan {
+                data: "abc=",
                 line: 1,
                 col: 1,
                 offset: 0,
