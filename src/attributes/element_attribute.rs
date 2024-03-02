@@ -26,7 +26,7 @@ pub struct ElementAttribute<'a> {
 impl<'a> ElementAttribute<'a> {
     #[allow(dead_code)]
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let i = source.clone();
+        let i = source;
 
         let (rem, name): (Span<'a>, Option<Span<'a>>) = if let Ok((rem, name)) = attr_name(i) {
             let (rem, _) = space0(rem)?;
@@ -79,7 +79,7 @@ impl<'a> HasSpan<'a> for ElementAttribute<'a> {
     }
 }
 
-fn parse_value<'a>(source: Span<'a>) -> IResult<Span<'a>, Span<'a>> {
+fn parse_value(source: Span<'_>) -> IResult<Span<'_>, Span<'_>> {
     if source.starts_with('\'') || source.starts_with('"') {
         quoted_string(source)
     } else {
