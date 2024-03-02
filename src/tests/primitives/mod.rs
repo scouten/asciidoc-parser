@@ -78,6 +78,125 @@ mod trim_input_for_rem {
     }
 }
 
+mod attr_name {
+    use nom::{
+        error::{Error, ErrorKind},
+        Err,
+    };
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{primitives::attr_name, tests::fixtures::TSpan, Span};
+
+    #[test]
+    fn err_empty_source() {
+        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
+            Err::Error(Error::new(Span::new("", true), ErrorKind::AlphaNumeric));
+
+        let actual_err = attr_name(Span::new("", true)).unwrap_err();
+
+        assert_eq!(expected_err, actual_err);
+    }
+
+    #[test]
+    fn err_starts_with_non_word() {
+        let expected_err: Err<Error<nom_span::Spanned<&str>>> = Err::Error(Error::new(
+            Span::new("#not-a-proper-name", true),
+            ErrorKind::AlphaNumeric,
+        ));
+
+        let actual_err = attr_name(Span::new("#not-a-proper-name", true)).unwrap_err();
+
+        assert_eq!(expected_err, actual_err);
+    }
+
+    #[test]
+    fn err_starts_with_hyphen() {
+        let expected_err: Err<Error<nom_span::Spanned<&str>>> = Err::Error(Error::new(
+            Span::new("-not-a-proper-name", true),
+            ErrorKind::AlphaNumeric,
+        ));
+
+        let actual_err = attr_name(Span::new("-not-a-proper-name", true)).unwrap_err();
+
+        assert_eq!(expected_err, actual_err);
+    }
+
+    #[test]
+    fn stops_at_non_ident() {
+        let (rem, qstr) = attr_name(Span::new("x#", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "#",
+                line: 1,
+                col: 2,
+                offset: 1
+            }
+        );
+
+        assert_eq!(
+            qstr,
+            TSpan {
+                data: "x",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn numeric() {
+        let (rem, qstr) = attr_name(Span::new("94!", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "!",
+                line: 1,
+                col: 3,
+                offset: 2
+            }
+        );
+
+        assert_eq!(
+            qstr,
+            TSpan {
+                data: "94",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn contains_hyphens() {
+        let (rem, qstr) = attr_name(Span::new("blah-blah-94 = foo", true)).unwrap();
+
+        assert_eq!(
+            rem,
+            TSpan {
+                data: " = foo",
+                line: 1,
+                col: 13,
+                offset: 12
+            }
+        );
+
+        assert_eq!(
+            qstr,
+            TSpan {
+                data: "blah-blah-94",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+}
+
 mod quoted_string {
     use nom::{
         error::{Error, ErrorKind},
