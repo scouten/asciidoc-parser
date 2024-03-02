@@ -120,7 +120,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_string() {
-        let (rem, line) = quoted_string(Span::new("\"abc\"def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("\"abc\"def", true)).unwrap();
 
         assert_eq!(
             rem,
@@ -133,7 +133,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            line,
+            qstr,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -145,7 +145,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_escape() {
-        let (rem, line) = quoted_string(Span::new("\"a\\\"bc\"def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("\"a\\\"bc\"def", true)).unwrap();
 
         assert_eq!(
             rem,
@@ -158,7 +158,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            line,
+            qstr,
             TSpan {
                 data: "a\\\"bc",
                 line: 1,
@@ -170,7 +170,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_single_quote() {
-        let (rem, line) = quoted_string(Span::new("\"a'bc\"def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("\"a'bc\"def", true)).unwrap();
 
         assert_eq!(
             rem,
@@ -183,7 +183,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            line,
+            qstr,
             TSpan {
                 data: "a'bc",
                 line: 1,
@@ -216,7 +216,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_string() {
-        let (rem, line) = quoted_string(Span::new("'abc'def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("'abc'def", true)).unwrap();
 
         assert_eq!(
             rem,
@@ -229,7 +229,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            line,
+            qstr,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -241,7 +241,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_escape() {
-        let (rem, line) = quoted_string(Span::new("'a\\'bc'def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("'a\\'bc'def", true)).unwrap();
 
         assert_eq!(
             rem,
@@ -254,7 +254,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            line,
+            qstr,
             TSpan {
                 data: "a\\'bc",
                 line: 1,
@@ -266,7 +266,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_double_quote() {
-        let (rem, line) = quoted_string(Span::new("'a\"bc'def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("'a\"bc'def", true)).unwrap();
 
         assert_eq!(
             rem,
@@ -279,7 +279,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            line,
+            qstr,
             TSpan {
                 data: "a\"bc",
                 line: 1,
