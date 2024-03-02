@@ -23,8 +23,7 @@
 //! String types that facilitate parsing.
 
 use std::{
-    borrow::{Borrow, Cow, ToOwned},
-    convert::{AsRef, TryFrom},
+    borrow::{Borrow, Cow},
     fmt,
     hash::{Hash, Hasher},
     ops::Deref,

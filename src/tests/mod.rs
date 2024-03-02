@@ -6,6 +6,7 @@
 #![allow(clippy::unwrap_used)]
 
 mod asciidoc_lang;
+mod attributes;
 mod blocks;
 mod document;
 mod error;
