@@ -2,7 +2,10 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     attributes::Attrlist,
-    tests::fixtures::{attributes::TAttrlist, TSpan},
+    tests::fixtures::{
+        attributes::{TAttrlist, TElementAttribute},
+        TSpan,
+    },
     HasSpan, Span,
 };
 
@@ -51,6 +54,171 @@ fn empty_source() {
         attrlist.span(),
         TSpan {
             data: "",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+}
+
+#[test]
+fn only_positional_attributes() {
+    let (rem, attrlist) = Attrlist::parse(Span::new("Sunset,300,400", true)).unwrap();
+
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 15,
+            offset: 14
+        }
+    );
+
+    assert_eq!(
+        attrlist,
+        TAttrlist {
+            attributes: vec!(
+                TElementAttribute {
+                    name: None,
+                    value: TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    source: TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                TElementAttribute {
+                    name: None,
+                    value: TSpan {
+                        data: "300",
+                        line: 1,
+                        col: 8,
+                        offset: 7,
+                    },
+                    source: TSpan {
+                        data: "300",
+                        line: 1,
+                        col: 8,
+                        offset: 7,
+                    },
+                },
+                TElementAttribute {
+                    name: None,
+                    value: TSpan {
+                        data: "400",
+                        line: 1,
+                        col: 12,
+                        offset: 11,
+                    },
+                    source: TSpan {
+                        data: "400",
+                        line: 1,
+                        col: 12,
+                        offset: 11,
+                    },
+                }
+            ),
+            source: TSpan {
+                data: "Sunset,300,400",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(attrlist.named_attribute("foo").is_none());
+
+    assert_eq!(
+        attrlist.nth_attribute(0).unwrap(),
+        TElementAttribute {
+            name: None,
+            value: TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            source: TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert_eq!(
+        attrlist.nth_attribute(1).unwrap(),
+        TElementAttribute {
+            name: None,
+            value: TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            source: TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert_eq!(
+        attrlist.nth_attribute(2).unwrap(),
+        TElementAttribute {
+            name: None,
+            value: TSpan {
+                data: "300",
+                line: 1,
+                col: 8,
+                offset: 7,
+            },
+            source: TSpan {
+                data: "300",
+                line: 1,
+                col: 8,
+                offset: 7,
+            },
+        }
+    );
+
+    assert_eq!(
+        attrlist.nth_attribute(3).unwrap(),
+        TElementAttribute {
+            name: None,
+            value: TSpan {
+                data: "400",
+                line: 1,
+                col: 12,
+                offset: 11,
+            },
+            source: TSpan {
+                data: "400",
+                line: 1,
+                col: 12,
+                offset: 11,
+            },
+        }
+    );
+
+    assert!(attrlist.nth_attribute(4).is_none());
+    assert!(attrlist.nth_attribute(42).is_none());
+
+    assert_eq!(
+        attrlist.span(),
+        TSpan {
+            data: "Sunset,300,400",
             line: 1,
             col: 1,
             offset: 0,
