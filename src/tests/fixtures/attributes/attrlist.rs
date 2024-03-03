@@ -1,6 +1,5 @@
 use std::{cmp::PartialEq, fmt};
 
-use super::THeader;
 use crate::{
     attributes::Attrlist,
     tests::fixtures::{attributes::TElementAttribute, TSpan},
@@ -22,7 +21,7 @@ impl fmt::Debug for TAttrlist {
     }
 }
 
-impl<'a> PartialEq<AttrList<'a>> for TAttrlist {
+impl<'a> PartialEq<Attrlist<'a>> for TAttrlist {
     fn eq(&self, other: &Attrlist<'a>) -> bool {
         tattrlist_eq(self, other)
     }
@@ -45,10 +44,10 @@ fn tattrlist_eq(tattrlist: &TAttrlist, attrlist: &Attrlist) -> bool {
         return false;
     }
 
-    if tattrlist.attributes.len() != tattrlist.attributes().len() {
+    if tattrlist.attributes.len() != attrlist.attributes().len() {
         return false;
     }
-    
+
     for (ta_attr, attr) in tattrlist.attributes.iter().zip(attrlist.attributes()) {
         if ta_attr != attr {
             return false;

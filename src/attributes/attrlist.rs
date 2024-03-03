@@ -40,13 +40,13 @@ impl<'a> Attrlist<'a> {
     /// Returns an iterator over the attributes contained within
     /// this attrlist.
     #[allow(dead_code)]
-    fn attributes(&'a self) -> Iter<'a, ElementAttribute<'a>> {
+    pub fn attributes(&'a self) -> Iter<'a, ElementAttribute<'a>> {
         self.attributes.iter()
     }
 
     /// Returns the first attribute with the given name.
     #[allow(dead_code)]
-    fn named_attribute(&'a self, name: &str) -> Option<&'a ElementAttribute<'a>> {
+    pub fn named_attribute(&'a self, name: &str) -> Option<&'a ElementAttribute<'a>> {
         self.attributes.iter().find(|attr| {
             if let Some(attr_name) = attr.name() {
                 attr_name.deref() == &name
@@ -60,7 +60,7 @@ impl<'a> Attrlist<'a> {
     ///
     /// IMPORTANT: Named attributes with names are disregarded when counting.
     #[allow(dead_code)]
-    fn positional_attribute(&'a self, n: usize) -> Option<&'a ElementAttribute<'a>> {
+    pub fn nth_attribute(&'a self, n: usize) -> Option<&'a ElementAttribute<'a>> {
         self.attributes
             .iter()
             .filter(|attr| attr.name().is_none())
