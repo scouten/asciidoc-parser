@@ -496,6 +496,7 @@ The block boundary is determined first, then the inline parsing happens within t
 * The only relationship between block attributes and document attributes is that document attributes are sometimes used as fallbacks for an absent block attribute (this needs to be clarified / tightened).
 * Block options are block attributes that end in `-option`; hence, `-option` is a reserved suffix.
 * *FI* Propose / Confirm that all block attributes that start with `data-` should be passed through to the output format; in HTML output, these map 1-to-1 with HTML data attributes on the corresponding tag.
+Also promote to data property.
 * *FI* Propose syntax to unset a block attribute, including block options (e.g., `[!id]`, `[%!header]` or `[%noheader]`).
 * *FI* Propose using `+[[id,reftext]style.role]+` where `+[id,reftext]+` must come first (or last?) as a way to unify the block attribute line and block anchor line.
 * *FI* Propose that an invalid block anchor should not be treated as paragraph text (still consume as block anchor, just don't set ID)?
@@ -658,6 +659,9 @@ Does it occur if there are parts? (Only after the title of the book, after ever 
 == Paragraphs
 // Defines a paragraph, its structure, and the rules that govern it.
 
+Initial page content done.
+See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/modules/ROOT/pages/paragraph.adoc[Paragraph].
+
 * A *paragraph* is a basic, implicit block consisting of a discrete set of contiguous (non-empty) lines that can contain inline elements and uninterpreted text.
 * Paragraphs are a foundational structure in AsciiDoc.
 * Aside from section and block titles, all non-verbatim leaf block elements are paragraphs.
@@ -715,11 +719,21 @@ The one exception to this rule is the discrete style on a heading.
 
 === List anatomy
 
+* *FI* Clarify and define anatomy terms for ordered and unordered lists:
+** principal text
+** source text markers (and spaces after markers)
+** indentation of list items
+** metadata/attrlist for list and list item
+** unordered list "bullets", "marks", "output markers", or something else?
+** ordered list numerations?/markers?/something else?
+** list continuation
+** any list/list/standard list (i.e., terminology for referring to groups if list types)
+
 ==== List markers and depth
 
 * *FI* Is more than one space permitted after a list marker?
 
-// Q: are we calling this "principal" or "primary" text?
+// Q: are we calling this "principal" or "primary" text? DONE: we've chosen principal
 ==== Principal text
 // here we could introduce the syntax for designating a block attribute line to a list item
 
@@ -1117,9 +1131,12 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * In doing so, we will aim to match the behavior of the substitution model as closely as possible so existing content can be interpreted in the same way or, when that is not possible, interpreted in such a way that information is not lost.
 * The accepted inline parsing approach is described in  https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-005-formal-grammar-for-inline-syntax.adoc[SDR-5: Describe Inline Syntax using Formal Grammar].
 
-=== Inline preprocessor
+== Inline parsing phases
 
 * In order to achieve compatibility with the original substitution model, inline parsing will need to be done in two phases; see  https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-005-formal-grammar-for-inline-syntax.adoc[SDR-5: Describe Inline Syntax using Formal Grammar].
+
+=== Phase 1: Inline preprocessor parsing
+
 * In the first phase, passthrough content is identified and/or extracted and attribute references are expanded.
 ** The simplest way to handle passthroughs are to extract them and leave a placeholder behind; passthrough text must be restored to the location of the placeholder during second parsing phase.
 * An inline preprocessor is the only way to allow attribute references to introduce inline syntax in the way they can today.
@@ -1127,7 +1144,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * All characters introduced by an attribute reference should be attributed to the left-most position of the attribute reference (in other words, they don't occupy space).
 * Once the first phase is complete, the conversion from input text to a parse tree may begin.
 
-=== Inline parsing
+=== Phase 2: Inline parsing
 
 * In the second phase, the expanded input is parsed into a tree of inlines (the root of that tree is the parent of the top-level inlines).
 * The parser should track the location (start line and column, end line and column) of every inline node.
@@ -1185,6 +1202,9 @@ The first match wins.
 * *FI* Should we forbid nested span of same variant? (unconstrained strong inside constrained strong and vice versa?)
 
 === Strong (Bold)
+
+Initial page content done.
+See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/modules/ROOT/pages/strong-span.adoc[Strong span].
 
 === Emphasis (Italic)
 
