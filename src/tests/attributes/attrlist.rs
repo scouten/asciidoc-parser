@@ -225,3 +225,184 @@ fn only_positional_attributes() {
         }
     );
 }
+
+#[test]
+fn only_named_attributes() {
+    let (rem, attrlist) =
+        Attrlist::parse(Span::new("alt=Sunset,width=300,height=400", true)).unwrap();
+
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 32,
+            offset: 31
+        }
+    );
+
+    assert_eq!(
+        attrlist,
+        TAttrlist {
+            attributes: vec!(
+                TElementAttribute {
+                    name: Some(TSpan {
+                        data: "alt",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },),
+                    value: TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 5,
+                        offset: 4,
+                    },
+                    source: TSpan {
+                        data: "alt=Sunset",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                TElementAttribute {
+                    name: Some(TSpan {
+                        data: "width",
+                        line: 1,
+                        col: 12,
+                        offset: 11,
+                    },),
+                    value: TSpan {
+                        data: "300",
+                        line: 1,
+                        col: 18,
+                        offset: 17,
+                    },
+                    source: TSpan {
+                        data: "width=300",
+                        line: 1,
+                        col: 12,
+                        offset: 11,
+                    },
+                },
+                TElementAttribute {
+                    name: Some(TSpan {
+                        data: "height",
+                        line: 1,
+                        col: 22,
+                        offset: 21,
+                    },),
+                    value: TSpan {
+                        data: "400",
+                        line: 1,
+                        col: 29,
+                        offset: 28,
+                    },
+                    source: TSpan {
+                        data: "height=400",
+                        line: 1,
+                        col: 22,
+                        offset: 21,
+                    },
+                }
+            ),
+            source: TSpan {
+                data: "alt=Sunset,width=300,height=400",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(attrlist.named_attribute("foo").is_none());
+
+    assert_eq!(
+        attrlist.named_attribute("alt").unwrap(),
+        TElementAttribute {
+            name: Some(TSpan {
+                data: "alt",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },),
+            value: TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 5,
+                offset: 4,
+            },
+            source: TSpan {
+                data: "alt=Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert_eq!(
+        attrlist.named_attribute("width").unwrap(),
+        TElementAttribute {
+            name: Some(TSpan {
+                data: "width",
+                line: 1,
+                col: 12,
+                offset: 11,
+            },),
+            value: TSpan {
+                data: "300",
+                line: 1,
+                col: 18,
+                offset: 17,
+            },
+            source: TSpan {
+                data: "width=300",
+                line: 1,
+                col: 12,
+                offset: 11,
+            },
+        }
+    );
+
+    assert_eq!(
+        attrlist.named_attribute("height").unwrap(),
+        TElementAttribute {
+            name: Some(TSpan {
+                data: "height",
+                line: 1,
+                col: 22,
+                offset: 21,
+            },),
+            value: TSpan {
+                data: "400",
+                line: 1,
+                col: 29,
+                offset: 28,
+            },
+            source: TSpan {
+                data: "height=400",
+                line: 1,
+                col: 22,
+                offset: 21,
+            },
+        }
+    );
+
+    assert!(attrlist.nth_attribute(0).is_none());
+    assert!(attrlist.nth_attribute(1).is_none());
+    assert!(attrlist.nth_attribute(2).is_none());
+    assert!(attrlist.nth_attribute(3).is_none());
+    assert!(attrlist.nth_attribute(4).is_none());
+    assert!(attrlist.nth_attribute(42).is_none());
+
+    assert_eq!(
+        attrlist.span(),
+        TSpan {
+            data: "alt=Sunset,width=300,height=400",
+            line: 1,
+            col: 1,
+            offset: 0
+        }
+    );
+}
