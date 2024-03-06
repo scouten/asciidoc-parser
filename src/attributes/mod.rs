@@ -3,5 +3,8 @@
 //! also be used to add supplemental information, such as citation metadata and
 //! fallback content, to certain elements.
 
+mod attrlist;
+pub use attrlist::Attrlist;
+
 mod element_attribute;
 pub use element_attribute::ElementAttribute;
