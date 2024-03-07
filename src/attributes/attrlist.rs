@@ -61,10 +61,14 @@ impl<'a> Attrlist<'a> {
     /// IMPORTANT: Named attributes with names are disregarded when counting.
     #[allow(dead_code)]
     pub fn nth_attribute(&'a self, n: usize) -> Option<&'a ElementAttribute<'a>> {
-        self.attributes
-            .iter()
-            .filter(|attr| attr.name().is_none())
-            .nth(if n == 0 { 0 } else { n - 1 })
+        if n == 0 {
+            None
+        } else {
+            self.attributes
+                .iter()
+                .filter(|attr| attr.name().is_none())
+                .nth(n - 1)
+        }
     }
 }
 
