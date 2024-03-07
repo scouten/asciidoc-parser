@@ -47,72 +47,185 @@
 // Unlike document attributes, element attributes are defined directly on the
 // element to which they apply using an <<attribute-list,attribute list>>.
 
-// [#attribute-list]
-// == Attribute lists
+mod attrlist {
+    use pretty_assertions_sorted::assert_eq;
 
-// Attributes can be assigned to block and inline elements using an
-// [.term]*attribute list* (often abbreviated as attrlist).
+    use crate::{
+        attributes::Attrlist,
+        tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
+            TSpan,
+        },
+        HasSpan, Span,
+    };
 
-// .Anatomy of an attribute list
-// ----
-// first-positional,second-positional,named="value of named"
-// ----
+    // [#attribute-list]
+    // == Attribute lists
 
-// Entries in an attribute list are separated by commas, excluding commas inside
-// quotes. The syntax used for an attribute list entry determines whether it's a
-// positional or named attribute. The space after the comma separating entries
-// is optional. To learn more about how the attribute list is parsed, see
-// xref:positional-and-named-attributes.adoc[].
+    #[test]
+    fn anatomy_of_attrlist() {
+        // Attributes can be assigned to block and inline elements using an
+        // [.term]*attribute list* (often abbreviated as attrlist).
 
-// For *block elements*, the attribute list is placed inside one or more block
-// attribute lines. A block attribute line is any line of text above the start
-// of a block (e.g., the opening delimiter or simple content) that begins with
-// `[` and ends with `]`. This line can be interspersed with other block
-// metadata lines, such as the block title. The text enclosed in the `[` and `]`
-// boundaries is assumed to be a valid attribute list and the line is
-// automatically consumed. If the text cannot be parsed, an error message will
-// be emitted to the log.
+        // .Anatomy of an attribute list
+        // ----
+        // first-positional,second-positional,named="value of named"
+        // ----
 
-// .A block attribute line
-// ----
-// [style,second-positional,named="value of named"]
-// ----
+        // Entries in an attribute list are separated by commas, excluding commas
+        // inside quotes. The syntax used for an attribute list entry determines
+        // whether it's a positional or named attribute. The space after the
+        // comma separating entries is optional. To learn more about how the
+        // attribute list is parsed, see xref:positional-and-named-attributes.
+        // adoc[].
 
-// WARNING: The opening line of a paragraph may inadvertently match the syntax
-// of a block attribute line. If this happens, append `+{empty}+` to the end of
-// the line to disrupt the syntax match.
+        const ATTRLIST_EXAMPLE: &str =
+            r#"first-positional,second-positional,named="value of named""#;
 
-// For *block and inline macros*, the attribute list is placed between the
-// square brackets of the macro. The text in an attribute list of a block macro
-// never needs to be escaped. For an inline macro, it may be necessary to escape
-// the text in the attribute list to avoid prematurely ending the macro or
-// unwanted substitutions.
+        let (rem, attrlist) = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE, true)).unwrap();
 
-// .A block macro with an attribute list
-// ----
-// name::target[first-positional,second-positional,named="value of named"]
-// ----
+        assert_eq!(
+            rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 58,
+                offset: 57
+            }
+        );
 
-// For *formatted text*, the attribute list is placed in the square brackets in
-// front of the text enclosure. However, formatted text only supports a
-// restricted form of the attribute list. Specifically, it does not support
-// named attributes, only the attribute shorthand syntax.
+        assert_eq!(
+            attrlist,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: None,
+                        value: TSpan {
+                            data: "first-positional",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        source: TSpan {
+                            data: "first-positional",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: None,
+                        value: TSpan {
+                            data: "second-positional",
+                            line: 1,
+                            col: 18,
+                            offset: 17,
+                        },
+                        source: TSpan {
+                            data: "second-positional",
+                            line: 1,
+                            col: 18,
+                            offset: 17,
+                        },
+                    },
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "named",
+                            line: 1,
+                            col: 36,
+                            offset: 35,
+                        },),
+                        value: TSpan {
+                            data: "value of named",
+                            line: 1,
+                            col: 43,
+                            offset: 42,
+                        },
+                        source: TSpan {
+                            data: r#"named="value of named""#,
+                            line: 1,
+                            col: 36,
+                            offset: 35,
+                        },
+                    }
+                ),
+                source: TSpan {
+                    data: r#"first-positional,second-positional,named="value of named""#,
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
 
-// .Formatted text with an attribute list
-// ----
-// [#idname.rolename]*text with id and role*
-// ----
+        assert!(attrlist.named_attribute("foo").is_none());
 
-// Attribute lists:
+        assert!(attrlist.nth_attribute(0).is_none());
+        assert!(attrlist.nth_attribute(1).is_none());
+        assert!(attrlist.nth_attribute(42).is_none());
 
-// * apply to blocks, macros, and inline elements,
-// * can contain xref:positional-and-named-attributes.adoc[positional and named
-//   attributes], and
-// * take precedence over xref:document-attributes.adoc[document attributes] if
-//   the element supports the override.
+        assert_eq!(
+            attrlist.span(),
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
 
-// As mentioned in the previous section, the schema for element attributes is
-// open-ended. Any positional or named attributes that are not recognized will
-// be stored on the element, but will not have an impact on the behavior or
-// output. Extensions may use this auxiliary information to influence their
-// behavior and/or customize the output.
+    // For *block elements*, the attribute list is placed inside one or more
+    // block attribute lines. A block attribute line is any line of text
+    // above the start of a block (e.g., the opening delimiter or simple
+    // content) that begins with `[` and ends with `]`. This line can be
+    // interspersed with other block metadata lines, such as the block
+    // title. The text enclosed in the `[` and `]` boundaries is assumed to
+    // be a valid attribute list and the line is automatically consumed. If
+    // the text cannot be parsed, an error message will be emitted to the
+    // log.
+
+    // .A block attribute line
+    // ----
+    // [style,second-positional,named="value of named"]
+    // ----
+
+    // WARNING: The opening line of a paragraph may inadvertently match the
+    // syntax of a block attribute line. If this happens, append `+{empty}+`
+    // to the end of the line to disrupt the syntax match.
+
+    // For *block and inline macros*, the attribute list is placed between the
+    // square brackets of the macro. The text in an attribute list of a block
+    // macro never needs to be escaped. For an inline macro, it may be
+    // necessary to escape the text in the attribute list to avoid
+    // prematurely ending the macro or unwanted substitutions.
+
+    // .A block macro with an attribute list
+    // ----
+    // name::target[first-positional,second-positional,named="value of named"]
+    // ----
+
+    // For *formatted text*, the attribute list is placed in the square brackets
+    // in front of the text enclosure. However, formatted text only supports
+    // a restricted form of the attribute list. Specifically, it does not
+    // support named attributes, only the attribute shorthand syntax.
+
+    // .Formatted text with an attribute list
+    // ----
+    // [#idname.rolename]*text with id and role*
+    // ----
+
+    // Attribute lists:
+
+    // * apply to blocks, macros, and inline elements,
+    // * can contain xref:positional-and-named-attributes.adoc[positional and
+    //   named attributes], and
+    // * take precedence over xref:document-attributes.adoc[document attributes]
+    //   if the element supports the override.
+
+    // As mentioned in the previous section, the schema for element attributes
+    // is open-ended. Any positional or named attributes that are not
+    // recognized will be stored on the element, but will not have an impact
+    // on the behavior or output. Extensions may use this auxiliary
+    // information to influence their behavior and/or customize the output.
+}
