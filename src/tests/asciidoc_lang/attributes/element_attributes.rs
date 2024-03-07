@@ -237,35 +237,45 @@ mod attrlist {
         );
     }
 
-    // For *block elements*, the attribute list is placed inside one or more
-    // block attribute lines. A block attribute line is any line of text
-    // above the start of a block (e.g., the opening delimiter or simple
-    // content) that begins with `[` and ends with `]`. This line can be
-    // interspersed with other block metadata lines, such as the block
-    // title. The text enclosed in the `[` and `]` boundaries is assumed to
-    // be a valid attribute list and the line is automatically consumed. If
-    // the text cannot be parsed, an error message will be emitted to the
-    // log.
+    #[ignore]
+    #[test]
+    fn block_attrlist() {
+        // For *block elements*, the attribute list is placed inside one or more
+        // block attribute lines. A block attribute line is any line of text
+        // above the start of a block (e.g., the opening delimiter or simple
+        // content) that begins with `[` and ends with `]`. This line can be
+        // interspersed with other block metadata lines, such as the block
+        // title. The text enclosed in the `[` and `]` boundaries is assumed to
+        // be a valid attribute list and the line is automatically consumed. If
+        // the text cannot be parsed, an error message will be emitted to the
+        // log.
 
-    // .A block attribute line
-    // ----
-    // [style,second-positional,named="value of named"]
-    // ----
+        // .A block attribute line
+        // ----
+        // [style,second-positional,named="value of named"]
+        // ----
 
-    // WARNING: The opening line of a paragraph may inadvertently match the
-    // syntax of a block attribute line. If this happens, append `+{empty}+`
-    // to the end of the line to disrupt the syntax match.
+        // WARNING: The opening line of a paragraph may inadvertently match the
+        // syntax of a block attribute line. If this happens, append `+{empty}+`
+        // to the end of the line to disrupt the syntax match.
+        todo!("Describe block element attrlist");
+    }
 
-    // For *block and inline macros*, the attribute list is placed between the
-    // square brackets of the macro. The text in an attribute list of a block
-    // macro never needs to be escaped. For an inline macro, it may be
-    // necessary to escape the text in the attribute list to avoid
-    // prematurely ending the macro or unwanted substitutions.
+    #[ignore]
+    #[test]
+    fn block_macro_attrlist() {
+        // For *block and inline macros*, the attribute list is placed between the
+        // square brackets of the macro. The text in an attribute list of a block
+        // macro never needs to be escaped. For an inline macro, it may be
+        // necessary to escape the text in the attribute list to avoid
+        // prematurely ending the macro or unwanted substitutions.
 
-    // .A block macro with an attribute list
-    // ----
-    // name::target[first-positional,second-positional,named="value of named"]
-    // ----
+        // .A block macro with an attribute list
+        // ----
+        // name::target[first-positional,second-positional,named="value of named"]
+        // ----
+        todo!("Describe block macro attrlist");
+    }
 
     // For *formatted text*, the attribute list is placed in the square brackets
     // in front of the text enclosure. However, formatted text only supports
