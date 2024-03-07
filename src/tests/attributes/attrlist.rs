@@ -136,24 +136,7 @@ fn only_positional_attributes() {
 
     assert!(attrlist.named_attribute("foo").is_none());
 
-    assert_eq!(
-        attrlist.nth_attribute(0).unwrap(),
-        TElementAttribute {
-            name: None,
-            value: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            source: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-        }
-    );
+    assert!(attrlist.nth_attribute(0).is_none());
 
     assert_eq!(
         attrlist.nth_attribute(1).unwrap(),
