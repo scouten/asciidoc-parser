@@ -277,15 +277,20 @@ mod attrlist {
         todo!("Describe block macro attrlist");
     }
 
-    // For *formatted text*, the attribute list is placed in the square brackets
-    // in front of the text enclosure. However, formatted text only supports
-    // a restricted form of the attribute list. Specifically, it does not
-    // support named attributes, only the attribute shorthand syntax.
+    #[ignore]
+    #[test]
+    fn inline_attrlist() {
+        // For *formatted text*, the attribute list is placed in the square brackets
+        // in front of the text enclosure. However, formatted text only supports
+        // a restricted form of the attribute list. Specifically, it does not
+        // support named attributes, only the attribute shorthand syntax.
 
-    // .Formatted text with an attribute list
-    // ----
-    // [#idname.rolename]*text with id and role*
-    // ----
+        // .Formatted text with an attribute list
+        // ----
+        // [#idname.rolename]*text with id and role*
+        // ----
+        todo!("Describe inline attrlists");
+    }
 
     // Attribute lists:
 
