@@ -161,16 +161,78 @@ mod attrlist {
         assert!(attrlist.named_attribute("foo").is_none());
 
         assert!(attrlist.nth_attribute(0).is_none());
-        assert!(attrlist.nth_attribute(1).is_none());
-        assert!(attrlist.nth_attribute(42).is_none());
+
+        assert_eq!(
+            attrlist.nth_attribute(1).unwrap(),
+            TElementAttribute {
+                name: None,
+                value: TSpan {
+                    data: "first-positional",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "first-positional",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            attrlist.nth_attribute(2).unwrap(),
+            TElementAttribute {
+                name: None,
+                value: TSpan {
+                    data: "second-positional",
+                    line: 1,
+                    col: 18,
+                    offset: 17,
+                },
+                source: TSpan {
+                    data: "second-positional",
+                    line: 1,
+                    col: 18,
+                    offset: 17,
+                },
+            }
+        );
+
+        assert!(attrlist.nth_attribute(3).is_none());
+
+        assert_eq!(
+            attrlist.named_attribute("named").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "named",
+                    line: 1,
+                    col: 36,
+                    offset: 35,
+                },),
+                value: TSpan {
+                    data: "value of named",
+                    line: 1,
+                    col: 43,
+                    offset: 42,
+                },
+                source: TSpan {
+                    data: r#"named="value of named""#,
+                    line: 1,
+                    col: 36,
+                    offset: 35,
+                },
+            }
+        );
 
         assert_eq!(
             attrlist.span(),
             TSpan {
-                data: "",
+                data: r#"first-positional,second-positional,named="value of named""#,
                 line: 1,
                 col: 1,
-                offset: 0,
+                offset: 0
             }
         );
     }
