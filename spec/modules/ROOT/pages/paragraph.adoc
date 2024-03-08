@@ -102,7 +102,7 @@ paragraph = &(!lf . eol / !any_block_delimiter_line) line|1.., !(list_continuati
 
 This rule is considered only after considering all other blocks.
 This grammar rule does not take into account the behavior of the priority line processor (i.e., block preprocessor).
-The rule also does not include the match for any block metadata that preceeds the paragraph.
+The rule also does not include the match for any block metadata that precedes the paragraph.
 Rather, the rule assumes any block metadata has already been consumed (and stored) and can be accessed from the rule's action (it's not necessary to reparse the block metadata before considering each block rule).
 What the rule actually matches can be understood as follows:
 
