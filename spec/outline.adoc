@@ -1519,7 +1519,7 @@ Q: should a custom block or block macro be able to start a new section?
 == ASG / Node model
 
 * the TCK works by verifying that an implementation can produce an expected ASG
-* ASG is abstract semantic graph, which is essentially a semantic parse tree
+* ASG is abstract semantic graph (or AsciiDoc semantic graph), which is essentially a semantic parse tree
 * an ASG only contains concrete nodes; it does not contain non-semantic empty lines; those are implied
 * in order to verify the ASG, implementations are expected to produce a node model
 * the node model is a JSON-representation of the ASG
