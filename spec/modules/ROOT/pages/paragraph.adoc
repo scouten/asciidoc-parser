@@ -69,17 +69,22 @@ It may parse to empty if it contains only inline preprocessor directives that al
 
 === Attributes and metadata
 
-A paragraph can accept the following attributes and metadata:
+A paragraph can accept the following built-in attributes and metadata forms:
 
 * Block title (defined as title line or named attribute)
 * id (named and shorthand forms)
 * reftext (named and shorthand forms)
 * role(s) (named and shorthand forms)
-//** lead (move to expected converter behavior)
+** converters will be encouraged to honor certain built-in roles, such as `lead` and `text-center`; these will be listed elsewhere
 * options (named and shorthand forms)
 * style (positional form)
 ** attributes applicable to style
 * data- named attributes
+
+Unrecognized attributes and options are permitted.
+These will be described in the general section about blocks.
+//Any unrecognized attributes must be captured and assigned to the attributes map on the paragraph in the document model.
+//Any unrecognized options must be captured and assigned to the options array on the paragraph in the document model.
 
 // The following paragraph is derived from SDR 003. We definitely shouldn't be re-describing how blocks are generally parsed in each block description, so I'm keeping this minimalistic because 1) it will be thoroughly explained in the high-level block section, and 2) we're still hardening the block parsing rules and refining the description, so we don't want to have to be contiuously updating all the different block sections because we were too verbose.
 The block parser must parse a paragraph according to the rules of its structural form (Paragraph) and content model (Basic), regardless of the presence of an explicit style.
