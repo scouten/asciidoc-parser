@@ -48,7 +48,7 @@ Paragraph with block title and attribute lines.
 |Structural form |paragraph
 |Content model |basic
 |Permitted content |text, inline elements, inline preprocessor directives; may vary if style is specified
-|Interrupting lines and syntax forms |empty line, block attribute line, block delimiter line, list continuation line (proposed), table cell delimiter (when the paragraph occurs anywhere inside a table)
+|Interrupting lines and syntax forms |empty line, block attribute line, block delimiter line, list continuation line, table cell delimiter (when the paragraph occurs anywhere inside a table)
 |Permitted parents |document (if document has no sections), preamble, compound block, list item, table cell
 |DOM interface |Paragraph
 |===
