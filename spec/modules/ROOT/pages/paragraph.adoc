@@ -6,7 +6,7 @@
 
 Paragraphs are a foundational structure in AsciiDoc.
 A *paragraph* is a block element comprised of a sequence of contiguous, non-interrupting lines that contain inline preprocessor directives, inline elements, and uninterpreted text.
-If a line isn't recognized as another block element or structural form, it's interpreted as a paragraph.
+If a non-empty line isn't recognized as another block element or structural form, it's interpreted as a paragraph.
 Unrecognized syntax, or syntax not permitted inside a paragraph, is retained and categorized as uninterpreted text.
 
 === Syntax examples
