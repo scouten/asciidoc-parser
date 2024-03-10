@@ -8,6 +8,17 @@
 // on an element and the rules for parsing an attribute list.
 
 mod positional_attribute {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        attributes::Attrlist,
+        tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
+            TSpan,
+        },
+        HasSpan, Span,
+    };
+
     // [#positional]
     // == Positional attribute
 
@@ -17,6 +28,8 @@ mod positional_attribute {
     // entry once all named attributes have been removed (so they may be
     // interspersed).
 
+    #[test]
+    fn implicit_attribute_name() {
     // The positional attribute may be dually assigned to an implicit attribute
     // name if the block or macro defines a mapping for positional attributes.
     // Here are some examples of those mappings:
@@ -41,6 +54,11 @@ mod positional_attribute {
     // form.
     
     // end::pos[]
+
+    // let (rem, positional) = Attrlist::parse(Span::new("image::sunset.jpg[Sunset,300,400]", true)).unwrap();
+
+    // let (rem, named) = Attrlist::parse(Span::new("image::sunset.jpg[Sunset,300,400]", true)).unwrap();
+}
 
     // === Block style and attribute shorthand
 
