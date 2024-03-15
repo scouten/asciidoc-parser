@@ -1,12 +1,16 @@
 use std::fmt;
 
-use crate::{blocks::MacroBlock, tests::fixtures::TSpan, HasSpan};
+use crate::{
+    blocks::MacroBlock,
+    tests::fixtures::{attributes::TAttrlist, TSpan},
+    HasSpan,
+};
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TMacroBlock {
     pub name: TSpan,
     pub target: Option<TSpan>,
-    pub attrlist: Option<TSpan>,
+    pub attrlist: TAttrlist,
     pub source: TSpan,
 }
 
@@ -50,16 +54,8 @@ fn tmacro_block_eq(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool
         }
     }
 
-    if tmacro_block.attrlist.is_some() != macro_block.attrlist().is_some() {
+    if tmacro_block.attrlist != *macro_block.attrlist() {
         return false;
-    }
-
-    if let Some(ref th_attrlist) = tmacro_block.attrlist {
-        if let Some(ref h_attrlist) = macro_block.attrlist() {
-            if &th_attrlist != h_attrlist {
-                return false;
-            }
-        }
     }
 
     &tmacro_block.source == macro_block.span()

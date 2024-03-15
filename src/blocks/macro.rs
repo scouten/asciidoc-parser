@@ -1,12 +1,14 @@
 use nom::{
-    bytes::complete::{tag, take_until1},
+    bytes::complete::{tag, take_until},
     error::{Error, ErrorKind},
-    Err, IResult,
+    sequence::tuple,
+    Err, IResult, Slice,
 };
 
 use crate::{
+    attributes::Attrlist,
     blocks::{ContentModel, IsBlock},
-    primitives::{consume_empty_lines, ident, normalized_line, trim_input_for_rem},
+    primitives::{consume_empty_lines, ident, normalized_line},
     strings::CowStr,
     HasSpan, Span,
 };
@@ -22,7 +24,7 @@ use crate::{
 pub struct MacroBlock<'a> {
     name: Span<'a>,
     target: Option<Span<'a>>,
-    attrlist: Option<Span<'a>>,
+    attrlist: Attrlist<'a>,
     source: Span<'a>,
 }
 
@@ -30,38 +32,29 @@ impl<'a> MacroBlock<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let (rem, line) = normalized_line(source)?;
 
-        let (line, name) = ident(line)?;
-        let (line, _) = tag("::")(line)?;
-
-        let (line, target) = if line.starts_with('[') {
-            (line, None)
-        } else {
-            let (line, target) = take_until1("[")(line)?;
-            (line, Some(target))
-        };
-
-        let (line, _) = tag("[")(line)?;
-
-        let (line, attrlist) = if line.starts_with(']') {
-            (line, None)
-        } else {
-            let (line, attrlist) = take_until1("]")(line)?;
-            (line, Some(attrlist))
-        };
-
-        let (line, _) = tag("]")(line)?;
-        if !line.is_empty() {
-            return Err(Err::Error(Error::new(line, ErrorKind::NonEmpty)));
+        // Line must end with `]`; otherwise, it's not a block macro.
+        if !line.ends_with(']') {
+            return Err(Err::Error(Error::new(line, ErrorKind::Tag)));
         }
 
-        let source = trim_input_for_rem(source, rem);
+        let line_wo_brace = line.slice(0..line.len() - 1);
+
+        let (attrlist, (name, _colons, target, _braces)) =
+            tuple((ident, tag("::"), take_until("["), tag("[")))(line_wo_brace)?;
+
+        let (_, attrlist) = Attrlist::parse(attrlist)?;
+
         Ok((
             consume_empty_lines(rem),
             Self {
                 name,
-                target,
+                target: if target.is_empty() {
+                    None
+                } else {
+                    Some(target)
+                },
                 attrlist,
-                source,
+                source: line,
             },
         ))
     }
@@ -76,9 +69,9 @@ impl<'a> MacroBlock<'a> {
         self.target.as_ref()
     }
 
-    /// Return a [`Span`] describing the macro's attribute list.
-    pub fn attrlist(&'a self) -> Option<&Span<'a>> {
-        self.attrlist.as_ref()
+    /// Return the macro's attribute list.
+    pub fn attrlist(&'a self) -> &'a Attrlist<'a> {
+        &self.attrlist
     }
 }
 

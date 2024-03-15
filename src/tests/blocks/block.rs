@@ -189,6 +189,7 @@ mod r#macro {
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
             inlines::{TInline, TInlineMacro},
             TSpan,
@@ -414,7 +415,15 @@ mod r#macro {
                     offset: 0,
                 },
                 target: None,
-                attrlist: None,
+                attrlist: TAttrlist {
+                    attributes: vec!(),
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 7,
+                        offset: 6,
+                    }
+                },
                 source: TSpan {
                     data: "foo::[]",
                     line: 1,
@@ -468,7 +477,15 @@ mod r#macro {
                     col: 6,
                     offset: 5,
                 }),
-                attrlist: None,
+                attrlist: TAttrlist {
+                    attributes: vec!(),
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 10,
+                        offset: 9,
+                    }
+                },
                 source: TSpan {
                     data: "foo::bar[]",
                     line: 1,
@@ -518,13 +535,29 @@ mod r#macro {
                     col: 6,
                     offset: 5,
                 }),
-                attrlist: Some(TSpan {
-                    data: "blah",
-                    line: 1,
-                    col: 10,
-                    offset: 9,
-                }),
-
+                attrlist: TAttrlist {
+                    attributes: vec!(TElementAttribute {
+                        name: None,
+                        value: TSpan {
+                            data: "blah",
+                            line: 1,
+                            col: 10,
+                            offset: 9,
+                        },
+                        source: TSpan {
+                            data: "blah",
+                            line: 1,
+                            col: 10,
+                            offset: 9,
+                        },
+                    }),
+                    source: TSpan {
+                        data: "blah",
+                        line: 1,
+                        col: 10,
+                        offset: 9,
+                    }
+                },
                 source: TSpan {
                     data: "foo::bar[blah]",
                     line: 1,
