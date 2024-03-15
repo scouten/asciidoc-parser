@@ -11,12 +11,9 @@ mod positional_attribute {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        attributes::Attrlist,
-        tests::fixtures::{
-            attributes::{TAttrlist, TElementAttribute},
-            TSpan,
-        },
-        HasSpan, Span,
+        blocks::MacroBlock,
+        tests::fixtures::{attributes::TElementAttribute, TSpan},
+        Span,
     };
 
     // [#positional]
@@ -30,35 +27,86 @@ mod positional_attribute {
 
     #[test]
     fn implicit_attribute_name() {
-    // The positional attribute may be dually assigned to an implicit attribute
-    // name if the block or macro defines a mapping for positional attributes.
-    // Here are some examples of those mappings:
+        // The positional attribute may be dually assigned to an implicit attribute
+        // name if the block or macro defines a mapping for positional attributes.
+        // Here are some examples of those mappings:
 
-    // * `icon:` 1 => size
-    // * `image:` and `image::` 1 => alt (text), 2 => width, 3 => height
-    // * Delimited blocks: 1 => block style and attribute shorthand
-    // * Other inline quoted text: 1 => attribute shorthand
-    // * `link:` and `xref:` 1 => text
-    // * Custom blocks and macros can also specify positional attributes
+        // * `icon:` 1 => size
+        // * `image:` and `image::` 1 => alt (text), 2 => width, 3 => height
+        // * Delimited blocks: 1 => block style and attribute shorthand
+        // * Other inline quoted text: 1 => attribute shorthand
+        // * `link:` and `xref:` 1 => text
+        // * Custom blocks and macros can also specify positional attributes
 
-    // For example, the following two image macros are equivalent.
+        // For example, the following two image macros are equivalent.
 
-    // [source]
-    // ----
-    // image::sunset.jpg[Sunset,300,400]
+        // [source]
+        // ----
+        // image::sunset.jpg[Sunset,300,400]
 
-    // image::sunset.jpg[alt=Sunset,width=300,height=400]
-    // ----
+        // image::sunset.jpg[alt=Sunset,width=300,height=400]
+        // ----
 
-    // The second macro is the same as the first, but written out in longhand
-    // form.
-    
-    // end::pos[]
+        // The second macro is the same as the first, but written out in longhand
+        // form.
 
-    // let (rem, positional) = Attrlist::parse(Span::new("image::sunset.jpg[Sunset,300,400]", true)).unwrap();
+        // end::pos[]
 
-    // let (rem, named) = Attrlist::parse(Span::new("image::sunset.jpg[Sunset,300,400]", true)).unwrap();
-}
+        let (_, m1) =
+            MacroBlock::parse(Span::new("image::sunset.jpg[Sunset,300,400]", true)).unwrap();
+
+        let (_, m2) = MacroBlock::parse(Span::new(
+            "image::sunset.jpg[alt=Sunset,width=300,height=400]",
+            true,
+        ))
+        .unwrap();
+
+        let a1 = m1.attrlist();
+        let a2 = m2.attrlist();
+
+        assert_eq!(
+            a1.named_or_positional_attribute("alt", 1).unwrap(),
+            TElementAttribute {
+                name: None,
+                value: TSpan {
+                    data: "Sunset",
+                    line: 1,
+                    col: 19,
+                    offset: 18,
+                },
+                source: TSpan {
+                    data: "Sunset",
+                    line: 1,
+                    col: 19,
+                    offset: 18,
+                },
+            },
+        );
+
+        assert_eq!(
+            a2.named_or_positional_attribute("alt", 1).unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "alt",
+                    line: 1,
+                    col: 19,
+                    offset: 18,
+                },),
+                value: TSpan {
+                    data: "Sunset",
+                    line: 1,
+                    col: 23,
+                    offset: 22,
+                },
+                source: TSpan {
+                    data: "alt=Sunset",
+                    line: 1,
+                    col: 19,
+                    offset: 18,
+                },
+            }
+        );
+    }
 
     // === Block style and attribute shorthand
 
