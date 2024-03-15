@@ -122,6 +122,7 @@ mod macros {
     use crate::{
         document::Document,
         tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
             document::TDocument,
             inlines::{TInline, TInlineMacro},
@@ -155,14 +156,31 @@ mod macros {
                         col: 8,
                         offset: 7,
                     }),
-                    attrlist: Some(TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 19,
-                        offset: 18,
-                    }),
+                    attrlist: TAttrlist {
+                        attributes: vec!(TElementAttribute {
+                            name: None,
+                            value: TSpan {
+                                data: "Sunset",
+                                line: 1,
+                                col: 19,
+                                offset: 18,
+                            },
+                            source: TSpan {
+                                data: "Sunset",
+                                line: 1,
+                                col: 19,
+                                offset: 18,
+                            },
+                        }),
+                        source: TSpan {
+                            data: "Sunset",
+                            line: 1,
+                            col: 19,
+                            offset: 18,
+                        }
+                    },
                     source: TSpan {
-                        data: "image::sunset.jpg[Sunset]\n",
+                        data: "image::sunset.jpg[Sunset]",
                         line: 1,
                         col: 1,
                         offset: 0,
