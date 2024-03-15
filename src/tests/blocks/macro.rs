@@ -9,7 +9,11 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock},
-    tests::fixtures::{blocks::TMacroBlock, TSpan},
+    tests::fixtures::{
+        attributes::{TAttrlist, TElementAttribute},
+        blocks::TMacroBlock,
+        TSpan,
+    },
     Span,
 };
 
@@ -43,6 +47,7 @@ fn err_only_spaces() {
 fn err_not_ident() {
     let err_span = Span::new("foo^xyz::bar[]", true);
     let (err_span, _) = take::<usize, Span, Error<Span>>(3)(err_span).unwrap();
+    let (_, err_span) = take::<usize, Span, Error<Span>>(10)(err_span).unwrap();
 
     let expected_err = Err::Error(Error::new(err_span, ErrorKind::Tag));
 
@@ -54,6 +59,7 @@ fn err_not_ident() {
 fn err_inline_syntax() {
     let err_span = Span::new("foo:bar[]", true);
     let (err_span, _) = take::<usize, Span, Error<Span>>(3)(err_span).unwrap();
+    let (_, err_span) = take::<usize, Span, Error<Span>>(5)(err_span).unwrap();
 
     let expected_err: Err<Error<nom_span::Spanned<&str>>> =
         Err::Error(Error::new(err_span, ErrorKind::Tag));
@@ -66,10 +72,9 @@ fn err_inline_syntax() {
 #[test]
 fn err_no_attr_list() {
     let err_span = Span::new("foo::bar", true);
-    let (err_span, _) = take::<usize, Span, Error<Span>>(5)(err_span).unwrap();
 
     let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-        Err::Error(Error::new(err_span, ErrorKind::TakeUntil));
+        Err::Error(Error::new(err_span, ErrorKind::Tag));
 
     let actual_err = MacroBlock::parse(Span::new("foo::bar", true)).unwrap_err();
 
@@ -79,9 +84,8 @@ fn err_no_attr_list() {
 #[test]
 fn err_attr_list_not_closed() {
     let err_span = Span::new("foo::bar[blah", true);
-    let (err_span, _) = take::<usize, Span, Error<Span>>(9)(err_span).unwrap();
 
-    let expected_err = Err::Error(Error::new(err_span, ErrorKind::TakeUntil));
+    let expected_err = Err::Error(Error::new(err_span, ErrorKind::Tag));
 
     let actual_err = MacroBlock::parse(Span::new("foo::bar[blah", true)).unwrap_err();
 
@@ -91,9 +95,8 @@ fn err_attr_list_not_closed() {
 #[test]
 fn err_unexpected_after_attr_list() {
     let err_span = Span::new("foo::bar[blah]bonus", true);
-    let (err_span, _) = take::<usize, Span, Error<Span>>(14)(err_span).unwrap();
 
-    let expected_err = Err::Error(Error::new(err_span, ErrorKind::NonEmpty));
+    let expected_err = Err::Error(Error::new(err_span, ErrorKind::Tag));
 
     let actual_err = MacroBlock::parse(Span::new("foo::bar[blah]bonus", true)).unwrap_err();
 
@@ -127,7 +130,15 @@ fn simplest_block_macro() {
                 offset: 0,
             },
             target: None,
-            attrlist: None,
+            attrlist: TAttrlist {
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 7,
+                    offset: 6,
+                }
+            },
             source: TSpan {
                 data: "foo::[]",
                 line: 1,
@@ -167,7 +178,15 @@ fn has_target() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: None,
+            attrlist: TAttrlist {
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 10,
+                    offset: 9,
+                }
+            },
             source: TSpan {
                 data: "foo::bar[]",
                 line: 1,
@@ -207,13 +226,29 @@ fn has_target_and_attrlist() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: Some(TSpan {
-                data: "blah",
-                line: 1,
-                col: 10,
-                offset: 9,
-            }),
-
+            attrlist: TAttrlist {
+                attributes: vec!(TElementAttribute {
+                    name: None,
+                    value: TSpan {
+                        data: "blah",
+                        line: 1,
+                        col: 10,
+                        offset: 9,
+                    },
+                    source: TSpan {
+                        data: "blah",
+                        line: 1,
+                        col: 10,
+                        offset: 9,
+                    },
+                }),
+                source: TSpan {
+                    data: "blah",
+                    line: 1,
+                    col: 10,
+                    offset: 9,
+                }
+            },
             source: TSpan {
                 data: "foo::bar[blah]",
                 line: 1,
