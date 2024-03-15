@@ -70,6 +70,23 @@ impl<'a> Attrlist<'a> {
                 .nth(n - 1)
         }
     }
+
+    /// Returns the first attribute with the given name or index.
+    ///
+    /// Some block and macro types provide implicit mappings between attribute
+    /// names and positions to permit a shorthand syntax.
+    ///
+    /// This method will search by name first, and fall back to positional
+    /// indexing if the name doesn't yield a match.
+    #[allow(dead_code)]
+    pub fn named_or_positional_attribute(
+        &'a self,
+        name: &str,
+        index: usize,
+    ) -> Option<&'a ElementAttribute<'a>> {
+        self.named_attribute(name)
+            .or_else(|| self.nth_attribute(index))
+    }
 }
 
 impl<'a> HasSpan<'a> for Attrlist<'a> {
