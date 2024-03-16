@@ -30,7 +30,7 @@ fn force_utf8() {
 
 #[test]
 fn strips_trailing_spaces() {
-    let (rem, line) = normalized_line(Span::new("abc   ", true)).unwrap();
+    let (rem, line) = normalized_line(Span::new("abc   ", true));
 
     assert_eq!(
         rem,
@@ -57,7 +57,7 @@ fn strips_trailing_spaces() {
 fn strips_trailing_lf() {
     // Should consume but not return \n.
 
-    let (rem, line) = normalized_line(Span::new("abc  \ndef", true)).unwrap();
+    let (rem, line) = normalized_line(Span::new("abc  \ndef", true));
 
     assert_eq!(
         rem,
@@ -84,7 +84,7 @@ fn strips_trailing_lf() {
 fn strips_trailing_crlf() {
     // Should consume but not return \r\n.
 
-    let (rem, line) = normalized_line(Span::new("abc  \r\ndef", true)).unwrap();
+    let (rem, line) = normalized_line(Span::new("abc  \r\ndef", true));
 
     assert_eq!(
         rem,

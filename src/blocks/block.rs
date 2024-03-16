@@ -46,7 +46,7 @@ impl<'a> Block<'a> {
         let i = consume_empty_lines(i);
 
         // Try to discern the block type by scanning the first line.
-        let (_, line) = normalized_line(i)?;
+        let (_, line) = normalized_line(i);
         if line.contains("::") {
             if let Ok((rem, macro_block)) = MacroBlock::parse(i) {
                 return Ok((rem, Self::Macro(macro_block)));
