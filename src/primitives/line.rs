@@ -14,10 +14,16 @@ use crate::Span;
 /// A line is terminated by end-of-input or a single `\n` character
 /// or a single `\r\n` sequence. The end of line sequence is consumed
 /// but not included in the returned line.
-pub(crate) fn line(input: Span<'_>) -> IResult<Span, Span> {
-    take_till(|c| c == '\n')(input)
-        .map(|ri| trim_rem_start_matches(ri, '\n'))
-        .map(|ri| trim_rem_end_matches(ri, '\r'))
+pub(crate) fn line(input: Span<'_>) -> (Span, Span) {
+    let ri = if let Some(index) = input.find('\n') {
+        (input.slice(index..), input.slice(0..index))
+    } else {
+        // No `\n` found; the entire input is the line.
+        (input.slice(input.len()..), input)
+    };
+
+    let ri = trim_rem_start_matches(ri, '\n');
+    trim_rem_end_matches(ri, '\r')
 }
 
 /// Return a single _normalized_ line from the source.
@@ -108,7 +114,7 @@ fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
 ///
 /// Returns an error if the line contains any non-white-space characters.
 pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
-    let (i, line) = line(input)?;
+    let (i, line) = line(input);
 
     if line.data().bytes().all(nom::character::is_space) {
         Ok((i, line))

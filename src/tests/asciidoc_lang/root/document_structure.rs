@@ -253,7 +253,7 @@ mod lines {
         // == Section Title
         // ----
 
-        let (rem, line) = line(Span::new("== Section Title\n", true)).unwrap();
+        let (rem, line) = line(Span::new("== Section Title\n", true));
 
         assert_eq!(
             rem,
