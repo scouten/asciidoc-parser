@@ -33,11 +33,8 @@ pub(crate) fn line(input: Span<'_>) -> (Span, Span) {
 /// but not included in the returned line.
 ///
 /// All trailing spaces are removed from the line.
-pub(crate) fn normalized_line(input: Span<'_>) -> IResult<Span, Span> {
-    take_till(|c| c == '\n')(input)
-        .map(|ri| trim_rem_start_matches(ri, '\n'))
-        .map(|ri| trim_rem_end_matches(ri, '\r'))
-        .map(trim_trailing_spaces)
+pub(crate) fn normalized_line(input: Span<'_>) -> (Span, Span) {
+    trim_trailing_spaces(line(input))
 }
 
 /// Return a single _normalized, non-empty_ line from the source.
@@ -100,7 +97,7 @@ pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
 }
 
 fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
-    let (rem, line) = normalized_line(input)?;
+    let (rem, line) = normalized_line(input);
     if line.ends_with('\\') {
         Ok((rem, line))
     } else {

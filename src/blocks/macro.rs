@@ -30,7 +30,7 @@ pub struct MacroBlock<'a> {
 
 impl<'a> MacroBlock<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (rem, line) = normalized_line(source)?;
+        let (rem, line) = normalized_line(source);
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.ends_with(']') {
