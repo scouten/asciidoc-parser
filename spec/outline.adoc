@@ -357,6 +357,9 @@ It should be considered for the following block-level constructs:
 ** Some name forms may not be recognized using the author line; in such cases the attributes will need to be explicitly set.
 * Revision line; must come after author line (thus requires author line to be present).
 * This metadata can be defined explicitly using attribute entries; the implicit lines are merely a shorthand form.
+* *FI* Should implicit author info line be stored in attributes map on header?
+* *Q* Should location be stored for author? Maybe only if stored as attribute?
+* *Q* What is relationship between implicit author and author defined as attribute?
 
 == Document attributes
 // Use content from https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/ and https://docs.asciidoctor.org/asciidoc/latest/attributes/attribute-entries/
@@ -369,6 +372,7 @@ It should be considered for the following block-level constructs:
 * If an attribute is unset, it is absent.
 * An attribute cannot be set and have a null/undefined value.
 * When set in the document header, the attribute is referred to as a document header attribute.
+* *Q* Are the attribute entries in the header considered a block or are the stored on the "document" block or an ensuing block (this question in posed for attribute entries in the body as well)
 // Q: should we move built-in and user-defined to own section(s)?
 
 === Attribute entries
@@ -385,7 +389,11 @@ It should be considered for the following block-level constructs:
 * *FI* Should we choose `\` or `` +`` as the character to continue an attribute value?
 ** Should we preserve newlines in the value of an attribute entry? Can we say that `\` consumes/folds the newline, whereas `+` preserves it; that way, `` + +`` would be a quick way to do a hard line break?
 * The value of document attributes set in the body must be available when the node they precede is accessed in the parsed document.
-// Does this mean that attribute entries are block terminal non-elements?
+** *Q* Does this mean that attribute entries are block terminal non-elements?
+That is, are they a block, or, if not a block, stored on the ensuing block?
+In general, what is the model?
+Are they stored as a set?
+Only stored as a set if the attribute entries are contiguous?
 // getAttr (getDocumentAttribute) is a proxy that first considers in-flow attributes, then delegates to previous proxy
 * Attribute entries cannot be interleaved with block metadata lines
 
@@ -400,6 +408,7 @@ It should be considered for the following block-level constructs:
 * Attributes set via the API can have the value `false` or `null` (or equivalent for the programming language, such as `nil` or `undefined`).
  ** The value `false` means to soft unset the attribute on the document.
  ** The value `null` means to hard unset the attribute on the document.
+* *FI* Introduce `!name!` to clear an attribute so it's like it was never declared (this is different from unsetting it).
 
 === Built-in attributes
 
@@ -455,9 +464,14 @@ When set, a boolean attribute typically has an empty value.
 * A *block element*, referred to as a *block*, is a discrete, line-wise element in the document structure.
 * A block always starts and ends on a whole line (starts at beginning of a line or effective beginning and ends at the end of the same or different line.
 * A block may have two to three source features: metadata, a body, and an enclosure.
-* The parent of a block is always another block (if nested, the parent block; if not nested, the parent section or document if not in a section).
+* Block structural forms include: paragraph, indented lines, delimited, macro, heading?, shorthand macro, list?, dlist? (lists and headings might also be referred to as prefixed?)
+** May also need a "generated" form
 * The body of a block may have an enclosure that is formed by delimiter lines.
-* A block's content model (e.g., `basic`, `compound`, `verbatim`) determines what kind of content the block can have (if any) and how it is parsed.
+* A block's content model determines what kind of content the block can have (if any) and how it is parsed.
+** Content models for blocks are: basic, compound, verbatim, compound, empty, raw?, table?, list?, delist?
+*** empty may be for headings, all macros, and breaks, but this will need to be confirmed
+*** raw may be for passthrough blocks, but these are handled by the preprocessor
+* The parent of a block is always another block (if nested, the parent block; if not nested, the parent section or document if not in a section).
 * A block's name and optional style modifier determines how it is converted.
 * Block element parsing takes precedence over inline element parsing.
 For example, an inline passthrough cannot enclose a line that would end the block, such as a block delimiter or list continuation.
@@ -472,6 +486,8 @@ The block boundary is determined first, then the inline parsing happens within t
 * Each block name provides semantics not covered by any other block name.
 * The block name may be implicit or explicit.
 * If a block name isn't derived from a specified block style, it's inferred by its structural form (e.g., block delimiter, marker, implicit boundaries).
+* Name affects how the element is converted
+* A block's name should be validated in the schema?
 
 === Block metadata
 // Defines the block metadata, its purpose, and how it affects a block.
@@ -488,7 +504,8 @@ The block boundary is determined first, then the inline parsing happens within t
 * Used to store the block metadata.
 * Can be positional or named.
 * Positional attributes use a 1-based index; index assignment skips over any named attributes (i.e., named attributes don't affect position).
-** See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-002-block-attrlist-parsing.adoc?ref_type=heads[SDR-2: Define Parsing Rules for attrlist in Block Attribute Line]/
+* An attrlist is unparsed, CSV data
+** See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-002-block-attrlist-parsing.adoc?ref_type=heads[SDR-2: Define Parsing Rules for attrlist in Block Attribute Line].
 ** See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-006-positional-attribute-mapping.adoc?ref_type=heads[SDR-6: Define Parsing Rules for Positional Attribute to Named Attribute Mapping].
 
 * Only available directly on the block.
@@ -1105,9 +1122,9 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 == Inline names
 
 * There are two types of inline nodes: inline and string
-* There are several inline names: text, charref, raw, span (or marked), ref, image, etc.
+* There are several inline names: text, charref, raw, span, ref, image, etc.
 * The variant further specializes the name: strong for span, xref for ref, etc.
-* The inline may also have a form to indicate how it is structured/expressed in the source (e.g., macro, unconstrained, etc)
+* The inline may also have a form to indicate how it is structured/expressed in the source (e.g., macro, unconstrained, etc.)
 * A non-element represents plain text, such as text, charref, raw, hard line break.
 * An inline element is an inline node with properties.
 * An inline element can be a leaf (e.g., image) or a non-leaf (e.g., span).
@@ -1115,7 +1132,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * Span is a "run of markup"; specifically, it's enclosed/bounded text (we're migrating away from the term "quoted text").
  ** In the grammar, we may refer to this as marked text; in node model, it's a span
 * Span and macro are elements, which means they can have attributes and, in many cases, inlines (children).
-* Properties of text: type=string, name=text, value
+* Properties of text: type=string, name=text, value=string?
 * Common properties of span: type=inline, name, variant, (source) form, attributes (includes id and roles)
 * Common properties of macro: type=inline, name, (source) form, attributes (includes ID and roles).
  ** Refer to macros expressed using non-named syntax as a shorthand macro (or shorthand notation); still a macro, just not expressed that way
@@ -1138,7 +1155,7 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 === Phase 1: Inline preprocessor parsing
 
 * In the first phase, passthrough content is identified and/or extracted and attribute references are expanded.
-** The simplest way to handle passthroughs are to extract them and leave a placeholder behind; passthrough text must be restored to the location of the placeholder during second parsing phase.
+** The simplest way to handle passthroughs are to extract them and leave a placeholder behind (guard or token); passthrough text must be restored to the location of the placeholder during second parsing phase.
 * An inline preprocessor is the only way to allow attribute references to introduce inline syntax in the way they can today.
 * The inline preprocessor must track the original positions of all characters so that inlines can be traced back to their source.
 * All characters introduced by an attribute reference should be attributed to the left-most position of the attribute reference (in other words, they don't occupy space).
@@ -1160,15 +1177,18 @@ It seems that horizontal being an option (`%horizontal`) rather than a style may
 * An attribute reference is permitted anywhere that inline markup is interpreted.
 * If the document attribute is not set, the `attribute-missing` document attribute determines what to do.
 ** Under normal operation, if the referenced attribute is missing (not set), the reference is dropped and a warning is issued.
+* Attribute references are processed by the inline preprocessor, only the input from an reference is visible
 
 == Passthroughs
 
 * Inline passthroughs have a similar purpose as block passthroughs, but for an inline context.
 * Inline passthroughs are processed by the inline preprocessor; thus they are not seen by the inline parser.
+** A protected guard or token indicates where a passthrough was post-inline preprocessing
+* Passthroughs are directives, even though their stuctural forms look similar to an inline macro and marked text.
 * Passthroughs are specified using the single plus, double plus, triple plus, and pass macro.
 * Passthroughs prevent text from being interpreted (including attribute references).
-* The triple plus and pass macro forms pass through text raw (no special character replacement in converter).
-* The single (constrained) and double (unconstrained) plus forms pass through text uninterpreted, but not raw (converter will apply special character replacement).
+* The triple plus and pass directive forms pass through text raw (no special character replacement in converter).
+* The single (constrained) and double (unconstrained) plus forms (marked pass) pass through text uninterpreted, but not raw (converter will apply special character replacement).
 * Nested passthroughs are forbidden / not recognized.
 
 == Marked text
@@ -1201,30 +1221,69 @@ The first match wins.
 * constrained inside unconstrained of the same variant cannot start with unconstrained (the unconstrained mark wins out and closes the span)
 * *FI* Should we forbid nested span of same variant? (unconstrained strong inside constrained strong and vice versa?)
 
+=== Code (Monospace)
+
+* *FI* Propose renaming the monospace variant to code (as in "code span").
+* Designate `code` as a built-in role
+
+* type: inline element
+* structural form: constrained and unconstrained
+* content model: verbatim
+* name: span
+* variant: code (proposed)
+* attrlist model:
+
+=== Emphasis (Italic)
+
+* type: inline element
+* structural form: constrained and unconstrained
+* content model: basic
+* name: span
+* variant: emphasis
+* attrlist model:
+
 === Strong (Bold)
 
 Initial page content done.
 See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/modules/ROOT/pages/strong-span.adoc[Strong span].
 
-=== Emphasis (Italic)
-
-=== Code (Monospace)
-
-* *FI* Propose renaming the monospace variant to code (as in "code span").
-
-=== Double-quoted (Smart double-quoted)
-
-=== Single-quoted (Smart single-quoted)
-
-=== Superscript
+* type: inline element
+* structural form: constrained and unconstrained
+* content model: basic
+* name: span
+* variant: strong
+* attrlist model:
 
 === Subscript
 
-=== Open
+* type: inline element
+* structural form: only unconstrained?
+* content model: basic
+* name: span
+* variant: subscript
+* attrlist model:
+
+=== Superscript
+
+* type: inline element
+* structural form: only unconstrained?
+* content model: basic
+* name: span
+* variant: superscript
+* attrlist model:
+
+=== Mark / Open
 
 * Highlighted / marked if no role
 * If custom role then it's a generic span with that role
 * Designate `mark` as a built-in role
+
+* type: inline element
+* structural form: constrained and unconstrained
+* content model: basic
+* name: span
+* variant: mark or open (proposed)
+* attrlist model:
 
 == Inline macros
 // Defines an inline macro and introduces its parts and variations.
@@ -1245,8 +1304,9 @@ See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/s
 * kbd (keyboard)
 * menu
 * btn (button)
-* stem (currently behaves as a specialized inline passthrough with macro syntax; we may not want to list it here)
+* stem (pre-spec: behaves as a specialized inline passthrough with macro syntax; in spec: becomes a true inline macro)
 * autolinks (don't follow the named macro structure)
+** URLs may be identified as an inline literal with the name url, as they are passed through as they are and whether they're changed into a link (made clickable) may be a task for the converter.
 * links (URL macro, link macro, mailto macro)
 * cross references (xref macro, xref shorthand notation)
 * footnote
@@ -1254,11 +1314,48 @@ See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/s
 
 === Image macro (inline)
 
+* type: inline element
+* structural form: macro
+* content model: empty
+* name: image
+* variant: NA
+* target model:
+* attrlist model:
+
 === Icon macro
+
+* type: inline element
+* structural form: macro
+* content model: empty
+* name: icon
+* variant: NA
+* target model:
+* attrlist model:
+
+=== Button macro
+
+* Uses named inline macro form, `+btn:[<attrlist>]+`.
+* Required name is `btn`.
+* Target is forbidden.
+* attrlist only accepts user-defined text.
+
+* type: inline element
+* structural form: macro
+* content model: empty
+* name: btn (or ui if we decide to group the UI macros?)
+* target model: forbidden
+* attrlist model:
 
 === Keyboard macro
 
 * *FI* Fully support the UI macros, therefore, `experimental` will no longer be needed to activate them.
+
+* type: inline element
+* structural form: macro
+* content model: empty
+* name: kbd (or ui if we decide to group the UI macros?)
+* target model: forbidden
+* attrlist model:
 
 === Menu macro
 
@@ -1271,12 +1368,12 @@ See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/s
 * *FI* Propose removing the shorthand structure, e.g., `+"Code > Folding > Expand to Level > 3"+`.
 * *FI* Make target forbidden in macro form to align menu with other UI macros.
 
-=== Button macro
-
-* Uses named inline macro form, `+btn:[<attrlist>]+`.
-* Required name is `btn`.
-* Target is forbidden.
-* attrlist only accepts user-defined text.
+* type: inline element
+* structural form: macro
+* content model: empty
+* name: menu (or ui if we decide to group the UI macros?)
+* target model: forbidden
+* attrlist model:
 
 === Autolinks (URLs and email addresses)
 
@@ -1285,11 +1382,34 @@ See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/s
 
 === Link and URL macros
 
+* type: inline element
+* structural form: macro
+* content model: basic
+* name: ref
+* variant: link
+* target model:
+* attrlist model:
+
 === Cross reference macros
+
+* type: inline element
+* structural form: macro, shorthand macro
+* content model: basic
+* name: ref
+* variant: xref
+* target model:
+* attrlist model:
 
 === STEM macro
 
 * *FI* Should we repurpose `$$` as shorthand for the stem macro?
+
+* type: inline element
+* structural form: macro
+* content model: verbatim
+* name: stem
+* target model:
+* attrlist model:
 
 === Footnote macro
 
@@ -1297,13 +1417,60 @@ See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/s
 This may need a special syntax to create a left-hand boundary for a macro, like an extra colon, empty `{}`, etc. (e.g., `+:footnote:[note]+`).
 * *FI* Scope footnotes that are immediately below table to the current table?
 
+* type: inline element
+* structural form: macro
+* content model: basic
+* name: footnote
+* target model:
+* attrlist model:
+
 === Index term macros
 
 * *FI* Propose that we merge `indexterm2` into `indexterm` and add `visible` or `show` (maybe as target?) to reproduce `indexterm2` behavior?
 
-== Hard line breaks
+* type: inline element
+* structural form: macro
+* content model: basic
+* name: indexterm
+* target model:
+* attrlist model:
+
+== Typographic replacements
+
+* For convenience, AsciiDoc supports numerous typographic replacements.
+* The author writes the shorthand equivalent and the processor replaces these sequences with typographic marks.
+* A typical example is that three dots are replaced with an ellipsis.
+* Pre-spec, this conversion is applied using search and replace to the text nodes in the inlines during conversion.
+
+* *FI* Should we include these replacement spans in the parse tree?
+* In the spec, should typographic replacements evolve to be character patterns in the source text that, depending on the converter, may be replaced with smart text in the output?
+If a converter doesn't replace the character or character pattern with smart text, the characters are passed through as they were entered in the source text.
+
+Examples of typographic replacements include (this is not an all inclusive list):
+
+* Double-quoted (Smart double-quoted) e.g., +"`word`"+ which may be replaced with smart double quote marks "`word`"
+* Single-quoted (Smart single-quoted)
+* +(TM)+ which may be replaced with (TM)
+* and more
+
+* Typographic replacements are inline literals.
+* Proposed ASG names include `replacement` or `typographic`, but further discussion and prototyping is required.
 
 == Character references
+
+* Character references are inline literals.
+* They're named `charref` in the ASG.
+* They're replaced by the glyph the reference points to.
+
+== Raw inline literal
+
+* A raw inline literal is low level machine code, such as `<wbr>`.
+* They're named `raw` in the ASG.
+* They're passed through to a converter exactly as they were entered in the source text.
+
+== Hard line breaks
+
+* May be considered a replacement or their own unique thing.
 
 == Backslash escaping and passthroughs
 
@@ -1320,17 +1487,7 @@ This will introduce a slight incompatibility, but one that is reasonable to expl
 
  from *\*foo**, do we get <strong>*foo*</strong> or <strong>*foo</strong>* ?
 
-== Replacements
-
-=== Typographic replacement
-
-* For convenience, AsciiDoc supports numerous typographic replacements.
-* The author writes the shorthand equivalent and the processor replaces these sequences with typographic marks.
-* A typical example is that three dots are replaced with an ellipsis.
-* This conversion is applied using search and replace to the text nodes in the inlines during conversion.
-* *FI* Should we include these replacement spans in the parse tree?
-
-=== Special character replacement
+== Special character replacement
 
 * Some output formats require that certain characters be escaped in order to be presented literally.
 * For example, HTML requires at least < and & be escaped as character references (and customarily > as well).
