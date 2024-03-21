@@ -12,6 +12,7 @@ In other words, you only have to use characters from US-ASCII in order to expres
 The content itself, which includes paragraphs, titles, verbatim blocks, attribute names and values, custom block names, and so forth, may contain characters from any character range in Unicode.
 
 An AsciiDoc processor assumes the input is encoded in UTF-8 and it encodes output documents in UTF-8 as well.
+The include directive allows the encoding to be specified if the include file is not encoded in UTF-8.
 
 == What's the relationship between a converter and a backend?
 
