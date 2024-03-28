@@ -32,7 +32,7 @@ impl<'a> Inline<'a> {
         // uninterpreted block, just return that without the allocation
         // overhead of the Vec of inlines.
 
-        let (mut span2, mut uninterp) = parse_uninterpreted(span)?;
+        let (mut span2, mut uninterp) = parse_uninterpreted(span);
 
         if span2.is_empty() {
             return Ok((rem, Self::Uninterpreted(uninterp)));
@@ -60,7 +60,7 @@ impl<'a> Inline<'a> {
 
             span = span3;
 
-            (span2, uninterp) = parse_uninterpreted(span)?;
+            (span2, uninterp) = parse_uninterpreted(span);
         }
 
         Ok((rem, Self::Sequence(inlines, trim_input_for_rem(i, rem))))
@@ -95,7 +95,7 @@ impl<'a> HasSpan<'a> for Inline<'a> {
 // Parse the largest possible block of "uninterpreted" text.
 // Remainder is either empty span or first span that requires
 // special interpretation.
-fn parse_uninterpreted(i: Span<'_>) -> IResult<Span, Span> {
+fn parse_uninterpreted(i: Span<'_>) -> (Span, Span) {
     let mut rem = i;
     let mut at_word_boundary = true;
 
@@ -103,7 +103,7 @@ fn parse_uninterpreted(i: Span<'_>) -> IResult<Span, Span> {
     // then it's all uninterpreted.
 
     if !rem.contains(':') {
-        return Ok((trim_input_for_rem(i, rem), rem));
+        return (trim_input_for_rem(i, rem), rem);
     }
 
     loop {
@@ -117,7 +117,7 @@ fn parse_uninterpreted(i: Span<'_>) -> IResult<Span, Span> {
         rem = rem2;
     }
 
-    Ok((rem, trim_input_for_rem(i, rem)))
+    (rem, trim_input_for_rem(i, rem))
 }
 
 // Parse the block as a special "interpreted" inline sequence or error out.
