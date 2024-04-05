@@ -37,7 +37,8 @@ pub(crate) fn normalized_line(input: Span<'_>) -> (Span, Span) {
     trim_trailing_spaces(line(input))
 }
 
-/// Return a single _normalized, non-empty_ line from the source.
+/// Returns a single _normalized, non-empty_ line from the source
+/// if one exists.
 ///
 /// A line is terminated by end-of-input or a single `\n` character
 /// or a single `\r\n` sequence. The end of line sequence is consumed
@@ -45,18 +46,22 @@ pub(crate) fn normalized_line(input: Span<'_>) -> (Span, Span) {
 ///
 /// All trailing spaces are removed from the line.
 ///
-/// Returns an error if the line becomes empty after trailing spaces have been
+/// Returns `None` if the line becomes empty after trailing spaces have been
 /// removed.
-pub(crate) fn non_empty_line(input: Span<'_>) -> IResult<Span, Span> {
-    take_till1(|c| c == '\n')(input)
+pub(crate) fn non_empty_line(input: Span<'_>) -> Option<(Span, Span)> {
+    // Result<(Spanned<&str>, Spanned<&str>),
+    // nom::Err<nom::error::Error<Spanned<&str>>>>
+    take_till1::<_, Span, nom::error::Error<Span>>(|c| c == '\n')(input)
+        .ok()
         .map(|ri| trim_rem_start_matches(ri, '\n'))
         .map(|ri| trim_rem_end_matches(ri, '\r'))
         .map(trim_trailing_spaces)
         .and_then(|(rem, inp)| {
             if inp.is_empty() {
-                Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
+                None
+                // Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
             } else {
-                Ok((rem, inp))
+                Some((rem, inp))
             }
         })
 }

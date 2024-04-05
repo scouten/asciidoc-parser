@@ -402,32 +402,18 @@ mod normalized_line {
 }
 
 mod non_empty_line {
-    use nom::{
-        error::{Error, ErrorKind},
-        Err,
-    };
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{primitives::non_empty_line, tests::fixtures::TSpan, Span};
 
     #[test]
     fn empty_source() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-            Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
-
-        let actual_err = non_empty_line(Span::new("", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(non_empty_line(Span::new("", true)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-            Err::Error(Error::new(Span::new("   ", true), ErrorKind::TakeTill1));
-
-        let actual_err = non_empty_line(Span::new("   ", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(non_empty_line(Span::new("   ", true)).is_none());
     }
 
     #[test]

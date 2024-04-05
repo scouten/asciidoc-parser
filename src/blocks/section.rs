@@ -86,7 +86,10 @@ impl<'a> HasSpan<'a> for SectionBlock<'a> {
 }
 
 fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
-    let (rem, line) = non_empty_line(source)?;
+    let (rem, line) = non_empty_line(source).ok_or(nom::Err::Error(nom::error::Error::new(
+        source,
+        nom::error::ErrorKind::TakeTill1,
+    )))?;
 
     // TO DO: Also support Markdown-style `#` markers.
     // TO DO: Enforce maximum of 6 `=` or `#` markers.
