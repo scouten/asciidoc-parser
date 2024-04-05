@@ -26,7 +26,10 @@ impl<'a> Inline<'a> {
     /// Parse a span (typically a line) of any type and return an `Inline` that
     /// describes it.
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        let (rem, mut span) = non_empty_line(i)?;
+        let (rem, mut span) = non_empty_line(i).ok_or(nom::Err::Error(nom::error::Error::new(
+            i,
+            nom::error::ErrorKind::TakeTill1,
+        )))?;
 
         // Special-case optimization: If the entire span is one
         // uninterpreted block, just return that without the allocation
