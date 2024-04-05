@@ -1,4 +1,4 @@
-use nom::{multi::many1, IResult, InputTake};
+use nom::InputTake;
 
 use crate::{
     inlines::InlineMacro,
@@ -25,11 +25,10 @@ pub enum Inline<'a> {
 impl<'a> Inline<'a> {
     /// Parse a span (typically a line) of any type and return an `Inline` that
     /// describes it.
-    pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        let (rem, mut span) = non_empty_line(i).ok_or(nom::Err::Error(nom::error::Error::new(
-            i,
-            nom::error::ErrorKind::TakeTill1,
-        )))?;
+    ///
+    /// Returns `None` if input doesn't start with a non-empty line.
+    pub(crate) fn parse(i: Span<'a>) -> Option<(Span, Self)> {
+        let (rem, mut span) = non_empty_line(i)?;
 
         // Special-case optimization: If the entire span is one
         // uninterpreted block, just return that without the allocation
@@ -38,7 +37,7 @@ impl<'a> Inline<'a> {
         let (mut span2, mut uninterp) = parse_uninterpreted(span);
 
         if span2.is_empty() {
-            return Ok((rem, Self::Uninterpreted(uninterp)));
+            return Some((rem, Self::Uninterpreted(uninterp)));
         }
 
         let mut inlines: Vec<Self> = vec![];
@@ -56,7 +55,7 @@ impl<'a> Inline<'a> {
             let (span3, interp) = parse_interpreted(span)?;
 
             if span3.is_empty() && inlines.is_empty() {
-                return Ok((rem, interp));
+                return Some((rem, interp));
             }
 
             inlines.push(interp);
@@ -66,21 +65,34 @@ impl<'a> Inline<'a> {
             (span2, uninterp) = parse_uninterpreted(span);
         }
 
-        Ok((rem, Self::Sequence(inlines, trim_input_for_rem(i, rem))))
+        Some((rem, Self::Sequence(inlines, trim_input_for_rem(i, rem))))
     }
 
     /// Parse a sequence of non-empty lines as a single `Inline` that
     /// describes it.
-    pub(crate) fn parse_lines(i: Span<'a>) -> IResult<Span, Self> {
-        let (rem, first_line) = Self::parse(i)?;
+    ///
+    /// Returns `None` if there is not at least one non-empty line at
+    /// beginning of input.
+    pub(crate) fn parse_lines(i: Span<'a>) -> Option<(Span, Self)> {
+        let mut inlines: Vec<Inline<'a>> = vec![];
+        let mut next = i;
 
-        if let Ok((rem2, mut more_inlines)) = many1(Self::parse)(rem) {
-            more_inlines.insert(0, first_line);
+        let mut count = 0;
 
-            let source = trim_input_for_rem(i, rem2);
-            Ok((rem2, Self::Sequence(more_inlines, source)))
+        while let Some((rem, inline)) = Self::parse(next) {
+            next = rem;
+            inlines.push(inline);
+            count += 1;
+            if count > 100 {
+                panic!("WHAT????");
+            }
+        }
+
+        if inlines.len() < 2 {
+            inlines.pop().map(|inline| ((next, inline)))
         } else {
-            Ok((rem, first_line))
+            let source = trim_input_for_rem(i, next);
+            Some((next, Self::Sequence(inlines, source)))
         }
     }
 }
@@ -124,6 +136,8 @@ fn parse_uninterpreted(i: Span<'_>) -> (Span, Span) {
 }
 
 // Parse the block as a special "interpreted" inline sequence or error out.
-fn parse_interpreted(i: Span<'_>) -> IResult<Span, Inline<'_>> {
-    InlineMacro::parse(i).map(|(rem, x)| (rem, Inline::Macro(x)))
+fn parse_interpreted(i: Span<'_>) -> Option<(Span, Inline<'_>)> {
+    InlineMacro::parse(i)
+        .map(|(rem, x)| (rem, Inline::Macro(x)))
+        .ok()
 }

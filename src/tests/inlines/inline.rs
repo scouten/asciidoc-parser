@@ -1,8 +1,4 @@
 mod uninterpreted {
-    use nom::{
-        error::{Error, ErrorKind},
-        Err,
-    };
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
@@ -21,20 +17,12 @@ mod uninterpreted {
 
     #[test]
     fn empty_source() {
-        let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
-
-        let actual_err = Inline::parse(Span::new("", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(Inline::parse(Span::new("", true)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        let expected_err = Err::Error(Error::new(Span::new("   ", true), ErrorKind::TakeTill1));
-
-        let actual_err = Inline::parse(Span::new("   ", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(Inline::parse(Span::new("   ", true)).is_none());
     }
 
     #[test]
@@ -74,10 +62,6 @@ mod uninterpreted {
 }
 
 mod parse_lines {
-    use nom::{
-        error::{Error, ErrorKind},
-        Err,
-    };
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
@@ -88,20 +72,12 @@ mod parse_lines {
 
     #[test]
     fn empty_source() {
-        let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
-
-        let actual_err = Inline::parse_lines(Span::new("", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(Inline::parse_lines(Span::new("", true)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        let expected_err = Err::Error(Error::new(Span::new("   ", true), ErrorKind::TakeTill1));
-
-        let actual_err = Inline::parse_lines(Span::new("   ", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(Inline::parse_lines(Span::new("   ", true)).is_none());
     }
 
     #[test]
