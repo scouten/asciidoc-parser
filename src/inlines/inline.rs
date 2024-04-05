@@ -77,19 +77,13 @@ impl<'a> Inline<'a> {
         let mut inlines: Vec<Inline<'a>> = vec![];
         let mut next = i;
 
-        let mut count = 0;
-
         while let Some((rem, inline)) = Self::parse(next) {
             next = rem;
             inlines.push(inline);
-            count += 1;
-            if count > 100 {
-                panic!("WHAT????");
-            }
         }
 
         if inlines.len() < 2 {
-            inlines.pop().map(|inline| ((next, inline)))
+            inlines.pop().map(|inline| (next, inline))
         } else {
             let source = trim_input_for_rem(i, next);
             Some((next, Self::Sequence(inlines, source)))
