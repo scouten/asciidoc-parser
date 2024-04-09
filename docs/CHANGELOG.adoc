@@ -4,6 +4,14 @@ This document summarizes the changes introduced to the AsciiDoc Language Documen
 For a detailed view of what's changed, refer to the repository's
 https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
+== Published Q2 2024
+
+Added::
+* Add example of page break macro with page layout
+
+Changed::
+* Clarify that blocks attached to list item must be left-aligned
+
 == Published Q1 2024
 
 Added::
@@ -12,6 +20,7 @@ Added::
 Changed::
 * Clarify how the width and scaledwidth attributes on an image macro are translated into DocBook and when scaledwidth is ignored
 * Be more clear about where the include tag directives are permitted in an include file
+* Clarify that the include directive allow the encoding to be specified
 
 == Published Q4 2023
 
