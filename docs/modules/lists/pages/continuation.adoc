@@ -44,6 +44,7 @@ For ordered lists, this will ensure that the numbering continues from one list i
 In addition to the principal text, a list item may contain block elements, including paragraphs, delimited blocks, and block macros.
 To add block elements to a list item, you must "`attach`" them (in a series) using a list continuation.
 A [.term]*list continuation* is a `{plus}` symbol on a line by itself, immediately adjacent to the block being attached.
+The attached block must be left-aligned, just like all blocks in AsciiDoc.
 
 NOTE: A `{plus}` at the end of a line, rather than on a line by itself, is not a list continuation.
 Instead, it creates a hard line break.
