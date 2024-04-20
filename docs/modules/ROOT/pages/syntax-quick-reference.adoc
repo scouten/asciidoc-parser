@@ -276,7 +276,7 @@ Section title anchors depend on support from the stylesheet to render properly.
 [discrete]
 === I'm an independent heading!
 
-This paragraph is it's sibling, not it's child.
+This paragraph is its sibling, not its child.
 ----
 
 .View result of <<ex-discrete>>
@@ -285,7 +285,7 @@ This paragraph is it's sibling, not it's child.
 [discrete]
 === I'm an independent heading!
 
-This paragraph is it's sibling, not it's child.
+This paragraph is its sibling, not its child.
 ====
 
 == Automatic TOC
@@ -297,7 +297,7 @@ Doc Writer <doc.writer@email.org>
 :toc:
 ----
 
-The Table of Content's xref:toc:title.adoc[title], xref:toc:levels.adoc[displayed section depth], and xref:toc:position.adoc[position] can be customized.
+The Table of Contents`' xref:toc:title.adoc[title], xref:toc:levels.adoc[displayed section depth], and xref:toc:position.adoc[position] can be customized.
 
 == Includes
 
