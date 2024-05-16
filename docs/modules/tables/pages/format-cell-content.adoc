@@ -85,6 +85,7 @@ d|This content is rendered as regular paragraph text because the `d` operator in
 
 To use AsciiDoc block elements, such as delimited source blocks and lists, in a cell, place the `a` operator directly in front of the xref:add-cells-and-rows.adoc#cell-separator[cell's separator] (`|`).
 Don't insert any spaces between the `|` and the operator.
+The `a` can also be specified on the column in the `cols` attribute on the table.
 
 .Apply the AsciiDoc block style operator to two cells
 [source#ex-asciidoc]
@@ -103,3 +104,8 @@ If an attribute is set or explicitly unset in the parent document, it _cannot_ b
 There are a handful of exceptions to this rule, which includes doctype, toc, notitle (and its complement, showtitle), and compat-mode.
 Any newly defined attributes in the AsciiDoc table do not impact the attributes in the parent document.
 Instead, these attributes are scoped to the table cell.
+
+If the AsciiDoc table cell starts with a preprocessor directive, that directive should be placed on the line after the cell separator.
+While it can be placed on the same line as the cell separator, that style is not recommended.
+That's because the preprocessor directive that starts after the cell separator must be treated with special handling and is thus limited to a single line (for example, a multiline preprocessor conditional is not allow in this case).
+By starting the contents of the AsciiDoc table cell on the line after the cell separator, the contents will be parsed as normal.
