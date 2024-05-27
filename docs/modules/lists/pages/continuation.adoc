@@ -6,9 +6,9 @@ A [.term]*complex list item* is a list item that contains block content that fol
 This is different from a list item whose principal text spans multiple lines, for which this page draws a distinction.
 The page goes on to explain how to attach a block to a list item in an ancestor list.
 
-In additional to unordered and ordered lists, list continuations are supported for callout and description lists as well.
+In additional to unordered and ordered lists, callout and description lists also support complex list items.
 On this page, the term list item refers to any list item in an unordered, ordered, callout, and description list.
-For a description list, it refers specifically to the description of the list item (not the term).
+For a description list, it refers specifically to the description of the list item (not the list item term).
 
 The main focus of the syntax covered on this page is to keep the list continuous (i.e., to prevent the list from breaking).
 
@@ -47,6 +47,8 @@ For ordered lists, this will ensure that the numbering continues from one list i
 
 In addition to the principal text, a list item may contain block elements, including paragraphs, delimited blocks, and block macros.
 To add block elements to a list item, you must "`attach`" them (in a series) using a list continuation.
+This technique works for unordered and ordered lists as well as callout and description lists.
+
 A [.term]*list continuation* is a `{plus}` symbol on a line by itself, immediately adjacent to the block being attached.
 The attached block must be left-aligned, just like all blocks in AsciiDoc.
 
