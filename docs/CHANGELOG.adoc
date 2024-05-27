@@ -12,6 +12,7 @@ Added::
 
 Changed::
 * Clarify that blocks attached to list item must be left-aligned
+* Clarify that list continuations apply to callout and description lists in additional to unordered and ordered lists
 
 == Published Q1 2024
 
