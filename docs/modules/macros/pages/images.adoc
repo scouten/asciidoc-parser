@@ -38,8 +38,9 @@ If you want to specify alt text, enter it inside the square brackets.
 include::example$image.adoc[tag=alt]
 ----
 
-If the alt text contains a comma, you must enclose the alt text in double quotes.
+If the alt text contains a comma or starts with a valid attribute name followed by an equals sign, you must enclose the alt text in double quotes.
 The double quote enclosure effectively escapes the comma from being interpreted as an attribute separator.
+See xref:attributes:positional-and-named-attributes.adoc#attribute-list-parsing[Attribute list parsing] to learn how the attribute list in a macro is parsed.
 
 .Block image macro with alt text that contains a comma
 [source#ex-alt-with-comma]
@@ -99,5 +100,7 @@ The result of <<ex-inline>> is displayed below.
 include::example$image.adoc[tag=inline]
 
 include::partial$image-target.adoc[]
+
+The alt text for an inline image has the same requirements as for a block image, with the added restriction that a closing square bracket must be escaped.
 
 For inline images, the optional title is displayed as a tooltip.

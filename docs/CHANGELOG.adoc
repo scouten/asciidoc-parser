@@ -13,6 +13,7 @@ Added::
 Changed::
 * Clarify that blocks attached to list item must be left-aligned
 * Clarify that list continuations apply to callout and description lists in additional to unordered and ordered lists
+* Clarify that the alt text for a block image must also be enclosed in quotes if it starts with a valid attribute name followed by an equals sign
 
 == Published Q1 2024
 
