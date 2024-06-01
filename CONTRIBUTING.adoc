@@ -117,6 +117,8 @@ If you're new to git, see https://gitlab.eclipse.org/help/topics/git/index.md[Gi
 . Make sure you've set up your <<legal,Eclipse Account and signed the ECA>>.
 . Go to the https://gitlab.eclipse.org/eclipse/asciidoc/asciidoc-lang[AsciiDoc language repository] and fork it to your personal namespace.
 The project doesn't accept MRs that don't come from a dedicated branch in a fork.
+*The fork must be public.*
+MRs from a private fork will not be accepted.
 . Clone the repository onto your machine and configure your remote path.
 . _Recommended but optional._ If you plan to contribute often to the project, we recommend associating your GPG key with your local repository and GitLab account so that you can sign your commits with it.
 .. See https://gitlab.eclipse.org/help/user/project/repository/gpg_signed_commits/index.md[Signing commits with GPG] to learn how to generate a GPG key and configure your local repository to automatically sign your commits.
