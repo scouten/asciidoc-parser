@@ -11,8 +11,10 @@ An ID:
 . provides an internal link or cross reference anchor for an element
 . can be used for adding additional styling to specific elements (e.g., via a CSS ID selector)
 
-You can assign an ID to blocks using the shorthand hash (`+#+`) syntax, longhand (`id=`) syntax, or the legacy anchor (`[[]]`) syntax.
+You can assign an ID to blocks using the shorthand hash (`+#+`) syntax, longhand (`id=`) syntax, or the anchor (`[[]]`) syntax.
 You can assign an ID to inline elements using the shorthand hash (`+#+`) syntax or by adding an anchor adjacent to the inline element using the anchor (`[[]]`) syntax.
+You can assign an ID to a table cell by using an anchor (`[[]]`) at the start of the cell.
+Likewise, you can assign an ID to a list item by using an anchor (`[[]]`) at the start of the principal text.
 
 == Valid ID characters
 
@@ -61,7 +63,7 @@ NOTE: Section pending
 == Block assignment
 
 // tag::bl[]
-You can assign an ID to a block using the shorthand syntax, the longhand syntax, or a legacy block anchor.
+You can assign an ID to a block using the shorthand syntax, the longhand syntax, or a block anchor.
 
 In the shorthand syntax, you prefix the name with a hash (`#`) in the first position attribute.
 
@@ -81,7 +83,7 @@ In the longhand syntax, you use a standard named attribute.
 * Goal 2
 ----
 
-In the legacy block anchor syntax, you surround the name with double square brackets:
+In the block anchor syntax, you surround the name with double square brackets:
 
 [source]
 ----
@@ -112,18 +114,16 @@ This is necessary since the `.` character in the shorthand syntax is the delimit
 // tag::in[]
 The id (`#`) shorthand can be used on inline quoted text.
 
-.Quoted text block with id assignment using shorthand syntax
+.Quoted text with ID assignment using shorthand syntax
 ----
-[#free_the_world]*free the world*
+[#free_the_world]#free the world#
+----
+
+.General text with preceding ID assignment using inline anchor syntax
+----
+[[free_the_world]]free the world
 ----
 // end::in[]
-
-////
-.Quoted text block with `id` assignment using traditional AsciiDoc syntax
-----
-[[free_the_world]]*free the world*
-----
-////
 
 [#anchor]
 == Use an ID as an anchor
@@ -147,9 +147,9 @@ You can define an ID using the shorthand syntax:
 include::example$id.adoc[tag=block-id-shorthand]
 ----
 
-or you can define it using the legacy block anchor syntax:
+or you can define it using the block anchor syntax:
 
-.Assign an ID to a paragraph using legacy block anchor syntax
+.Assign an ID to a paragraph using block anchor syntax
 [source]
 ----
 include::example$id.adoc[tag=block-id-brackets]
@@ -206,6 +206,18 @@ include::example$id.adoc[tag=anchor-dlist-item]
 You can add multiple anchors to a list item or description list term.
 However, only the first anchor is registered for use as an xref within the document.
 The remaining anchors are auxiliary and are used for making deep links (i.e., accessible from a URL fragment).
+
+=== On a table cell
+
+You can assign an ID to a table cell by placing an inline anchor at the start of the cell.
+
+.Assigning an ID to a table cell using an inline anchor
+[source]
+----
+|===
+|[[my_cell]]The table cell I want to jump to.
+|===
+----
 
 === On an inline image
 

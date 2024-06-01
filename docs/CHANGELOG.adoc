@@ -9,11 +9,13 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 Added::
 * Add example of page break macro with page layout
 * Document the rules for using a preprocessor directive on the same line as the cell separator in an AsciiDoc table cell
+* Add example of how to assign an ID to a table cell
 
 Changed::
 * Clarify that blocks attached to list item must be left-aligned
 * Clarify that list continuations apply to callout and description lists in additional to unordered and ordered lists
 * Clarify that the alt text for a block image must also be enclosed in quotes if it starts with a valid attribute name followed by an equals sign
+* Remove legacy qualifier when refering to block and inline anchor
 
 == Published Q1 2024
 
