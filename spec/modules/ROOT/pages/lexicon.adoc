@@ -2,8 +2,8 @@
 
 _This section is non-normative._
 
-[[asg]]abstract semantic graph (ASG):: The Abstract Semantic Graph (ASG) is a tree structure made up of <<node,nodes>> that model the parsed semantic elements, select non-elements of an AsciiDoc document.
-The ASG also include source mapping information for these nodes (i.e., where the nodes were found in the source document).
+[[asg]]abstract semantic graph (ASG):: The Abstract Semantic Graph (ASG) is a tree structure made up of <<node,nodes>> that model the parsed semantic elements and certain non-elements of an AsciiDoc document.
+The ASG also tracks source mapping information for these nodes (i.e., where the nodes were found in the source document).
 The primary purpose of the ASG is to validate that an implementation is compliant with the AsciiDoc language specification.
 
 [[attribute]]attribute:: An attribute is a key-value pair that adds, removes, or controls a feature on an <<element>> or document.
@@ -21,7 +21,7 @@ That inline content is not parsed as part of the attrlist.
 The attrlist is parsed into a map of attributes that are associated with the node for a block or inline element.
 The source text an attrlist can contain, and how the attrlist is interpreted, is dependent on the grammar rules of the element on which it is defined.
 
-[[basic-block]]basic block content model; basic block:: A block that belongs to the basic block content can only contain <<uninterpreted-text>>, <<inline-element,inline elements>> and inline preprocessor directives.
+[[basic-block]]basic block content model; basic block:: A block that belongs to the basic block content model can only contain <<uninterpreted-text>>, <<inline-element,inline elements>> and inline preprocessor directives.
 Such blocks may be referred to informally as basic blocks.
 A basic block is represented by a terminal block node in the ASG.
 

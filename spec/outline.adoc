@@ -463,7 +463,7 @@ When set, a boolean attribute typically has an empty value.
 
 * A *block element*, referred to as a *block*, is a discrete, line-wise element in the document structure.
 * A block always starts and ends on a whole line (starts at beginning of a line or effective beginning and ends at the end of the same or different line.
-* A block may have two to three source features: metadata, a body, and an enclosure.
+* A block may have two to three source characteristics: metadata, a body, and an enclosure.
 * Block structural forms include: paragraph, indented lines, delimited, macro, heading?, shorthand macro, list?, dlist? (lists and headings might also be referred to as prefixed?)
 ** May also need a "generated" form
 * The body of a block may have an enclosure that is formed by delimiter lines.

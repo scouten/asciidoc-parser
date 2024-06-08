@@ -8,9 +8,10 @@ A block always starts at the beginning or effective beginning of a whole line an
 
 Block elements are separated from one another by boundaries.
 These boundaries are either implicit, such as an empty line, or explicit, such as a delimiter line that is part of an enclosure.
-An enclosure is a source feature of some blocks.
-Specifically, a block element consists of two or three source features: an enclosure, content, and metadata.
-These three features are described in the following sections.
+An enclosure is a source characteristic of some blocks.
+Specifically, a block element consists of two or three source characteristics: an enclosure, content, and metadata.
+Once parsed, the enclosure does not produce a block which is fundamentally different from a block without an enclosure.
+These three characteristics are described in the following sections.
 
 === Boundaries and enclosures
 

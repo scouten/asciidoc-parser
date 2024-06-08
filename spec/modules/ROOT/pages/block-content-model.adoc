@@ -8,7 +8,7 @@ The block content models are: basic, verbatim, compound, empty, and raw.
 
 == Basic
 
-A block that belongs to the basic content model can only contain uninterpreted text, inline elements, and inline preprocessor directives.
+A block that belongs to the basic content model can only contain uninterpreted text, inline elements (e.g., formatted text, inline macro), and inline preprocessor directives (e.g., attribute reference).
 Basic block content cannot contain any child block elements.
 A basic block is represented as a terminal block node in the ASG tree.
 
@@ -16,7 +16,7 @@ The following block elements belong to the basic content model by default:
 
 * paragraph
 * table cell
-* principle text of list item
+* principal text of list item
 
 Currently, the later two do not support block attributes.
 This is expected to change in a future revision of a specification so they behave more like a paragraph.
