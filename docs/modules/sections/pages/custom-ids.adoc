@@ -23,7 +23,7 @@ include::example$section.adoc[tag=with-anchor-and-reftext-shorthand]
 
 IMPORTANT: The value of the reftext attribute must be quoted if it contains spaces or commas.
 
-The ID and reference text can also be defined using the legacy block anchor syntax:
+The ID and reference text can also be defined using the block anchor syntax:
 
 [source]
 ----
