@@ -17,6 +17,9 @@ When part of an author's name consists of more than one word, use an underscore 
 firstname_firstname lastname; firstname middlename_middlename lastname
 ----
 
+If the more than three space-separated names (or initials) are entered in the implicit author line, the entire line (including the email portion) will be used as the author's full name and first name.
+Thus, it's important to use the underscore separator to ensure there are no more than three space-separated names.
+
 == Compound names in the author line
 
 In <<ex-line-compound>>, the first author has a compound first name and the second author has a compound surname.
