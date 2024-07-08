@@ -1,6 +1,8 @@
-use nom::IResult;
-
 use crate::Span;
+
+// TO DO: I think this crate is moving in the direction of being infallible
+// (i.e. error conditions are reflected as annotations rather than overall
+// failures). So this will hopefully be unnecessary.
 
 /// The error type for AsciiDoc parsing operations.
 #[non_exhaustive]
@@ -19,9 +21,3 @@ impl<'a> From<nom::Err<nom::error::Error<Span<'a>>>> for Error<'a> {
         }
     }
 }
-
-/// Holds the result of AsciiDoc parsing functions.
-///
-/// Note that this type is also a [`Result`], so the usual functions (`map`,
-/// `unwrap`, etc.) are available.
-pub type ParseResult<'a, T, E = Error<'a>> = IResult<&'a str, T, E>;
