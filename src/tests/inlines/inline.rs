@@ -83,10 +83,10 @@ mod parse_lines {
 
     #[test]
     fn simple_line() {
-        let (rem, inline) = Inline::parse_lines(Span::new("abc", true)).unwrap();
+        let inline = Inline::parse_lines(Span::new("abc", true)).unwrap();
 
         assert_eq!(
-            rem,
+            inline.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -96,7 +96,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline,
+            inline.t,
             TInline::Uninterpreted(TSpan {
                 data: "abc",
                 line: 1,
@@ -106,7 +106,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline.span(),
+            inline.t.span(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -118,10 +118,10 @@ mod parse_lines {
 
     #[test]
     fn two_lines() {
-        let (rem, inline) = Inline::parse_lines(Span::new("abc\ndef", true)).unwrap();
+        let inline = Inline::parse_lines(Span::new("abc\ndef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            inline.rem,
             TSpan {
                 data: "",
                 line: 2,
@@ -131,7 +131,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline,
+            inline.t,
             TInline::Sequence(
                 vec!(
                     TInline::Uninterpreted(TSpan {
@@ -157,7 +157,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline.span(),
+            inline.t.span(),
             TSpan {
                 data: "abc\ndef",
                 line: 1,

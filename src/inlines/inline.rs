@@ -79,7 +79,7 @@ impl<'a> Inline<'a> {
     ///
     /// Returns `None` if there is not at least one non-empty line at
     /// beginning of input.
-    pub(crate) fn parse_lines(i: Span<'a>) -> Option<(Span, Self)> {
+    pub(crate) fn parse_lines(i: Span<'a>) -> Option<ParseResult<Self>> {
         let mut inlines: Vec<Inline<'a>> = vec![];
         let mut next = i;
 
@@ -89,10 +89,16 @@ impl<'a> Inline<'a> {
         }
 
         if inlines.len() < 2 {
-            inlines.pop().map(|inline| (next, inline))
+            inlines.pop().map(|inline| ParseResult {
+                t: inline,
+                rem: next,
+            })
         } else {
             let source = trim_input_for_rem(i, next);
-            Some((next, Self::Sequence(inlines, source)))
+            Some(ParseResult {
+                t: Self::Sequence(inlines, source),
+                rem: next,
+            })
         }
     }
 }
