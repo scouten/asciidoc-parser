@@ -14,7 +14,7 @@ pub mod document;
 pub use document::Document;
 
 mod error;
-pub use error::{Error, ParseResult};
+pub use error::Error;
 
 pub mod inlines;
 
