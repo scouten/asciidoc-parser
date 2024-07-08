@@ -10,7 +10,8 @@ mod uninterpreted {
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
-        let (_, b1) = Inline::parse(Span::new("abc", true)).unwrap();
+        let b1 = Inline::parse(Span::new("abc", true)).unwrap();
+        let b1 = b1.t;
         let b2 = b1.clone();
         assert_eq!(b1, b2);
     }
@@ -27,10 +28,10 @@ mod uninterpreted {
 
     #[test]
     fn simple_line() {
-        let (rem, inline) = Inline::parse(Span::new("abc", true)).unwrap();
+        let inline = Inline::parse(Span::new("abc", true)).unwrap();
 
         assert_eq!(
-            rem,
+            inline.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -40,7 +41,7 @@ mod uninterpreted {
         );
 
         assert_eq!(
-            inline,
+            inline.t,
             TInline::Uninterpreted(TSpan {
                 data: "abc",
                 line: 1,
@@ -50,7 +51,7 @@ mod uninterpreted {
         );
 
         assert_eq!(
-            inline.span(),
+            inline.t.span(),
             TSpan {
                 data: "abc",
                 line: 1,

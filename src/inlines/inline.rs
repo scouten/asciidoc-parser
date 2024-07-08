@@ -2,7 +2,7 @@ use nom::InputTake;
 
 use crate::{
     inlines::InlineMacro,
-    primitives::{non_empty_line, trim_input_for_rem},
+    primitives::{non_empty_line, trim_input_for_rem, ParseResult},
     HasSpan, Span,
 };
 
@@ -27,7 +27,7 @@ impl<'a> Inline<'a> {
     /// describes it.
     ///
     /// Returns `None` if input doesn't start with a non-empty line.
-    pub(crate) fn parse(i: Span<'a>) -> Option<(Span, Self)> {
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
         let (rem, mut span) = non_empty_line(i)?;
 
         // Special-case optimization: If the entire span is one
@@ -37,7 +37,10 @@ impl<'a> Inline<'a> {
         let (mut span2, mut uninterp) = parse_uninterpreted(span);
 
         if span2.is_empty() {
-            return Some((rem, Self::Uninterpreted(uninterp)));
+            return Some(ParseResult {
+                t: Self::Uninterpreted(uninterp),
+                rem,
+            });
         }
 
         let mut inlines: Vec<Self> = vec![];
@@ -55,7 +58,7 @@ impl<'a> Inline<'a> {
             let (span3, interp) = parse_interpreted(span)?;
 
             if span3.is_empty() && inlines.is_empty() {
-                return Some((rem, interp));
+                return Some(ParseResult { t: interp, rem });
             }
 
             inlines.push(interp);
@@ -65,7 +68,10 @@ impl<'a> Inline<'a> {
             (span2, uninterp) = parse_uninterpreted(span);
         }
 
-        Some((rem, Self::Sequence(inlines, trim_input_for_rem(i, rem))))
+        Some(ParseResult {
+            t: Self::Sequence(inlines, trim_input_for_rem(i, rem)),
+            rem,
+        })
     }
 
     /// Parse a sequence of non-empty lines as a single `Inline` that
@@ -77,9 +83,9 @@ impl<'a> Inline<'a> {
         let mut inlines: Vec<Inline<'a>> = vec![];
         let mut next = i;
 
-        while let Some((rem, inline)) = Self::parse(next) {
-            next = rem;
-            inlines.push(inline);
+        while let Some(inline) = Self::parse(next) {
+            next = inline.rem;
+            inlines.push(inline.t);
         }
 
         if inlines.len() < 2 {

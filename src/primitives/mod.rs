@@ -24,6 +24,13 @@ pub(crate) use line::{
 /// syntactic element in question.
 pub type Span<'a> = nom_span::Spanned<&'a str>;
 
+/// Represents a successful parse result and subsequent remainder of the input
+/// stream.
+pub(crate) struct ParseResult<'a, T> {
+    pub(crate) t: T,
+    pub(crate) rem: Span<'a>,
+}
+
 /// Given two [`Span`]s, the second of which must be a trailing remainder
 /// of the first, return the first input trimmed to exclude the second.
 ///
