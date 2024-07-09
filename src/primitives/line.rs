@@ -129,29 +129,29 @@ fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
 ///
 /// An empty line may contain any number of white space characters.
 ///
-/// Returns an error if the line contains any non-white-space characters.
-pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
-    let l = line(input);
+/// Returns `None` if the line contains any non-white-space characters.
+pub(crate) fn empty_line(i: Span<'_>) -> Option<ParseResult<Span>> {
+    let l = line(i);
 
     if l.t.data().bytes().all(nom::character::is_space) {
-        Ok((l.rem, l.t))
+        Some(l)
     } else {
-        Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
+        None
     }
 }
 
 /// Consumes zero or more empty lines.
 ///
 /// Returns the original input if any error occurs or no empty lines are found.
-pub(crate) fn consume_empty_lines(mut input: Span<'_>) -> Span {
-    while !input.data().is_empty() {
-        match empty_line(input) {
-            Ok((rem, _)) => input = rem,
-            Err(_) => break,
+pub(crate) fn consume_empty_lines(mut i: Span<'_>) -> Span {
+    while !i.data().is_empty() {
+        match empty_line(i) {
+            Some(line) => i = line.rem,
+            None => break,
         }
     }
 
-    input
+    i
 }
 
 fn trim_rem_start_matches<'a>(i: ParseResult<'a, Span<'a>>, c: char) -> ParseResult<Span<'a>> {
