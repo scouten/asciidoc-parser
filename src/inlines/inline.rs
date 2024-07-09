@@ -34,11 +34,11 @@ impl<'a> Inline<'a> {
         // uninterpreted block, just return that without the allocation
         // overhead of the Vec of inlines.
 
-        let (mut span2, mut uninterp) = parse_uninterpreted(span);
+        let mut uninterp = parse_uninterpreted(span);
 
-        if span2.is_empty() {
+        if uninterp.rem.is_empty() {
             return Some(ParseResult {
-                t: Self::Uninterpreted(uninterp),
+                t: Self::Uninterpreted(uninterp.t),
                 rem,
             });
         }
@@ -46,11 +46,11 @@ impl<'a> Inline<'a> {
         let mut inlines: Vec<Self> = vec![];
 
         loop {
-            if !uninterp.is_empty() {
-                inlines.push(Self::Uninterpreted(uninterp));
+            if !uninterp.t.is_empty() {
+                inlines.push(Self::Uninterpreted(uninterp.t));
             }
 
-            span = span2;
+            span = uninterp.rem;
             if span.is_empty() {
                 break;
             }
@@ -65,7 +65,7 @@ impl<'a> Inline<'a> {
 
             span = span3;
 
-            (span2, uninterp) = parse_uninterpreted(span);
+            uninterp = parse_uninterpreted(span);
         }
 
         Some(ParseResult {
@@ -116,7 +116,7 @@ impl<'a> HasSpan<'a> for Inline<'a> {
 // Parse the largest possible block of "uninterpreted" text.
 // Remainder is either empty span or first span that requires
 // special interpretation.
-fn parse_uninterpreted(i: Span<'_>) -> (Span, Span) {
+fn parse_uninterpreted(i: Span<'_>) -> ParseResult<Span> {
     let mut rem = i;
     let mut at_word_boundary = true;
 
@@ -124,7 +124,10 @@ fn parse_uninterpreted(i: Span<'_>) -> (Span, Span) {
     // then it's all uninterpreted.
 
     if !rem.contains(':') {
-        return (trim_input_for_rem(i, rem), rem);
+        return ParseResult {
+            rem: trim_input_for_rem(i, rem),
+            t: rem,
+        };
     }
 
     loop {
@@ -138,7 +141,10 @@ fn parse_uninterpreted(i: Span<'_>) -> (Span, Span) {
         rem = rem2;
     }
 
-    (rem, trim_input_for_rem(i, rem))
+    ParseResult {
+        t: trim_input_for_rem(i, rem),
+        rem,
+    }
 }
 
 // Parse the block as a special "interpreted" inline sequence or error out.
