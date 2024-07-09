@@ -86,7 +86,7 @@ impl<'a> HasSpan<'a> for SectionBlock<'a> {
 }
 
 fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
-    let (rem, line) = non_empty_line(source).ok_or(nom::Err::Error(nom::error::Error::new(
+    let line = non_empty_line(source).ok_or(nom::Err::Error(nom::error::Error::new(
         source,
         nom::error::ErrorKind::TakeTill1,
     )))?;
@@ -94,10 +94,10 @@ fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
     // TO DO: Also support Markdown-style `#` markers.
     // TO DO: Enforce maximum of 6 `=` or `#` markers.
     // TO DO: Disallow empty title.
-    let (space_title, count) = many1_count(tag("="))(line)?;
+    let (space_title, count) = many1_count(tag("="))(line.t)?;
     let (title, _) = space1(space_title)?;
 
-    Ok((rem, (count - 1, title)))
+    Ok((line.rem, (count - 1, title)))
 }
 
 fn peer_or_ancestor_section(i: Span<'_>, level: usize) -> bool {

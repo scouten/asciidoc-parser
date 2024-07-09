@@ -28,7 +28,8 @@ impl<'a> Inline<'a> {
     ///
     /// Returns `None` if input doesn't start with a non-empty line.
     pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
-        let (rem, mut span) = non_empty_line(i)?;
+        let line = non_empty_line(i)?;
+        let mut span = line.t;
 
         // Special-case optimization: If the entire span is one
         // uninterpreted block, just return that without the allocation
@@ -39,7 +40,7 @@ impl<'a> Inline<'a> {
         if uninterp.rem.is_empty() {
             return Some(ParseResult {
                 t: Self::Uninterpreted(uninterp.t),
-                rem,
+                rem: line.rem,
             });
         }
 
@@ -68,8 +69,8 @@ impl<'a> Inline<'a> {
         }
 
         Some(ParseResult {
-            t: Self::Sequence(inlines, trim_input_for_rem(i, rem)),
-            rem,
+            t: Self::Sequence(inlines, trim_input_for_rem(i, line.rem)),
+            rem: line.rem,
         })
     }
 

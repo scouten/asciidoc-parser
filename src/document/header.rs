@@ -58,13 +58,13 @@ impl<'a> HasSpan<'a> for Header<'a> {
 }
 
 fn parse_title(i: Span<'_>) -> IResult<Span, Span<'_>> {
-    let (rem, line) = non_empty_line(i).ok_or(nom::Err::Error(nom::error::Error::new(
+    let line = non_empty_line(i).ok_or(nom::Err::Error(nom::error::Error::new(
         i,
         nom::error::ErrorKind::TakeTill1,
     )))?;
 
-    let (title, _) = tag("=")(line)?;
+    let (title, _) = tag("=")(line.t)?;
     let (title, _) = space1(title)?;
 
-    Ok((rem, title))
+    Ok((line.rem, title))
 }

@@ -57,7 +57,7 @@ pub(crate) fn normalized_line(input: Span<'_>) -> ParseResult<Span> {
 ///
 /// Returns `None` if the line becomes empty after trailing spaces have been
 /// removed.
-pub(crate) fn non_empty_line(input: Span<'_>) -> Option<(Span, Span)> {
+pub(crate) fn non_empty_line(input: Span<'_>) -> Option<ParseResult<Span>> {
     // Result<(Spanned<&str>, Spanned<&str>),
     // nom::Err<nom::error::Error<Spanned<&str>>>>
     take_till1::<_, Span, nom::error::Error<Span>>(|c| c == '\n')(input)
@@ -70,7 +70,7 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> Option<(Span, Span)> {
                 None
                 // Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
             } else {
-                Some((rem, inp))
+                Some(ParseResult { rem, t: inp })
             }
         })
 }
