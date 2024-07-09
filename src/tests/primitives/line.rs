@@ -194,10 +194,10 @@ mod normalized_line {
 
     #[test]
     fn empty_source() {
-        let (rem, line) = normalized_line(Span::new("", true));
+        let line = normalized_line(Span::new("", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -207,7 +207,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "",
                 line: 1,
@@ -219,10 +219,10 @@ mod normalized_line {
 
     #[test]
     fn simple_line() {
-        let (rem, line) = normalized_line(Span::new("abc", true));
+        let line = normalized_line(Span::new("abc", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -232,7 +232,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -244,10 +244,10 @@ mod normalized_line {
 
     #[test]
     fn discards_trailing_space() {
-        let (rem, line) = normalized_line(Span::new("abc ", true));
+        let line = normalized_line(Span::new("abc ", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -257,7 +257,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -269,10 +269,10 @@ mod normalized_line {
 
     #[test]
     fn discards_multiple_trailing_spaces() {
-        let (rem, line) = normalized_line(Span::new("abc   ", true));
+        let line = normalized_line(Span::new("abc   ", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -282,7 +282,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -296,10 +296,10 @@ mod normalized_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let (rem, line) = normalized_line(Span::new("abc  \ndef", true));
+        let line = normalized_line(Span::new("abc  \ndef", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "def",
                 line: 2,
@@ -309,7 +309,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -323,10 +323,10 @@ mod normalized_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let (rem, line) = normalized_line(Span::new("abc  \r\ndef", true));
+        let line = normalized_line(Span::new("abc  \r\ndef", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "def",
                 line: 2,
@@ -336,7 +336,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -350,10 +350,10 @@ mod normalized_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let (rem, line) = normalized_line(Span::new("abc  \n\rdef", true));
+        let line = normalized_line(Span::new("abc  \n\rdef", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -363,7 +363,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -377,10 +377,10 @@ mod normalized_line {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate normalized line at \r without \n.
 
-        let (rem, line) = normalized_line(Span::new("abc   \rdef", true));
+        let line = normalized_line(Span::new("abc   \rdef", true));
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -390,7 +390,7 @@ mod normalized_line {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc   \rdef",
                 line: 1,

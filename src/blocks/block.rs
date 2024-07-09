@@ -46,15 +46,15 @@ impl<'a> Block<'a> {
         let i = consume_empty_lines(i);
 
         // Try to discern the block type by scanning the first line.
-        let (_, line) = normalized_line(i);
-        if line.contains("::") {
+        let line = normalized_line(i);
+        if line.t.contains("::") {
             if let Ok((rem, macro_block)) = MacroBlock::parse(i) {
                 return Ok((rem, Self::Macro(macro_block)));
             }
 
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
-        } else if line.starts_with('=') {
+        } else if line.t.starts_with('=') {
             if let Ok((rem, section_block)) = SectionBlock::parse(i) {
                 return Ok((rem, Self::Section(section_block)));
             }
