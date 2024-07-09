@@ -576,40 +576,26 @@ mod non_empty_line {
 }
 
 mod line_with_continuation {
-    use nom::{
-        error::{Error, ErrorKind},
-        Err,
-    };
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{primitives::line_with_continuation, tests::fixtures::TSpan, Span};
 
     #[test]
     fn empty_source() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-            Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
-
-        let actual_err = line_with_continuation(Span::new("", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(line_with_continuation(Span::new("", true)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-            Err::Error(Error::new(Span::new("   ", true), ErrorKind::TakeTill1));
-
-        let actual_err = line_with_continuation(Span::new("   ", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(line_with_continuation(Span::new("   ", true)).is_none());
     }
 
     #[test]
     fn simple_line() {
-        let (rem, line) = line_with_continuation(Span::new("abc", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -619,7 +605,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -631,10 +617,10 @@ mod line_with_continuation {
 
     #[test]
     fn discards_trailing_space() {
-        let (rem, line) = line_with_continuation(Span::new("abc ", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc ", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -644,7 +630,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -658,10 +644,10 @@ mod line_with_continuation {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let (rem, line) = line_with_continuation(Span::new("abc  \ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc  \ndef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "def",
                 line: 2,
@@ -671,7 +657,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -685,10 +671,10 @@ mod line_with_continuation {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let (rem, line) = line_with_continuation(Span::new("abc  \r\ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc  \r\ndef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "def",
                 line: 2,
@@ -698,7 +684,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -712,10 +698,10 @@ mod line_with_continuation {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let (rem, line) = line_with_continuation(Span::new("abc  \n\rdef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc  \n\rdef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -725,7 +711,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -739,10 +725,10 @@ mod line_with_continuation {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate line at \r without \n.
 
-        let (rem, line) = line_with_continuation(Span::new("abc   \rdef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc   \rdef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -752,7 +738,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc   \rdef",
                 line: 1,
@@ -764,10 +750,10 @@ mod line_with_continuation {
 
     #[test]
     fn simple_continuation() {
-        let (rem, line) = line_with_continuation(Span::new("abc \\\ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\ndef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 2,
@@ -777,7 +763,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc \\\ndef",
                 line: 1,
@@ -789,10 +775,10 @@ mod line_with_continuation {
 
     #[test]
     fn simple_continuation_with_crlf() {
-        let (rem, line) = line_with_continuation(Span::new("abc \\\r\ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\r\ndef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 2,
@@ -802,7 +788,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc \\\r\ndef",
                 line: 1,
@@ -814,10 +800,10 @@ mod line_with_continuation {
 
     #[test]
     fn continuation_with_trailing_space() {
-        let (rem, line) = line_with_continuation(Span::new("abc \\   \ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\   \ndef", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 2,
@@ -827,7 +813,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc \\   \ndef",
                 line: 1,
@@ -839,10 +825,10 @@ mod line_with_continuation {
 
     #[test]
     fn multiple_continuations() {
-        let (rem, line) = line_with_continuation(Span::new("abc \\\ndef\\\nghi", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\ndef\\\nghi", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "",
                 line: 3,
@@ -852,7 +838,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc \\\ndef\\\nghi",
                 line: 1,
@@ -864,10 +850,10 @@ mod line_with_continuation {
 
     #[test]
     fn terminates_on_line_without_plus() {
-        let (rem, line) = line_with_continuation(Span::new("abc \\\ndef  \nghi", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\ndef  \nghi", true)).unwrap();
 
         assert_eq!(
-            rem,
+            line.rem,
             TSpan {
                 data: "ghi",
                 line: 3,
@@ -877,7 +863,7 @@ mod line_with_continuation {
         );
 
         assert_eq!(
-            line,
+            line.t,
             TSpan {
                 data: "abc \\\ndef",
                 line: 1,

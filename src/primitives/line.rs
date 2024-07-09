@@ -88,14 +88,14 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> Option<ParseResult<Span>> {
 /// Trailing white spaces are removed from the final line and are not
 /// removed from any lines with continuations.
 ///
-/// Returns an error if the line becomes empty after trailing spaces have been
+/// Returns `None` if the line becomes empty after trailing spaces have been
 /// removed.
-pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
+pub(crate) fn line_with_continuation(i: Span<'_>) -> Option<ParseResult<Span>> {
     recognize(pair(
         many0(one_line_with_continuation),
         take_till(|c| c == '\n'),
     ))
-    .parse(input)
+    .parse(i)
     .map(|line| {
         trim_rem_start_matches(
             ParseResult {
@@ -107,13 +107,8 @@ pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
     })
     .map(|line| trim_rem_end_matches(line, '\r'))
     .map(trim_trailing_spaces)
-    .and_then(|line| {
-        if line.t.is_empty() {
-            Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
-        } else {
-            Ok((line.rem, line.t))
-        }
-    })
+    .ok()
+    .filter(|line| !line.t.is_empty())
 }
 
 fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
