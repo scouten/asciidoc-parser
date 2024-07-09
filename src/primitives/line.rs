@@ -15,7 +15,7 @@ use crate::{primitives::ParseResult, Span};
 /// or a single `\r\n` sequence. The end of line sequence is consumed
 /// but not included in the returned line.
 pub(crate) fn line(input: Span<'_>) -> ParseResult<Span> {
-    let ri = if let Some(index) = input.find('\n') {
+    let line = if let Some(index) = input.find('\n') {
         ParseResult {
             rem: input.slice(index..),
             t: input.slice(0..index),
@@ -28,9 +28,12 @@ pub(crate) fn line(input: Span<'_>) -> ParseResult<Span> {
         }
     };
 
-    let ri = trim_rem_start_matches((ri.rem, ri.t), '\n');
-    let ri = trim_rem_end_matches(ri, '\r');
-    ParseResult { rem: ri.0, t: ri.1 }
+    let line = trim_rem_start_matches(line, '\n');
+    let line = trim_rem_end_matches((line.rem, line.t), '\r');
+    ParseResult {
+        rem: line.0,
+        t: line.1,
+    }
 }
 
 /// Return a single _normalized_ line from the source.
@@ -62,8 +65,16 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> Option<ParseResult<Span>> {
     // nom::Err<nom::error::Error<Spanned<&str>>>>
     take_till1::<_, Span, nom::error::Error<Span>>(|c| c == '\n')(input)
         .ok()
-        .map(|ri| trim_rem_start_matches(ri, '\n'))
-        .map(|ri| trim_rem_end_matches(ri, '\r'))
+        .map(|line| {
+            trim_rem_start_matches(
+                ParseResult {
+                    rem: line.0,
+                    t: line.1,
+                },
+                '\n',
+            )
+        })
+        .map(|line| trim_rem_end_matches((line.rem, line.t), '\r'))
         .map(trim_trailing_spaces)
         .and_then(|(rem, inp)| {
             if inp.is_empty() {
@@ -98,8 +109,16 @@ pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
         take_till(|c| c == '\n'),
     ))
     .parse(input)
-    .map(|ri| trim_rem_start_matches(ri, '\n'))
-    .map(|ri| trim_rem_end_matches(ri, '\r'))
+    .map(|line| {
+        trim_rem_start_matches(
+            ParseResult {
+                rem: line.0,
+                t: line.1,
+            },
+            '\n',
+        )
+    })
+    .map(|line| trim_rem_end_matches((line.rem, line.t), '\r'))
     .map(trim_trailing_spaces)
     .and_then(|(rem, inp)| {
         if inp.is_empty() {
@@ -148,13 +167,13 @@ pub(crate) fn consume_empty_lines(mut input: Span<'_>) -> Span {
     input
 }
 
-fn trim_rem_start_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
-    if let Some(rem) = rem_inp.0.strip_prefix(c) {
-        let prefix_len = rem_inp.0.len() - rem.len();
-        let rem = rem_inp.0.slice(prefix_len..);
-        (rem, rem_inp.1)
+fn trim_rem_start_matches<'a>(i: ParseResult<'a, Span<'a>>, c: char) -> ParseResult<Span<'a>> {
+    if let Some(rem) = i.rem.strip_prefix(c) {
+        let prefix_len = i.rem.len() - rem.len();
+        let rem = i.rem.slice(prefix_len..);
+        ParseResult { rem, t: i.t }
     } else {
-        rem_inp
+        i
     }
 }
 
