@@ -39,10 +39,8 @@ pub(crate) fn line(input: Span<'_>) -> ParseResult<Span> {
 /// but not included in the returned line.
 ///
 /// All trailing spaces are removed from the line.
-pub(crate) fn normalized_line(input: Span<'_>) -> ParseResult<Span> {
-    let line = line(input); // TEMPORARY: Re-inline this.
-    let x = trim_trailing_spaces((line.rem, line.t));
-    ParseResult { rem: x.0, t: x.1 }
+pub(crate) fn normalized_line(i: Span<'_>) -> ParseResult<Span> {
+    trim_trailing_spaces(line(i))
 }
 
 /// Returns a single _normalized, non-empty_ line from the source
@@ -71,15 +69,8 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> Option<ParseResult<Span>> {
             )
         })
         .map(|line| trim_rem_end_matches(line, '\r'))
-        .map(|line| trim_trailing_spaces((line.rem, line.t)))
-        .and_then(|(rem, inp)| {
-            if inp.is_empty() {
-                None
-                // Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
-            } else {
-                Some(ParseResult { rem, t: inp })
-            }
-        })
+        .map(trim_trailing_spaces)
+        .and_then(|line| if line.t.is_empty() { None } else { Some(line) })
 }
 
 /// Return a normalized, non-empty line that may be continued onto subsequent
@@ -115,12 +106,12 @@ pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
         )
     })
     .map(|line| trim_rem_end_matches(line, '\r'))
-    .map(|line| trim_trailing_spaces((line.rem, line.t)))
-    .and_then(|(rem, inp)| {
-        if inp.is_empty() {
+    .map(trim_trailing_spaces)
+    .and_then(|line| {
+        if line.t.is_empty() {
             Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
         } else {
-            Ok((rem, inp))
+            Ok((line.rem, line.t))
         }
     })
 }
@@ -182,8 +173,8 @@ fn trim_rem_end_matches<'a>(i: ParseResult<'a, Span<'a>>, c: char) -> ParseResul
     }
 }
 
-fn trim_trailing_spaces<'a>(rem_inp: (Span<'a>, Span<'a>)) -> (Span<'a>, Span<'a>) {
-    let inp = rem_inp.1.trim_end_matches(' ');
-    let inp = rem_inp.1.slice(0..inp.len());
-    (rem_inp.0, inp)
+fn trim_trailing_spaces<'a>(i: ParseResult<'a, Span<'a>>) -> ParseResult<Span<'a>> {
+    let inp = i.t.trim_end_matches(' ');
+    let inp = i.t.slice(0..inp.len());
+    ParseResult { rem: i.rem, t: inp }
 }
