@@ -7,23 +7,29 @@ use nom::{
     Err, IResult, Parser, Slice,
 };
 
-use crate::Span;
+use crate::{primitives::ParseResult, Span};
 
 /// Return a single line from the source.
 ///
 /// A line is terminated by end-of-input or a single `\n` character
 /// or a single `\r\n` sequence. The end of line sequence is consumed
 /// but not included in the returned line.
-pub(crate) fn line(input: Span<'_>) -> (Span, Span) {
-    let ri = if let Some(index) = input.find('\n') {
-        (input.slice(index..), input.slice(0..index))
+pub(crate) fn line(input: Span<'_>) -> ParseResult<Span> {
+    let line = if let Some(index) = input.find('\n') {
+        ParseResult {
+            rem: input.slice(index..),
+            t: input.slice(0..index),
+        }
     } else {
         // No `\n` found; the entire input is the line.
-        (input.slice(input.len()..), input)
+        ParseResult {
+            rem: input.slice(input.len()..),
+            t: input,
+        }
     };
 
-    let ri = trim_rem_start_matches(ri, '\n');
-    trim_rem_end_matches(ri, '\r')
+    let line = trim_rem_start_matches(line, '\n');
+    trim_rem_end_matches(line, '\r')
 }
 
 /// Return a single _normalized_ line from the source.
@@ -33,8 +39,8 @@ pub(crate) fn line(input: Span<'_>) -> (Span, Span) {
 /// but not included in the returned line.
 ///
 /// All trailing spaces are removed from the line.
-pub(crate) fn normalized_line(input: Span<'_>) -> (Span, Span) {
-    trim_trailing_spaces(line(input))
+pub(crate) fn normalized_line(i: Span<'_>) -> ParseResult<Span> {
+    trim_trailing_spaces(line(i))
 }
 
 /// Returns a single _normalized, non-empty_ line from the source
@@ -48,22 +54,23 @@ pub(crate) fn normalized_line(input: Span<'_>) -> (Span, Span) {
 ///
 /// Returns `None` if the line becomes empty after trailing spaces have been
 /// removed.
-pub(crate) fn non_empty_line(input: Span<'_>) -> Option<(Span, Span)> {
+pub(crate) fn non_empty_line(input: Span<'_>) -> Option<ParseResult<Span>> {
     // Result<(Spanned<&str>, Spanned<&str>),
     // nom::Err<nom::error::Error<Spanned<&str>>>>
     take_till1::<_, Span, nom::error::Error<Span>>(|c| c == '\n')(input)
         .ok()
-        .map(|ri| trim_rem_start_matches(ri, '\n'))
-        .map(|ri| trim_rem_end_matches(ri, '\r'))
-        .map(trim_trailing_spaces)
-        .and_then(|(rem, inp)| {
-            if inp.is_empty() {
-                None
-                // Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
-            } else {
-                Some((rem, inp))
-            }
+        .map(|line| {
+            trim_rem_start_matches(
+                ParseResult {
+                    rem: line.0,
+                    t: line.1,
+                },
+                '\n',
+            )
         })
+        .map(|line| trim_rem_end_matches(line, '\r'))
+        .map(trim_trailing_spaces)
+        .and_then(|line| if line.t.is_empty() { None } else { Some(line) })
 }
 
 /// Return a normalized, non-empty line that may be continued onto subsequent
@@ -81,30 +88,33 @@ pub(crate) fn non_empty_line(input: Span<'_>) -> Option<(Span, Span)> {
 /// Trailing white spaces are removed from the final line and are not
 /// removed from any lines with continuations.
 ///
-/// Returns an error if the line becomes empty after trailing spaces have been
+/// Returns `None` if the line becomes empty after trailing spaces have been
 /// removed.
-pub(crate) fn line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
+pub(crate) fn line_with_continuation(i: Span<'_>) -> Option<ParseResult<Span>> {
     recognize(pair(
         many0(one_line_with_continuation),
         take_till(|c| c == '\n'),
     ))
-    .parse(input)
-    .map(|ri| trim_rem_start_matches(ri, '\n'))
-    .map(|ri| trim_rem_end_matches(ri, '\r'))
-    .map(trim_trailing_spaces)
-    .and_then(|(rem, inp)| {
-        if inp.is_empty() {
-            Err(Err::Error(Error::new(input, ErrorKind::TakeTill1)))
-        } else {
-            Ok((rem, inp))
-        }
+    .parse(i)
+    .map(|line| {
+        trim_rem_start_matches(
+            ParseResult {
+                rem: line.0,
+                t: line.1,
+            },
+            '\n',
+        )
     })
+    .map(|line| trim_rem_end_matches(line, '\r'))
+    .map(trim_trailing_spaces)
+    .ok()
+    .filter(|line| !line.t.is_empty())
 }
 
 fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
-    let (rem, line) = normalized_line(input);
-    if line.ends_with('\\') {
-        Ok((rem, line))
+    let line = normalized_line(input);
+    if line.t.ends_with('\\') {
+        Ok((line.rem, line.t))
     } else {
         Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
     }
@@ -114,52 +124,52 @@ fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
 ///
 /// An empty line may contain any number of white space characters.
 ///
-/// Returns an error if the line contains any non-white-space characters.
-pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
-    let (i, line) = line(input);
+/// Returns `None` if the line contains any non-white-space characters.
+pub(crate) fn empty_line(i: Span<'_>) -> Option<ParseResult<Span>> {
+    let l = line(i);
 
-    if line.data().bytes().all(nom::character::is_space) {
-        Ok((i, line))
+    if l.t.data().bytes().all(nom::character::is_space) {
+        Some(l)
     } else {
-        Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
+        None
     }
 }
 
 /// Consumes zero or more empty lines.
 ///
 /// Returns the original input if any error occurs or no empty lines are found.
-pub(crate) fn consume_empty_lines(mut input: Span<'_>) -> Span {
-    while !input.data().is_empty() {
-        match empty_line(input) {
-            Ok((rem, _)) => input = rem,
-            Err(_) => break,
+pub(crate) fn consume_empty_lines(mut i: Span<'_>) -> Span {
+    while !i.data().is_empty() {
+        match empty_line(i) {
+            Some(line) => i = line.rem,
+            None => break,
         }
     }
 
-    input
+    i
 }
 
-fn trim_rem_start_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
-    if let Some(rem) = rem_inp.0.strip_prefix(c) {
-        let prefix_len = rem_inp.0.len() - rem.len();
-        let rem = rem_inp.0.slice(prefix_len..);
-        (rem, rem_inp.1)
+fn trim_rem_start_matches<'a>(i: ParseResult<'a, Span<'a>>, c: char) -> ParseResult<Span<'a>> {
+    if let Some(rem) = i.rem.strip_prefix(c) {
+        let prefix_len = i.rem.len() - rem.len();
+        let rem = i.rem.slice(prefix_len..);
+        ParseResult { rem, t: i.t }
     } else {
-        rem_inp
+        i
     }
 }
 
-fn trim_rem_end_matches<'a>(rem_inp: (Span<'a>, Span<'a>), c: char) -> (Span<'a>, Span<'a>) {
-    if let Some(inp) = rem_inp.1.strip_suffix(c) {
-        let inp = rem_inp.1.slice(0..inp.len());
-        (rem_inp.0, inp)
+fn trim_rem_end_matches<'a>(i: ParseResult<'a, Span<'a>>, c: char) -> ParseResult<Span<'a>> {
+    if let Some(inp) = i.t.strip_suffix(c) {
+        let inp = i.t.slice(0..inp.len());
+        ParseResult { rem: i.rem, t: inp }
     } else {
-        rem_inp
+        i
     }
 }
 
-fn trim_trailing_spaces<'a>(rem_inp: (Span<'a>, Span<'a>)) -> (Span<'a>, Span<'a>) {
-    let inp = rem_inp.1.trim_end_matches(' ');
-    let inp = rem_inp.1.slice(0..inp.len());
-    (rem_inp.0, inp)
+fn trim_trailing_spaces<'a>(i: ParseResult<'a, Span<'a>>) -> ParseResult<Span<'a>> {
+    let inp = i.t.trim_end_matches(' ');
+    let inp = i.t.slice(0..inp.len());
+    ParseResult { rem: i.rem, t: inp }
 }

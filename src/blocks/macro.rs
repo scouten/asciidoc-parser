@@ -30,14 +30,14 @@ pub struct MacroBlock<'a> {
 
 impl<'a> MacroBlock<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (rem, line) = normalized_line(source);
+        let line = normalized_line(source);
 
         // Line must end with `]`; otherwise, it's not a block macro.
-        if !line.ends_with(']') {
-            return Err(Err::Error(Error::new(line, ErrorKind::Tag)));
+        if !line.t.ends_with(']') {
+            return Err(Err::Error(Error::new(line.t, ErrorKind::Tag)));
         }
 
-        let line_wo_brace = line.slice(0..line.len() - 1);
+        let line_wo_brace = line.t.slice(0..line.t.len() - 1);
 
         let (attrlist, (name, _colons, target, _braces)) =
             tuple((ident, tag("::"), take_until("["), tag("[")))(line_wo_brace)?;
@@ -45,7 +45,7 @@ impl<'a> MacroBlock<'a> {
         let (_, attrlist) = Attrlist::parse(attrlist)?;
 
         Ok((
-            consume_empty_lines(rem),
+            consume_empty_lines(line.rem),
             Self {
                 name,
                 target: if target.is_empty() {
@@ -54,7 +54,7 @@ impl<'a> MacroBlock<'a> {
                     Some(target)
                 },
                 attrlist,
-                source: line,
+                source: line.t,
             },
         ))
     }

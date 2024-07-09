@@ -1,6 +1,12 @@
 use std::slice::Iter;
 
-use nom::{bytes::complete::tag, character::complete::space1, multi::many0, IResult};
+use nom::{
+    bytes::complete::tag,
+    character::complete::space1,
+    error::{Error, ErrorKind},
+    multi::many0,
+    Err, IResult,
+};
 
 use crate::{
     document::Attribute,
@@ -27,7 +33,9 @@ impl<'a> Header<'a> {
         let (rem, attributes) = many0(Attribute::parse)(rem)?;
 
         // Header must be followed by an empty line.
-        let (_, _) = empty_line(rem)?;
+        if empty_line(rem).is_none() {
+            return Err(Err::Error(Error::new(rem, ErrorKind::NonEmpty)));
+        }
 
         let source = trim_input_for_rem(source, rem);
         Ok((
@@ -58,13 +66,13 @@ impl<'a> HasSpan<'a> for Header<'a> {
 }
 
 fn parse_title(i: Span<'_>) -> IResult<Span, Span<'_>> {
-    let (rem, line) = non_empty_line(i).ok_or(nom::Err::Error(nom::error::Error::new(
+    let line = non_empty_line(i).ok_or(nom::Err::Error(nom::error::Error::new(
         i,
         nom::error::ErrorKind::TakeTill1,
     )))?;
 
-    let (title, _) = tag("=")(line)?;
+    let (title, _) = tag("=")(line.t)?;
     let (title, _) = space1(title)?;
 
-    Ok((rem, title))
+    Ok((line.rem, title))
 }

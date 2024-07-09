@@ -10,10 +10,11 @@ pub struct SimpleBlock<'a>(Inline<'a>);
 
 impl<'a> SimpleBlock<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (rem, inline) = Inline::parse_lines(source).ok_or(nom::Err::Error(
-            nom::error::Error::new(source, nom::error::ErrorKind::TakeTill1),
-        ))?;
-        Ok((consume_empty_lines(rem), Self(inline)))
+        let inline = Inline::parse_lines(source).ok_or(nom::Err::Error(nom::error::Error::new(
+            source,
+            nom::error::ErrorKind::TakeTill1,
+        )))?;
+        Ok((consume_empty_lines(inline.rem), Self(inline.t)))
     }
 
     /// Return the inline content of this block.

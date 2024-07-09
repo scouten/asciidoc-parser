@@ -1,4 +1,9 @@
-use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
+use nom::{
+    bytes::complete::tag,
+    character::complete::space0,
+    error::{Error, ErrorKind},
+    Err, IResult, Slice,
+};
 
 use crate::{
     primitives::{ident, line_with_continuation, trim_input_for_rem},
@@ -18,11 +23,13 @@ pub struct Attribute<'a> {
 }
 
 impl<'a> Attribute<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (rem, line) = line_with_continuation(source)?;
+    pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
+        let Some(attr_line) = line_with_continuation(i) else {
+            return Err(Err::Error(Error::new(i, ErrorKind::TakeTill1)));
+        };
 
         let mut unset = false;
-        let (mut line, _) = tag(":")(line)?;
+        let (mut line, _) = tag(":")(attr_line.t)?;
 
         if line.starts_with('!') {
             unset = true;
@@ -48,9 +55,9 @@ impl<'a> Attribute<'a> {
             RawAttributeValue::Value(value)
         };
 
-        let source = trim_input_for_rem(source, rem);
+        let source = trim_input_for_rem(i, attr_line.rem);
         Ok((
-            rem,
+            attr_line.rem,
             Self {
                 name,
                 value,
