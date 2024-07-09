@@ -7,23 +7,30 @@ use nom::{
     Err, IResult, Parser, Slice,
 };
 
-use crate::Span;
+use crate::{primitives::ParseResult, Span};
 
 /// Return a single line from the source.
 ///
 /// A line is terminated by end-of-input or a single `\n` character
 /// or a single `\r\n` sequence. The end of line sequence is consumed
 /// but not included in the returned line.
-pub(crate) fn line(input: Span<'_>) -> (Span, Span) {
+pub(crate) fn line(input: Span<'_>) -> ParseResult<Span> {
     let ri = if let Some(index) = input.find('\n') {
-        (input.slice(index..), input.slice(0..index))
+        ParseResult {
+            rem: input.slice(index..),
+            t: input.slice(0..index),
+        }
     } else {
         // No `\n` found; the entire input is the line.
-        (input.slice(input.len()..), input)
+        ParseResult {
+            rem: input.slice(input.len()..),
+            t: input,
+        }
     };
 
-    let ri = trim_rem_start_matches(ri, '\n');
-    trim_rem_end_matches(ri, '\r')
+    let ri = trim_rem_start_matches((ri.rem, ri.t), '\n');
+    let ri = trim_rem_end_matches(ri, '\r');
+    ParseResult { rem: ri.0, t: ri.1 }
 }
 
 /// Return a single _normalized_ line from the source.
@@ -34,7 +41,8 @@ pub(crate) fn line(input: Span<'_>) -> (Span, Span) {
 ///
 /// All trailing spaces are removed from the line.
 pub(crate) fn normalized_line(input: Span<'_>) -> (Span, Span) {
-    trim_trailing_spaces(line(input))
+    let line = line(input); // TEMPORARY: Re-inline this.
+    trim_trailing_spaces((line.rem, line.t))
 }
 
 /// Returns a single _normalized, non-empty_ line from the source
@@ -116,10 +124,10 @@ fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
 ///
 /// Returns an error if the line contains any non-white-space characters.
 pub(crate) fn empty_line(input: Span<'_>) -> IResult<Span, Span> {
-    let (i, line) = line(input);
+    let l = line(input);
 
-    if line.data().bytes().all(nom::character::is_space) {
-        Ok((i, line))
+    if l.t.data().bytes().all(nom::character::is_space) {
+        Ok((l.rem, l.t))
     } else {
         Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
     }

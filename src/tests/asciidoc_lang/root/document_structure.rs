@@ -253,10 +253,10 @@ mod lines {
         // == Section Title
         // ----
 
-        let (rem, line) = line(Span::new("== Section Title\n", true));
+        let l = line(Span::new("== Section Title\n", true));
 
         assert_eq!(
-            rem,
+            l.rem,
             TSpan {
                 data: "",
                 line: 2,
@@ -266,7 +266,7 @@ mod lines {
         );
 
         assert_eq!(
-            line,
+            l.t,
             TSpan {
                 data: "== Section Title",
                 line: 1,
