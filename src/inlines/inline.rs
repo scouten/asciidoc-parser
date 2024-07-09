@@ -55,15 +55,14 @@ impl<'a> Inline<'a> {
                 break;
             }
 
-            let (span3, interp) = parse_interpreted(span)?;
+            let interp = parse_interpreted(span)?;
 
-            if span3.is_empty() && inlines.is_empty() {
-                return Some(ParseResult { t: interp, rem });
+            if interp.rem.is_empty() && inlines.is_empty() {
+                return Some(interp);
             }
 
-            inlines.push(interp);
-
-            span = span3;
+            inlines.push(interp.t);
+            span = interp.rem;
 
             uninterp = parse_uninterpreted(span);
         }
@@ -148,8 +147,11 @@ fn parse_uninterpreted(i: Span<'_>) -> ParseResult<Span> {
 }
 
 // Parse the block as a special "interpreted" inline sequence or error out.
-fn parse_interpreted(i: Span<'_>) -> Option<(Span, Inline<'_>)> {
+fn parse_interpreted(i: Span<'_>) -> Option<ParseResult<Inline<'_>>> {
     InlineMacro::parse(i)
-        .map(|(rem, x)| (rem, Inline::Macro(x)))
+        .map(|(rem, x)| ParseResult {
+            t: Inline::Macro(x),
+            rem,
+        })
         .ok()
 }
