@@ -10,6 +10,8 @@ repository = "https://github.com/scouten/asciidoc-parser"
 rust-version = "1.74.0"
 
 [dependencies]
+bytecount = "0.6.7"
+memchr = "2.6.4"
 nom = "7.1"
 thiserror = "1.0.50"
 
