@@ -46,3 +46,19 @@ mod impl_nom_compare_no_case {
         assert_eq!(span.compare_no_case("ABCE"), CompareResult::Error);
     }
 }
+
+mod impl_nom_input_iter {
+    use nom::InputIter;
+
+    use crate::Span;
+
+    #[test]
+    fn iter_indices() {
+        let span = Span::new("abc");
+        let mut i = span.iter_indices();
+        assert_eq!(i.next(), Some((0, 'a')));
+        assert_eq!(i.next(), Some((1, 'b')));
+        assert_eq!(i.next(), Some((2, 'c')));
+        assert_eq!(i.next(), None);
+    }
+}
