@@ -60,7 +60,7 @@ use nom::{
 /// }
 /// ```
 
-/// You can wrap your input in this struct with [`Spanned::new`]
+/// You can wrap your input in this struct with [`Span::new`].
 #[derive(Clone, Debug, Copy, PartialEq, Eq)]
 pub struct Span<'a> {
     data: &'a str,
@@ -324,4 +324,12 @@ where
             offset: self.offset + offset,
         }
     }
+}
+
+/// Any syntactic element can describe its location
+/// within the source material using this trait.
+pub trait HasSpan<'a> {
+    /// Return a [`Span`] describing the syntactic element's
+    /// location within the source string/file.
+    fn span(&'a self) -> &'a Span<'a>;
 }

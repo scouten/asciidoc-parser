@@ -8,14 +8,13 @@ use nom::{
     IResult, Parser, Slice,
 };
 
+use crate::Span;
+
 mod line;
 #[allow(unused_imports)]
 pub(crate) use line::{
     consume_empty_lines, empty_line, line, line_with_continuation, non_empty_line, normalized_line,
 };
-
-mod span;
-pub use span::Span;
 
 /// Represents a successful parse result and subsequent remainder of the input
 /// stream.

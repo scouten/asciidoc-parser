@@ -586,13 +586,12 @@ mod section {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
-        has_span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             inlines::TInline,
             TSpan,
         },
-        Span,
+        HasSpan, Span,
     };
 
     #[test]
