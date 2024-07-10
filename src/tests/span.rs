@@ -80,3 +80,18 @@ mod impl_nom_input_iter {
         }
     }
 }
+
+mod impl_nom_input_take {
+    use nom::InputTake;
+
+    use crate::Span;
+
+    #[test]
+    fn take() {
+        let span = Span::new("abc").take(2);
+        assert_eq!(span.data(), "ab");
+        assert_eq!(span.line(), 1);
+        assert_eq!(span.col(), 1);
+        assert_eq!(span.byte_offset(), 0);
+    }
+}
