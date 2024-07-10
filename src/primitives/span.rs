@@ -1,7 +1,28 @@
-use std::str::{CharIndices, Chars};
+// Adapted from nom-span, which comes with the following license:
 
-use nom::{
-    Compare, FindSubstring, InputIter, InputLength, InputTake, InputTakeAtPosition, Offset, Slice,
+// Copyright 2023 Jules Guesnon
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the “Software”), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+use std::{
+    ops::{RangeFrom, RangeTo},
+    str::FromStr,
 };
 
 /// Represents a subset of the overall input stream.
@@ -13,116 +34,170 @@ use nom::{
 /// to yield another `Span` with annotations for the end of the
 /// syntactic element in question.
 ///
-/// TO DO: Planning to remove dependency on `nom_span` crate.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Span<'a> {
-    s: nom_span::Spanned<&'a str>,
+/// ## How to use it?
+///
+/// Here is a basic example of how to create the input and how to retrieve all
+/// the informations you need.
+///
+/// ```ignore
+/// use crate::Span;
+///
+/// fn main() {
+///     let span = Span::new(
+///       r#"{"hello": "world 🙌"}"#,
+///     );
+///
+///     assert_eq!(span.line(), 1);
+///     assert_eq!(span.col(), 1);
+///     assert_eq!(span.byte_offset(), 0);
+/// }
+/// ```
+use bytecount::num_chars;
+use memchr::Memchr;
+use nom::{
+    AsBytes, Compare, Err, ExtendInto, FindSubstring, FindToken, InputIter, InputLength, InputTake,
+    InputTakeAtPosition, Offset, ParseTo, Slice,
+};
+
+/// You can wrap your input in this struct with [`Spanned::new`]
+#[derive(Clone, Debug, Copy, PartialEq, Eq)]
+pub struct Span {
+    data: &str,
+    line: usize,
+    col: usize,
+    offset: usize,
 }
 
-impl<'a> Span<'a> {
-    pub fn new(data: &'a str) -> Self {
+impl Span {
+    /// Create a new `Span` that describes an entire UTF-8 input stream.
+    pub fn new(data: &str) -> Self {
         Self {
-            s: nom_span::Spanned::new(data, true),
+            data,
+            line: 1,
+            col: 1,
+            offset: 0,
         }
     }
 
-    /// Get the current line number
+    /// Get the current line number.
     pub fn line(&self) -> usize {
-        self.s.line()
+        self.line
     }
 
-    /// Get the current column number
+    /// Get the current column number.
     pub fn col(&self) -> usize {
-        self.s.col()
+        self.col
     }
 
-    /// Get the current byte offset
+    /// Get the current byte offset.
     pub fn byte_offset(&self) -> usize {
-        self.s.byte_offset()
+        self.offset
     }
 
-    /// Get the current data in the span
-    pub fn data(&self) -> &'a str {
-        &self.s.data()
-    }
-}
-
-impl<'a> core::convert::AsRef<str> for Span<'a> {
-    fn as_ref(&self) -> &str {
-        self.s.as_ref()
+    /// Get the current data in the span.
+    pub fn data(&self) -> &&str {
+        &self.data
     }
 }
 
-impl<'a> core::ops::Deref for Span<'a> {
-    type Target = &'a str;
+impl std::ops::Deref<&str> for Span {
+    type Target = &str;
 
     fn deref(&self) -> &Self::Target {
-        self.s.deref()
+        &self.data
     }
 }
 
-impl<'a> Compare<&'a str> for Span<'a> {
-    fn compare(&self, t: &'a str) -> nom::CompareResult {
-        self.s.compare(t)
-    }
-
-    fn compare_no_case(&self, t: &'a str) -> nom::CompareResult {
-        self.s.compare_no_case(t)
+impl std::convert::AsRef<&str> for Span {
+    fn as_ref(&self) -> &U {
+        self.data.as_ref()
     }
 }
 
-impl<'a> FindSubstring<&str> for Span<'a> {
+impl AsBytes for Span {
+    fn as_bytes(&self) -> &[u8] {
+        self.data.as_bytes()
+    }
+}
+
+impl Compare<&str> for Span {
+    fn compare(&self, t: &str) -> nom::CompareResult {
+        self.data.compare(t)
+    }
+
+    fn compare_no_case(&self, t: &str) -> nom::CompareResult {
+        self.data.compare_no_case(t)
+    }
+}
+
+impl ExtendInto for Span {
+    type Extender = &str::Extender;
+    type Item = &str::Item;
+
+    fn new_builder(&self) -> Self::Extender {
+        self.data.new_builder()
+    }
+
+    fn extend_into(&self, acc: &mut Self::Extender) {
+        self.data.extend_into(acc);
+    }
+}
+
+impl FindSubstring<&str> for Span {
     fn find_substring(&self, substr: &str) -> Option<usize> {
-        self.s.find_substring(substr)
+        self.data.find_substring(substr)
     }
 }
 
-impl<'a> InputIter for Span<'a> {
-    type Item = char;
-    type Iter = CharIndices<'a>;
-    type IterElem = Chars<'a>;
+impl<Token> FindToken<Token> for Span {
+    fn find_token(&self, token: Token) -> bool {
+        self.data.find_token(token)
+    }
+}
+
+impl InputIter for Span {
+    type Item = &str::Item;
+    type Iter = &str::Iter;
+    type IterElem = &str::IterElem;
 
     fn iter_indices(&self) -> Self::Iter {
-        self.s.iter_indices()
+        self.data.iter_indices()
     }
 
     fn iter_elements(&self) -> Self::IterElem {
-        self.s.iter_elements()
+        self.data.iter_elements()
     }
 
     fn position<P>(&self, predicate: P) -> Option<usize>
     where
         P: Fn(Self::Item) -> bool,
     {
-        self.s.position(predicate)
+        self.data.position(predicate)
     }
 
     fn slice_index(&self, count: usize) -> Result<usize, nom::Needed> {
-        self.s.slice_index(count)
+        self.data.slice_index(count)
     }
 }
 
-impl<'a> InputLength for Span<'a> {
+impl InputLength for Span {
     fn input_len(&self) -> usize {
-        self.s.input_len()
+        self.data.input_len()
     }
 }
 
-impl<'a> InputTake for Span<'a> {
+impl InputTake for Span {
     fn take(&self, count: usize) -> Self {
-        Self {
-            s: self.s.take(count),
-        }
+        self.slice(..count)
     }
 
     fn take_split(&self, count: usize) -> (Self, Self) {
-        let (a, b) = self.s.take_split(count);
-        (Self { s: a }, Self { s: b })
+        (self.slice(count..), self.slice(..count))
     }
 }
 
-impl<'a> InputTakeAtPosition for Span<'a> {
-    type Item = char;
+impl InputTakeAtPosition for Span {
+    type Item = <&str as InputIter>::Item;
 
     fn split_at_position<P, E: nom::error::ParseError<Self>>(
         &self,
@@ -131,23 +206,24 @@ impl<'a> InputTakeAtPosition for Span<'a> {
     where
         P: Fn(Self::Item) -> bool,
     {
-        self.s
-            .split_at_position(predicate)
-            .map(|(s1, s2)| (Self { s: s1 }, Self { s: s2 }))
-            .map_err(span_err)
+        match self.data.position(predicate) {
+            Some(n) => Ok(self.take_split(n)),
+            None => Err(Err::Incomplete(nom::Needed::new(1))),
+        }
     }
 
     fn split_at_position1<P, E: nom::error::ParseError<Self>>(
         &self,
         predicate: P,
-        e: nom::error::ErrorKind,
+        _e: nom::error::ErrorKind,
     ) -> nom::IResult<Self, Self, E>
     where
         P: Fn(Self::Item) -> bool,
     {
-        self.s
-            .split_at_position1(predicate, e)
-            .map(|(s1, s2)| (Self { s: s1 }, Self { s: s2 }))
+        match self.data.position(predicate) {
+            Some(n) => Ok(self.take_split(n)),
+            None => Err(Err::Incomplete(nom::Needed::new(1))),
+        }
     }
 
     fn split_at_position_complete<P, E: nom::error::ParseError<Self>>(
@@ -157,9 +233,10 @@ impl<'a> InputTakeAtPosition for Span<'a> {
     where
         P: Fn(Self::Item) -> bool,
     {
-        self.s
-            .split_at_position_complete(predicate)
-            .map(|s| Self { s })
+        match self.split_at_position(predicate) {
+            Err(Err::Incomplete(_)) => Ok(self.take_split(self.input_len())),
+            res => res,
+        }
     }
 
     fn split_at_position1_complete<P, E: nom::error::ParseError<Self>>(
@@ -170,25 +247,75 @@ impl<'a> InputTakeAtPosition for Span<'a> {
     where
         P: Fn(Self::Item) -> bool,
     {
-        self.s
-            .split_at_position1_complete(predicate, e)
-            .map(|s| Self { s })
-    }
-}
-
-impl<'a> Offset for Span<'a> {
-    fn offset(&self, second: &Self) -> usize {
-        self.s.offset(&second.s)
-    }
-}
-
-impl<'a, R> Slice<R> for Span<'a> {
-    fn slice(&self, range: R) -> Self {
-        Self {
-            s: self.s.slice(range),
+        match self.data.position(predicate) {
+            Some(0) => Err(Err::Error(E::from_error_kind(self.clone(), e))),
+            Some(n) => Ok(self.take_split(n)),
+            None => {
+                if self.data.input_len() == 0 {
+                    Err(Err::Error(E::from_error_kind(self.clone(), e)))
+                } else {
+                    Ok(self.take_split(self.input_len()))
+                }
+            }
         }
     }
 }
 
-fn map_span_err(e: nom::error::ParseError<nom_span::Spanned<&str>>) -> nom::error::ParseError<Span> {
+impl Offset for Span {
+    fn offset(&self, second: &Self) -> usize {
+        self.data.offset(&second.data)
+    }
+}
+
+impl<R: FromStr> ParseTo<R> for Span {
+    fn parse_to(&self) -> Option<R> {
+        self.data.parse_to()
+    }
+}
+
+impl<R> Slice<R> for Span {
+    fn slice(&self, range: R) -> Self {
+        let next_data = self.data.slice(range);
+
+        let offset = self.data.offset(&next_data);
+
+        let old_data = self.data.slice(..offset);
+
+        if offset == 0 {
+            return Self {
+                data: next_data,
+                line: self.line,
+                col: self.col,
+                offset: self.offset,
+            };
+        }
+
+        let new_line_iter = Memchr::new(b'\n', old_data.as_bytes());
+
+        let mut lines_to_add = 0;
+        let mut last_index = None;
+        for i in new_line_iter {
+            lines_to_add += 1;
+            last_index = Some(i);
+        }
+        let last_index = last_index.map_or(0, |v| v + 1);
+
+        let col = if self.handle_utf8 {
+            num_chars(old_data.as_bytes().slice(last_index..))
+        } else {
+            old_data.as_bytes().len() - last_index
+        };
+
+        Self {
+            data: next_data,
+            line: self.line + lines_to_add,
+            col: if lines_to_add == 0 {
+                self.col + col
+            } else {
+                // When going to a new line, char starts at 1
+                col + 1
+            },
+            offset: self.offset + offset,
+        }
+    }
 }
