@@ -29,8 +29,8 @@ use std::{
 use bytecount::num_chars;
 use memchr::Memchr;
 use nom::{
-    AsBytes, Compare, Err, FindSubstring, FindToken, InputIter, InputLength, InputTake,
-    InputTakeAtPosition, Offset, ParseTo, Slice,
+    AsBytes, Compare, Err, FindSubstring, InputIter, InputLength, InputTake, InputTakeAtPosition,
+    Offset, ParseTo, Slice,
 };
 
 /// Represents a subset of the overall UTF-8 input stream.
@@ -151,6 +151,7 @@ impl<'a> FindSubstring<&str> for Span<'a> {
     }
 }
 
+/* Maybe we don't need this?
 impl<'a, Token> FindToken<Token> for Span<'a>
 where
     &'a str: FindToken<Token>,
@@ -159,6 +160,7 @@ where
         self.data.find_token(token)
     }
 }
+*/
 
 impl<'a> InputIter for Span<'a>
 where
