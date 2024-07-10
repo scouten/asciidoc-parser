@@ -97,13 +97,13 @@ impl<'a> Span<'a> {
 
     /// Get the current data in the span.
     pub fn data(&self) -> &'a str {
-        &self.data
+        self.data
     }
 }
 
 impl<'a> std::convert::AsRef<str> for Span<'a> {
     fn as_ref(&self) -> &str {
-        self.data.as_ref()
+        self.data
     }
 }
 
@@ -257,11 +257,11 @@ impl<'a> InputTakeAtPosition for Span<'a> {
         P: Fn(Self::Item) -> bool,
     {
         match self.data.position(predicate) {
-            Some(0) => Err(Err::Error(E::from_error_kind(self.clone(), e))),
+            Some(0) => Err(Err::Error(E::from_error_kind(*self, e))),
             Some(n) => Ok(self.take_split(n)),
             None => {
                 if self.data.input_len() == 0 {
-                    Err(Err::Error(E::from_error_kind(self.clone(), e)))
+                    Err(Err::Error(E::from_error_kind(*self, e)))
                 } else {
                     Ok(self.take_split(self.input_len()))
                 }
@@ -272,7 +272,7 @@ impl<'a> InputTakeAtPosition for Span<'a> {
 
 impl<'a> Offset for Span<'a> {
     fn offset(&self, second: &Self) -> usize {
-        self.data.offset(&second.data)
+        self.data.offset(second.data)
     }
 }
 
@@ -288,7 +288,7 @@ where
 {
     fn slice(&self, range: R) -> Self {
         let next_data = self.data.slice(range);
-        let offset = self.data.offset(&next_data);
+        let offset = self.data.offset(next_data);
 
         if offset == 0 {
             return Self {
