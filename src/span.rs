@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 use std::{
+    convert::AsRef,
     ops::{Deref, RangeTo},
     str::FromStr,
 };
@@ -99,15 +100,15 @@ impl<'a> Span<'a> {
     }
 }
 
-impl<'a> std::convert::AsRef<str> for Span<'a> {
-    fn as_ref(&self) -> &str {
-        self.data
-    }
-}
-
 impl<'a> AsBytes for Span<'a> {
     fn as_bytes(&self) -> &'a [u8] {
         self.data.as_bytes()
+    }
+}
+
+impl<'a> AsRef<str> for Span<'a> {
+    fn as_ref(&self) -> &str {
+        self.data
     }
 }
 
