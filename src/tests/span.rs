@@ -11,6 +11,8 @@ fn test_happy_case() {
 
 #[test]
 fn impl_as_bytes() {
+    use nom::AsBytes;
+
     let span = Span::new("abcdef");
     assert_eq!(span.as_bytes(), b"abcdef");
 }
