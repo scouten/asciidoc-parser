@@ -46,13 +46,11 @@ use nom::{
 /// Here is a basic example of how to create the input and how to retrieve all
 /// the informations you need.
 ///
-/// ```ignore
-/// use crate::Span;
-///
+/// ```
+/// # use asciidoc_parser::Span;
+/// #
 /// fn main() {
-///     let span = Span::new(
-///       r#"{"hello": "world 🙌"}"#,
-///     );
+///     let span = Span::new(r#"{"hello": "world 🙌"}"#);
 ///
 ///     assert_eq!(span.line(), 1);
 ///     assert_eq!(span.col(), 1);
