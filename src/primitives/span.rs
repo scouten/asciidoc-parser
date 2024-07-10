@@ -21,11 +21,18 @@
 // SOFTWARE.
 
 use std::{
-    ops::{RangeFrom, RangeTo},
+    ops::{Deref, RangeTo},
     str::FromStr,
 };
 
-/// Represents a subset of the overall input stream.
+use bytecount::num_chars;
+use memchr::Memchr;
+use nom::{
+    AsBytes, Compare, Err, FindSubstring, FindToken, InputIter, InputLength, InputTake,
+    InputTakeAtPosition, Offset, ParseTo, Slice,
+};
+
+/// Represents a subset of the overall UTF-8 input stream.
 ///
 /// Annotated with 1-based line and column numbers relative to the
 /// beginning of the overall input stream.
@@ -52,25 +59,19 @@ use std::{
 ///     assert_eq!(span.byte_offset(), 0);
 /// }
 /// ```
-use bytecount::num_chars;
-use memchr::Memchr;
-use nom::{
-    AsBytes, Compare, Err, ExtendInto, FindSubstring, FindToken, InputIter, InputLength, InputTake,
-    InputTakeAtPosition, Offset, ParseTo, Slice,
-};
 
 /// You can wrap your input in this struct with [`Spanned::new`]
 #[derive(Clone, Debug, Copy, PartialEq, Eq)]
-pub struct Span {
-    data: &str,
+pub struct Span<'a> {
+    data: &'a str,
     line: usize,
     col: usize,
     offset: usize,
 }
 
-impl Span {
+impl<'a> Span<'a> {
     /// Create a new `Span` that describes an entire UTF-8 input stream.
-    pub fn new(data: &str) -> Self {
+    pub fn new(data: &'a str) -> Self {
         Self {
             data,
             line: 1,
@@ -95,32 +96,24 @@ impl Span {
     }
 
     /// Get the current data in the span.
-    pub fn data(&self) -> &&str {
+    pub fn data(&self) -> &'a str {
         &self.data
     }
 }
 
-impl std::ops::Deref<&str> for Span {
-    type Target = &str;
-
-    fn deref(&self) -> &Self::Target {
-        &self.data
-    }
-}
-
-impl std::convert::AsRef<&str> for Span {
-    fn as_ref(&self) -> &U {
+impl<'a> std::convert::AsRef<str> for Span<'a> {
+    fn as_ref(&self) -> &str {
         self.data.as_ref()
     }
 }
 
-impl AsBytes for Span {
-    fn as_bytes(&self) -> &[u8] {
+impl<'a> AsBytes for Span<'a> {
+    fn as_bytes(&self) -> &'a [u8] {
         self.data.as_bytes()
     }
 }
 
-impl Compare<&str> for Span {
+impl<'a> Compare<&str> for Span<'a> {
     fn compare(&self, t: &str) -> nom::CompareResult {
         self.data.compare(t)
     }
@@ -130,9 +123,18 @@ impl Compare<&str> for Span {
     }
 }
 
-impl ExtendInto for Span {
-    type Extender = &str::Extender;
-    type Item = &str::Item;
+impl<'a> Deref for Span<'a> {
+    type Target = &'a str;
+
+    fn deref(&self) -> &Self::Target {
+        &self.data
+    }
+}
+
+/* maybe this isn't needed either?
+impl<'a> ExtendInto for Span<'a> {
+    type Extender = &'a <str as ExtendInto>::Extender;
+    type Item = &'a <str as ExtendInto>::Item;
 
     fn new_builder(&self) -> Self::Extender {
         self.data.new_builder()
@@ -142,23 +144,30 @@ impl ExtendInto for Span {
         self.data.extend_into(acc);
     }
 }
+*/
 
-impl FindSubstring<&str> for Span {
+impl<'a> FindSubstring<&str> for Span<'a> {
     fn find_substring(&self, substr: &str) -> Option<usize> {
         self.data.find_substring(substr)
     }
 }
 
-impl<Token> FindToken<Token> for Span {
+impl<'a, Token> FindToken<Token> for Span<'a>
+where
+    &'a str: FindToken<Token>,
+{
     fn find_token(&self, token: Token) -> bool {
         self.data.find_token(token)
     }
 }
 
-impl InputIter for Span {
-    type Item = &str::Item;
-    type Iter = &str::Iter;
-    type IterElem = &str::IterElem;
+impl<'a> InputIter for Span<'a>
+where
+    &'a str: InputIter,
+{
+    type Item = <&'a str as InputIter>::Item;
+    type Iter = <&'a str as InputIter>::Iter;
+    type IterElem = <&'a str as InputIter>::IterElem;
 
     fn iter_indices(&self) -> Self::Iter {
         self.data.iter_indices()
@@ -180,13 +189,13 @@ impl InputIter for Span {
     }
 }
 
-impl InputLength for Span {
+impl<'a> InputLength for Span<'a> {
     fn input_len(&self) -> usize {
         self.data.input_len()
     }
 }
 
-impl InputTake for Span {
+impl<'a> InputTake for Span<'a> {
     fn take(&self, count: usize) -> Self {
         self.slice(..count)
     }
@@ -196,8 +205,8 @@ impl InputTake for Span {
     }
 }
 
-impl InputTakeAtPosition for Span {
-    type Item = <&str as InputIter>::Item;
+impl<'a> InputTakeAtPosition for Span<'a> {
+    type Item = <&'a str as InputIter>::Item;
 
     fn split_at_position<P, E: nom::error::ParseError<Self>>(
         &self,
@@ -261,25 +270,25 @@ impl InputTakeAtPosition for Span {
     }
 }
 
-impl Offset for Span {
+impl<'a> Offset for Span<'a> {
     fn offset(&self, second: &Self) -> usize {
         self.data.offset(&second.data)
     }
 }
 
-impl<R: FromStr> ParseTo<R> for Span {
+impl<'a, R: FromStr> ParseTo<R> for Span<'a> {
     fn parse_to(&self) -> Option<R> {
         self.data.parse_to()
     }
 }
 
-impl<R> Slice<R> for Span {
+impl<'a, R> Slice<R> for Span<'a>
+where
+    &'a str: Slice<R> + Offset + AsBytes + Slice<RangeTo<usize>>,
+{
     fn slice(&self, range: R) -> Self {
         let next_data = self.data.slice(range);
-
         let offset = self.data.offset(&next_data);
-
-        let old_data = self.data.slice(..offset);
 
         if offset == 0 {
             return Self {
@@ -290,6 +299,7 @@ impl<R> Slice<R> for Span {
             };
         }
 
+        let old_data = self.data.slice(..offset);
         let new_line_iter = Memchr::new(b'\n', old_data.as_bytes());
 
         let mut lines_to_add = 0;
@@ -300,11 +310,7 @@ impl<R> Slice<R> for Span {
         }
         let last_index = last_index.map_or(0, |v| v + 1);
 
-        let col = if self.handle_utf8 {
-            num_chars(old_data.as_bytes().slice(last_index..))
-        } else {
-            old_data.as_bytes().len() - last_index
-        };
+        let col = num_chars(old_data.as_bytes().slice(last_index..));
 
         Self {
             data: next_data,

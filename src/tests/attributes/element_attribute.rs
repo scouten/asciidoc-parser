@@ -13,23 +13,23 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let (_, b1) = ElementAttribute::parse(Span::new("abc", true)).unwrap();
+    let (_, b1) = ElementAttribute::parse(Span::new("abc")).unwrap();
     let b2 = b1.clone();
     assert_eq!(b1, b2);
 }
 
 #[test]
 fn empty_source() {
-    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::IsNot));
+    let expected_err = Err::Error(Error::new(Span::new(""), ErrorKind::IsNot));
 
-    let actual_err = ElementAttribute::parse(Span::new("", true)).unwrap_err();
+    let actual_err = ElementAttribute::parse(Span::new("")).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn only_spaces() {
-    let (rem, attr) = ElementAttribute::parse(Span::new("   ", true)).unwrap();
+    let (rem, attr) = ElementAttribute::parse(Span::new("   ")).unwrap();
 
     assert_eq!(
         rem,
@@ -75,7 +75,7 @@ fn only_spaces() {
 
 #[test]
 fn unquoted_and_unnamed_value() {
-    let (rem, attr) = ElementAttribute::parse(Span::new("abc", true)).unwrap();
+    let (rem, attr) = ElementAttribute::parse(Span::new("abc")).unwrap();
 
     assert_eq!(
         rem,
@@ -121,7 +121,7 @@ fn unquoted_and_unnamed_value() {
 
 #[test]
 fn unquoted_stops_at_comma() {
-    let (rem, attr) = ElementAttribute::parse(Span::new("abc,def", true)).unwrap();
+    let (rem, attr) = ElementAttribute::parse(Span::new("abc,def")).unwrap();
 
     assert_eq!(
         rem,
@@ -177,7 +177,7 @@ mod quoted_string {
 
     #[test]
     fn err_unterminated_double_quote() {
-        let err = ElementAttribute::parse(Span::new("\"xxx", true)).unwrap_err();
+        let err = ElementAttribute::parse(Span::new("\"xxx")).unwrap_err();
 
         let Err::Error(e) = err else {
             panic!("Expected Err::Error: {err:#?}");
@@ -198,7 +198,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_string() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("\"abc\"def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("\"abc\"def")).unwrap();
 
         assert_eq!(
             rem,
@@ -244,7 +244,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_escape() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("\"a\\\"bc\"def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("\"a\\\"bc\"def")).unwrap();
 
         assert_eq!(
             rem,
@@ -290,7 +290,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_single_quote() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("\"a'bc\"def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("\"a'bc\"def")).unwrap();
 
         assert_eq!(
             rem,
@@ -336,7 +336,7 @@ mod quoted_string {
 
     #[test]
     fn err_unterminated_single_quote() {
-        let err = ElementAttribute::parse(Span::new("'xxx", true)).unwrap_err();
+        let err = ElementAttribute::parse(Span::new("'xxx")).unwrap_err();
 
         let Err::Error(e) = err else {
             panic!("Expected Err::Error: {err:#?}");
@@ -357,7 +357,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_string() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("'abc'def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("'abc'def")).unwrap();
 
         assert_eq!(
             rem,
@@ -403,7 +403,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_escape() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("'a\\'bc'def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("'a\\'bc'def")).unwrap();
 
         assert_eq!(
             rem,
@@ -449,7 +449,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_double_quote() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("'a\"bc'def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("'a\"bc'def")).unwrap();
 
         assert_eq!(
             rem,
@@ -505,7 +505,7 @@ mod named {
 
     #[test]
     fn simple_named_value() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc=def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc=def")).unwrap();
 
         assert_eq!(
             rem,
@@ -564,7 +564,7 @@ mod named {
 
     #[test]
     fn ignores_spaces_around_equals() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc =  def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc =  def")).unwrap();
 
         assert_eq!(
             rem,
@@ -623,7 +623,7 @@ mod named {
 
     #[test]
     fn numeric_name() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("94-x =def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("94-x =def")).unwrap();
 
         assert_eq!(
             rem,
@@ -682,7 +682,7 @@ mod named {
 
     #[test]
     fn quoted_value() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc='def'g", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc='def'g")).unwrap();
 
         assert_eq!(
             rem,
@@ -741,7 +741,7 @@ mod named {
 
     #[test]
     fn fallback_if_no_value() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc=", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc=")).unwrap();
 
         assert_eq!(
             rem,
@@ -787,7 +787,7 @@ mod named {
 
     #[test]
     fn fallback_if_immediate_comma() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc=,def", true)).unwrap();
+        let (rem, attr) = ElementAttribute::parse(Span::new("abc=,def")).unwrap();
 
         assert_eq!(
             rem,

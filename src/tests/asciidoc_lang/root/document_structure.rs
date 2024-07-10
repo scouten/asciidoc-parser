@@ -253,7 +253,7 @@ mod lines {
         // == Section Title
         // ----
 
-        let l = line(Span::new("== Section Title\n", true));
+        let l = line(Span::new("== Section Title\n"));
 
         assert_eq!(
             l.rem,
@@ -284,7 +284,7 @@ mod lines {
         // :name: value
         // -----
 
-        let (rem, attr) = Attribute::parse(Span::new(":name: value\n", true)).unwrap();
+        let (rem, attr) = Attribute::parse(Span::new(":name: value\n")).unwrap();
 
         assert_eq!(
             rem,
@@ -330,8 +330,7 @@ mod lines {
         // more value
         // -----
 
-        let (rem, attr) =
-            Attribute::parse(Span::new(":name: value \\\nmore value\n", true)).unwrap();
+        let (rem, attr) = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
 
         assert_eq!(
             rem,

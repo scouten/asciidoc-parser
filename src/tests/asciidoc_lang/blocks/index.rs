@@ -78,7 +78,7 @@ mod content_model {
         // simple:: a block that's treated as contiguous lines of paragraph text (and
         // subject to normal substitutions) (e.g., a paragraph block)
 
-        let (_rem, block) = Block::parse(Span::new("abc", true)).unwrap();
+        let (_rem, block) = Block::parse(Span::new("abc")).unwrap();
         assert_eq!(block.content_model(), ContentModel::Simple);
     }
 
@@ -152,7 +152,7 @@ mod context {
         // The context of this block is `section`.
 
         let (_rem, block) =
-            Block::parse(Span::new("== Section Title\n\nContent of section.", true)).unwrap();
+            Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
 
         assert_eq!(block.context().deref(), "section");
     }
@@ -199,7 +199,7 @@ mod context {
         // because a section may only contain other blocks.
 
         let (_rem, block) =
-            Block::parse(Span::new("== Section Title\n\nContent of section.", true)).unwrap();
+            Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
 
         assert_eq!(block.content_model(), ContentModel::Compound);
     }

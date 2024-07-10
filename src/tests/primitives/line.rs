@@ -5,7 +5,7 @@ mod fn_line {
 
     #[test]
     fn empty_source() {
-        let l = line(Span::new("", true));
+        let l = line(Span::new(""));
 
         assert_eq!(
             l.rem,
@@ -30,7 +30,7 @@ mod fn_line {
 
     #[test]
     fn simple_line() {
-        let l = line(Span::new("abc", true));
+        let l = line(Span::new("abc"));
 
         assert_eq!(
             l.rem,
@@ -55,7 +55,7 @@ mod fn_line {
 
     #[test]
     fn trailing_space() {
-        let l = line(Span::new("abc ", true));
+        let l = line(Span::new("abc "));
 
         assert_eq!(
             l.rem,
@@ -82,7 +82,7 @@ mod fn_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let l = line(Span::new("abc\ndef", true));
+        let l = line(Span::new("abc\ndef"));
 
         assert_eq!(
             l.rem,
@@ -109,7 +109,7 @@ mod fn_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let l = line(Span::new("abc\r\ndef", true));
+        let l = line(Span::new("abc\r\ndef"));
 
         assert_eq!(
             l.rem,
@@ -136,7 +136,7 @@ mod fn_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let l = line(Span::new("abc\n\rdef", true));
+        let l = line(Span::new("abc\n\rdef"));
 
         assert_eq!(
             l.rem,
@@ -163,7 +163,7 @@ mod fn_line {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate line at \r without \n.
 
-        let l = line(Span::new("abc\rdef", true));
+        let l = line(Span::new("abc\rdef"));
 
         assert_eq!(
             l.rem,
@@ -194,7 +194,7 @@ mod normalized_line {
 
     #[test]
     fn empty_source() {
-        let line = normalized_line(Span::new("", true));
+        let line = normalized_line(Span::new(""));
 
         assert_eq!(
             line.rem,
@@ -219,7 +219,7 @@ mod normalized_line {
 
     #[test]
     fn simple_line() {
-        let line = normalized_line(Span::new("abc", true));
+        let line = normalized_line(Span::new("abc"));
 
         assert_eq!(
             line.rem,
@@ -244,7 +244,7 @@ mod normalized_line {
 
     #[test]
     fn discards_trailing_space() {
-        let line = normalized_line(Span::new("abc ", true));
+        let line = normalized_line(Span::new("abc "));
 
         assert_eq!(
             line.rem,
@@ -269,7 +269,7 @@ mod normalized_line {
 
     #[test]
     fn discards_multiple_trailing_spaces() {
-        let line = normalized_line(Span::new("abc   ", true));
+        let line = normalized_line(Span::new("abc   "));
 
         assert_eq!(
             line.rem,
@@ -296,7 +296,7 @@ mod normalized_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let line = normalized_line(Span::new("abc  \ndef", true));
+        let line = normalized_line(Span::new("abc  \ndef"));
 
         assert_eq!(
             line.rem,
@@ -323,7 +323,7 @@ mod normalized_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let line = normalized_line(Span::new("abc  \r\ndef", true));
+        let line = normalized_line(Span::new("abc  \r\ndef"));
 
         assert_eq!(
             line.rem,
@@ -350,7 +350,7 @@ mod normalized_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let line = normalized_line(Span::new("abc  \n\rdef", true));
+        let line = normalized_line(Span::new("abc  \n\rdef"));
 
         assert_eq!(
             line.rem,
@@ -377,7 +377,7 @@ mod normalized_line {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate normalized line at \r without \n.
 
-        let line = normalized_line(Span::new("abc   \rdef", true));
+        let line = normalized_line(Span::new("abc   \rdef"));
 
         assert_eq!(
             line.rem,
@@ -408,17 +408,17 @@ mod non_empty_line {
 
     #[test]
     fn empty_source() {
-        assert!(non_empty_line(Span::new("", true)).is_none());
+        assert!(non_empty_line(Span::new("",)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        assert!(non_empty_line(Span::new("   ", true)).is_none());
+        assert!(non_empty_line(Span::new("   ",)).is_none());
     }
 
     #[test]
     fn simple_line() {
-        let line = non_empty_line(Span::new("abc", true)).unwrap();
+        let line = non_empty_line(Span::new("abc")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -443,7 +443,7 @@ mod non_empty_line {
 
     #[test]
     fn discards_trailing_space() {
-        let line = non_empty_line(Span::new("abc ", true)).unwrap();
+        let line = non_empty_line(Span::new("abc ")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -470,7 +470,7 @@ mod non_empty_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let line = non_empty_line(Span::new("abc  \ndef", true)).unwrap();
+        let line = non_empty_line(Span::new("abc  \ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -497,7 +497,7 @@ mod non_empty_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let line = non_empty_line(Span::new("abc  \r\ndef", true)).unwrap();
+        let line = non_empty_line(Span::new("abc  \r\ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -524,7 +524,7 @@ mod non_empty_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let line = non_empty_line(Span::new("abc  \n\rdef", true)).unwrap();
+        let line = non_empty_line(Span::new("abc  \n\rdef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -551,7 +551,7 @@ mod non_empty_line {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate line at \r without \n.
 
-        let line = non_empty_line(Span::new("abc   \rdef", true)).unwrap();
+        let line = non_empty_line(Span::new("abc   \rdef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -582,17 +582,17 @@ mod line_with_continuation {
 
     #[test]
     fn empty_source() {
-        assert!(line_with_continuation(Span::new("", true)).is_none());
+        assert!(line_with_continuation(Span::new("",)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        assert!(line_with_continuation(Span::new("   ", true)).is_none());
+        assert!(line_with_continuation(Span::new("   ",)).is_none());
     }
 
     #[test]
     fn simple_line() {
-        let line = line_with_continuation(Span::new("abc", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -617,7 +617,7 @@ mod line_with_continuation {
 
     #[test]
     fn discards_trailing_space() {
-        let line = line_with_continuation(Span::new("abc ", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc ")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -644,7 +644,7 @@ mod line_with_continuation {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let line = line_with_continuation(Span::new("abc  \ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc  \ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -671,7 +671,7 @@ mod line_with_continuation {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let line = line_with_continuation(Span::new("abc  \r\ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc  \r\ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -698,7 +698,7 @@ mod line_with_continuation {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let line = line_with_continuation(Span::new("abc  \n\rdef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc  \n\rdef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -725,7 +725,7 @@ mod line_with_continuation {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate line at \r without \n.
 
-        let line = line_with_continuation(Span::new("abc   \rdef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc   \rdef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -750,7 +750,7 @@ mod line_with_continuation {
 
     #[test]
     fn simple_continuation() {
-        let line = line_with_continuation(Span::new("abc \\\ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -775,7 +775,7 @@ mod line_with_continuation {
 
     #[test]
     fn simple_continuation_with_crlf() {
-        let line = line_with_continuation(Span::new("abc \\\r\ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\r\ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -800,7 +800,7 @@ mod line_with_continuation {
 
     #[test]
     fn continuation_with_trailing_space() {
-        let line = line_with_continuation(Span::new("abc \\   \ndef", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\   \ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -825,7 +825,7 @@ mod line_with_continuation {
 
     #[test]
     fn multiple_continuations() {
-        let line = line_with_continuation(Span::new("abc \\\ndef\\\nghi", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\ndef\\\nghi")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -850,7 +850,7 @@ mod line_with_continuation {
 
     #[test]
     fn terminates_on_line_without_plus() {
-        let line = line_with_continuation(Span::new("abc \\\ndef  \nghi", true)).unwrap();
+        let line = line_with_continuation(Span::new("abc \\\ndef  \nghi")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -881,7 +881,7 @@ mod empty_line {
 
     #[test]
     fn empty_source() {
-        let line = empty_line(Span::new("", true)).unwrap();
+        let line = empty_line(Span::new("")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -906,19 +906,19 @@ mod empty_line {
 
     #[test]
     fn simple_line() {
-        assert!(empty_line(Span::new("abc", true)).is_none());
+        assert!(empty_line(Span::new("abc",)).is_none());
     }
 
     #[test]
     fn leading_space() {
-        assert!(empty_line(Span::new("  abc", true)).is_none());
+        assert!(empty_line(Span::new("  abc",)).is_none());
     }
 
     #[test]
     fn consumes_spaces() {
         // Should consume a source containing only spaces.
 
-        let line = empty_line(Span::new("     ", true)).unwrap();
+        let line = empty_line(Span::new("     ")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -945,7 +945,7 @@ mod empty_line {
     fn consumes_spaces_and_tabs() {
         // Should consume a source containing only spaces.
 
-        let line = empty_line(Span::new("  \t  ", true)).unwrap();
+        let line = empty_line(Span::new("  \t  ")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -972,7 +972,7 @@ mod empty_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let line = empty_line(Span::new("   \ndef", true)).unwrap();
+        let line = empty_line(Span::new("   \ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -999,7 +999,7 @@ mod empty_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let line = empty_line(Span::new("   \r\ndef", true)).unwrap();
+        let line = empty_line(Span::new("   \r\ndef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -1026,7 +1026,7 @@ mod empty_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let line = empty_line(Span::new("   \n\rdef", true)).unwrap();
+        let line = empty_line(Span::new("   \n\rdef")).unwrap();
 
         assert_eq!(
             line.rem,
@@ -1053,7 +1053,7 @@ mod empty_line {
     fn standalone_cr_doesnt_end_line() {
         // A "line" with \r and no immediate \n is not considered empty.
 
-        assert!(empty_line(Span::new("   \rdef", true)).is_none());
+        assert!(empty_line(Span::new("   \rdef",)).is_none());
     }
 }
 
@@ -1064,13 +1064,13 @@ mod consume_empty_lines {
 
     #[test]
     fn empty_source() {
-        let rem = consume_empty_lines(Span::new("", true));
-        assert_eq!(rem, Span::new("", true));
+        let rem = consume_empty_lines(Span::new(""));
+        assert_eq!(rem, Span::new("",));
     }
 
     #[test]
     fn consumes_empty_line() {
-        let rem = consume_empty_lines(Span::new("\nabc", true));
+        let rem = consume_empty_lines(Span::new("\nabc"));
 
         assert_eq!(
             rem,
@@ -1085,7 +1085,7 @@ mod consume_empty_lines {
 
     #[test]
     fn doesnt_consume_non_empty_line() {
-        let rem = consume_empty_lines(Span::new("abc", true));
+        let rem = consume_empty_lines(Span::new("abc"));
 
         assert_eq!(
             rem,
@@ -1100,7 +1100,7 @@ mod consume_empty_lines {
 
     #[test]
     fn doesnt_consume_leading_space() {
-        let rem = consume_empty_lines(Span::new("   abc", true));
+        let rem = consume_empty_lines(Span::new("   abc"));
 
         assert_eq!(
             rem,
@@ -1115,7 +1115,7 @@ mod consume_empty_lines {
 
     #[test]
     fn consumes_line_with_only_spaces() {
-        let rem = consume_empty_lines(Span::new("   \nabc", true));
+        let rem = consume_empty_lines(Span::new("   \nabc"));
 
         assert_eq!(
             rem,
@@ -1130,7 +1130,7 @@ mod consume_empty_lines {
 
     #[test]
     fn consumes_spaces_and_tabs() {
-        let rem = consume_empty_lines(Span::new(" \t \nabc", true));
+        let rem = consume_empty_lines(Span::new(" \t \nabc"));
 
         assert_eq!(
             rem,
@@ -1145,7 +1145,7 @@ mod consume_empty_lines {
 
     #[test]
     fn consumes_multiple_lines() {
-        let rem = consume_empty_lines(Span::new("\n  \t \n\nabc", true));
+        let rem = consume_empty_lines(Span::new("\n  \t \n\nabc"));
 
         assert_eq!(
             rem,
@@ -1162,7 +1162,7 @@ mod consume_empty_lines {
     fn consumes_crlf() {
         // Should consume \r\n sequence.
 
-        let rem = consume_empty_lines(Span::new("  \r\ndef", true));
+        let rem = consume_empty_lines(Span::new("  \r\ndef"));
 
         assert_eq!(
             rem,
@@ -1179,7 +1179,7 @@ mod consume_empty_lines {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let rem = consume_empty_lines(Span::new("   \n\rdef", true));
+        let rem = consume_empty_lines(Span::new("   \n\rdef"));
 
         assert_eq!(
             rem,
@@ -1196,7 +1196,7 @@ mod consume_empty_lines {
     fn standalone_cr_doesnt_end_line() {
         // A "line" with \r and no immediate \n is not considered empty.
 
-        let rem = consume_empty_lines(Span::new("   \rdef", true));
+        let rem = consume_empty_lines(Span::new("   \rdef"));
 
         assert_eq!(
             rem,

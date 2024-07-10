@@ -20,23 +20,23 @@ mod simple {
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
-        let (_, b1) = Block::parse(Span::new("abc", true)).unwrap();
+        let (_, b1) = Block::parse(Span::new("abc")).unwrap();
         let b2 = b1.clone();
         assert_eq!(b1, b2);
     }
 
     #[test]
     fn err_empty_source() {
-        let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
+        let expected_err = Err::Error(Error::new(Span::new(""), ErrorKind::TakeTill1));
 
-        let actual_err = Block::parse(Span::new("", true)).unwrap_err();
+        let actual_err = Block::parse(Span::new("")).unwrap_err();
 
         assert_eq!(expected_err, actual_err);
     }
 
     #[test]
     fn err_only_spaces() {
-        let err = Block::parse(Span::new("    ", true)).unwrap_err();
+        let err = Block::parse(Span::new("    ")).unwrap_err();
 
         let Err::Error(e) = err else {
             panic!("Expected Err::Error: {err:#?}");
@@ -57,7 +57,7 @@ mod simple {
 
     #[test]
     fn single_line() {
-        let (rem, block) = Block::parse(Span::new("abc", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("abc")).unwrap();
 
         assert_eq!(
             rem,
@@ -96,7 +96,7 @@ mod simple {
 
     #[test]
     fn multiple_lines() {
-        let (rem, block) = Block::parse(Span::new("abc\ndef", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("abc\ndef")).unwrap();
 
         assert_eq!(
             rem,
@@ -147,7 +147,7 @@ mod simple {
 
     #[test]
     fn consumes_blank_lines_after() {
-        let (rem, block) = Block::parse(Span::new("abc\n\ndef", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("abc\n\ndef")).unwrap();
 
         assert_eq!(
             rem,
@@ -202,7 +202,7 @@ mod r#macro {
 
     #[test]
     fn err_inline_syntax() {
-        let (rem, block) = Block::parse(Span::new("foo:bar[]", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("foo:bar[]")).unwrap();
 
         assert_eq!(
             rem,
@@ -252,7 +252,7 @@ mod r#macro {
 
     #[test]
     fn err_no_attr_list() {
-        let (rem, block) = Block::parse(Span::new("foo::bar", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("foo::bar")).unwrap();
 
         assert_eq!(
             rem,
@@ -287,7 +287,7 @@ mod r#macro {
 
     #[test]
     fn err_attr_list_not_closed() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[blah", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("foo::bar[blah")).unwrap();
 
         assert_eq!(
             rem,
@@ -322,7 +322,7 @@ mod r#macro {
 
     #[test]
     fn err_unexpected_after_attr_list() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[blah]bonus", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("foo::bar[blah]bonus")).unwrap();
 
         assert_eq!(
             rem,
@@ -393,7 +393,7 @@ mod r#macro {
 
     #[test]
     fn simplest_block_macro() {
-        let (rem, block) = Block::parse(Span::new("foo::[]", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("foo::[]")).unwrap();
 
         assert_eq!(
             rem,
@@ -450,7 +450,7 @@ mod r#macro {
 
     #[test]
     fn has_target() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[]", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("foo::bar[]")).unwrap();
 
         assert_eq!(
             rem,
@@ -508,7 +508,7 @@ mod r#macro {
 
     #[test]
     fn has_target_and_attrlist() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[blah]", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("foo::bar[blah]")).unwrap();
 
         assert_eq!(
             rem,
@@ -597,7 +597,7 @@ mod section {
 
     #[test]
     fn err_missing_space_before_title() {
-        let (rem, block) = Block::parse(Span::new("=blah blah", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("=blah blah")).unwrap();
 
         assert_eq!(
             rem,
@@ -632,7 +632,7 @@ mod section {
 
     #[test]
     fn simplest_section_block() {
-        let (rem, block) = Block::parse(Span::new("== Section Title", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("== Section Title")).unwrap();
 
         assert_eq!(block.content_model(), ContentModel::Compound);
         assert_eq!(block.context().deref(), "section");
@@ -672,7 +672,7 @@ mod section {
 
     #[test]
     fn has_child_block() {
-        let (rem, block) = Block::parse(Span::new("== Section Title\n\nabc", true)).unwrap();
+        let (rem, block) = Block::parse(Span::new("== Section Title\n\nabc")).unwrap();
 
         assert_eq!(block.content_model(), ContentModel::Compound);
         assert_eq!(block.context().deref(), "section");

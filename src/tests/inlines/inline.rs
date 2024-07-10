@@ -10,7 +10,7 @@ mod uninterpreted {
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
-        let b1 = Inline::parse(Span::new("abc", true)).unwrap();
+        let b1 = Inline::parse(Span::new("abc")).unwrap();
         let b1 = b1.t;
         let b2 = b1.clone();
         assert_eq!(b1, b2);
@@ -18,17 +18,17 @@ mod uninterpreted {
 
     #[test]
     fn empty_source() {
-        assert!(Inline::parse(Span::new("", true)).is_none());
+        assert!(Inline::parse(Span::new("",)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        assert!(Inline::parse(Span::new("   ", true)).is_none());
+        assert!(Inline::parse(Span::new("   ",)).is_none());
     }
 
     #[test]
     fn simple_line() {
-        let inline = Inline::parse(Span::new("abc", true)).unwrap();
+        let inline = Inline::parse(Span::new("abc")).unwrap();
 
         assert_eq!(
             inline.rem,
@@ -73,17 +73,17 @@ mod parse_lines {
 
     #[test]
     fn empty_source() {
-        assert!(Inline::parse_lines(Span::new("", true)).is_none());
+        assert!(Inline::parse_lines(Span::new("",)).is_none());
     }
 
     #[test]
     fn only_spaces() {
-        assert!(Inline::parse_lines(Span::new("   ", true)).is_none());
+        assert!(Inline::parse_lines(Span::new("   ",)).is_none());
     }
 
     #[test]
     fn simple_line() {
-        let inline = Inline::parse_lines(Span::new("abc", true)).unwrap();
+        let inline = Inline::parse_lines(Span::new("abc")).unwrap();
 
         assert_eq!(
             inline.rem,
@@ -118,7 +118,7 @@ mod parse_lines {
 
     #[test]
     fn two_lines() {
-        let inline = Inline::parse_lines(Span::new("abc\ndef", true)).unwrap();
+        let inline = Inline::parse_lines(Span::new("abc\ndef")).unwrap();
 
         assert_eq!(
             inline.rem,

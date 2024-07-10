@@ -12,14 +12,14 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let (_, b1) = Attrlist::parse(Span::new("abc", true)).unwrap();
+    let (_, b1) = Attrlist::parse(Span::new("abc")).unwrap();
     let b2 = b1.clone();
     assert_eq!(b1, b2);
 }
 
 #[test]
 fn empty_source() {
-    let (rem, attrlist) = Attrlist::parse(Span::new("", true)).unwrap();
+    let (rem, attrlist) = Attrlist::parse(Span::new("")).unwrap();
 
     assert_eq!(
         rem,
@@ -67,7 +67,7 @@ fn empty_source() {
 
 #[test]
 fn only_positional_attributes() {
-    let (rem, attrlist) = Attrlist::parse(Span::new("Sunset,300,400", true)).unwrap();
+    let (rem, attrlist) = Attrlist::parse(Span::new("Sunset,300,400")).unwrap();
 
     assert_eq!(
         rem,
@@ -277,8 +277,7 @@ fn only_positional_attributes() {
 
 #[test]
 fn only_named_attributes() {
-    let (rem, attrlist) =
-        Attrlist::parse(Span::new("alt=Sunset,width=300,height=400", true)).unwrap();
+    let (rem, attrlist) = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap();
 
     assert_eq!(
         rem,

@@ -52,12 +52,10 @@ mod positional_attribute {
 
         // end::pos[]
 
-        let (_, m1) =
-            MacroBlock::parse(Span::new("image::sunset.jpg[Sunset,300,400]", true)).unwrap();
+        let (_, m1) = MacroBlock::parse(Span::new("image::sunset.jpg[Sunset,300,400]")).unwrap();
 
         let (_, m2) = MacroBlock::parse(Span::new(
             "image::sunset.jpg[alt=Sunset,width=300,height=400]",
-            true,
         ))
         .unwrap();
 
