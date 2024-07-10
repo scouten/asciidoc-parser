@@ -12,11 +12,11 @@ fn test_happy_case() {
 #[test]
 fn impl_as_bytes() {
     let span = Span::new("abcdef");
-    assert_eq!(span.as_ref(), "abcdef");
+    assert_eq!(span.as_bytes(), b"abcdef");
 }
 
 #[test]
 fn impl_as_ref() {
     let span = Span::new("abcdef");
-    assert_eq!(span.as_bytes(), b"abcdef");
+    assert_eq!(span.as_ref(), "abcdef");
 }
