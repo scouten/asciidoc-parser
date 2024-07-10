@@ -61,4 +61,22 @@ mod impl_nom_input_iter {
         assert_eq!(i.next(), Some((2, 'c')));
         assert_eq!(i.next(), None);
     }
+
+    mod position {
+        use nom::InputIter;
+
+        use crate::Span;
+
+        #[test]
+        fn success() {
+            let span = Span::new("abc");
+            assert_eq!(span.position(|c| c == 'c'), Some(2));
+        }
+
+        #[test]
+        fn no_match() {
+            let span = Span::new("abc");
+            assert_eq!(span.position(|c| c == 'x'), None);
+        }
+    }
 }
