@@ -23,14 +23,13 @@
 use std::{
     convert::AsRef,
     ops::{Deref, RangeTo},
-    str::FromStr,
 };
 
 use bytecount::num_chars;
 use memchr::Memchr;
 use nom::{
     AsBytes, Compare, Err, FindSubstring, InputIter, InputLength, InputTake, InputTakeAtPosition,
-    Offset, ParseTo, Slice,
+    Offset, Slice,
 };
 
 /// Represents a subset of the overall UTF-8 input stream.
@@ -277,11 +276,13 @@ impl<'a> Offset for Span<'a> {
     }
 }
 
+/* Maybe we don't need this?
 impl<'a, R: FromStr> ParseTo<R> for Span<'a> {
     fn parse_to(&self) -> Option<R> {
         self.data.parse_to()
     }
 }
+*/
 
 impl<'a, R> Slice<R> for Span<'a>
 where
