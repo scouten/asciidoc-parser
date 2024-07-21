@@ -29,7 +29,8 @@ impl<'a> ParseError<Span<'a>> for Error<'a> {
         Self::NomError(nom::error::Error::new(input, kind))
     }
 
-    fn append(_input: Span<'a>, _kind: nom::error::ErrorKind, _other: Self) -> Self {
-        unimplemented!();
+    fn append(_input: Span<'a>, _kind: nom::error::ErrorKind, other: Self) -> Self {
+        // TO DO: Fix or remove.
+        other
     }
 }
