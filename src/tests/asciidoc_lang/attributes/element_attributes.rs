@@ -82,7 +82,7 @@ mod attrlist {
         const ATTRLIST_EXAMPLE: &str =
             r#"first-positional,second-positional,named="value of named""#;
 
-        let (rem, attrlist) = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE, true)).unwrap();
+        let (rem, attrlist) = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE)).unwrap();
 
         assert_eq!(
             rem,

@@ -38,7 +38,7 @@ impl<'a> Document<'a> {
     pub fn parse(source: &'a str) -> Result<Self, Error> {
         // TO DO: Add option for best-guess parsing?
 
-        let source = Span::new(source, true);
+        let source = Span::new(source);
         let i = consume_empty_lines(source);
 
         let (i, header) = if i.starts_with("= ") {

@@ -14,68 +14,68 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let (_, b1) = InlineMacro::parse(Span::new("foo:[]", true)).unwrap();
+    let (_, b1) = InlineMacro::parse(Span::new("foo:[]")).unwrap();
     let b2 = b1.clone();
     assert_eq!(b1, b2);
 }
 
 #[test]
 fn empty_source() {
-    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::Tag));
+    let expected_err = Err::Error(Error::new(Span::new(""), ErrorKind::Tag));
 
-    let actual_err = InlineMacro::parse(Span::new("", true)).unwrap_err();
+    let actual_err = InlineMacro::parse(Span::new("")).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn only_spaces() {
-    let expected_err = Err::Error(Error::new(Span::new("    ", true), ErrorKind::Tag));
+    let expected_err = Err::Error(Error::new(Span::new("    "), ErrorKind::Tag));
 
-    let actual_err = InlineMacro::parse(Span::new("    ", true)).unwrap_err();
+    let actual_err = InlineMacro::parse(Span::new("    ")).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn err_not_ident() {
-    let err_span = Span::new("foo^xyz:bar[]", true);
+    let err_span = Span::new("foo^xyz:bar[]");
     let (err_span, _) = take::<usize, Span, Error<Span>>(3)(err_span).unwrap();
 
     let expected_err = Err::Error(Error::new(err_span, ErrorKind::Tag));
 
-    let actual_err = InlineMacro::parse(Span::new("foo^xyz:bar[]", true)).unwrap_err();
+    let actual_err = InlineMacro::parse(Span::new("foo^xyz:bar[]")).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn err_no_attr_list() {
-    let err_span = Span::new("foo:bar", true);
+    let err_span = Span::new("foo:bar");
     let (err_span, _) = take::<usize, Span, Error<Span>>(4)(err_span).unwrap();
 
     let expected_err = Err::Error(Error::new(err_span, ErrorKind::TakeUntil));
 
-    let actual_err = InlineMacro::parse(Span::new("foo:bar", true)).unwrap_err();
+    let actual_err = InlineMacro::parse(Span::new("foo:bar")).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn err_attr_list_not_closed() {
-    let err_span = Span::new("foo:bar[blah", true);
+    let err_span = Span::new("foo:bar[blah");
     let (err_span, _) = take::<usize, Span, Error<Span>>(8)(err_span).unwrap();
 
     let expected_err = Err::Error(Error::new(err_span, ErrorKind::TakeUntil));
 
-    let actual_err = InlineMacro::parse(Span::new("foo:bar[blah", true)).unwrap_err();
+    let actual_err = InlineMacro::parse(Span::new("foo:bar[blah")).unwrap_err();
 
     assert_eq!(expected_err, actual_err);
 }
 
 #[test]
 fn simplest_block_macro() {
-    let (rem, block) = InlineMacro::parse(Span::new("foo:[]", true)).unwrap();
+    let (rem, block) = InlineMacro::parse(Span::new("foo:[]")).unwrap();
 
     assert_eq!(
         rem,
@@ -110,7 +110,7 @@ fn simplest_block_macro() {
 
 #[test]
 fn has_target() {
-    let (rem, block) = InlineMacro::parse(Span::new("foo:bar[]", true)).unwrap();
+    let (rem, block) = InlineMacro::parse(Span::new("foo:bar[]")).unwrap();
 
     assert_eq!(
         rem,
@@ -150,7 +150,7 @@ fn has_target() {
 
 #[test]
 fn has_target_and_attrlist() {
-    let (rem, block) = InlineMacro::parse(Span::new("foo:bar[blah]", true)).unwrap();
+    let (rem, block) = InlineMacro::parse(Span::new("foo:bar[blah]")).unwrap();
 
     assert_eq!(
         rem,
@@ -196,7 +196,7 @@ fn has_target_and_attrlist() {
 
 #[test]
 fn doesnt_consume_after_attr_list() {
-    let (rem, block) = InlineMacro::parse(Span::new("foo:bar[blah]bonus", true)).unwrap();
+    let (rem, block) = InlineMacro::parse(Span::new("foo:bar[blah]bonus")).unwrap();
 
     assert_eq!(
         rem,
@@ -244,7 +244,7 @@ fn doesnt_consume_after_attr_list() {
 fn okish_block_syntax() {
     // TO DO: Should this be an error? Or is the second colon part of the target?
 
-    let (rem, block) = InlineMacro::parse(Span::new("foo::bar[]", true)).unwrap();
+    let (rem, block) = InlineMacro::parse(Span::new("foo::bar[]")).unwrap();
 
     assert_eq!(
         rem,

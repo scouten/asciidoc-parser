@@ -41,7 +41,7 @@ impl<'a> PartialEq<TSpan> for &Span<'a> {
 }
 
 fn tspan_eq(tspan: &TSpan, span: &Span) -> bool {
-    &tspan.data == span.data()
+    tspan.data == span.data()
         && tspan.line == span.line()
         && tspan.col == span.col()
         && tspan.offset == span.byte_offset()

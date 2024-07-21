@@ -1,3 +1,5 @@
+use nom::error::ParseError;
+
 use crate::Span;
 
 // TO DO: I think this crate is moving in the direction of being infallible
@@ -19,5 +21,16 @@ impl<'a> From<nom::Err<nom::error::Error<Span<'a>>>> for Error<'a> {
             nom::Err::Incomplete(_n) => unreachable!("We don't do streaming parsing"),
             nom::Err::Error(e) | nom::Err::Failure(e) => Self::NomError(e),
         }
+    }
+}
+
+impl<'a> ParseError<Span<'a>> for Error<'a> {
+    fn from_error_kind(input: Span<'a>, kind: nom::error::ErrorKind) -> Self {
+        Self::NomError(nom::error::Error::new(input, kind))
+    }
+
+    fn append(_input: Span<'a>, _kind: nom::error::ErrorKind, other: Self) -> Self {
+        // TO DO: Fix or remove.
+        other
     }
 }

@@ -12,14 +12,14 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Header::parse(Span::new("= Title", true)).unwrap();
+    let h1 = Header::parse(Span::new("= Title")).unwrap();
     let h2 = h1.clone();
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn only_title() {
-    let (rem, block) = Header::parse(Span::new("= Just the Title", true)).unwrap();
+    let (rem, block) = Header::parse(Span::new("= Just the Title")).unwrap();
 
     assert_eq!(
         rem,
@@ -55,7 +55,7 @@ fn only_title() {
 fn trims_leading_spaces_in_title() {
     // This is totally a judgement call on my part. As far as I can tell,
     // the language doesn't describe behavior here.
-    let (rem, block) = Header::parse(Span::new("=    Just the Title", true)).unwrap();
+    let (rem, block) = Header::parse(Span::new("=    Just the Title")).unwrap();
 
     assert_eq!(
         rem,
@@ -89,7 +89,7 @@ fn trims_leading_spaces_in_title() {
 
 #[test]
 fn trims_trailing_spaces_in_title() {
-    let (rem, block) = Header::parse(Span::new("= Just the Title   ", true)).unwrap();
+    let (rem, block) = Header::parse(Span::new("= Just the Title   ")).unwrap();
 
     assert_eq!(
         rem,
@@ -123,8 +123,7 @@ fn trims_trailing_spaces_in_title() {
 
 #[test]
 fn title_and_attribute() {
-    let (rem, block) =
-        Header::parse(Span::new("= Just the Title\n:foo: bar\n\nblah", true)).unwrap();
+    let (rem, block) = Header::parse(Span::new("= Just the Title\n:foo: bar\n\nblah")).unwrap();
 
     assert_eq!(
         rem,

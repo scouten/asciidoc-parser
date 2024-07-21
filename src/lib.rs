@@ -18,11 +18,11 @@ pub use error::Error;
 
 pub mod inlines;
 
-mod has_span;
-pub use has_span::HasSpan;
-
 pub(crate) mod primitives;
-pub use primitives::Span;
+
+mod span;
+pub use span::{HasSpan, Span};
+
 pub mod strings;
 
 #[cfg(test)]

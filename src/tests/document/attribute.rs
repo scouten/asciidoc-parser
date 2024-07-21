@@ -12,14 +12,14 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Attribute::parse(Span::new(":foo: bar", true)).unwrap();
+    let h1 = Attribute::parse(Span::new(":foo: bar")).unwrap();
     let h2 = h1.clone();
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn simple_value() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo: bar\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo: bar\nblah")).unwrap();
 
     assert_eq!(
         rem,
@@ -60,7 +60,7 @@ fn simple_value() {
 
 #[test]
 fn no_value() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo:\nblah")).unwrap();
 
     assert_eq!(
         rem,
@@ -96,7 +96,7 @@ fn no_value() {
 
 #[test]
 fn unset_prefix() {
-    let (rem, attr) = Attribute::parse(Span::new(":!foo:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":!foo:\nblah")).unwrap();
 
     assert_eq!(
         rem,
@@ -132,7 +132,7 @@ fn unset_prefix() {
 
 #[test]
 fn unset_postfix() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo!:\nblah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo!:\nblah")).unwrap();
 
     assert_eq!(
         rem,
@@ -168,8 +168,8 @@ fn unset_postfix() {
 
 #[test]
 fn err_unset_prefix_and_postfix() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":!foo!:\nblah", true)).unwrap_err();
+    let err: nom::Err<nom::error::Error<Span>> =
+        Attribute::parse(Span::new(":!foo!:\nblah")).unwrap_err();
 
     if let nom::Err::Error(e) = err {
         assert_eq!(
@@ -190,8 +190,8 @@ fn err_unset_prefix_and_postfix() {
 
 #[test]
 fn err_invalid_ident1() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":@invalid:\nblah", true)).unwrap_err();
+    let err: nom::Err<nom::error::Error<Span>> =
+        Attribute::parse(Span::new(":@invalid:\nblah")).unwrap_err();
 
     if let nom::Err::Error(e) = err {
         assert_eq!(
@@ -212,8 +212,8 @@ fn err_invalid_ident1() {
 
 #[test]
 fn err_invalid_ident2() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":invalid@:\nblah", true)).unwrap_err();
+    let err: nom::Err<nom::error::Error<Span>> =
+        Attribute::parse(Span::new(":invalid@:\nblah")).unwrap_err();
 
     if let nom::Err::Error(e) = err {
         assert_eq!(
@@ -234,8 +234,8 @@ fn err_invalid_ident2() {
 
 #[test]
 fn err_invalid_ident3() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":-invalid:\nblah", true)).unwrap_err();
+    let err: nom::Err<nom::error::Error<Span>> =
+        Attribute::parse(Span::new(":-invalid:\nblah")).unwrap_err();
 
     if let nom::Err::Error(e) = err {
         assert_eq!(
@@ -256,7 +256,7 @@ fn err_invalid_ident3() {
 
 #[test]
 fn value_with_continuation() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo: bar \\\n blah", true)).unwrap();
+    let (rem, attr) = Attribute::parse(Span::new(":foo: bar \\\n blah")).unwrap();
 
     assert_eq!(
         rem,

@@ -7,14 +7,14 @@ mod trim_input_for_rem {
     use crate::{primitives::trim_input_for_rem, tests::fixtures::TSpan, Span};
 
     fn advanced_span(source: &'static str, skip: usize) -> Span<'static> {
-        let span = Span::new(source, true);
+        let span = Span::new(source);
         span.slice(skip..)
     }
 
     #[test]
     fn empty_spans() {
         let inp = advanced_span("abcdef", 6);
-        let rem = Span::new("", true);
+        let rem = Span::new("");
 
         assert_eq!(
             trim_input_for_rem(inp, rem),
@@ -30,7 +30,7 @@ mod trim_input_for_rem {
     #[test]
     fn rem_equals_inp() {
         let inp = advanced_span("abcdef", 6);
-        let rem = Span::new("abcdef", true);
+        let rem = Span::new("abcdef");
 
         assert_eq!(
             trim_input_for_rem(inp, rem),
@@ -48,7 +48,7 @@ mod trim_input_for_rem {
         // This is nonsense input, but we should at least not panic in this case.
 
         let inp = advanced_span("abcdef", 6);
-        let rem = Span::new("abcdef_bogus_bogus", true);
+        let rem = Span::new("abcdef_bogus_bogus");
 
         assert_eq!(
             trim_input_for_rem(inp, rem),
@@ -89,41 +89,41 @@ mod attr_name {
 
     #[test]
     fn err_empty_source() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-            Err::Error(Error::new(Span::new("", true), ErrorKind::AlphaNumeric));
+        let expected_err: Err<Error<Span>> =
+            Err::Error(Error::new(Span::new(""), ErrorKind::AlphaNumeric));
 
-        let actual_err = attr_name(Span::new("", true)).unwrap_err();
+        let actual_err = attr_name(Span::new("")).unwrap_err();
 
         assert_eq!(expected_err, actual_err);
     }
 
     #[test]
     fn err_starts_with_non_word() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> = Err::Error(Error::new(
-            Span::new("#not-a-proper-name", true),
+        let expected_err: Err<Error<Span>> = Err::Error(Error::new(
+            Span::new("#not-a-proper-name"),
             ErrorKind::AlphaNumeric,
         ));
 
-        let actual_err = attr_name(Span::new("#not-a-proper-name", true)).unwrap_err();
+        let actual_err = attr_name(Span::new("#not-a-proper-name")).unwrap_err();
 
         assert_eq!(expected_err, actual_err);
     }
 
     #[test]
     fn err_starts_with_hyphen() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> = Err::Error(Error::new(
-            Span::new("-not-a-proper-name", true),
+        let expected_err: Err<Error<Span>> = Err::Error(Error::new(
+            Span::new("-not-a-proper-name"),
             ErrorKind::AlphaNumeric,
         ));
 
-        let actual_err = attr_name(Span::new("-not-a-proper-name", true)).unwrap_err();
+        let actual_err = attr_name(Span::new("-not-a-proper-name")).unwrap_err();
 
         assert_eq!(expected_err, actual_err);
     }
 
     #[test]
     fn stops_at_non_ident() {
-        let (rem, qstr) = attr_name(Span::new("x#", true)).unwrap();
+        let (rem, qstr) = attr_name(Span::new("x#")).unwrap();
 
         assert_eq!(
             rem,
@@ -148,7 +148,7 @@ mod attr_name {
 
     #[test]
     fn numeric() {
-        let (rem, qstr) = attr_name(Span::new("94!", true)).unwrap();
+        let (rem, qstr) = attr_name(Span::new("94!")).unwrap();
 
         assert_eq!(
             rem,
@@ -173,7 +173,7 @@ mod attr_name {
 
     #[test]
     fn contains_hyphens() {
-        let (rem, qstr) = attr_name(Span::new("blah-blah-94 = foo", true)).unwrap();
+        let (rem, qstr) = attr_name(Span::new("blah-blah-94 = foo")).unwrap();
 
         assert_eq!(
             rem,
@@ -208,17 +208,16 @@ mod quoted_string {
 
     #[test]
     fn err_empty_source() {
-        let expected_err: Err<Error<nom_span::Spanned<&str>>> =
-            Err::Error(Error::new(Span::new("", true), ErrorKind::Char));
+        let expected_err: Err<Error<Span>> = Err::Error(Error::new(Span::new(""), ErrorKind::Char));
 
-        let actual_err = quoted_string(Span::new("", true)).unwrap_err();
+        let actual_err = quoted_string(Span::new("")).unwrap_err();
 
         assert_eq!(expected_err, actual_err);
     }
 
     #[test]
     fn err_unterminated_double_quote() {
-        let err = quoted_string(Span::new("\"xxx", true)).unwrap_err();
+        let err = quoted_string(Span::new("\"xxx")).unwrap_err();
 
         let Err::Error(e) = err else {
             panic!("Expected Err::Error: {err:#?}");
@@ -239,7 +238,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_string() {
-        let (rem, qstr) = quoted_string(Span::new("\"abc\"def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("\"abc\"def")).unwrap();
 
         assert_eq!(
             rem,
@@ -264,7 +263,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_escape() {
-        let (rem, qstr) = quoted_string(Span::new("\"a\\\"bc\"def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("\"a\\\"bc\"def")).unwrap();
 
         assert_eq!(
             rem,
@@ -289,7 +288,7 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_single_quote() {
-        let (rem, qstr) = quoted_string(Span::new("\"a'bc\"def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("\"a'bc\"def")).unwrap();
 
         assert_eq!(
             rem,
@@ -314,7 +313,7 @@ mod quoted_string {
 
     #[test]
     fn err_unterminated_single_quote() {
-        let err = quoted_string(Span::new("'xxx", true)).unwrap_err();
+        let err = quoted_string(Span::new("'xxx")).unwrap_err();
 
         let Err::Error(e) = err else {
             panic!("Expected Err::Error: {err:#?}");
@@ -335,7 +334,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_string() {
-        let (rem, qstr) = quoted_string(Span::new("'abc'def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("'abc'def")).unwrap();
 
         assert_eq!(
             rem,
@@ -360,7 +359,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_escape() {
-        let (rem, qstr) = quoted_string(Span::new("'a\\'bc'def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("'a\\'bc'def")).unwrap();
 
         assert_eq!(
             rem,
@@ -385,7 +384,7 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_double_quote() {
-        let (rem, qstr) = quoted_string(Span::new("'a\"bc'def", true)).unwrap();
+        let (rem, qstr) = quoted_string(Span::new("'a\"bc'def")).unwrap();
 
         assert_eq!(
             rem,
