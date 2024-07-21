@@ -95,3 +95,26 @@ mod impl_nom_input_take {
         assert_eq!(span.byte_offset(), 0);
     }
 }
+
+mod impl_nom_input_take_at_position {
+    use nom::InputTakeAtPosition;
+
+    use crate::Span;
+
+    #[test]
+    fn take() {
+        let r: nom::IResult<Span<'_>, Span<'_>, crate::Error> =
+            Span::new("abc").split_at_position(|c| c == 'b');
+        let (s1, s2) = r.unwrap();
+
+        assert_eq!(s1.data(), "bc");
+        assert_eq!(s1.line(), 1);
+        assert_eq!(s1.col(), 2);
+        assert_eq!(s1.byte_offset(), 1);
+
+        assert_eq!(s2.data(), "a");
+        assert_eq!(s2.line(), 1);
+        assert_eq!(s2.col(), 1);
+        assert_eq!(s2.byte_offset(), 0);
+    }
+}
