@@ -134,4 +134,12 @@ mod impl_nom_input_take_at_position {
         assert_eq!(s2.col(), 1);
         assert_eq!(s2.byte_offset(), 0);
     }
+
+    #[test]
+    fn split_at_position_not_found() {
+        let r: nom::IResult<Span<'_>, Span<'_>, crate::Error> =
+            Span::new("abc").split_at_position1(|c| c == 'x', nom::error::ErrorKind::Fail);
+
+        assert!(r.is_err());
+    }
 }
