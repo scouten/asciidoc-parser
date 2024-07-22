@@ -106,7 +106,10 @@ impl<'a> Deref for Span<'a> {
 // available inside this crate only.
 
 mod nom_traits;
+mod parse_result;
 mod split;
+
+pub(crate) use parse_result::ParseResult;
 
 /// Any syntactic element can describe its location
 /// within the source material using this trait.
@@ -114,10 +117,4 @@ pub trait HasSpan<'a> {
     /// Return a [`Span`] describing the syntactic element's
     /// location within the source string/file.
     fn span(&'a self) -> &'a Span<'a>;
-}
-
-/// Represents a successful parse result and subsequent remainder of the span.
-pub(crate) struct ParseResult<'a, T> {
-    pub(crate) t: T,
-    pub(crate) rem: Span<'a>,
 }
