@@ -8,7 +8,7 @@ use nom::{
 use crate::{
     attributes::Attrlist,
     blocks::{ContentModel, IsBlock},
-    primitives::{ident, normalized_line},
+    primitives::ident,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -30,7 +30,7 @@ pub struct MacroBlock<'a> {
 
 impl<'a> MacroBlock<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let line = normalized_line(source);
+        let line = source.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.t.ends_with(']') {
