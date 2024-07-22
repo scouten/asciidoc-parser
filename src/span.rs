@@ -59,7 +59,7 @@ use nom::{
 /// ```
 
 /// You can wrap your input in this struct with [`Span::new`].
-#[derive(Clone, Debug, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Span<'a> {
     data: &'a str,
     line: usize,
@@ -101,7 +101,7 @@ impl<'a> Span<'a> {
     /// Splits the current input stream into a [`ParseResult<Span>`] at the
     /// given position.
     #[allow(dead_code)] // TEMPORARY while refactoring
-    pub(crate) fn into_parse_result(&self, at_index: usize) -> ParseResult<Self> {
+    pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
         ParseResult {
             t: self.slice(..at_index),
             rem: self.slice(at_index..),
