@@ -98,7 +98,7 @@ impl<'a> Span<'a> {
         self.data
     }
 
-    /// Splits the current input stream into a [`ParseResult<Span>`] at the
+    /// Splits the current span into a [`ParseResult<Span>`] at the
     /// given position.
     #[allow(dead_code)] // TEMPORARY while refactoring
     pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
@@ -107,7 +107,29 @@ impl<'a> Span<'a> {
             rem: self.slice(at_index..),
         }
     }
+
+    /// Splits this span at the first character that matches `predicate`,
+    /// but will not return an empty subspan.
+    ///
+    /// Returns `None` if:
+    ///
+    /// * `predicate` returns `true` for the _first_ character in the span, or
+    /// * the span is empty.
+    ///
+    /// NOM REFACTOR: Replacement for `take_till1`.
+    #[allow(dead_code)] // TEMPORARY while refactoring
+    pub(crate) fn split_at_match_non_empty<P>(&self, predicate: P) -> Option<ParseResult<Self>>
+    where
+        P: Fn(char) -> bool,
+    {
+        match self.data.position(predicate) {
+            Some(0) | None => None,
+            Some(n) => Some(self.into_parse_result(n)),
+        }
+    }
 }
+
+// --- TO DO: Deprecate the nom interfaces once they are no longer needed. ---
 
 impl<'a> AsBytes for Span<'a> {
     fn as_bytes(&self) -> &'a [u8] {

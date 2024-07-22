@@ -16,14 +16,6 @@ fn impl_as_ref() {
 }
 
 #[test]
-fn impl_nom_as_bytes() {
-    use nom::AsBytes;
-
-    let span = Span::new("abcdef");
-    assert_eq!(span.as_bytes(), b"abcdef");
-}
-
-#[test]
 fn into_parse_result() {
     let s = Span::new("abc");
     let pr = s.into_parse_result(1);
@@ -37,6 +29,46 @@ fn into_parse_result() {
     assert_eq!(pr.rem.line(), 1);
     assert_eq!(pr.rem.col(), 2);
     assert_eq!(pr.rem.byte_offset(), 1);
+}
+
+mod split_at_match_non_empty {
+    use crate::Span;
+
+    #[test]
+    fn empty_input() {
+        let s = Span::new("");
+        assert!(s.split_at_match_non_empty(|c| c == ':').is_none());
+    }
+
+    #[test]
+    fn empty_subspan() {
+        let s = Span::new(":abc");
+        assert!(s.split_at_match_non_empty(|c| c == ':').is_none());
+    }
+
+    #[test]
+    fn match_after_first() {
+        let s = Span::new("ab:cd");
+        let pr = s.split_at_match_non_empty(|c| c == ':').unwrap();
+
+        assert_eq!(pr.t.data(), "ab");
+        assert_eq!(pr.t.line(), 1);
+        assert_eq!(pr.t.col(), 1);
+        assert_eq!(pr.t.byte_offset(), 0);
+
+        assert_eq!(pr.rem.data(), ":cd");
+        assert_eq!(pr.rem.line(), 1);
+        assert_eq!(pr.rem.col(), 3);
+        assert_eq!(pr.rem.byte_offset(), 2);
+    }
+}
+
+#[test]
+fn impl_nom_as_bytes() {
+    use nom::AsBytes;
+
+    let span = Span::new("abcdef");
+    assert_eq!(span.as_bytes(), b"abcdef");
 }
 
 mod impl_nom_compare_no_case {
