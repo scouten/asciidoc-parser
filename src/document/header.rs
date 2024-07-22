@@ -10,7 +10,7 @@ use nom::{
 
 use crate::{
     document::Attribute,
-    primitives::{consume_empty_lines, empty_line, non_empty_line, trim_input_for_rem},
+    primitives::{non_empty_line, trim_input_for_rem},
     HasSpan, Span,
 };
 
@@ -26,20 +26,20 @@ pub struct Header<'a> {
 
 impl<'a> Header<'a> {
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        let source = consume_empty_lines(i);
+        let source = i.discard_empty_lines();
 
         // TEMPORARY: Titles are optional, but we're not prepared for that yet.
         let (rem, title) = parse_title(source)?;
         let (rem, attributes) = many0(Attribute::parse)(rem)?;
 
         // Header must be followed by an empty line.
-        if empty_line(rem).is_none() {
+        if rem.take_empty_line().is_none() {
             return Err(Err::Error(Error::new(rem, ErrorKind::NonEmpty)));
         }
 
         let source = trim_input_for_rem(source, rem);
         Ok((
-            consume_empty_lines(rem),
+            rem.discard_empty_lines(),
             Self {
                 title: Some(title),
                 attributes,

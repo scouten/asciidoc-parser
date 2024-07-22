@@ -4,7 +4,7 @@ use nom::IResult;
 
 use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
-    primitives::{consume_empty_lines, normalized_line},
+    primitives::normalized_line,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -43,7 +43,7 @@ impl<'a> Block<'a> {
     ///
     /// Consumes any blank lines before and after the block.
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        let i = consume_empty_lines(i);
+        let i = i.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
         let line = normalized_line(i);

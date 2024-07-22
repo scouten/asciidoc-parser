@@ -114,32 +114,3 @@ fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
         Err(Err::Error(Error::new(input, ErrorKind::NonEmpty)))
     }
 }
-
-/// Consumes an empty line.
-///
-/// An empty line may contain any number of white space characters.
-///
-/// Returns `None` if the line contains any non-white-space characters.
-pub(crate) fn empty_line(i: Span<'_>) -> Option<ParseResult<Span>> {
-    let l = line(i);
-
-    if l.t.data().bytes().all(nom::character::is_space) {
-        Some(l)
-    } else {
-        None
-    }
-}
-
-/// Consumes zero or more empty lines.
-///
-/// Returns the original input if any error occurs or no empty lines are found.
-pub(crate) fn consume_empty_lines(mut i: Span<'_>) -> Span {
-    while !i.data().is_empty() {
-        match empty_line(i) {
-            Some(line) => i = line.rem,
-            None => break,
-        }
-    }
-
-    i
-}

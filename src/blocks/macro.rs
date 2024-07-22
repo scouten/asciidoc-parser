@@ -8,7 +8,7 @@ use nom::{
 use crate::{
     attributes::Attrlist,
     blocks::{ContentModel, IsBlock},
-    primitives::{consume_empty_lines, ident, normalized_line},
+    primitives::{ident, normalized_line},
     strings::CowStr,
     HasSpan, Span,
 };
@@ -45,7 +45,7 @@ impl<'a> MacroBlock<'a> {
         let (_, attrlist) = Attrlist::parse(attrlist)?;
 
         Ok((
-            consume_empty_lines(line.rem),
+            line.rem.discard_empty_lines(),
             Self {
                 name,
                 target: if target.is_empty() {

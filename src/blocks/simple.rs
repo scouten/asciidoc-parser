@@ -1,7 +1,7 @@
 use nom::IResult;
 
 use super::{ContentModel, IsBlock};
-use crate::{inlines::Inline, primitives::consume_empty_lines, strings::CowStr, HasSpan, Span};
+use crate::{inlines::Inline, strings::CowStr, HasSpan, Span};
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
@@ -14,7 +14,7 @@ impl<'a> SimpleBlock<'a> {
             source,
             nom::error::ErrorKind::TakeTill1,
         )))?;
-        Ok((consume_empty_lines(inline.rem), Self(inline.t)))
+        Ok((inline.rem.discard_empty_lines(), Self(inline.t)))
     }
 
     /// Return the inline content of this block.

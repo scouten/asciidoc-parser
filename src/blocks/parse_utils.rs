@@ -1,6 +1,6 @@
 use nom::IResult;
 
-use crate::{blocks::Block, primitives::consume_empty_lines, Span};
+use crate::{blocks::Block, Span};
 
 /// Parse blocks until end of input or a pre-determined stop condition is
 /// reached.
@@ -9,7 +9,7 @@ where
     F: Fn(&Span<'a>) -> bool,
 {
     let mut blocks: Vec<Block<'a>> = vec![];
-    i = consume_empty_lines(i);
+    i = i.discard_empty_lines();
 
     while !i.data().is_empty() {
         if f(&i) {

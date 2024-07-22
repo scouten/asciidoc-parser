@@ -105,6 +105,7 @@ impl<'a> Deref for Span<'a> {
 // The other modules referenced below implement additional APIs that are only
 // available inside this crate only.
 
+mod line;
 mod nom_traits;
 mod parse_result;
 mod split;
