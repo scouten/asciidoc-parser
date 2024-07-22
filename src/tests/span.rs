@@ -23,6 +23,22 @@ fn impl_nom_as_bytes() {
     assert_eq!(span.as_bytes(), b"abcdef");
 }
 
+#[test]
+fn into_parse_result() {
+    let s = Span::new("abc");
+    let pr = s.into_parse_result(1);
+
+    assert_eq!(pr.t.data(), "a");
+    assert_eq!(pr.t.line(), 1);
+    assert_eq!(pr.t.col(), 1);
+    assert_eq!(pr.t.byte_offset(), 0);
+
+    assert_eq!(pr.rem.data(), "bc");
+    assert_eq!(pr.rem.line(), 1);
+    assert_eq!(pr.rem.col(), 2);
+    assert_eq!(pr.rem.byte_offset(), 1);
+}
+
 mod impl_nom_compare_no_case {
     use nom::{Compare, CompareResult};
 

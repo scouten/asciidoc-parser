@@ -2,7 +2,8 @@ use nom::InputTake;
 
 use crate::{
     inlines::InlineMacro,
-    primitives::{non_empty_line, trim_input_for_rem, ParseResult},
+    primitives::{non_empty_line, trim_input_for_rem},
+    span::ParseResult,
     HasSpan, Span,
 };
 
