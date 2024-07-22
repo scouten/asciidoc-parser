@@ -1,3 +1,199 @@
+mod take_line {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{tests::fixtures::TSpan, Span};
+
+    #[test]
+    fn empty_source() {
+        let span = Span::new("");
+        let l = span.take_line();
+
+        assert_eq!(
+            l.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            l.t,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn simple_line() {
+        let span = Span::new("abc");
+        let l = span.take_line();
+
+        assert_eq!(
+            l.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
+
+        assert_eq!(
+            l.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn trailing_space() {
+        let span = Span::new("abc ");
+        let l = span.take_line();
+
+        assert_eq!(
+            l.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
+
+        assert_eq!(
+            l.t,
+            TSpan {
+                data: "abc ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn consumes_lf() {
+        // Should consume but not return \n.
+
+        let span = Span::new("abc\ndef");
+        let l = span.take_line();
+
+        assert_eq!(
+            l.rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
+
+        assert_eq!(
+            l.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn consumes_crlf() {
+        // Should consume but not return \r\n.
+
+        let span = Span::new("abc\r\ndef");
+        let l = span.take_line();
+
+        assert_eq!(
+            l.rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 5
+            }
+        );
+
+        assert_eq!(
+            l.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn doesnt_consume_lfcr() {
+        // Should consume \n but not a subsequent \r.
+
+        let span = Span::new("abc\n\rdef");
+        let l = span.take_line();
+
+        assert_eq!(
+            l.rem,
+            TSpan {
+                data: "\rdef",
+                line: 2,
+                col: 1,
+                offset: 4
+            }
+        );
+
+        assert_eq!(
+            l.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn standalone_cr_doesnt_end_line() {
+        // Shouldn't terminate line at \r without \n.
+
+        let span = Span::new("abc\rdef");
+        let l = span.take_line();
+
+        assert_eq!(
+            l.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
+
+        assert_eq!(
+            l.t,
+            TSpan {
+                data: "abc\rdef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+}
+
 mod take_empty_line {
     use pretty_assertions_sorted::assert_eq;
 

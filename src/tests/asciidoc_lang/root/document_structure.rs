@@ -226,7 +226,6 @@ mod lines {
 
     use crate::{
         document::Attribute,
-        primitives::line,
         tests::fixtures::{
             document::{TAttribute, TAttributeValue, TRawAttributeValue},
             TSpan,
@@ -253,7 +252,8 @@ mod lines {
         // == Section Title
         // ----
 
-        let l = line(Span::new("== Section Title\n"));
+        let span = Span::new("== Section Title\n");
+        let l = span.take_line();
 
         assert_eq!(
             l.rem,
