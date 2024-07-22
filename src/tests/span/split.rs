@@ -1,21 +1,6 @@
 use crate::Span;
 
 #[test]
-fn test_happy_case() {
-    let span = Span::new(r#"{"hello": "world 🙌"}"#);
-
-    assert_eq!(span.line(), 1);
-    assert_eq!(span.col(), 1);
-    assert_eq!(span.byte_offset(), 0);
-}
-
-#[test]
-fn impl_as_ref() {
-    let span = Span::new("abcdef");
-    assert_eq!(span.as_ref(), "abcdef");
-}
-
-#[test]
 fn into_parse_result() {
     let s = Span::new("abc");
     let pr = s.into_parse_result(1);
@@ -62,6 +47,3 @@ mod split_at_match_non_empty {
         assert_eq!(pr.rem.byte_offset(), 2);
     }
 }
-
-mod nom_traits;
-mod split;

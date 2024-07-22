@@ -22,8 +22,6 @@
 
 use std::{convert::AsRef, ops::Deref};
 
-use nom::{InputIter, Slice};
-
 /// Represents a subset of the overall UTF-8 input stream.
 ///
 /// Annotated with 1-based line and column numbers relative to the
@@ -87,36 +85,6 @@ impl<'a> Span<'a> {
     pub fn data(&self) -> &'a str {
         self.data
     }
-
-    /// Split the current span into a [`ParseResult<Span>`] at the
-    /// given position.
-    #[allow(dead_code)] // TEMPORARY while refactoring
-    pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
-        ParseResult {
-            t: self.slice(..at_index),
-            rem: self.slice(at_index..),
-        }
-    }
-
-    /// Split this span at the first character that matches `predicate`,
-    /// but will not return an empty subspan.
-    ///
-    /// Return `None` if:
-    ///
-    /// * `predicate` returns `true` for the _first_ character in the span, or
-    /// * the span is empty.
-    ///
-    /// NOM REFACTOR: Replacement for `take_till1`.
-    #[allow(dead_code)] // TEMPORARY while refactoring
-    pub(crate) fn split_at_match_non_empty<P>(&self, predicate: P) -> Option<ParseResult<Self>>
-    where
-        P: Fn(char) -> bool,
-    {
-        match self.data.position(predicate) {
-            Some(0) | None => None,
-            Some(n) => Some(self.into_parse_result(n)),
-        }
-    }
 }
 
 impl<'a> AsRef<str> for Span<'a> {
@@ -138,6 +106,7 @@ impl<'a> Deref for Span<'a> {
 // available inside this crate only.
 
 mod nom_traits;
+mod split;
 
 /// Any syntactic element can describe its location
 /// within the source material using this trait.
