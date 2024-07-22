@@ -5,7 +5,6 @@ use std::slice::Iter;
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     document::Header,
-    primitives::consume_empty_lines,
     strings::CowStr,
     Error, HasSpan, Span,
 };
@@ -39,7 +38,7 @@ impl<'a> Document<'a> {
         // TO DO: Add option for best-guess parsing?
 
         let source = Span::new(source);
-        let i = consume_empty_lines(source);
+        let i = source.discard_empty_lines();
 
         let (i, header) = if i.starts_with("= ") {
             let (i, header) = Header::parse(i)?;

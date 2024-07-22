@@ -4,7 +4,7 @@ use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count,
 
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
-    primitives::{consume_empty_lines, non_empty_line, trim_input_for_rem},
+    primitives::{non_empty_line, trim_input_for_rem},
     strings::CowStr,
     HasSpan, Span,
 };
@@ -27,7 +27,7 @@ pub struct SectionBlock<'a> {
 impl<'a> SectionBlock<'a> {
     #[allow(dead_code)]
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let source = consume_empty_lines(source);
+        let source = source.discard_empty_lines();
 
         let (rem, (level, title)) = parse_title_line(source)?;
 

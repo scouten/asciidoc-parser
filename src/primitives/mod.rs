@@ -12,9 +12,7 @@ use crate::Span;
 
 mod line;
 #[allow(unused_imports)]
-pub(crate) use line::{
-    consume_empty_lines, empty_line, line, line_with_continuation, non_empty_line, normalized_line,
-};
+pub(crate) use line::{line, line_with_continuation, non_empty_line, normalized_line};
 
 /// Given two [`Span`]s, the second of which must be a trailing remainder
 /// of the first, return the first input trimmed to exclude the second.
