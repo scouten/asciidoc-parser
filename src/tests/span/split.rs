@@ -46,4 +46,20 @@ mod split_at_match_non_empty {
         assert_eq!(pr.rem.col(), 3);
         assert_eq!(pr.rem.byte_offset(), 2);
     }
+
+    #[test]
+    fn non_empty_no_match() {
+        let s = Span::new("abcd");
+        let pr = s.split_at_match_non_empty(|c| c == ':').unwrap();
+
+        assert_eq!(pr.t.data(), "abcd");
+        assert_eq!(pr.t.line(), 1);
+        assert_eq!(pr.t.col(), 1);
+        assert_eq!(pr.t.byte_offset(), 0);
+
+        assert_eq!(pr.rem.data(), "");
+        assert_eq!(pr.rem.line(), 1);
+        assert_eq!(pr.rem.col(), 5);
+        assert_eq!(pr.rem.byte_offset(), 4);
+    }
 }
