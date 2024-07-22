@@ -1,3 +1,6 @@
+// TEMPORARY (?): Nom compatibility layer for `Span`
+// TO DO: Deprecate the nom interfaces once they are no longer needed.
+
 // Adapted from nom-span, which comes with the following license:
 
 // Copyright 2023 Jules Guesnon
@@ -20,10 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-use std::{
-    convert::AsRef,
-    ops::{Deref, RangeTo},
-};
+use std::ops::RangeTo;
 
 use bytecount::num_chars;
 use memchr::Memchr;
@@ -32,114 +32,11 @@ use nom::{
     Offset, Slice,
 };
 
-/// Represents a subset of the overall UTF-8 input stream.
-///
-/// Annotated with 1-based line and column numbers relative to the
-/// beginning of the overall input stream.
-///
-/// Called `Span` because its `data` member can be consumed
-/// to yield another `Span` with annotations for the end of the
-/// syntactic element in question.
-///
-/// ## How to use it?
-///
-/// Here is a basic example of how to create the input and how to retrieve all
-/// the informations you need.
-///
-/// ```
-/// # use asciidoc_parser::Span;
-/// #
-/// fn main() {
-///     let span = Span::new(r#"{"hello": "world 🙌"}"#);
-///
-///     assert_eq!(span.line(), 1);
-///     assert_eq!(span.col(), 1);
-///     assert_eq!(span.byte_offset(), 0);
-/// }
-/// ```
-
-/// You can wrap your input in this struct with [`Span::new`].
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Span<'a> {
-    data: &'a str,
-    line: usize,
-    col: usize,
-    offset: usize,
-}
-
-impl<'a> Span<'a> {
-    /// Create a new `Span` that describes an entire UTF-8 input stream.
-    pub fn new(data: &'a str) -> Self {
-        Self {
-            data,
-            line: 1,
-            col: 1,
-            offset: 0,
-        }
-    }
-
-    /// Get the current line number.
-    pub fn line(&self) -> usize {
-        self.line
-    }
-
-    /// Get the current column number.
-    pub fn col(&self) -> usize {
-        self.col
-    }
-
-    /// Get the current byte offset.
-    pub fn byte_offset(&self) -> usize {
-        self.offset
-    }
-
-    /// Get the current data in the span.
-    pub fn data(&self) -> &'a str {
-        self.data
-    }
-
-    /// Splits the current span into a [`ParseResult<Span>`] at the
-    /// given position.
-    #[allow(dead_code)] // TEMPORARY while refactoring
-    pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
-        ParseResult {
-            t: self.slice(..at_index),
-            rem: self.slice(at_index..),
-        }
-    }
-
-    /// Splits this span at the first character that matches `predicate`,
-    /// but will not return an empty subspan.
-    ///
-    /// Returns `None` if:
-    ///
-    /// * `predicate` returns `true` for the _first_ character in the span, or
-    /// * the span is empty.
-    ///
-    /// NOM REFACTOR: Replacement for `take_till1`.
-    #[allow(dead_code)] // TEMPORARY while refactoring
-    pub(crate) fn split_at_match_non_empty<P>(&self, predicate: P) -> Option<ParseResult<Self>>
-    where
-        P: Fn(char) -> bool,
-    {
-        match self.data.position(predicate) {
-            Some(0) | None => None,
-            Some(n) => Some(self.into_parse_result(n)),
-        }
-    }
-}
-
-// --- TO DO: Deprecate the nom interfaces once they are no longer needed. ---
+use super::Span;
 
 impl<'a> AsBytes for Span<'a> {
     fn as_bytes(&self) -> &'a [u8] {
         self.data.as_bytes()
-    }
-}
-
-impl<'a> AsRef<str> for Span<'a> {
-    fn as_ref(&self) -> &str {
-        self.data
     }
 }
 
@@ -150,14 +47,6 @@ impl<'a> Compare<&str> for Span<'a> {
 
     fn compare_no_case(&self, t: &str) -> nom::CompareResult {
         self.data.compare_no_case(t)
-    }
-}
-
-impl<'a> Deref for Span<'a> {
-    type Target = &'a str;
-
-    fn deref(&self) -> &Self::Target {
-        &self.data
     }
 }
 
@@ -193,13 +82,13 @@ where
 }
 */
 
-impl<'a> InputIter for Span<'a>
+impl<'a> nom::InputIter for Span<'a>
 where
-    &'a str: InputIter,
+    &'a str: nom::InputIter,
 {
-    type Item = <&'a str as InputIter>::Item;
-    type Iter = <&'a str as InputIter>::Iter;
-    type IterElem = <&'a str as InputIter>::IterElem;
+    type Item = <&'a str as nom::InputIter>::Item;
+    type Iter = <&'a str as nom::InputIter>::Iter;
+    type IterElem = <&'a str as nom::InputIter>::IterElem;
 
     fn iter_indices(&self) -> Self::Iter {
         self.data.iter_indices()
@@ -238,7 +127,7 @@ impl<'a> InputTake for Span<'a> {
 }
 
 impl<'a> InputTakeAtPosition for Span<'a> {
-    type Item = <&'a str as InputIter>::Item;
+    type Item = <&'a str as nom::InputIter>::Item;
 
     fn split_at_position<P, E: nom::error::ParseError<Self>>(
         &self,
@@ -316,9 +205,9 @@ impl<'a, R: FromStr> ParseTo<R> for Span<'a> {
 }
 */
 
-impl<'a, R> Slice<R> for Span<'a>
+impl<'a, R> nom::Slice<R> for Span<'a>
 where
-    &'a str: Slice<R> + Offset + AsBytes + Slice<RangeTo<usize>>,
+    &'a str: nom::Slice<R> + Offset + AsBytes + nom::Slice<RangeTo<usize>>,
 {
     fn slice(&self, range: R) -> Self {
         let next_data = self.data.slice(range);
@@ -358,19 +247,4 @@ where
             offset: self.offset + offset,
         }
     }
-}
-
-/// Any syntactic element can describe its location
-/// within the source material using this trait.
-pub trait HasSpan<'a> {
-    /// Return a [`Span`] describing the syntactic element's
-    /// location within the source string/file.
-    fn span(&'a self) -> &'a Span<'a>;
-}
-
-/// Represents a successful parse result and subsequent remainder of the input
-/// stream.
-pub(crate) struct ParseResult<'a, T> {
-    pub(crate) t: T,
-    pub(crate) rem: Span<'a>,
 }
