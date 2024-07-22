@@ -115,7 +115,7 @@ impl<'a> Span<'a> {
     ///
     /// * `predicate` returns `true` for the _first_ character in the span, or
     /// * the span is empty.
-    /// 
+    ///
     /// NOM REFACTOR: Replacement for `take_till1`.
     #[allow(dead_code)] // TEMPORARY while refactoring
     pub(crate) fn split_at_match_non_empty<P>(&self, predicate: P) -> Option<ParseResult<Self>>
