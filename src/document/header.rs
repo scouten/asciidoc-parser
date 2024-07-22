@@ -8,11 +8,7 @@ use nom::{
     Err, IResult,
 };
 
-use crate::{
-    document::Attribute,
-    primitives::{non_empty_line, trim_input_for_rem},
-    HasSpan, Span,
-};
+use crate::{document::Attribute, primitives::trim_input_for_rem, HasSpan, Span};
 
 /// An AsciiDoc document may begin with a document header. The document header
 /// encapsulates the document title, author and revision information,
@@ -66,10 +62,12 @@ impl<'a> HasSpan<'a> for Header<'a> {
 }
 
 fn parse_title(i: Span<'_>) -> IResult<Span, Span<'_>> {
-    let line = non_empty_line(i).ok_or(nom::Err::Error(nom::error::Error::new(
-        i,
-        nom::error::ErrorKind::TakeTill1,
-    )))?;
+    let line = i
+        .take_non_empty_line()
+        .ok_or(nom::Err::Error(nom::error::Error::new(
+            i,
+            nom::error::ErrorKind::TakeTill1,
+        )))?;
 
     let (title, _) = tag("=")(line.t)?;
     let (title, _) = space1(title)?;

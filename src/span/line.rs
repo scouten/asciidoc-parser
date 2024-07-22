@@ -26,6 +26,27 @@ impl<'a> Span<'a> {
         self.take_line().trim_t_trailing_spaces()
     }
 
+    /// Split the span, consuming a single _normalized, non-empty_ line from the
+    /// source if one exists.
+    ///
+    /// A line is terminated by end-of-input or a single `\n` character
+    /// or a single `\r\n` sequence. The end of line sequence is consumed
+    /// but not included in the returned line.
+    ///
+    /// All trailing spaces are removed from the line.
+    ///
+    /// Returns `None` if the line becomes empty after trailing spaces have been
+    /// removed.
+    pub(crate) fn take_non_empty_line(self) -> Option<ParseResult<'a, Self>> {
+        self.split_at_match_non_empty(|c| c == '\n')
+            .map(|pr| {
+                pr.trim_rem_start_matches('\n')
+                    .trim_t_end_matches('\r')
+                    .trim_t_trailing_spaces()
+            })
+            .filter(|line| !line.t.is_empty())
+    }
+
     /// Split the span, assuming the span begins with an empty line.
     ///
     /// An empty line may contain any number of white space characters.
