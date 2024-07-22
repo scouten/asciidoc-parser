@@ -7,7 +7,7 @@ use nom::{
     Err, IResult, Parser, Slice,
 };
 
-use crate::{primitives::ParseResult, Span};
+use crate::{span::ParseResult, Span};
 
 /// Return a single line from the source.
 ///

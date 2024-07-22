@@ -16,13 +16,6 @@ pub(crate) use line::{
     consume_empty_lines, empty_line, line, line_with_continuation, non_empty_line, normalized_line,
 };
 
-/// Represents a successful parse result and subsequent remainder of the input
-/// stream.
-pub(crate) struct ParseResult<'a, T> {
-    pub(crate) t: T,
-    pub(crate) rem: Span<'a>,
-}
-
 /// Given two [`Span`]s, the second of which must be a trailing remainder
 /// of the first, return the first input trimmed to exclude the second.
 ///

@@ -59,7 +59,7 @@ use nom::{
 /// ```
 
 /// You can wrap your input in this struct with [`Span::new`].
-#[derive(Clone, Debug, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Span<'a> {
     data: &'a str,
     line: usize,
@@ -96,6 +96,16 @@ impl<'a> Span<'a> {
     /// Get the current data in the span.
     pub fn data(&self) -> &'a str {
         self.data
+    }
+
+    /// Splits the current input stream into a [`ParseResult<Span>`] at the
+    /// given position.
+    #[allow(dead_code)] // TEMPORARY while refactoring
+    pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
+        ParseResult {
+            t: self.slice(..at_index),
+            rem: self.slice(at_index..),
+        }
     }
 }
 
@@ -334,4 +344,11 @@ pub trait HasSpan<'a> {
     /// Return a [`Span`] describing the syntactic element's
     /// location within the source string/file.
     fn span(&'a self) -> &'a Span<'a>;
+}
+
+/// Represents a successful parse result and subsequent remainder of the input
+/// stream.
+pub(crate) struct ParseResult<'a, T> {
+    pub(crate) t: T,
+    pub(crate) rem: Span<'a>,
 }
