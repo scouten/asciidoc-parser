@@ -4,7 +4,6 @@ use nom::IResult;
 
 use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
-    primitives::normalized_line,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -46,7 +45,7 @@ impl<'a> Block<'a> {
         let i = i.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
-        let line = normalized_line(i);
+        let line = i.take_normalized_line();
         if line.t.contains("::") {
             if let Ok((rem, macro_block)) = MacroBlock::parse(i) {
                 return Ok((rem, Self::Macro(macro_block)));

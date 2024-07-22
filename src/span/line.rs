@@ -15,6 +15,17 @@ impl<'a> Span<'a> {
         line.trim_rem_start_matches('\n').trim_t_end_matches('\r')
     }
 
+    /// Split the span, consuming a single line and normalizing it.
+    ///
+    /// A line is terminated by end-of-input or a single `\n` character
+    /// or a single `\r\n` sequence. The end of line sequence is consumed
+    /// but not included in the returned line.
+    ///
+    /// All trailing spaces are removed from the line.
+    pub(crate) fn take_normalized_line(self) -> ParseResult<'a, Self> {
+        self.take_line().trim_t_trailing_spaces()
+    }
+
     /// Split the span, assuming the span begins with an empty line.
     ///
     /// An empty line may contain any number of white space characters.

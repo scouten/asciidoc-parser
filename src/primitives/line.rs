@@ -9,17 +9,6 @@ use nom::{
 
 use crate::{span::ParseResult, Span};
 
-/// Return a single _normalized_ line from the source.
-///
-/// A line is terminated by end-of-input or a single `\n` character
-/// or a single `\r\n` sequence. The end of line sequence is consumed
-/// but not included in the returned line.
-///
-/// All trailing spaces are removed from the line.
-pub(crate) fn normalized_line(i: Span<'_>) -> ParseResult<Span> {
-    i.take_line().trim_t_trailing_spaces()
-}
-
 /// Returns a single _normalized, non-empty_ line from the source
 /// if one exists.
 ///
@@ -85,7 +74,7 @@ pub(crate) fn line_with_continuation(i: Span<'_>) -> Option<ParseResult<Span>> {
 }
 
 fn one_line_with_continuation(input: Span<'_>) -> IResult<Span, Span> {
-    let line = normalized_line(input);
+    let line = input.take_normalized_line();
     if line.t.ends_with('\\') {
         Ok((line.rem, line.t))
     } else {

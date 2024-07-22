@@ -7,7 +7,7 @@
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{primitives::normalized_line, tests::fixtures::TSpan, Span};
+use crate::{tests::fixtures::TSpan, Span};
 
 // = Normalization
 //
@@ -30,7 +30,8 @@ fn force_utf8() {
 
 #[test]
 fn strips_trailing_spaces() {
-    let line = normalized_line(Span::new("abc   "));
+    let span = Span::new("abc   ");
+    let line = span.take_normalized_line();
 
     assert_eq!(
         line.rem,
@@ -57,7 +58,8 @@ fn strips_trailing_spaces() {
 fn strips_trailing_lf() {
     // Should consume but not return \n.
 
-    let line = normalized_line(Span::new("abc  \ndef"));
+    let span = Span::new("abc  \ndef");
+    let line = span.take_normalized_line();
 
     assert_eq!(
         line.rem,
@@ -84,7 +86,8 @@ fn strips_trailing_lf() {
 fn strips_trailing_crlf() {
     // Should consume but not return \r\n.
 
-    let line = normalized_line(Span::new("abc  \r\ndef"));
+    let span = Span::new("abc  \r\ndef");
+    let line = span.take_normalized_line();
 
     assert_eq!(
         line.rem,
