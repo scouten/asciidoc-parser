@@ -34,7 +34,7 @@ impl<'a> Span<'a> {
             Some(0) => None,
             Some(n) => Some(self.into_parse_result(n)),
             None => {
-                if self.data.len() == 0 {
+                if self.data.is_empty() {
                     None
                 } else {
                     Some(self.into_parse_result(self.data.len()))
