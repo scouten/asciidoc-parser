@@ -1,10 +1,7 @@
 use nom::InputTake;
 
 use crate::{
-    inlines::InlineMacro,
-    primitives::{non_empty_line, trim_input_for_rem},
-    span::ParseResult,
-    HasSpan, Span,
+    inlines::InlineMacro, primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span,
 };
 
 /// An inline element is a phrase (i.e., span of content) within a block element
@@ -29,7 +26,7 @@ impl<'a> Inline<'a> {
     ///
     /// Returns `None` if input doesn't start with a non-empty line.
     pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
-        let line = non_empty_line(i)?;
+        let line = i.take_non_empty_line()?;
         let mut span = line.t;
 
         // Special-case optimization: If the entire span is one

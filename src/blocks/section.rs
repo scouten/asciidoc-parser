@@ -4,7 +4,7 @@ use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count,
 
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
-    primitives::{non_empty_line, trim_input_for_rem},
+    primitives::trim_input_for_rem,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -86,10 +86,12 @@ impl<'a> HasSpan<'a> for SectionBlock<'a> {
 }
 
 fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
-    let line = non_empty_line(source).ok_or(nom::Err::Error(nom::error::Error::new(
-        source,
-        nom::error::ErrorKind::TakeTill1,
-    )))?;
+    let line = source
+        .take_non_empty_line()
+        .ok_or(nom::Err::Error(nom::error::Error::new(
+            source,
+            nom::error::ErrorKind::TakeTill1,
+        )))?;
 
     // TO DO: Also support Markdown-style `#` markers.
     // TO DO: Enforce maximum of 6 `=` or `#` markers.
