@@ -15,7 +15,7 @@ impl<'a> Span<'a> {
         line.trim_rem_start_matches('\n').trim_t_end_matches('\r')
     }
 
-    /// Split the span, consuming a single line and normalizing it.\
+    /// Split the span, consuming a single line and normalizing it.
     ///
     /// A line is terminated by end-of-input or a single `\n` character
     /// or a single `\r\n` sequence. The end of line sequence is consumed
