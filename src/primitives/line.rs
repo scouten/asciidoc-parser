@@ -4,32 +4,10 @@ use nom::{
     error::{Error, ErrorKind},
     multi::many0,
     sequence::pair,
-    Err, IResult, Parser, Slice,
+    Err, IResult, Parser,
 };
 
 use crate::{span::ParseResult, Span};
-
-/// Return a single line from the source.
-///
-/// A line is terminated by end-of-input or a single `\n` character
-/// or a single `\r\n` sequence. The end of line sequence is consumed
-/// but not included in the returned line.
-pub(crate) fn line(input: Span<'_>) -> ParseResult<Span> {
-    let line = if let Some(index) = input.find('\n') {
-        ParseResult {
-            rem: input.slice(index..),
-            t: input.slice(0..index),
-        }
-    } else {
-        // No `\n` found; the entire input is the line.
-        ParseResult {
-            rem: input.slice(input.len()..),
-            t: input,
-        }
-    };
-
-    line.trim_rem_start_matches('\n').trim_t_end_matches('\r')
-}
 
 /// Return a single _normalized_ line from the source.
 ///
@@ -39,7 +17,7 @@ pub(crate) fn line(input: Span<'_>) -> ParseResult<Span> {
 ///
 /// All trailing spaces are removed from the line.
 pub(crate) fn normalized_line(i: Span<'_>) -> ParseResult<Span> {
-    line(i).trim_t_trailing_spaces()
+    i.take_line().trim_t_trailing_spaces()
 }
 
 /// Returns a single _normalized, non-empty_ line from the source
