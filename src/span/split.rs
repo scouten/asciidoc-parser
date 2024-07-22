@@ -31,8 +31,15 @@ impl<'a> Span<'a> {
         P: Fn(char) -> bool,
     {
         match self.data.position(predicate) {
-            Some(0) | None => None,
+            Some(0) => None,
             Some(n) => Some(self.into_parse_result(n)),
+            None => {
+                if self.data.len() == 0 {
+                    None
+                } else {
+                    Some(self.into_parse_result(self.data.len()))
+                }
+            }
         }
     }
 }
