@@ -10,10 +10,6 @@ use nom::{
 
 use crate::Span;
 
-mod line;
-#[allow(unused_imports)]
-pub(crate) use line::line_with_continuation;
-
 /// Given two [`Span`]s, the second of which must be a trailing remainder
 /// of the first, return the first input trimmed to exclude the second.
 ///

@@ -952,3 +952,341 @@ mod discard_empty_lines {
         );
     }
 }
+
+mod take_line_with_continuation {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{tests::fixtures::TSpan, Span};
+
+    #[test]
+    fn empty_source() {
+        let span = Span::new("");
+        assert!(span.take_line_with_continuation().is_none());
+    }
+
+    #[test]
+    fn only_spaces() {
+        let span = Span::new("   ");
+        assert!(span.take_line_with_continuation().is_none());
+    }
+
+    #[test]
+    fn simple_line() {
+        let span = Span::new("abc");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn discards_trailing_space() {
+        let span = Span::new("abc ");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn consumes_lf() {
+        // Should consume but not return \n.
+
+        let span = Span::new("abc  \ndef");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 6
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn consumes_crlf() {
+        // Should consume but not return \r\n.
+
+        let span = Span::new("abc  \r\ndef");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "def",
+                line: 2,
+                col: 1,
+                offset: 7
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn doesnt_consume_lfcr() {
+        // Should consume \n but not a subsequent \r.
+
+        let span = Span::new("abc  \n\rdef");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "\rdef",
+                line: 2,
+                col: 1,
+                offset: 6
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn standalone_cr_doesnt_end_line() {
+        // Shouldn't terminate line at \r without \n.
+
+        let span = Span::new("abc   \rdef");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc   \rdef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn simple_continuation() {
+        let span = Span::new("abc \\\ndef");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 4,
+                offset: 9
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc \\\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn simple_continuation_with_crlf() {
+        let span = Span::new("abc \\\r\ndef");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 4,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc \\\r\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn continuation_with_trailing_space() {
+        let span = Span::new("abc \\   \ndef");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 4,
+                offset: 12
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc \\   \ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn multiple_continuations() {
+        let span = Span::new("abc \\\ndef\\\nghi");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 4,
+                offset: 14
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc \\\ndef\\\nghi",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn terminates_on_line_without_trailing_slash() {
+        let span = Span::new("abc \\\ndef  \nghi");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "ghi",
+                line: 3,
+                col: 1,
+                offset: 12
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc \\\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+
+    #[test]
+    fn doesnt_consume_empty_line() {
+        let span = Span::new("abc \\\ndef\n\nghi");
+        let line = span.take_line_with_continuation().unwrap();
+
+        assert_eq!(
+            line.rem,
+            TSpan {
+                data: "\nghi",
+                line: 3,
+                col: 1,
+                offset: 10
+            }
+        );
+
+        assert_eq!(
+            line.t,
+            TSpan {
+                data: "abc \\\ndef",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
+}

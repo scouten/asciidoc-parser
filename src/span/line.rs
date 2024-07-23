@@ -78,4 +78,53 @@ impl<'a> Span<'a> {
 
         i
     }
+
+    /// Split the span, consuming one normalized, non-empty line that may be
+    /// continued onto subsequent lines with an explicit continuation marker.
+    ///
+    /// A line is terminated by end-of-input or a single `\n` character
+    /// or a single `\r\n` sequence. The end of line sequence is consumed
+    /// but not included in the returned line.
+    ///
+    /// A line is _not_ terminated by `\n` when preceded by a `\` character.
+    ///
+    /// SPEC QUESTION: Is it allowed to have a `+` character followed by
+    /// white space? For now, I'm saying yes.
+    ///
+    /// Trailing white spaces are removed from the final line and are not
+    /// removed from any lines with continuations.
+    ///
+    /// Returns `None` if the line becomes empty after trailing spaces have been
+    /// removed.
+    pub(crate) fn take_line_with_continuation(self) -> Option<ParseResult<'a, Self>> {
+        // Consume any number of lines terminated by '\\'.
+        let mut pr = self.into_parse_result(0);
+        while let Some(new_pr) = pr.rem.one_line_with_continuation() {
+            pr = new_pr;
+        }
+
+        // Consume at most one line without a `\\` terminator.
+        pr = pr.rem.take_line();
+
+        let pr = self
+            .into_parse_result(pr.rem.byte_offset() - self.byte_offset())
+            .trim_t_end_matches('\n')
+            .trim_t_end_matches('\r')
+            .trim_t_trailing_spaces();
+
+        if pr.t.is_empty() {
+            None
+        } else {
+            Some(pr)
+        }
+    }
+
+    fn one_line_with_continuation(self) -> Option<ParseResult<'a, Self>> {
+        let line = self.take_normalized_line();
+        if line.t.ends_with('\\') {
+            Some(line)
+        } else {
+            None
+        }
+    }
 }

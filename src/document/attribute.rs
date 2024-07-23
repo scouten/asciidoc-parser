@@ -6,7 +6,7 @@ use nom::{
 };
 
 use crate::{
-    primitives::{ident, line_with_continuation, trim_input_for_rem},
+    primitives::{ident, trim_input_for_rem},
     strings::CowStr,
     HasSpan, Span,
 };
@@ -24,7 +24,7 @@ pub struct Attribute<'a> {
 
 impl<'a> Attribute<'a> {
     pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        let Some(attr_line) = line_with_continuation(i) else {
+        let Some(attr_line) = i.take_line_with_continuation() else {
             return Err(Err::Error(Error::new(i, ErrorKind::TakeTill1)));
         };
 

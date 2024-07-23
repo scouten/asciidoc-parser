@@ -1,5 +1,3 @@
-mod line;
-
 mod trim_input_for_rem {
     use nom::Slice;
     use pretty_assertions_sorted::assert_eq;
