@@ -121,7 +121,6 @@ impl<'a> Span<'a> {
 
     fn one_line_with_continuation(self) -> Option<ParseResult<'a, Self>> {
         let line = self.take_normalized_line();
-        dbg!(&line);
         if line.t.ends_with('\\') {
             Some(line)
         } else {
