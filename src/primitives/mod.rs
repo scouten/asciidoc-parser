@@ -1,11 +1,6 @@
 use nom::{
-    branch::alt,
-    bytes::complete::{is_not, tag},
-    character::complete::{alphanumeric1, char},
-    combinator::recognize,
-    multi::many0,
-    sequence::{delimited, pair},
-    IResult, Parser, Slice,
+    branch::alt, bytes::complete::tag, character::complete::alphanumeric1, combinator::recognize,
+    multi::many0, sequence::pair, IResult, Parser, Slice,
 };
 
 use crate::Span;
@@ -46,32 +41,4 @@ pub(crate) fn ident(i: Span<'_>) -> IResult<Span, Span> {
 #[allow(dead_code)]
 pub(crate) fn attr_name(i: Span<'_>) -> IResult<Span, Span> {
     recognize(pair(alphanumeric1, many0(alt((alphanumeric1, tag("-")))))).parse(i)
-}
-
-/// Recognize a quoted string. The string is read until the next unescaped
-/// matching quote.
-///
-/// IMPORTANT: The [`Span`] that is returned does not include the start or
-/// ending quote, but does include (without transformation) any escaped quotes.
-#[allow(dead_code)]
-pub(crate) fn quoted_string(i: Span<'_>) -> IResult<Span, Span> {
-    let (rem, _) = alt((
-        delimited(
-            char('\''),
-            many0(alt((tag("\\\'"), is_not("\\\'")))),
-            char('\''),
-        ),
-        delimited(
-            char('"'),
-            many0(alt((tag("\\\""), is_not("\\\"")))),
-            char('"'),
-        ),
-    ))
-    .parse(i)?;
-
-    let content = trim_input_for_rem(i, rem);
-    let content_len = content.len();
-    let content = content.slice(1..content_len - 1);
-
-    Ok((rem, content))
 }
