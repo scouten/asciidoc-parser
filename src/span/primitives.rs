@@ -12,15 +12,15 @@ impl<'a> Span<'a> {
         let mut chars = self.data.char_indices();
 
         if let Some((_, c)) = chars.next() {
-            if !is_alphanum(c) {
+            if !c.is_ascii_alphanumeric() {
                 return None;
             }
         } else {
             return None;
         }
 
-        while let Some((index, c)) = chars.next() {
-            if !is_alphanum(c) && (c != '-') {
+        for (index, c) in chars {
+            if !c.is_ascii_alphanumeric() && (c != '-') {
                 return Some(self.into_parse_result(index));
             }
         }
@@ -66,19 +66,4 @@ impl<'a> Span<'a> {
         // Didn't find closing delimiter.
         None
     }
-}
-
-#[inline]
-fn is_alpha(c: char) -> bool {
-    (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
-}
-
-#[inline]
-fn is_dec_digit(c: char) -> bool {
-    c >= '0' && c <= '9'
-}
-
-#[inline]
-fn is_alphanum(c: char) -> bool {
-    is_alpha(c) || is_dec_digit(c)
 }
