@@ -3,6 +3,31 @@ use nom::Slice;
 use super::{ParseResult, Span};
 
 impl<'a> Span<'a> {
+    /// Split the span, consuming an attribute name if found.
+    ///
+    /// An attribute name consists of a word character (letter or numeral)
+    /// followed by any number of word or `-` characters (e.g., `see-also`).
+    #[allow(dead_code)]
+    pub(crate) fn take_attr_name(self) -> Option<ParseResult<'a, Self>> {
+        let mut chars = self.data.char_indices();
+
+        if let Some((_, c)) = chars.next() {
+            if !is_alphanum(c) {
+                return None;
+            }
+        } else {
+            return None;
+        }
+
+        while let Some((index, c)) = chars.next() {
+            if !is_alphanum(c) && (c != '-') {
+                return Some(self.into_parse_result(index));
+            }
+        }
+
+        Some(self.into_parse_result(self.len()))
+    }
+
     /// Split the span, consuming one quoted string if found.
     ///
     /// A string is defined as a single quote or double quote character,
@@ -41,4 +66,19 @@ impl<'a> Span<'a> {
         // Didn't find closing delimiter.
         None
     }
+}
+
+#[inline]
+fn is_alpha(c: char) -> bool {
+    (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')
+}
+
+#[inline]
+fn is_dec_digit(c: char) -> bool {
+    c >= '0' && c <= '9'
+}
+
+#[inline]
+fn is_alphanum(c: char) -> bool {
+    is_alpha(c) || is_dec_digit(c)
 }
