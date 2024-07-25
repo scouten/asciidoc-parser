@@ -12,7 +12,7 @@ pub(crate) struct TSpan {
 
 impl fmt::Debug for TSpan {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Spanned")
+        f.debug_struct("Span")
             .field("data", &self.data)
             .field("line", &self.line)
             .field("col", &self.col)
