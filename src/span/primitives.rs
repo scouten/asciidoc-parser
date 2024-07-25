@@ -29,7 +29,7 @@ impl<'a> Span<'a> {
 
         let mut prev_was_backslash = false;
 
-        while let Some((index, c)) = chars.next() {
+        for (index, c) in chars {
             if c == delimiter && !prev_was_backslash {
                 return Some(ParseResult {
                     t: self.slice(1..index),
