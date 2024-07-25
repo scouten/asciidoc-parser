@@ -109,6 +109,7 @@ mod line;
 mod nom_traits;
 mod parse_result;
 mod split;
+mod take;
 
 pub(crate) use parse_result::ParseResult;
 

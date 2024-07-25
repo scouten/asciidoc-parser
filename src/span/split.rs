@@ -19,6 +19,7 @@ impl<'a> Span<'a> {
     ///
     /// Return `None` if:
     ///
+    /// * `predicate` never returns `true`,
     /// * `predicate` returns `true` for the _first_ character in the span, or
     /// * the span is empty.
     ///
