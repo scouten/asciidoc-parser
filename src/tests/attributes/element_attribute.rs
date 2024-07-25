@@ -32,16 +32,6 @@ fn only_spaces() {
     let (rem, attr) = ElementAttribute::parse(Span::new("   ")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 4,
-            offset: 3
-        }
-    );
-
-    assert_eq!(
         attr,
         TElementAttribute {
             name: None,
@@ -57,6 +47,16 @@ fn only_spaces() {
                 col: 1,
                 offset: 0,
             },
+        }
+    );
+
+    assert_eq!(
+        rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 4,
+            offset: 3
         }
     );
 
@@ -347,10 +347,10 @@ mod quoted_string {
         assert_eq!(
             e.input,
             TSpan {
-                data: "\'xxx",
+                data: "",
                 line: 1,
-                col: 1,
-                offset: 0
+                col: 5,
+                offset: 4
             }
         );
     }

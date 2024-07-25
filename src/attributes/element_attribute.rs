@@ -1,11 +1,7 @@
-use nom::{
-    bytes::complete::{is_not, tag},
-    character::complete::space0,
-    IResult,
-};
+use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
 
 use crate::{
-    primitives::{attr_name, quoted_string, trim_input_for_rem},
+    primitives::{attr_name, trim_input_for_rem},
     HasSpan, Span,
 };
 
@@ -24,7 +20,6 @@ pub struct ElementAttribute<'a> {
 }
 
 impl<'a> ElementAttribute<'a> {
-    #[allow(dead_code)]
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let i = source;
 
@@ -44,14 +39,33 @@ impl<'a> ElementAttribute<'a> {
             (i, None)
         };
 
-        let (rem, value) = parse_value(rem)?;
-        let source = trim_input_for_rem(source, rem);
+        let value = match rem.data().chars().next() {
+            Some('\'') | Some('"') => match rem.take_quoted_string() {
+                Some(v) => v,
+                None => {
+                    return Err(nom::Err::Error(nom::error::Error::new(
+                        rem.slice(rem.len()..),
+                        nom::error::ErrorKind::Char,
+                    )));
+                }
+            },
+            _ => rem.take_while(|c| c != ','),
+        };
+
+        if value.t.is_empty() {
+            return Err(nom::Err::Error(nom::error::Error::new(
+                Span::new(""),
+                nom::error::ErrorKind::IsNot,
+            )));
+        }
+
+        let source = trim_input_for_rem(source, value.rem);
 
         Ok((
-            rem,
+            value.rem,
             Self {
                 name,
-                value,
+                value: value.t,
                 source,
             },
         ))
@@ -76,13 +90,5 @@ impl<'a> ElementAttribute<'a> {
 impl<'a> HasSpan<'a> for ElementAttribute<'a> {
     fn span(&'a self) -> &'a Span<'a> {
         &self.source
-    }
-}
-
-fn parse_value(source: Span<'_>) -> IResult<Span<'_>, Span<'_>> {
-    if source.starts_with('\'') || source.starts_with('"') {
-        quoted_string(source)
-    } else {
-        is_not(",")(source)
     }
 }
