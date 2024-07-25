@@ -15,7 +15,6 @@ impl<'a> Span<'a> {
     /// IMPORTANT: The [`Span`] that is returned does not include the start or
     /// ending quote, but _does_ include (without transformation) any escaped
     /// quotes.
-    #[allow(dead_code)]
     pub(crate) fn take_quoted_string(self) -> Option<ParseResult<'a, Self>> {
         let mut chars = self.data.char_indices();
 
