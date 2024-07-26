@@ -98,6 +98,32 @@ mod take_attr_name {
             }
         );
     }
+
+    #[test]
+    fn stops_at_eof() {
+        let span = Span::new("xyz");
+        let pr = span.take_attr_name().unwrap();
+
+        assert_eq!(
+            pr.t,
+            TSpan {
+                data: "xyz",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
+    }
 }
 
 mod take_quoted_string {
