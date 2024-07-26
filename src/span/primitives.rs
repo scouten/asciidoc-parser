@@ -3,6 +3,31 @@ use nom::Slice;
 use super::{ParseResult, Span};
 
 impl<'a> Span<'a> {
+    /// Split the span, consuming an attribute name if found.
+    ///
+    /// An attribute name consists of a word character (letter or numeral)
+    /// followed by any number of word or `-` characters (e.g., `see-also`).
+    #[allow(dead_code)]
+    pub(crate) fn take_attr_name(self) -> Option<ParseResult<'a, Self>> {
+        let mut chars = self.data.char_indices();
+
+        if let Some((_, c)) = chars.next() {
+            if !c.is_ascii_alphanumeric() {
+                return None;
+            }
+        } else {
+            return None;
+        }
+
+        for (index, c) in chars {
+            if !c.is_ascii_alphanumeric() && (c != '-') {
+                return Some(self.into_parse_result(index));
+            }
+        }
+
+        Some(self.into_parse_result(self.len()))
+    }
+
     /// Split the span, consuming one quoted string if found.
     ///
     /// A string is defined as a single quote or double quote character,
