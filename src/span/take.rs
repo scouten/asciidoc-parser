@@ -26,6 +26,21 @@ impl<'a> Span<'a> {
         self.take_while(|c| c == ' ' || c == '\t')
     }
 
+    /// Split this span, consuming at least one white space character.
+    ///
+    /// Returns `None` if the first character is not a space or tab.
+    ///
+    /// NOM REFACTOR: Replacement for `space1`.
+    #[allow(dead_code)]
+    pub(crate) fn take_required_whitespace(self) -> Option<ParseResult<'a, Self>> {
+        let pr = self.take_while(|c| c == ' ' || c == '\t');
+        if pr.t.is_empty() {
+            None
+        } else {
+            Some(pr)
+        }
+    }
+
     /// Split this span at the first character that doesn't match `predicate`.
     ///
     /// NOM REFACTOR: Replacement for `is_not`.

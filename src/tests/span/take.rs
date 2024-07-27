@@ -180,6 +180,74 @@ mod take_whitespace {
     }
 }
 
+mod take_required_whitespace {
+    use crate::{tests::fixtures::TSpan, Span};
+
+    #[test]
+    fn empty_input() {
+        let span = Span::new("");
+        assert!(span.take_required_whitespace().is_none());
+    }
+
+    #[test]
+    fn starts_with_non_whitespace() {
+        let s = Span::new(":abc");
+        assert!(s.take_required_whitespace().is_none());
+    }
+
+    #[test]
+    fn match_after_first() {
+        let s = Span::new(" \t:cd");
+        let pr = s.take_required_whitespace().unwrap();
+
+        assert_eq!(
+            pr.t,
+            TSpan {
+                data: " \t",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: ":cd",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+    }
+
+    #[test]
+    fn all_whitespace() {
+        let s = Span::new("  \t ");
+        let pr = s.take_required_whitespace().unwrap();
+
+        assert_eq!(
+            pr.t,
+            TSpan {
+                data: "  \t ",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4,
+            }
+        );
+    }
+}
+
 mod take_while {
     use crate::{tests::fixtures::TSpan, Span};
 
