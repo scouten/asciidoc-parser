@@ -1,9 +1,6 @@
 use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
 
-use crate::{
-    primitives::{attr_name, trim_input_for_rem},
-    HasSpan, Span,
-};
+use crate::{primitives::trim_input_for_rem, HasSpan, Span};
 
 /// This struct represents a single element attribute.
 ///
@@ -23,14 +20,14 @@ impl<'a> ElementAttribute<'a> {
     pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
         let i = source;
 
-        let (rem, name): (Span<'a>, Option<Span<'a>>) = if let Ok((rem, name)) = attr_name(i) {
-            let (rem, _) = space0(rem)?;
+        let (rem, name): (Span<'a>, Option<Span<'a>>) = if let Some(pr) = i.take_attr_name() {
+            let (rem, _) = space0(pr.rem)?;
             if let Ok((rem, _)) = tag::<&str, Span<'a>, nom::error::Error<Span<'a>>>("=")(rem) {
                 let (rem, _) = space0(rem)?;
                 if rem.len() == 0 || rem.starts_with(',') {
                     (i, None)
                 } else {
-                    (rem, Some(name))
+                    (rem, Some(pr.t))
                 }
             } else {
                 (i, None)
