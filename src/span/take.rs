@@ -18,6 +18,14 @@ impl<'a> Span<'a> {
         }
     }
 
+    /// Split this span, consuming any white space.
+    ///
+    /// NOM REFACTOR: Replacement for `space0`.
+    #[allow(dead_code)]
+    pub(crate) fn take_whitespace(self) -> ParseResult<'a, Self> {
+        self.take_while(|c| c == ' ' || c == '\t')
+    }
+
     /// Split this span at the first character that doesn't match `predicate`.
     ///
     /// NOM REFACTOR: Replacement for `is_not`.
