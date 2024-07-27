@@ -6,7 +6,7 @@ use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     document::Header,
     strings::CowStr,
-    Error, HasSpan, Span,
+    HasSpan, Span,
 };
 
 /// A document represents the top-level block element in AsciiDoc. It consists
@@ -34,22 +34,25 @@ impl<'a> Document<'a> {
     /// start of a file. This format is not directly supported by the
     /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
     /// UTF-8 prior to parsing.
-    pub fn parse(source: &'a str) -> Result<Self, Error> {
+    ///
+    /// TEMPORARY: Returns an `Option` which will be `None` if unable to parse.
+    /// This will eventually be replaced with an annotation mechanism.
+    pub fn parse(source: &'a str) -> Option<Self> {
         // TO DO: Add option for best-guess parsing?
 
         let source = Span::new(source);
         let i = source.discard_empty_lines();
 
         let (i, header) = if i.starts_with("= ") {
-            let (i, header) = Header::parse(i)?;
+            let (i, header) = Header::parse(i).ok()?;
             (i, Some(header))
         } else {
             (i, None)
         };
 
-        let (_rem, blocks) = parse_blocks_until(i, |_| false)?;
+        let (_rem, blocks) = parse_blocks_until(i, |_| false).ok()?;
 
-        Ok(Self {
+        Some(Self {
             header,
             blocks,
             source,
