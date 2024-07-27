@@ -129,7 +129,7 @@ fn parse_uninterpreted(i: Span<'_>) -> ParseResult<Span> {
     }
 
     loop {
-        if (at_word_boundary && InlineMacro::parse(rem).is_ok()) || rem.is_empty() {
+        if (at_word_boundary && InlineMacro::parse(rem).is_some()) || rem.is_empty() {
             break;
         }
 
@@ -147,10 +147,8 @@ fn parse_uninterpreted(i: Span<'_>) -> ParseResult<Span> {
 
 // Parse the block as a special "interpreted" inline sequence or error out.
 fn parse_interpreted(i: Span<'_>) -> Option<ParseResult<Inline<'_>>> {
-    InlineMacro::parse(i)
-        .map(|(rem, x)| ParseResult {
-            t: Inline::Macro(x),
-            rem,
-        })
-        .ok()
+    InlineMacro::parse(i).map(|inline| ParseResult {
+        t: Inline::Macro(inline.t),
+        rem: inline.rem,
+    })
 }
