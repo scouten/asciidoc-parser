@@ -44,8 +44,8 @@ impl<'a> Document<'a> {
         let i = source.discard_empty_lines();
 
         let (i, header) = if i.starts_with("= ") {
-            let (i, header) = Header::parse(i).ok()?;
-            (i, Some(header))
+            let pr = Header::parse(i)?;
+            (pr.rem, Some(pr.t))
         } else {
             (i, None)
         };
