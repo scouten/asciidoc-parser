@@ -1,3 +1,77 @@
+mod take_prefix {
+    use crate::{tests::fixtures::TSpan, Span};
+
+    #[test]
+    fn empty_input() {
+        let span = Span::new("");
+        assert!(span.take_prefix("foo").is_none());
+    }
+
+    #[test]
+    fn mismatch() {
+        let span = Span::new(":abc");
+        assert!(span.take_prefix("abc").is_none());
+    }
+
+    #[test]
+    fn partial_match() {
+        let span = Span::new("abc");
+        assert!(span.take_prefix("abcd").is_none());
+    }
+
+    #[test]
+    fn match_with_remainder() {
+        let s = Span::new("ab:cd");
+        let pr = s.take_prefix("ab").unwrap();
+
+        assert_eq!(
+            pr.t,
+            TSpan {
+                data: "ab",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: ":cd",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+    }
+
+    #[test]
+    fn exact_match() {
+        let s = Span::new("ab:cd");
+        let pr = s.take_prefix("ab:cd").unwrap();
+
+        assert_eq!(
+            pr.t,
+            TSpan {
+                data: "ab:cd",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 6,
+                offset: 5,
+            }
+        );
+    }
+}
+
 mod take_while {
     use crate::{tests::fixtures::TSpan, Span};
 
