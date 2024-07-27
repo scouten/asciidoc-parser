@@ -1,14 +1,9 @@
-use nom::{
-    bytes::complete::{tag, take_until},
-    error::{Error, ErrorKind},
-    sequence::tuple,
-    Err, IResult, Slice,
-};
+use nom::Slice;
 
 use crate::{
     attributes::Attrlist,
     blocks::{ContentModel, IsBlock},
-    primitives::ident,
+    span::ParseResult,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -29,34 +24,41 @@ pub struct MacroBlock<'a> {
 }
 
 impl<'a> MacroBlock<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
         let line = source.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.t.ends_with(']') {
-            return Err(Err::Error(Error::new(line.t, ErrorKind::Tag)));
+            return None;
         }
 
         let line_wo_brace = line.t.slice(0..line.t.len() - 1);
+        let Some(name) = line_wo_brace.take_ident() else {
+            return None;
+        };
+        let Some(colons) = name.rem.take_prefix("::") else {
+            return None;
+        };
+        let target = colons.rem.take_while(|c| c != '[');
+        let Some(open_brace) = target.rem.take_prefix("[") else {
+            return None;
+        };
+        let (_, attrlist) = Attrlist::parse(open_brace.rem).ok()?;
 
-        let (attrlist, (name, _colons, target, _braces)) =
-            tuple((ident, tag("::"), take_until("["), tag("[")))(line_wo_brace)?;
-
-        let (_, attrlist) = Attrlist::parse(attrlist)?;
-
-        Ok((
-            line.rem.discard_empty_lines(),
-            Self {
-                name,
-                target: if target.is_empty() {
+        Some(ParseResult {
+            t: Self {
+                name: name.t,
+                target: if target.t.is_empty() {
                     None
                 } else {
-                    Some(target)
+                    Some(target.t)
                 },
                 attrlist,
                 source: line.t,
             },
-        ))
+
+            rem: line.rem.discard_empty_lines(),
+        })
     }
 
     /// Return a [`Span`] describing the macro name.
