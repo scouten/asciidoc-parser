@@ -284,20 +284,10 @@ mod lines {
         // :name: value
         // -----
 
-        let (rem, attr) = Attribute::parse(Span::new(":name: value\n")).unwrap();
+        let pr = Attribute::parse(Span::new(":name: value\n")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 2,
-                col: 1,
-                offset: 13
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TAttribute {
                 name: TSpan {
                     data: "name",
@@ -319,6 +309,16 @@ mod lines {
                 }
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 1,
+                offset: 13
+            }
+        );
     }
 
     #[test]
@@ -330,20 +330,10 @@ mod lines {
         // more value
         // -----
 
-        let (rem, attr) = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
+        let pr = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 3,
-                col: 1,
-                offset: 26
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TAttribute {
                 name: TSpan {
                     data: "name",
@@ -366,7 +356,17 @@ mod lines {
             }
         );
 
-        assert_eq!(attr.value(), TAttributeValue::Value("value more value"));
+        assert_eq!(pr.t.value(), TAttributeValue::Value("value more value"));
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 1,
+                offset: 26
+            }
+        );
     }
 
     // No test cases:

@@ -47,8 +47,8 @@ impl<'a> Block<'a> {
         // Try to discern the block type by scanning the first line.
         let line = i.take_normalized_line();
         if line.t.contains("::") {
-            if let Ok((rem, macro_block)) = MacroBlock::parse(i) {
-                return Ok((rem, Self::Macro(macro_block)));
+            if let Some(macro_block) = MacroBlock::parse(i) {
+                return Ok((macro_block.rem, Self::Macro(macro_block.t)));
             }
 
             // A line containing `::` might be some other kind of block, so we
