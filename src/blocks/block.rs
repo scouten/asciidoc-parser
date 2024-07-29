@@ -1,9 +1,8 @@
 use std::slice::Iter;
 
-use nom::IResult;
-
 use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
+    span::ParseResult,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -41,21 +40,27 @@ impl<'a> Block<'a> {
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
-    pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
         let i = i.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
         let line = i.take_normalized_line();
         if line.t.contains("::") {
             if let Some(macro_block) = MacroBlock::parse(i) {
-                return Ok((macro_block.rem, Self::Macro(macro_block.t)));
+                return Some(ParseResult {
+                    t: Self::Macro(macro_block.t),
+                    rem: macro_block.rem,
+                });
             }
 
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
         } else if line.t.starts_with('=') {
             if let Some(section_block) = SectionBlock::parse(i) {
-                return Ok((section_block.rem, Self::Section(section_block.t)));
+                return Some(ParseResult {
+                    t: Self::Section(section_block.t),
+                    rem: section_block.rem,
+                });
             }
 
             // A line starting with `=` might be some other kind of block, so we
@@ -63,8 +68,13 @@ impl<'a> Block<'a> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
-        let (rem, simple_block) = SimpleBlock::parse(i)?;
-        Ok((rem, Self::Simple(simple_block)))
+        match SimpleBlock::parse(i) {
+            Ok((rem, simple_block)) => Some(ParseResult {
+                t: Self::Simple(simple_block),
+                rem,
+            }),
+            _ => None,
+        }
     }
 }
 
