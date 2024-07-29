@@ -24,9 +24,9 @@ impl<'a> Header<'a> {
         let mut attributes: Vec<Attribute> = vec![];
         let mut rem = title.rem;
 
-        while let Ok(attr) = Attribute::parse(rem) {
-            attributes.push(attr.1);
-            rem = attr.0;
+        while let Some(attr) = Attribute::parse(rem) {
+            attributes.push(attr.t);
+            rem = attr.rem;
         }
 
         let source = trim_input_for_rem(source, rem);
