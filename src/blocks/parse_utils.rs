@@ -1,10 +1,11 @@
-use nom::IResult;
-
-use crate::{blocks::Block, Span};
+use crate::{blocks::Block, span::ParseResult, Span};
 
 /// Parse blocks until end of input or a pre-determined stop condition is
 /// reached.
-pub(crate) fn parse_blocks_until<'a, F>(mut i: Span<'a>, f: F) -> IResult<Span, Vec<Block<'a>>>
+pub(crate) fn parse_blocks_until<'a, F>(
+    mut i: Span<'a>,
+    f: F,
+) -> Option<ParseResult<Vec<Block<'a>>>>
 where
     F: Fn(&Span<'a>) -> bool,
 {
@@ -16,10 +17,10 @@ where
             break;
         }
 
-        let (i2, block) = Block::parse(i)?;
+        let (i2, block) = Block::parse(i).ok()?;
         i = i2;
         blocks.push(block);
     }
 
-    Ok((i, blocks))
+    Some(ParseResult { t: blocks, rem: i })
 }

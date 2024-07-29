@@ -54,8 +54,8 @@ impl<'a> Block<'a> {
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
         } else if line.t.starts_with('=') {
-            if let Ok((rem, section_block)) = SectionBlock::parse(i) {
-                return Ok((rem, Self::Section(section_block)));
+            if let Some(section_block) = SectionBlock::parse(i) {
+                return Ok((section_block.rem, Self::Section(section_block.t)));
             }
 
             // A line starting with `=` might be some other kind of block, so we
