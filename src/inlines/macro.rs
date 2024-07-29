@@ -18,20 +18,12 @@ pub struct InlineMacro<'a> {
 
 impl<'a> InlineMacro<'a> {
     pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
-        let Some(name) = source.take_ident() else {
-            return None;
-        };
-        let Some(colon) = name.rem.take_prefix(":") else {
-            return None;
-        };
+        let name = source.take_ident()?;
+        let colon = name.rem.take_prefix(":")?;
         let target = colon.rem.take_while(|c| c != '[');
-        let Some(open_brace) = target.rem.take_prefix("[") else {
-            return None;
-        };
+        let open_brace = target.rem.take_prefix("[")?;
         let attrlist = open_brace.rem.take_while(|c| c != ']');
-        let Some(close_brace) = attrlist.rem.take_prefix("]") else {
-            return None;
-        };
+        let close_brace = attrlist.rem.take_prefix("]")?;
         let source = trim_input_for_rem(source, close_brace.rem);
 
         Some(ParseResult {

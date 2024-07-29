@@ -33,16 +33,10 @@ impl<'a> MacroBlock<'a> {
         }
 
         let line_wo_brace = line.t.slice(0..line.t.len() - 1);
-        let Some(name) = line_wo_brace.take_ident() else {
-            return None;
-        };
-        let Some(colons) = name.rem.take_prefix("::") else {
-            return None;
-        };
+        let name = line_wo_brace.take_ident()?;
+        let colons = name.rem.take_prefix("::")?;
         let target = colons.rem.take_while(|c| c != '[');
-        let Some(open_brace) = target.rem.take_prefix("[") else {
-            return None;
-        };
+        let open_brace = target.rem.take_prefix("[")?;
         let (_, attrlist) = Attrlist::parse(open_brace.rem).ok()?;
 
         Some(ParseResult {

@@ -15,15 +15,10 @@ pub struct Attribute<'a> {
 
 impl<'a> Attribute<'a> {
     pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
-        let Some(attr_line) = i.take_line_with_continuation() else {
-            return None;
-        };
+        let attr_line = i.take_line_with_continuation()?;
+        let colon = attr_line.t.take_prefix(":")?;
 
         let mut unset = false;
-        let Some(colon) = attr_line.t.take_prefix(":") else {
-            return None;
-        };
-
         let line = if colon.rem.starts_with('!') {
             unset = true;
             colon.rem.slice(1..)
@@ -31,9 +26,7 @@ impl<'a> Attribute<'a> {
             colon.rem
         };
 
-        let Some(name) = line.take_ident() else {
-            return None;
-        };
+        let name = line.take_ident()?;
 
         let line = if name.rem.starts_with('!') && !unset {
             unset = true;
@@ -42,9 +35,7 @@ impl<'a> Attribute<'a> {
             name.rem
         };
 
-        let Some(line) = line.take_prefix(":") else {
-            return None;
-        };
+        let line = line.take_prefix(":")?;
 
         let value = if unset {
             // Ensure line is now empty except for comment.
