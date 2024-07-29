@@ -1,6 +1,4 @@
-use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
-
-use crate::{primitives::trim_input_for_rem, HasSpan, Span};
+use crate::{primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span};
 
 /// This struct represents a single element attribute.
 ///
@@ -17,55 +15,49 @@ pub struct ElementAttribute<'a> {
 }
 
 impl<'a> ElementAttribute<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let i = source;
-
-        let (rem, name): (Span<'a>, Option<Span<'a>>) = if let Some(pr) = i.take_attr_name() {
-            let (rem, _) = space0(pr.rem)?;
-            if let Ok((rem, _)) = tag::<&str, Span<'a>, nom::error::Error<Span<'a>>>("=")(rem) {
-                let (rem, _) = space0(rem)?;
-                if rem.len() == 0 || rem.starts_with(',') {
-                    (i, None)
-                } else {
-                    (rem, Some(pr.t))
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+        let (name, rem): (Option<Span>, Span) = match source.take_attr_name() {
+            Some(name) => {
+                let space = name.rem.take_whitespace();
+                match space.rem.take_prefix("=") {
+                    Some(equals) => {
+                        let space = equals.rem.take_whitespace();
+                        if space.rem.is_empty() || space.rem.starts_with(',') {
+                            (None, source)
+                        } else {
+                            (Some(name.t), space.rem)
+                        }
+                    }
+                    None => (None, source),
                 }
-            } else {
-                (i, None)
             }
-        } else {
-            (i, None)
+            None => (None, source),
         };
 
         let value = match rem.data().chars().next() {
             Some('\'') | Some('"') => match rem.take_quoted_string() {
                 Some(v) => v,
                 None => {
-                    return Err(nom::Err::Error(nom::error::Error::new(
-                        rem.slice(rem.len()..),
-                        nom::error::ErrorKind::Char,
-                    )));
+                    return None;
                 }
             },
             _ => rem.take_while(|c| c != ','),
         };
 
         if value.t.is_empty() {
-            return Err(nom::Err::Error(nom::error::Error::new(
-                Span::new(""),
-                nom::error::ErrorKind::IsNot,
-            )));
+            return None;
         }
 
         let source = trim_input_for_rem(source, value.rem);
 
-        Ok((
-            value.rem,
-            Self {
+        Some(ParseResult {
+            t: Self {
                 name,
                 value: value.t,
                 source,
             },
-        ))
+            rem: value.rem,
+        })
     }
 
     /// Return a [`Span`] describing the attribute name.
