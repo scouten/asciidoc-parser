@@ -17,9 +17,9 @@ where
             break;
         }
 
-        let (i2, block) = Block::parse(i).ok()?;
-        i = i2;
-        blocks.push(block);
+        let pr = Block::parse(i)?;
+        i = pr.rem;
+        blocks.push(pr.t);
     }
 
     Some(ParseResult { t: blocks, rem: i })
