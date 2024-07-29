@@ -37,7 +37,7 @@ impl<'a> MacroBlock<'a> {
         let colons = name.rem.take_prefix("::")?;
         let target = colons.rem.take_while(|c| c != '[');
         let open_brace = target.rem.take_prefix("[")?;
-        let (_, attrlist) = Attrlist::parse(open_brace.rem).ok()?;
+        let attrlist = Attrlist::parse(open_brace.rem)?;
 
         Some(ParseResult {
             t: Self {
@@ -47,7 +47,7 @@ impl<'a> MacroBlock<'a> {
                 } else {
                     Some(target.t)
                 },
-                attrlist,
+                attrlist: attrlist.t,
                 source: line.t,
             },
 

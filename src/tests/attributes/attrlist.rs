@@ -12,27 +12,17 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let (_, b1) = Attrlist::parse(Span::new("abc")).unwrap();
-    let b2 = b1.clone();
-    assert_eq!(b1, b2);
+    let b1 = Attrlist::parse(Span::new("abc")).unwrap();
+    let b2 = b1.t.clone();
+    assert_eq!(b1.t, b2);
 }
 
 #[test]
 fn empty_source() {
-    let (rem, attrlist) = Attrlist::parse(Span::new("")).unwrap();
+    let pr = Attrlist::parse(Span::new("")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 1,
-            offset: 0
-        }
-    );
-
-    assert_eq!(
-        attrlist,
+        pr.t,
         TAttrlist {
             attributes: vec!(),
             source: TSpan {
@@ -44,18 +34,18 @@ fn empty_source() {
         }
     );
 
-    assert!(attrlist.named_attribute("foo").is_none());
+    assert!(pr.t.named_attribute("foo").is_none());
 
-    assert!(attrlist.nth_attribute(0).is_none());
-    assert!(attrlist.nth_attribute(1).is_none());
-    assert!(attrlist.nth_attribute(42).is_none());
+    assert!(pr.t.nth_attribute(0).is_none());
+    assert!(pr.t.nth_attribute(1).is_none());
+    assert!(pr.t.nth_attribute(42).is_none());
 
-    assert!(attrlist.named_or_positional_attribute("foo", 0).is_none());
-    assert!(attrlist.named_or_positional_attribute("foo", 1).is_none());
-    assert!(attrlist.named_or_positional_attribute("foo", 42).is_none());
+    assert!(pr.t.named_or_positional_attribute("foo", 0).is_none());
+    assert!(pr.t.named_or_positional_attribute("foo", 1).is_none());
+    assert!(pr.t.named_or_positional_attribute("foo", 42).is_none());
 
     assert_eq!(
-        attrlist.span(),
+        pr.t.span(),
         TSpan {
             data: "",
             line: 1,
@@ -63,24 +53,24 @@ fn empty_source() {
             offset: 0,
         }
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 1,
+            offset: 0
+        }
+    );
 }
 
 #[test]
 fn only_positional_attributes() {
-    let (rem, attrlist) = Attrlist::parse(Span::new("Sunset,300,400")).unwrap();
+    let pr = Attrlist::parse(Span::new("Sunset,300,400")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 15,
-            offset: 14
-        }
-    );
-
-    assert_eq!(
-        attrlist,
+        pr.t,
         TAttrlist {
             attributes: vec!(
                 TElementAttribute {
@@ -138,12 +128,12 @@ fn only_positional_attributes() {
         }
     );
 
-    assert!(attrlist.named_attribute("foo").is_none());
-    assert!(attrlist.nth_attribute(0).is_none());
-    assert!(attrlist.named_or_positional_attribute("foo", 0).is_none());
+    assert!(pr.t.named_attribute("foo").is_none());
+    assert!(pr.t.nth_attribute(0).is_none());
+    assert!(pr.t.named_or_positional_attribute("foo", 0).is_none());
 
     assert_eq!(
-        attrlist.nth_attribute(1).unwrap(),
+        pr.t.nth_attribute(1).unwrap(),
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -162,7 +152,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_or_positional_attribute("alt", 1).unwrap(),
+        pr.t.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -181,7 +171,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        attrlist.nth_attribute(2).unwrap(),
+        pr.t.nth_attribute(2).unwrap(),
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -200,7 +190,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_or_positional_attribute("width", 2).unwrap(),
+        pr.t.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -219,7 +209,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        attrlist.nth_attribute(3).unwrap(),
+        pr.t.nth_attribute(3).unwrap(),
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -238,7 +228,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_or_positional_attribute("height", 3).unwrap(),
+        pr.t.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -256,16 +246,14 @@ fn only_positional_attributes() {
         }
     );
 
-    assert!(attrlist.nth_attribute(4).is_none());
+    assert!(pr.t.nth_attribute(4).is_none());
 
-    assert!(attrlist
-        .named_or_positional_attribute("height", 4)
-        .is_none());
+    assert!(pr.t.named_or_positional_attribute("height", 4).is_none());
 
-    assert!(attrlist.nth_attribute(42).is_none());
+    assert!(pr.t.nth_attribute(42).is_none());
 
     assert_eq!(
-        attrlist.span(),
+        pr.t.span(),
         TSpan {
             data: "Sunset,300,400",
             line: 1,
@@ -273,24 +261,24 @@ fn only_positional_attributes() {
             offset: 0,
         }
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 15,
+            offset: 14
+        }
+    );
 }
 
 #[test]
 fn only_named_attributes() {
-    let (rem, attrlist) = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap();
+    let pr = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 32,
-            offset: 31
-        }
-    );
-
-    assert_eq!(
-        attrlist,
+        pr.t,
         TAttrlist {
             attributes: vec!(
                 TElementAttribute {
@@ -363,11 +351,11 @@ fn only_named_attributes() {
         }
     );
 
-    assert!(attrlist.named_attribute("foo").is_none());
-    assert!(attrlist.named_or_positional_attribute("foo", 0).is_none());
+    assert!(pr.t.named_attribute("foo").is_none());
+    assert!(pr.t.named_or_positional_attribute("foo", 0).is_none());
 
     assert_eq!(
-        attrlist.named_attribute("alt").unwrap(),
+        pr.t.named_attribute("alt").unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "alt",
@@ -391,7 +379,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_or_positional_attribute("alt", 1).unwrap(),
+        pr.t.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "alt",
@@ -415,7 +403,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_attribute("width").unwrap(),
+        pr.t.named_attribute("width").unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "width",
@@ -439,7 +427,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_or_positional_attribute("width", 2).unwrap(),
+        pr.t.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "width",
@@ -463,7 +451,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_attribute("height").unwrap(),
+        pr.t.named_attribute("height").unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "height",
@@ -487,7 +475,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        attrlist.named_or_positional_attribute("height", 3).unwrap(),
+        pr.t.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "height",
@@ -510,20 +498,30 @@ fn only_named_attributes() {
         }
     );
 
-    assert!(attrlist.nth_attribute(0).is_none());
-    assert!(attrlist.nth_attribute(1).is_none());
-    assert!(attrlist.nth_attribute(2).is_none());
-    assert!(attrlist.nth_attribute(3).is_none());
-    assert!(attrlist.nth_attribute(4).is_none());
-    assert!(attrlist.nth_attribute(42).is_none());
+    assert!(pr.t.nth_attribute(0).is_none());
+    assert!(pr.t.nth_attribute(1).is_none());
+    assert!(pr.t.nth_attribute(2).is_none());
+    assert!(pr.t.nth_attribute(3).is_none());
+    assert!(pr.t.nth_attribute(4).is_none());
+    assert!(pr.t.nth_attribute(42).is_none());
 
     assert_eq!(
-        attrlist.span(),
+        pr.t.span(),
         TSpan {
             data: "alt=Sunset,width=300,height=400",
             line: 1,
             col: 1,
             offset: 0
+        }
+    );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 32,
+            offset: 31
         }
     );
 }
