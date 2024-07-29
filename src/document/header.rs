@@ -1,14 +1,8 @@
 use std::slice::Iter;
 
-use nom::{
-    bytes::complete::tag,
-    character::complete::space1,
-    error::{Error, ErrorKind},
-    multi::many0,
-    Err, IResult,
+use crate::{
+    document::Attribute, primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span,
 };
-
-use crate::{document::Attribute, primitives::trim_input_for_rem, HasSpan, Span};
 
 /// An AsciiDoc document may begin with a document header. The document header
 /// encapsulates the document title, author and revision information,
@@ -21,27 +15,33 @@ pub struct Header<'a> {
 }
 
 impl<'a> Header<'a> {
-    pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
         let source = i.discard_empty_lines();
 
         // TEMPORARY: Titles are optional, but we're not prepared for that yet.
-        let (rem, title) = parse_title(source)?;
-        let (rem, attributes) = many0(Attribute::parse)(rem)?;
+        let title = parse_title(source)?;
 
-        // Header must be followed by an empty line.
-        if rem.take_empty_line().is_none() {
-            return Err(Err::Error(Error::new(rem, ErrorKind::NonEmpty)));
+        let mut attributes: Vec<Attribute> = vec![];
+        let mut rem = title.rem;
+
+        while let Ok(attr) = Attribute::parse(rem) {
+            attributes.push(attr.1);
+            rem = attr.0;
         }
 
         let source = trim_input_for_rem(source, rem);
-        Ok((
-            rem.discard_empty_lines(),
-            Self {
-                title: Some(title),
+
+        // Header must be followed by an empty line or EOF.
+        let pr = rem.take_empty_line()?;
+
+        Some(ParseResult {
+            t: Self {
+                title: Some(title.t),
                 attributes,
                 source,
             },
-        ))
+            rem: pr.rem.discard_empty_lines(),
+        })
     }
 
     /// Return a [`Span`] describing the document title, if there was one.
@@ -61,16 +61,13 @@ impl<'a> HasSpan<'a> for Header<'a> {
     }
 }
 
-fn parse_title(i: Span<'_>) -> IResult<Span, Span<'_>> {
-    let line = i
-        .take_non_empty_line()
-        .ok_or(nom::Err::Error(nom::error::Error::new(
-            i,
-            nom::error::ErrorKind::TakeTill1,
-        )))?;
+fn parse_title(i: Span<'_>) -> Option<ParseResult<Span>> {
+    let line = i.take_non_empty_line()?;
+    let equal = line.t.take_prefix("=")?;
+    let ws = equal.rem.take_required_whitespace()?;
 
-    let (title, _) = tag("=")(line.t)?;
-    let (title, _) = space1(title)?;
-
-    Ok((line.rem, title))
+    Some(ParseResult {
+        t: ws.rem,
+        rem: line.rem,
+    })
 }

@@ -198,21 +198,5 @@ fn extra_space_before_title() {
 
 #[test]
 fn bad_header() {
-    let err = Document::parse("= Title\nnot an attribute\n").unwrap_err();
-    dbg!(&err); // cover the #[derive] line
-
-    // Change to if let if we add other cases to Error enum.
-    let crate::Error::NomError(e) = err;
-
-    assert_eq!(
-        e.input,
-        TSpan {
-            data: "not an attribute\n",
-            line: 2,
-            col: 1,
-            offset: 8,
-        }
-    );
-
-    assert_eq!(e.code, nom::error::ErrorKind::NonEmpty);
+    assert!(Document::parse("= Title\nnot an attribute\n").is_none());
 }
