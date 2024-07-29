@@ -25,13 +25,12 @@ impl<'a> Attrlist<'a> {
         let mut attributes: Vec<ElementAttribute> = vec![];
 
         loop {
-            let Ok((new_rem, attr)) = ElementAttribute::parse(rem) else {
+            let Some(attr) = ElementAttribute::parse(rem) else {
                 break;
             };
-            attributes.push(attr);
+            attributes.push(attr.t);
 
-            rem = new_rem.take_whitespace().rem;
-
+            rem = attr.rem.take_whitespace().rem;
             match rem.take_prefix(",") {
                 Some(comma) => {
                     rem = comma.rem.take_whitespace().rem;
