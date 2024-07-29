@@ -525,3 +525,8 @@ fn only_named_attributes() {
         }
     );
 }
+
+#[test]
+fn err_double_comma() {
+    assert!(Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400")).is_none());
+}
