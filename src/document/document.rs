@@ -50,11 +50,11 @@ impl<'a> Document<'a> {
             (i, None)
         };
 
-        let (_rem, blocks) = parse_blocks_until(i, |_| false).ok()?;
+        let blocks = parse_blocks_until(i, |_| false)?;
 
         Some(Self {
             header,
-            blocks,
+            blocks: blocks.t,
             source,
         })
     }

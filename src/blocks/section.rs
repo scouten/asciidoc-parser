@@ -1,10 +1,9 @@
 use std::slice::Iter;
 
-use nom::{bytes::complete::tag, character::complete::space1, multi::many1_count, IResult};
-
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     primitives::trim_input_for_rem,
+    span::ParseResult,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -25,25 +24,21 @@ pub struct SectionBlock<'a> {
 }
 
 impl<'a> SectionBlock<'a> {
-    #[allow(dead_code)]
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
         let source = source.discard_empty_lines();
+        let level = parse_title_line(source)?;
+        let blocks = parse_blocks_until(level.rem, |i| peer_or_ancestor_section(*i, level.t.0))?;
+        let source = trim_input_for_rem(source, blocks.rem);
 
-        let (rem, (level, title)) = parse_title_line(source)?;
-
-        let (rem, blocks) = parse_blocks_until(rem, |i| peer_or_ancestor_section(*i, level))?;
-
-        let source = trim_input_for_rem(source, rem);
-
-        Ok((
-            rem,
-            Self {
-                level,
-                title,
-                blocks,
+        Some(ParseResult {
+            t: Self {
+                level: level.t.0,
+                title: level.t.1,
+                blocks: blocks.t,
                 source,
             },
-        ))
+            rem: blocks.rem,
+        })
     }
 
     /// Return the section's level.
@@ -85,26 +80,32 @@ impl<'a> HasSpan<'a> for SectionBlock<'a> {
     }
 }
 
-fn parse_title_line(source: Span<'_>) -> IResult<Span<'_>, (usize, Span<'_>)> {
-    let line = source
-        .take_non_empty_line()
-        .ok_or(nom::Err::Error(nom::error::Error::new(
-            source,
-            nom::error::ErrorKind::TakeTill1,
-        )))?;
+fn parse_title_line(source: Span<'_>) -> Option<ParseResult<(usize, Span)>> {
+    let pr = source.take_non_empty_line()?;
+    let mut line = pr.t;
 
     // TO DO: Also support Markdown-style `#` markers.
     // TO DO: Enforce maximum of 6 `=` or `#` markers.
     // TO DO: Disallow empty title.
-    let (space_title, count) = many1_count(tag("="))(line.t)?;
-    let (title, _) = space1(space_title)?;
 
-    Ok((line.rem, (count - 1, title)))
+    let mut count = 0;
+
+    while let Some(pr) = line.take_prefix("=") {
+        count += 1;
+        line = pr.rem;
+    }
+
+    let title = line.take_required_whitespace()?;
+
+    Some(ParseResult {
+        t: (count - 1, title.rem),
+        rem: pr.rem,
+    })
 }
 
 fn peer_or_ancestor_section(i: Span<'_>, level: usize) -> bool {
-    if let Ok((_, (new_level, _))) = parse_title_line(i) {
-        new_level <= level
+    if let Some(pr) = parse_title_line(i) {
+        pr.t.0 <= level
     } else {
         false
     }
