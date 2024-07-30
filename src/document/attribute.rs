@@ -19,7 +19,7 @@ impl<'a> Attribute<'a> {
         let mut unset = false;
         let line = if colon.rem.starts_with('!') {
             unset = true;
-            colon.rem.temp_slice_from(1..)
+            colon.rem.slice_from(1..)
         } else {
             colon.rem
         };
@@ -28,7 +28,7 @@ impl<'a> Attribute<'a> {
 
         let line = if name.rem.starts_with('!') && !unset {
             unset = true;
-            name.rem.temp_slice_from(1..)
+            name.rem.slice_from(1..)
         } else {
             name.rem
         };

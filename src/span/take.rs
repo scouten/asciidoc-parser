@@ -36,7 +36,7 @@ impl<'a> Span<'a> {
     where
         P: Fn(char) -> bool,
     {
-        match self.temp_position(|c| !predicate(c)) {
+        match self.position(|c| !predicate(c)) {
             Some(n) => self.into_parse_result(n),
             None => self.into_parse_result(self.data.len()),
         }
