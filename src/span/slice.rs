@@ -7,22 +7,22 @@ use super::Span;
 
 impl<'a> Span<'a> {
     /// Returns the requested subrange of this input span.
-    pub fn temp_slice(&self, range: Range<usize>) -> Self {
+    pub fn slice(&self, range: Range<usize>) -> Self {
         self.slice_internal(&self.data[range])
     }
 
     /// Returns the requested subrange of this input span.
-    pub fn temp_slice_from(&self, range: RangeFrom<usize>) -> Self {
+    pub fn slice_from(&self, range: RangeFrom<usize>) -> Self {
         self.slice_internal(&self.data[range])
     }
 
     /// Returns the requested subrange of this input span.
-    pub fn temp_slice_to(&self, range: RangeTo<usize>) -> Self {
+    pub fn slice_to(&self, range: RangeTo<usize>) -> Self {
         self.slice_internal(&self.data[range])
     }
 
     /// Returns the first position where `predicate` returns `true`.
-    pub fn temp_position<P>(&self, predicate: P) -> Option<usize>
+    pub fn position<P>(&self, predicate: P) -> Option<usize>
     where
         P: Fn(char) -> bool,
     {

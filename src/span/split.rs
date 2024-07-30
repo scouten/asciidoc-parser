@@ -5,8 +5,8 @@ impl<'a> Span<'a> {
     /// given position.
     pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
         ParseResult {
-            t: self.temp_slice_to(..at_index),
-            rem: self.temp_slice_from(at_index..),
+            t: self.slice_to(..at_index),
+            rem: self.slice_from(at_index..),
         }
     }
 
@@ -22,7 +22,7 @@ impl<'a> Span<'a> {
     where
         P: Fn(char) -> bool,
     {
-        match self.temp_position(predicate) {
+        match self.position(predicate) {
             Some(0) => None,
             Some(n) => Some(self.into_parse_result(n)),
             None => {

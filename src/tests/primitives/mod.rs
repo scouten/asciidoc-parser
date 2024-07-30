@@ -5,7 +5,7 @@ mod trim_input_for_rem {
 
     fn advanced_span(source: &'static str, skip: usize) -> Span<'static> {
         let span = Span::new(source);
-        span.temp_slice_from(skip..)
+        span.slice_from(skip..)
     }
 
     #[test]
