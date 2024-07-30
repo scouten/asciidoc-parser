@@ -21,7 +21,6 @@ impl<'a> Span<'a> {
     /// Split this span, consuming at least one white space character.
     ///
     /// Returns `None` if the first character is not a space or tab.
-    #[allow(dead_code)]
     pub(crate) fn take_required_whitespace(self) -> Option<ParseResult<'a, Self>> {
         let pr = self.take_while(|c| c == ' ' || c == '\t');
         if pr.t.is_empty() {
