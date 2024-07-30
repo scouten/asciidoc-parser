@@ -1,5 +1,3 @@
-use nom::{InputIter, Slice};
-
 use super::{ParseResult, Span};
 
 impl<'a> Span<'a> {
@@ -9,8 +7,8 @@ impl<'a> Span<'a> {
     /// NOM REFACTOR: Replacement for `take_split`.
     pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
         ParseResult {
-            t: self.slice(..at_index),
-            rem: self.slice(at_index..),
+            t: self.temp_slice_to(..at_index),
+            rem: self.temp_slice_from(at_index..),
         }
     }
 
@@ -28,7 +26,7 @@ impl<'a> Span<'a> {
     where
         P: Fn(char) -> bool,
     {
-        match self.data.position(predicate) {
+        match self.temp_position(predicate) {
             Some(0) => None,
             Some(n) => Some(self.into_parse_result(n)),
             None => {
