@@ -109,6 +109,7 @@ mod line;
 mod nom_traits;
 mod parse_result;
 mod primitives;
+mod r#slice;
 mod split;
 mod take;
 

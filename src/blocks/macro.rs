@@ -1,5 +1,3 @@
-use nom::Slice;
-
 use crate::{
     attributes::Attrlist,
     blocks::{ContentModel, IsBlock},
@@ -32,7 +30,7 @@ impl<'a> MacroBlock<'a> {
             return None;
         }
 
-        let line_wo_brace = line.t.slice(0..line.t.len() - 1);
+        let line_wo_brace = line.t.temp_slice(0..line.t.len() - 1);
         let name = line_wo_brace.take_ident()?;
         let colons = name.rem.take_prefix("::")?;
         let target = colons.rem.take_while(|c| c != '[');

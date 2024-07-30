@@ -1,7 +1,3 @@
-#![allow(dead_code)] // TEMPORARY while refactoring
-
-use nom::Slice;
-
 use super::Span;
 
 /// Represents a successful parse result and subsequent remainder of the span.
@@ -20,7 +16,7 @@ impl<'a> ParseResult<'a, Span<'a>> {
     pub(crate) fn trim_rem_start_matches(&self, c: char) -> Self {
         if let Some(rem) = self.rem.strip_prefix(c) {
             let prefix_len = self.rem.len() - rem.len();
-            let rem = self.rem.slice(prefix_len..);
+            let rem = self.rem.temp_slice_from(prefix_len..);
             Self { t: self.t, rem }
         } else {
             *self
@@ -30,7 +26,7 @@ impl<'a> ParseResult<'a, Span<'a>> {
     /// Discard any instances of the given character from the end of `self.t`.
     pub(crate) fn trim_t_end_matches(&self, c: char) -> Self {
         if let Some(inp) = self.t.strip_suffix(c) {
-            let inp = self.t.slice(0..inp.len());
+            let inp = self.t.temp_slice(0..inp.len());
             Self {
                 t: inp,
                 rem: self.rem,
@@ -43,7 +39,7 @@ impl<'a> ParseResult<'a, Span<'a>> {
     /// Discard any trailing spaces from `self.t`.
     pub(crate) fn trim_t_trailing_spaces(&self) -> Self {
         let inp = self.t.trim_end_matches(' ');
-        let inp = self.t.slice(0..inp.len());
+        let inp = self.t.temp_slice(0..inp.len());
         Self {
             t: inp,
             rem: self.rem,

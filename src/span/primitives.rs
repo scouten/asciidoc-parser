@@ -1,5 +1,3 @@
-use nom::Slice;
-
 use super::{ParseResult, Span};
 
 impl<'a> Span<'a> {
@@ -82,8 +80,8 @@ impl<'a> Span<'a> {
         for (index, c) in chars {
             if c == delimiter && !prev_was_backslash {
                 return Some(ParseResult {
-                    t: self.slice(1..index),
-                    rem: self.slice(index + 1..),
+                    t: self.temp_slice(1..index),
+                    rem: self.temp_slice_from(index + 1..),
                 });
             }
             prev_was_backslash = c == '\\';
