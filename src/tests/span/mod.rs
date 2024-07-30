@@ -64,7 +64,6 @@ mod split_at_match_non_empty {
 }
 
 mod line;
-mod nom_traits;
 mod parse_result;
 mod primitives;
 mod split;
