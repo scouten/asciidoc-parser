@@ -1,4 +1,4 @@
-use std::ops::{Range, RangeFrom};
+use std::ops::{Range, RangeFrom, RangeTo};
 
 use bytecount::num_chars;
 use memchr::Memchr;
@@ -14,6 +14,24 @@ impl<'a> Span<'a> {
     /// Returns the requested subrange of this input span.
     pub fn temp_slice_from(&self, range: RangeFrom<usize>) -> Self {
         self.slice_internal(&self.data[range])
+    }
+
+    /// Returns the requested subrange of this input span.
+    pub fn temp_slice_to(&self, range: RangeTo<usize>) -> Self {
+        self.slice_internal(&self.data[range])
+    }
+
+    /// Returns the first position where `predicate` returns `true`.
+    pub fn temp_position<P>(&self, predicate: P) -> Option<usize>
+    where
+        P: Fn(char) -> bool,
+    {
+        for (o, c) in self.data.char_indices() {
+            if predicate(c) {
+                return Some(o);
+            }
+        }
+        None
     }
 
     fn slice_internal(&self, slice_data: &'a str) -> Self {
