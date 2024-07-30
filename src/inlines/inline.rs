@@ -1,5 +1,3 @@
-use nom::InputTake;
-
 use crate::{
     inlines::InlineMacro, primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span,
 };
@@ -34,7 +32,6 @@ impl<'a> Inline<'a> {
         // overhead of the Vec of inlines.
 
         let mut uninterp = parse_uninterpreted(span);
-
         if uninterp.rem.is_empty() {
             return Some(ParseResult {
                 t: Self::Uninterpreted(uninterp.t),
@@ -55,7 +52,6 @@ impl<'a> Inline<'a> {
             }
 
             let interp = parse_interpreted(span)?;
-
             if interp.rem.is_empty() && inlines.is_empty() {
                 return Some(interp);
             }
@@ -115,28 +111,23 @@ impl<'a> HasSpan<'a> for Inline<'a> {
 // Remainder is either empty span or first span that requires
 // special interpretation.
 fn parse_uninterpreted(i: Span<'_>) -> ParseResult<Span> {
-    let mut rem = i;
-    let mut at_word_boundary = true;
-
     // Optimization: If line doesn't contain special markup chars,
     // then it's all uninterpreted.
 
-    if !rem.contains(':') {
-        return ParseResult {
-            rem: trim_input_for_rem(i, rem),
-            t: rem,
-        };
+    if !i.contains(':') {
+        return i.into_parse_result(i.len());
     }
 
-    loop {
-        if (at_word_boundary && InlineMacro::parse(rem).is_some()) || rem.is_empty() {
+    let mut rem = i;
+
+    while !rem.is_empty() {
+        if InlineMacro::parse(rem).is_some() {
             break;
         }
 
-        let (rem2, c) = rem.take_split(1);
-        at_word_boundary = matches!(c.data().chars().next(), Some(' ') | Some('\t'));
-
-        rem = rem2;
+        let word = rem.take_while(|c| c != ' ' && c != '\t');
+        let spaces = word.rem.take_whitespace();
+        rem = spaces.rem;
     }
 
     ParseResult {
