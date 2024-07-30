@@ -7,7 +7,6 @@ impl<'a> Span<'a> {
     /// documentation, so – for now – we're borrowing the definition from Rust,
     /// which is a single alphabetic character or underscore, followed by any
     /// number of alphanumeric characters or underscores.
-    #[allow(dead_code)] // TEMPORARY
     pub(crate) fn take_ident(self) -> Option<ParseResult<'a, Self>> {
         let mut chars = self.data.char_indices();
 
