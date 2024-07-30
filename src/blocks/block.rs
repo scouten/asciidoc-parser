@@ -68,13 +68,10 @@ impl<'a> Block<'a> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
-        match SimpleBlock::parse(i) {
-            Ok((rem, simple_block)) => Some(ParseResult {
-                t: Self::Simple(simple_block),
-                rem,
-            }),
-            _ => None,
-        }
+        SimpleBlock::parse(i).map(|pr| ParseResult {
+            t: Self::Simple(pr.t),
+            rem: pr.rem,
+        })
     }
 }
 

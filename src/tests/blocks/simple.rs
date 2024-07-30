@@ -1,9 +1,5 @@
 use std::ops::Deref;
 
-use nom::{
-    error::{Error, ErrorKind},
-    Err,
-};
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
@@ -15,48 +11,27 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let (_, b1) = SimpleBlock::parse(Span::new("abc")).unwrap();
-    let b2 = b1.clone();
-    assert_eq!(b1, b2);
+    let b1 = SimpleBlock::parse(Span::new("abc")).unwrap();
+    let b2 = b1.t.clone();
+    assert_eq!(b1.t, b2);
 }
 
 #[test]
 fn empty_source() {
-    let expected_err = Err::Error(Error::new(Span::new(""), ErrorKind::TakeTill1));
-
-    let actual_err = SimpleBlock::parse(Span::new("")).unwrap_err();
-
-    assert_eq!(expected_err, actual_err);
+    assert!(SimpleBlock::parse(Span::new("")).is_none());
 }
 
 #[test]
 fn only_spaces() {
-    let expected_err = Err::Error(Error::new(Span::new("    "), ErrorKind::TakeTill1));
-
-    let actual_err = SimpleBlock::parse(Span::new("    ")).unwrap_err();
-
-    assert_eq!(expected_err, actual_err);
+    assert!(SimpleBlock::parse(Span::new("    ")).is_none());
 }
 
 #[test]
 fn single_line() {
-    let (rem, block) = SimpleBlock::parse(Span::new("abc")).unwrap();
-
-    assert_eq!(block.content_model(), ContentModel::Simple);
-    assert_eq!(block.context().deref(), "paragraph");
+    let pr = SimpleBlock::parse(Span::new("abc")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 4,
-            offset: 3
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         TSimpleBlock(TInline::Uninterpreted(TSpan {
             data: "abc",
             line: 1,
@@ -64,24 +39,27 @@ fn single_line() {
             offset: 0,
         })),
     );
+
+    assert_eq!(pr.t.content_model(), ContentModel::Simple);
+    assert_eq!(pr.t.context().deref(), "paragraph");
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 4,
+            offset: 3
+        }
+    );
 }
 
 #[test]
 fn multiple_lines() {
-    let (rem, block) = SimpleBlock::parse(Span::new("abc\ndef")).unwrap();
+    let pr = SimpleBlock::parse(Span::new("abc\ndef")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 2,
-            col: 4,
-            offset: 7
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         TSimpleBlock(TInline::Sequence(
             vec![
                 TInline::Uninterpreted(TSpan {
@@ -105,29 +83,39 @@ fn multiple_lines() {
             }
         ))
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 2,
+            col: 4,
+            offset: 7
+        }
+    );
 }
 
 #[test]
 fn consumes_blank_lines_after() {
-    let (rem, block) = SimpleBlock::parse(Span::new("abc\n\ndef")).unwrap();
+    let pr = SimpleBlock::parse(Span::new("abc\n\ndef")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "def",
-            line: 3,
-            col: 1,
-            offset: 5
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         TSimpleBlock(TInline::Uninterpreted(TSpan {
             data: "abc",
             line: 1,
             col: 1,
             offset: 0,
         }))
+    );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "def",
+            line: 3,
+            col: 1,
+            offset: 5
+        }
     );
 }

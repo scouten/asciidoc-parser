@@ -1,7 +1,5 @@
-use nom::IResult;
-
 use super::{ContentModel, IsBlock};
-use crate::{inlines::Inline, strings::CowStr, HasSpan, Span};
+use crate::{inlines::Inline, span::ParseResult, strings::CowStr, HasSpan, Span};
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
@@ -9,12 +7,12 @@ use crate::{inlines::Inline, strings::CowStr, HasSpan, Span};
 pub struct SimpleBlock<'a>(Inline<'a>);
 
 impl<'a> SimpleBlock<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let inline = Inline::parse_lines(source).ok_or(nom::Err::Error(nom::error::Error::new(
-            source,
-            nom::error::ErrorKind::TakeTill1,
-        )))?;
-        Ok((inline.rem.discard_empty_lines(), Self(inline.t)))
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+        let inline = Inline::parse_lines(source)?;
+        Some(ParseResult {
+            t: Self(inline.t),
+            rem: inline.rem.discard_empty_lines(),
+        })
     }
 
     /// Return the inline content of this block.
