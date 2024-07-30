@@ -106,7 +106,6 @@ impl<'a> Deref for Span<'a> {
 // available inside this crate only.
 
 mod line;
-mod nom_traits;
 mod parse_result;
 mod primitives;
 mod r#slice;
