@@ -1,12 +1,11 @@
 mod trim_input_for_rem {
-    use nom::Slice;
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{primitives::trim_input_for_rem, tests::fixtures::TSpan, Span};
 
     fn advanced_span(source: &'static str, skip: usize) -> Span<'static> {
         let span = Span::new(source);
-        span.slice(skip..)
+        span.temp_slice_from(skip..)
     }
 
     #[test]

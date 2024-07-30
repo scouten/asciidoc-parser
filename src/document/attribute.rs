@@ -1,5 +1,3 @@
-use nom::Slice;
-
 use crate::{primitives::trim_input_for_rem, span::ParseResult, strings::CowStr, HasSpan, Span};
 
 /// Document attributes are effectively document-scoped variables for the
@@ -21,7 +19,7 @@ impl<'a> Attribute<'a> {
         let mut unset = false;
         let line = if colon.rem.starts_with('!') {
             unset = true;
-            colon.rem.slice(1..)
+            colon.rem.temp_slice_from(1..)
         } else {
             colon.rem
         };
@@ -30,7 +28,7 @@ impl<'a> Attribute<'a> {
 
         let line = if name.rem.starts_with('!') && !unset {
             unset = true;
-            name.rem.slice(1..)
+            name.rem.temp_slice_from(1..)
         } else {
             name.rem
         };
