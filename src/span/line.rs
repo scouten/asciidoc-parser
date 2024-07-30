@@ -56,7 +56,7 @@ impl<'a> Span<'a> {
     pub(crate) fn take_empty_line(self) -> Option<ParseResult<'a, Self>> {
         let l = self.take_line();
 
-        if l.t.data().bytes().all(nom::character::is_space) {
+        if l.t.data().bytes().all(|b| b == b' ' || b == b'\t') {
             Some(l)
         } else {
             None
