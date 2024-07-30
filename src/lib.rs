@@ -13,9 +13,6 @@ pub mod blocks;
 pub mod document;
 pub use document::Document;
 
-mod error;
-pub use error::Error;
-
 pub mod inlines;
 
 pub(crate) mod primitives;
