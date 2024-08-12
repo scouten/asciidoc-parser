@@ -90,6 +90,12 @@ mod attrlist {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "first-positional",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }],
                         value: TSpan {
                             data: "first-positional",
                             line: 1,
@@ -105,6 +111,7 @@ mod attrlist {
                     },
                     TElementAttribute {
                         name: None,
+                        shorthand_items: vec![],
                         value: TSpan {
                             data: "second-positional",
                             line: 1,
@@ -125,6 +132,7 @@ mod attrlist {
                             col: 36,
                             offset: 35,
                         },),
+                        shorthand_items: vec![],
                         value: TSpan {
                             data: "value of named",
                             line: 1,
@@ -156,6 +164,12 @@ mod attrlist {
             pr.t.nth_attribute(1).unwrap(),
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![TSpan {
+                    data: "first-positional",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
                 value: TSpan {
                     data: "first-positional",
                     line: 1,
@@ -175,6 +189,7 @@ mod attrlist {
             pr.t.nth_attribute(2).unwrap(),
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "second-positional",
                     line: 1,
@@ -201,6 +216,7 @@ mod attrlist {
                     col: 36,
                     offset: 35,
                 },),
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "value of named",
                     line: 1,

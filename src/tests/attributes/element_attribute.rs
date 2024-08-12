@@ -27,6 +27,7 @@ fn only_spaces() {
         pr.t,
         TElementAttribute {
             name: None,
+            shorthand_items: vec![],
             value: TSpan {
                 data: "   ",
                 line: 1,
@@ -73,6 +74,7 @@ fn unquoted_and_unnamed_value() {
         pr.t,
         TElementAttribute {
             name: None,
+            shorthand_items: vec![],
             value: TSpan {
                 data: "abc",
                 line: 1,
@@ -119,6 +121,7 @@ fn unquoted_stops_at_comma() {
         pr.t,
         TElementAttribute {
             name: None,
+            shorthand_items: vec![],
             value: TSpan {
                 data: "abc",
                 line: 1,
@@ -179,6 +182,7 @@ mod quoted_string {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "abc",
                     line: 1,
@@ -225,6 +229,7 @@ mod quoted_string {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "a\\\"bc",
                     line: 1,
@@ -271,6 +276,7 @@ mod quoted_string {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "a'bc",
                     line: 1,
@@ -322,6 +328,7 @@ mod quoted_string {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "abc",
                     line: 1,
@@ -368,6 +375,7 @@ mod quoted_string {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "a\\'bc",
                     line: 1,
@@ -414,6 +422,7 @@ mod quoted_string {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "a\"bc",
                     line: 1,
@@ -475,6 +484,7 @@ mod named {
                     col: 1,
                     offset: 0,
                 }),
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "def",
                     line: 1,
@@ -534,6 +544,7 @@ mod named {
                     col: 1,
                     offset: 0,
                 }),
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "def",
                     line: 1,
@@ -593,6 +604,7 @@ mod named {
                     col: 1,
                     offset: 0,
                 }),
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "def",
                     line: 1,
@@ -652,6 +664,7 @@ mod named {
                     col: 1,
                     offset: 0,
                 }),
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "def",
                     line: 1,
@@ -706,6 +719,7 @@ mod named {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "abc=",
                     line: 1,
@@ -752,6 +766,7 @@ mod named {
             pr.t,
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "abc=",
                     line: 1,
