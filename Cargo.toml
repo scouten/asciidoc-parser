@@ -10,9 +10,8 @@ repository = "https://github.com/scouten/asciidoc-parser"
 rust-version = "1.74.0"
 
 [dependencies]
-nom = "7.1"
-nom-span = "0.1.1"
-thiserror = "1.0.50"
+bytecount = "0.6.7"
+memchr = "2.6.4"
 
 [dev-dependencies]
 codspeed-criterion-compat = "2.3.3"

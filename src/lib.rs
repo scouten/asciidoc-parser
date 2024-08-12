@@ -13,16 +13,13 @@ pub mod blocks;
 pub mod document;
 pub use document::Document;
 
-mod error;
-pub use error::{Error, ParseResult};
-
 pub mod inlines;
 
-mod has_span;
-pub use has_span::HasSpan;
-
 pub(crate) mod primitives;
-pub use primitives::Span;
+
+mod span;
+pub use span::{HasSpan, Span};
+
 pub mod strings;
 
 #[cfg(test)]

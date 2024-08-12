@@ -12,27 +12,17 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Header::parse(Span::new("= Title", true)).unwrap();
+    let h1 = Header::parse(Span::new("= Title")).unwrap();
     let h2 = h1.clone();
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn only_title() {
-    let (rem, block) = Header::parse(Span::new("= Just the Title", true)).unwrap();
+    let pr = Header::parse(Span::new("= Just the Title")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 17,
-            offset: 16
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -49,26 +39,26 @@ fn only_title() {
             }
         }
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 17,
+            offset: 16
+        }
+    );
 }
 
 #[test]
 fn trims_leading_spaces_in_title() {
     // This is totally a judgement call on my part. As far as I can tell,
     // the language doesn't describe behavior here.
-    let (rem, block) = Header::parse(Span::new("=    Just the Title", true)).unwrap();
+    let pr = Header::parse(Span::new("=    Just the Title")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 20,
-            offset: 19
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -85,14 +75,9 @@ fn trims_leading_spaces_in_title() {
             }
         }
     );
-}
-
-#[test]
-fn trims_trailing_spaces_in_title() {
-    let (rem, block) = Header::parse(Span::new("= Just the Title   ", true)).unwrap();
 
     assert_eq!(
-        rem,
+        pr.rem,
         TSpan {
             data: "",
             line: 1,
@@ -100,9 +85,14 @@ fn trims_trailing_spaces_in_title() {
             offset: 19
         }
     );
+}
+
+#[test]
+fn trims_trailing_spaces_in_title() {
+    let pr = Header::parse(Span::new("= Just the Title   ")).unwrap();
 
     assert_eq!(
-        block,
+        pr.t,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -119,25 +109,24 @@ fn trims_trailing_spaces_in_title() {
             }
         }
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 20,
+            offset: 19
+        }
+    );
 }
 
 #[test]
 fn title_and_attribute() {
-    let (rem, block) =
-        Header::parse(Span::new("= Just the Title\n:foo: bar\n\nblah", true)).unwrap();
+    let pr = Header::parse(Span::new("= Just the Title\n:foo: bar\n\nblah")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "blah",
-            line: 4,
-            col: 1,
-            offset: 28
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -171,6 +160,16 @@ fn title_and_attribute() {
                 col: 1,
                 offset: 0,
             }
+        }
+    );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "blah",
+            line: 4,
+            col: 1,
+            offset: 28
         }
     );
 }

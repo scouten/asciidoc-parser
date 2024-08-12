@@ -52,17 +52,15 @@ mod positional_attribute {
 
         // end::pos[]
 
-        let (_, m1) =
-            MacroBlock::parse(Span::new("image::sunset.jpg[Sunset,300,400]", true)).unwrap();
+        let m1 = MacroBlock::parse(Span::new("image::sunset.jpg[Sunset,300,400]")).unwrap();
 
-        let (_, m2) = MacroBlock::parse(Span::new(
+        let m2 = MacroBlock::parse(Span::new(
             "image::sunset.jpg[alt=Sunset,width=300,height=400]",
-            true,
         ))
         .unwrap();
 
-        let a1 = m1.attrlist();
-        let a2 = m2.attrlist();
+        let a1 = m1.t.attrlist();
+        let a2 = m2.t.attrlist();
 
         assert_eq!(
             a1.named_or_positional_attribute("alt", 1).unwrap(),

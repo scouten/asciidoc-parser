@@ -1,10 +1,5 @@
 use std::ops::Deref;
 
-use nom::{
-    bytes::complete::take,
-    error::{Error, ErrorKind},
-    Err,
-};
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
@@ -20,74 +15,40 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let (_, b1) = SectionBlock::parse(Span::new("== Section Title", true)).unwrap();
-    let b2 = b1.clone();
-    assert_eq!(b1, b2);
+    let b1 = SectionBlock::parse(Span::new("== Section Title")).unwrap();
+    let b2 = b1.t.clone();
+    assert_eq!(b1.t, b2);
 }
 
 #[test]
 fn err_empty_source() {
-    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
-
-    let actual_err = SectionBlock::parse(Span::new("", true)).unwrap_err();
-
-    assert_eq!(expected_err, actual_err);
+    assert!(SectionBlock::parse(Span::new("")).is_none());
 }
 
 #[test]
 fn err_only_spaces() {
-    let err_span: nom_span::Spanned<&str> = Span::new("    ", true);
-    let (err_span, _) = take::<usize, Span, Error<Span>>(4)(err_span).unwrap();
-
-    let expected_err = Err::Error(Error::new(err_span, ErrorKind::TakeTill1));
-
-    let actual_err = SectionBlock::parse(Span::new("    ", true)).unwrap_err();
-
-    assert_eq!(expected_err, actual_err);
+    assert!(SectionBlock::parse(Span::new("    ")).is_none());
 }
 
 #[test]
 fn err_not_section() {
-    let err_span: nom_span::Spanned<&str> = Span::new("blah blah", true);
-
-    let expected_err = Err::Error(Error::new(err_span, ErrorKind::Many1Count));
-
-    let actual_err = SectionBlock::parse(Span::new("blah blah", true)).unwrap_err();
-
-    assert_eq!(expected_err, actual_err);
+    assert!(SectionBlock::parse(Span::new("blah blah")).is_none());
 }
 
 #[test]
 fn err_missing_space_before_title() {
-    let err_span: nom_span::Spanned<&str> = Span::new("=blah blah", true);
-    let (err_span, _) = take::<usize, Span, Error<Span>>(1)(err_span).unwrap();
-
-    let expected_err = Err::Error(Error::new(err_span, ErrorKind::Space));
-
-    let actual_err = SectionBlock::parse(Span::new("=blah blah", true)).unwrap_err();
-
-    assert_eq!(expected_err, actual_err);
+    assert!(SectionBlock::parse(Span::new("=blah blah")).is_none());
 }
 
 #[test]
 fn simplest_section_block() {
-    let (rem, block) = SectionBlock::parse(Span::new("== Section Title", true)).unwrap();
+    let pr = SectionBlock::parse(Span::new("== Section Title")).unwrap();
 
-    assert_eq!(block.content_model(), ContentModel::Compound);
-    assert_eq!(block.context().deref(), "section");
-
-    assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 17,
-            offset: 16
-        }
-    );
+    assert_eq!(pr.t.content_model(), ContentModel::Compound);
+    assert_eq!(pr.t.context().deref(), "section");
 
     assert_eq!(
-        block,
+        pr.t,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -105,27 +66,27 @@ fn simplest_section_block() {
             },
         }
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 17,
+            offset: 16
+        }
+    );
 }
 
 #[test]
 fn has_child_block() {
-    let (rem, block) = SectionBlock::parse(Span::new("== Section Title\n\nabc", true)).unwrap();
+    let pr = SectionBlock::parse(Span::new("== Section Title\n\nabc")).unwrap();
 
-    assert_eq!(block.content_model(), ContentModel::Compound);
-    assert_eq!(block.context().deref(), "section");
-
-    assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 3,
-            col: 4,
-            offset: 21
-        }
-    );
+    assert_eq!(pr.t.content_model(), ContentModel::Compound);
+    assert_eq!(pr.t.context().deref(), "section");
 
     assert_eq!(
-        block,
+        pr.t,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -150,31 +111,28 @@ fn has_child_block() {
             },
         }
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 4,
+            offset: 21
+        }
+    );
 }
 
 #[test]
 fn dont_stop_at_peer_section() {
-    let (rem, block) = SectionBlock::parse(Span::new(
-        "== Section Title\n\nabc\n\n=== Section 2\n\ndef",
-        true,
-    ))
-    .unwrap();
+    let pr =
+        SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef")).unwrap();
 
-    assert_eq!(block.content_model(), ContentModel::Compound);
-    assert_eq!(block.context().deref(), "section");
+    assert_eq!(pr.t.content_model(), ContentModel::Compound);
+    assert_eq!(pr.t.context().deref(), "section");
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 7,
-            col: 4,
-            offset: 41
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -222,31 +180,28 @@ fn dont_stop_at_peer_section() {
             }
         }
     );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 7,
+            col: 4,
+            offset: 41
+        }
+    );
 }
 
 #[test]
 fn stop_at_peer_section() {
-    let (rem, block) = SectionBlock::parse(Span::new(
-        "== Section Title\n\nabc\n\n== Section 2\n\ndef",
-        true,
-    ))
-    .unwrap();
+    let pr =
+        SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n== Section 2\n\ndef")).unwrap();
 
-    assert_eq!(block.content_model(), ContentModel::Compound);
-    assert_eq!(block.context().deref(), "section");
+    assert_eq!(pr.t.content_model(), ContentModel::Compound);
+    assert_eq!(pr.t.context().deref(), "section");
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "== Section 2\n\ndef",
-            line: 5,
-            col: 1,
-            offset: 23
-        }
-    );
-
-    assert_eq!(
-        block,
+        pr.t,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -272,31 +227,28 @@ fn stop_at_peer_section() {
             },
         }
     );
-}
-
-#[test]
-fn stop_at_ancestor_section() {
-    let (rem, block) = SectionBlock::parse(Span::new(
-        "=== Section Title\n\nabc\n\n== Section 2\n\ndef",
-        true,
-    ))
-    .unwrap();
-
-    assert_eq!(block.content_model(), ContentModel::Compound);
-    assert_eq!(block.context().deref(), "section");
 
     assert_eq!(
-        rem,
+        pr.rem,
         TSpan {
             data: "== Section 2\n\ndef",
             line: 5,
             col: 1,
-            offset: 24
+            offset: 23
         }
     );
+}
+
+#[test]
+fn stop_at_ancestor_section() {
+    let pr =
+        SectionBlock::parse(Span::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef")).unwrap();
+
+    assert_eq!(pr.t.content_model(), ContentModel::Compound);
+    assert_eq!(pr.t.context().deref(), "section");
 
     assert_eq!(
-        block,
+        pr.t,
         TSectionBlock {
             level: 2,
             title: TSpan {
@@ -320,6 +272,16 @@ fn stop_at_ancestor_section() {
                 col: 1,
                 offset: 0,
             },
+        }
+    );
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "== Section 2\n\ndef",
+            line: 5,
+            col: 1,
+            offset: 24
         }
     );
 }

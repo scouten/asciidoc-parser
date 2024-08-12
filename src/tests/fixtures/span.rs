@@ -12,7 +12,7 @@ pub(crate) struct TSpan {
 
 impl fmt::Debug for TSpan {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Spanned")
+        f.debug_struct("Span")
             .field("data", &self.data)
             .field("line", &self.line)
             .field("col", &self.col)
@@ -41,7 +41,7 @@ impl<'a> PartialEq<TSpan> for &Span<'a> {
 }
 
 fn tspan_eq(tspan: &TSpan, span: &Span) -> bool {
-    &tspan.data == span.data()
+    tspan.data == span.data()
         && tspan.line == span.line()
         && tspan.col == span.col()
         && tspan.offset == span.byte_offset()

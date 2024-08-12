@@ -1,11 +1,6 @@
 use std::{ops::Deref, slice::Iter};
 
-use nom::{
-    bytes::complete::tag, character::complete::space0, combinator::eof, multi::separated_list0,
-    sequence::pair, IResult,
-};
-
-use crate::{attributes::ElementAttribute, HasSpan, Span};
+use crate::{attributes::ElementAttribute, span::ParseResult, HasSpan, Span};
 
 /// The source text that’s used to define attributes for an element is referred
 /// to as an attrlist. An attrlist is always enclosed in a pair of square
@@ -25,27 +20,44 @@ impl<'a> Attrlist<'a> {
     /// the opening or closing square brackets for the attrlist. This is because
     /// the rules for closing brackets differ when parsing inline, macro, and
     /// block elements.
-    #[allow(dead_code)]
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let i = source;
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+        let mut rem = source;
+        let mut attributes: Vec<ElementAttribute> = vec![];
 
-        let (rem, attributes) =
-            separated_list0(pair(tag(","), space0), ElementAttribute::parse)(i)?;
+        loop {
+            let Some(attr) = ElementAttribute::parse(rem) else {
+                break;
+            };
+            attributes.push(attr.t);
 
-        let (rem, _) = eof(rem)?;
+            rem = attr.rem.take_whitespace().rem;
+            match rem.take_prefix(",") {
+                Some(comma) => {
+                    rem = comma.rem.take_whitespace().rem;
+                }
+                None => {
+                    break;
+                }
+            }
+        }
 
-        Ok((rem, Self { attributes, source }))
+        if !rem.is_empty() {
+            return None;
+        }
+
+        Some(ParseResult {
+            t: Self { attributes, source },
+            rem,
+        })
     }
 
     /// Returns an iterator over the attributes contained within
     /// this attrlist.
-    #[allow(dead_code)]
     pub fn attributes(&'a self) -> Iter<'a, ElementAttribute<'a>> {
         self.attributes.iter()
     }
 
     /// Returns the first attribute with the given name.
-    #[allow(dead_code)]
     pub fn named_attribute(&'a self, name: &str) -> Option<&'a ElementAttribute<'a>> {
         self.attributes.iter().find(|attr| {
             if let Some(attr_name) = attr.name() {
@@ -59,7 +71,6 @@ impl<'a> Attrlist<'a> {
     /// Returns the given (1-based) positional attribute.
     ///
     /// IMPORTANT: Named attributes with names are disregarded when counting.
-    #[allow(dead_code)]
     pub fn nth_attribute(&'a self, n: usize) -> Option<&'a ElementAttribute<'a>> {
         if n == 0 {
             None
@@ -78,7 +89,6 @@ impl<'a> Attrlist<'a> {
     ///
     /// This method will search by name first, and fall back to positional
     /// indexing if the name doesn't yield a match.
-    #[allow(dead_code)]
     pub fn named_or_positional_attribute(
         &'a self,
         name: &str,

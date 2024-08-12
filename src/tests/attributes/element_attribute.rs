@@ -1,7 +1,3 @@
-use nom::{
-    error::{Error, ErrorKind},
-    Err,
-};
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
@@ -13,36 +9,22 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let (_, b1) = ElementAttribute::parse(Span::new("abc", true)).unwrap();
-    let b2 = b1.clone();
-    assert_eq!(b1, b2);
+    let b1 = ElementAttribute::parse(Span::new("abc")).unwrap();
+    let b2 = b1.t.clone();
+    assert_eq!(b1.t, b2);
 }
 
 #[test]
 fn empty_source() {
-    let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::IsNot));
-
-    let actual_err = ElementAttribute::parse(Span::new("", true)).unwrap_err();
-
-    assert_eq!(expected_err, actual_err);
+    assert!(ElementAttribute::parse(Span::new("")).is_none());
 }
 
 #[test]
 fn only_spaces() {
-    let (rem, attr) = ElementAttribute::parse(Span::new("   ", true)).unwrap();
+    let pr = ElementAttribute::parse(Span::new("   ")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 4,
-            offset: 3
-        }
-    );
-
-    assert_eq!(
-        attr,
+        pr.t,
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -60,10 +42,20 @@ fn only_spaces() {
         }
     );
 
-    assert!(attr.name().is_none());
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 4,
+            offset: 3
+        }
+    );
+
+    assert!(pr.t.name().is_none());
 
     assert_eq!(
-        attr.span(),
+        pr.t.span(),
         TSpan {
             data: "   ",
             line: 1,
@@ -75,10 +67,41 @@ fn only_spaces() {
 
 #[test]
 fn unquoted_and_unnamed_value() {
-    let (rem, attr) = ElementAttribute::parse(Span::new("abc", true)).unwrap();
+    let pr = ElementAttribute::parse(Span::new("abc")).unwrap();
 
     assert_eq!(
-        rem,
+        pr.t,
+        TElementAttribute {
+            name: None,
+            value: TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            source: TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert!(pr.t.name().is_none());
+
+    assert_eq!(
+        pr.t.span(),
+        TSpan {
+            data: "abc",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        pr.rem,
         TSpan {
             data: "",
             line: 1,
@@ -86,9 +109,14 @@ fn unquoted_and_unnamed_value() {
             offset: 3
         }
     );
+}
+
+#[test]
+fn unquoted_stops_at_comma() {
+    let pr = ElementAttribute::parse(Span::new("abc,def")).unwrap();
 
     assert_eq!(
-        attr,
+        pr.t,
         TElementAttribute {
             name: None,
             value: TSpan {
@@ -106,10 +134,10 @@ fn unquoted_and_unnamed_value() {
         }
     );
 
-    assert!(attr.name().is_none());
+    assert!(pr.t.name().is_none());
 
     assert_eq!(
-        attr.span(),
+        pr.t.span(),
         TSpan {
             data: "abc",
             line: 1,
@@ -117,14 +145,9 @@ fn unquoted_and_unnamed_value() {
             offset: 0,
         }
     );
-}
-
-#[test]
-fn unquoted_stops_at_comma() {
-    let (rem, attr) = ElementAttribute::parse(Span::new("abc,def", true)).unwrap();
 
     assert_eq!(
-        rem,
+        pr.rem,
         TSpan {
             data: ",def",
             line: 1,
@@ -132,41 +155,9 @@ fn unquoted_stops_at_comma() {
             offset: 3
         }
     );
-
-    assert_eq!(
-        attr,
-        TElementAttribute {
-            name: None,
-            value: TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            source: TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-        }
-    );
-
-    assert!(attr.name().is_none());
-
-    assert_eq!(
-        attr.span(),
-        TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0,
-        }
-    );
 }
 
 mod quoted_string {
-    use nom::{error::ErrorKind, Err};
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
@@ -177,41 +168,15 @@ mod quoted_string {
 
     #[test]
     fn err_unterminated_double_quote() {
-        let err = ElementAttribute::parse(Span::new("\"xxx", true)).unwrap_err();
-
-        let Err::Error(e) = err else {
-            panic!("Expected Err::Error: {err:#?}");
-        };
-
-        assert_eq!(e.code, ErrorKind::Char);
-
-        assert_eq!(
-            e.input,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 5,
-                offset: 4
-            }
-        );
+        assert!(ElementAttribute::parse(Span::new("\"xxx")).is_none());
     }
 
     #[test]
     fn double_quoted_string() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("\"abc\"def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("\"abc\"def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "def",
-                line: 1,
-                col: 6,
-                offset: 5
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: None,
                 value: TSpan {
@@ -229,10 +194,10 @@ mod quoted_string {
             }
         );
 
-        assert!(attr.name().is_none());
+        assert!(pr.t.name().is_none());
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "\"abc\"",
                 line: 1,
@@ -240,24 +205,24 @@ mod quoted_string {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "def",
+                line: 1,
+                col: 6,
+                offset: 5
+            }
+        );
     }
 
     #[test]
     fn double_quoted_with_escape() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("\"a\\\"bc\"def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("\"a\\\"bc\"def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "def",
-                line: 1,
-                col: 8,
-                offset: 7
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: None,
                 value: TSpan {
@@ -275,10 +240,10 @@ mod quoted_string {
             }
         );
 
-        assert!(attr.name().is_none());
+        assert!(pr.t.name().is_none());
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "\"a\\\"bc\"",
                 line: 1,
@@ -286,24 +251,24 @@ mod quoted_string {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "def",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
     }
 
     #[test]
     fn double_quoted_with_single_quote() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("\"a'bc\"def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("\"a'bc\"def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "def",
-                line: 1,
-                col: 7,
-                offset: 6
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: None,
                 value: TSpan {
@@ -321,10 +286,10 @@ mod quoted_string {
             }
         );
 
-        assert!(attr.name().is_none());
+        assert!(pr.t.name().is_none());
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "\"a'bc\"",
                 line: 1,
@@ -332,45 +297,29 @@ mod quoted_string {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "def",
+                line: 1,
+                col: 7,
+                offset: 6
+            }
+        );
     }
 
     #[test]
     fn err_unterminated_single_quote() {
-        let err = ElementAttribute::parse(Span::new("'xxx", true)).unwrap_err();
-
-        let Err::Error(e) = err else {
-            panic!("Expected Err::Error: {err:#?}");
-        };
-
-        assert_eq!(e.code, ErrorKind::Char);
-
-        assert_eq!(
-            e.input,
-            TSpan {
-                data: "\'xxx",
-                line: 1,
-                col: 1,
-                offset: 0
-            }
-        );
+        assert!(ElementAttribute::parse(Span::new("'xxx")).is_none());
     }
 
     #[test]
     fn single_quoted_string() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("'abc'def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("'abc'def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "def",
-                line: 1,
-                col: 6,
-                offset: 5
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: None,
                 value: TSpan {
@@ -388,10 +337,10 @@ mod quoted_string {
             }
         );
 
-        assert!(attr.name().is_none());
+        assert!(pr.t.name().is_none());
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "'abc'",
                 line: 1,
@@ -399,24 +348,24 @@ mod quoted_string {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "def",
+                line: 1,
+                col: 6,
+                offset: 5
+            }
+        );
     }
 
     #[test]
     fn single_quoted_with_escape() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("'a\\'bc'def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("'a\\'bc'def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "def",
-                line: 1,
-                col: 8,
-                offset: 7
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: None,
                 value: TSpan {
@@ -434,10 +383,10 @@ mod quoted_string {
             }
         );
 
-        assert!(attr.name().is_none());
+        assert!(pr.t.name().is_none());
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "'a\\'bc'",
                 line: 1,
@@ -445,24 +394,24 @@ mod quoted_string {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "def",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
     }
 
     #[test]
     fn single_quoted_with_double_quote() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("'a\"bc'def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("'a\"bc'def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "def",
-                line: 1,
-                col: 7,
-                offset: 6
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: None,
                 value: TSpan {
@@ -480,15 +429,25 @@ mod quoted_string {
             }
         );
 
-        assert!(attr.name().is_none());
+        assert!(pr.t.name().is_none());
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "'a\"bc'",
                 line: 1,
                 col: 1,
                 offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "def",
+                line: 1,
+                col: 7,
+                offset: 6
             }
         );
     }
@@ -505,20 +464,10 @@ mod named {
 
     #[test]
     fn simple_named_value() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc=def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("abc=def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 8,
-                offset: 7
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "abc",
@@ -542,7 +491,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.name().unwrap(),
+            pr.t.name().unwrap(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -552,7 +501,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "abc=def",
                 line: 1,
@@ -560,24 +509,24 @@ mod named {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
     }
 
     #[test]
     fn ignores_spaces_around_equals() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc =  def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("abc =  def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 11,
-                offset: 10
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "abc",
@@ -601,7 +550,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.name().unwrap(),
+            pr.t.name().unwrap(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -611,7 +560,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "abc =  def",
                 line: 1,
@@ -619,24 +568,24 @@ mod named {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
     }
 
     #[test]
     fn numeric_name() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("94-x =def", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("94-x =def")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 10,
-                offset: 9
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "94-x",
@@ -660,7 +609,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.name().unwrap(),
+            pr.t.name().unwrap(),
             TSpan {
                 data: "94-x",
                 line: 1,
@@ -670,7 +619,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "94-x =def",
                 line: 1,
@@ -678,24 +627,24 @@ mod named {
                 offset: 0,
             }
         );
-    }
-
-    #[test]
-    fn quoted_value() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc='def'g", true)).unwrap();
 
         assert_eq!(
-            rem,
+            pr.rem,
             TSpan {
-                data: "g",
+                data: "",
                 line: 1,
                 col: 10,
                 offset: 9
             }
         );
+    }
+
+    #[test]
+    fn quoted_value() {
+        let pr = ElementAttribute::parse(Span::new("abc='def'g")).unwrap();
 
         assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "abc",
@@ -719,7 +668,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.name().unwrap(),
+            pr.t.name().unwrap(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -729,7 +678,7 @@ mod named {
         );
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "abc='def'",
                 line: 1,
@@ -737,14 +686,55 @@ mod named {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "g",
+                line: 1,
+                col: 10,
+                offset: 9
+            }
+        );
     }
 
     #[test]
     fn fallback_if_no_value() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc=", true)).unwrap();
+        let pr = ElementAttribute::parse(Span::new("abc=")).unwrap();
 
         assert_eq!(
-            rem,
+            pr.t,
+            TElementAttribute {
+                name: None,
+                value: TSpan {
+                    data: "abc=",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "abc=",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(pr.t.name().is_none());
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: "abc=",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
             TSpan {
                 data: "",
                 line: 1,
@@ -752,9 +742,14 @@ mod named {
                 offset: 4
             }
         );
+    }
+
+    #[test]
+    fn fallback_if_immediate_comma() {
+        let pr = ElementAttribute::parse(Span::new("abc=,def")).unwrap();
 
         assert_eq!(
-            attr,
+            pr.t,
             TElementAttribute {
                 name: None,
                 value: TSpan {
@@ -772,10 +767,10 @@ mod named {
             }
         );
 
-        assert!(attr.name().is_none());
+        assert!(pr.t.name().is_none());
 
         assert_eq!(
-            attr.span(),
+            pr.t.span(),
             TSpan {
                 data: "abc=",
                 line: 1,
@@ -783,50 +778,14 @@ mod named {
                 offset: 0,
             }
         );
-    }
-
-    #[test]
-    fn fallback_if_immediate_comma() {
-        let (rem, attr) = ElementAttribute::parse(Span::new("abc=,def", true)).unwrap();
 
         assert_eq!(
-            rem,
+            pr.rem,
             TSpan {
                 data: ",def",
                 line: 1,
                 col: 5,
                 offset: 4
-            }
-        );
-
-        assert_eq!(
-            attr,
-            TElementAttribute {
-                name: None,
-                value: TSpan {
-                    data: "abc=",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-                source: TSpan {
-                    data: "abc=",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-            }
-        );
-
-        assert!(attr.name().is_none());
-
-        assert_eq!(
-            attr.span(),
-            TSpan {
-                data: "abc=",
-                line: 1,
-                col: 1,
-                offset: 0,
             }
         );
     }
