@@ -104,13 +104,13 @@ impl<'a> HasSpan<'a> for ElementAttribute<'a> {
 }
 
 fn parse_shorthand_items<'a>(span: Span<'a>) -> Vec<Span<'a>> {
-    let mut span = span.clone();
+    let mut span = span;
     let mut shorthand_items: Vec<Span<'a>> = vec![];
 
     // Look for block style selector.
     if let Some(block_style_pr) = span.split_at_match_non_empty(is_shorthand_delimiter) {
         shorthand_items.push(block_style_pr.t);
-        span = block_style_pr.rem.clone();
+        span = block_style_pr.rem;
     }
 
     while !span.is_empty() {
