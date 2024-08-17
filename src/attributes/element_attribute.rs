@@ -91,7 +91,7 @@ impl<'a> ElementAttribute<'a> {
         self.shorthand_items
             .first()
             .filter(|span| matches!(span.position(is_shorthand_delimiter), None | Some(0)))
-            .map(|span| span.clone())
+            .copied()
     }
 
     /// Return the attribute's raw value.
