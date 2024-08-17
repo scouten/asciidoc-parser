@@ -1097,4 +1097,121 @@ mod parse_with_shorthand {
             }
         );
     }
+
+    #[test]
+    fn multiple_roles() {
+        let pr = ElementAttribute::parse_with_shorthand(Span::new(".role1.role2.role3")).unwrap();
+
+        assert_eq!(
+            pr.t,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![
+                    TSpan {
+                        data: ".role1",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    TSpan {
+                        data: ".role2",
+                        line: 1,
+                        col: 7,
+                        offset: 6,
+                    },
+                    TSpan {
+                        data: ".role3",
+                        line: 1,
+                        col: 13,
+                        offset: 12,
+                    }
+                ],
+                value: TSpan {
+                    data: ".role1.role2.role3",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: ".role1.role2.role3",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(pr.t.name().is_none());
+
+        assert_eq!(
+            pr.t.shorthand_items(),
+            &vec![
+                TSpan {
+                    data: ".role1",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                TSpan {
+                    data: ".role2",
+                    line: 1,
+                    col: 7,
+                    offset: 6,
+                },
+                TSpan {
+                    data: ".role3",
+                    line: 1,
+                    col: 13,
+                    offset: 12,
+                }
+            ]
+        );
+
+        assert!(pr.t.block_style().is_none());
+        assert!(pr.t.id().is_none());
+
+        assert_eq!(
+            pr.t.roles(),
+            vec!(
+                TSpan {
+                    data: "role1",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+                TSpan {
+                    data: "role2",
+                    line: 1,
+                    col: 8,
+                    offset: 7,
+                },
+                TSpan {
+                    data: "role3",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                }
+            )
+        );
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: ".role1.role2.role3",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 19,
+                offset: 18
+            }
+        );
+    }
 }
