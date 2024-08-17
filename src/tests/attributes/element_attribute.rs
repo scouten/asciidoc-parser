@@ -43,6 +43,8 @@ fn only_spaces() {
         }
     );
 
+    assert!(pr.t.block_style().is_none());
+
     assert_eq!(
         pr.rem,
         TSpan {
@@ -91,6 +93,7 @@ fn unquoted_and_unnamed_value() {
     );
 
     assert!(pr.t.name().is_none());
+    assert!(pr.t.block_style().is_none());
 
     assert_eq!(
         pr.t.span(),
@@ -138,6 +141,7 @@ fn unquoted_stops_at_comma() {
     );
 
     assert!(pr.t.name().is_none());
+    assert!(pr.t.block_style().is_none());
 
     assert_eq!(
         pr.t.span(),
@@ -199,6 +203,7 @@ mod quoted_string {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -246,6 +251,7 @@ mod quoted_string {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -293,6 +299,7 @@ mod quoted_string {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -345,6 +352,7 @@ mod quoted_string {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -392,6 +400,7 @@ mod quoted_string {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -439,6 +448,7 @@ mod quoted_string {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -509,6 +519,8 @@ mod named {
                 offset: 0,
             }
         );
+
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -630,6 +642,8 @@ mod named {
             }
         );
 
+        assert!(pr.t.block_style().is_none());
+
         assert_eq!(
             pr.t.span(),
             TSpan {
@@ -690,6 +704,8 @@ mod named {
             }
         );
 
+        assert!(pr.t.block_style().is_none());
+
         assert_eq!(
             pr.t.span(),
             TSpan {
@@ -736,6 +752,7 @@ mod named {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -783,6 +800,7 @@ mod named {
         );
 
         assert!(pr.t.name().is_none());
+        assert!(pr.t.block_style().is_none());
 
         assert_eq!(
             pr.t.span(),
@@ -801,6 +819,88 @@ mod named {
                 line: 1,
                 col: 5,
                 offset: 4
+            }
+        );
+    }
+}
+
+mod parse_with_shorthand {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        attributes::ElementAttribute,
+        tests::fixtures::{attributes::TElementAttribute, TSpan},
+        HasSpan, Span,
+    };
+
+    #[test]
+    fn block_style_only() {
+        let pr = ElementAttribute::parse_with_shorthand(Span::new("abc")).unwrap();
+
+        assert_eq!(
+            pr.t,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+                value: TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(pr.t.name().is_none());
+
+        assert_eq!(
+            pr.t.shorthand_items(),
+            &vec![TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }]
+        );
+
+        assert_eq!(
+            pr.t.block_style().unwrap(),
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
             }
         );
     }

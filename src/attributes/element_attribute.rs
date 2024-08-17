@@ -86,6 +86,14 @@ impl<'a> ElementAttribute<'a> {
         &self.shorthand_items
     }
 
+    /// Return the block style name.
+    pub fn block_style(&'a self) -> Option<Span<'a>> {
+        self.shorthand_items
+            .first()
+            .filter(|span| matches!(span.position(is_shorthand_delimiter), None | Some(0)))
+            .map(|span| span.clone())
+    }
+
     /// Return the attribute's raw value.
     pub fn raw_value(&'a self) -> &'a Span<'a> {
         &self.value
