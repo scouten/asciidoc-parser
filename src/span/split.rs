@@ -4,6 +4,7 @@ impl<'a> Span<'a> {
     /// Split the current span into a [`ParseResult<Span>`] at the
     /// given position.
     pub(crate) fn into_parse_result(self, mut at_index: usize) -> ParseResult<'a, Self> {
+        // Avoid panic if `at_index` is out of range.
         at_index = self.data.len().min(at_index);
 
         ParseResult {
