@@ -46,6 +46,7 @@ fn only_spaces() {
     assert!(pr.t.block_style().is_none());
     assert!(pr.t.id().is_none());
     assert!(pr.t.roles().is_empty());
+    assert!(pr.t.options().is_empty());
 
     assert_eq!(
         pr.rem,
@@ -257,6 +258,7 @@ mod quoted_string {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -307,6 +309,7 @@ mod quoted_string {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -362,6 +365,7 @@ mod quoted_string {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -412,6 +416,7 @@ mod quoted_string {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -462,6 +467,7 @@ mod quoted_string {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -536,6 +542,7 @@ mod named {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -660,6 +667,7 @@ mod named {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -724,6 +732,7 @@ mod named {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -774,6 +783,7 @@ mod named {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -824,6 +834,7 @@ mod named {
         assert!(pr.t.block_style().is_none());
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -909,6 +920,7 @@ mod parse_with_shorthand {
 
         assert!(pr.t.id().is_none());
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -1067,6 +1079,7 @@ mod parse_with_shorthand {
         );
 
         assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -1142,6 +1155,8 @@ mod parse_with_shorthand {
                 offset: 1,
             })
         );
+
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
@@ -1260,6 +1275,8 @@ mod parse_with_shorthand {
             )
         );
 
+        assert!(pr.t.options().is_empty());
+
         assert_eq!(
             pr.t.span(),
             TSpan {
@@ -1277,6 +1294,82 @@ mod parse_with_shorthand {
                 line: 1,
                 col: 19,
                 offset: 18
+            }
+        );
+    }
+
+    #[test]
+    fn one_option_only() {
+        let pr = ElementAttribute::parse_with_shorthand(Span::new("%option1")).unwrap();
+
+        assert_eq!(
+            pr.t,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![TSpan {
+                    data: "%option1",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+                value: TSpan {
+                    data: "%option1",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "%option1",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(pr.t.name().is_none());
+
+        assert_eq!(
+            pr.t.shorthand_items(),
+            &vec![TSpan {
+                data: "%option1",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }]
+        );
+
+        assert!(pr.t.block_style().is_none());
+        assert!(pr.t.id().is_none());
+        assert!(pr.t.roles().is_empty());
+
+        assert_eq!(
+            pr.t.options(),
+            vec!(TSpan {
+                data: "option1",
+                line: 1,
+                col: 2,
+                offset: 1,
+            })
+        );
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: "%option1",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 9,
+                offset: 8
             }
         );
     }

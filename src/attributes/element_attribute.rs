@@ -114,6 +114,15 @@ impl<'a> ElementAttribute<'a> {
             .collect()
     }
 
+    /// Return any option attributes that were found in shorthand syntax.
+    pub fn options(&'a self) -> Vec<Span<'a>> {
+        self.shorthand_items
+            .iter()
+            .filter(|span| span.starts_with('%'))
+            .map(|span| span.discard(1))
+            .collect()
+    }
+
     /// Return the attribute's raw value.
     pub fn raw_value(&'a self) -> &'a Span<'a> {
         &self.value
