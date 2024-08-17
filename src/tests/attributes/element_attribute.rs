@@ -932,6 +932,22 @@ mod parse_with_shorthand {
     }
 
     #[test]
+    #[should_panic]
+    fn error_empty_id() {
+        let _pr = ElementAttribute::parse_with_shorthand(Span::new("abc#")).unwrap();
+
+        // TO DO (#120): Flag warning for empty shorthand item
+    }
+
+    #[test]
+    #[should_panic]
+    fn error_duplicate_delimiter() {
+        let _pr = ElementAttribute::parse_with_shorthand(Span::new("abc##id")).unwrap();
+
+        // TO DO (#121): Flag warning for duplicate shorthand delimiters
+    }
+
+    #[test]
     fn id_only() {
         let pr = ElementAttribute::parse_with_shorthand(Span::new("#xyz")).unwrap();
 

@@ -147,15 +147,14 @@ fn parse_shorthand_items<'a>(span: Span<'a>) -> Vec<Span<'a>> {
         match after_delimiter.position(is_shorthand_delimiter) {
             None => {
                 if after_delimiter.is_empty() {
-                    span = after_delimiter;
+                    todo!("Flag warning for empty shorthand item (issue #120)");
                 } else {
                     shorthand_items.push(span);
                     span = span.discard_all();
                 }
             }
             Some(0) => {
-                // TO DO: File issue and test case for this.
-                todo!("This is should be flagged as a warning.");
+                todo!("Flag warning for duplicate shorthand delimiter (issue #121)");
             }
             Some(index) => {
                 let pr: ParseResult<Span> = span.into_parse_result(index + 1);
