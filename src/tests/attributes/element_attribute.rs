@@ -1373,4 +1373,123 @@ mod parse_with_shorthand {
             }
         );
     }
+
+    #[test]
+    fn multiple_options() {
+        let pr =
+            ElementAttribute::parse_with_shorthand(Span::new("%option1%option2%option3")).unwrap();
+
+        assert_eq!(
+            pr.t,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![
+                    TSpan {
+                        data: "%option1",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    TSpan {
+                        data: "%option2",
+                        line: 1,
+                        col: 9,
+                        offset: 8,
+                    },
+                    TSpan {
+                        data: "%option3",
+                        line: 1,
+                        col: 17,
+                        offset: 16,
+                    }
+                ],
+                value: TSpan {
+                    data: "%option1%option2%option3",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "%option1%option2%option3",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(pr.t.name().is_none());
+
+        assert_eq!(
+            pr.t.shorthand_items(),
+            &vec![
+                TSpan {
+                    data: "%option1",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                TSpan {
+                    data: "%option2",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                },
+                TSpan {
+                    data: "%option3",
+                    line: 1,
+                    col: 17,
+                    offset: 16,
+                }
+            ]
+        );
+
+        assert!(pr.t.block_style().is_none());
+        assert!(pr.t.id().is_none());
+        assert!(pr.t.roles().is_empty());
+
+        assert_eq!(
+            pr.t.options(),
+            vec!(
+                TSpan {
+                    data: "option1",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+                TSpan {
+                    data: "option2",
+                    line: 1,
+                    col: 10,
+                    offset: 9,
+                },
+                TSpan {
+                    data: "option3",
+                    line: 1,
+                    col: 18,
+                    offset: 17,
+                }
+            )
+        );
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: "%option1%option2%option3",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 25,
+                offset: 24
+            }
+        );
+    }
 }
