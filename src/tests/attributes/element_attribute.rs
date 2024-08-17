@@ -932,6 +932,72 @@ mod parse_with_shorthand {
     }
 
     #[test]
+    fn ignore_if_named_attribute() {
+        let pr = ElementAttribute::parse_with_shorthand(Span::new("name=block_style#id")).unwrap();
+
+        assert_eq!(
+            pr.t,
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "name",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "block_style#id",
+                    line: 1,
+                    col: 6,
+                    offset: 5,
+                },
+                source: TSpan {
+                    data: "name=block_style#id",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            pr.t.name().unwrap(),
+            TSpan {
+                data: "name",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert!(pr.t.shorthand_items().is_empty());
+        assert!(pr.t.block_style().is_none());
+        assert!(pr.t.id().is_none());
+        assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: "name=block_style#id",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 20,
+                offset: 19
+            }
+        );
+    }
+
+    #[test]
     #[should_panic]
     fn error_empty_id() {
         let _pr = ElementAttribute::parse_with_shorthand(Span::new("abc#")).unwrap();
