@@ -86,12 +86,23 @@ impl<'a> ElementAttribute<'a> {
         &self.shorthand_items
     }
 
-    /// Return the block style name.
+    /// Return the block style name from shorthand syntax.
     pub fn block_style(&'a self) -> Option<Span<'a>> {
         self.shorthand_items
             .first()
-            .filter(|span| matches!(span.position(is_shorthand_delimiter), None | Some(0)))
+            .filter(|span| span.position(is_shorthand_delimiter).is_none())
             .copied()
+    }
+
+    /// Return the id attribute from shorthand syntax.
+    /// 
+    /// If multiple id attributes were specified, only the first
+    /// match is returned. (Multiple ids are not supported.)
+    pub fn id(&'a self) -> Option<Span<'a>> {
+        self.shorthand_items
+            .iter()
+            .find(|span| span.starts_with('#'))
+            .map(|span| span.into_parse_result(1).rem)
     }
 
     /// Return the attribute's raw value.
@@ -125,11 +136,20 @@ fn parse_shorthand_items<'a>(span: Span<'a>) -> Vec<Span<'a>> {
         // Assumption: First character is a delimiter.
         let after_delimiter = span.into_parse_result(1).rem;
         match after_delimiter.position(is_shorthand_delimiter) {
-            None | Some(0) => {
-                span = after_delimiter;
+            None => {
+                if after_delimiter.is_empty() {
+                    span = after_delimiter;
+                } else {
+                    shorthand_items.push(span);
+                    span = span.into_parse_result(span.len()).rem;
+                }
+            }
+            Some(0) => {
+                // TO DO: File issue and test case for this.
+                todo!("This is should be flagged as a warning.");
             }
             Some(index) => {
-                let pr = span.into_parse_result(index + 1);
+                let pr: ParseResult<Span> = span.into_parse_result(index + 1);
                 shorthand_items.push(pr.t);
                 span = pr.rem;
             }
