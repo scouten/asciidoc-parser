@@ -1492,4 +1492,9 @@ mod parse_with_shorthand {
             }
         );
     }
+
+    #[test]
+    fn complex_scenarios() {
+        todo!("Write test cases for combinations of id, role, option");
+    }
 }
