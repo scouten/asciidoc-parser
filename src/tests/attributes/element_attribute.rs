@@ -1494,7 +1494,226 @@ mod parse_with_shorthand {
     }
 
     #[test]
-    fn complex_scenarios() {
-        todo!("Write test cases for combinations of id, role, option");
+    fn block_style_and_id() {
+        let pr = ElementAttribute::parse_with_shorthand(Span::new("appendix#custom-id")).unwrap();
+
+        assert_eq!(
+            pr.t,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![
+                    TSpan {
+                        data: "appendix",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    TSpan {
+                        data: "#custom-id",
+                        line: 1,
+                        col: 9,
+                        offset: 8,
+                    },
+                ],
+                value: TSpan {
+                    data: "appendix#custom-id",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "appendix#custom-id",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(pr.t.name().is_none());
+
+        assert_eq!(
+            pr.t.shorthand_items(),
+            &vec![
+                TSpan {
+                    data: "appendix",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                TSpan {
+                    data: "#custom-id",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                },
+            ]
+        );
+
+        assert_eq!(
+            pr.t.block_style().unwrap(),
+            TSpan {
+                data: "appendix",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.t.id().unwrap(),
+            TSpan {
+                data: "custom-id",
+                line: 1,
+                col: 10,
+                offset: 9,
+            }
+        );
+
+        assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: "appendix#custom-id",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 19,
+                offset: 18
+            }
+        );
+    }
+
+    #[test]
+    fn id_role_and_option() {
+        let pr = ElementAttribute::parse_with_shorthand(Span::new("#rules.prominent%incremental"))
+            .unwrap();
+
+        assert_eq!(
+            pr.t,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![
+                    TSpan {
+                        data: "#rules",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    TSpan {
+                        data: ".prominent",
+                        line: 1,
+                        col: 7,
+                        offset: 6,
+                    },
+                    TSpan {
+                        data: "%incremental",
+                        line: 1,
+                        col: 17,
+                        offset: 16,
+                    },
+                ],
+                value: TSpan {
+                    data: "#rules.prominent%incremental",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "#rules.prominent%incremental",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert!(pr.t.name().is_none());
+
+        assert_eq!(
+            pr.t.shorthand_items(),
+            &vec![
+                TSpan {
+                    data: "#rules",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                TSpan {
+                    data: ".prominent",
+                    line: 1,
+                    col: 7,
+                    offset: 6,
+                },
+                TSpan {
+                    data: "%incremental",
+                    line: 1,
+                    col: 17,
+                    offset: 16,
+                },
+            ]
+        );
+
+        assert!(pr.t.block_style().is_none());
+
+        assert_eq!(
+            pr.t.id().unwrap(),
+            TSpan {
+                data: "rules",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
+            pr.t.roles(),
+            vec!(TSpan {
+                data: "prominent",
+                line: 1,
+                col: 8,
+                offset: 7,
+            })
+        );
+
+        assert_eq!(
+            pr.t.options(),
+            vec!(TSpan {
+                data: "incremental",
+                line: 1,
+                col: 18,
+                offset: 17,
+            })
+        );
+
+        assert_eq!(
+            pr.t.span(),
+            TSpan {
+                data: "#rules.prominent%incremental",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 29,
+                offset: 28
+            }
+        );
     }
 }
