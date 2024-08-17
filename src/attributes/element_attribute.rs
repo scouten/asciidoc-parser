@@ -95,7 +95,7 @@ impl<'a> ElementAttribute<'a> {
     }
 
     /// Return the id attribute from shorthand syntax.
-    /// 
+    ///
     /// If multiple id attributes were specified, only the first
     /// match is returned. (Multiple ids are not supported.)
     pub fn id(&'a self) -> Option<Span<'a>> {
@@ -103,6 +103,15 @@ impl<'a> ElementAttribute<'a> {
             .iter()
             .find(|span| span.starts_with('#'))
             .map(|span| span.into_parse_result(1).rem)
+    }
+
+    /// Return any role attributes that were found in shorthand syntax.
+    pub fn roles(&'a self) -> Vec<Span<'a>> {
+        self.shorthand_items
+            .iter()
+            .filter(|span| span.starts_with('.'))
+            .map(|span| span.into_parse_result(1).rem)
+            .collect()
     }
 
     /// Return the attribute's raw value.
