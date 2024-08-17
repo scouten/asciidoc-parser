@@ -102,7 +102,7 @@ impl<'a> ElementAttribute<'a> {
         self.shorthand_items
             .iter()
             .find(|span| span.starts_with('#'))
-            .map(|span| span.into_parse_result(1).rem)
+            .map(|span| span.discard(1))
     }
 
     /// Return any role attributes that were found in shorthand syntax.
@@ -110,7 +110,7 @@ impl<'a> ElementAttribute<'a> {
         self.shorthand_items
             .iter()
             .filter(|span| span.starts_with('.'))
-            .map(|span| span.into_parse_result(1).rem)
+            .map(|span| span.discard(1))
             .collect()
     }
 
@@ -143,14 +143,14 @@ fn parse_shorthand_items<'a>(span: Span<'a>) -> Vec<Span<'a>> {
 
     while !span.is_empty() {
         // Assumption: First character is a delimiter.
-        let after_delimiter = span.into_parse_result(1).rem;
+        let after_delimiter = span.discard(1);
         match after_delimiter.position(is_shorthand_delimiter) {
             None => {
                 if after_delimiter.is_empty() {
                     span = after_delimiter;
                 } else {
                     shorthand_items.push(span);
-                    span = span.into_parse_result(span.len()).rem;
+                    span = span.discard_all();
                 }
             }
             Some(0) => {
