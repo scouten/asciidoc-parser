@@ -44,7 +44,7 @@ fn tattribute_eq(tattribute: &TElementAttribute, attribute: &ElementAttribute) -
         return false;
     }
 
-    if &tattribute.value != attribute.raw_value() {
+    if tattribute.value != attribute.raw_value() {
         return false;
     }
 

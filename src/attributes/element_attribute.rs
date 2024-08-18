@@ -124,8 +124,8 @@ impl<'a> ElementAttribute<'a> {
     }
 
     /// Return the attribute's raw value.
-    pub fn raw_value(&'a self) -> &'a Span<'a> {
-        &self.value
+    pub fn raw_value(&'a self) -> Span<'a> {
+        self.value
     }
 
     //-/ Return the attribute's interpolated value.

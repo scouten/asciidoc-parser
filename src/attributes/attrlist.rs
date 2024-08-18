@@ -140,8 +140,10 @@ impl<'a> Attrlist<'a> {
     /// * Goal 1
     /// * Goal 2
     /// ```
-    pub fn id(&'a self) -> Option<&'a Span<'a>> {
-        None
+    pub fn id(&'a self) -> Option<Span<'a>> {
+        self.nth_attribute(1)
+            .and_then(|attr1| attr1.id())
+            .or_else(|| self.named_attribute("id").map(|attr| attr.raw_value()))
     }
 }
 
