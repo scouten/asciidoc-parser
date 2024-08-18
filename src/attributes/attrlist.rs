@@ -25,6 +25,10 @@ impl<'a> Attrlist<'a> {
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
 
+        if source.starts_with('[') && source.ends_with(']') {
+            todo!("Parse block anchor syntax (issue #122)");
+        }
+
         loop {
             let maybe_attr = if parse_shorthand_items {
                 ElementAttribute::parse_with_shorthand(rem)
@@ -108,6 +112,42 @@ impl<'a> Attrlist<'a> {
     ) -> Option<&'a ElementAttribute<'a>> {
         self.named_attribute(name)
             .or_else(|| self.nth_attribute(index))
+    }
+
+    /// Returns the ID attribute (if any).
+    ///
+    /// You can assign an ID to a block using the shorthand syntax, the longhand
+    /// syntax, or a legacy block anchor.
+    ///
+    /// In the shorthand syntax, you prefix the name with a hash (`#`) in the
+    /// first position attribute:
+    ///
+    /// ```ignore
+    /// [#goals]
+    /// * Goal 1
+    /// * Goal 2
+    /// ```
+    ///
+    /// In the longhand syntax, you use a standard named attribute:
+    ///
+    /// ```ignore
+    /// [id=goals]
+    /// * Goal 1
+    /// * Goal 2
+    /// ```
+    ///
+    /// In the legacy block anchor syntax, you surround the name with double
+    /// square brackets:
+    ///
+    /// ```ignore
+    /// [[goals]]
+    /// * Goal 1
+    /// * Goal 2
+    /// ```
+    pub fn id(&'a self) -> Option<Span<'a>> {
+        self.nth_attribute(1)
+            .and_then(|attr1| attr1.id())
+            .or_else(|| self.named_attribute("id").map(|attr| attr.raw_value()))
     }
 }
 
