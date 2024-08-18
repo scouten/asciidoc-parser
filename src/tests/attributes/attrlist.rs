@@ -778,6 +778,14 @@ mod id {
             }
         );
     }
+
+    #[test]
+    #[should_panic]
+    fn via_block_anchor_syntax() {
+        let _pr = Attrlist::parse(Span::new("[goals]")).unwrap();
+
+        // TO DO (#122): Parse block anchor syntax
+    }
 }
 
 #[test]

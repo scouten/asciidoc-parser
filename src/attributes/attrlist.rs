@@ -25,6 +25,10 @@ impl<'a> Attrlist<'a> {
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
 
+        if source.starts_with('[') && source.ends_with(']') {
+            todo!("Parse block anchor syntax (issue #122)");
+        }
+
         loop {
             let maybe_attr = if parse_shorthand_items {
                 ElementAttribute::parse_with_shorthand(rem)
