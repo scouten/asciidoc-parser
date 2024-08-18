@@ -23,11 +23,23 @@ impl<'a> Attrlist<'a> {
     pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
         let mut rem = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
+        let mut parse_shorthand_items = true;
 
         loop {
-            let Some(attr) = ElementAttribute::parse(rem) else {
+            let maybe_attr = if parse_shorthand_items {
+                ElementAttribute::parse_with_shorthand(rem)
+            } else {
+                ElementAttribute::parse(rem)
+            };
+
+            let Some(attr) = maybe_attr else {
                 break;
             };
+
+            if attr.t.name().is_none() {
+                parse_shorthand_items = false;
+            }
+
             attributes.push(attr.t);
 
             rem = attr.rem.take_whitespace().rem;

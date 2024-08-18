@@ -159,6 +159,12 @@ mod macros {
                     attrlist: TAttrlist {
                         attributes: vec!(TElementAttribute {
                             name: None,
+                            shorthand_items: vec![TSpan {
+                                data: "Sunset",
+                                line: 1,
+                                col: 19,
+                                offset: 18,
+                            }],
                             value: TSpan {
                                 data: "Sunset",
                                 line: 1,

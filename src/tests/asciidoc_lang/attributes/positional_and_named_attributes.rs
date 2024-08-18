@@ -66,6 +66,12 @@ mod positional_attribute {
             a1.named_or_positional_attribute("alt", 1).unwrap(),
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![TSpan {
+                    data: "Sunset",
+                    line: 1,
+                    col: 19,
+                    offset: 18,
+                }],
                 value: TSpan {
                     data: "Sunset",
                     line: 1,
@@ -90,6 +96,7 @@ mod positional_attribute {
                     col: 19,
                     offset: 18,
                 },),
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "Sunset",
                     line: 1,

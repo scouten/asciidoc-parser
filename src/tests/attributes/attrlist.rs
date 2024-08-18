@@ -75,6 +75,12 @@ fn only_positional_attributes() {
             attributes: vec!(
                 TElementAttribute {
                     name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }],
                     value: TSpan {
                         data: "Sunset",
                         line: 1,
@@ -90,6 +96,7 @@ fn only_positional_attributes() {
                 },
                 TElementAttribute {
                     name: None,
+                    shorthand_items: vec![],
                     value: TSpan {
                         data: "300",
                         line: 1,
@@ -105,6 +112,7 @@ fn only_positional_attributes() {
                 },
                 TElementAttribute {
                     name: None,
+                    shorthand_items: vec![],
                     value: TSpan {
                         data: "400",
                         line: 1,
@@ -136,6 +144,12 @@ fn only_positional_attributes() {
         pr.t.nth_attribute(1).unwrap(),
         TElementAttribute {
             name: None,
+            shorthand_items: vec![TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }],
             value: TSpan {
                 data: "Sunset",
                 line: 1,
@@ -155,6 +169,12 @@ fn only_positional_attributes() {
         pr.t.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: None,
+            shorthand_items: vec![TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }],
             value: TSpan {
                 data: "Sunset",
                 line: 1,
@@ -174,6 +194,7 @@ fn only_positional_attributes() {
         pr.t.nth_attribute(2).unwrap(),
         TElementAttribute {
             name: None,
+            shorthand_items: vec![],
             value: TSpan {
                 data: "300",
                 line: 1,
@@ -193,6 +214,7 @@ fn only_positional_attributes() {
         pr.t.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: None,
+            shorthand_items: vec![],
             value: TSpan {
                 data: "300",
                 line: 1,
@@ -212,6 +234,7 @@ fn only_positional_attributes() {
         pr.t.nth_attribute(3).unwrap(),
         TElementAttribute {
             name: None,
+            shorthand_items: vec![],
             value: TSpan {
                 data: "400",
                 line: 1,
@@ -231,6 +254,7 @@ fn only_positional_attributes() {
         pr.t.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: None,
+            shorthand_items: vec![],
             value: TSpan {
                 data: "400",
                 line: 1,
@@ -288,6 +312,7 @@ fn only_named_attributes() {
                         col: 1,
                         offset: 0,
                     },),
+                    shorthand_items: vec![],
                     value: TSpan {
                         data: "Sunset",
                         line: 1,
@@ -308,6 +333,7 @@ fn only_named_attributes() {
                         col: 12,
                         offset: 11,
                     },),
+                    shorthand_items: vec![],
                     value: TSpan {
                         data: "300",
                         line: 1,
@@ -328,6 +354,7 @@ fn only_named_attributes() {
                         col: 22,
                         offset: 21,
                     },),
+                    shorthand_items: vec![],
                     value: TSpan {
                         data: "400",
                         line: 1,
@@ -363,6 +390,7 @@ fn only_named_attributes() {
                 col: 1,
                 offset: 0,
             },),
+            shorthand_items: vec![],
             value: TSpan {
                 data: "Sunset",
                 line: 1,
@@ -387,6 +415,7 @@ fn only_named_attributes() {
                 col: 1,
                 offset: 0,
             },),
+            shorthand_items: vec![],
             value: TSpan {
                 data: "Sunset",
                 line: 1,
@@ -411,6 +440,7 @@ fn only_named_attributes() {
                 col: 12,
                 offset: 11,
             },),
+            shorthand_items: vec![],
             value: TSpan {
                 data: "300",
                 line: 1,
@@ -435,6 +465,7 @@ fn only_named_attributes() {
                 col: 12,
                 offset: 11,
             },),
+            shorthand_items: vec![],
             value: TSpan {
                 data: "300",
                 line: 1,
@@ -459,6 +490,7 @@ fn only_named_attributes() {
                 col: 22,
                 offset: 21,
             },),
+            shorthand_items: vec![],
             value: TSpan {
                 data: "400",
                 line: 1,
@@ -483,6 +515,7 @@ fn only_named_attributes() {
                 col: 22,
                 offset: 21,
             },),
+            shorthand_items: vec![],
             value: TSpan {
                 data: "400",
                 line: 1,

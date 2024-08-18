@@ -3,7 +3,10 @@ use super::{ParseResult, Span};
 impl<'a> Span<'a> {
     /// Split the current span into a [`ParseResult<Span>`] at the
     /// given position.
-    pub(crate) fn into_parse_result(self, at_index: usize) -> ParseResult<'a, Self> {
+    pub(crate) fn into_parse_result(self, mut at_index: usize) -> ParseResult<'a, Self> {
+        // Avoid panic if `at_index` is out of range.
+        at_index = self.data.len().min(at_index);
+
         ParseResult {
             t: self.slice_to(..at_index),
             rem: self.slice_from(at_index..),

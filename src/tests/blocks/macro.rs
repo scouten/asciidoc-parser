@@ -170,6 +170,12 @@ fn has_target_and_attrlist() {
             attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "blah",
+                        line: 1,
+                        col: 10,
+                        offset: 9,
+                    }],
                     value: TSpan {
                         data: "blah",
                         line: 1,
