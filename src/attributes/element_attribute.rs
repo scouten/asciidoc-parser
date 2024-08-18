@@ -81,7 +81,7 @@ impl<'a> ElementAttribute<'a> {
         &self.name
     }
 
-    /// Return the shorthand items, if this is the first positional attribute.
+    /// Return the shorthand items, if parsed via `parse_with_shorthand`.
     pub fn shorthand_items(&'a self) -> &'a Vec<Span<'a>> {
         &self.shorthand_items
     }
