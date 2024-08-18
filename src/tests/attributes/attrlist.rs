@@ -786,6 +786,74 @@ mod id {
 
         // TO DO (#122): Parse block anchor syntax
     }
+
+    #[test]
+    fn shorthand_only_first_attribute() {
+        let pr = Attrlist::parse(Span::new("foo,blah#goals")).unwrap();
+
+        assert_eq!(
+            pr.t,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }],
+                        value: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        source: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "blah#goals",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                        source: TSpan {
+                            data: "blah#goals",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "foo,blah#goals",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(pr.t.id().is_none());
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 15,
+                offset: 14
+            }
+        );
+    }
 }
 
 #[test]
