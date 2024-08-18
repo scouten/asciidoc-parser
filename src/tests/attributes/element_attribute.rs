@@ -98,6 +98,8 @@ fn unquoted_and_unnamed_value() {
     assert!(pr.t.name().is_none());
     assert!(pr.t.block_style().is_none());
     assert!(pr.t.id().is_none());
+    assert!(pr.t.roles().is_empty());
+    assert!(pr.t.options().is_empty());
 
     assert_eq!(
         pr.t.span(),
@@ -146,6 +148,9 @@ fn unquoted_stops_at_comma() {
 
     assert!(pr.t.name().is_none());
     assert!(pr.t.block_style().is_none());
+    assert!(pr.t.id().is_none());
+    assert!(pr.t.roles().is_empty());
+    assert!(pr.t.options().is_empty());
 
     assert_eq!(
         pr.t.span(),
@@ -208,6 +213,9 @@ mod quoted_string {
 
         assert!(pr.t.name().is_none());
         assert!(pr.t.block_style().is_none());
+        assert!(pr.t.id().is_none());
+        assert!(pr.t.roles().is_empty());
+        assert!(pr.t.options().is_empty());
 
         assert_eq!(
             pr.t.span(),
