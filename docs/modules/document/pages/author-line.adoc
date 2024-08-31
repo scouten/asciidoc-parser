@@ -25,8 +25,10 @@ firstname middlename lastname <email>
 ----
 
 The author's middle name is optional.
-An email or URL following the author's last name is also optional.
+An email following the author's last name is also optional.
 If included, the email address must be enclosed in a pair of angle brackets (`< >`).
+
+TIP: The email can be replaced by a URL, though the value is still stored in the `email` attribute.
 
 The author line also accepts xref:multiple-authors.adoc[multiple authors].
 
@@ -42,10 +44,12 @@ The author line must be placed on the line directly below the xref:title.adoc[do
 Kismet R. Lee <kismet@asciidoctor.org> <.> <.>
 ----
 <.> Enter the author's name on the line below the document title.
-<.> In a pair of angle brackets (`< >`), enter the author's email or URL.
+<.> In a pair of angle brackets (`< >`), enter the author's email.
 
 Remember, a middle name and email are optional.
 The processor assigns the content on the author line to the built-in attributes using word position, word count, and syntax.
+
+TIP: The email can be replaced by a URL, though the value is still stored in the `email` attribute.
 
 When the default stylesheet is applied, the author information is displayed on the byline.
 The [.term]*byline* displays the author information and the xref:revision-information.adoc[revision information] directly beneath the document's title.

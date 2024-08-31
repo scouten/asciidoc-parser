@@ -8,6 +8,7 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 Changed::
 * Clarify how the author name is partitioned
+* Clarify that a URL can be used in place of an email address in the author information
 
 == Published Q2 2024
 
