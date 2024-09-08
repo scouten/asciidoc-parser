@@ -12,7 +12,7 @@ pub struct Attribute<'a> {
 }
 
 impl<'a> Attribute<'a> {
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let attr_line = i.take_line_with_continuation()?;
         let colon = attr_line.t.take_prefix(":")?;
 

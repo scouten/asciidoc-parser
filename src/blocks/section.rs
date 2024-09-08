@@ -24,7 +24,7 @@ pub struct SectionBlock<'a> {
 }
 
 impl<'a> SectionBlock<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
         let blocks = parse_blocks_until(level.rem, |i| peer_or_ancestor_section(*i, level.t.0))?;
