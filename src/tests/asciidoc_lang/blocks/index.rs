@@ -149,9 +149,15 @@ mod context {
         // Content of section.
         // ----
         //
-        // The context of this block is `section`. We often refer to this as a section (or section block), using the context as an adjective to describe the block. The writer does not have to specify the context in this case since it's implied by the syntax.
+        // The context of this block is `section`. We often refer to this as a section
+        // (or section block), using the context as an adjective to describe the block.
+        // The writer does not have to specify the context in this case since it's
+        // implied by the syntax.
         //
-        // Every block has a context. The context is often implied by the syntax, but can be declared explicitly in certain cases. The context is what distinguishes one kind of block from another. You can think of the context as the block's type.
+        // Every block has a context. The context is often implied by the syntax, but
+        // can be declared explicitly in certain cases. The context is what
+        // distinguishes one kind of block from another. You can think of the context as
+        // the block's type.
 
         let pr = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
 
