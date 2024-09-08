@@ -149,22 +149,20 @@ mod context {
         // Content of section.
         // ----
         //
-        // The context of this block is `section`.
+        // The context of this block is `section`. We often refer to this as a section
+        // (or section block), using the context as an adjective to describe the block.
+        // The writer does not have to specify the context in this case since it's
+        // implied by the syntax.
+        //
+        // Every block has a context. The context is often implied by the syntax, but
+        // can be declared explicitly in certain cases. The context is what
+        // distinguishes one kind of block from another. You can think of the context as
+        // the block's type.
 
         let pr = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
 
         assert_eq!(pr.t.context().deref(), "section");
     }
-
-    // We often refer to this as a section (or section block), using the context
-    // as an adjective to describe the block. The writer does not have to
-    // specify the context in this case since it's implied by the syntax.
-    //
-    // Every block has a context.
-    // The context is often implied by the syntax, but can be declared
-    // explicitly in certain cases. The context is what distinguishes one
-    // kind of block from another. You can think of the context as the
-    // block's type.
 
     #[test]
     #[ignore]
@@ -173,7 +171,7 @@ mod context {
         // family of blocks that share a common type, as is the case with
         // admonition blocks and sections. We'll cover that modifier shortly.
 
-        todo!("I don't understand block style yet. Will add test later.");
+        todo!("Redundant: Covered by block_style test below.");
     }
 
     #[test]
@@ -356,9 +354,7 @@ mod context {
     }
 }
 
-#[test]
-#[ignore]
-fn block_style() {
+mod block_style {
     // [#block-style]
     // == Block style
     //
