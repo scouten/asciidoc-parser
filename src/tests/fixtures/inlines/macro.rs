@@ -21,13 +21,13 @@ impl fmt::Debug for TInlineMacro {
     }
 }
 
-impl<'a> PartialEq<InlineMacro<'a>> for TInlineMacro {
-    fn eq(&self, other: &InlineMacro<'a>) -> bool {
+impl<'src> PartialEq<InlineMacro<'src>> for TInlineMacro {
+    fn eq(&self, other: &InlineMacro<'src>) -> bool {
         tinline_macro_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TInlineMacro> for InlineMacro<'a> {
+impl<'src> PartialEq<TInlineMacro> for InlineMacro<'src> {
     fn eq(&self, other: &TInlineMacro) -> bool {
         tinline_macro_eq(other, self)
     }

@@ -48,16 +48,16 @@ use std::ops::Deref;
 /// }
 /// ```
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Span<'a> {
-    data: &'a str,
+pub struct Span<'src> {
+    data: &'src str,
     line: usize,
     col: usize,
     offset: usize,
 }
 
-impl<'a> Span<'a> {
+impl<'src> Span<'src> {
     /// Create a new `Span` that describes an entire UTF-8 input stream.
-    pub fn new(data: &'a str) -> Self {
+    pub fn new(data: &'src str) -> Self {
         Self {
             data,
             line: 1,
@@ -82,19 +82,19 @@ impl<'a> Span<'a> {
     }
 
     /// Get the current data in the span.
-    pub fn data(&self) -> &'a str {
+    pub fn data(&self) -> &'src str {
         self.data
     }
 }
 
-impl<'a> AsRef<str> for Span<'a> {
+impl<'src> AsRef<str> for Span<'src> {
     fn as_ref(&self) -> &str {
         self.data
     }
 }
 
-impl<'a> Deref for Span<'a> {
-    type Target = &'a str;
+impl<'src> Deref for Span<'src> {
+    type Target = &'src str;
 
     fn deref(&self) -> &Self::Target {
         &self.data
@@ -117,8 +117,8 @@ pub(crate) use parse_result::ParseResult;
 
 /// Any syntactic element can describe its location
 /// within the source material using this trait.
-pub trait HasSpan<'a> {
+pub trait HasSpan<'src> {
     /// Return a [`Span`] describing the syntactic element's
     /// location within the source string/file.
-    fn span(&'a self) -> &'a Span<'a>;
+    fn span(&'src self) -> &'src Span<'src>;
 }

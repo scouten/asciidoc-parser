@@ -23,19 +23,19 @@ impl fmt::Debug for THeader {
     }
 }
 
-impl<'a> PartialEq<Header<'a>> for THeader {
-    fn eq(&self, other: &Header<'a>) -> bool {
+impl<'src> PartialEq<Header<'src>> for THeader {
+    fn eq(&self, other: &Header<'src>) -> bool {
         theader_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<THeader> for Header<'a> {
+impl<'src> PartialEq<THeader> for Header<'src> {
     fn eq(&self, other: &THeader) -> bool {
         theader_eq(other, self)
     }
 }
 
-impl<'a> PartialEq<THeader> for &Header<'a> {
+impl<'src> PartialEq<THeader> for &Header<'src> {
     fn eq(&self, other: &THeader) -> bool {
         theader_eq(other, self)
     }

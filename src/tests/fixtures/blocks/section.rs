@@ -25,13 +25,13 @@ impl fmt::Debug for TSectionBlock {
     }
 }
 
-impl<'a> PartialEq<SectionBlock<'a>> for TSectionBlock {
-    fn eq(&self, other: &SectionBlock<'a>) -> bool {
+impl<'src> PartialEq<SectionBlock<'src>> for TSectionBlock {
+    fn eq(&self, other: &SectionBlock<'src>) -> bool {
         tsection_block_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TSectionBlock> for SectionBlock<'a> {
+impl<'src> PartialEq<TSectionBlock> for SectionBlock<'src> {
     fn eq(&self, other: &TSectionBlock) -> bool {
         tsection_block_eq(other, self)
     }

@@ -22,19 +22,19 @@ impl fmt::Debug for TSpan {
     }
 }
 
-impl<'a> PartialEq<Span<'a>> for TSpan {
-    fn eq(&self, other: &Span<'a>) -> bool {
+impl<'src> PartialEq<Span<'src>> for TSpan {
+    fn eq(&self, other: &Span<'src>) -> bool {
         tspan_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TSpan> for Span<'a> {
+impl<'src> PartialEq<TSpan> for Span<'src> {
     fn eq(&self, other: &TSpan) -> bool {
         tspan_eq(other, self)
     }
 }
 
-impl<'a> PartialEq<TSpan> for &Span<'a> {
+impl<'src> PartialEq<TSpan> for &Span<'src> {
     fn eq(&self, other: &TSpan) -> bool {
         tspan_eq(other, self)
     }

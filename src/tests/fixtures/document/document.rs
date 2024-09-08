@@ -25,19 +25,19 @@ impl fmt::Debug for TDocument {
     }
 }
 
-impl<'a> PartialEq<Document<'a>> for TDocument {
-    fn eq(&self, other: &Document<'a>) -> bool {
+impl<'src> PartialEq<Document<'src>> for TDocument {
+    fn eq(&self, other: &Document<'src>) -> bool {
         tdocument_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TDocument> for Document<'a> {
+impl<'src> PartialEq<TDocument> for Document<'src> {
     fn eq(&self, other: &TDocument) -> bool {
         tdocument_eq(other, self)
     }
 }
 
-impl<'a> PartialEq<TDocument> for &Document<'a> {
+impl<'src> PartialEq<TDocument> for &Document<'src> {
     fn eq(&self, other: &TDocument) -> bool {
         tdocument_eq(other, self)
     }

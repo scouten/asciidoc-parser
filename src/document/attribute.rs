@@ -5,14 +5,14 @@ use crate::{primitives::trim_input_for_rem, span::ParseResult, strings::CowStr, 
 /// attributes, and also allows the author (or extensions) to define additional
 /// document attributes, which may replace built-in attributes when permitted.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Attribute<'a> {
-    name: Span<'a>,
-    value: RawAttributeValue<'a>,
-    source: Span<'a>,
+pub struct Attribute<'src> {
+    name: Span<'src>,
+    value: RawAttributeValue<'src>,
+    source: Span<'src>,
 }
 
-impl<'a> Attribute<'a> {
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
+impl<'src> Attribute<'src> {
+    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let attr_line = i.take_line_with_continuation()?;
         let colon = attr_line.t.take_prefix(":")?;
 
@@ -57,23 +57,23 @@ impl<'a> Attribute<'a> {
     }
 
     /// Return a [`Span`] describing the attribute name.
-    pub fn name(&'a self) -> &'a Span<'a> {
+    pub fn name(&'src self) -> &'src Span<'src> {
         &self.name
     }
 
     /// Return the attribute's raw value.
-    pub fn raw_value(&'a self) -> &'a RawAttributeValue<'a> {
+    pub fn raw_value(&'src self) -> &'src RawAttributeValue<'src> {
         &self.value
     }
 
     /// Return the attribute's interpolated value.
-    pub fn value(&'a self) -> AttributeValue<'a> {
+    pub fn value(&'src self) -> AttributeValue<'src> {
         self.value.as_attribute_value()
     }
 }
 
-impl<'a> HasSpan<'a> for Attribute<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for Attribute<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }
@@ -83,9 +83,9 @@ impl<'a> HasSpan<'a> for Attribute<'a> {
 /// If the value contains a textual value, this value will
 /// contain continuation markers.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum RawAttributeValue<'a> {
+pub enum RawAttributeValue<'src> {
     /// A custom value, described by its accompanying [`Span`].
-    Value(Span<'a>),
+    Value(Span<'src>),
 
     /// No explicit value. This is typically interpreted as either
     /// boolean `true` or a default value for a built-in attribute.
@@ -95,10 +95,10 @@ pub enum RawAttributeValue<'a> {
     Unset,
 }
 
-impl<'a> RawAttributeValue<'a> {
+impl<'src> RawAttributeValue<'src> {
     /// Convert this to an [`AttributeValue`], resolving any interpolation
     /// necessary if the value contains a textual value.
-    pub fn as_attribute_value(&self) -> AttributeValue<'a> {
+    pub fn as_attribute_value(&self) -> AttributeValue<'src> {
         match self {
             Self::Value(span) => {
                 let data = span.data();
@@ -138,9 +138,9 @@ impl<'a> RawAttributeValue<'a> {
 /// have any continuation markers resolved, but will no longer
 /// contain a reference to the [`Span`] that contains the value.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum AttributeValue<'a> {
+pub enum AttributeValue<'src> {
     /// A custom value with all necessary interpolations applied.
-    Value(CowStr<'a>),
+    Value(CowStr<'src>),
 
     /// No explicit value. This is typically interpreted as either
     /// boolean `true` or a default value for a built-in attribute.

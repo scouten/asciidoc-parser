@@ -9,19 +9,19 @@ pub(crate) enum TRawAttributeValue {
     Unset,
 }
 
-impl<'a> PartialEq<RawAttributeValue<'a>> for TRawAttributeValue {
-    fn eq(&self, other: &RawAttributeValue<'a>) -> bool {
+impl<'src> PartialEq<RawAttributeValue<'src>> for TRawAttributeValue {
+    fn eq(&self, other: &RawAttributeValue<'src>) -> bool {
         tattribute_value_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TRawAttributeValue> for RawAttributeValue<'a> {
+impl<'src> PartialEq<TRawAttributeValue> for RawAttributeValue<'src> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }
 }
 
-impl<'a> PartialEq<TRawAttributeValue> for &RawAttributeValue<'a> {
+impl<'src> PartialEq<TRawAttributeValue> for &RawAttributeValue<'src> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }

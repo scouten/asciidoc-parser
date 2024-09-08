@@ -17,17 +17,22 @@ use crate::{
 /// block itself, but contributes metadata to the document, such as the document
 /// title and document attributes.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Document<'a> {
-    header: Option<Header<'a>>,
-    blocks: Vec<Block<'a>>,
-    source: Span<'a>,
+pub struct Document<'src> {
+    header: Option<Header<'src>>,
+    blocks: Vec<Block<'src>>,
+    source: Span<'src>,
 }
 
-impl<'a> Document<'a> {
+impl<'src> Document<'src> {
     /// Parse a UTF-8 string as an AsciiDoc document.
     ///
     /// Note that the document references the underlying source string and
     /// necessarily has the same lifetime as the source.
+    ///
+    /// The `Document` data structure returned by this call and nearly all data
+    /// structures contained within it are gated by the lifetime of the `source`
+    /// text passed in to this function. For that reason all of those data
+    /// structures are given the lifetime `'src`.
     ///
     /// **IMPORTANT:** The AsciiDoc language documentation states that UTF-16
     /// encoding is allowed if a byte-order-mark (BOM) is present at the
@@ -37,7 +42,7 @@ impl<'a> Document<'a> {
     ///
     /// TEMPORARY: Returns an `Option` which will be `None` if unable to parse.
     /// This will eventually be replaced with an annotation mechanism.
-    pub fn parse(source: &'a str) -> Option<Self> {
+    pub fn parse(source: &'src str) -> Option<Self> {
         // TO DO: Add option for best-guess parsing?
 
         let source = Span::new(source);
@@ -60,27 +65,27 @@ impl<'a> Document<'a> {
     }
 
     /// Return the document header if there is one.
-    pub fn header(&'a self) -> Option<&'a Header<'a>> {
+    pub fn header(&'src self) -> Option<&'src Header<'src>> {
         self.header.as_ref()
     }
 }
 
-impl<'a> IsBlock<'a> for Document<'a> {
+impl<'src> IsBlock<'src> for Document<'src> {
     fn content_model(&self) -> ContentModel {
         ContentModel::Compound
     }
 
-    fn context(&self) -> CowStr<'a> {
+    fn context(&self) -> CowStr<'src> {
         "document".into()
     }
 
-    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
+    fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         self.blocks.iter()
     }
 }
 
-impl<'a> HasSpan<'a> for Document<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for Document<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }

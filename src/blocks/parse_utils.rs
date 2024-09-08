@@ -2,14 +2,14 @@ use crate::{blocks::Block, span::ParseResult, Span};
 
 /// Parse blocks until end of input or a pre-determined stop condition is
 /// reached.
-pub(crate) fn parse_blocks_until<'a, F>(
-    mut i: Span<'a>,
+pub(crate) fn parse_blocks_until<'src, F>(
+    mut i: Span<'src>,
     f: F,
-) -> Option<ParseResult<'a, Vec<Block<'a>>>>
+) -> Option<ParseResult<'src, Vec<Block<'src>>>>
 where
-    F: Fn(&Span<'a>) -> bool,
+    F: Fn(&Span<'src>) -> bool,
 {
-    let mut blocks: Vec<Block<'a>> = vec![];
+    let mut blocks: Vec<Block<'src>> = vec![];
     i = i.discard_empty_lines();
 
     while !i.data().is_empty() {

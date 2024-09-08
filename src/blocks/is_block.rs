@@ -15,7 +15,7 @@ use crate::{blocks::Block, strings::CowStr, HasSpan};
 /// This trait implements many of the same core methods as the
 /// [Block](crate::blocks::Block) enum but provides a mechanism for third-party
 /// code to extend the behavior of blocks.
-pub trait IsBlock<'a>: HasSpan<'a> + Clone + Debug + Eq + PartialEq {
+pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// Returns the [ContentModel] for this block.
     fn content_model(&self) -> ContentModel;
 
@@ -32,14 +32,14 @@ pub trait IsBlock<'a>: HasSpan<'a> + Clone + Debug + Eq + PartialEq {
     /// For that reason, the context is not defined as an enumeration, but
     /// rather as a string type that is optimized for the case where predefined
     /// constants are viable.
-    fn context(&self) -> CowStr<'a>;
+    fn context(&self) -> CowStr<'src>;
 
     /// Returns an iterator over the nested blocks contained within
     /// this block.
     ///
     /// Many block types do not have nested blocks so the default implementation
     /// returns an empty iterator.
-    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
+    fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         const NO_BLOCKS: &[Block<'static>] = &[];
         NO_BLOCKS.iter()
     }

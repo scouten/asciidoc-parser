@@ -16,15 +16,15 @@ use crate::{
 /// WARNING: This is a very preliminary implementation. There are many TO DO
 /// items in this code.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SectionBlock<'a> {
+pub struct SectionBlock<'src> {
     level: usize,
-    title: Span<'a>,
-    blocks: Vec<Block<'a>>,
-    source: Span<'a>,
+    title: Span<'src>,
+    blocks: Vec<Block<'src>>,
+    source: Span<'src>,
 }
 
-impl<'a> SectionBlock<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
+impl<'src> SectionBlock<'src> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
         let blocks = parse_blocks_until(level.rem, |i| peer_or_ancestor_section(*i, level.t.0))?;
@@ -55,27 +55,27 @@ impl<'a> SectionBlock<'a> {
     }
 
     /// Return a [`Span`] describing the section title.
-    pub fn title(&'a self) -> &'a Span<'a> {
+    pub fn title(&'src self) -> &'src Span<'src> {
         &self.title
     }
 }
 
-impl<'a> IsBlock<'a> for SectionBlock<'a> {
+impl<'src> IsBlock<'src> for SectionBlock<'src> {
     fn content_model(&self) -> ContentModel {
         ContentModel::Compound
     }
 
-    fn context(&self) -> CowStr<'a> {
+    fn context(&self) -> CowStr<'src> {
         "section".into()
     }
 
-    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
+    fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         self.blocks.iter()
     }
 }
 
-impl<'a> HasSpan<'a> for SectionBlock<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for SectionBlock<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }

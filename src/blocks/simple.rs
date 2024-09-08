@@ -4,10 +4,10 @@ use crate::{inlines::Inline, span::ParseResult, strings::CowStr, HasSpan, Span};
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct SimpleBlock<'a>(Inline<'a>);
+pub struct SimpleBlock<'src>(Inline<'src>);
 
-impl<'a> SimpleBlock<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
+impl<'src> SimpleBlock<'src> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let inline = Inline::parse_lines(source)?;
         Some(ParseResult {
             t: Self(inline.t),
@@ -16,23 +16,23 @@ impl<'a> SimpleBlock<'a> {
     }
 
     /// Return the inline content of this block.
-    pub fn inline(&self) -> &Inline<'a> {
+    pub fn inline(&self) -> &Inline<'src> {
         &self.0
     }
 }
 
-impl<'a> IsBlock<'a> for SimpleBlock<'a> {
+impl<'src> IsBlock<'src> for SimpleBlock<'src> {
     fn content_model(&self) -> ContentModel {
         ContentModel::Simple
     }
 
-    fn context(&self) -> CowStr<'a> {
+    fn context(&self) -> CowStr<'src> {
         "paragraph".into()
     }
 }
 
-impl<'a> HasSpan<'a> for SimpleBlock<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for SimpleBlock<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         self.0.span()
     }
 }

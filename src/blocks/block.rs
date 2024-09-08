@@ -22,25 +22,25 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[allow(clippy::large_enum_variant)] // TEMPORARY: review later
 #[non_exhaustive]
-pub enum Block<'a> {
+pub enum Block<'src> {
     /// A block that’s treated as contiguous lines of paragraph text (and
     /// subject to normal substitutions) (e.g., a paragraph block).
-    Simple(SimpleBlock<'a>),
+    Simple(SimpleBlock<'src>),
 
     /// A block macro is a syntax for representing non-text elements or syntax
     /// that expands into text using the provided metadata.
-    Macro(MacroBlock<'a>),
+    Macro(MacroBlock<'src>),
 
     /// A section helps to partition the document into a content hierarchy.
     /// May also be a part, chapter, or special section.
-    Section(SectionBlock<'a>),
+    Section(SectionBlock<'src>),
 }
 
-impl<'a> Block<'a> {
+impl<'src> Block<'src> {
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let i = i.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
@@ -75,7 +75,7 @@ impl<'a> Block<'a> {
     }
 }
 
-impl<'a> IsBlock<'a> for Block<'a> {
+impl<'src> IsBlock<'src> for Block<'src> {
     fn content_model(&self) -> ContentModel {
         match self {
             Self::Simple(_) => ContentModel::Simple,
@@ -84,7 +84,7 @@ impl<'a> IsBlock<'a> for Block<'a> {
         }
     }
 
-    fn context(&self) -> CowStr<'a> {
+    fn context(&self) -> CowStr<'src> {
         match self {
             Self::Simple(b) => b.context(),
             Self::Macro(b) => b.context(),
@@ -92,7 +92,7 @@ impl<'a> IsBlock<'a> for Block<'a> {
         }
     }
 
-    fn nested_blocks(&'a self) -> Iter<'a, Block<'a>> {
+    fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         match self {
             Self::Simple(b) => b.nested_blocks(),
             Self::Macro(b) => b.nested_blocks(),
@@ -101,8 +101,8 @@ impl<'a> IsBlock<'a> for Block<'a> {
     }
 }
 
-impl<'a> HasSpan<'a> for Block<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for Block<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         match self {
             Self::Simple(b) => b.span(),
             Self::Macro(b) => b.span(),

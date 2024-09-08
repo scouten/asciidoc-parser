@@ -4,7 +4,7 @@ use crate::Span;
 /// of the first, return the first input trimmed to exclude the second.
 ///
 /// Note that the trailing remainder condition is not enforced.
-pub(crate) fn trim_input_for_rem<'a>(inp: Span<'a>, rem: Span<'a>) -> Span<'a> {
+pub(crate) fn trim_input_for_rem<'src>(inp: Span<'src>, rem: Span<'src>) -> Span<'src> {
     // Sanity check: If rem is longer than inp, we can't trim.
     let rlen = rem.len();
     let ilen = inp.len();

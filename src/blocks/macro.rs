@@ -14,15 +14,15 @@ use crate::{
 /// <name>::<target>?[<attrlist>?].
 /// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct MacroBlock<'a> {
-    name: Span<'a>,
-    target: Option<Span<'a>>,
-    attrlist: Attrlist<'a>,
-    source: Span<'a>,
+pub struct MacroBlock<'src> {
+    name: Span<'src>,
+    target: Option<Span<'src>>,
+    attrlist: Attrlist<'src>,
+    source: Span<'src>,
 }
 
-impl<'a> MacroBlock<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
+impl<'src> MacroBlock<'src> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let line = source.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
@@ -54,22 +54,22 @@ impl<'a> MacroBlock<'a> {
     }
 
     /// Return a [`Span`] describing the macro name.
-    pub fn name(&'a self) -> &'a Span<'a> {
+    pub fn name(&'src self) -> &'src Span<'src> {
         &self.name
     }
 
     /// Return a [`Span`] describing the macro target.
-    pub fn target(&'a self) -> Option<&'a Span<'a>> {
+    pub fn target(&'src self) -> Option<&'src Span<'src>> {
         self.target.as_ref()
     }
 
     /// Return the macro's attribute list.
-    pub fn attrlist(&'a self) -> &'a Attrlist<'a> {
+    pub fn attrlist(&'src self) -> &'src Attrlist<'src> {
         &self.attrlist
     }
 }
 
-impl<'a> IsBlock<'a> for MacroBlock<'a> {
+impl<'src> IsBlock<'src> for MacroBlock<'src> {
     fn content_model(&self) -> ContentModel {
         // TO DO: We'll probably want different macro types
         // to provide different content models. For now, just
@@ -77,7 +77,7 @@ impl<'a> IsBlock<'a> for MacroBlock<'a> {
         ContentModel::Simple
     }
 
-    fn context(&self) -> CowStr<'a> {
+    fn context(&self) -> CowStr<'src> {
         // TO DO: We'll probably want different macro types to provide different
         // contexts. For now, just default to "paragraph."
 
@@ -85,8 +85,8 @@ impl<'a> IsBlock<'a> for MacroBlock<'a> {
     }
 }
 
-impl<'a> HasSpan<'a> for MacroBlock<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for MacroBlock<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }
