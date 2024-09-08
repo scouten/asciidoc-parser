@@ -1,13 +1,13 @@
 use super::{ParseResult, Span};
 
-impl<'a> Span<'a> {
+impl<'src> Span<'src> {
     /// Split the span, consuming an identifier if found.
     ///
     /// NOTE: The concept of "identifier" is not crisply defined in the Asciidoc
     /// documentation, so – for now – we're borrowing the definition from Rust,
     /// which is a single alphabetic character or underscore, followed by any
     /// number of alphanumeric characters or underscores.
-    pub(crate) fn take_ident(self) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn take_ident(self) -> Option<ParseResult<'src, Self>> {
         let mut chars = self.data.char_indices();
 
         if let Some((_, c)) = chars.next() {
@@ -31,7 +31,7 @@ impl<'a> Span<'a> {
     ///
     /// An attribute name consists of a word character (letter or numeral)
     /// followed by any number of word or `-` characters (e.g., `see-also`).
-    pub(crate) fn take_attr_name(self) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn take_attr_name(self) -> Option<ParseResult<'src, Self>> {
         let mut chars = self.data.char_indices();
 
         if let Some((_, c)) = chars.next() {
@@ -63,7 +63,7 @@ impl<'a> Span<'a> {
     /// IMPORTANT: The [`Span`] that is returned does not include the start or
     /// ending quote, but _does_ include (without transformation) any escaped
     /// quotes.
-    pub(crate) fn take_quoted_string(self) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn take_quoted_string(self) -> Option<ParseResult<'src, Self>> {
         let mut chars = self.data.char_indices();
 
         let delimiter = match chars.next() {

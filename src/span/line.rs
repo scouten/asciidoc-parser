@@ -1,12 +1,12 @@
 use super::{ParseResult, Span};
 
-impl<'a> Span<'a> {
+impl<'src> Span<'src> {
     /// Split the span, consuming a single line from the source.
     ///
     /// A line is terminated by end-of-input or a single `\n` character
     /// or a single `\r\n` sequence. The end of line sequence is consumed
     /// but not included in the returned line.
-    pub(crate) fn take_line(self) -> ParseResult<'a, Self> {
+    pub(crate) fn take_line(self) -> ParseResult<'src, Self> {
         let line = match self.find('\n') {
             Some(index) => self.into_parse_result(index),
             None => self.into_parse_result(self.len()),
@@ -22,7 +22,7 @@ impl<'a> Span<'a> {
     /// but not included in the returned line.
     ///
     /// All trailing spaces are removed from the line.
-    pub(crate) fn take_normalized_line(self) -> ParseResult<'a, Self> {
+    pub(crate) fn take_normalized_line(self) -> ParseResult<'src, Self> {
         self.take_line().trim_t_trailing_spaces()
     }
 
@@ -37,7 +37,7 @@ impl<'a> Span<'a> {
     ///
     /// Returns `None` if the line becomes empty after trailing spaces have been
     /// removed.
-    pub(crate) fn take_non_empty_line(self) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn take_non_empty_line(self) -> Option<ParseResult<'src, Self>> {
         self.split_at_match_non_empty(|c| c == '\n')
             .map(|pr| {
                 pr.trim_rem_start_matches('\n')
@@ -53,7 +53,7 @@ impl<'a> Span<'a> {
     ///
     /// Returns `None` if the first line of the span contains any
     /// non-white-space characters.
-    pub(crate) fn take_empty_line(self) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn take_empty_line(self) -> Option<ParseResult<'src, Self>> {
         let l = self.take_line();
 
         if l.t.data().bytes().all(|b| b == b' ' || b == b'\t') {
@@ -66,7 +66,7 @@ impl<'a> Span<'a> {
     /// Discard zero or more empty lines.
     ///
     /// Return the original span if no empty lines are found.
-    pub(crate) fn discard_empty_lines(self) -> Span<'a> {
+    pub(crate) fn discard_empty_lines(self) -> Span<'src> {
         let mut i = self;
 
         while !i.data().is_empty() {
@@ -96,7 +96,7 @@ impl<'a> Span<'a> {
     ///
     /// Returns `None` if the line becomes empty after trailing spaces have been
     /// removed.
-    pub(crate) fn take_line_with_continuation(self) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn take_line_with_continuation(self) -> Option<ParseResult<'src, Self>> {
         // Consume any number of lines terminated by '\\'.
         let mut pr = self.into_parse_result(0);
         while let Some(new_pr) = pr.rem.one_line_with_continuation() {
@@ -119,7 +119,7 @@ impl<'a> Span<'a> {
         }
     }
 
-    fn one_line_with_continuation(self) -> Option<ParseResult<'a, Self>> {
+    fn one_line_with_continuation(self) -> Option<ParseResult<'src, Self>> {
         let line = self.take_normalized_line();
         if line.t.ends_with('\\') {
             Some(line)

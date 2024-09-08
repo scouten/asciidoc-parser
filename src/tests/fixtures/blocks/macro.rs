@@ -25,13 +25,13 @@ impl fmt::Debug for TMacroBlock {
     }
 }
 
-impl<'a> PartialEq<MacroBlock<'a>> for TMacroBlock {
-    fn eq(&self, other: &MacroBlock<'a>) -> bool {
+impl<'src> PartialEq<MacroBlock<'src>> for TMacroBlock {
+    fn eq(&self, other: &MacroBlock<'src>) -> bool {
         tmacro_block_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TMacroBlock> for MacroBlock<'a> {
+impl<'src> PartialEq<TMacroBlock> for MacroBlock<'src> {
     fn eq(&self, other: &TMacroBlock) -> bool {
         tmacro_block_eq(other, self)
     }

@@ -21,19 +21,19 @@ impl fmt::Debug for TElementAttribute {
     }
 }
 
-impl<'a> PartialEq<ElementAttribute<'a>> for TElementAttribute {
-    fn eq(&self, other: &ElementAttribute<'a>) -> bool {
+impl<'src> PartialEq<ElementAttribute<'src>> for TElementAttribute {
+    fn eq(&self, other: &ElementAttribute<'src>) -> bool {
         tattribute_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TElementAttribute> for ElementAttribute<'a> {
+impl<'src> PartialEq<TElementAttribute> for ElementAttribute<'src> {
     fn eq(&self, other: &TElementAttribute) -> bool {
         tattribute_eq(other, self)
     }
 }
 
-impl<'a> PartialEq<TElementAttribute> for &ElementAttribute<'a> {
+impl<'src> PartialEq<TElementAttribute> for &ElementAttribute<'src> {
     fn eq(&self, other: &TElementAttribute) -> bool {
         tattribute_eq(other, self)
     }

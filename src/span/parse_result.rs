@@ -2,15 +2,15 @@ use super::Span;
 
 /// Represents a successful parse result and subsequent remainder of the span.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) struct ParseResult<'a, T> {
+pub(crate) struct ParseResult<'src, T> {
     /// The successful parse result.
     pub(crate) t: T,
 
     /// Remainder of previous input span.
-    pub(crate) rem: Span<'a>,
+    pub(crate) rem: Span<'src>,
 }
 
-impl<'a> ParseResult<'a, Span<'a>> {
+impl<'src> ParseResult<'src, Span<'src>> {
     /// Discard any instances of the given character from the beginning of
     /// `self.rem`.
     pub(crate) fn trim_rem_start_matches(&self, c: char) -> Self {

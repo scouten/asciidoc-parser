@@ -8,23 +8,26 @@ use crate::{primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span};
 /// not technically an element, element attributes can also be defined on an
 /// include directive.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct ElementAttribute<'a> {
-    name: Option<Span<'a>>,
-    shorthand_items: Vec<Span<'a>>,
-    value: Span<'a>,
-    source: Span<'a>,
+pub struct ElementAttribute<'src> {
+    name: Option<Span<'src>>,
+    shorthand_items: Vec<Span<'src>>,
+    value: Span<'src>,
+    source: Span<'src>,
 }
 
-impl<'a> ElementAttribute<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
+impl<'src> ElementAttribute<'src> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         Self::parse_internal(source, false)
     }
 
-    pub(crate) fn parse_with_shorthand(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn parse_with_shorthand(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         Self::parse_internal(source, true)
     }
 
-    fn parse_internal(source: Span<'a>, parse_shorthand: bool) -> Option<ParseResult<'a, Self>> {
+    fn parse_internal(
+        source: Span<'src>,
+        parse_shorthand: bool,
+    ) -> Option<ParseResult<'src, Self>> {
         let (name, rem): (Option<Span>, Span) = match source.take_attr_name() {
             Some(name) => {
                 let space = name.rem.take_whitespace();
@@ -77,17 +80,17 @@ impl<'a> ElementAttribute<'a> {
     }
 
     /// Return a [`Span`] describing the attribute name.
-    pub fn name(&'a self) -> &'a Option<Span<'a>> {
+    pub fn name(&'src self) -> &'src Option<Span<'src>> {
         &self.name
     }
 
     /// Return the shorthand items, if parsed via `parse_with_shorthand`.
-    pub fn shorthand_items(&'a self) -> &'a Vec<Span<'a>> {
+    pub fn shorthand_items(&'src self) -> &'src Vec<Span<'src>> {
         &self.shorthand_items
     }
 
     /// Return the block style name from shorthand syntax.
-    pub fn block_style(&'a self) -> Option<Span<'a>> {
+    pub fn block_style(&'src self) -> Option<Span<'src>> {
         self.shorthand_items
             .first()
             .filter(|span| span.position(is_shorthand_delimiter).is_none())
@@ -98,7 +101,7 @@ impl<'a> ElementAttribute<'a> {
     ///
     /// If multiple id attributes were specified, only the first
     /// match is returned. (Multiple ids are not supported.)
-    pub fn id(&'a self) -> Option<Span<'a>> {
+    pub fn id(&'src self) -> Option<Span<'src>> {
         self.shorthand_items
             .iter()
             .find(|span| span.starts_with('#'))
@@ -106,7 +109,7 @@ impl<'a> ElementAttribute<'a> {
     }
 
     /// Return any role attributes that were found in shorthand syntax.
-    pub fn roles(&'a self) -> Vec<Span<'a>> {
+    pub fn roles(&'src self) -> Vec<Span<'src>> {
         self.shorthand_items
             .iter()
             .filter(|span| span.starts_with('.'))
@@ -115,7 +118,7 @@ impl<'a> ElementAttribute<'a> {
     }
 
     /// Return any option attributes that were found in shorthand syntax.
-    pub fn options(&'a self) -> Vec<Span<'a>> {
+    pub fn options(&'src self) -> Vec<Span<'src>> {
         self.shorthand_items
             .iter()
             .filter(|span| span.starts_with('%'))
@@ -124,25 +127,25 @@ impl<'a> ElementAttribute<'a> {
     }
 
     /// Return the attribute's raw value.
-    pub fn raw_value(&'a self) -> Span<'a> {
+    pub fn raw_value(&'src self) -> Span<'src> {
         self.value
     }
 
     //-/ Return the attribute's interpolated value.
-    // pub fn value(&'a self) -> AttributeValue<'a> {
+    // pub fn value(&'src self) -> AttributeValue<'src> {
     //     self.value.as_attribute_value()
     // }
 }
 
-impl<'a> HasSpan<'a> for ElementAttribute<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for ElementAttribute<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }
 
-fn parse_shorthand_items<'a>(span: Span<'a>) -> Vec<Span<'a>> {
+fn parse_shorthand_items<'src>(span: Span<'src>) -> Vec<Span<'src>> {
     let mut span = span;
-    let mut shorthand_items: Vec<Span<'a>> = vec![];
+    let mut shorthand_items: Vec<Span<'src>> = vec![];
 
     // Look for block style selector.
     if let Some(block_style_pr) = span.split_at_match_non_empty(is_shorthand_delimiter) {

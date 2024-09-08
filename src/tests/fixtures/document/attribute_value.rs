@@ -9,19 +9,19 @@ pub(crate) enum TAttributeValue {
     Unset,
 }
 
-impl<'a> PartialEq<AttributeValue<'a>> for TAttributeValue {
-    fn eq(&self, other: &AttributeValue<'a>) -> bool {
+impl<'src> PartialEq<AttributeValue<'src>> for TAttributeValue {
+    fn eq(&self, other: &AttributeValue<'src>) -> bool {
         tattribute_value_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TAttributeValue> for AttributeValue<'a> {
+impl<'src> PartialEq<TAttributeValue> for AttributeValue<'src> {
     fn eq(&self, other: &TAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }
 }
 
-impl<'a> PartialEq<TAttributeValue> for &AttributeValue<'a> {
+impl<'src> PartialEq<TAttributeValue> for &AttributeValue<'src> {
     fn eq(&self, other: &TAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }

@@ -5,7 +5,7 @@ use memchr::Memchr;
 
 use super::Span;
 
-impl<'a> Span<'a> {
+impl<'src> Span<'src> {
     /// Returns the requested subrange of this input span.
     pub fn slice(&self, range: Range<usize>) -> Self {
         self.slice_internal(&self.data[range])
@@ -34,7 +34,7 @@ impl<'a> Span<'a> {
         None
     }
 
-    fn slice_internal(&self, slice_data: &'a str) -> Self {
+    fn slice_internal(&self, slice_data: &'src str) -> Self {
         let offset = offset(self.data, slice_data);
 
         if offset == 0 {

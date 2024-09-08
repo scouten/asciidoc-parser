@@ -11,13 +11,13 @@ impl fmt::Debug for TSimpleBlock {
     }
 }
 
-impl<'a> PartialEq<SimpleBlock<'a>> for TSimpleBlock {
-    fn eq(&self, other: &SimpleBlock<'a>) -> bool {
+impl<'src> PartialEq<SimpleBlock<'src>> for TSimpleBlock {
+    fn eq(&self, other: &SimpleBlock<'src>) -> bool {
         tsimple_block_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TSimpleBlock> for SimpleBlock<'a> {
+impl<'src> PartialEq<TSimpleBlock> for SimpleBlock<'src> {
     fn eq(&self, other: &TSimpleBlock) -> bool {
         tsimple_block_eq(other, self)
     }

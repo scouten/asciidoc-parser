@@ -8,14 +8,14 @@ use crate::{
 /// encapsulates the document title, author and revision information,
 /// document-wide attributes, and other document metadata.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Header<'a> {
-    title: Option<Span<'a>>,
-    attributes: Vec<Attribute<'a>>,
-    source: Span<'a>,
+pub struct Header<'src> {
+    title: Option<Span<'src>>,
+    attributes: Vec<Attribute<'src>>,
+    source: Span<'src>,
 }
 
-impl<'a> Header<'a> {
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
+impl<'src> Header<'src> {
+    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let source = i.discard_empty_lines();
 
         // TEMPORARY: Titles are optional, but we're not prepared for that yet.
@@ -45,18 +45,18 @@ impl<'a> Header<'a> {
     }
 
     /// Return a [`Span`] describing the document title, if there was one.
-    pub fn title(&'a self) -> Option<Span<'a>> {
+    pub fn title(&'src self) -> Option<Span<'src>> {
         self.title
     }
 
     /// Return an iterator over the attributes in this header.
-    pub fn attributes(&'a self) -> Iter<'a, Attribute<'a>> {
+    pub fn attributes(&'src self) -> Iter<'src, Attribute<'src>> {
         self.attributes.iter()
     }
 }
 
-impl<'a> HasSpan<'a> for Header<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for Header<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }

@@ -1,9 +1,9 @@
 use super::{ParseResult, Span};
 
-impl<'a> Span<'a> {
+impl<'src> Span<'src> {
     /// Split the current span into a [`ParseResult<Span>`] at the
     /// given position.
-    pub(crate) fn into_parse_result(self, mut at_index: usize) -> ParseResult<'a, Self> {
+    pub(crate) fn into_parse_result(self, mut at_index: usize) -> ParseResult<'src, Self> {
         // Avoid panic if `at_index` is out of range.
         at_index = self.data.len().min(at_index);
 
@@ -21,7 +21,7 @@ impl<'a> Span<'a> {
     /// * `predicate` never returns `true`,
     /// * `predicate` returns `true` for the _first_ character in the span, or
     /// * the span is empty.
-    pub(crate) fn split_at_match_non_empty<P>(self, predicate: P) -> Option<ParseResult<'a, Self>>
+    pub(crate) fn split_at_match_non_empty<P>(self, predicate: P) -> Option<ParseResult<'src, Self>>
     where
         P: Fn(char) -> bool,
     {

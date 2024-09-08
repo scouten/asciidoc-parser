@@ -10,17 +10,17 @@ use crate::{attributes::ElementAttribute, span::ParseResult, HasSpan, Span};
 /// parses the entry accordingly, and assigns the result as an attribute on the
 /// node.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Attrlist<'a> {
-    attributes: Vec<ElementAttribute<'a>>,
-    source: Span<'a>,
+pub struct Attrlist<'src> {
+    attributes: Vec<ElementAttribute<'src>>,
+    source: Span<'src>,
 }
 
-impl<'a> Attrlist<'a> {
+impl<'src> Attrlist<'src> {
     /// IMPORTANT: This `source` span passed to this function should NOT include
     /// the opening or closing square brackets for the attrlist. This is because
     /// the rules for closing brackets differ when parsing inline, macro, and
     /// block elements.
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let mut rem = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
@@ -69,12 +69,12 @@ impl<'a> Attrlist<'a> {
 
     /// Returns an iterator over the attributes contained within
     /// this attrlist.
-    pub fn attributes(&'a self) -> Iter<'a, ElementAttribute<'a>> {
+    pub fn attributes(&'src self) -> Iter<'src, ElementAttribute<'src>> {
         self.attributes.iter()
     }
 
     /// Returns the first attribute with the given name.
-    pub fn named_attribute(&'a self, name: &str) -> Option<&'a ElementAttribute<'a>> {
+    pub fn named_attribute(&'src self, name: &str) -> Option<&'src ElementAttribute<'src>> {
         self.attributes.iter().find(|attr| {
             if let Some(attr_name) = attr.name() {
                 attr_name.deref() == &name
@@ -87,7 +87,7 @@ impl<'a> Attrlist<'a> {
     /// Returns the given (1-based) positional attribute.
     ///
     /// IMPORTANT: Named attributes with names are disregarded when counting.
-    pub fn nth_attribute(&'a self, n: usize) -> Option<&'a ElementAttribute<'a>> {
+    pub fn nth_attribute(&'src self, n: usize) -> Option<&'src ElementAttribute<'src>> {
         if n == 0 {
             None
         } else {
@@ -106,10 +106,10 @@ impl<'a> Attrlist<'a> {
     /// This method will search by name first, and fall back to positional
     /// indexing if the name doesn't yield a match.
     pub fn named_or_positional_attribute(
-        &'a self,
+        &'src self,
         name: &str,
         index: usize,
-    ) -> Option<&'a ElementAttribute<'a>> {
+    ) -> Option<&'src ElementAttribute<'src>> {
         self.named_attribute(name)
             .or_else(|| self.nth_attribute(index))
     }
@@ -144,15 +144,15 @@ impl<'a> Attrlist<'a> {
     /// * Goal 1
     /// * Goal 2
     /// ```
-    pub fn id(&'a self) -> Option<Span<'a>> {
+    pub fn id(&'src self) -> Option<Span<'src>> {
         self.nth_attribute(1)
             .and_then(|attr1| attr1.id())
             .or_else(|| self.named_attribute("id").map(|attr| attr.raw_value()))
     }
 }
 
-impl<'a> HasSpan<'a> for Attrlist<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for Attrlist<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }

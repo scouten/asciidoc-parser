@@ -10,13 +10,13 @@ pub(crate) enum TInline {
     Macro(TInlineMacro),
 }
 
-impl<'a> PartialEq<Inline<'a>> for TInline {
-    fn eq(&self, other: &Inline<'a>) -> bool {
+impl<'src> PartialEq<Inline<'src>> for TInline {
+    fn eq(&self, other: &Inline<'src>) -> bool {
         tinline_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TInline> for Inline<'a> {
+impl<'src> PartialEq<TInline> for Inline<'src> {
     fn eq(&self, other: &TInline) -> bool {
         tinline_eq(other, self)
     }

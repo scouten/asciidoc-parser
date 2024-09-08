@@ -6,24 +6,24 @@ use crate::{
 /// or one of its attributes in an AsciiDoc document.
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum Inline<'a> {
+pub enum Inline<'src> {
     /// Uninterpreted text (i.e., plain text) is text (character data) for which
     /// all inline grammar rules fail to match.
-    Uninterpreted(Span<'a>),
+    Uninterpreted(Span<'src>),
 
     /// A sequence of other inline blocks.
-    Sequence(Vec<Self>, Span<'a>),
+    Sequence(Vec<Self>, Span<'src>),
 
     /// An inline macro.
-    Macro(InlineMacro<'a>),
+    Macro(InlineMacro<'src>),
 }
 
-impl<'a> Inline<'a> {
+impl<'src> Inline<'src> {
     /// Parse a span (typically a line) of any type and return an `Inline` that
     /// describes it.
     ///
     /// Returns `None` if input doesn't start with a non-empty line.
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
+    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let line = i.take_non_empty_line()?;
         let mut span = line.t;
 
@@ -73,8 +73,8 @@ impl<'a> Inline<'a> {
     ///
     /// Returns `None` if there is not at least one non-empty line at
     /// beginning of input.
-    pub(crate) fn parse_lines(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
-        let mut inlines: Vec<Inline<'a>> = vec![];
+    pub(crate) fn parse_lines(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
+        let mut inlines: Vec<Inline<'src>> = vec![];
         let mut next = i;
 
         while let Some(inline) = Self::parse(next) {
@@ -97,8 +97,8 @@ impl<'a> Inline<'a> {
     }
 }
 
-impl<'a> HasSpan<'a> for Inline<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for Inline<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         match self {
             Self::Uninterpreted(i) => i,
             Self::Sequence(_, i) => i,

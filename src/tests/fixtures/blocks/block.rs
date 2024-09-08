@@ -10,13 +10,13 @@ pub(crate) enum TBlock {
     Section(TSectionBlock),
 }
 
-impl<'a> PartialEq<Block<'a>> for TBlock {
-    fn eq(&self, other: &Block<'a>) -> bool {
+impl<'src> PartialEq<Block<'src>> for TBlock {
+    fn eq(&self, other: &Block<'src>) -> bool {
         tblock_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TBlock> for Block<'a> {
+impl<'src> PartialEq<TBlock> for Block<'src> {
     fn eq(&self, other: &TBlock) -> bool {
         tblock_eq(other, self)
     }

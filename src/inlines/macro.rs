@@ -9,15 +9,15 @@ use crate::{primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span};
 /// <name>:<target>?[<attrlist>?].
 /// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct InlineMacro<'a> {
-    name: Span<'a>,
-    target: Option<Span<'a>>,
-    attrlist: Option<Span<'a>>,
-    source: Span<'a>,
+pub struct InlineMacro<'src> {
+    name: Span<'src>,
+    target: Option<Span<'src>>,
+    attrlist: Option<Span<'src>>,
+    source: Span<'src>,
 }
 
-impl<'a> InlineMacro<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
+impl<'src> InlineMacro<'src> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let name = source.take_ident()?;
         let colon = name.rem.take_prefix(":")?;
         let target = colon.rem.take_while(|c| c != '[');
@@ -46,23 +46,23 @@ impl<'a> InlineMacro<'a> {
     }
 
     /// Return a [`Span`] describing the macro name.
-    pub fn name(&'a self) -> &'a Span<'a> {
+    pub fn name(&'src self) -> &'src Span<'src> {
         &self.name
     }
 
     /// Return a [`Span`] describing the macro target.
-    pub fn target(&'a self) -> Option<&'a Span<'a>> {
+    pub fn target(&'src self) -> Option<&'src Span<'src>> {
         self.target.as_ref()
     }
 
     /// Return a [`Span`] describing the macro's attribute list.
-    pub fn attrlist(&'a self) -> Option<&'a Span<'a>> {
+    pub fn attrlist(&'src self) -> Option<&'src Span<'src>> {
         self.attrlist.as_ref()
     }
 }
 
-impl<'a> HasSpan<'a> for InlineMacro<'a> {
-    fn span(&'a self) -> &'a Span<'a> {
+impl<'src> HasSpan<'src> for InlineMacro<'src> {
+    fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
 }

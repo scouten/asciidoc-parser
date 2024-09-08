@@ -21,19 +21,19 @@ impl fmt::Debug for TAttrlist {
     }
 }
 
-impl<'a> PartialEq<Attrlist<'a>> for TAttrlist {
-    fn eq(&self, other: &Attrlist<'a>) -> bool {
+impl<'src> PartialEq<Attrlist<'src>> for TAttrlist {
+    fn eq(&self, other: &Attrlist<'src>) -> bool {
         tattrlist_eq(self, other)
     }
 }
 
-impl<'a> PartialEq<TAttrlist> for Attrlist<'a> {
+impl<'src> PartialEq<TAttrlist> for Attrlist<'src> {
     fn eq(&self, other: &TAttrlist) -> bool {
         tattrlist_eq(other, self)
     }
 }
 
-impl<'a> PartialEq<TAttrlist> for &Attrlist<'a> {
+impl<'src> PartialEq<TAttrlist> for &Attrlist<'src> {
     fn eq(&self, other: &TAttrlist) -> bool {
         tattrlist_eq(other, self)
     }
