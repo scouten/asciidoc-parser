@@ -226,7 +226,6 @@ mod lines {
 
     use crate::{
         document::Attribute,
-        primitives::line,
         tests::fixtures::{
             document::{TAttribute, TAttributeValue, TRawAttributeValue},
             TSpan,
@@ -253,10 +252,11 @@ mod lines {
         // == Section Title
         // ----
 
-        let (rem, line) = line(Span::new("== Section Title\n", true)).unwrap();
+        let span = Span::new("== Section Title\n");
+        let l = span.take_line();
 
         assert_eq!(
-            rem,
+            l.rem,
             TSpan {
                 data: "",
                 line: 2,
@@ -266,7 +266,7 @@ mod lines {
         );
 
         assert_eq!(
-            line,
+            l.t,
             TSpan {
                 data: "== Section Title",
                 line: 1,
@@ -284,20 +284,10 @@ mod lines {
         // :name: value
         // -----
 
-        let (rem, attr) = Attribute::parse(Span::new(":name: value\n", true)).unwrap();
+        let pr = Attribute::parse(Span::new(":name: value\n")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 2,
-                col: 1,
-                offset: 13
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TAttribute {
                 name: TSpan {
                     data: "name",
@@ -319,6 +309,16 @@ mod lines {
                 }
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 1,
+                offset: 13
+            }
+        );
     }
 
     #[test]
@@ -330,21 +330,10 @@ mod lines {
         // more value
         // -----
 
-        let (rem, attr) =
-            Attribute::parse(Span::new(":name: value \\\nmore value\n", true)).unwrap();
+        let pr = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 3,
-                col: 1,
-                offset: 26
-            }
-        );
-
-        assert_eq!(
-            attr,
+            pr.t,
             TAttribute {
                 name: TSpan {
                     data: "name",
@@ -367,7 +356,17 @@ mod lines {
             }
         );
 
-        assert_eq!(attr.value(), TAttributeValue::Value("value more value"));
+        assert_eq!(pr.t.value(), TAttributeValue::Value("value more value"));
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 1,
+                offset: 26
+            }
+        );
     }
 
     // No test cases:

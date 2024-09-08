@@ -1,12 +1,4 @@
-use nom::{
-    bytes::complete::{tag, take_until1},
-    IResult,
-};
-
-use crate::{
-    primitives::{ident, trim_input_for_rem},
-    HasSpan, Span,
-};
+use crate::{primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span};
 
 /// An inline macro can be used in an inline context to create new inline
 /// content.
@@ -25,39 +17,32 @@ pub struct InlineMacro<'a> {
 }
 
 impl<'a> InlineMacro<'a> {
-    #[allow(dead_code)]
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (i, name) = ident(source)?;
-        let (i, _) = tag(":")(i)?;
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+        let name = source.take_ident()?;
+        let colon = name.rem.take_prefix(":")?;
+        let target = colon.rem.take_while(|c| c != '[');
+        let open_brace = target.rem.take_prefix("[")?;
+        let attrlist = open_brace.rem.take_while(|c| c != ']');
+        let close_brace = attrlist.rem.take_prefix("]")?;
+        let source = trim_input_for_rem(source, close_brace.rem);
 
-        let (i, target) = if i.starts_with('[') {
-            (i, None)
-        } else {
-            let (i, target) = take_until1("[")(i)?;
-            (i, Some(target))
-        };
-
-        let (i, _) = tag("[")(i)?;
-
-        let (i, attrlist) = if i.starts_with(']') {
-            (i, None)
-        } else {
-            let (i, attrlist) = take_until1("]")(i)?;
-            (i, Some(attrlist))
-        };
-
-        let (i, _) = tag("]")(i)?;
-
-        let source = trim_input_for_rem(source, i);
-        Ok((
-            i,
-            Self {
-                name,
-                target,
-                attrlist,
+        Some(ParseResult {
+            t: Self {
+                name: name.t,
+                target: if target.t.is_empty() {
+                    None
+                } else {
+                    Some(target.t)
+                },
+                attrlist: if attrlist.t.is_empty() {
+                    None
+                } else {
+                    Some(attrlist.t)
+                },
                 source,
             },
-        ))
+            rem: close_brace.rem,
+        })
     }
 
     /// Return a [`Span`] describing the macro name.

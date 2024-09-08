@@ -82,24 +82,20 @@ mod attrlist {
         const ATTRLIST_EXAMPLE: &str =
             r#"first-positional,second-positional,named="value of named""#;
 
-        let (rem, attrlist) = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE, true)).unwrap();
+        let pr = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE)).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 58,
-                offset: 57
-            }
-        );
-
-        assert_eq!(
-            attrlist,
+            pr.t,
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "first-positional",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }],
                         value: TSpan {
                             data: "first-positional",
                             line: 1,
@@ -115,6 +111,7 @@ mod attrlist {
                     },
                     TElementAttribute {
                         name: None,
+                        shorthand_items: vec![],
                         value: TSpan {
                             data: "second-positional",
                             line: 1,
@@ -135,6 +132,7 @@ mod attrlist {
                             col: 36,
                             offset: 35,
                         },),
+                        shorthand_items: vec![],
                         value: TSpan {
                             data: "value of named",
                             line: 1,
@@ -158,14 +156,20 @@ mod attrlist {
             }
         );
 
-        assert!(attrlist.named_attribute("foo").is_none());
+        assert!(pr.t.named_attribute("foo").is_none());
 
-        assert!(attrlist.nth_attribute(0).is_none());
+        assert!(pr.t.nth_attribute(0).is_none());
 
         assert_eq!(
-            attrlist.nth_attribute(1).unwrap(),
+            pr.t.nth_attribute(1).unwrap(),
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![TSpan {
+                    data: "first-positional",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
                 value: TSpan {
                     data: "first-positional",
                     line: 1,
@@ -182,9 +186,10 @@ mod attrlist {
         );
 
         assert_eq!(
-            attrlist.nth_attribute(2).unwrap(),
+            pr.t.nth_attribute(2).unwrap(),
             TElementAttribute {
                 name: None,
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "second-positional",
                     line: 1,
@@ -200,10 +205,10 @@ mod attrlist {
             }
         );
 
-        assert!(attrlist.nth_attribute(3).is_none());
+        assert!(pr.t.nth_attribute(3).is_none());
 
         assert_eq!(
-            attrlist.named_attribute("named").unwrap(),
+            pr.t.named_attribute("named").unwrap(),
             TElementAttribute {
                 name: Some(TSpan {
                     data: "named",
@@ -211,6 +216,7 @@ mod attrlist {
                     col: 36,
                     offset: 35,
                 },),
+                shorthand_items: vec![],
                 value: TSpan {
                     data: "value of named",
                     line: 1,
@@ -227,12 +233,22 @@ mod attrlist {
         );
 
         assert_eq!(
-            attrlist.span(),
+            pr.t.span(),
             TSpan {
                 data: r#"first-positional,second-positional,named="value of named""#,
                 line: 1,
                 col: 1,
                 offset: 0
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 58,
+                offset: 57
             }
         );
     }

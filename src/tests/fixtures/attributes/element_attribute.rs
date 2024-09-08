@@ -5,6 +5,7 @@ use crate::{attributes::ElementAttribute, tests::fixtures::TSpan, HasSpan};
 #[derive(Eq, PartialEq)]
 pub(crate) struct TElementAttribute {
     pub name: Option<TSpan>,
+    pub shorthand_items: Vec<TSpan>,
     pub value: TSpan,
     pub source: TSpan,
 }
@@ -13,6 +14,7 @@ impl fmt::Debug for TElementAttribute {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("ElementAttribute")
             .field("name", &self.name)
+            .field("shorthand_items", &self.shorthand_items)
             .field("value", &self.value)
             .field("source", &self.source)
             .finish()
@@ -42,7 +44,11 @@ fn tattribute_eq(tattribute: &TElementAttribute, attribute: &ElementAttribute) -
         return false;
     }
 
-    if &tattribute.value != attribute.raw_value() {
+    if tattribute.value != attribute.raw_value() {
+        return false;
+    }
+
+    if &tattribute.shorthand_items != attribute.shorthand_items() {
         return false;
     }
 

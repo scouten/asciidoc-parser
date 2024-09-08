@@ -7,7 +7,7 @@
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{primitives::normalized_line, tests::fixtures::TSpan, Span};
+use crate::{tests::fixtures::TSpan, Span};
 
 // = Normalization
 //
@@ -30,10 +30,11 @@ fn force_utf8() {
 
 #[test]
 fn strips_trailing_spaces() {
-    let (rem, line) = normalized_line(Span::new("abc   ", true)).unwrap();
+    let span = Span::new("abc   ");
+    let line = span.take_normalized_line();
 
     assert_eq!(
-        rem,
+        line.rem,
         TSpan {
             data: "",
             line: 1,
@@ -43,7 +44,7 @@ fn strips_trailing_spaces() {
     );
 
     assert_eq!(
-        line,
+        line.t,
         TSpan {
             data: "abc",
             line: 1,
@@ -57,10 +58,11 @@ fn strips_trailing_spaces() {
 fn strips_trailing_lf() {
     // Should consume but not return \n.
 
-    let (rem, line) = normalized_line(Span::new("abc  \ndef", true)).unwrap();
+    let span = Span::new("abc  \ndef");
+    let line = span.take_normalized_line();
 
     assert_eq!(
-        rem,
+        line.rem,
         TSpan {
             data: "def",
             line: 2,
@@ -70,7 +72,7 @@ fn strips_trailing_lf() {
     );
 
     assert_eq!(
-        line,
+        line.t,
         TSpan {
             data: "abc",
             line: 1,
@@ -84,10 +86,11 @@ fn strips_trailing_lf() {
 fn strips_trailing_crlf() {
     // Should consume but not return \r\n.
 
-    let (rem, line) = normalized_line(Span::new("abc  \r\ndef", true)).unwrap();
+    let span = Span::new("abc  \r\ndef");
+    let line = span.take_normalized_line();
 
     assert_eq!(
-        rem,
+        line.rem,
         TSpan {
             data: "def",
             line: 2,
@@ -97,7 +100,7 @@ fn strips_trailing_crlf() {
     );
 
     assert_eq!(
-        line,
+        line.t,
         TSpan {
             data: "abc",
             line: 1,

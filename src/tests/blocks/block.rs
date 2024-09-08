@@ -1,10 +1,6 @@
 mod simple {
     use std::ops::Deref;
 
-    use nom::{
-        error::{Error, ErrorKind},
-        Err,
-    };
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
@@ -20,57 +16,27 @@ mod simple {
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
-        let (_, b1) = Block::parse(Span::new("abc", true)).unwrap();
-        let b2 = b1.clone();
-        assert_eq!(b1, b2);
+        let b1 = Block::parse(Span::new("abc")).unwrap();
+        let b2 = b1.t.clone();
+        assert_eq!(b1.t, b2);
     }
 
     #[test]
     fn err_empty_source() {
-        let expected_err = Err::Error(Error::new(Span::new("", true), ErrorKind::TakeTill1));
-
-        let actual_err = Block::parse(Span::new("", true)).unwrap_err();
-
-        assert_eq!(expected_err, actual_err);
+        assert!(Block::parse(Span::new("")).is_none());
     }
 
     #[test]
     fn err_only_spaces() {
-        let err = Block::parse(Span::new("    ", true)).unwrap_err();
-
-        let Err::Error(e) = err else {
-            panic!("Expected Err::Error: {err:#?}");
-        };
-
-        assert_eq!(e.code, ErrorKind::TakeTill1);
-
-        assert_eq!(
-            e.input,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 5,
-                offset: 4
-            }
-        );
+        assert!(Block::parse(Span::new("    ")).is_none());
     }
 
     #[test]
     fn single_line() {
-        let (rem, block) = Block::parse(Span::new("abc", true)).unwrap();
+        let pr = Block::parse(Span::new("abc")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 4,
-                offset: 3
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
                 data: "abc",
                 line: 1,
@@ -80,7 +46,7 @@ mod simple {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -89,27 +55,27 @@ mod simple {
             }
         );
 
-        assert_eq!(block.content_model(), ContentModel::Simple);
-        assert_eq!(block.context().deref(), "paragraph");
-        assert_eq!(block.nested_blocks().next(), None);
+        assert_eq!(pr.t.content_model(), ContentModel::Simple);
+        assert_eq!(pr.t.context().deref(), "paragraph");
+        assert_eq!(pr.t.nested_blocks().next(), None);
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
     }
 
     #[test]
     fn multiple_lines() {
-        let (rem, block) = Block::parse(Span::new("abc\ndef", true)).unwrap();
+        let pr = Block::parse(Span::new("abc\ndef")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 2,
-                col: 4,
-                offset: 7
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Sequence(
                 vec![
                     TInline::Uninterpreted(TSpan {
@@ -135,7 +101,7 @@ mod simple {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "abc\ndef",
                 line: 1,
@@ -143,24 +109,24 @@ mod simple {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 4,
+                offset: 7
+            }
+        );
     }
 
     #[test]
     fn consumes_blank_lines_after() {
-        let (rem, block) = Block::parse(Span::new("abc\n\ndef", true)).unwrap();
+        let pr = Block::parse(Span::new("abc\n\ndef")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "def",
-                line: 3,
-                col: 1,
-                offset: 5
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
                 data: "abc",
                 line: 1,
@@ -170,12 +136,22 @@ mod simple {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "def",
+                line: 3,
+                col: 1,
+                offset: 5
             }
         );
     }
@@ -202,20 +178,10 @@ mod r#macro {
 
     #[test]
     fn err_inline_syntax() {
-        let (rem, block) = Block::parse(Span::new("foo:bar[]", true)).unwrap();
+        let pr = Block::parse(Span::new("foo:bar[]")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 10,
-                offset: 9
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Macro(TInlineMacro {
                 name: TSpan {
                     data: "foo",
@@ -240,7 +206,7 @@ mod r#macro {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "foo:bar[]",
                 line: 1,
@@ -248,24 +214,24 @@ mod r#macro {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 10,
+                offset: 9
+            }
+        );
     }
 
     #[test]
     fn err_no_attr_list() {
-        let (rem, block) = Block::parse(Span::new("foo::bar", true)).unwrap();
+        let pr = Block::parse(Span::new("foo::bar")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 9,
-                offset: 8
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
                 data: "foo::bar",
                 line: 1,
@@ -275,7 +241,7 @@ mod r#macro {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "foo::bar",
                 line: 1,
@@ -283,24 +249,24 @@ mod r#macro {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 9,
+                offset: 8
+            }
+        );
     }
 
     #[test]
     fn err_attr_list_not_closed() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[blah", true)).unwrap();
+        let pr = Block::parse(Span::new("foo::bar[blah")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 14,
-                offset: 13
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
                 data: "foo::bar[blah",
                 line: 1,
@@ -310,7 +276,7 @@ mod r#macro {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "foo::bar[blah",
                 line: 1,
@@ -318,24 +284,24 @@ mod r#macro {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 14,
+                offset: 13
+            }
+        );
     }
 
     #[test]
     fn err_unexpected_after_attr_list() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[blah]bonus", true)).unwrap();
+        let pr = Block::parse(Span::new("foo::bar[blah]bonus")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 20,
-                offset: 19
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Sequence(
                 vec![
                     TInline::Macro(TInlineMacro {
@@ -381,7 +347,7 @@ mod r#macro {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "foo::bar[blah]bonus",
                 line: 1,
@@ -389,24 +355,24 @@ mod r#macro {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 20,
+                offset: 19
+            }
+        );
     }
 
     #[test]
     fn simplest_block_macro() {
-        let (rem, block) = Block::parse(Span::new("foo::[]", true)).unwrap();
+        let pr = Block::parse(Span::new("foo::[]")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 8,
-                offset: 7
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Macro(TMacroBlock {
                 name: TSpan {
                     data: "foo",
@@ -434,7 +400,7 @@ mod r#macro {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "foo::[]",
                 line: 1,
@@ -443,27 +409,27 @@ mod r#macro {
             }
         );
 
-        assert_eq!(block.content_model(), ContentModel::Simple);
-        assert_eq!(block.context().deref(), "paragraph");
-        assert_eq!(block.nested_blocks().next(), None);
+        assert_eq!(pr.t.content_model(), ContentModel::Simple);
+        assert_eq!(pr.t.context().deref(), "paragraph");
+        assert_eq!(pr.t.nested_blocks().next(), None);
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
     }
 
     #[test]
     fn has_target() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[]", true)).unwrap();
+        let pr = Block::parse(Span::new("foo::bar[]")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 11,
-                offset: 10
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Macro(TMacroBlock {
                 name: TSpan {
                     data: "foo",
@@ -496,7 +462,7 @@ mod r#macro {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "foo::bar[]",
                 line: 1,
@@ -504,24 +470,24 @@ mod r#macro {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
     }
 
     #[test]
     fn has_target_and_attrlist() {
-        let (rem, block) = Block::parse(Span::new("foo::bar[blah]", true)).unwrap();
+        let pr = Block::parse(Span::new("foo::bar[blah]")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 15,
-                offset: 14
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Macro(TMacroBlock {
                 name: TSpan {
                     data: "foo",
@@ -538,6 +504,12 @@ mod r#macro {
                 attrlist: TAttrlist {
                     attributes: vec!(TElementAttribute {
                         name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "blah",
+                            line: 1,
+                            col: 10,
+                            offset: 9,
+                        }],
                         value: TSpan {
                             data: "blah",
                             line: 1,
@@ -568,12 +540,22 @@ mod r#macro {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "foo::bar[blah]",
                 line: 1,
                 col: 1,
                 offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 15,
+                offset: 14
             }
         );
     }
@@ -586,31 +568,20 @@ mod section {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
-        has_span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             inlines::TInline,
             TSpan,
         },
-        Span,
+        HasSpan, Span,
     };
 
     #[test]
     fn err_missing_space_before_title() {
-        let (rem, block) = Block::parse(Span::new("=blah blah", true)).unwrap();
+        let pr = Block::parse(Span::new("=blah blah")).unwrap();
 
         assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 11,
-                offset: 10
-            }
-        );
-
-        assert_eq!(
-            block,
+            pr.t,
             TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
                 data: "=blah blah",
                 line: 1,
@@ -620,7 +591,7 @@ mod section {
         );
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "=blah blah",
                 line: 1,
@@ -628,27 +599,27 @@ mod section {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
     }
 
     #[test]
     fn simplest_section_block() {
-        let (rem, block) = Block::parse(Span::new("== Section Title", true)).unwrap();
+        let pr = Block::parse(Span::new("== Section Title")).unwrap();
 
-        assert_eq!(block.content_model(), ContentModel::Compound);
-        assert_eq!(block.context().deref(), "section");
-
-        assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 1,
-                col: 17,
-                offset: 16
-            }
-        );
+        assert_eq!(pr.t.content_model(), ContentModel::Compound);
+        assert_eq!(pr.t.context().deref(), "section");
 
         assert_eq!(
-            block,
+            pr.t,
             TBlock::Section(TSectionBlock {
                 level: 1,
                 title: TSpan {
@@ -667,28 +638,28 @@ mod section {
             })
         );
 
-        assert_eq!(block.nested_blocks().next(), None);
+        assert_eq!(pr.t.nested_blocks().next(), None);
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 17,
+                offset: 16
+            }
+        );
     }
 
     #[test]
     fn has_child_block() {
-        let (rem, block) = Block::parse(Span::new("== Section Title\n\nabc", true)).unwrap();
+        let pr = Block::parse(Span::new("== Section Title\n\nabc")).unwrap();
 
-        assert_eq!(block.content_model(), ContentModel::Compound);
-        assert_eq!(block.context().deref(), "section");
-
-        assert_eq!(
-            rem,
-            TSpan {
-                data: "",
-                line: 3,
-                col: 4,
-                offset: 21
-            }
-        );
+        assert_eq!(pr.t.content_model(), ContentModel::Compound);
+        assert_eq!(pr.t.context().deref(), "section");
 
         assert_eq!(
-            block,
+            pr.t,
             TBlock::Section(TSectionBlock {
                 level: 1,
                 title: TSpan {
@@ -714,7 +685,7 @@ mod section {
             })
         );
 
-        let mut nested_blocks = block.nested_blocks();
+        let mut nested_blocks = pr.t.nested_blocks();
 
         assert_eq!(
             nested_blocks.next().unwrap(),
@@ -729,12 +700,22 @@ mod section {
         assert_eq!(nested_blocks.next(), None);
 
         assert_eq!(
-            block.span(),
+            pr.t.span(),
             TSpan {
                 data: "== Section Title\n\nabc",
                 line: 1,
                 col: 1,
                 offset: 0,
+            }
+        );
+
+        assert_eq!(
+            pr.rem,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 4,
+                offset: 21
             }
         );
     }

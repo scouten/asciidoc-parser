@@ -1,10 +1,4 @@
-use nom::{bytes::complete::tag, character::complete::space0, IResult, Slice};
-
-use crate::{
-    primitives::{ident, line_with_continuation, trim_input_for_rem},
-    strings::CowStr,
-    HasSpan, Span,
-};
+use crate::{primitives::trim_input_for_rem, span::ParseResult, strings::CowStr, HasSpan, Span};
 
 /// Document attributes are effectively document-scoped variables for the
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in
@@ -18,45 +12,48 @@ pub struct Attribute<'a> {
 }
 
 impl<'a> Attribute<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> IResult<Span, Self> {
-        let (rem, line) = line_with_continuation(source)?;
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
+        let attr_line = i.take_line_with_continuation()?;
+        let colon = attr_line.t.take_prefix(":")?;
 
         let mut unset = false;
-        let (mut line, _) = tag(":")(line)?;
-
-        if line.starts_with('!') {
+        let line = if colon.rem.starts_with('!') {
             unset = true;
-            line = line.slice(1..);
-        }
+            colon.rem.slice_from(1..)
+        } else {
+            colon.rem
+        };
 
-        let (mut line, name) = ident(line)?;
+        let name = line.take_ident()?;
 
-        if line.starts_with('!') && !unset {
+        let line = if name.rem.starts_with('!') && !unset {
             unset = true;
-            line = line.slice(1..);
-        }
+            name.rem.slice_from(1..)
+        } else {
+            name.rem
+        };
 
-        let (line, _) = tag(":")(line)?;
+        let line = line.take_prefix(":")?;
 
         let value = if unset {
             // Ensure line is now empty except for comment.
             RawAttributeValue::Unset
-        } else if line.is_empty() {
+        } else if line.rem.is_empty() {
             RawAttributeValue::Set
         } else {
-            let (value, _) = space0(line)?;
-            RawAttributeValue::Value(value)
+            let value = line.rem.take_whitespace();
+            RawAttributeValue::Value(value.rem)
         };
 
-        let source = trim_input_for_rem(source, rem);
-        Ok((
-            rem,
-            Self {
-                name,
+        let source = trim_input_for_rem(i, attr_line.rem);
+        Some(ParseResult {
+            t: Self {
+                name: name.t,
                 value,
                 source,
             },
-        ))
+            rem: attr_line.rem,
+        })
     }
 
     /// Return a [`Span`] describing the attribute name.

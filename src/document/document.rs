@@ -5,9 +5,8 @@ use std::slice::Iter;
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     document::Header,
-    primitives::consume_empty_lines,
     strings::CowStr,
-    Error, HasSpan, Span,
+    HasSpan, Span,
 };
 
 /// A document represents the top-level block element in AsciiDoc. It consists
@@ -35,24 +34,27 @@ impl<'a> Document<'a> {
     /// start of a file. This format is not directly supported by the
     /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
     /// UTF-8 prior to parsing.
-    pub fn parse(source: &'a str) -> Result<Self, Error> {
+    ///
+    /// TEMPORARY: Returns an `Option` which will be `None` if unable to parse.
+    /// This will eventually be replaced with an annotation mechanism.
+    pub fn parse(source: &'a str) -> Option<Self> {
         // TO DO: Add option for best-guess parsing?
 
-        let source = Span::new(source, true);
-        let i = consume_empty_lines(source);
+        let source = Span::new(source);
+        let i = source.discard_empty_lines();
 
         let (i, header) = if i.starts_with("= ") {
-            let (i, header) = Header::parse(i)?;
-            (i, Some(header))
+            let pr = Header::parse(i)?;
+            (pr.rem, Some(pr.t))
         } else {
             (i, None)
         };
 
-        let (_rem, blocks) = parse_blocks_until(i, |_| false)?;
+        let blocks = parse_blocks_until(i, |_| false)?;
 
-        Ok(Self {
+        Some(Self {
             header,
-            blocks,
+            blocks: blocks.t,
             source,
         })
     }

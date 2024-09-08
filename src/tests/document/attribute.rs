@@ -12,27 +12,17 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Attribute::parse(Span::new(":foo: bar", true)).unwrap();
+    let h1 = Attribute::parse(Span::new(":foo: bar")).unwrap();
     let h2 = h1.clone();
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn simple_value() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo: bar\nblah", true)).unwrap();
+    let pr = Attribute::parse(Span::new(":foo: bar\nblah")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "blah",
-            line: 2,
-            col: 1,
-            offset: 10
-        }
-    );
-
-    assert_eq!(
-        attr,
+        pr.t,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -55,25 +45,25 @@ fn simple_value() {
         }
     );
 
-    assert_eq!(attr.value(), TAttributeValue::Value("bar"));
-}
-
-#[test]
-fn no_value() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo:\nblah", true)).unwrap();
+    assert_eq!(pr.t.value(), TAttributeValue::Value("bar"));
 
     assert_eq!(
-        rem,
+        pr.rem,
         TSpan {
             data: "blah",
             line: 2,
             col: 1,
-            offset: 6
+            offset: 10
         }
     );
+}
+
+#[test]
+fn no_value() {
+    let pr = Attribute::parse(Span::new(":foo:\nblah")).unwrap();
 
     assert_eq!(
-        attr,
+        pr.t,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -91,25 +81,25 @@ fn no_value() {
         }
     );
 
-    assert_eq!(attr.value(), TAttributeValue::Set);
-}
-
-#[test]
-fn unset_prefix() {
-    let (rem, attr) = Attribute::parse(Span::new(":!foo:\nblah", true)).unwrap();
+    assert_eq!(pr.t.value(), TAttributeValue::Set);
 
     assert_eq!(
-        rem,
+        pr.rem,
         TSpan {
             data: "blah",
             line: 2,
             col: 1,
-            offset: 7
+            offset: 6
         }
     );
+}
+
+#[test]
+fn unset_prefix() {
+    let pr = Attribute::parse(Span::new(":!foo:\nblah")).unwrap();
 
     assert_eq!(
-        attr,
+        pr.t,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -127,15 +117,10 @@ fn unset_prefix() {
         }
     );
 
-    assert_eq!(attr.value(), TAttributeValue::Unset);
-}
-
-#[test]
-fn unset_postfix() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo!:\nblah", true)).unwrap();
+    assert_eq!(pr.t.value(), TAttributeValue::Unset);
 
     assert_eq!(
-        rem,
+        pr.rem,
         TSpan {
             data: "blah",
             line: 2,
@@ -143,9 +128,14 @@ fn unset_postfix() {
             offset: 7
         }
     );
+}
+
+#[test]
+fn unset_postfix() {
+    let pr = Attribute::parse(Span::new(":foo!:\nblah")).unwrap();
 
     assert_eq!(
-        attr,
+        pr.t,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -163,113 +153,45 @@ fn unset_postfix() {
         }
     );
 
-    assert_eq!(attr.value(), TAttributeValue::Unset);
+    assert_eq!(pr.t.value(), TAttributeValue::Unset);
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "blah",
+            line: 2,
+            col: 1,
+            offset: 7
+        }
+    );
 }
 
 #[test]
 fn err_unset_prefix_and_postfix() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":!foo!:\nblah", true)).unwrap_err();
-
-    if let nom::Err::Error(e) = err {
-        assert_eq!(
-            e.input,
-            TSpan {
-                data: "!:",
-                line: 1,
-                col: 6,
-                offset: 5,
-            }
-        );
-
-        assert_eq!(e.code, nom::error::ErrorKind::Tag);
-    } else {
-        panic!("Unexpected error: {err:#?}");
-    }
+    assert!(Attribute::parse(Span::new(":!foo!:\nblah")).is_none());
 }
 
 #[test]
 fn err_invalid_ident1() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":@invalid:\nblah", true)).unwrap_err();
-
-    if let nom::Err::Error(e) = err {
-        assert_eq!(
-            e.input,
-            TSpan {
-                data: "@invalid:",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
-
-        assert_eq!(e.code, nom::error::ErrorKind::Tag);
-    } else {
-        panic!("Unexpected error: {err:#?}");
-    }
+    assert!(Attribute::parse(Span::new(":@invalid:\nblah")).is_none());
 }
 
 #[test]
 fn err_invalid_ident2() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":invalid@:\nblah", true)).unwrap_err();
-
-    if let nom::Err::Error(e) = err {
-        assert_eq!(
-            e.input,
-            TSpan {
-                data: "@:",
-                line: 1,
-                col: 9,
-                offset: 8,
-            }
-        );
-
-        assert_eq!(e.code, nom::error::ErrorKind::Tag);
-    } else {
-        panic!("Unexpected error: {err:#?}");
-    }
+    assert!(Attribute::parse(Span::new(":invalid@:\nblah")).is_none());
 }
 
 #[test]
 fn err_invalid_ident3() {
-    let err: nom::Err<nom::error::Error<nom_span::Spanned<&str>>> =
-        Attribute::parse(Span::new(":-invalid:\nblah", true)).unwrap_err();
-
-    if let nom::Err::Error(e) = err {
-        assert_eq!(
-            e.input,
-            TSpan {
-                data: "-invalid:",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
-
-        assert_eq!(e.code, nom::error::ErrorKind::Tag);
-    } else {
-        panic!("Unexpected error: {err:#?}");
-    }
+    assert!(Attribute::parse(Span::new(":-invalid:\nblah")).is_none());
 }
 
 #[test]
 fn value_with_continuation() {
-    let (rem, attr) = Attribute::parse(Span::new(":foo: bar \\\n blah", true)).unwrap();
+    let pr = Attribute::parse(Span::new(":foo: bar \\\n blah")).unwrap();
 
     assert_eq!(
-        rem,
-        TSpan {
-            data: "",
-            line: 2,
-            col: 6,
-            offset: 17
-        }
-    );
-
-    assert_eq!(
-        attr,
+        pr.t,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -292,5 +214,15 @@ fn value_with_continuation() {
         }
     );
 
-    assert_eq!(attr.value(), TAttributeValue::Value("bar blah"));
+    assert_eq!(pr.t.value(), TAttributeValue::Value("bar blah"));
+
+    assert_eq!(
+        pr.rem,
+        TSpan {
+            data: "",
+            line: 2,
+            col: 6,
+            offset: 17
+        }
+    );
 }

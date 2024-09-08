@@ -1,10 +1,8 @@
 use std::slice::Iter;
 
-use nom::IResult;
-
 use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
-    primitives::{consume_empty_lines, normalized_line},
+    span::ParseResult,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -42,21 +40,27 @@ impl<'a> Block<'a> {
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
-    pub(crate) fn parse(i: Span<'a>) -> IResult<Span, Self> {
-        let i = consume_empty_lines(i);
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
+        let i = i.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
-        let (_, line) = normalized_line(i)?;
-        if line.contains("::") {
-            if let Ok((rem, macro_block)) = MacroBlock::parse(i) {
-                return Ok((rem, Self::Macro(macro_block)));
+        let line = i.take_normalized_line();
+        if line.t.contains("::") {
+            if let Some(macro_block) = MacroBlock::parse(i) {
+                return Some(ParseResult {
+                    t: Self::Macro(macro_block.t),
+                    rem: macro_block.rem,
+                });
             }
 
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
-        } else if line.starts_with('=') {
-            if let Ok((rem, section_block)) = SectionBlock::parse(i) {
-                return Ok((rem, Self::Section(section_block)));
+        } else if line.t.starts_with('=') {
+            if let Some(section_block) = SectionBlock::parse(i) {
+                return Some(ParseResult {
+                    t: Self::Section(section_block.t),
+                    rem: section_block.rem,
+                });
             }
 
             // A line starting with `=` might be some other kind of block, so we
@@ -64,8 +68,10 @@ impl<'a> Block<'a> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
-        let (rem, simple_block) = SimpleBlock::parse(i)?;
-        Ok((rem, Self::Simple(simple_block)))
+        SimpleBlock::parse(i).map(|pr| ParseResult {
+            t: Self::Simple(pr.t),
+            rem: pr.rem,
+        })
     }
 }
 
