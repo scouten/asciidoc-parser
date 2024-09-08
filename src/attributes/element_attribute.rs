@@ -16,15 +16,15 @@ pub struct ElementAttribute<'a> {
 }
 
 impl<'a> ElementAttribute<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
         Self::parse_internal(source, false)
     }
 
-    pub(crate) fn parse_with_shorthand(source: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse_with_shorthand(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
         Self::parse_internal(source, true)
     }
 
-    fn parse_internal(source: Span<'a>, parse_shorthand: bool) -> Option<ParseResult<Self>> {
+    fn parse_internal(source: Span<'a>, parse_shorthand: bool) -> Option<ParseResult<'a, Self>> {
         let (name, rem): (Option<Span>, Span) = match source.take_attr_name() {
             Some(name) => {
                 let space = name.rem.take_whitespace();

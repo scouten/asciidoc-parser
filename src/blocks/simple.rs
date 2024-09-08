@@ -7,7 +7,7 @@ use crate::{inlines::Inline, span::ParseResult, strings::CowStr, HasSpan, Span};
 pub struct SimpleBlock<'a>(Inline<'a>);
 
 impl<'a> SimpleBlock<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let inline = Inline::parse_lines(source)?;
         Some(ParseResult {
             t: Self(inline.t),

@@ -20,7 +20,7 @@ impl<'a> Attrlist<'a> {
     /// the opening or closing square brackets for the attrlist. This is because
     /// the rules for closing brackets differ when parsing inline, macro, and
     /// block elements.
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let mut rem = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;

@@ -17,7 +17,7 @@ pub struct InlineMacro<'a> {
 }
 
 impl<'a> InlineMacro<'a> {
-    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(source: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let name = source.take_ident()?;
         let colon = name.rem.take_prefix(":")?;
         let target = colon.rem.take_while(|c| c != '[');
@@ -51,12 +51,12 @@ impl<'a> InlineMacro<'a> {
     }
 
     /// Return a [`Span`] describing the macro target.
-    pub fn target(&'a self) -> Option<&Span<'a>> {
+    pub fn target(&'a self) -> Option<&'a Span<'a>> {
         self.target.as_ref()
     }
 
     /// Return a [`Span`] describing the macro's attribute list.
-    pub fn attrlist(&'a self) -> Option<&Span<'a>> {
+    pub fn attrlist(&'a self) -> Option<&'a Span<'a>> {
         self.attrlist.as_ref()
     }
 }

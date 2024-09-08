@@ -15,7 +15,7 @@ pub struct Header<'a> {
 }
 
 impl<'a> Header<'a> {
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let source = i.discard_empty_lines();
 
         // TEMPORARY: Titles are optional, but we're not prepared for that yet.

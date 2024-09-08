@@ -40,7 +40,7 @@ impl<'a> Block<'a> {
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let i = i.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
