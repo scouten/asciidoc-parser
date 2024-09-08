@@ -1,5 +1,5 @@
 use crate::{
-    inlines::InlineMacro, primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span,
+    inlines::InlineMacro, primitives::trim_source_for_rem, span::ParseResult, HasSpan, Span,
 };
 
 /// An inline element is a phrase (i.e., span of content) within a block element
@@ -23,8 +23,8 @@ impl<'src> Inline<'src> {
     /// describes it.
     ///
     /// Returns `None` if input doesn't start with a non-empty line.
-    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
-        let line = i.take_non_empty_line()?;
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+        let line = source.take_non_empty_line()?;
         let mut span = line.t;
 
         // Special-case optimization: If the entire span is one
@@ -63,7 +63,7 @@ impl<'src> Inline<'src> {
         }
 
         Some(ParseResult {
-            t: Self::Sequence(inlines, trim_input_for_rem(i, line.rem)),
+            t: Self::Sequence(inlines, trim_source_for_rem(source, line.rem)),
             rem: line.rem,
         })
     }
@@ -73,9 +73,9 @@ impl<'src> Inline<'src> {
     ///
     /// Returns `None` if there is not at least one non-empty line at
     /// beginning of input.
-    pub(crate) fn parse_lines(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse_lines(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
         let mut inlines: Vec<Inline<'src>> = vec![];
-        let mut next = i;
+        let mut next = source;
 
         while let Some(inline) = Self::parse(next) {
             next = inline.rem;
@@ -88,7 +88,7 @@ impl<'src> Inline<'src> {
                 rem: next,
             })
         } else {
-            let source = trim_input_for_rem(i, next);
+            let source = trim_source_for_rem(source, next);
             Some(ParseResult {
                 t: Self::Sequence(inlines, source),
                 rem: next,
@@ -100,8 +100,8 @@ impl<'src> Inline<'src> {
 impl<'src> HasSpan<'src> for Inline<'src> {
     fn span(&'src self) -> &'src Span<'src> {
         match self {
-            Self::Uninterpreted(i) => i,
-            Self::Sequence(_, i) => i,
+            Self::Uninterpreted(source) => source,
+            Self::Sequence(_, source) => source,
             Self::Macro(m) => m.span(),
         }
     }
@@ -110,15 +110,15 @@ impl<'src> HasSpan<'src> for Inline<'src> {
 // Parse the largest possible block of "uninterpreted" text.
 // Remainder is either empty span or first span that requires
 // special interpretation.
-fn parse_uninterpreted(i: Span<'_>) -> ParseResult<Span> {
+fn parse_uninterpreted(source: Span<'_>) -> ParseResult<Span> {
     // Optimization: If line doesn't contain special markup chars,
     // then it's all uninterpreted.
 
-    if !i.contains(':') {
-        return i.into_parse_result(i.len());
+    if !source.contains(':') {
+        return source.into_parse_result(source.len());
     }
 
-    let mut rem = i;
+    let mut rem = source;
 
     while !rem.is_empty() {
         if InlineMacro::parse(rem).is_some() {
@@ -131,14 +131,14 @@ fn parse_uninterpreted(i: Span<'_>) -> ParseResult<Span> {
     }
 
     ParseResult {
-        t: trim_input_for_rem(i, rem),
+        t: trim_source_for_rem(source, rem),
         rem,
     }
 }
 
 // Parse the block as a special "interpreted" inline sequence or error out.
-fn parse_interpreted(i: Span<'_>) -> Option<ParseResult<Inline<'_>>> {
-    InlineMacro::parse(i).map(|inline| ParseResult {
+fn parse_interpreted(source: Span<'_>) -> Option<ParseResult<Inline<'_>>> {
+    InlineMacro::parse(source).map(|inline| ParseResult {
         t: Inline::Macro(inline.t),
         rem: inline.rem,
     })

@@ -58,7 +58,7 @@ mod split_at_match_non_empty {
     use crate::Span;
 
     #[test]
-    fn empty_input() {
+    fn empty_source() {
         let s = Span::new("");
         assert!(s.split_at_match_non_empty(|c| c == ':').is_none());
     }

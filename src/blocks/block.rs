@@ -40,13 +40,13 @@ impl<'src> Block<'src> {
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
-    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
-        let i = i.discard_empty_lines();
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+        let source = source.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
-        let line = i.take_normalized_line();
+        let line = source.take_normalized_line();
         if line.t.contains("::") {
-            if let Some(macro_block) = MacroBlock::parse(i) {
+            if let Some(macro_block) = MacroBlock::parse(source) {
                 return Some(ParseResult {
                     t: Self::Macro(macro_block.t),
                     rem: macro_block.rem,
@@ -56,7 +56,7 @@ impl<'src> Block<'src> {
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
         } else if line.t.starts_with('=') {
-            if let Some(section_block) = SectionBlock::parse(i) {
+            if let Some(section_block) = SectionBlock::parse(source) {
                 return Some(ParseResult {
                     t: Self::Section(section_block.t),
                     rem: section_block.rem,
@@ -68,7 +68,7 @@ impl<'src> Block<'src> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
-        SimpleBlock::parse(i).map(|pr| ParseResult {
+        SimpleBlock::parse(source).map(|pr| ParseResult {
             t: Self::Simple(pr.t),
             rem: pr.rem,
         })
