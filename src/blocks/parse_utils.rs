@@ -5,7 +5,7 @@ use crate::{blocks::Block, span::ParseResult, Span};
 pub(crate) fn parse_blocks_until<'a, F>(
     mut i: Span<'a>,
     f: F,
-) -> Option<ParseResult<Vec<Block<'a>>>>
+) -> Option<ParseResult<'a, Vec<Block<'a>>>>
 where
     F: Fn(&Span<'a>) -> bool,
 {

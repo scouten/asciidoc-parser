@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-use std::{convert::AsRef, ops::Deref};
+use std::ops::Deref;
 
 /// Represents a subset of the overall UTF-8 input stream.
 ///

@@ -23,7 +23,7 @@ impl<'a> Inline<'a> {
     /// describes it.
     ///
     /// Returns `None` if input doesn't start with a non-empty line.
-    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let line = i.take_non_empty_line()?;
         let mut span = line.t;
 
@@ -73,7 +73,7 @@ impl<'a> Inline<'a> {
     ///
     /// Returns `None` if there is not at least one non-empty line at
     /// beginning of input.
-    pub(crate) fn parse_lines(i: Span<'a>) -> Option<ParseResult<Self>> {
+    pub(crate) fn parse_lines(i: Span<'a>) -> Option<ParseResult<'a, Self>> {
         let mut inlines: Vec<Inline<'a>> = vec![];
         let mut next = i;
 
