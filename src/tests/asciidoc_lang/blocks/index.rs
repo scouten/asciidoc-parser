@@ -79,7 +79,7 @@ mod content_model {
         // subject to normal substitutions) (e.g., a paragraph block)
 
         let block = Block::parse(Span::new("abc")).unwrap();
-        assert_eq!(block.t.content_model(), ContentModel::Simple);
+        assert_eq!(block.item.content_model(), ContentModel::Simple);
     }
 
     #[ignore]
@@ -159,9 +159,9 @@ mod context {
         // distinguishes one kind of block from another. You can think of the context as
         // the block's type.
 
-        let pr = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
 
-        assert_eq!(pr.t.context().deref(), "section");
+        assert_eq!(mi.item.context().deref(), "section");
     }
 
     #[test]
@@ -195,9 +195,9 @@ mod context {
         // For example, all sections implicitly have the compound content model
         // because a section may only contain other blocks.
 
-        let pr = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
 
-        assert_eq!(pr.t.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
     }
 
     #[test]

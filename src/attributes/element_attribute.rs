@@ -1,4 +1,4 @@
-use crate::{span::ParseResult, HasSpan, Span};
+use crate::{span::MatchedItem, HasSpan, Span};
 
 /// This struct represents a single element attribute.
 ///
@@ -16,28 +16,28 @@ pub struct ElementAttribute<'src> {
 }
 
 impl<'src> ElementAttribute<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         Self::parse_internal(source, false)
     }
 
-    pub(crate) fn parse_with_shorthand(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse_with_shorthand(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         Self::parse_internal(source, true)
     }
 
     fn parse_internal(
         source: Span<'src>,
         parse_shorthand: bool,
-    ) -> Option<ParseResult<'src, Self>> {
-        let (name, rem): (Option<Span>, Span) = match source.take_attr_name() {
+    ) -> Option<MatchedItem<'src, Self>> {
+        let (name, after): (Option<Span>, Span) = match source.take_attr_name() {
             Some(name) => {
-                let space = name.rem.take_whitespace();
-                match space.rem.take_prefix("=") {
+                let space = name.after.take_whitespace();
+                match space.after.take_prefix("=") {
                     Some(equals) => {
-                        let space = equals.rem.take_whitespace();
-                        if space.rem.is_empty() || space.rem.starts_with(',') {
+                        let space = equals.after.take_whitespace();
+                        if space.after.is_empty() || space.after.starts_with(',') {
                             (None, source)
                         } else {
-                            (Some(name.t), space.rem)
+                            (Some(name.item), space.after)
                         }
                     }
                     None => (None, source),
@@ -46,21 +46,21 @@ impl<'src> ElementAttribute<'src> {
             None => (None, source),
         };
 
-        let value = match rem.data().chars().next() {
-            Some('\'') | Some('"') => match rem.take_quoted_string() {
+        let value = match after.data().chars().next() {
+            Some('\'') | Some('"') => match after.take_quoted_string() {
                 Some(v) => v,
                 None => {
                     return None;
                 }
             },
-            _ => rem.take_while(|c| c != ','),
+            _ => after.take_while(|c| c != ','),
         };
 
-        if value.t.is_empty() {
+        if value.item.is_empty() {
             return None;
         }
 
-        let source = source.trim_remainder(value.rem);
+        let source = source.trim_remainder(value.after);
 
         let shorthand_items = if name.is_none() && parse_shorthand {
             parse_shorthand_items(source)
@@ -68,14 +68,14 @@ impl<'src> ElementAttribute<'src> {
             vec![]
         };
 
-        Some(ParseResult {
-            t: Self {
+        Some(MatchedItem {
+            item: Self {
                 name,
                 shorthand_items,
-                value: value.t,
+                value: value.item,
                 source,
             },
-            rem: value.rem,
+            after: value.after,
         })
     }
 
@@ -149,8 +149,8 @@ fn parse_shorthand_items<'src>(span: Span<'src>) -> Vec<Span<'src>> {
 
     // Look for block style selector.
     if let Some(block_style_pr) = span.split_at_match_non_empty(is_shorthand_delimiter) {
-        shorthand_items.push(block_style_pr.t);
-        span = block_style_pr.rem;
+        shorthand_items.push(block_style_pr.item);
+        span = block_style_pr.after;
     }
 
     while !span.is_empty() {
@@ -169,9 +169,9 @@ fn parse_shorthand_items<'src>(span: Span<'src>) -> Vec<Span<'src>> {
                 todo!("Flag warning for duplicate shorthand delimiter (issue #121)");
             }
             Some(index) => {
-                let pr: ParseResult<Span> = span.into_parse_result(index + 1);
-                shorthand_items.push(pr.t);
-                span = pr.rem;
+                let mi: MatchedItem<Span> = span.into_parse_result(index + 1);
+                shorthand_items.push(mi.item);
+                span = mi.after;
             }
         }
     }

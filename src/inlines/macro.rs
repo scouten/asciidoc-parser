@@ -1,4 +1,4 @@
-use crate::{span::ParseResult, HasSpan, Span};
+use crate::{span::MatchedItem, HasSpan, Span};
 
 /// An inline macro can be used in an inline context to create new inline
 /// content.
@@ -17,31 +17,31 @@ pub struct InlineMacro<'src> {
 }
 
 impl<'src> InlineMacro<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let name = source.take_ident()?;
-        let colon = name.rem.take_prefix(":")?;
-        let target = colon.rem.take_while(|c| c != '[');
-        let open_brace = target.rem.take_prefix("[")?;
-        let attrlist = open_brace.rem.take_while(|c| c != ']');
-        let close_brace = attrlist.rem.take_prefix("]")?;
-        let source = source.trim_remainder(close_brace.rem);
+        let colon = name.after.take_prefix(":")?;
+        let target = colon.after.take_while(|c| c != '[');
+        let open_brace = target.after.take_prefix("[")?;
+        let attrlist = open_brace.after.take_while(|c| c != ']');
+        let close_brace = attrlist.after.take_prefix("]")?;
+        let source = source.trim_remainder(close_brace.after);
 
-        Some(ParseResult {
-            t: Self {
-                name: name.t,
-                target: if target.t.is_empty() {
+        Some(MatchedItem {
+            item: Self {
+                name: name.item,
+                target: if target.item.is_empty() {
                     None
                 } else {
-                    Some(target.t)
+                    Some(target.item)
                 },
-                attrlist: if attrlist.t.is_empty() {
+                attrlist: if attrlist.item.is_empty() {
                     None
                 } else {
-                    Some(attrlist.t)
+                    Some(attrlist.item)
                 },
                 source,
             },
-            rem: close_brace.rem,
+            after: close_brace.after,
         })
     }
 

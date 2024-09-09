@@ -19,10 +19,10 @@ fn impl_clone() {
 
 #[test]
 fn only_title() {
-    let pr = Header::parse(Span::new("= Just the Title")).unwrap();
+    let mi = Header::parse(Span::new("= Just the Title")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -41,7 +41,7 @@ fn only_title() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -55,10 +55,10 @@ fn only_title() {
 fn trims_leading_spaces_in_title() {
     // This is totally a judgement call on my part. As far as I can tell,
     // the language doesn't describe behavior here.
-    let pr = Header::parse(Span::new("=    Just the Title")).unwrap();
+    let mi = Header::parse(Span::new("=    Just the Title")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -77,7 +77,7 @@ fn trims_leading_spaces_in_title() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -89,10 +89,10 @@ fn trims_leading_spaces_in_title() {
 
 #[test]
 fn trims_trailing_spaces_in_title() {
-    let pr = Header::parse(Span::new("= Just the Title   ")).unwrap();
+    let mi = Header::parse(Span::new("= Just the Title   ")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -111,7 +111,7 @@ fn trims_trailing_spaces_in_title() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -123,10 +123,10 @@ fn trims_trailing_spaces_in_title() {
 
 #[test]
 fn title_and_attribute() {
-    let pr = Header::parse(Span::new("= Just the Title\n:foo: bar\n\nblah")).unwrap();
+    let mi = Header::parse(Span::new("= Just the Title\n:foo: bar\n\nblah")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         THeader {
             title: Some(TSpan {
                 data: "Just the Title",
@@ -164,7 +164,7 @@ fn title_and_attribute() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "blah",
             line: 4,

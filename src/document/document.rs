@@ -49,8 +49,8 @@ impl<'src> Document<'src> {
         let i = source.discard_empty_lines();
 
         let (i, header) = if i.starts_with("= ") {
-            let pr = Header::parse(i)?;
-            (pr.rem, Some(pr.t))
+            let mi = Header::parse(i)?;
+            (mi.after, Some(mi.item))
         } else {
             (i, None)
         };
@@ -59,7 +59,7 @@ impl<'src> Document<'src> {
 
         Some(Self {
             header,
-            blocks: blocks.t,
+            blocks: blocks.item,
             source,
         })
     }

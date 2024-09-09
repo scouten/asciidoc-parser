@@ -1,4 +1,4 @@
-use crate::{span::ParseResult, strings::CowStr, HasSpan, Span};
+use crate::{span::MatchedItem, strings::CowStr, HasSpan, Span};
 
 /// Document attributes are effectively document-scoped variables for the
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in
@@ -12,25 +12,25 @@ pub struct Attribute<'src> {
 }
 
 impl<'src> Attribute<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let attr_line = source.take_line_with_continuation()?;
-        let colon = attr_line.t.take_prefix(":")?;
+        let colon = attr_line.item.take_prefix(":")?;
 
         let mut unset = false;
-        let line = if colon.rem.starts_with('!') {
+        let line = if colon.after.starts_with('!') {
             unset = true;
-            colon.rem.slice_from(1..)
+            colon.after.slice_from(1..)
         } else {
-            colon.rem
+            colon.after
         };
 
         let name = line.take_ident()?;
 
-        let line = if name.rem.starts_with('!') && !unset {
+        let line = if name.after.starts_with('!') && !unset {
             unset = true;
-            name.rem.slice_from(1..)
+            name.after.slice_from(1..)
         } else {
-            name.rem
+            name.after
         };
 
         let line = line.take_prefix(":")?;
@@ -38,21 +38,21 @@ impl<'src> Attribute<'src> {
         let value = if unset {
             // Ensure line is now empty except for comment.
             RawAttributeValue::Unset
-        } else if line.rem.is_empty() {
+        } else if line.after.is_empty() {
             RawAttributeValue::Set
         } else {
-            let value = line.rem.take_whitespace();
-            RawAttributeValue::Value(value.rem)
+            let value = line.after.take_whitespace();
+            RawAttributeValue::Value(value.after)
         };
 
-        let source = source.trim_remainder(attr_line.rem);
-        Some(ParseResult {
-            t: Self {
-                name: name.t,
+        let source = source.trim_remainder(attr_line.after);
+        Some(MatchedItem {
+            item: Self {
+                name: name.item,
                 value,
                 source,
             },
-            rem: attr_line.rem,
+            after: attr_line.after,
         })
     }
 

@@ -13,16 +13,16 @@ use crate::{
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let b1 = Attrlist::parse(Span::new("abc")).unwrap();
-    let b2 = b1.t.clone();
-    assert_eq!(b1.t, b2);
+    let b2 = b1.item.clone();
+    assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn empty_source() {
-    let pr = Attrlist::parse(Span::new("")).unwrap();
+    let mi = Attrlist::parse(Span::new("")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttrlist {
             attributes: vec!(),
             source: TSpan {
@@ -34,20 +34,20 @@ fn empty_source() {
         }
     );
 
-    assert!(pr.t.named_attribute("foo").is_none());
+    assert!(mi.item.named_attribute("foo").is_none());
 
-    assert!(pr.t.nth_attribute(0).is_none());
-    assert!(pr.t.nth_attribute(1).is_none());
-    assert!(pr.t.nth_attribute(42).is_none());
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.nth_attribute(1).is_none());
+    assert!(mi.item.nth_attribute(42).is_none());
 
-    assert!(pr.t.named_or_positional_attribute("foo", 0).is_none());
-    assert!(pr.t.named_or_positional_attribute("foo", 1).is_none());
-    assert!(pr.t.named_or_positional_attribute("foo", 42).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 1).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 42).is_none());
 
-    assert!(pr.t.id().is_none());
+    assert!(mi.item.id().is_none());
 
     assert_eq!(
-        pr.t.span(),
+        mi.item.span(),
         TSpan {
             data: "",
             line: 1,
@@ -57,7 +57,7 @@ fn empty_source() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -69,10 +69,10 @@ fn empty_source() {
 
 #[test]
 fn only_positional_attributes() {
-    let pr = Attrlist::parse(Span::new("Sunset,300,400")).unwrap();
+    let mi = Attrlist::parse(Span::new("Sunset,300,400")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttrlist {
             attributes: vec!(
                 TElementAttribute {
@@ -138,14 +138,14 @@ fn only_positional_attributes() {
         }
     );
 
-    assert!(pr.t.named_attribute("foo").is_none());
-    assert!(pr.t.nth_attribute(0).is_none());
-    assert!(pr.t.named_or_positional_attribute("foo", 0).is_none());
+    assert!(mi.item.named_attribute("foo").is_none());
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
 
-    assert!(pr.t.id().is_none());
+    assert!(mi.item.id().is_none());
 
     assert_eq!(
-        pr.t.nth_attribute(1).unwrap(),
+        mi.item.nth_attribute(1).unwrap(),
         TElementAttribute {
             name: None,
             shorthand_items: vec![TSpan {
@@ -170,7 +170,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_or_positional_attribute("alt", 1).unwrap(),
+        mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: None,
             shorthand_items: vec![TSpan {
@@ -195,7 +195,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        pr.t.nth_attribute(2).unwrap(),
+        mi.item.nth_attribute(2).unwrap(),
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
@@ -215,7 +215,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_or_positional_attribute("width", 2).unwrap(),
+        mi.item.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
@@ -235,7 +235,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        pr.t.nth_attribute(3).unwrap(),
+        mi.item.nth_attribute(3).unwrap(),
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
@@ -255,7 +255,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_or_positional_attribute("height", 3).unwrap(),
+        mi.item.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
@@ -274,14 +274,14 @@ fn only_positional_attributes() {
         }
     );
 
-    assert!(pr.t.nth_attribute(4).is_none());
+    assert!(mi.item.nth_attribute(4).is_none());
 
-    assert!(pr.t.named_or_positional_attribute("height", 4).is_none());
+    assert!(mi.item.named_or_positional_attribute("height", 4).is_none());
 
-    assert!(pr.t.nth_attribute(42).is_none());
+    assert!(mi.item.nth_attribute(42).is_none());
 
     assert_eq!(
-        pr.t.span(),
+        mi.item.span(),
         TSpan {
             data: "Sunset,300,400",
             line: 1,
@@ -291,7 +291,7 @@ fn only_positional_attributes() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -303,10 +303,10 @@ fn only_positional_attributes() {
 
 #[test]
 fn only_named_attributes() {
-    let pr = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap();
+    let mi = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttrlist {
             attributes: vec!(
                 TElementAttribute {
@@ -382,11 +382,11 @@ fn only_named_attributes() {
         }
     );
 
-    assert!(pr.t.named_attribute("foo").is_none());
-    assert!(pr.t.named_or_positional_attribute("foo", 0).is_none());
+    assert!(mi.item.named_attribute("foo").is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
 
     assert_eq!(
-        pr.t.named_attribute("alt").unwrap(),
+        mi.item.named_attribute("alt").unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "alt",
@@ -411,7 +411,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_or_positional_attribute("alt", 1).unwrap(),
+        mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "alt",
@@ -436,7 +436,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_attribute("width").unwrap(),
+        mi.item.named_attribute("width").unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "width",
@@ -461,7 +461,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_or_positional_attribute("width", 2).unwrap(),
+        mi.item.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "width",
@@ -486,7 +486,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_attribute("height").unwrap(),
+        mi.item.named_attribute("height").unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "height",
@@ -511,7 +511,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        pr.t.named_or_positional_attribute("height", 3).unwrap(),
+        mi.item.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: Some(TSpan {
                 data: "height",
@@ -535,17 +535,17 @@ fn only_named_attributes() {
         }
     );
 
-    assert!(pr.t.nth_attribute(0).is_none());
-    assert!(pr.t.nth_attribute(1).is_none());
-    assert!(pr.t.nth_attribute(2).is_none());
-    assert!(pr.t.nth_attribute(3).is_none());
-    assert!(pr.t.nth_attribute(4).is_none());
-    assert!(pr.t.nth_attribute(42).is_none());
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.nth_attribute(1).is_none());
+    assert!(mi.item.nth_attribute(2).is_none());
+    assert!(mi.item.nth_attribute(3).is_none());
+    assert!(mi.item.nth_attribute(4).is_none());
+    assert!(mi.item.nth_attribute(42).is_none());
 
-    assert!(pr.t.id().is_none());
+    assert!(mi.item.id().is_none());
 
     assert_eq!(
-        pr.t.span(),
+        mi.item.span(),
         TSpan {
             data: "alt=Sunset,width=300,height=400",
             line: 1,
@@ -555,7 +555,7 @@ fn only_named_attributes() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -579,10 +579,10 @@ mod id {
 
     #[test]
     fn via_shorthand_syntax() {
-        let pr = Attrlist::parse(Span::new("#goals")).unwrap();
+        let mi = Attrlist::parse(Span::new("#goals")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
@@ -614,11 +614,11 @@ mod id {
             }
         );
 
-        assert!(pr.t.named_attribute("foo").is_none());
-        assert!(pr.t.named_or_positional_attribute("foo", 0).is_none());
+        assert!(mi.item.named_attribute("foo").is_none());
+        assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
 
         assert_eq!(
-            pr.t.id().unwrap(),
+            mi.item.id().unwrap(),
             TSpan {
                 data: "goals",
                 line: 1,
@@ -628,7 +628,7 @@ mod id {
         );
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "#goals",
                 line: 1,
@@ -638,7 +638,7 @@ mod id {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -650,10 +650,10 @@ mod id {
 
     #[test]
     fn via_named_attribute() {
-        let pr = Attrlist::parse(Span::new("foo=bar,id=goals")).unwrap();
+        let mi = Attrlist::parse(Span::new("foo=bar,id=goals")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
@@ -709,7 +709,7 @@ mod id {
         );
 
         assert_eq!(
-            pr.t.named_attribute("foo").unwrap(),
+            mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
                 name: Some(TSpan {
                     data: "foo",
@@ -734,7 +734,7 @@ mod id {
         );
 
         assert_eq!(
-            pr.t.named_attribute("id").unwrap(),
+            mi.item.named_attribute("id").unwrap(),
             TElementAttribute {
                 name: Some(TSpan {
                     data: "id",
@@ -759,7 +759,7 @@ mod id {
         );
 
         assert_eq!(
-            pr.t.id().unwrap(),
+            mi.item.id().unwrap(),
             TSpan {
                 data: "goals",
                 line: 1,
@@ -769,7 +769,7 @@ mod id {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -789,10 +789,10 @@ mod id {
 
     #[test]
     fn shorthand_only_first_attribute() {
-        let pr = Attrlist::parse(Span::new("foo,blah#goals")).unwrap();
+        let mi = Attrlist::parse(Span::new("foo,blah#goals")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
@@ -842,10 +842,10 @@ mod id {
             }
         );
 
-        assert!(pr.t.id().is_none());
+        assert!(mi.item.id().is_none());
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,

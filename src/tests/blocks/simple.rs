@@ -12,8 +12,8 @@ use crate::{
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let b1 = SimpleBlock::parse(Span::new("abc")).unwrap();
-    let b2 = b1.t.clone();
-    assert_eq!(b1.t, b2);
+    let b2 = b1.item.clone();
+    assert_eq!(b1.item, b2);
 }
 
 #[test]
@@ -28,10 +28,10 @@ fn only_spaces() {
 
 #[test]
 fn single_line() {
-    let pr = SimpleBlock::parse(Span::new("abc")).unwrap();
+    let mi = SimpleBlock::parse(Span::new("abc")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSimpleBlock(TInline::Uninterpreted(TSpan {
             data: "abc",
             line: 1,
@@ -40,11 +40,11 @@ fn single_line() {
         })),
     );
 
-    assert_eq!(pr.t.content_model(), ContentModel::Simple);
-    assert_eq!(pr.t.context().deref(), "paragraph");
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.context().deref(), "paragraph");
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -56,10 +56,10 @@ fn single_line() {
 
 #[test]
 fn multiple_lines() {
-    let pr = SimpleBlock::parse(Span::new("abc\ndef")).unwrap();
+    let mi = SimpleBlock::parse(Span::new("abc\ndef")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSimpleBlock(TInline::Sequence(
             vec![
                 TInline::Uninterpreted(TSpan {
@@ -85,7 +85,7 @@ fn multiple_lines() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 2,
@@ -97,10 +97,10 @@ fn multiple_lines() {
 
 #[test]
 fn consumes_blank_lines_after() {
-    let pr = SimpleBlock::parse(Span::new("abc\n\ndef")).unwrap();
+    let mi = SimpleBlock::parse(Span::new("abc\n\ndef")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSimpleBlock(TInline::Uninterpreted(TSpan {
             data: "abc",
             line: 1,
@@ -110,7 +110,7 @@ fn consumes_blank_lines_after() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "def",
             line: 3,

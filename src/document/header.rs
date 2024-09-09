@@ -1,6 +1,6 @@
 use std::slice::Iter;
 
-use crate::{document::Attribute, span::ParseResult, HasSpan, Span};
+use crate::{document::Attribute, span::MatchedItem, HasSpan, Span};
 
 /// An AsciiDoc document may begin with a document header. The document header
 /// encapsulates the document title, author and revision information,
@@ -13,32 +13,32 @@ pub struct Header<'src> {
 }
 
 impl<'src> Header<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_empty_lines();
 
         // TEMPORARY: Titles are optional, but we're not prepared for that yet.
         let title = parse_title(source)?;
 
         let mut attributes: Vec<Attribute> = vec![];
-        let mut rem = title.rem;
+        let mut after = title.after;
 
-        while let Some(attr) = Attribute::parse(rem) {
-            attributes.push(attr.t);
-            rem = attr.rem;
+        while let Some(attr) = Attribute::parse(after) {
+            attributes.push(attr.item);
+            after = attr.after;
         }
 
-        let source = source.trim_remainder(rem);
+        let source = source.trim_remainder(after);
 
         // Header must be followed by an empty line or EOF.
-        let pr = rem.take_empty_line()?;
+        let mi = after.take_empty_line()?;
 
-        Some(ParseResult {
-            t: Self {
-                title: Some(title.t),
+        Some(MatchedItem {
+            item: Self {
+                title: Some(title.item),
                 attributes,
                 source,
             },
-            rem: pr.rem.discard_empty_lines(),
+            after: mi.after.discard_empty_lines(),
         })
     }
 
@@ -59,13 +59,13 @@ impl<'src> HasSpan<'src> for Header<'src> {
     }
 }
 
-fn parse_title(source: Span<'_>) -> Option<ParseResult<Span>> {
+fn parse_title(source: Span<'_>) -> Option<MatchedItem<Span>> {
     let line = source.take_non_empty_line()?;
-    let equal = line.t.take_prefix("=")?;
-    let ws = equal.rem.take_required_whitespace()?;
+    let equal = line.item.take_prefix("=")?;
+    let ws = equal.after.take_required_whitespace()?;
 
-    Some(ParseResult {
-        t: ws.rem,
-        rem: line.rem,
+    Some(MatchedItem {
+        item: ws.after,
+        after: line.after,
     })
 }

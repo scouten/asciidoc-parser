@@ -9,7 +9,7 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = InlineMacro::parse(Span::new("foo:[]")).unwrap().t;
+    let b1 = InlineMacro::parse(Span::new("foo:[]")).unwrap().item;
     let b2 = b1.clone();
     assert_eq!(b1, b2);
 }
@@ -41,10 +41,10 @@ fn err_attr_list_not_closed() {
 
 #[test]
 fn simplest_block_macro() {
-    let pr = InlineMacro::parse(Span::new("foo:[]")).unwrap();
+    let mi = InlineMacro::parse(Span::new("foo:[]")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TInlineMacro {
             name: TSpan {
                 data: "foo",
@@ -64,7 +64,7 @@ fn simplest_block_macro() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -76,10 +76,10 @@ fn simplest_block_macro() {
 
 #[test]
 fn has_target() {
-    let pr = InlineMacro::parse(Span::new("foo:bar[]")).unwrap();
+    let mi = InlineMacro::parse(Span::new("foo:bar[]")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TInlineMacro {
             name: TSpan {
                 data: "foo",
@@ -104,7 +104,7 @@ fn has_target() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -116,10 +116,10 @@ fn has_target() {
 
 #[test]
 fn has_target_and_attrlist() {
-    let pr = InlineMacro::parse(Span::new("foo:bar[blah]")).unwrap();
+    let mi = InlineMacro::parse(Span::new("foo:bar[blah]")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TInlineMacro {
             name: TSpan {
                 data: "foo",
@@ -150,7 +150,7 @@ fn has_target_and_attrlist() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -162,10 +162,10 @@ fn has_target_and_attrlist() {
 
 #[test]
 fn doesnt_consume_after_attr_list() {
-    let pr = InlineMacro::parse(Span::new("foo:bar[blah]bonus")).unwrap();
+    let mi = InlineMacro::parse(Span::new("foo:bar[blah]bonus")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TInlineMacro {
             name: TSpan {
                 data: "foo",
@@ -196,7 +196,7 @@ fn doesnt_consume_after_attr_list() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "bonus",
             line: 1,
@@ -210,10 +210,10 @@ fn doesnt_consume_after_attr_list() {
 fn okish_block_syntax() {
     // TO DO: Should this be an error? Or is the second colon part of the target?
 
-    let pr = InlineMacro::parse(Span::new("foo::bar[]")).unwrap();
+    let mi = InlineMacro::parse(Span::new("foo::bar[]")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TInlineMacro {
             name: TSpan {
                 data: "foo",
@@ -238,7 +238,7 @@ fn okish_block_syntax() {
         }
     );
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,

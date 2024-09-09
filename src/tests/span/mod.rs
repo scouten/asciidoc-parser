@@ -18,17 +18,17 @@ fn impl_as_ref() {
 #[test]
 fn into_parse_result() {
     let s = Span::new("abc");
-    let pr = s.into_parse_result(1);
+    let mi = s.into_parse_result(1);
 
-    assert_eq!(pr.t.data(), "a");
-    assert_eq!(pr.t.line(), 1);
-    assert_eq!(pr.t.col(), 1);
-    assert_eq!(pr.t.byte_offset(), 0);
+    assert_eq!(mi.item.data(), "a");
+    assert_eq!(mi.item.line(), 1);
+    assert_eq!(mi.item.col(), 1);
+    assert_eq!(mi.item.byte_offset(), 0);
 
-    assert_eq!(pr.rem.data(), "bc");
-    assert_eq!(pr.rem.line(), 1);
-    assert_eq!(pr.rem.col(), 2);
-    assert_eq!(pr.rem.byte_offset(), 1);
+    assert_eq!(mi.after.data(), "bc");
+    assert_eq!(mi.after.line(), 1);
+    assert_eq!(mi.after.col(), 2);
+    assert_eq!(mi.after.byte_offset(), 1);
 }
 
 mod split_at_match_non_empty {
@@ -49,17 +49,17 @@ mod split_at_match_non_empty {
     #[test]
     fn match_after_first() {
         let s = Span::new("ab:cd");
-        let pr = s.split_at_match_non_empty(|c| c == ':').unwrap();
+        let mi = s.split_at_match_non_empty(|c| c == ':').unwrap();
 
-        assert_eq!(pr.t.data(), "ab");
-        assert_eq!(pr.t.line(), 1);
-        assert_eq!(pr.t.col(), 1);
-        assert_eq!(pr.t.byte_offset(), 0);
+        assert_eq!(mi.item.data(), "ab");
+        assert_eq!(mi.item.line(), 1);
+        assert_eq!(mi.item.col(), 1);
+        assert_eq!(mi.item.byte_offset(), 0);
 
-        assert_eq!(pr.rem.data(), ":cd");
-        assert_eq!(pr.rem.line(), 1);
-        assert_eq!(pr.rem.col(), 3);
-        assert_eq!(pr.rem.byte_offset(), 2);
+        assert_eq!(mi.after.data(), ":cd");
+        assert_eq!(mi.after.line(), 1);
+        assert_eq!(mi.after.col(), 3);
+        assert_eq!(mi.after.byte_offset(), 2);
     }
 }
 

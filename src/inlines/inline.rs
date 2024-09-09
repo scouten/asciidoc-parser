@@ -1,4 +1,4 @@
-use crate::{inlines::InlineMacro, span::ParseResult, HasSpan, Span};
+use crate::{inlines::InlineMacro, span::MatchedItem, HasSpan, Span};
 
 /// An inline element is a phrase (i.e., span of content) within a block element
 /// or one of its attributes in an AsciiDoc document.
@@ -21,48 +21,48 @@ impl<'src> Inline<'src> {
     /// describes it.
     ///
     /// Returns `None` if input doesn't start with a non-empty line.
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let line = source.take_non_empty_line()?;
-        let mut span = line.t;
+        let mut span = line.item;
 
         // Special-case optimization: If the entire span is one
         // uninterpreted block, just return that without the allocation
         // overhead of the Vec of inlines.
 
         let mut uninterp = parse_uninterpreted(span);
-        if uninterp.rem.is_empty() {
-            return Some(ParseResult {
-                t: Self::Uninterpreted(uninterp.t),
-                rem: line.rem,
+        if uninterp.after.is_empty() {
+            return Some(MatchedItem {
+                item: Self::Uninterpreted(uninterp.item),
+                after: line.after,
             });
         }
 
         let mut inlines: Vec<Self> = vec![];
 
         loop {
-            if !uninterp.t.is_empty() {
-                inlines.push(Self::Uninterpreted(uninterp.t));
+            if !uninterp.item.is_empty() {
+                inlines.push(Self::Uninterpreted(uninterp.item));
             }
 
-            span = uninterp.rem;
+            span = uninterp.after;
             if span.is_empty() {
                 break;
             }
 
             let interp = parse_interpreted(span)?;
-            if interp.rem.is_empty() && inlines.is_empty() {
+            if interp.after.is_empty() && inlines.is_empty() {
                 return Some(interp);
             }
 
-            inlines.push(interp.t);
-            span = interp.rem;
+            inlines.push(interp.item);
+            span = interp.after;
 
             uninterp = parse_uninterpreted(span);
         }
 
-        Some(ParseResult {
-            t: Self::Sequence(inlines, source.trim_remainder(line.rem)),
-            rem: line.rem,
+        Some(MatchedItem {
+            item: Self::Sequence(inlines, source.trim_remainder(line.after)),
+            after: line.after,
         })
     }
 
@@ -71,25 +71,25 @@ impl<'src> Inline<'src> {
     ///
     /// Returns `None` if there is not at least one non-empty line at
     /// beginning of input.
-    pub(crate) fn parse_lines(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse_lines(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let mut inlines: Vec<Inline<'src>> = vec![];
         let mut next = source;
 
         while let Some(inline) = Self::parse(next) {
-            next = inline.rem;
-            inlines.push(inline.t);
+            next = inline.after;
+            inlines.push(inline.item);
         }
 
         if inlines.len() < 2 {
-            inlines.pop().map(|inline| ParseResult {
-                t: inline,
-                rem: next,
+            inlines.pop().map(|inline| MatchedItem {
+                item: inline,
+                after: next,
             })
         } else {
             let source = source.trim_remainder(next);
-            Some(ParseResult {
-                t: Self::Sequence(inlines, source),
-                rem: next,
+            Some(MatchedItem {
+                item: Self::Sequence(inlines, source),
+                after: next,
             })
         }
     }
@@ -108,7 +108,7 @@ impl<'src> HasSpan<'src> for Inline<'src> {
 // Parse the largest possible block of "uninterpreted" text.
 // Remainder is either empty span or first span that requires
 // special interpretation.
-fn parse_uninterpreted(source: Span<'_>) -> ParseResult<Span> {
+fn parse_uninterpreted(source: Span<'_>) -> MatchedItem<Span> {
     // Optimization: If line doesn't contain special markup chars,
     // then it's all uninterpreted.
 
@@ -116,28 +116,28 @@ fn parse_uninterpreted(source: Span<'_>) -> ParseResult<Span> {
         return source.into_parse_result(source.len());
     }
 
-    let mut rem = source;
+    let mut after = source;
 
-    while !rem.is_empty() {
-        if InlineMacro::parse(rem).is_some() {
+    while !after.is_empty() {
+        if InlineMacro::parse(after).is_some() {
             break;
         }
 
-        let word = rem.take_while(|c| c != ' ' && c != '\t');
-        let spaces = word.rem.take_whitespace();
-        rem = spaces.rem;
+        let word = after.take_while(|c| c != ' ' && c != '\t');
+        let spaces = word.after.take_whitespace();
+        after = spaces.after;
     }
 
-    ParseResult {
-        t: source.trim_remainder(rem),
-        rem,
+    MatchedItem {
+        item: source.trim_remainder(after),
+        after: after,
     }
 }
 
 // Parse the block as a special "interpreted" inline sequence or error out.
-fn parse_interpreted(source: Span<'_>) -> Option<ParseResult<Inline<'_>>> {
-    InlineMacro::parse(source).map(|inline| ParseResult {
-        t: Inline::Macro(inline.t),
-        rem: inline.rem,
+fn parse_interpreted(source: Span<'_>) -> Option<MatchedItem<Inline<'_>>> {
+    InlineMacro::parse(source).map(|inline| MatchedItem {
+        item: Inline::Macro(inline.item),
+        after: inline.after,
     })
 }

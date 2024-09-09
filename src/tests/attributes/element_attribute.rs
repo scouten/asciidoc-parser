@@ -10,8 +10,8 @@ use crate::{
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let b1 = ElementAttribute::parse(Span::new("abc")).unwrap();
-    let b2 = b1.t.clone();
-    assert_eq!(b1.t, b2);
+    let b2 = b1.item.clone();
+    assert_eq!(b1.item, b2);
 }
 
 #[test]
@@ -21,10 +21,10 @@ fn empty_source() {
 
 #[test]
 fn only_spaces() {
-    let pr = ElementAttribute::parse(Span::new("   ")).unwrap();
+    let mi = ElementAttribute::parse(Span::new("   ")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
@@ -43,13 +43,13 @@ fn only_spaces() {
         }
     );
 
-    assert!(pr.t.block_style().is_none());
-    assert!(pr.t.id().is_none());
-    assert!(pr.t.roles().is_empty());
-    assert!(pr.t.options().is_empty());
+    assert!(mi.item.block_style().is_none());
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -58,10 +58,10 @@ fn only_spaces() {
         }
     );
 
-    assert!(pr.t.name().is_none());
+    assert!(mi.item.name().is_none());
 
     assert_eq!(
-        pr.t.span(),
+        mi.item.span(),
         TSpan {
             data: "   ",
             line: 1,
@@ -73,10 +73,10 @@ fn only_spaces() {
 
 #[test]
 fn unquoted_and_unnamed_value() {
-    let pr = ElementAttribute::parse(Span::new("abc")).unwrap();
+    let mi = ElementAttribute::parse(Span::new("abc")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
@@ -95,14 +95,14 @@ fn unquoted_and_unnamed_value() {
         }
     );
 
-    assert!(pr.t.name().is_none());
-    assert!(pr.t.block_style().is_none());
-    assert!(pr.t.id().is_none());
-    assert!(pr.t.roles().is_empty());
-    assert!(pr.t.options().is_empty());
+    assert!(mi.item.name().is_none());
+    assert!(mi.item.block_style().is_none());
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
 
     assert_eq!(
-        pr.t.span(),
+        mi.item.span(),
         TSpan {
             data: "abc",
             line: 1,
@@ -112,7 +112,7 @@ fn unquoted_and_unnamed_value() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -124,10 +124,10 @@ fn unquoted_and_unnamed_value() {
 
 #[test]
 fn unquoted_stops_at_comma() {
-    let pr = ElementAttribute::parse(Span::new("abc,def")).unwrap();
+    let mi = ElementAttribute::parse(Span::new("abc,def")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
@@ -146,14 +146,14 @@ fn unquoted_stops_at_comma() {
         }
     );
 
-    assert!(pr.t.name().is_none());
-    assert!(pr.t.block_style().is_none());
-    assert!(pr.t.id().is_none());
-    assert!(pr.t.roles().is_empty());
-    assert!(pr.t.options().is_empty());
+    assert!(mi.item.name().is_none());
+    assert!(mi.item.block_style().is_none());
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
 
     assert_eq!(
-        pr.t.span(),
+        mi.item.span(),
         TSpan {
             data: "abc",
             line: 1,
@@ -163,7 +163,7 @@ fn unquoted_stops_at_comma() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: ",def",
             line: 1,
@@ -189,10 +189,10 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_string() {
-        let pr = ElementAttribute::parse(Span::new("\"abc\"def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("\"abc\"def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -211,14 +211,14 @@ mod quoted_string {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "\"abc\"",
                 line: 1,
@@ -228,7 +228,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -240,10 +240,10 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_escape() {
-        let pr = ElementAttribute::parse(Span::new("\"a\\\"bc\"def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("\"a\\\"bc\"def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -262,14 +262,14 @@ mod quoted_string {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "\"a\\\"bc\"",
                 line: 1,
@@ -279,7 +279,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -291,10 +291,10 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_single_quote() {
-        let pr = ElementAttribute::parse(Span::new("\"a'bc\"def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("\"a'bc\"def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -313,14 +313,14 @@ mod quoted_string {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "\"a'bc\"",
                 line: 1,
@@ -330,7 +330,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -347,10 +347,10 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_string() {
-        let pr = ElementAttribute::parse(Span::new("'abc'def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("'abc'def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -369,14 +369,14 @@ mod quoted_string {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "'abc'",
                 line: 1,
@@ -386,7 +386,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -398,10 +398,10 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_escape() {
-        let pr = ElementAttribute::parse(Span::new("'a\\'bc'def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("'a\\'bc'def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -420,14 +420,14 @@ mod quoted_string {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "'a\\'bc'",
                 line: 1,
@@ -437,7 +437,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -449,10 +449,10 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_double_quote() {
-        let pr = ElementAttribute::parse(Span::new("'a\"bc'def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("'a\"bc'def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -471,14 +471,14 @@ mod quoted_string {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "'a\"bc'",
                 line: 1,
@@ -488,7 +488,7 @@ mod quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -510,10 +510,10 @@ mod named {
 
     #[test]
     fn simple_named_value() {
-        let pr = ElementAttribute::parse(Span::new("abc=def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc=def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "abc",
@@ -538,7 +538,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.t.name().unwrap(),
+            mi.item.name().unwrap(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -547,13 +547,13 @@ mod named {
             }
         );
 
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "abc=def",
                 line: 1,
@@ -563,7 +563,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -575,10 +575,10 @@ mod named {
 
     #[test]
     fn ignores_spaces_around_equals() {
-        let pr = ElementAttribute::parse(Span::new("abc =  def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc =  def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "abc",
@@ -603,7 +603,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.t.name().unwrap(),
+            mi.item.name().unwrap(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -613,7 +613,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "abc =  def",
                 line: 1,
@@ -623,7 +623,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -635,10 +635,10 @@ mod named {
 
     #[test]
     fn numeric_name() {
-        let pr = ElementAttribute::parse(Span::new("94-x =def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("94-x =def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "94-x",
@@ -663,7 +663,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.t.name().unwrap(),
+            mi.item.name().unwrap(),
             TSpan {
                 data: "94-x",
                 line: 1,
@@ -672,13 +672,13 @@ mod named {
             }
         );
 
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "94-x =def",
                 line: 1,
@@ -688,7 +688,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -700,10 +700,10 @@ mod named {
 
     #[test]
     fn quoted_value() {
-        let pr = ElementAttribute::parse(Span::new("abc='def'g")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc='def'g")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "abc",
@@ -728,7 +728,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.t.name().unwrap(),
+            mi.item.name().unwrap(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -737,13 +737,13 @@ mod named {
             }
         );
 
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "abc='def'",
                 line: 1,
@@ -753,7 +753,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "g",
                 line: 1,
@@ -765,10 +765,10 @@ mod named {
 
     #[test]
     fn fallback_if_no_value() {
-        let pr = ElementAttribute::parse(Span::new("abc=")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc=")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -787,14 +787,14 @@ mod named {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "abc=",
                 line: 1,
@@ -804,7 +804,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -816,10 +816,10 @@ mod named {
 
     #[test]
     fn fallback_if_immediate_comma() {
-        let pr = ElementAttribute::parse(Span::new("abc=,def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc=,def")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -838,14 +838,14 @@ mod named {
             }
         );
 
-        assert!(pr.t.name().is_none());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.name().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "abc=",
                 line: 1,
@@ -855,7 +855,7 @@ mod named {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: ",def",
                 line: 1,
@@ -877,10 +877,10 @@ mod parse_with_shorthand {
 
     #[test]
     fn block_style_only() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new("abc")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("abc")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![TSpan {
@@ -904,10 +904,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![TSpan {
                 data: "abc",
                 line: 1,
@@ -917,7 +917,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.block_style().unwrap(),
+            mi.item.block_style().unwrap(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -926,12 +926,12 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -941,7 +941,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -953,10 +953,10 @@ mod parse_with_shorthand {
 
     #[test]
     fn ignore_if_named_attribute() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new("name=block_style#id")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("name=block_style#id")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: Some(TSpan {
                     data: "name",
@@ -981,7 +981,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.name().unwrap(),
+            mi.item.name().unwrap(),
             TSpan {
                 data: "name",
                 line: 1,
@@ -990,14 +990,14 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.shorthand_items().is_empty());
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.shorthand_items().is_empty());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "name=block_style#id",
                 line: 1,
@@ -1007,7 +1007,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1035,10 +1035,10 @@ mod parse_with_shorthand {
 
     #[test]
     fn id_only() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new("#xyz")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("#xyz")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![TSpan {
@@ -1062,10 +1062,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![TSpan {
                 data: "#xyz",
                 line: 1,
@@ -1074,10 +1074,10 @@ mod parse_with_shorthand {
             }]
         );
 
-        assert!(pr.t.block_style().is_none());
+        assert!(mi.item.block_style().is_none());
 
         assert_eq!(
-            pr.t.id().unwrap(),
+            mi.item.id().unwrap(),
             TSpan {
                 data: "xyz",
                 line: 1,
@@ -1086,11 +1086,11 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "#xyz",
                 line: 1,
@@ -1100,7 +1100,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1112,10 +1112,10 @@ mod parse_with_shorthand {
 
     #[test]
     fn one_role_only() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new(".role1")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![TSpan {
@@ -1139,10 +1139,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![TSpan {
                 data: ".role1",
                 line: 1,
@@ -1151,11 +1151,11 @@ mod parse_with_shorthand {
             }]
         );
 
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
 
         assert_eq!(
-            pr.t.roles(),
+            mi.item.roles(),
             vec!(TSpan {
                 data: "role1",
                 line: 1,
@@ -1164,10 +1164,10 @@ mod parse_with_shorthand {
             })
         );
 
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: ".role1",
                 line: 1,
@@ -1177,7 +1177,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1189,10 +1189,10 @@ mod parse_with_shorthand {
 
     #[test]
     fn multiple_roles() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new(".role1.role2.role3")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1.role2.role3")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![
@@ -1230,10 +1230,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![
                 TSpan {
                     data: ".role1",
@@ -1256,11 +1256,11 @@ mod parse_with_shorthand {
             ]
         );
 
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
 
         assert_eq!(
-            pr.t.roles(),
+            mi.item.roles(),
             vec!(
                 TSpan {
                     data: "role1",
@@ -1283,10 +1283,10 @@ mod parse_with_shorthand {
             )
         );
 
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: ".role1.role2.role3",
                 line: 1,
@@ -1296,7 +1296,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1308,10 +1308,10 @@ mod parse_with_shorthand {
 
     #[test]
     fn one_option_only() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new("%option1")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("%option1")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![TSpan {
@@ -1335,10 +1335,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![TSpan {
                 data: "%option1",
                 line: 1,
@@ -1347,12 +1347,12 @@ mod parse_with_shorthand {
             }]
         );
 
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
 
         assert_eq!(
-            pr.t.options(),
+            mi.item.options(),
             vec!(TSpan {
                 data: "option1",
                 line: 1,
@@ -1362,7 +1362,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "%option1",
                 line: 1,
@@ -1372,7 +1372,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1384,11 +1384,11 @@ mod parse_with_shorthand {
 
     #[test]
     fn multiple_options() {
-        let pr =
+        let mi =
             ElementAttribute::parse_with_shorthand(Span::new("%option1%option2%option3")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![
@@ -1426,10 +1426,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![
                 TSpan {
                     data: "%option1",
@@ -1452,12 +1452,12 @@ mod parse_with_shorthand {
             ]
         );
 
-        assert!(pr.t.block_style().is_none());
-        assert!(pr.t.id().is_none());
-        assert!(pr.t.roles().is_empty());
+        assert!(mi.item.block_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
 
         assert_eq!(
-            pr.t.options(),
+            mi.item.options(),
             vec!(
                 TSpan {
                     data: "option1",
@@ -1481,7 +1481,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "%option1%option2%option3",
                 line: 1,
@@ -1491,7 +1491,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1503,10 +1503,10 @@ mod parse_with_shorthand {
 
     #[test]
     fn block_style_and_id() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new("appendix#custom-id")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("appendix#custom-id")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![
@@ -1538,10 +1538,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![
                 TSpan {
                     data: "appendix",
@@ -1559,7 +1559,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.block_style().unwrap(),
+            mi.item.block_style().unwrap(),
             TSpan {
                 data: "appendix",
                 line: 1,
@@ -1569,7 +1569,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.id().unwrap(),
+            mi.item.id().unwrap(),
             TSpan {
                 data: "custom-id",
                 line: 1,
@@ -1578,11 +1578,11 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.roles().is_empty());
-        assert!(pr.t.options().is_empty());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "appendix#custom-id",
                 line: 1,
@@ -1592,7 +1592,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1604,11 +1604,11 @@ mod parse_with_shorthand {
 
     #[test]
     fn id_role_and_option() {
-        let pr = ElementAttribute::parse_with_shorthand(Span::new("#rules.prominent%incremental"))
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("#rules.prominent%incremental"))
             .unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![
@@ -1646,10 +1646,10 @@ mod parse_with_shorthand {
             }
         );
 
-        assert!(pr.t.name().is_none());
+        assert!(mi.item.name().is_none());
 
         assert_eq!(
-            pr.t.shorthand_items(),
+            mi.item.shorthand_items(),
             &vec![
                 TSpan {
                     data: "#rules",
@@ -1672,10 +1672,10 @@ mod parse_with_shorthand {
             ]
         );
 
-        assert!(pr.t.block_style().is_none());
+        assert!(mi.item.block_style().is_none());
 
         assert_eq!(
-            pr.t.id().unwrap(),
+            mi.item.id().unwrap(),
             TSpan {
                 data: "rules",
                 line: 1,
@@ -1685,7 +1685,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.roles(),
+            mi.item.roles(),
             vec!(TSpan {
                 data: "prominent",
                 line: 1,
@@ -1695,7 +1695,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.options(),
+            mi.item.options(),
             vec!(TSpan {
                 data: "incremental",
                 line: 1,
@@ -1705,7 +1705,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: "#rules.prominent%incremental",
                 line: 1,
@@ -1715,7 +1715,7 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,

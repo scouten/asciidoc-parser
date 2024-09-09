@@ -1,11 +1,11 @@
-use crate::{blocks::Block, span::ParseResult, Span};
+use crate::{blocks::Block, span::MatchedItem, Span};
 
 /// Parse blocks until end of input or a pre-determined stop condition is
 /// reached.
 pub(crate) fn parse_blocks_until<'src, F>(
     mut source: Span<'src>,
     f: F,
-) -> Option<ParseResult<'src, Vec<Block<'src>>>>
+) -> Option<MatchedItem<'src, Vec<Block<'src>>>>
 where
     F: Fn(&Span<'src>) -> bool,
 {
@@ -17,13 +17,13 @@ where
             break;
         }
 
-        let pr = Block::parse(source)?;
-        source = pr.rem;
-        blocks.push(pr.t);
+        let mi = Block::parse(source)?;
+        source = mi.after;
+        blocks.push(mi.item);
     }
 
-    Some(ParseResult {
-        t: blocks,
-        rem: source,
+    Some(MatchedItem {
+        item: blocks,
+        after: source,
     })
 }

@@ -30,10 +30,10 @@ mod take_ident {
     #[test]
     fn stops_at_non_ident() {
         let span = Span::new("x#");
-        let pr = span.take_ident().unwrap();
+        let mi = span.take_ident().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "x",
                 line: 1,
@@ -43,7 +43,7 @@ mod take_ident {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "#",
                 line: 1,
@@ -56,10 +56,10 @@ mod take_ident {
     #[test]
     fn alpha_numeric() {
         let span = Span::new("i94!");
-        let pr = span.take_ident().unwrap();
+        let mi = span.take_ident().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "i94",
                 line: 1,
@@ -69,7 +69,7 @@ mod take_ident {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "!",
                 line: 1,
@@ -82,10 +82,10 @@ mod take_ident {
     #[test]
     fn starts_with_underscore() {
         let span = Span::new("_i94!");
-        let pr = span.take_ident().unwrap();
+        let mi = span.take_ident().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "_i94",
                 line: 1,
@@ -95,7 +95,7 @@ mod take_ident {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "!",
                 line: 1,
@@ -108,10 +108,10 @@ mod take_ident {
     #[test]
     fn contains_underscores() {
         let span = Span::new("blah_blah_94 = foo");
-        let pr = span.take_ident().unwrap();
+        let mi = span.take_ident().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "blah_blah_94",
                 line: 1,
@@ -121,7 +121,7 @@ mod take_ident {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: " = foo",
                 line: 1,
@@ -134,10 +134,10 @@ mod take_ident {
     #[test]
     fn contains_hyphens() {
         let span = Span::new("blah-blah-94 = foo");
-        let pr = span.take_ident().unwrap();
+        let mi = span.take_ident().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "blah",
                 line: 1,
@@ -147,7 +147,7 @@ mod take_ident {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "-blah-94 = foo",
                 line: 1,
@@ -160,10 +160,10 @@ mod take_ident {
     #[test]
     fn stops_at_eof() {
         let span = Span::new("xyz");
-        let pr = span.take_ident().unwrap();
+        let mi = span.take_ident().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "xyz",
                 line: 1,
@@ -173,7 +173,7 @@ mod take_ident {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -210,10 +210,10 @@ mod take_attr_name {
     #[test]
     fn stops_at_non_ident() {
         let span = Span::new("x#");
-        let pr = span.take_attr_name().unwrap();
+        let mi = span.take_attr_name().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "x",
                 line: 1,
@@ -223,7 +223,7 @@ mod take_attr_name {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "#",
                 line: 1,
@@ -236,10 +236,10 @@ mod take_attr_name {
     #[test]
     fn numeric() {
         let span = Span::new("94!");
-        let pr = span.take_attr_name().unwrap();
+        let mi = span.take_attr_name().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "94",
                 line: 1,
@@ -249,7 +249,7 @@ mod take_attr_name {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "!",
                 line: 1,
@@ -262,10 +262,10 @@ mod take_attr_name {
     #[test]
     fn contains_hyphens() {
         let span = Span::new("blah-blah-94 = foo");
-        let pr = span.take_attr_name().unwrap();
+        let mi = span.take_attr_name().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "blah-blah-94",
                 line: 1,
@@ -275,7 +275,7 @@ mod take_attr_name {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: " = foo",
                 line: 1,
@@ -288,10 +288,10 @@ mod take_attr_name {
     #[test]
     fn stops_at_eof() {
         let span = Span::new("xyz");
-        let pr = span.take_attr_name().unwrap();
+        let mi = span.take_attr_name().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "xyz",
                 line: 1,
@@ -301,7 +301,7 @@ mod take_attr_name {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -332,10 +332,10 @@ mod take_quoted_string {
     #[test]
     fn double_quoted_string() {
         let span = Span::new("\"abc\"def");
-        let pr = span.take_quoted_string().unwrap();
+        let mi = span.take_quoted_string().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -345,7 +345,7 @@ mod take_quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -358,10 +358,10 @@ mod take_quoted_string {
     #[test]
     fn double_quoted_with_escape() {
         let span = Span::new("\"a\\\"bc\"def");
-        let pr = span.take_quoted_string().unwrap();
+        let mi = span.take_quoted_string().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "a\\\"bc",
                 line: 1,
@@ -371,7 +371,7 @@ mod take_quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -384,10 +384,10 @@ mod take_quoted_string {
     #[test]
     fn double_quoted_with_single_quote() {
         let span = Span::new("\"a'bc\"def");
-        let pr = span.take_quoted_string().unwrap();
+        let mi = span.take_quoted_string().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "a'bc",
                 line: 1,
@@ -397,7 +397,7 @@ mod take_quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -416,10 +416,10 @@ mod take_quoted_string {
     #[test]
     fn single_quoted_string() {
         let span = Span::new("'abc'def");
-        let pr = span.take_quoted_string().unwrap();
+        let mi = span.take_quoted_string().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -429,7 +429,7 @@ mod take_quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -442,10 +442,10 @@ mod take_quoted_string {
     #[test]
     fn single_quoted_with_escape() {
         let span = Span::new("'a\\'bc'def");
-        let pr = span.take_quoted_string().unwrap();
+        let mi = span.take_quoted_string().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "a\\'bc",
                 line: 1,
@@ -455,7 +455,7 @@ mod take_quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -468,10 +468,10 @@ mod take_quoted_string {
     #[test]
     fn single_quoted_with_double_quote() {
         let span = Span::new("'a\"bc'def");
-        let pr = span.take_quoted_string().unwrap();
+        let mi = span.take_quoted_string().unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "a\"bc",
                 line: 1,
@@ -481,7 +481,7 @@ mod take_quoted_string {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "def",
                 line: 1,
@@ -505,10 +505,10 @@ mod trim_remainder {
     #[test]
     fn empty_spans() {
         let source = advanced_span("abcdef", 6);
-        let rem = Span::new("");
+        let after = Span::new("");
 
         assert_eq!(
-            source.trim_remainder(rem),
+            source.trim_remainder(after),
             TSpan {
                 data: "",
                 line: 1,
@@ -521,10 +521,10 @@ mod trim_remainder {
     #[test]
     fn rem_equals_source() {
         let source = advanced_span("abcdef", 6);
-        let rem = Span::new("abcdef");
+        let after = Span::new("abcdef");
 
         assert_eq!(
-            source.trim_remainder(rem),
+            source.trim_remainder(after),
             TSpan {
                 data: "",
                 line: 1,
@@ -539,10 +539,10 @@ mod trim_remainder {
         // This is nonsense input, but we should at least not panic in this case.
 
         let source = advanced_span("abcdef", 6);
-        let rem = Span::new("abcdef_bogus_bogus");
+        let after = Span::new("abcdef_bogus_bogus");
 
         assert_eq!(
-            source.trim_remainder(rem),
+            source.trim_remainder(after),
             TSpan {
                 data: "",
                 line: 1,
@@ -555,10 +555,10 @@ mod trim_remainder {
     #[test]
     fn rem_is_subset_of_source() {
         let source = advanced_span("abcdef", 2);
-        let rem = advanced_span("abcdef", 4);
+        let after = advanced_span("abcdef", 4);
 
         assert_eq!(
-            source.trim_remainder(rem),
+            source.trim_remainder(after),
             TSpan {
                 data: "cd",
                 line: 1,
