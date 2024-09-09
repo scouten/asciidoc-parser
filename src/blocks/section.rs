@@ -2,7 +2,6 @@ use std::slice::Iter;
 
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
-    primitives::trim_source_for_rem,
     span::ParseResult,
     strings::CowStr,
     HasSpan, Span,
@@ -28,7 +27,7 @@ impl<'src> SectionBlock<'src> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
         let blocks = parse_blocks_until(level.rem, |i| peer_or_ancestor_section(*i, level.t.0))?;
-        let source = trim_source_for_rem(source, blocks.rem);
+        let source = source.trim_remainder(blocks.rem);
 
         Some(ParseResult {
             t: Self {

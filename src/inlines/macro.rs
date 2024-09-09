@@ -1,4 +1,4 @@
-use crate::{primitives::trim_source_for_rem, span::ParseResult, HasSpan, Span};
+use crate::{span::ParseResult, HasSpan, Span};
 
 /// An inline macro can be used in an inline context to create new inline
 /// content.
@@ -24,7 +24,7 @@ impl<'src> InlineMacro<'src> {
         let open_brace = target.rem.take_prefix("[")?;
         let attrlist = open_brace.rem.take_while(|c| c != ']');
         let close_brace = attrlist.rem.take_prefix("]")?;
-        let source = trim_source_for_rem(source, close_brace.rem);
+        let source = source.trim_remainder(close_brace.rem);
 
         Some(ParseResult {
             t: Self {

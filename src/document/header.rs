@@ -1,8 +1,6 @@
 use std::slice::Iter;
 
-use crate::{
-    document::Attribute, primitives::trim_source_for_rem, span::ParseResult, HasSpan, Span,
-};
+use crate::{document::Attribute, span::ParseResult, HasSpan, Span};
 
 /// An AsciiDoc document may begin with a document header. The document header
 /// encapsulates the document title, author and revision information,
@@ -29,7 +27,7 @@ impl<'src> Header<'src> {
             rem = attr.rem;
         }
 
-        let source = trim_source_for_rem(source, rem);
+        let source = source.trim_remainder(rem);
 
         // Header must be followed by an empty line or EOF.
         let pr = rem.take_empty_line()?;

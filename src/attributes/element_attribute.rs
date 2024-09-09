@@ -1,4 +1,4 @@
-use crate::{primitives::trim_source_for_rem, span::ParseResult, HasSpan, Span};
+use crate::{span::ParseResult, HasSpan, Span};
 
 /// This struct represents a single element attribute.
 ///
@@ -60,7 +60,7 @@ impl<'src> ElementAttribute<'src> {
             return None;
         }
 
-        let source = trim_source_for_rem(source, value.rem);
+        let source = source.trim_remainder(value.rem);
 
         let shorthand_items = if name.is_none() && parse_shorthand {
             parse_shorthand_items(source)

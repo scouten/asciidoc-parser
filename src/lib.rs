@@ -15,8 +15,6 @@ pub use document::Document;
 
 pub mod inlines;
 
-pub(crate) mod primitives;
-
 mod span;
 pub use span::{HasSpan, Span};
 

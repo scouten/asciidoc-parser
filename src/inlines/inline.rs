@@ -1,6 +1,4 @@
-use crate::{
-    inlines::InlineMacro, primitives::trim_source_for_rem, span::ParseResult, HasSpan, Span,
-};
+use crate::{inlines::InlineMacro, span::ParseResult, HasSpan, Span};
 
 /// An inline element is a phrase (i.e., span of content) within a block element
 /// or one of its attributes in an AsciiDoc document.
@@ -63,7 +61,7 @@ impl<'src> Inline<'src> {
         }
 
         Some(ParseResult {
-            t: Self::Sequence(inlines, trim_source_for_rem(source, line.rem)),
+            t: Self::Sequence(inlines, source.trim_remainder(line.rem)),
             rem: line.rem,
         })
     }
@@ -88,7 +86,7 @@ impl<'src> Inline<'src> {
                 rem: next,
             })
         } else {
-            let source = trim_source_for_rem(source, next);
+            let source = source.trim_remainder(next);
             Some(ParseResult {
                 t: Self::Sequence(inlines, source),
                 rem: next,
@@ -131,7 +129,7 @@ fn parse_uninterpreted(source: Span<'_>) -> ParseResult<Span> {
     }
 
     ParseResult {
-        t: trim_source_for_rem(source, rem),
+        t: source.trim_remainder(rem),
         rem,
     }
 }
