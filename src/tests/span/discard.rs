@@ -2,7 +2,7 @@ mod discard {
     use crate::{tests::fixtures::TSpan, Span};
 
     #[test]
-    fn empty_input() {
+    fn empty_source() {
         let span = Span::new("");
         assert_eq!(
             span.discard(4),
@@ -76,7 +76,7 @@ mod discard_all {
     use crate::{tests::fixtures::TSpan, Span};
 
     #[test]
-    fn empty_input() {
+    fn empty_source() {
         let span = Span::new("");
         assert_eq!(
             span.discard_all(),

@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
-    document::Attribute, primitives::trim_input_for_rem, span::ParseResult, HasSpan, Span,
+    document::Attribute, primitives::trim_source_for_rem, span::ParseResult, HasSpan, Span,
 };
 
 /// An AsciiDoc document may begin with a document header. The document header
@@ -15,8 +15,8 @@ pub struct Header<'src> {
 }
 
 impl<'src> Header<'src> {
-    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
-        let source = i.discard_empty_lines();
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+        let source = source.discard_empty_lines();
 
         // TEMPORARY: Titles are optional, but we're not prepared for that yet.
         let title = parse_title(source)?;
@@ -29,7 +29,7 @@ impl<'src> Header<'src> {
             rem = attr.rem;
         }
 
-        let source = trim_input_for_rem(source, rem);
+        let source = trim_source_for_rem(source, rem);
 
         // Header must be followed by an empty line or EOF.
         let pr = rem.take_empty_line()?;
@@ -61,8 +61,8 @@ impl<'src> HasSpan<'src> for Header<'src> {
     }
 }
 
-fn parse_title(i: Span<'_>) -> Option<ParseResult<Span>> {
-    let line = i.take_non_empty_line()?;
+fn parse_title(source: Span<'_>) -> Option<ParseResult<Span>> {
+    let line = source.take_non_empty_line()?;
     let equal = line.t.take_prefix("=")?;
     let ws = equal.rem.take_required_whitespace()?;
 

@@ -2,7 +2,7 @@ mod take_prefix {
     use crate::{tests::fixtures::TSpan, Span};
 
     #[test]
-    fn empty_input() {
+    fn empty_source() {
         let span = Span::new("");
         assert!(span.take_prefix("foo").is_none());
     }
@@ -76,7 +76,7 @@ mod take_whitespace {
     use crate::{tests::fixtures::TSpan, Span};
 
     #[test]
-    fn empty_input() {
+    fn empty_source() {
         let span = Span::new("");
         let pr = span.take_whitespace();
 
@@ -184,7 +184,7 @@ mod take_required_whitespace {
     use crate::{tests::fixtures::TSpan, Span};
 
     #[test]
-    fn empty_input() {
+    fn empty_source() {
         let span = Span::new("");
         assert!(span.take_required_whitespace().is_none());
     }
@@ -252,7 +252,7 @@ mod take_while {
     use crate::{tests::fixtures::TSpan, Span};
 
     #[test]
-    fn empty_input() {
+    fn empty_source() {
         let span = Span::new("");
         let pr = span.take_while(|c| c != ':');
 

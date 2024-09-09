@@ -2,7 +2,7 @@ use std::slice::Iter;
 
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
-    primitives::trim_input_for_rem,
+    primitives::trim_source_for_rem,
     span::ParseResult,
     strings::CowStr,
     HasSpan, Span,
@@ -28,7 +28,7 @@ impl<'src> SectionBlock<'src> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
         let blocks = parse_blocks_until(level.rem, |i| peer_or_ancestor_section(*i, level.t.0))?;
-        let source = trim_input_for_rem(source, blocks.rem);
+        let source = trim_source_for_rem(source, blocks.rem);
 
         Some(ParseResult {
             t: Self {
@@ -103,8 +103,8 @@ fn parse_title_line(source: Span<'_>) -> Option<ParseResult<(usize, Span)>> {
     })
 }
 
-fn peer_or_ancestor_section(i: Span<'_>, level: usize) -> bool {
-    if let Some(pr) = parse_title_line(i) {
+fn peer_or_ancestor_section(source: Span<'_>, level: usize) -> bool {
+    if let Some(pr) = parse_title_line(source) {
         pr.t.0 <= level
     } else {
         false

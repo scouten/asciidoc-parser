@@ -1,4 +1,4 @@
-use crate::{primitives::trim_input_for_rem, span::ParseResult, strings::CowStr, HasSpan, Span};
+use crate::{primitives::trim_source_for_rem, span::ParseResult, strings::CowStr, HasSpan, Span};
 
 /// Document attributes are effectively document-scoped variables for the
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in
@@ -12,8 +12,8 @@ pub struct Attribute<'src> {
 }
 
 impl<'src> Attribute<'src> {
-    pub(crate) fn parse(i: Span<'src>) -> Option<ParseResult<'src, Self>> {
-        let attr_line = i.take_line_with_continuation()?;
+    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+        let attr_line = source.take_line_with_continuation()?;
         let colon = attr_line.t.take_prefix(":")?;
 
         let mut unset = false;
@@ -45,7 +45,7 @@ impl<'src> Attribute<'src> {
             RawAttributeValue::Value(value.rem)
         };
 
-        let source = trim_input_for_rem(i, attr_line.rem);
+        let source = trim_source_for_rem(source, attr_line.rem);
         Some(ParseResult {
             t: Self {
                 name: name.t,
