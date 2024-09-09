@@ -89,4 +89,21 @@ impl<'src> Span<'src> {
         // Didn't find closing delimiter.
         None
     }
+
+    /// Given a second [`Span`], which must be a trailing remainder of `self`,
+    /// return the portion of `self` that excludes the second (remainder).
+    ///
+    /// Note that the trailing remainder condition is not enforced.
+    pub(crate) fn trim_remainder(self, rem: Span<'src>) -> Span<'src> {
+        // Sanity check: If rem is longer than source, we can't trim.
+        let rlen = rem.len();
+        let slen = self.len();
+
+        if rlen >= slen {
+            self.slice(0..0)
+        } else {
+            let trim_len = slen - rlen;
+            self.slice(0..trim_len)
+        }
+    }
 }

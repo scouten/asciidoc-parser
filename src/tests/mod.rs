@@ -11,6 +11,5 @@ mod blocks;
 mod document;
 pub(crate) mod fixtures;
 mod inlines;
-mod primitives;
 mod span;
 mod strings;
