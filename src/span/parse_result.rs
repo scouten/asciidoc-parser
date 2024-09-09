@@ -25,10 +25,10 @@ impl<'src> ParseResult<'src, Span<'src>> {
 
     /// Discard any instances of the given character from the end of `self.t`.
     pub(crate) fn trim_t_end_matches(&self, c: char) -> Self {
-        if let Some(inp) = self.t.strip_suffix(c) {
-            let inp = self.t.slice(0..inp.len());
+        if let Some(source) = self.t.strip_suffix(c) {
+            let source = self.t.slice(0..source.len());
             Self {
-                t: inp,
+                t: source,
                 rem: self.rem,
             }
         } else {
@@ -38,10 +38,10 @@ impl<'src> ParseResult<'src, Span<'src>> {
 
     /// Discard any trailing spaces from `self.t`.
     pub(crate) fn trim_t_trailing_spaces(&self) -> Self {
-        let inp = self.t.trim_end_matches(' ');
-        let inp = self.t.slice(0..inp.len());
+        let source = self.t.trim_end_matches(' ');
+        let source = self.t.slice(0..source.len());
         Self {
-            t: inp,
+            t: source,
             rem: self.rem,
         }
     }
