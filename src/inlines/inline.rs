@@ -130,7 +130,7 @@ fn parse_uninterpreted(source: Span<'_>) -> MatchedItem<Span> {
 
     MatchedItem {
         item: source.trim_remainder(after),
-        after: after,
+        after,
     }
 }
 

@@ -63,7 +63,7 @@ impl<'src> Attrlist<'src> {
 
         Some(MatchedItem {
             item: Self { attributes, source },
-            after: after,
+            after,
         })
     }
 

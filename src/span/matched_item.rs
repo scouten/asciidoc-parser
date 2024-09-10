@@ -20,7 +20,7 @@ impl<'src> MatchedItem<'src, Span<'src>> {
             let after = self.after.slice_from(prefix_len..);
             Self {
                 item: self.item,
-                after: after,
+                after,
             }
         } else {
             *self
