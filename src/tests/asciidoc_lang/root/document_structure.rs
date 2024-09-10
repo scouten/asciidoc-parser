@@ -256,7 +256,7 @@ mod lines {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "",
                 line: 2,
@@ -266,7 +266,7 @@ mod lines {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "== Section Title",
                 line: 1,
@@ -284,10 +284,10 @@ mod lines {
         // :name: value
         // -----
 
-        let pr = Attribute::parse(Span::new(":name: value\n")).unwrap();
+        let mi = Attribute::parse(Span::new(":name: value\n")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TAttribute {
                 name: TSpan {
                     data: "name",
@@ -311,7 +311,7 @@ mod lines {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 2,
@@ -330,10 +330,10 @@ mod lines {
         // more value
         // -----
 
-        let pr = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
+        let mi = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TAttribute {
                 name: TSpan {
                     data: "name",
@@ -356,10 +356,10 @@ mod lines {
             }
         );
 
-        assert_eq!(pr.t.value(), TAttributeValue::Value("value more value"));
+        assert_eq!(mi.item.value(), TAttributeValue::Value("value more value"));
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 3,

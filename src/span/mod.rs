@@ -107,13 +107,13 @@ impl<'src> Deref for Span<'src> {
 
 mod discard;
 mod line;
-mod parse_result;
+mod matched_item;
 mod primitives;
 mod r#slice;
 mod split;
 mod take;
 
-pub(crate) use parse_result::ParseResult;
+pub(crate) use matched_item::MatchedItem;
 
 /// Any syntactic element can describe its location
 /// within the source material using this trait.

@@ -15,7 +15,7 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = MacroBlock::parse(Span::new("foo::[]")).unwrap().t;
+    let b1 = MacroBlock::parse(Span::new("foo::[]")).unwrap().item;
     let b2 = b1.clone();
     assert_eq!(b1, b2);
 }
@@ -56,13 +56,13 @@ fn err_unexpected_after_attr_list() {
 
 #[test]
 fn simplest_block_macro() {
-    let pr = MacroBlock::parse(Span::new("foo::[]")).unwrap();
+    let mi = MacroBlock::parse(Span::new("foo::[]")).unwrap();
 
-    assert_eq!(pr.t.content_model(), ContentModel::Simple);
-    assert_eq!(pr.t.context().deref(), "paragraph");
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.context().deref(), "paragraph");
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TMacroBlock {
             name: TSpan {
                 data: "foo",
@@ -90,7 +90,7 @@ fn simplest_block_macro() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -102,10 +102,10 @@ fn simplest_block_macro() {
 
 #[test]
 fn has_target() {
-    let pr = MacroBlock::parse(Span::new("foo::bar[]")).unwrap();
+    let mi = MacroBlock::parse(Span::new("foo::bar[]")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TMacroBlock {
             name: TSpan {
                 data: "foo",
@@ -138,7 +138,7 @@ fn has_target() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -150,10 +150,10 @@ fn has_target() {
 
 #[test]
 fn has_target_and_attrlist() {
-    let pr = MacroBlock::parse(Span::new("foo::bar[blah]")).unwrap();
+    let mi = MacroBlock::parse(Span::new("foo::bar[blah]")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TMacroBlock {
             name: TSpan {
                 data: "foo",
@@ -206,7 +206,7 @@ fn has_target_and_attrlist() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,

@@ -11,7 +11,7 @@ mod uninterpreted {
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
         let b1 = Inline::parse(Span::new("abc")).unwrap();
-        let b1 = b1.t;
+        let b1 = b1.item;
         let b2 = b1.clone();
         assert_eq!(b1, b2);
     }
@@ -31,7 +31,7 @@ mod uninterpreted {
         let inline = Inline::parse(Span::new("abc")).unwrap();
 
         assert_eq!(
-            inline.rem,
+            inline.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -41,7 +41,7 @@ mod uninterpreted {
         );
 
         assert_eq!(
-            inline.t,
+            inline.item,
             TInline::Uninterpreted(TSpan {
                 data: "abc",
                 line: 1,
@@ -51,7 +51,7 @@ mod uninterpreted {
         );
 
         assert_eq!(
-            inline.t.span(),
+            inline.item.span(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -86,7 +86,7 @@ mod parse_lines {
         let inline = Inline::parse_lines(Span::new("abc")).unwrap();
 
         assert_eq!(
-            inline.rem,
+            inline.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -96,7 +96,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline.t,
+            inline.item,
             TInline::Uninterpreted(TSpan {
                 data: "abc",
                 line: 1,
@@ -106,7 +106,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline.t.span(),
+            inline.item.span(),
             TSpan {
                 data: "abc",
                 line: 1,
@@ -121,7 +121,7 @@ mod parse_lines {
         let inline = Inline::parse_lines(Span::new("abc\ndef")).unwrap();
 
         assert_eq!(
-            inline.rem,
+            inline.after,
             TSpan {
                 data: "",
                 line: 2,
@@ -131,7 +131,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline.t,
+            inline.item,
             TInline::Sequence(
                 vec!(
                     TInline::Uninterpreted(TSpan {
@@ -157,7 +157,7 @@ mod parse_lines {
         );
 
         assert_eq!(
-            inline.t.span(),
+            inline.item.span(),
             TSpan {
                 data: "abc\ndef",
                 line: 1,

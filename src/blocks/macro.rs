@@ -1,7 +1,7 @@
 use crate::{
     attributes::Attrlist,
     blocks::{ContentModel, IsBlock},
-    span::ParseResult,
+    span::MatchedItem,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -22,34 +22,34 @@ pub struct MacroBlock<'src> {
 }
 
 impl<'src> MacroBlock<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let line = source.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
-        if !line.t.ends_with(']') {
+        if !line.item.ends_with(']') {
             return None;
         }
 
-        let line_wo_brace = line.t.slice(0..line.t.len() - 1);
+        let line_wo_brace = line.item.slice(0..line.item.len() - 1);
         let name = line_wo_brace.take_ident()?;
-        let colons = name.rem.take_prefix("::")?;
-        let target = colons.rem.take_while(|c| c != '[');
-        let open_brace = target.rem.take_prefix("[")?;
-        let attrlist = Attrlist::parse(open_brace.rem)?;
+        let colons = name.after.take_prefix("::")?;
+        let target = colons.after.take_while(|c| c != '[');
+        let open_brace = target.after.take_prefix("[")?;
+        let attrlist = Attrlist::parse(open_brace.after)?;
 
-        Some(ParseResult {
-            t: Self {
-                name: name.t,
-                target: if target.t.is_empty() {
+        Some(MatchedItem {
+            item: Self {
+                name: name.item,
+                target: if target.item.is_empty() {
                     None
                 } else {
-                    Some(target.t)
+                    Some(target.item)
                 },
-                attrlist: attrlist.t,
-                source: line.t,
+                attrlist: attrlist.item,
+                source: line.item,
             },
 
-            rem: line.rem.discard_empty_lines(),
+            after: line.after.discard_empty_lines(),
         })
     }
 

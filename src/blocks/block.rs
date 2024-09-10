@@ -2,7 +2,7 @@ use std::slice::Iter;
 
 use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
-    span::ParseResult,
+    span::MatchedItem,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -40,26 +40,26 @@ impl<'src> Block<'src> {
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
         let line = source.take_normalized_line();
-        if line.t.contains("::") {
+        if line.item.contains("::") {
             if let Some(macro_block) = MacroBlock::parse(source) {
-                return Some(ParseResult {
-                    t: Self::Macro(macro_block.t),
-                    rem: macro_block.rem,
+                return Some(MatchedItem {
+                    item: Self::Macro(macro_block.item),
+                    after: macro_block.after,
                 });
             }
 
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
-        } else if line.t.starts_with('=') {
+        } else if line.item.starts_with('=') {
             if let Some(section_block) = SectionBlock::parse(source) {
-                return Some(ParseResult {
-                    t: Self::Section(section_block.t),
-                    rem: section_block.rem,
+                return Some(MatchedItem {
+                    item: Self::Section(section_block.item),
+                    after: section_block.after,
                 });
             }
 
@@ -68,9 +68,9 @@ impl<'src> Block<'src> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
-        SimpleBlock::parse(source).map(|pr| ParseResult {
-            t: Self::Simple(pr.t),
-            rem: pr.rem,
+        SimpleBlock::parse(source).map(|mi| MatchedItem {
+            item: Self::Simple(mi.item),
+            after: mi.after,
         })
     }
 }

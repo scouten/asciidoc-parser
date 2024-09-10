@@ -34,7 +34,7 @@ fn strips_trailing_spaces() {
     let line = span.take_normalized_line();
 
     assert_eq!(
-        line.rem,
+        line.after,
         TSpan {
             data: "",
             line: 1,
@@ -44,7 +44,7 @@ fn strips_trailing_spaces() {
     );
 
     assert_eq!(
-        line.t,
+        line.item,
         TSpan {
             data: "abc",
             line: 1,
@@ -62,7 +62,7 @@ fn strips_trailing_lf() {
     let line = span.take_normalized_line();
 
     assert_eq!(
-        line.rem,
+        line.after,
         TSpan {
             data: "def",
             line: 2,
@@ -72,7 +72,7 @@ fn strips_trailing_lf() {
     );
 
     assert_eq!(
-        line.t,
+        line.item,
         TSpan {
             data: "abc",
             line: 1,
@@ -90,7 +90,7 @@ fn strips_trailing_crlf() {
     let line = span.take_normalized_line();
 
     assert_eq!(
-        line.rem,
+        line.after,
         TSpan {
             data: "def",
             line: 2,
@@ -100,7 +100,7 @@ fn strips_trailing_crlf() {
     );
 
     assert_eq!(
-        line.t,
+        line.item,
         TSpan {
             data: "abc",
             line: 1,

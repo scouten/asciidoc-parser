@@ -19,10 +19,10 @@ fn impl_clone() {
 
 #[test]
 fn simple_value() {
-    let pr = Attribute::parse(Span::new(":foo: bar\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo: bar\nblah")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -45,10 +45,10 @@ fn simple_value() {
         }
     );
 
-    assert_eq!(pr.t.value(), TAttributeValue::Value("bar"));
+    assert_eq!(mi.item.value(), TAttributeValue::Value("bar"));
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "blah",
             line: 2,
@@ -60,10 +60,10 @@ fn simple_value() {
 
 #[test]
 fn no_value() {
-    let pr = Attribute::parse(Span::new(":foo:\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo:\nblah")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -81,10 +81,10 @@ fn no_value() {
         }
     );
 
-    assert_eq!(pr.t.value(), TAttributeValue::Set);
+    assert_eq!(mi.item.value(), TAttributeValue::Set);
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "blah",
             line: 2,
@@ -96,10 +96,10 @@ fn no_value() {
 
 #[test]
 fn unset_prefix() {
-    let pr = Attribute::parse(Span::new(":!foo:\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":!foo:\nblah")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -117,10 +117,10 @@ fn unset_prefix() {
         }
     );
 
-    assert_eq!(pr.t.value(), TAttributeValue::Unset);
+    assert_eq!(mi.item.value(), TAttributeValue::Unset);
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "blah",
             line: 2,
@@ -132,10 +132,10 @@ fn unset_prefix() {
 
 #[test]
 fn unset_postfix() {
-    let pr = Attribute::parse(Span::new(":foo!:\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo!:\nblah")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -153,10 +153,10 @@ fn unset_postfix() {
         }
     );
 
-    assert_eq!(pr.t.value(), TAttributeValue::Unset);
+    assert_eq!(mi.item.value(), TAttributeValue::Unset);
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "blah",
             line: 2,
@@ -188,10 +188,10 @@ fn err_invalid_ident3() {
 
 #[test]
 fn value_with_continuation() {
-    let pr = Attribute::parse(Span::new(":foo: bar \\\n blah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo: bar \\\n blah")).unwrap();
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TAttribute {
             name: TSpan {
                 data: "foo",
@@ -214,10 +214,10 @@ fn value_with_continuation() {
         }
     );
 
-    assert_eq!(pr.t.value(), TAttributeValue::Value("bar blah"));
+    assert_eq!(mi.item.value(), TAttributeValue::Value("bar blah"));
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 2,

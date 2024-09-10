@@ -9,7 +9,7 @@ mod take_line {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -19,7 +19,7 @@ mod take_line {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "",
                 line: 1,
@@ -35,7 +35,7 @@ mod take_line {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -45,7 +45,7 @@ mod take_line {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -61,7 +61,7 @@ mod take_line {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -71,7 +71,7 @@ mod take_line {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "abc ",
                 line: 1,
@@ -89,7 +89,7 @@ mod take_line {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -99,7 +99,7 @@ mod take_line {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -117,7 +117,7 @@ mod take_line {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -127,7 +127,7 @@ mod take_line {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -145,7 +145,7 @@ mod take_line {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -155,7 +155,7 @@ mod take_line {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -173,7 +173,7 @@ mod take_line {
         let l = span.take_line();
 
         assert_eq!(
-            l.rem,
+            l.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -183,7 +183,7 @@ mod take_line {
         );
 
         assert_eq!(
-            l.t,
+            l.item,
             TSpan {
                 data: "abc\rdef",
                 line: 1,
@@ -205,7 +205,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -215,7 +215,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "",
                 line: 1,
@@ -231,7 +231,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -241,7 +241,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -257,7 +257,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -267,7 +267,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -283,7 +283,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -293,7 +293,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -311,7 +311,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -321,7 +321,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -339,7 +339,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -349,7 +349,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -367,7 +367,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -377,7 +377,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -395,7 +395,7 @@ mod take_normalized_line {
         let line = span.take_normalized_line();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -405,7 +405,7 @@ mod take_normalized_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc   \rdef",
                 line: 1,
@@ -439,7 +439,7 @@ mod take_non_empty_line {
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -449,7 +449,7 @@ mod take_non_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -465,7 +465,7 @@ mod take_non_empty_line {
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -475,7 +475,7 @@ mod take_non_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -493,7 +493,7 @@ mod take_non_empty_line {
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -503,7 +503,7 @@ mod take_non_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -521,7 +521,7 @@ mod take_non_empty_line {
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -531,7 +531,7 @@ mod take_non_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -549,7 +549,7 @@ mod take_non_empty_line {
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -559,7 +559,7 @@ mod take_non_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -577,7 +577,7 @@ mod take_non_empty_line {
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -587,7 +587,7 @@ mod take_non_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc   \rdef",
                 line: 1,
@@ -609,7 +609,7 @@ mod take_empty_line {
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -619,7 +619,7 @@ mod take_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "",
                 line: 1,
@@ -649,7 +649,7 @@ mod take_empty_line {
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -659,7 +659,7 @@ mod take_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "     ",
                 line: 1,
@@ -677,7 +677,7 @@ mod take_empty_line {
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -687,7 +687,7 @@ mod take_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "  \t  ",
                 line: 1,
@@ -705,7 +705,7 @@ mod take_empty_line {
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -715,7 +715,7 @@ mod take_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "   ",
                 line: 1,
@@ -733,7 +733,7 @@ mod take_empty_line {
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -743,7 +743,7 @@ mod take_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "   ",
                 line: 1,
@@ -761,7 +761,7 @@ mod take_empty_line {
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -771,7 +771,7 @@ mod take_empty_line {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "   ",
                 line: 1,
@@ -798,17 +798,17 @@ mod discard_empty_lines {
     #[test]
     fn empty_source() {
         let span = Span::new("");
-        let rem = span.discard_empty_lines();
-        assert_eq!(rem, Span::new("",));
+        let after = span.discard_empty_lines();
+        assert_eq!(after, Span::new("",));
     }
 
     #[test]
     fn consumes_empty_line() {
         let span = Span::new("\nabc");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "abc",
                 line: 2,
@@ -821,10 +821,10 @@ mod discard_empty_lines {
     #[test]
     fn doesnt_consume_non_empty_line() {
         let span = Span::new("abc");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -837,10 +837,10 @@ mod discard_empty_lines {
     #[test]
     fn doesnt_consume_leading_space() {
         let span = Span::new("   abc");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "   abc",
                 line: 1,
@@ -853,10 +853,10 @@ mod discard_empty_lines {
     #[test]
     fn consumes_line_with_only_spaces() {
         let span = Span::new("   \nabc");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "abc",
                 line: 2,
@@ -869,10 +869,10 @@ mod discard_empty_lines {
     #[test]
     fn consumes_spaces_and_tabs() {
         let span = Span::new(" \t \nabc");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "abc",
                 line: 2,
@@ -885,10 +885,10 @@ mod discard_empty_lines {
     #[test]
     fn consumes_multiple_lines() {
         let span = Span::new("\n  \t \n\nabc");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "abc",
                 line: 4,
@@ -903,10 +903,10 @@ mod discard_empty_lines {
         // Should consume \r\n sequence.
 
         let span = Span::new("  \r\ndef");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -921,10 +921,10 @@ mod discard_empty_lines {
         // Should consume \n but not a subsequent \r.
 
         let span = Span::new("   \n\rdef");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -939,10 +939,10 @@ mod discard_empty_lines {
         // A "line" with \r and no immediate \n is not considered empty.
 
         let span = Span::new("   \rdef");
-        let rem = span.discard_empty_lines();
+        let after = span.discard_empty_lines();
 
         assert_eq!(
-            rem,
+            after,
             TSpan {
                 data: "   \rdef",
                 line: 1,
@@ -976,7 +976,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -986,7 +986,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -1002,7 +1002,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1012,7 +1012,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -1030,7 +1030,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -1040,7 +1040,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -1058,7 +1058,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "def",
                 line: 2,
@@ -1068,7 +1068,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -1086,7 +1086,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "\rdef",
                 line: 2,
@@ -1096,7 +1096,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -1114,7 +1114,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -1124,7 +1124,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc   \rdef",
                 line: 1,
@@ -1140,7 +1140,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 2,
@@ -1150,7 +1150,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc \\\ndef",
                 line: 1,
@@ -1166,7 +1166,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 2,
@@ -1176,7 +1176,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc \\\r\ndef",
                 line: 1,
@@ -1192,7 +1192,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 2,
@@ -1202,7 +1202,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc \\   \ndef",
                 line: 1,
@@ -1218,7 +1218,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "",
                 line: 3,
@@ -1228,7 +1228,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc \\\ndef\\\nghi",
                 line: 1,
@@ -1244,7 +1244,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "ghi",
                 line: 3,
@@ -1254,7 +1254,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc \\\ndef",
                 line: 1,
@@ -1270,7 +1270,7 @@ mod take_line_with_continuation {
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
-            line.rem,
+            line.after,
             TSpan {
                 data: "\nghi",
                 line: 3,
@@ -1280,7 +1280,7 @@ mod take_line_with_continuation {
         );
 
         assert_eq!(
-            line.t,
+            line.item,
             TSpan {
                 data: "abc \\\ndef",
                 line: 1,

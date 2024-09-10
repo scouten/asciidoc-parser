@@ -1,6 +1,6 @@
 use std::{ops::Deref, slice::Iter};
 
-use crate::{attributes::ElementAttribute, span::ParseResult, HasSpan, Span};
+use crate::{attributes::ElementAttribute, span::MatchedItem, HasSpan, Span};
 
 /// The source text that’s used to define attributes for an element is referred
 /// to as an attrlist. An attrlist is always enclosed in a pair of square
@@ -20,8 +20,8 @@ impl<'src> Attrlist<'src> {
     /// the opening or closing square brackets for the attrlist. This is because
     /// the rules for closing brackets differ when parsing inline, macro, and
     /// block elements.
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
-        let mut rem = source;
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+        let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
 
@@ -31,25 +31,25 @@ impl<'src> Attrlist<'src> {
 
         loop {
             let maybe_attr = if parse_shorthand_items {
-                ElementAttribute::parse_with_shorthand(rem)
+                ElementAttribute::parse_with_shorthand(after)
             } else {
-                ElementAttribute::parse(rem)
+                ElementAttribute::parse(after)
             };
 
             let Some(attr) = maybe_attr else {
                 break;
             };
 
-            if attr.t.name().is_none() {
+            if attr.item.name().is_none() {
                 parse_shorthand_items = false;
             }
 
-            attributes.push(attr.t);
+            attributes.push(attr.item);
 
-            rem = attr.rem.take_whitespace().rem;
-            match rem.take_prefix(",") {
+            after = attr.after.take_whitespace().after;
+            match after.take_prefix(",") {
                 Some(comma) => {
-                    rem = comma.rem.take_whitespace().rem;
+                    after = comma.after.take_whitespace().after;
                 }
                 None => {
                     break;
@@ -57,13 +57,13 @@ impl<'src> Attrlist<'src> {
             }
         }
 
-        if !rem.is_empty() {
+        if !after.is_empty() {
             return None;
         }
 
-        Some(ParseResult {
-            t: Self { attributes, source },
-            rem,
+        Some(MatchedItem {
+            item: Self { attributes, source },
+            after,
         })
     }
 

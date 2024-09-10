@@ -2,7 +2,7 @@ use std::slice::Iter;
 
 use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
-    span::ParseResult,
+    span::MatchedItem,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -23,20 +23,21 @@ pub struct SectionBlock<'src> {
 }
 
 impl<'src> SectionBlock<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<ParseResult<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
-        let blocks = parse_blocks_until(level.rem, |i| peer_or_ancestor_section(*i, level.t.0))?;
-        let source = source.trim_remainder(blocks.rem);
+        let blocks =
+            parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0))?;
+        let source = source.trim_remainder(blocks.after);
 
-        Some(ParseResult {
-            t: Self {
-                level: level.t.0,
-                title: level.t.1,
-                blocks: blocks.t,
+        Some(MatchedItem {
+            item: Self {
+                level: level.item.0,
+                title: level.item.1,
+                blocks: blocks.item,
                 source,
             },
-            rem: blocks.rem,
+            after: blocks.after,
         })
     }
 
@@ -79,9 +80,9 @@ impl<'src> HasSpan<'src> for SectionBlock<'src> {
     }
 }
 
-fn parse_title_line(source: Span<'_>) -> Option<ParseResult<(usize, Span)>> {
-    let pr = source.take_non_empty_line()?;
-    let mut line = pr.t;
+fn parse_title_line(source: Span<'_>) -> Option<MatchedItem<(usize, Span)>> {
+    let mi = source.take_non_empty_line()?;
+    let mut line = mi.item;
 
     // TO DO: Also support Markdown-style `#` markers.
     // TO DO: Enforce maximum of 6 `=` or `#` markers.
@@ -89,22 +90,22 @@ fn parse_title_line(source: Span<'_>) -> Option<ParseResult<(usize, Span)>> {
 
     let mut count = 0;
 
-    while let Some(pr) = line.take_prefix("=") {
+    while let Some(mi) = line.take_prefix("=") {
         count += 1;
-        line = pr.rem;
+        line = mi.after;
     }
 
     let title = line.take_required_whitespace()?;
 
-    Some(ParseResult {
-        t: (count - 1, title.rem),
-        rem: pr.rem,
+    Some(MatchedItem {
+        item: (count - 1, title.after),
+        after: mi.after,
     })
 }
 
 fn peer_or_ancestor_section(source: Span<'_>, level: usize) -> bool {
-    if let Some(pr) = parse_title_line(source) {
-        pr.t.0 <= level
+    if let Some(mi) = parse_title_line(source) {
+        mi.item.0 <= level
     } else {
         false
     }

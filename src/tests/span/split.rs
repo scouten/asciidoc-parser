@@ -4,10 +4,10 @@ mod into_parse_result {
     #[test]
     fn base_case() {
         let s = Span::new("abc");
-        let pr = s.into_parse_result(1);
+        let mi = s.into_parse_result(1);
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "a",
                 line: 1,
@@ -17,7 +17,7 @@ mod into_parse_result {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "bc",
                 line: 1,
@@ -30,10 +30,10 @@ mod into_parse_result {
     #[test]
     fn index_out_of_range() {
         let s = Span::new("abc");
-        let pr = s.into_parse_result(4);
+        let mi = s.into_parse_result(4);
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TSpan {
                 data: "abc",
                 line: 1,
@@ -43,7 +43,7 @@ mod into_parse_result {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
@@ -72,32 +72,32 @@ mod split_at_match_non_empty {
     #[test]
     fn match_after_first() {
         let s = Span::new("ab:cd");
-        let pr = s.split_at_match_non_empty(|c| c == ':').unwrap();
+        let mi = s.split_at_match_non_empty(|c| c == ':').unwrap();
 
-        assert_eq!(pr.t.data(), "ab");
-        assert_eq!(pr.t.line(), 1);
-        assert_eq!(pr.t.col(), 1);
-        assert_eq!(pr.t.byte_offset(), 0);
+        assert_eq!(mi.item.data(), "ab");
+        assert_eq!(mi.item.line(), 1);
+        assert_eq!(mi.item.col(), 1);
+        assert_eq!(mi.item.byte_offset(), 0);
 
-        assert_eq!(pr.rem.data(), ":cd");
-        assert_eq!(pr.rem.line(), 1);
-        assert_eq!(pr.rem.col(), 3);
-        assert_eq!(pr.rem.byte_offset(), 2);
+        assert_eq!(mi.after.data(), ":cd");
+        assert_eq!(mi.after.line(), 1);
+        assert_eq!(mi.after.col(), 3);
+        assert_eq!(mi.after.byte_offset(), 2);
     }
 
     #[test]
     fn non_empty_no_match() {
         let s = Span::new("abcd");
-        let pr = s.split_at_match_non_empty(|c| c == ':').unwrap();
+        let mi = s.split_at_match_non_empty(|c| c == ':').unwrap();
 
-        assert_eq!(pr.t.data(), "abcd");
-        assert_eq!(pr.t.line(), 1);
-        assert_eq!(pr.t.col(), 1);
-        assert_eq!(pr.t.byte_offset(), 0);
+        assert_eq!(mi.item.data(), "abcd");
+        assert_eq!(mi.item.line(), 1);
+        assert_eq!(mi.item.col(), 1);
+        assert_eq!(mi.item.byte_offset(), 0);
 
-        assert_eq!(pr.rem.data(), "");
-        assert_eq!(pr.rem.line(), 1);
-        assert_eq!(pr.rem.col(), 5);
-        assert_eq!(pr.rem.byte_offset(), 4);
+        assert_eq!(mi.after.data(), "");
+        assert_eq!(mi.after.line(), 1);
+        assert_eq!(mi.after.col(), 5);
+        assert_eq!(mi.after.byte_offset(), 4);
     }
 }

@@ -16,8 +16,8 @@ use crate::{
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let b1 = SectionBlock::parse(Span::new("== Section Title")).unwrap();
-    let b2 = b1.t.clone();
-    assert_eq!(b1.t, b2);
+    let b2 = b1.item.clone();
+    assert_eq!(b1.item, b2);
 }
 
 #[test]
@@ -42,13 +42,13 @@ fn err_missing_space_before_title() {
 
 #[test]
 fn simplest_section_block() {
-    let pr = SectionBlock::parse(Span::new("== Section Title")).unwrap();
+    let mi = SectionBlock::parse(Span::new("== Section Title")).unwrap();
 
-    assert_eq!(pr.t.content_model(), ContentModel::Compound);
-    assert_eq!(pr.t.context().deref(), "section");
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -68,7 +68,7 @@ fn simplest_section_block() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 1,
@@ -80,13 +80,13 @@ fn simplest_section_block() {
 
 #[test]
 fn has_child_block() {
-    let pr = SectionBlock::parse(Span::new("== Section Title\n\nabc")).unwrap();
+    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc")).unwrap();
 
-    assert_eq!(pr.t.content_model(), ContentModel::Compound);
-    assert_eq!(pr.t.context().deref(), "section");
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -113,7 +113,7 @@ fn has_child_block() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 3,
@@ -125,14 +125,14 @@ fn has_child_block() {
 
 #[test]
 fn dont_stop_at_peer_section() {
-    let pr =
+    let mi =
         SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef")).unwrap();
 
-    assert_eq!(pr.t.content_model(), ContentModel::Compound);
-    assert_eq!(pr.t.context().deref(), "section");
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -182,7 +182,7 @@ fn dont_stop_at_peer_section() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "",
             line: 7,
@@ -194,14 +194,14 @@ fn dont_stop_at_peer_section() {
 
 #[test]
 fn stop_at_peer_section() {
-    let pr =
+    let mi =
         SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n== Section 2\n\ndef")).unwrap();
 
-    assert_eq!(pr.t.content_model(), ContentModel::Compound);
-    assert_eq!(pr.t.context().deref(), "section");
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSectionBlock {
             level: 1,
             title: TSpan {
@@ -229,7 +229,7 @@ fn stop_at_peer_section() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "== Section 2\n\ndef",
             line: 5,
@@ -241,14 +241,14 @@ fn stop_at_peer_section() {
 
 #[test]
 fn stop_at_ancestor_section() {
-    let pr =
+    let mi =
         SectionBlock::parse(Span::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef")).unwrap();
 
-    assert_eq!(pr.t.content_model(), ContentModel::Compound);
-    assert_eq!(pr.t.context().deref(), "section");
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
 
     assert_eq!(
-        pr.t,
+        mi.item,
         TSectionBlock {
             level: 2,
             title: TSpan {
@@ -276,7 +276,7 @@ fn stop_at_ancestor_section() {
     );
 
     assert_eq!(
-        pr.rem,
+        mi.after,
         TSpan {
             data: "== Section 2\n\ndef",
             line: 5,

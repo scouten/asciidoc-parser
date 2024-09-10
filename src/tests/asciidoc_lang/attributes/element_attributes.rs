@@ -82,10 +82,10 @@ mod attrlist {
         const ATTRLIST_EXAMPLE: &str =
             r#"first-positional,second-positional,named="value of named""#;
 
-        let pr = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE)).unwrap();
+        let mi = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE)).unwrap();
 
         assert_eq!(
-            pr.t,
+            mi.item,
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
@@ -156,12 +156,12 @@ mod attrlist {
             }
         );
 
-        assert!(pr.t.named_attribute("foo").is_none());
+        assert!(mi.item.named_attribute("foo").is_none());
 
-        assert!(pr.t.nth_attribute(0).is_none());
+        assert!(mi.item.nth_attribute(0).is_none());
 
         assert_eq!(
-            pr.t.nth_attribute(1).unwrap(),
+            mi.item.nth_attribute(1).unwrap(),
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![TSpan {
@@ -186,7 +186,7 @@ mod attrlist {
         );
 
         assert_eq!(
-            pr.t.nth_attribute(2).unwrap(),
+            mi.item.nth_attribute(2).unwrap(),
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
@@ -205,10 +205,10 @@ mod attrlist {
             }
         );
 
-        assert!(pr.t.nth_attribute(3).is_none());
+        assert!(mi.item.nth_attribute(3).is_none());
 
         assert_eq!(
-            pr.t.named_attribute("named").unwrap(),
+            mi.item.named_attribute("named").unwrap(),
             TElementAttribute {
                 name: Some(TSpan {
                     data: "named",
@@ -233,7 +233,7 @@ mod attrlist {
         );
 
         assert_eq!(
-            pr.t.span(),
+            mi.item.span(),
             TSpan {
                 data: r#"first-positional,second-positional,named="value of named""#,
                 line: 1,
@@ -243,7 +243,7 @@ mod attrlist {
         );
 
         assert_eq!(
-            pr.rem,
+            mi.after,
             TSpan {
                 data: "",
                 line: 1,
