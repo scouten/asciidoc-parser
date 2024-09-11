@@ -23,4 +23,4 @@ pub mod strings;
 #[cfg(test)]
 mod tests;
 
-mod warning;
+mod warnings;
