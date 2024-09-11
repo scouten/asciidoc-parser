@@ -1,4 +1,8 @@
-use crate::{span::MatchedItem, HasSpan, Span};
+use crate::{
+    span::MatchedItem,
+    warnings::{MaybeManyWarnings, Warning, WarningType},
+    HasSpan, Span,
+};
 
 /// This struct represents a single element attribute.
 ///
@@ -63,7 +67,11 @@ impl<'src> ElementAttribute<'src> {
         let source = source.trim_remainder(value.after);
 
         let shorthand_items = if name.is_none() && parse_shorthand {
-            parse_shorthand_items(source)
+            let mmw = parse_shorthand_items(source);
+            if !mmw.warnings.is_empty() {
+                todo!("Propagate warnings up the chain.");
+            }
+            mmw.item
         } else {
             vec![]
         };
@@ -143,8 +151,8 @@ impl<'src> HasSpan<'src> for ElementAttribute<'src> {
     }
 }
 
-fn parse_shorthand_items<'src>(span: Span<'src>) -> Vec<Span<'src>> {
-    let mut span = span;
+fn parse_shorthand_items<'src>(mut span: Span<'src>) -> MaybeManyWarnings<Vec<Span<'src>>> {
+    let mut warnings: Vec<Warning<'src>> = vec![];
     let mut shorthand_items: Vec<Span<'src>> = vec![];
 
     // Look for block style selector.
@@ -159,14 +167,22 @@ fn parse_shorthand_items<'src>(span: Span<'src>) -> Vec<Span<'src>> {
         match after_delimiter.position(is_shorthand_delimiter) {
             None => {
                 if after_delimiter.is_empty() {
-                    todo!("Flag warning for empty shorthand item (issue #120)");
+                    warnings.push(Warning {
+                        source: span,
+                        warning: WarningType::EmptyShorthandItem,
+                    });
+                    span = after_delimiter;
                 } else {
                     shorthand_items.push(span);
                     span = span.discard_all();
                 }
             }
             Some(0) => {
-                todo!("Flag warning for duplicate shorthand delimiter (issue #121)");
+                warnings.push(Warning {
+                    source: span.trim_remainder(after_delimiter),
+                    warning: WarningType::EmptyShorthandItem,
+                });
+                span = after_delimiter;
             }
             Some(index) => {
                 let mi: MatchedItem<Span> = span.into_parse_result(index + 1);
@@ -176,7 +192,10 @@ fn parse_shorthand_items<'src>(span: Span<'src>) -> Vec<Span<'src>> {
         }
     }
 
-    shorthand_items
+    MaybeManyWarnings {
+        item: shorthand_items,
+        warnings,
+    }
 }
 
 fn is_shorthand_delimiter(c: char) -> bool {
