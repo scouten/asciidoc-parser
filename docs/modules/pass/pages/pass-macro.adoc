@@ -26,7 +26,7 @@ TIP: When you need to prevent or control the substitutions on one or more blocks
 [#single-double-plus]
 == Single and double plus
 
-The single and double plus passthroughs prevent text enclosed in either a pair of single pluses (`+`) or a pair of double pluses (`++`) from being formatted.
+The single and double plus passthroughs prevent text enclosed in either a pair of single pluses (`{plus}`) or a pair of double pluses (`{pp}`) from being formatted.
 
 ----
 A +word+, a +sequence of words+, or ++char++acters that are escaped from formatting.
