@@ -19,6 +19,9 @@ pub struct Warning<'src> {
 #[derive(Clone, Debug, Eq, Error, PartialEq)]
 #[allow(dead_code)] // TEMPORARY while building
 pub enum WarningType {
+    #[error("An attribute value is missing its terminating quote")]
+    AttributeValueMissingTerminatingQuote,
+
     #[error(
         "A shorthand element attribute marker ('.', '#', or '%') was found with no subsequent text"
     )]
@@ -47,4 +50,17 @@ pub(crate) struct MatchAndWarnings<'src, T> {
 
     /// Possible parse errors.
     pub(crate) warnings: Vec<Warning<'src>>,
+}
+
+impl<'src, T> MatchAndWarnings<'src, T> {
+    #[cfg(test)]
+    #[inline(always)]
+    #[track_caller]
+    pub(crate) fn unwrap_if_no_warnings(self) -> T {
+        assert!(
+            self.warnings.is_empty(),
+            "expected self.warnings to be empty"
+        );
+        self.item
+    }
 }

@@ -5,3 +5,5 @@ pub(crate) mod inlines;
 
 mod span;
 pub(crate) use span::TSpan;
+
+pub(crate) mod warnings;

@@ -20,18 +20,22 @@ pub struct ElementAttribute<'src> {
 }
 
 impl<'src> ElementAttribute<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
         Self::parse_internal(source, false)
     }
 
-    pub(crate) fn parse_with_shorthand(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse_with_shorthand(
+        source: Span<'src>,
+    ) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
         Self::parse_internal(source, true)
     }
 
     fn parse_internal(
         source: Span<'src>,
         parse_shorthand: bool,
-    ) -> Option<MatchedItem<'src, Self>> {
+    ) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
+        let mut warnings: Vec<Warning<'src>> = vec![];
+
         let (name, after): (Option<Span>, Span) = match source.take_attr_name() {
             Some(name) => {
                 let space = name.after.take_whitespace();
@@ -39,6 +43,7 @@ impl<'src> ElementAttribute<'src> {
                     Some(equals) => {
                         let space = equals.after.take_whitespace();
                         if space.after.is_empty() || space.after.starts_with(',') {
+                            // TO DO: Is this a warning? Possible spec ambiguity.
                             (None, source)
                         } else {
                             (Some(name.item), space.after)
@@ -54,37 +59,47 @@ impl<'src> ElementAttribute<'src> {
             Some('\'') | Some('"') => match after.take_quoted_string() {
                 Some(v) => v,
                 None => {
-                    return None;
+                    warnings.push(Warning {
+                        source: after,
+                        warning: WarningType::AttributeValueMissingTerminatingQuote,
+                    });
+
+                    return MatchAndWarnings {
+                        item: None,
+                        warnings,
+                    };
                 }
             },
             _ => after.take_while(|c| c != ','),
         };
 
         if value.item.is_empty() {
-            return None;
+            return MatchAndWarnings {
+                item: None,
+                warnings,
+            };
         }
 
         let source = source.trim_remainder(value.after);
 
         let shorthand_items = if name.is_none() && parse_shorthand {
-            let mmw = parse_shorthand_items(source);
-            if !mmw.warnings.is_empty() {
-                todo!("Propagate warnings up the chain.");
-            }
-            mmw.item
+            parse_shorthand_items(source, &mut warnings)
         } else {
             vec![]
         };
 
-        Some(MatchedItem {
-            item: Self {
-                name,
-                shorthand_items,
-                value: value.item,
-                source,
-            },
-            after: value.after,
-        })
+        MatchAndWarnings {
+            item: Some(MatchedItem {
+                item: Self {
+                    name,
+                    shorthand_items,
+                    value: value.item,
+                    source,
+                },
+                after: value.after,
+            }),
+            warnings,
+        }
     }
 
     /// Return a [`Span`] describing the attribute name.
@@ -151,8 +166,10 @@ impl<'src> HasSpan<'src> for ElementAttribute<'src> {
     }
 }
 
-fn parse_shorthand_items<'src>(mut span: Span<'src>) -> MatchAndWarnings<Vec<Span<'src>>> {
-    let mut warnings: Vec<Warning<'src>> = vec![];
+fn parse_shorthand_items<'src>(
+    mut span: Span<'src>,
+    warnings: &mut Vec<Warning<'src>>,
+) -> Vec<Span<'src>> {
     let mut shorthand_items: Vec<Span<'src>> = vec![];
 
     // Look for block style selector.
@@ -192,10 +209,7 @@ fn parse_shorthand_items<'src>(mut span: Span<'src>) -> MatchAndWarnings<Vec<Spa
         }
     }
 
-    MatchAndWarnings {
-        item: shorthand_items,
-        warnings,
-    }
+    shorthand_items
 }
 
 fn is_shorthand_delimiter(c: char) -> bool {

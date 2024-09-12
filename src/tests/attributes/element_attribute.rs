@@ -9,19 +9,23 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = ElementAttribute::parse(Span::new("abc")).unwrap();
+    let b1 = ElementAttribute::parse(Span::new("abc")).item.unwrap();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn empty_source() {
-    assert!(ElementAttribute::parse(Span::new("")).is_none());
+    assert!(ElementAttribute::parse(Span::new(""))
+        .unwrap_if_no_warnings()
+        .is_none());
 }
 
 #[test]
 fn only_spaces() {
-    let mi = ElementAttribute::parse(Span::new("   ")).unwrap();
+    let mi = ElementAttribute::parse(Span::new("   "))
+        .unwrap_if_no_warnings()
+        .unwrap();
 
     assert_eq!(
         mi.item,
@@ -73,7 +77,9 @@ fn only_spaces() {
 
 #[test]
 fn unquoted_and_unnamed_value() {
-    let mi = ElementAttribute::parse(Span::new("abc")).unwrap();
+    let mi = ElementAttribute::parse(Span::new("abc"))
+        .unwrap_if_no_warnings()
+        .unwrap();
 
     assert_eq!(
         mi.item,
@@ -124,7 +130,9 @@ fn unquoted_and_unnamed_value() {
 
 #[test]
 fn unquoted_stops_at_comma() {
-    let mi = ElementAttribute::parse(Span::new("abc,def")).unwrap();
+    let mi = ElementAttribute::parse(Span::new("abc,def"))
+        .unwrap_if_no_warnings()
+        .unwrap();
 
     assert_eq!(
         mi.item,
@@ -178,18 +186,36 @@ mod quoted_string {
 
     use crate::{
         attributes::ElementAttribute,
-        tests::fixtures::{attributes::TElementAttribute, TSpan},
+        tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
+        warnings::WarningType,
         HasSpan, Span,
     };
 
     #[test]
     fn err_unterminated_double_quote() {
-        assert!(ElementAttribute::parse(Span::new("\"xxx")).is_none());
+        let maw = ElementAttribute::parse(Span::new("\"xxx"));
+
+        assert!(maw.item.is_none());
+
+        assert_eq!(
+            maw.warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: "\"xxx",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warning: WarningType::AttributeValueMissingTerminatingQuote,
+            }]
+        );
     }
 
     #[test]
     fn double_quoted_string() {
-        let mi = ElementAttribute::parse(Span::new("\"abc\"def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("\"abc\"def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -240,7 +266,9 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_escape() {
-        let mi = ElementAttribute::parse(Span::new("\"a\\\"bc\"def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("\"a\\\"bc\"def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -291,7 +319,9 @@ mod quoted_string {
 
     #[test]
     fn double_quoted_with_single_quote() {
-        let mi = ElementAttribute::parse(Span::new("\"a'bc\"def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("\"a'bc\"def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -342,12 +372,29 @@ mod quoted_string {
 
     #[test]
     fn err_unterminated_single_quote() {
-        assert!(ElementAttribute::parse(Span::new("'xxx")).is_none());
+        let maw = ElementAttribute::parse(Span::new("\'xxx"));
+
+        assert!(maw.item.is_none());
+
+        assert_eq!(
+            maw.warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: "\'xxx",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warning: WarningType::AttributeValueMissingTerminatingQuote,
+            }]
+        );
     }
 
     #[test]
     fn single_quoted_string() {
-        let mi = ElementAttribute::parse(Span::new("'abc'def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("'abc'def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -398,7 +445,9 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_escape() {
-        let mi = ElementAttribute::parse(Span::new("'a\\'bc'def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("'a\\'bc'def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -449,7 +498,9 @@ mod quoted_string {
 
     #[test]
     fn single_quoted_with_double_quote() {
-        let mi = ElementAttribute::parse(Span::new("'a\"bc'def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("'a\"bc'def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -510,7 +561,9 @@ mod named {
 
     #[test]
     fn simple_named_value() {
-        let mi = ElementAttribute::parse(Span::new("abc=def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc=def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -575,7 +628,9 @@ mod named {
 
     #[test]
     fn ignores_spaces_around_equals() {
-        let mi = ElementAttribute::parse(Span::new("abc =  def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc =  def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -635,7 +690,9 @@ mod named {
 
     #[test]
     fn numeric_name() {
-        let mi = ElementAttribute::parse(Span::new("94-x =def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("94-x =def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -700,7 +757,9 @@ mod named {
 
     #[test]
     fn quoted_value() {
-        let mi = ElementAttribute::parse(Span::new("abc='def'g")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc='def'g"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -765,7 +824,9 @@ mod named {
 
     #[test]
     fn fallback_if_no_value() {
-        let mi = ElementAttribute::parse(Span::new("abc=")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc="))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -816,7 +877,9 @@ mod named {
 
     #[test]
     fn fallback_if_immediate_comma() {
-        let mi = ElementAttribute::parse(Span::new("abc=,def")).unwrap();
+        let mi = ElementAttribute::parse(Span::new("abc=,def"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -871,13 +934,16 @@ mod parse_with_shorthand {
 
     use crate::{
         attributes::ElementAttribute,
-        tests::fixtures::{attributes::TElementAttribute, TSpan},
+        tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
+        warnings::WarningType,
         HasSpan, Span,
     };
 
     #[test]
     fn block_style_only() {
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("abc")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("abc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -953,7 +1019,9 @@ mod parse_with_shorthand {
 
     #[test]
     fn ignore_if_named_attribute() {
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("name=block_style#id")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("name=block_style#id"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -1018,24 +1086,134 @@ mod parse_with_shorthand {
     }
 
     #[test]
-    #[should_panic]
     fn error_empty_id() {
-        let _pr = ElementAttribute::parse_with_shorthand(Span::new("abc#")).unwrap();
+        let maw = ElementAttribute::parse_with_shorthand(Span::new("abc#"));
 
-        // TO DO (#120): Flag warning for empty shorthand item
+        let mi = maw.item.unwrap();
+
+        assert_eq!(
+            mi.item,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }],
+                value: TSpan {
+                    data: "abc#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "abc#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 5,
+                offset: 4
+            }
+        );
+
+        assert_eq!(
+            maw.warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: "#",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                warning: WarningType::EmptyShorthandItem,
+            }]
+        );
     }
 
     #[test]
-    #[should_panic]
     fn error_duplicate_delimiter() {
-        let _pr = ElementAttribute::parse_with_shorthand(Span::new("abc##id")).unwrap();
+        let maw = ElementAttribute::parse_with_shorthand(Span::new("abc##id"));
+
+        let mi = maw.item.unwrap();
+
+        assert_eq!(
+            mi.item,
+            TElementAttribute {
+                name: None,
+                shorthand_items: vec![
+                    TSpan {
+                        data: "abc",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    TSpan {
+                        data: "#id",
+                        line: 1,
+                        col: 5,
+                        offset: 4,
+                    }
+                ],
+                value: TSpan {
+                    data: "abc##id",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "abc##id",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
+
+        assert_eq!(
+            maw.warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: "#",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                warning: WarningType::EmptyShorthandItem,
+            }]
+        );
+
+        // let _pr = ElementAttribute::parse_with_shorthand(Span::new("abc##id"
+        // ))     .unwrap_if_no_warnings()
+        //     .unwrap();
 
         // TO DO (#121): Flag warning for duplicate shorthand delimiters
     }
 
     #[test]
     fn id_only() {
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("#xyz")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("#xyz"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -1112,7 +1290,9 @@ mod parse_with_shorthand {
 
     #[test]
     fn one_role_only() {
-        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -1189,7 +1369,9 @@ mod parse_with_shorthand {
 
     #[test]
     fn multiple_roles() {
-        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1.role2.role3")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1.role2.role3"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -1308,7 +1490,9 @@ mod parse_with_shorthand {
 
     #[test]
     fn one_option_only() {
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("%option1")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("%option1"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -1384,8 +1568,9 @@ mod parse_with_shorthand {
 
     #[test]
     fn multiple_options() {
-        let mi =
-            ElementAttribute::parse_with_shorthand(Span::new("%option1%option2%option3")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("%option1%option2%option3"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -1503,7 +1688,9 @@ mod parse_with_shorthand {
 
     #[test]
     fn block_style_and_id() {
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("appendix#custom-id")).unwrap();
+        let mi = ElementAttribute::parse_with_shorthand(Span::new("appendix#custom-id"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -1605,6 +1792,7 @@ mod parse_with_shorthand {
     #[test]
     fn id_role_and_option() {
         let mi = ElementAttribute::parse_with_shorthand(Span::new("#rules.prominent%incremental"))
+            .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(

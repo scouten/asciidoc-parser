@@ -30,11 +30,17 @@ impl<'src> Attrlist<'src> {
         }
 
         loop {
-            let maybe_attr = if parse_shorthand_items {
+            let maybe_attr_and_warnings = if parse_shorthand_items {
                 ElementAttribute::parse_with_shorthand(after)
             } else {
                 ElementAttribute::parse(after)
             };
+
+            if !maybe_attr_and_warnings.warnings.is_empty() {
+                todo!("Propagate warnings up the chain");
+            }
+
+            let maybe_attr = maybe_attr_and_warnings.item;
 
             let Some(attr) = maybe_attr else {
                 break;
