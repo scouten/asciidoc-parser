@@ -20,20 +20,22 @@ pub struct ElementAttribute<'src> {
 }
 
 impl<'src> ElementAttribute<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         Self::parse_internal(source, false)
     }
 
     pub(crate) fn parse_with_shorthand(
         source: Span<'src>,
-    ) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         Self::parse_internal(source, true)
     }
 
     fn parse_internal(
         source: Span<'src>,
         parse_shorthand: bool,
-    ) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let mut warnings: Vec<Warning<'src>> = vec![];
 
         let (name, after): (Option<Span>, Span) = match source.take_attr_name() {
