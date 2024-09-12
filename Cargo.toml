@@ -19,6 +19,10 @@ criterion = "0.5.1"
 pretty_assertions_sorted = "1.2.3"
 
 [[bench]]
+name = "element_attributes"
+harness = false
+
+[[bench]]
 name = "inline_macro"
 harness = false
 
