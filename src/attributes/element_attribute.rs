@@ -1,6 +1,6 @@
 use crate::{
     span::MatchedItem,
-    warnings::{MaybeManyWarnings, Warning, WarningType},
+    warnings::{MatchAndWarnings, Warning, WarningType},
     HasSpan, Span,
 };
 
@@ -151,7 +151,7 @@ impl<'src> HasSpan<'src> for ElementAttribute<'src> {
     }
 }
 
-fn parse_shorthand_items<'src>(mut span: Span<'src>) -> MaybeManyWarnings<Vec<Span<'src>>> {
+fn parse_shorthand_items<'src>(mut span: Span<'src>) -> MatchAndWarnings<Vec<Span<'src>>> {
     let mut warnings: Vec<Warning<'src>> = vec![];
     let mut shorthand_items: Vec<Span<'src>> = vec![];
 
@@ -192,7 +192,7 @@ fn parse_shorthand_items<'src>(mut span: Span<'src>) -> MaybeManyWarnings<Vec<Sp
         }
     }
 
-    MaybeManyWarnings {
+    MatchAndWarnings {
         item: shorthand_items,
         warnings,
     }

@@ -28,7 +28,7 @@ pub enum WarningType {
 /// Return type used to signal one possible parse error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[allow(dead_code)] // TEMPORARY while building
-pub(crate) struct MaybeOneWarning<'src, T> {
+pub(crate) struct MatchAndMaybeWarning<'src, T> {
     /// Matched item. Typically either `MatchedItem<X>` or
     /// `Option<MatchedItem<X>>`.
     pub(crate) item: T,
@@ -40,7 +40,7 @@ pub(crate) struct MaybeOneWarning<'src, T> {
 /// Return type used to signal one or more possible parse error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[allow(dead_code)] // TEMPORARY while building
-pub(crate) struct MaybeManyWarnings<'src, T> {
+pub(crate) struct MatchAndWarnings<'src, T> {
     /// Matched item. Typically either `MatchedItem<X>` or
     /// `Option<MatchedItem<X>>`.
     pub(crate) item: T,
