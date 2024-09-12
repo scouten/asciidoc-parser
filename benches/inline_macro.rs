@@ -1,11 +1,12 @@
 use asciidoc_parser::Document;
 use codspeed_criterion_compat::{black_box, criterion_group, criterion_main, Criterion};
 
-const INLINE_MACRO: &str = "= Example Title\n\nblah foo:bar[blah] bonus";
+const BENCH_NAME: &str = "inline macro";
+const PARSE_TEXT: &str = "= Example Title\n\nblah foo:bar[blah] bonus";
 
 pub fn inline_macro(c: &mut Criterion) {
-    c.bench_function("inline_macro", |b| {
-        b.iter(|| Document::parse(black_box(INLINE_MACRO)))
+    c.bench_function(BENCH_NAME, |b| {
+        b.iter(|| Document::parse(black_box(PARSE_TEXT)))
     });
 }
 
