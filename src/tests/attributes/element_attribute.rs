@@ -1201,12 +1201,6 @@ mod parse_with_shorthand {
                 warning: WarningType::EmptyShorthandItem,
             }]
         );
-
-        // let _pr = ElementAttribute::parse_with_shorthand(Span::new("abc##id"
-        // ))     .unwrap_if_no_warnings()
-        //     .unwrap();
-
-        // TO DO (#121): Flag warning for duplicate shorthand delimiters
     }
 
     #[test]

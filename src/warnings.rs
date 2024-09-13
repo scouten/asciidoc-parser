@@ -22,6 +22,9 @@ pub enum WarningType {
     #[error("An attribute value is missing its terminating quote")]
     AttributeValueMissingTerminatingQuote,
 
+    #[error("An empty attribute value was detected")]
+    EmptyAttributeValue,
+
     #[error(
         "A shorthand element attribute marker ('.', '#', or '%') was found with no subsequent text"
     )]

@@ -35,7 +35,13 @@ impl<'src> MacroBlock<'src> {
         let colons = name.after.take_prefix("::")?;
         let target = colons.after.take_while(|c| c != '[');
         let open_brace = target.after.take_prefix("[")?;
-        let attrlist = Attrlist::parse(open_brace.after)?;
+        let attrlist = Attrlist::parse(open_brace.after);
+
+        if !attrlist.warnings.is_empty() {
+            todo!("Propagate warnings up the chain");
+        }
+
+        let attrlist = attrlist.item?;
 
         Some(MatchedItem {
             item: Self {

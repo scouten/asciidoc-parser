@@ -4,22 +4,28 @@ use crate::{
     attributes::Attrlist,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
+        warnings::TWarning,
         TSpan,
     },
+    warnings::WarningType,
     HasSpan, Span,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = Attrlist::parse(Span::new("abc")).unwrap();
+    let b1 = Attrlist::parse(Span::new("abc"))
+        .unwrap_if_no_warnings()
+        .unwrap();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn empty_source() {
-    let mi = Attrlist::parse(Span::new("")).unwrap();
+    let mi = Attrlist::parse(Span::new(""))
+        .unwrap_if_no_warnings()
+        .unwrap();
 
     assert_eq!(
         mi.item,
@@ -69,7 +75,9 @@ fn empty_source() {
 
 #[test]
 fn only_positional_attributes() {
-    let mi = Attrlist::parse(Span::new("Sunset,300,400")).unwrap();
+    let mi = Attrlist::parse(Span::new("Sunset,300,400"))
+        .unwrap_if_no_warnings()
+        .unwrap();
 
     assert_eq!(
         mi.item,
@@ -303,7 +311,9 @@ fn only_positional_attributes() {
 
 #[test]
 fn only_named_attributes() {
-    let mi = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap();
+    let mi = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400"))
+        .unwrap_if_no_warnings()
+        .unwrap();
 
     assert_eq!(
         mi.item,
@@ -579,7 +589,9 @@ mod id {
 
     #[test]
     fn via_shorthand_syntax() {
-        let mi = Attrlist::parse(Span::new("#goals")).unwrap();
+        let mi = Attrlist::parse(Span::new("#goals"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -650,7 +662,9 @@ mod id {
 
     #[test]
     fn via_named_attribute() {
-        let mi = Attrlist::parse(Span::new("foo=bar,id=goals")).unwrap();
+        let mi = Attrlist::parse(Span::new("foo=bar,id=goals"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -782,14 +796,18 @@ mod id {
     #[test]
     #[should_panic]
     fn via_block_anchor_syntax() {
-        let _pr = Attrlist::parse(Span::new("[goals]")).unwrap();
+        let _pr = Attrlist::parse(Span::new("[goals]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         // TO DO (#122): Parse block anchor syntax
     }
 
     #[test]
     fn shorthand_only_first_attribute() {
-        let mi = Attrlist::parse(Span::new("foo,blah#goals")).unwrap();
+        let mi = Attrlist::parse(Span::new("foo,blah#goals"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -858,5 +876,107 @@ mod id {
 
 #[test]
 fn err_double_comma() {
-    assert!(Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400")).is_none());
+    let maw = Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400"));
+
+    let mi = maw.item.unwrap().clone();
+
+    assert_eq!(
+        mi.item,
+        TAttrlist {
+            attributes: vec!(
+                TElementAttribute {
+                    name: Some(TSpan {
+                        data: "alt",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },),
+                    shorthand_items: vec![],
+                    value: TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 5,
+                        offset: 4,
+                    },
+                    source: TSpan {
+                        data: "alt=Sunset",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                TElementAttribute {
+                    name: Some(TSpan {
+                        data: "width",
+                        line: 1,
+                        col: 12,
+                        offset: 11,
+                    },),
+                    shorthand_items: vec![],
+                    value: TSpan {
+                        data: "300",
+                        line: 1,
+                        col: 18,
+                        offset: 17,
+                    },
+                    source: TSpan {
+                        data: "width=300",
+                        line: 1,
+                        col: 12,
+                        offset: 11,
+                    },
+                },
+                TElementAttribute {
+                    name: Some(TSpan {
+                        data: "height",
+                        line: 1,
+                        col: 23,
+                        offset: 22,
+                    },),
+                    shorthand_items: vec![],
+                    value: TSpan {
+                        data: "400",
+                        line: 1,
+                        col: 30,
+                        offset: 29,
+                    },
+                    source: TSpan {
+                        data: "height=400",
+                        line: 1,
+                        col: 23,
+                        offset: 22,
+                    },
+                },
+            ),
+            source: TSpan {
+                data: "alt=Sunset,width=300,,height=400",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 33,
+            offset: 32,
+        }
+    );
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: ",",
+                line: 1,
+                col: 21,
+                offset: 20,
+            },
+            warning: WarningType::EmptyAttributeValue,
+        }]
+    );
 }
