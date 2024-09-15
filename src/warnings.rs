@@ -29,6 +29,9 @@ pub enum WarningType {
         "A shorthand element attribute marker ('.', '#', or '%') was found with no subsequent text"
     )]
     EmptyShorthandItem,
+
+    #[error("Missing comma after quoted attribute value")]
+    MissingCommaAfterQuotedAttributeValue,
 }
 
 /// Return type used to signal one possible parse error.

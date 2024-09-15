@@ -79,12 +79,12 @@ impl<'src> Attrlist<'src> {
         }
 
         if !after.is_empty() {
-            dbg!(&after);
-            panic!("Dis you?");
-            // return MatchAndWarnings {
-            //     item: None,
-            //     warnings,
-            // };
+            warnings.push(Warning {
+                source: after,
+                warning: WarningType::MissingCommaAfterQuotedAttributeValue,
+            });
+
+            after = after.discard_all();
         }
 
         MatchAndWarnings {

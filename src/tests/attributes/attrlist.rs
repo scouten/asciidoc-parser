@@ -575,6 +575,69 @@ fn only_named_attributes() {
     );
 }
 
+#[test]
+fn err_unparsed_remainder_after_value() {
+    let maw = Attrlist::parse(Span::new("alt=\"Sunset\"width=300"));
+
+    let mi = maw.item.as_ref().unwrap().clone();
+
+    assert_eq!(
+        mi.item,
+        TAttrlist {
+            attributes: vec!(TElementAttribute {
+                name: Some(TSpan {
+                    data: "alt",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "Sunset",
+                    line: 1,
+                    col: 6,
+                    offset: 5,
+                },
+                source: TSpan {
+                    data: "alt=\"Sunset\"",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },),
+            source: TSpan {
+                data: "alt=\"Sunset\"width=300",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 22,
+            offset: 21
+        }
+    );
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: "width=300",
+                line: 1,
+                col: 13,
+                offset: 12,
+            },
+            warning: WarningType::MissingCommaAfterQuotedAttributeValue,
+        }]
+    );
+}
+
 mod id {
     use pretty_assertions_sorted::assert_eq;
 
