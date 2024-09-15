@@ -638,6 +638,77 @@ fn err_unparsed_remainder_after_value() {
     );
 }
 
+#[test]
+fn propagates_error_from_element_attribute() {
+    let maw = Attrlist::parse(Span::new("foo%#id"));
+
+    let mi = maw.item.as_ref().unwrap().clone();
+
+    assert_eq!(
+        mi.item,
+        TAttrlist {
+            attributes: vec!(TElementAttribute {
+                name: None,
+                shorthand_items: vec![
+                    TSpan {
+                        data: "foo",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    TSpan {
+                        data: "#id",
+                        line: 1,
+                        col: 5,
+                        offset: 4,
+                    },
+                ],
+                value: TSpan {
+                    data: "foo%#id",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                source: TSpan {
+                    data: "foo%#id",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },),
+            source: TSpan {
+                data: "foo%#id",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 8,
+            offset: 7
+        }
+    );
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: "%",
+                line: 1,
+                col: 4,
+                offset: 3,
+            },
+            warning: WarningType::EmptyShorthandItem,
+        }]
+    );
+}
+
 mod id {
     use pretty_assertions_sorted::assert_eq;
 
