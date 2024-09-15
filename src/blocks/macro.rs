@@ -23,7 +23,9 @@ pub struct MacroBlock<'src> {
 }
 
 impl<'src> MacroBlock<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let line = source.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
