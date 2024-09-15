@@ -3,6 +3,7 @@ use crate::{
     blocks::{ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
+    warnings::MatchAndWarnings,
     HasSpan, Span,
 };
 
@@ -22,41 +23,55 @@ pub struct MacroBlock<'src> {
 }
 
 impl<'src> MacroBlock<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<Option<MatchedItem<'src, Self>>> {
         let line = source.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.item.ends_with(']') {
-            return None;
+            return empty_match_and_warnings();
         }
 
         let line_wo_brace = line.item.slice(0..line.item.len() - 1);
-        let name = line_wo_brace.take_ident()?;
-        let colons = name.after.take_prefix("::")?;
+
+        let Some(name) = line_wo_brace.take_ident() else {
+            return empty_match_and_warnings();
+        };
+
+        let Some(colons) = name.after.take_prefix("::") else {
+            return empty_match_and_warnings();
+        };
+
         let target = colons.after.take_while(|c| c != '[');
-        let open_brace = target.after.take_prefix("[")?;
-        let attrlist = Attrlist::parse(open_brace.after);
 
-        if !attrlist.warnings.is_empty() {
-            todo!("Propagate warnings up the chain");
-        }
+        let Some(open_brace) = target.after.take_prefix("[") else {
+            return empty_match_and_warnings();
+        };
 
-        let attrlist = attrlist.item?;
+        let maw_attrlist = Attrlist::parse(open_brace.after);
 
-        Some(MatchedItem {
-            item: Self {
-                name: name.item,
-                target: if target.item.is_empty() {
-                    None
-                } else {
-                    Some(target.item)
-                },
-                attrlist: attrlist.item,
-                source: line.item,
+        match maw_attrlist.item {
+            Some(attrlist) => MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self {
+                        name: name.item,
+                        target: if target.item.is_empty() {
+                            None
+                        } else {
+                            Some(target.item)
+                        },
+                        attrlist: attrlist.item,
+                        source: line.item,
+                    },
+
+                    after: line.after.discard_empty_lines(),
+                }),
+                warnings: maw_attrlist.warnings,
             },
-
-            after: line.after.discard_empty_lines(),
-        })
+            None => MatchAndWarnings {
+                item: None,
+                warnings: maw_attrlist.warnings,
+            },
+        }
     }
 
     /// Return a [`Span`] describing the macro name.
@@ -94,5 +109,13 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
 impl<'src> HasSpan<'src> for MacroBlock<'src> {
     fn span(&'src self) -> &'src Span<'src> {
         &self.source
+    }
+}
+
+fn empty_match_and_warnings<'src>(
+) -> MatchAndWarnings<'src, Option<MatchedItem<'src, MacroBlock<'src>>>> {
+    MatchAndWarnings {
+        item: None,
+        warnings: vec![],
     }
 }

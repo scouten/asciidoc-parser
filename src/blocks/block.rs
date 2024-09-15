@@ -46,7 +46,12 @@ impl<'src> Block<'src> {
         // Try to discern the block type by scanning the first line.
         let line = source.take_normalized_line();
         if line.item.contains("::") {
-            if let Some(macro_block) = MacroBlock::parse(source) {
+            let macro_block_maw = MacroBlock::parse(source);
+            if let Some(macro_block) = macro_block_maw.item {
+                if !macro_block_maw.warnings.is_empty() {
+                    todo!("Propagate warnings up the chain");
+                }
+
                 return Some(MatchedItem {
                     item: Self::Macro(macro_block.item),
                     after: macro_block.after,
