@@ -61,7 +61,7 @@ impl<'src> Document<'src> {
             todo!("Retain warnings");
         }
 
-        let blocks = maw_blocks.item?;
+        let blocks = maw_blocks.item;
 
         Some(Self {
             header,

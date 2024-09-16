@@ -33,7 +33,7 @@ impl<'src> SectionBlock<'src> {
             todo!("Propagate warnings up the chain");
         }
 
-        let blocks = maw_blocks.item?;
+        let blocks = maw_blocks.item;
         let source = source.trim_remainder(blocks.after);
 
         Some(MatchedItem {

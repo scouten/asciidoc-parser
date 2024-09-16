@@ -10,7 +10,7 @@ use crate::{
 pub(crate) fn parse_blocks_until<'src, F>(
     mut source: Span<'src>,
     f: F,
-) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Vec<Block<'src>>>>>
+) -> MatchAndWarnings<'src, MatchedItem<'src, Vec<Block<'src>>>>
 where
     F: Fn(&Span<'src>) -> bool,
 {
@@ -31,10 +31,7 @@ where
         }
 
         let Some(mi) = maw.item else {
-            return MatchAndWarnings {
-                item: None,
-                warnings,
-            };
+            break;
         };
 
         source = mi.after;
@@ -42,10 +39,10 @@ where
     }
 
     MatchAndWarnings {
-        item: Some(MatchedItem {
+        item: MatchedItem {
             item: blocks,
             after: source,
-        }),
+        },
         warnings,
     }
 }
