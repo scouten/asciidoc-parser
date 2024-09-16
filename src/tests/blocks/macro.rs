@@ -40,16 +40,63 @@ fn err_only_spaces() {
 }
 
 #[test]
-fn err_not_ident() {
-    assert!(MacroBlock::parse(Span::new("foo^xyz::bar[]"))
-        .unwrap_if_no_warnings()
-        .is_none());
+fn err_macro_name_not_ident() {
+    let maw = MacroBlock::parse(Span::new("98xyz::bar[blah,blap]"));
+
+    assert!(maw.item.is_none());
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: "98xyz::bar[blah,blap]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warning: WarningType::InvalidMacroName,
+        }]
+    );
 }
+
 #[test]
-fn err_inline_syntax() {
-    assert!(MacroBlock::parse(Span::new("foo:bar[]"))
-        .unwrap_if_no_warnings()
-        .is_none());
+fn err_missing_double_colon() {
+    let maw = MacroBlock::parse(Span::new("foo:bar[blah,blap]"));
+
+    assert!(maw.item.is_none());
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: ":bar[blah,blap]",
+                line: 1,
+                col: 4,
+                offset: 3,
+            },
+            warning: WarningType::MacroMissingDoubleColon,
+        }]
+    );
+}
+
+#[test]
+fn err_missing_attrlist() {
+    let maw = MacroBlock::parse(Span::new("foo::barblah,blap]"));
+
+    assert!(maw.item.is_none());
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: "",
+                line: 1,
+                col: 19,
+                offset: 18,
+            },
+            warning: WarningType::MacroMissingAttributeList,
+        }]
+    );
 }
 
 #[test]

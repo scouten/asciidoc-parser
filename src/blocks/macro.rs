@@ -3,7 +3,7 @@ use crate::{
     blocks::{ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
-    warnings::MatchAndWarnings,
+    warnings::{MatchAndWarnings, Warning, WarningType},
     HasSpan, Span,
 };
 
@@ -30,26 +30,48 @@ impl<'src> MacroBlock<'src> {
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.item.ends_with(']') {
-            return empty_match_and_warnings();
+            return MatchAndWarnings {
+                item: None,
+                warnings: vec![],
+            };
         }
 
-        let line_wo_brace = line.item.slice(0..line.item.len() - 1);
-
-        let Some(name) = line_wo_brace.take_ident() else {
-            return empty_match_and_warnings();
+        let Some(name) = line.item.take_ident() else {
+            return MatchAndWarnings {
+                item: None,
+                warnings: vec![Warning {
+                    source: line.item,
+                    warning: WarningType::InvalidMacroName,
+                }],
+            };
         };
 
         let Some(colons) = name.after.take_prefix("::") else {
-            return empty_match_and_warnings();
+            return MatchAndWarnings {
+                item: None,
+                warnings: vec![Warning {
+                    source: name.after,
+                    warning: WarningType::MacroMissingDoubleColon,
+                }],
+            };
         };
 
         let target = colons.after.take_while(|c| c != '[');
 
         let Some(open_brace) = target.after.take_prefix("[") else {
-            return empty_match_and_warnings();
+            return MatchAndWarnings {
+                item: None,
+                warnings: vec![Warning {
+                    source: target.after,
+                    warning: WarningType::MacroMissingAttributeList,
+                }],
+            };
         };
 
-        let maw_attrlist = Attrlist::parse(open_brace.after);
+        let attrlist = open_brace.after.slice(0..open_brace.after.len() - 1);
+        // Note that we already checked that this line ends with a close brace.
+
+        let maw_attrlist = Attrlist::parse(attrlist);
 
         match maw_attrlist.item {
             Some(attrlist) => MatchAndWarnings {
@@ -111,13 +133,5 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
 impl<'src> HasSpan<'src> for MacroBlock<'src> {
     fn span(&'src self) -> &'src Span<'src> {
         &self.source
-    }
-}
-
-fn empty_match_and_warnings<'src>(
-) -> MatchAndWarnings<'src, Option<MatchedItem<'src, MacroBlock<'src>>>> {
-    MatchAndWarnings {
-        item: None,
-        warnings: vec![],
     }
 }

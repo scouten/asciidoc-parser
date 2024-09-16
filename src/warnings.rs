@@ -29,6 +29,15 @@ pub enum WarningType {
     )]
     EmptyShorthandItem,
 
+    #[error("Macro name is not a valid identifier")]
+    InvalidMacroName,
+
+    #[error("Macro missing attribute list")]
+    MacroMissingAttributeList,
+
+    #[error("Macro missing :: separator")]
+    MacroMissingDoubleColon,
+
     #[error("Missing comma after quoted attribute value")]
     MissingCommaAfterQuotedAttributeValue,
 }
