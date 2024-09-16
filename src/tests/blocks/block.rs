@@ -16,24 +16,33 @@ mod simple {
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
-        let b1 = Block::parse(Span::new("abc")).unwrap();
+        let b1 = Block::parse(Span::new("abc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
         let b2 = b1.item.clone();
         assert_eq!(b1.item, b2);
     }
 
     #[test]
     fn err_empty_source() {
-        assert!(Block::parse(Span::new("")).is_none());
+        assert!(Block::parse(Span::new(""))
+            .unwrap_if_no_warnings()
+            .is_none());
     }
 
     #[test]
     fn err_only_spaces() {
-        assert!(Block::parse(Span::new("    ")).is_none());
+        assert!(Block::parse(Span::new("    "))
+            .unwrap_if_no_warnings()
+            .is_none());
     }
 
     #[test]
     fn single_line() {
-        let mi = Block::parse(Span::new("abc")).unwrap();
+        let mi = Block::parse(Span::new("abc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -72,7 +81,9 @@ mod simple {
 
     #[test]
     fn multiple_lines() {
-        let mi = Block::parse(Span::new("abc\ndef")).unwrap();
+        let mi = Block::parse(Span::new("abc\ndef"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -123,7 +134,9 @@ mod simple {
 
     #[test]
     fn consumes_blank_lines_after() {
-        let mi = Block::parse(Span::new("abc\n\ndef")).unwrap();
+        let mi = Block::parse(Span::new("abc\n\ndef"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -178,7 +191,9 @@ mod r#macro {
 
     #[test]
     fn err_inline_syntax() {
-        let mi = Block::parse(Span::new("foo:bar[]")).unwrap();
+        let mi = Block::parse(Span::new("foo:bar[]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -228,7 +243,9 @@ mod r#macro {
 
     #[test]
     fn err_no_attr_list() {
-        let mi = Block::parse(Span::new("foo::bar")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -263,7 +280,9 @@ mod r#macro {
 
     #[test]
     fn err_attr_list_not_closed() {
-        let mi = Block::parse(Span::new("foo::bar[blah")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[blah"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -298,7 +317,9 @@ mod r#macro {
 
     #[test]
     fn err_unexpected_after_attr_list() {
-        let mi = Block::parse(Span::new("foo::bar[blah]bonus")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[blah]bonus"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -369,7 +390,9 @@ mod r#macro {
 
     #[test]
     fn simplest_block_macro() {
-        let mi = Block::parse(Span::new("foo::[]")).unwrap();
+        let mi = Block::parse(Span::new("foo::[]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -426,7 +449,9 @@ mod r#macro {
 
     #[test]
     fn has_target() {
-        let mi = Block::parse(Span::new("foo::bar[]")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -484,7 +509,9 @@ mod r#macro {
 
     #[test]
     fn has_target_and_attrlist() {
-        let mi = Block::parse(Span::new("foo::bar[blah]")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[blah]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -578,7 +605,9 @@ mod section {
 
     #[test]
     fn err_missing_space_before_title() {
-        let mi = Block::parse(Span::new("=blah blah")).unwrap();
+        let mi = Block::parse(Span::new("=blah blah"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -613,7 +642,9 @@ mod section {
 
     #[test]
     fn simplest_section_block() {
-        let mi = Block::parse(Span::new("== Section Title")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().deref(), "section");
@@ -653,7 +684,9 @@ mod section {
 
     #[test]
     fn has_child_block() {
-        let mi = Block::parse(Span::new("== Section Title\n\nabc")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title\n\nabc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().deref(), "section");

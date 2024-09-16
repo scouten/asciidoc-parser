@@ -4,6 +4,7 @@ use crate::{
     blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
     span::MatchedItem,
     strings::CowStr,
+    warnings::{MatchAndWarnings, Warning},
     HasSpan, Span,
 };
 
@@ -40,43 +41,57 @@ impl<'src> Block<'src> {
     /// Parse a block of any type and return a `Block` that describes it.
     ///
     /// Consumes any blank lines before and after the block.
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
+        let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
         // Try to discern the block type by scanning the first line.
         let line = source.take_normalized_line();
         if line.item.contains("::") {
-            let macro_block_maw = MacroBlock::parse(source);
-            if let Some(macro_block) = macro_block_maw.item {
-                if !macro_block_maw.warnings.is_empty() {
-                    todo!("Propagate warnings up the chain");
-                }
+            let mut macro_block_maw = MacroBlock::parse(source);
+            if !macro_block_maw.warnings.is_empty() {
+                warnings.append(&mut macro_block_maw.warnings);
+            }
 
-                return Some(MatchedItem {
-                    item: Self::Macro(macro_block.item),
-                    after: macro_block.after,
-                });
+            if let Some(macro_block) = macro_block_maw.item {
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::Macro(macro_block.item),
+                        after: macro_block.after,
+                    }),
+                    warnings,
+                };
             }
 
             // A line containing `::` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
-        } else if line.item.starts_with('=') {
+        }
+
+        if line.item.starts_with('=') {
             if let Some(section_block) = SectionBlock::parse(source) {
-                return Some(MatchedItem {
-                    item: Self::Section(section_block.item),
-                    after: section_block.after,
-                });
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::Section(section_block.item),
+                        after: section_block.after,
+                    }),
+                    warnings,
+                };
             }
 
             // A line starting with `=` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
         }
 
-        // If no other block kind matches, we can always use SimpleBlock.
-        SimpleBlock::parse(source).map(|mi| MatchedItem {
-            item: Self::Simple(mi.item),
-            after: mi.after,
-        })
+        // If no other block kind matches, we can always use SimpleBlock.]
+        MatchAndWarnings {
+            item: SimpleBlock::parse(source).map(|mi| MatchedItem {
+                item: Self::Simple(mi.item),
+                after: mi.after,
+            }),
+            warnings,
+        }
     }
 }
 

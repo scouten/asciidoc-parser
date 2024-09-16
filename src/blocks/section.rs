@@ -26,8 +26,14 @@ impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
-        let blocks =
-            parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0))?;
+        let maw_blocks =
+            parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0));
+
+        if !maw_blocks.warnings.is_empty() {
+            todo!("Propagate warnings up the chain");
+        }
+
+        let blocks = maw_blocks.item?;
         let source = source.trim_remainder(blocks.after);
 
         Some(MatchedItem {

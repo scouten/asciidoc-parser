@@ -55,7 +55,13 @@ impl<'src> Document<'src> {
             (i, None)
         };
 
-        let blocks = parse_blocks_until(i, |_| false)?;
+        let maw_blocks = parse_blocks_until(i, |_| false);
+
+        if !maw_blocks.warnings.is_empty() {
+            todo!("Retain warnings");
+        }
+
+        let blocks = maw_blocks.item?;
 
         Some(Self {
             header,

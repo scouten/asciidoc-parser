@@ -78,7 +78,10 @@ mod content_model {
         // simple:: a block that's treated as contiguous lines of paragraph text (and
         // subject to normal substitutions) (e.g., a paragraph block)
 
-        let block = Block::parse(Span::new("abc")).unwrap();
+        let block = Block::parse(Span::new("abc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
         assert_eq!(block.item.content_model(), ContentModel::Simple);
     }
 
@@ -159,7 +162,9 @@ mod context {
         // distinguishes one kind of block from another. You can think of the context as
         // the block's type.
 
-        let mi = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title\n\nContent of section."))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(mi.item.context().deref(), "section");
     }
@@ -195,7 +200,9 @@ mod context {
         // For example, all sections implicitly have the compound content model
         // because a section may only contain other blocks.
 
-        let mi = Block::parse(Span::new("== Section Title\n\nContent of section.")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title\n\nContent of section."))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
     }
