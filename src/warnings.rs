@@ -17,7 +17,6 @@ pub struct Warning<'src> {
 
 /// Type of possible parse error that was detected.
 #[derive(Clone, Debug, Eq, Error, PartialEq)]
-#[allow(dead_code)] // TEMPORARY while building
 pub enum WarningType {
     #[error("An attribute value is missing its terminating quote")]
     AttributeValueMissingTerminatingQuote,
@@ -48,7 +47,6 @@ pub(crate) struct MatchAndMaybeWarning<'src, T> {
 
 /// Return type used to signal one or more possible parse error.
 #[derive(Clone, Debug, Eq, PartialEq)]
-#[allow(dead_code)] // TEMPORARY while building
 pub(crate) struct MatchAndWarnings<'src, T> {
     /// Matched item. Typically either `MatchedItem<X>` or
     /// `Option<MatchedItem<X>>`.
