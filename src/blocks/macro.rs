@@ -71,30 +71,24 @@ impl<'src> MacroBlock<'src> {
         let attrlist = open_brace.after.slice(0..open_brace.after.len() - 1);
         // Note that we already checked that this line ends with a close brace.
 
-        let maw_attrlist = Attrlist::parse(attrlist);
+        let attrlist = Attrlist::parse(attrlist);
 
-        match maw_attrlist.item {
-            Some(attrlist) => MatchAndWarnings {
-                item: Some(MatchedItem {
-                    item: Self {
-                        name: name.item,
-                        target: if target.item.is_empty() {
-                            None
-                        } else {
-                            Some(target.item)
-                        },
-                        attrlist: attrlist.item,
-                        source: line.item,
+        MatchAndWarnings {
+            item: Some(MatchedItem {
+                item: Self {
+                    name: name.item,
+                    target: if target.item.is_empty() {
+                        None
+                    } else {
+                        Some(target.item)
                     },
+                    attrlist: attrlist.item.item,
+                    source: line.item,
+                },
 
-                    after: line.after.discard_empty_lines(),
-                }),
-                warnings: maw_attrlist.warnings,
-            },
-            None => MatchAndWarnings {
-                item: None,
-                warnings: maw_attrlist.warnings,
-            },
+                after: line.after.discard_empty_lines(),
+            }),
+            warnings: attrlist.warnings,
         }
     }
 

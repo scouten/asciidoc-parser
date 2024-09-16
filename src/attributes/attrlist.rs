@@ -25,9 +25,7 @@ impl<'src> Attrlist<'src> {
     /// the opening or closing square brackets for the attrlist. This is because
     /// the rules for closing brackets differ when parsing inline, macro, and
     /// block elements.
-    pub(crate) fn parse(
-        source: Span<'src>,
-    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
+    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
@@ -88,10 +86,10 @@ impl<'src> Attrlist<'src> {
         }
 
         MatchAndWarnings {
-            item: Some(MatchedItem {
+            item: MatchedItem {
                 item: Self { attributes, source },
                 after,
-            }),
+            },
             warnings,
         }
     }

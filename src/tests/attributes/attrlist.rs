@@ -14,18 +14,14 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = Attrlist::parse(Span::new("abc"))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let b1 = Attrlist::parse(Span::new("abc")).unwrap_if_no_warnings();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn empty_source() {
-    let mi = Attrlist::parse(Span::new(""))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi = Attrlist::parse(Span::new("")).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -75,9 +71,7 @@ fn empty_source() {
 
 #[test]
 fn only_positional_attributes() {
-    let mi = Attrlist::parse(Span::new("Sunset,300,400"))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi = Attrlist::parse(Span::new("Sunset,300,400")).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -311,9 +305,7 @@ fn only_positional_attributes() {
 
 #[test]
 fn only_named_attributes() {
-    let mi = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400"))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -579,7 +571,7 @@ fn only_named_attributes() {
 fn err_unparsed_remainder_after_value() {
     let maw = Attrlist::parse(Span::new("alt=\"Sunset\"width=300"));
 
-    let mi = maw.item.as_ref().unwrap().clone();
+    let mi = maw.item.clone();
 
     assert_eq!(
         mi.item,
@@ -642,7 +634,7 @@ fn err_unparsed_remainder_after_value() {
 fn propagates_error_from_element_attribute() {
     let maw = Attrlist::parse(Span::new("foo%#id"));
 
-    let mi = maw.item.as_ref().unwrap().clone();
+    let mi = maw.item.clone();
 
     assert_eq!(
         mi.item,
@@ -723,9 +715,7 @@ mod id {
 
     #[test]
     fn via_shorthand_syntax() {
-        let mi = Attrlist::parse(Span::new("#goals"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = Attrlist::parse(Span::new("#goals")).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -796,9 +786,7 @@ mod id {
 
     #[test]
     fn via_named_attribute() {
-        let mi = Attrlist::parse(Span::new("foo=bar,id=goals"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = Attrlist::parse(Span::new("foo=bar,id=goals")).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -930,18 +918,14 @@ mod id {
     #[test]
     #[should_panic]
     fn via_block_anchor_syntax() {
-        let _pr = Attrlist::parse(Span::new("[goals]"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let _pr = Attrlist::parse(Span::new("[goals]")).unwrap_if_no_warnings();
 
         // TO DO (#122): Parse block anchor syntax
     }
 
     #[test]
     fn shorthand_only_first_attribute() {
-        let mi = Attrlist::parse(Span::new("foo,blah#goals"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = Attrlist::parse(Span::new("foo,blah#goals")).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1012,7 +996,7 @@ mod id {
 fn err_double_comma() {
     let maw = Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400"));
 
-    let mi = maw.item.unwrap().clone();
+    let mi = maw.item.clone();
 
     assert_eq!(
         mi.item,
