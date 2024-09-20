@@ -711,6 +711,7 @@ mod r#macro {
                 offset: 42
             }
         );
+
         assert_eq!(
             maw.warnings,
             vec![TWarning {
