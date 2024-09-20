@@ -74,11 +74,15 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=') {
-            if let Some(section_block) = SectionBlock::parse(source) {
+            if let Some(mut maw_section_block) = SectionBlock::parse(source) {
+                if !maw_section_block.warnings.is_empty() {
+                    warnings.append(&mut maw_section_block.warnings);
+                }
+
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
-                        item: Self::Section(section_block.item),
-                        after: section_block.after,
+                        item: Self::Section(maw_section_block.item.item),
+                        after: maw_section_block.item.after,
                     }),
                     warnings,
                 };

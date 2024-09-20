@@ -5,10 +5,13 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     blocks::{ContentModel, IsBlock, SectionBlock},
     tests::fixtures::{
-        blocks::{TBlock, TSectionBlock, TSimpleBlock},
+        attributes::{TAttrlist, TElementAttribute},
+        blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
         inlines::TInline,
+        warnings::TWarning,
         TSpan,
     },
+    warnings::WarningType,
     Span,
 };
 
@@ -42,7 +45,9 @@ fn err_missing_space_before_title() {
 
 #[test]
 fn simplest_section_block() {
-    let mi = SectionBlock::parse(Span::new("== Section Title")).unwrap();
+    let mi = SectionBlock::parse(Span::new("== Section Title"))
+        .unwrap()
+        .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
@@ -80,7 +85,9 @@ fn simplest_section_block() {
 
 #[test]
 fn has_child_block() {
-    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc")).unwrap();
+    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc"))
+        .unwrap()
+        .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
@@ -124,9 +131,158 @@ fn has_child_block() {
 }
 
 #[test]
-fn dont_stop_at_peer_section() {
-    let mi =
-        SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef")).unwrap();
+fn has_child_block_with_errors() {
+    let maw = SectionBlock::parse(Span::new(
+        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+    ))
+    .unwrap();
+
+    let mi = maw.item.clone();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
+
+    assert_eq!(
+        mi.item,
+        TSectionBlock {
+            level: 1,
+            title: TSpan {
+                data: "Section Title",
+                line: 1,
+                col: 4,
+                offset: 3,
+            },
+            blocks: vec![TBlock::Macro(TMacroBlock {
+                name: TSpan {
+                    data: "foo",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 3,
+                    col: 6,
+                    offset: 23,
+                }),
+                attrlist: TAttrlist {
+                    attributes: vec!(
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "alt",
+                                line: 3,
+                                col: 10,
+                                offset: 27,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "Sunset",
+                                line: 3,
+                                col: 14,
+                                offset: 31,
+                            },
+                            source: TSpan {
+                                data: "alt=Sunset",
+                                line: 3,
+                                col: 10,
+                                offset: 27,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "width",
+                                line: 3,
+                                col: 21,
+                                offset: 38,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "300",
+                                line: 3,
+                                col: 27,
+                                offset: 44,
+                            },
+                            source: TSpan {
+                                data: "width=300",
+                                line: 3,
+                                col: 21,
+                                offset: 38,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "height",
+                                line: 3,
+                                col: 32,
+                                offset: 49,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "400",
+                                line: 3,
+                                col: 39,
+                                offset: 56,
+                            },
+                            source: TSpan {
+                                data: "height=400",
+                                line: 3,
+                                col: 32,
+                                offset: 49,
+                            },
+                        }
+                    ),
+                    source: TSpan {
+                        data: "alt=Sunset,width=300,,height=400",
+                        line: 3,
+                        col: 10,
+                        offset: 27,
+                    }
+                },
+                source: TSpan {
+                    data: "foo::bar[alt=Sunset,width=300,,height=400]",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+            })],
+            source: TSpan {
+                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 43,
+            offset: 60
+        }
+    );
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: ",",
+                line: 3,
+                col: 30,
+                offset: 47,
+            },
+            warning: WarningType::EmptyAttributeValue,
+        }]
+    );
+}
+
+#[test]
+fn dont_stop_at_child_section() {
+    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"))
+        .unwrap()
+        .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
@@ -194,8 +350,9 @@ fn dont_stop_at_peer_section() {
 
 #[test]
 fn stop_at_peer_section() {
-    let mi =
-        SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n== Section 2\n\ndef")).unwrap();
+    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"))
+        .unwrap()
+        .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
@@ -241,8 +398,9 @@ fn stop_at_peer_section() {
 
 #[test]
 fn stop_at_ancestor_section() {
-    let mi =
-        SectionBlock::parse(Span::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef")).unwrap();
+    let mi = SectionBlock::parse(Span::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"))
+        .unwrap()
+        .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
