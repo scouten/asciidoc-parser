@@ -51,11 +51,15 @@ impl<'src> Block<'src> {
         let line = source.take_normalized_line();
         if line.item.contains("::") {
             let mut macro_block_maw = MacroBlock::parse(source);
-            if !macro_block_maw.warnings.is_empty() {
-                warnings.append(&mut macro_block_maw.warnings);
-            }
 
             if let Some(macro_block) = macro_block_maw.item {
+                // Only propagate warnings from macro block parsing if we think this
+                // *is* a macro block. Otherwise, there would likely be too many false
+                // positives.
+                if !macro_block_maw.warnings.is_empty() {
+                    warnings.append(&mut macro_block_maw.warnings);
+                }
+
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
                         item: Self::Macro(macro_block.item),
