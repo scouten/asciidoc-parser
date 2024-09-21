@@ -92,7 +92,7 @@ impl<'src> Block<'src> {
             // don't automatically error out on a parse failure.
         }
 
-        // If no other block kind matches, we can always use SimpleBlock.]
+        // If no other block kind matches, we can always use SimpleBlock.
         MatchAndWarnings {
             item: SimpleBlock::parse(source).map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
