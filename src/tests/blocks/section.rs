@@ -131,6 +131,140 @@ fn has_child_block() {
 }
 
 #[test]
+fn has_macro_block_with_extra_blank_line() {
+    let mi = SectionBlock::parse(Span::new(
+        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
+    ))
+    .unwrap()
+    .unwrap_if_no_warnings();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
+
+    assert_eq!(
+        mi.item,
+        TSectionBlock {
+            level: 1,
+            title: TSpan {
+                data: "Section Title",
+                line: 1,
+                col: 4,
+                offset: 3,
+            },
+            blocks: vec![TBlock::Macro(TMacroBlock {
+                name: TSpan {
+                    data: "foo",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 3,
+                    col: 6,
+                    offset: 23,
+                }),
+                attrlist: TAttrlist {
+                    attributes: vec!(
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "alt",
+                                line: 3,
+                                col: 10,
+                                offset: 27,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "Sunset",
+                                line: 3,
+                                col: 14,
+                                offset: 31,
+                            },
+                            source: TSpan {
+                                data: "alt=Sunset",
+                                line: 3,
+                                col: 10,
+                                offset: 27,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "width",
+                                line: 3,
+                                col: 21,
+                                offset: 38,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "300",
+                                line: 3,
+                                col: 27,
+                                offset: 44,
+                            },
+                            source: TSpan {
+                                data: "width=300",
+                                line: 3,
+                                col: 21,
+                                offset: 38,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "height",
+                                line: 3,
+                                col: 31,
+                                offset: 48,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "400",
+                                line: 3,
+                                col: 38,
+                                offset: 55,
+                            },
+                            source: TSpan {
+                                data: "height=400",
+                                line: 3,
+                                col: 31,
+                                offset: 48,
+                            },
+                        }
+                    ),
+                    source: TSpan {
+                        data: "alt=Sunset,width=300,height=400",
+                        line: 3,
+                        col: 10,
+                        offset: 27,
+                    }
+                },
+                source: TSpan {
+                    data: "foo::bar[alt=Sunset,width=300,height=400]",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+            })],
+            source: TSpan {
+                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 5,
+            col: 1,
+            offset: 61
+        }
+    );
+}
+
+#[test]
 fn has_child_block_with_errors() {
     let maw = SectionBlock::parse(Span::new(
         "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
