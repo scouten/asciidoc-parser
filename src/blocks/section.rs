@@ -24,7 +24,9 @@ pub struct SectionBlock<'src> {
 }
 
 impl<'src> SectionBlock<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchAndWarnings<MatchedItem<'src, Self>>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+    ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
 
