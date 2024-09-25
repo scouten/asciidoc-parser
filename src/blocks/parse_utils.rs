@@ -30,12 +30,10 @@ where
             warnings.append(&mut maw.warnings);
         }
 
-        let Some(mi) = maw.item else {
-            break;
-        };
-
-        source = mi.after;
-        blocks.push(mi.item);
+        if let Some(mi) = maw.item {
+            source = mi.after;
+            blocks.push(mi.item);
+        }
     }
 
     MatchAndWarnings {
