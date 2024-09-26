@@ -16,11 +16,13 @@ impl<'src> Header<'src> {
     pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_empty_lines();
 
-        // TEMPORARY: Titles are optional, but we're not prepared for that yet.
-        let title = parse_title(source)?;
+        let (title, mut after) = if let Some(mi) = parse_title(source) {
+            (Some(mi.item), mi.after)
+        } else {
+            (None, source)
+        };
 
         let mut attributes: Vec<Attribute> = vec![];
-        let mut after = title.after;
 
         while let Some(attr) = Attribute::parse(after) {
             attributes.push(attr.item);
@@ -34,7 +36,7 @@ impl<'src> Header<'src> {
 
         Some(MatchedItem {
             item: Self {
-                title: Some(title.item),
+                title,
                 attributes,
                 source,
             },
