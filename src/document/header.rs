@@ -19,7 +19,7 @@ pub struct Header<'src> {
 
 impl<'src> Header<'src> {
     pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
-        let original_src = source.clone();
+        let original_src = source;
 
         let mut attributes: Vec<Attribute> = vec![];
         let mut warnings: Vec<Warning<'src>> = vec![];
