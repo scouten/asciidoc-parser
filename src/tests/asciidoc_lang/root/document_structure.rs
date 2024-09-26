@@ -40,7 +40,7 @@ mod documents {
         // ----
 
         assert_eq!(
-            Document::parse("This is a basic AsciiDoc document.\n").unwrap(),
+            Document::parse("This is a basic AsciiDoc document.\n"),
             TDocument {
                 header: THeader {
                     title: None,
@@ -92,8 +92,7 @@ mod documents {
         assert_eq!(
             Document::parse(
                 "This is a basic AsciiDoc document.\n\nThis document contains two paragraphs.\n"
-            )
-            .unwrap(),
+            ),
             TDocument {
                 header: THeader {
                     title: None,
@@ -158,8 +157,7 @@ mod documents {
         assert_eq!(
             Document::parse(
                 "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title."
-            )
-            .unwrap(),
+            ),
             TDocument {
                 header:
                     THeader {

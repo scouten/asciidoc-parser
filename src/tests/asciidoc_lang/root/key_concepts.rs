@@ -140,7 +140,7 @@ mod macros {
         // ----
 
         assert_eq!(
-            Document::parse("image::sunset.jpg[Sunset]\n").unwrap(),
+            Document::parse("image::sunset.jpg[Sunset]\n"),
             TDocument {
                 header: THeader {
                     title: None,
@@ -224,8 +224,7 @@ mod macros {
         assert_eq!(
             Document::parse(
                 "Click the button with the image:star.png[Star] to favorite the project.\n"
-            )
-            .unwrap(),
+            ),
             TDocument {
                 header: THeader {
                     title: None,

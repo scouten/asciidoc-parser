@@ -42,11 +42,12 @@ impl<'src> Document<'src> {
     /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
     /// UTF-8 prior to parsing.
     ///
-    /// TEMPORARY: Returns an `Option` which will be `None` if unable to parse.
-    /// This will eventually be replaced with an annotation mechanism.
-    pub fn parse(source: &'src str) -> Option<Self> {
-        // TO DO: Add option for best-guess parsing?
-
+    /// Any UTF-8 string is a valid AsciiDoc document, so there is no `Option`
+    /// or `Result` on this API. There may be any number of character sequences
+    /// that have ambiguous or potentially unintended meanings. For that reason,
+    /// a caller is advised to review the warnings provided via the
+    /// `Self::warnings` iterator.
+    pub fn parse(source: &'src str) -> Self {
         let source = Span::new(source);
         let i = source.discard_empty_lines();
         let i = if i.is_empty() { source } else { i };
@@ -63,12 +64,12 @@ impl<'src> Document<'src> {
             warnings.append(&mut maw_blocks.warnings);
         }
 
-        Some(Self {
+        Self {
             header,
             blocks: maw_blocks.item.item,
             source,
             warnings,
-        })
+        }
     }
 
     /// Return the document header if there is one.
