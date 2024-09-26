@@ -17,28 +17,6 @@ mod warning {
     }
 }
 
-mod match_and_maybe_warning {
-    use crate::{
-        warnings::{MatchAndMaybeWarning, Warning, WarningType},
-        Span,
-    };
-
-    #[test]
-    fn impl_clone() {
-        // Silly test to mark the #[derive(...)] line as covered.
-        let mmw1 = MatchAndMaybeWarning {
-            item: "xyz",
-            warning: Some(Warning {
-                source: Span::new("abc"),
-                warning: WarningType::EmptyAttributeValue,
-            }),
-        };
-
-        let mmw2 = mmw1.clone();
-        assert_eq!(mmw1, mmw2);
-    }
-}
-
 mod match_and_warnings {
     use crate::{
         warnings::{MatchAndWarnings, Warning, WarningType},

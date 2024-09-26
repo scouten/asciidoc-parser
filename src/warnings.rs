@@ -45,18 +45,6 @@ pub enum WarningType {
     MissingCommaAfterQuotedAttributeValue,
 }
 
-/// Return type used to signal one possible parse error.
-#[derive(Clone, Debug, Eq, PartialEq)]
-#[allow(dead_code)] // TEMPORARY while building
-pub(crate) struct MatchAndMaybeWarning<'src, T> {
-    /// Matched item. Typically either `MatchedItem<X>` or
-    /// `Option<MatchedItem<X>>`.
-    pub(crate) item: T,
-
-    /// Possible parse error.
-    pub(crate) warning: Option<Warning<'src>>,
-}
-
 /// Return type used to signal one or more possible parse error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct MatchAndWarnings<'src, T> {
