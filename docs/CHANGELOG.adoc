@@ -6,6 +6,9 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 == Published Q3 2024
 
+Added::
+* Add example for how to escape an inline plus passthrough on the prevent substitutions page
+
 Changed::
 * Clarify how the author name is partitioned
 * Clarify that a URL can be used in place of an email address in the author information

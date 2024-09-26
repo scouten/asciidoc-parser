@@ -42,3 +42,22 @@ They're far more comprehensive and consistent than using a backslash.
 As the name implies, a passthrough passes content directly through to the output document without applying any substitutions.
 
 You can control and prevent substitutions in inline text with the xref:pass:pass-macro.adoc[inline passthrough macros] and for entire blocks of content with the xref:pass:pass-block.adoc[block passthrough].
+
+The inline `{plus}` passthrough takes precedence over all other inline formatting.
+Therefore, if you need to output a literal plus when it would otherwise match a passthrough, you have two options.
+
+First, you can escape it using the `\{plus}` attribute reference:
+
+[source]
+----
+`{plus}` and `{plus}`
+----
+
+Alternately, you can escape the pair using a backslash.
+
+[source]
+----
+`\+` and `+`
+----
+
+The backslash is only required before the pair, not before each occurance of the plus.
