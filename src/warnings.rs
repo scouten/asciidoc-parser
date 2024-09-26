@@ -21,6 +21,9 @@ pub enum WarningType {
     #[error("An attribute value is missing its terminating quote")]
     AttributeValueMissingTerminatingQuote,
 
+    #[error("Document header wasn't terminated by a blank line (this line can't be parsed as part of a document header)")]
+    DocumentHeaderNotTerminated,
+
     #[error("An empty attribute value was detected")]
     EmptyAttributeValue,
 

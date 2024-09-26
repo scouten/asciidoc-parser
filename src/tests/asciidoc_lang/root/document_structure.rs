@@ -42,7 +42,16 @@ mod documents {
         assert_eq!(
             Document::parse("This is a basic AsciiDoc document.\n").unwrap(),
             TDocument {
-                header: None,
+                header: THeader {
+                    title: None,
+                    attributes: vec![],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0
+                    }
+                },
                 source: TSpan {
                     data: "This is a basic AsciiDoc document.\n",
                     line: 1,
@@ -56,7 +65,8 @@ mod documents {
                         col: 1,
                         offset: 0,
                     },
-                )))]
+                )))],
+                warnings: vec![],
             }
         );
     }
@@ -85,7 +95,16 @@ mod documents {
             )
             .unwrap(),
             TDocument {
-                header: None,
+                header: THeader {
+                    title: None,
+                    attributes: vec![],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0
+                    }
+                },
                 source: TSpan {
                     data: "This is a basic AsciiDoc document.\n\nThis document contains two paragraphs.\n",
                     line: 1,
@@ -107,7 +126,8 @@ mod documents {
                             line: 3,
                             col: 1,
                             offset: 36,
-                        })))]
+                        })))],
+                        warnings: vec![],
                      }
         );
     }
@@ -141,7 +161,7 @@ mod documents {
             )
             .unwrap(),
             TDocument {
-                header: Some(
+                header:
                     THeader {
                         title: Some(
                             TSpan {
@@ -175,8 +195,6 @@ mod documents {
                             offset: 0,
                         },
                     },
-                ),
-
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock(
@@ -216,6 +234,7 @@ mod documents {
                     col: 1,
                     offset: 0
                 },
+                warnings: vec![],
             }
         );
     }

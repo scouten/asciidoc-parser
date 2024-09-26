@@ -124,7 +124,7 @@ mod macros {
         tests::fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
-            document::TDocument,
+            document::{TDocument, THeader},
             inlines::{TInline, TInlineMacro},
             TSpan,
         },
@@ -142,7 +142,16 @@ mod macros {
         assert_eq!(
             Document::parse("image::sunset.jpg[Sunset]\n").unwrap(),
             TDocument {
-                header: None,
+                header: THeader {
+                    title: None,
+                    attributes: vec![],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0
+                    }
+                },
                 blocks: vec![TBlock::Macro(TMacroBlock {
                     name: TSpan {
                         data: "image",
@@ -198,6 +207,7 @@ mod macros {
                     col: 1,
                     offset: 0
                 },
+                warnings: vec![],
             }
         );
     }
@@ -217,7 +227,16 @@ mod macros {
             )
             .unwrap(),
             TDocument {
-                header: None,
+                header: THeader {
+                    title: None,
+                    attributes: vec![],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0
+                    }
+                },
                     blocks: vec![
                             TBlock::Simple(
                                 TSimpleBlock(
@@ -288,6 +307,7 @@ mod macros {
                     col: 1,
                     offset: 0
                 },
+                warnings: vec![],
             }
         );
 

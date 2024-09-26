@@ -6,6 +6,7 @@ use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     document::Header,
     strings::CowStr,
+    warnings::Warning,
     HasSpan, Span,
 };
 
@@ -18,9 +19,10 @@ use crate::{
 /// title and document attributes.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Document<'src> {
-    header: Option<Header<'src>>,
+    header: Header<'src>,
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
+    warnings: Vec<Warning<'src>>,
 }
 
 impl<'src> Document<'src> {
@@ -47,32 +49,36 @@ impl<'src> Document<'src> {
 
         let source = Span::new(source);
         let i = source.discard_empty_lines();
+        let i = if i.is_empty() { source } else { i };
 
-        let (i, header) = if i.starts_with("= ") {
-            let mi = Header::parse(i)?;
-            (mi.after, Some(mi.item))
-        } else {
-            (i, None)
-        };
+        let mi = Header::parse(i);
+        let i = mi.item.after;
 
-        let maw_blocks = parse_blocks_until(i, |_| false);
+        let header = mi.item.item;
+        let mut warnings = mi.warnings;
+
+        let mut maw_blocks = parse_blocks_until(i, |_| false);
 
         if !maw_blocks.warnings.is_empty() {
-            todo!("Retain warnings");
+            warnings.append(&mut maw_blocks.warnings);
         }
-
-        let blocks = maw_blocks.item;
 
         Some(Self {
             header,
-            blocks: blocks.item,
+            blocks: maw_blocks.item.item,
             source,
+            warnings,
         })
     }
 
     /// Return the document header if there is one.
-    pub fn header(&'src self) -> Option<&'src Header<'src>> {
-        self.header.as_ref()
+    pub fn header(&'src self) -> &'src Header<'src> {
+        &self.header
+    }
+
+    /// Return an iterator over any warnings found during parsing.
+    pub fn warnings(&'src self) -> Iter<'src, Warning<'src>> {
+        self.warnings.iter()
     }
 }
 

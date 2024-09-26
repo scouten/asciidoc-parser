@@ -9,8 +9,10 @@ use crate::{
         blocks::{TBlock, TSimpleBlock},
         document::{TDocument, THeader},
         inlines::TInline,
+        warnings::TWarning,
         TSpan,
     },
+    warnings::WarningType,
 };
 
 #[test]
@@ -31,7 +33,16 @@ fn empty_source() {
     assert_eq!(
         doc,
         TDocument {
-            header: None,
+            header: THeader {
+                title: None,
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                },
+            },
             source: TSpan {
                 data: "",
                 line: 1,
@@ -39,6 +50,7 @@ fn empty_source() {
                 offset: 0
             },
             blocks: vec![],
+            warnings: vec![],
         }
     );
 }
@@ -48,7 +60,16 @@ fn only_spaces() {
     assert_eq!(
         Document::parse("    ").unwrap(),
         TDocument {
-            header: None,
+            header: THeader {
+                title: None,
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                },
+            },
             source: TSpan {
                 data: "    ",
                 line: 1,
@@ -56,6 +77,7 @@ fn only_spaces() {
                 offset: 0
             },
             blocks: vec![],
+            warnings: vec![],
         }
     );
 }
@@ -65,7 +87,16 @@ fn one_simple_block() {
     assert_eq!(
         Document::parse("abc").unwrap(),
         TDocument {
-            header: None,
+            header: THeader {
+                title: None,
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                },
+            },
             source: TSpan {
                 data: "abc",
                 line: 1,
@@ -79,7 +110,8 @@ fn one_simple_block() {
                     col: 1,
                     offset: 0,
                 }
-            )))]
+            )))],
+            warnings: vec![],
         }
     );
 }
@@ -89,7 +121,16 @@ fn two_simple_blocks() {
     assert_eq!(
         Document::parse("abc\n\ndef").unwrap(),
         TDocument {
-            header: None,
+            header: THeader {
+                title: None,
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                },
+            },
             source: TSpan {
                 data: "abc\n\ndef",
                 line: 1,
@@ -110,6 +151,7 @@ fn two_simple_blocks() {
                     offset: 5,
                 })))
             ],
+            warnings: vec![],
         }
     );
 }
@@ -119,7 +161,7 @@ fn two_blocks_and_title() {
     assert_eq!(
         Document::parse("= Example Title\n\nabc\n\ndef").unwrap(),
         TDocument {
-            header: Some(THeader {
+            header: THeader {
                 title: Some(TSpan {
                     data: "Example Title",
                     line: 1,
@@ -133,7 +175,7 @@ fn two_blocks_and_title() {
                     col: 1,
                     offset: 0,
                 }
-            }),
+            },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
                     data: "abc",
@@ -154,6 +196,7 @@ fn two_blocks_and_title() {
                 col: 1,
                 offset: 0
             },
+            warnings: vec![],
         }
     );
 }
@@ -163,7 +206,7 @@ fn extra_space_before_title() {
     assert_eq!(
         Document::parse("=   Example Title\n\nabc").unwrap(),
         TDocument {
-            header: Some(THeader {
+            header: THeader {
                 title: Some(TSpan {
                     data: "Example Title",
                     line: 1,
@@ -177,7 +220,7 @@ fn extra_space_before_title() {
                     col: 1,
                     offset: 0,
                 }
-            }),
+            },
             blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
                 TSpan {
                     data: "abc",
@@ -192,11 +235,54 @@ fn extra_space_before_title() {
                 col: 1,
                 offset: 0
             },
+            warnings: vec!(),
         }
     );
 }
 
 #[test]
-fn bad_header() {
-    assert!(Document::parse("= Title\nnot an attribute\n").is_none());
+fn err_bad_header() {
+    assert_eq!(
+        Document::parse("= Title\nnot an attribute\n").unwrap(),
+        TDocument {
+            header: THeader {
+                title: Some(TSpan {
+                    data: "Title",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                }),
+                attributes: vec![],
+                source: TSpan {
+                    data: "= Title\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            },
+            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                TSpan {
+                    data: "not an attribute",
+                    line: 2,
+                    col: 1,
+                    offset: 8,
+                }
+            )))],
+            source: TSpan {
+                data: "= Title\nnot an attribute\n",
+                line: 1,
+                col: 1,
+                offset: 0
+            },
+            warnings: vec!(TWarning {
+                source: TSpan {
+                    data: "not an attribute",
+                    line: 2,
+                    col: 1,
+                    offset: 8,
+                },
+                warning: WarningType::DocumentHeaderNotTerminated,
+            },),
+        }
+    );
 }
