@@ -46,6 +46,9 @@ nobreak:: Disables words within the span of text from being broken.
 nowrap:: Prevents the span of text from wrapping at all.
 pre-wrap:: Prevents sequences of space and space-like characters from being collapsed (i.e., all spaces are preserved).
 
+[#deprecated]
+=== Deprecated roles
+
 There are several built-in roles that were once supported in AsciiDoc, but have since been deprecated.
 These roles include `big`, `small`, named colors (e.g., `aqua`), and named background colors (e.g., `aqua-background`).
 You should create your own semantic roles in place of these deprecated roles.
