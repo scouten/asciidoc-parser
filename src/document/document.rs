@@ -72,7 +72,7 @@ impl<'src> Document<'src> {
         }
     }
 
-    /// Return the document header if there is one.
+    /// Return the document header.
     pub fn header(&'src self) -> &'src Header<'src> {
         &self.header
     }
