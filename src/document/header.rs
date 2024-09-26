@@ -1,6 +1,11 @@
 use std::slice::Iter;
 
-use crate::{document::Attribute, span::MatchedItem, HasSpan, Span};
+use crate::{
+    document::Attribute,
+    span::MatchedItem,
+    warnings::{MatchAndWarnings, Warning, WarningType},
+    HasSpan, Span,
+};
 
 /// An AsciiDoc document may begin with a document header. The document header
 /// encapsulates the document title, author and revision information,
@@ -13,7 +18,12 @@ pub struct Header<'src> {
 }
 
 impl<'src> Header<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
+        let original_src = source;
+
+        let mut attributes: Vec<Attribute> = vec![];
+        let mut warnings: Vec<Warning<'src>> = vec![];
+
         let source = source.discard_empty_lines();
 
         let (title, mut after) = if let Some(mi) = parse_title(source) {
@@ -22,8 +32,6 @@ impl<'src> Header<'src> {
             (None, source)
         };
 
-        let mut attributes: Vec<Attribute> = vec![];
-
         while let Some(attr) = Attribute::parse(after) {
             attributes.push(attr.item);
             after = attr.after;
@@ -31,17 +39,44 @@ impl<'src> Header<'src> {
 
         let source = source.trim_remainder(after);
 
-        // Header must be followed by an empty line or EOF.
-        let mi = after.take_empty_line()?;
+        // Nothing resembling a header so far? Don't look for empty line.
+        if title.is_none() && attributes.is_empty() {
+            return MatchAndWarnings {
+                item: MatchedItem {
+                    item: Self {
+                        title: None,
+                        attributes,
+                        source: original_src.into_parse_result(0).item,
+                    },
+                    after,
+                },
+                warnings,
+            };
+        }
 
-        Some(MatchedItem {
-            item: Self {
-                title,
-                attributes,
-                source,
+        // Header is valid so far. Warn if not followed by empty line or EOF.
+        after = match after.take_empty_line() {
+            Some(mi) => mi.after.discard_empty_lines(),
+            None => {
+                warnings.push(Warning {
+                    source: after.take_line().item,
+                    warning: WarningType::DocumentHeaderNotTerminated,
+                });
+                after
+            }
+        };
+
+        MatchAndWarnings {
+            item: MatchedItem {
+                item: Self {
+                    title,
+                    attributes,
+                    source,
+                },
+                after,
             },
-            after: mi.after.discard_empty_lines(),
-        })
+            warnings,
+        }
     }
 
     /// Return a [`Span`] describing the document title, if there was one.

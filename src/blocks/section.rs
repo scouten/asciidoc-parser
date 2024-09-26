@@ -4,6 +4,7 @@ use crate::{
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
+    warnings::MatchAndWarnings,
     HasSpan, Span,
 };
 
@@ -23,21 +24,29 @@ pub struct SectionBlock<'src> {
 }
 
 impl<'src> SectionBlock<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+    ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
-        let blocks =
-            parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0))?;
+
+        let maw_blocks =
+            parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0));
+
+        let blocks = maw_blocks.item;
         let source = source.trim_remainder(blocks.after);
 
-        Some(MatchedItem {
-            item: Self {
-                level: level.item.0,
-                title: level.item.1,
-                blocks: blocks.item,
-                source,
+        Some(MatchAndWarnings {
+            item: MatchedItem {
+                item: Self {
+                    level: level.item.0,
+                    title: level.item.1,
+                    blocks: blocks.item,
+                    source,
+                },
+                after: blocks.after,
             },
-            after: blocks.after,
+            warnings: maw_blocks.warnings,
         })
     }
 

@@ -1,6 +1,11 @@
 use std::{ops::Deref, slice::Iter};
 
-use crate::{attributes::ElementAttribute, span::MatchedItem, HasSpan, Span};
+use crate::{
+    attributes::ElementAttribute,
+    span::MatchedItem,
+    warnings::{MatchAndWarnings, Warning, WarningType},
+    HasSpan, Span,
+};
 
 /// The source text that’s used to define attributes for an element is referred
 /// to as an attrlist. An attrlist is always enclosed in a pair of square
@@ -20,22 +25,28 @@ impl<'src> Attrlist<'src> {
     /// the opening or closing square brackets for the attrlist. This is because
     /// the rules for closing brackets differ when parsing inline, macro, and
     /// block elements.
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
+        let mut warnings: Vec<Warning<'src>> = vec![];
 
         if source.starts_with('[') && source.ends_with(']') {
             todo!("Parse block anchor syntax (issue #122)");
         }
 
         loop {
-            let maybe_attr = if parse_shorthand_items {
+            let mut maybe_attr_and_warnings = if parse_shorthand_items {
                 ElementAttribute::parse_with_shorthand(after)
             } else {
                 ElementAttribute::parse(after)
             };
 
+            if !maybe_attr_and_warnings.warnings.is_empty() {
+                warnings.append(&mut maybe_attr_and_warnings.warnings);
+            }
+
+            let maybe_attr = maybe_attr_and_warnings.item;
             let Some(attr) = maybe_attr else {
                 break;
             };
@@ -50,6 +61,14 @@ impl<'src> Attrlist<'src> {
             match after.take_prefix(",") {
                 Some(comma) => {
                     after = comma.after.take_whitespace().after;
+                    if after.starts_with(",") {
+                        warnings.push(Warning {
+                            source: comma.item,
+                            warning: WarningType::EmptyAttributeValue,
+                        });
+                        after = after.discard(1);
+                        continue;
+                    }
                 }
                 None => {
                     break;
@@ -58,13 +77,21 @@ impl<'src> Attrlist<'src> {
         }
 
         if !after.is_empty() {
-            return None;
+            warnings.push(Warning {
+                source: after,
+                warning: WarningType::MissingCommaAfterQuotedAttributeValue,
+            });
+
+            after = after.discard_all();
         }
 
-        Some(MatchedItem {
-            item: Self { attributes, source },
-            after,
-        })
+        MatchAndWarnings {
+            item: MatchedItem {
+                item: Self { attributes, source },
+                after,
+            },
+            warnings,
+        }
     }
 
     /// Returns an iterator over the attributes contained within

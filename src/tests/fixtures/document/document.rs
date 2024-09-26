@@ -4,15 +4,16 @@ use super::THeader;
 use crate::{
     blocks::IsBlock,
     document::Document,
-    tests::fixtures::{blocks::TBlock, TSpan},
+    tests::fixtures::{blocks::TBlock, warnings::TWarning, TSpan},
     HasSpan,
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TDocument {
-    pub header: Option<THeader>,
+    pub header: THeader,
     pub blocks: Vec<TBlock>,
     pub source: TSpan,
+    pub warnings: Vec<TWarning>,
 }
 
 impl fmt::Debug for TDocument {
@@ -21,6 +22,7 @@ impl fmt::Debug for TDocument {
             .field("header", &self.header)
             .field("blocks", &self.blocks)
             .field("source", &self.source)
+            .field("warnings", &self.warnings)
             .finish()
     }
 }
@@ -48,14 +50,8 @@ fn tdocument_eq(tdocument: &TDocument, document: &Document) -> bool {
         return false;
     }
 
-    if tdocument.header.is_some() != document.header().is_some() {
+    if &tdocument.header != document.header() {
         return false;
-    } else if let Some(ref td_header) = tdocument.header {
-        if let Some(d_header) = document.header() {
-            if td_header != d_header {
-                return false;
-            }
-        }
     }
 
     if tdocument.blocks.len() != document.nested_blocks().len() {
@@ -64,6 +60,16 @@ fn tdocument_eq(tdocument: &TDocument, document: &Document) -> bool {
 
     for (td_block, block) in tdocument.blocks.iter().zip(document.nested_blocks()) {
         if td_block != block {
+            return false;
+        }
+    }
+
+    if tdocument.warnings.len() != document.warnings().len() {
+        return false;
+    }
+
+    for (td_warning, warning) in tdocument.warnings.iter().zip(document.warnings()) {
+        if td_warning != warning {
             return false;
         }
     }

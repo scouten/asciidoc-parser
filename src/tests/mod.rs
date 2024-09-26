@@ -13,3 +13,4 @@ pub(crate) mod fixtures;
 mod inlines;
 mod span;
 mod strings;
+mod warnings;

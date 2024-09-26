@@ -16,24 +16,33 @@ mod simple {
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
-        let b1 = Block::parse(Span::new("abc")).unwrap();
+        let b1 = Block::parse(Span::new("abc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
         let b2 = b1.item.clone();
         assert_eq!(b1.item, b2);
     }
 
     #[test]
     fn err_empty_source() {
-        assert!(Block::parse(Span::new("")).is_none());
+        assert!(Block::parse(Span::new(""))
+            .unwrap_if_no_warnings()
+            .is_none());
     }
 
     #[test]
     fn err_only_spaces() {
-        assert!(Block::parse(Span::new("    ")).is_none());
+        assert!(Block::parse(Span::new("    "))
+            .unwrap_if_no_warnings()
+            .is_none());
     }
 
     #[test]
     fn single_line() {
-        let mi = Block::parse(Span::new("abc")).unwrap();
+        let mi = Block::parse(Span::new("abc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -72,7 +81,9 @@ mod simple {
 
     #[test]
     fn multiple_lines() {
-        let mi = Block::parse(Span::new("abc\ndef")).unwrap();
+        let mi = Block::parse(Span::new("abc\ndef"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -123,7 +134,9 @@ mod simple {
 
     #[test]
     fn consumes_blank_lines_after() {
-        let mi = Block::parse(Span::new("abc\n\ndef")).unwrap();
+        let mi = Block::parse(Span::new("abc\n\ndef"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -168,8 +181,10 @@ mod r#macro {
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
             inlines::{TInline, TInlineMacro},
+            warnings::TWarning,
             TSpan,
         },
+        warnings::WarningType,
         HasSpan, Span,
     };
 
@@ -178,7 +193,9 @@ mod r#macro {
 
     #[test]
     fn err_inline_syntax() {
-        let mi = Block::parse(Span::new("foo:bar[]")).unwrap();
+        let mi = Block::parse(Span::new("foo:bar[]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -228,7 +245,9 @@ mod r#macro {
 
     #[test]
     fn err_no_attr_list() {
-        let mi = Block::parse(Span::new("foo::bar")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -263,7 +282,9 @@ mod r#macro {
 
     #[test]
     fn err_attr_list_not_closed() {
-        let mi = Block::parse(Span::new("foo::bar[blah")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[blah"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -298,7 +319,9 @@ mod r#macro {
 
     #[test]
     fn err_unexpected_after_attr_list() {
-        let mi = Block::parse(Span::new("foo::bar[blah]bonus")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[blah]bonus"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -369,7 +392,9 @@ mod r#macro {
 
     #[test]
     fn simplest_block_macro() {
-        let mi = Block::parse(Span::new("foo::[]")).unwrap();
+        let mi = Block::parse(Span::new("foo::[]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -426,7 +451,9 @@ mod r#macro {
 
     #[test]
     fn has_target() {
-        let mi = Block::parse(Span::new("foo::bar[]")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -484,7 +511,9 @@ mod r#macro {
 
     #[test]
     fn has_target_and_attrlist() {
-        let mi = Block::parse(Span::new("foo::bar[blah]")).unwrap();
+        let mi = Block::parse(Span::new("foo::bar[blah]"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -559,6 +588,142 @@ mod r#macro {
             }
         );
     }
+
+    #[test]
+    fn warn_attrlist_has_extra_comma() {
+        let maw = Block::parse(Span::new("foo::bar[alt=Sunset,width=300,,height=400]"));
+
+        let mi = maw.item.as_ref().unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TBlock::Macro(TMacroBlock {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 6,
+                    offset: 5,
+                }),
+                attrlist: TAttrlist {
+                    attributes: vec!(
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "alt",
+                                line: 1,
+                                col: 10,
+                                offset: 9,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "Sunset",
+                                line: 1,
+                                col: 14,
+                                offset: 13,
+                            },
+                            source: TSpan {
+                                data: "alt=Sunset",
+                                line: 1,
+                                col: 10,
+                                offset: 9,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "width",
+                                line: 1,
+                                col: 21,
+                                offset: 20,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "300",
+                                line: 1,
+                                col: 27,
+                                offset: 26,
+                            },
+                            source: TSpan {
+                                data: "width=300",
+                                line: 1,
+                                col: 21,
+                                offset: 20,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "height",
+                                line: 1,
+                                col: 32,
+                                offset: 31,
+                            }),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "400",
+                                line: 1,
+                                col: 39,
+                                offset: 38,
+                            },
+                            source: TSpan {
+                                data: "height=400",
+                                line: 1,
+                                col: 32,
+                                offset: 31,
+                            },
+                        }
+                    ),
+                    source: TSpan {
+                        data: "alt=Sunset,width=300,,height=400",
+                        line: 1,
+                        col: 10,
+                        offset: 9,
+                    }
+                },
+                source: TSpan {
+                    data: "foo::bar[alt=Sunset,width=300,,height=400]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            })
+        );
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "foo::bar[alt=Sunset,width=300,,height=400]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 43,
+                offset: 42
+            }
+        );
+        assert_eq!(
+            maw.warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: ",",
+                    line: 1,
+                    col: 30,
+                    offset: 29,
+                },
+                warning: WarningType::EmptyAttributeValue,
+            }]
+        );
+    }
 }
 
 mod section {
@@ -569,16 +734,21 @@ mod section {
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
-            blocks::{TBlock, TSectionBlock, TSimpleBlock},
+            attributes::{TAttrlist, TElementAttribute},
+            blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
             inlines::TInline,
+            warnings::TWarning,
             TSpan,
         },
+        warnings::WarningType,
         HasSpan, Span,
     };
 
     #[test]
     fn err_missing_space_before_title() {
-        let mi = Block::parse(Span::new("=blah blah")).unwrap();
+        let mi = Block::parse(Span::new("=blah blah"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,
@@ -613,7 +783,9 @@ mod section {
 
     #[test]
     fn simplest_section_block() {
-        let mi = Block::parse(Span::new("== Section Title")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().deref(), "section");
@@ -653,7 +825,9 @@ mod section {
 
     #[test]
     fn has_child_block() {
-        let mi = Block::parse(Span::new("== Section Title\n\nabc")).unwrap();
+        let mi = Block::parse(Span::new("== Section Title\n\nabc"))
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().deref(), "section");
@@ -717,6 +891,160 @@ mod section {
                 col: 4,
                 offset: 21
             }
+        );
+    }
+
+    #[test]
+    fn warn_child_attrlist_has_extra_comma() {
+        let maw = Block::parse(Span::new(
+            "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+        ));
+
+        let mi = maw.item.as_ref().unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TBlock::Section(TSectionBlock {
+                level: 1,
+                title: TSpan {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                blocks: vec![TBlock::Macro(TMacroBlock {
+                    name: TSpan {
+                        data: "foo",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                    target: Some(TSpan {
+                        data: "bar",
+                        line: 3,
+                        col: 6,
+                        offset: 23,
+                    }),
+                    attrlist: TAttrlist {
+                        attributes: vec!(
+                            TElementAttribute {
+                                name: Some(TSpan {
+                                    data: "alt",
+                                    line: 3,
+                                    col: 10,
+                                    offset: 27,
+                                }),
+                                shorthand_items: vec![],
+                                value: TSpan {
+                                    data: "Sunset",
+                                    line: 3,
+                                    col: 14,
+                                    offset: 31,
+                                },
+                                source: TSpan {
+                                    data: "alt=Sunset",
+                                    line: 3,
+                                    col: 10,
+                                    offset: 27,
+                                },
+                            },
+                            TElementAttribute {
+                                name: Some(TSpan {
+                                    data: "width",
+                                    line: 3,
+                                    col: 21,
+                                    offset: 38,
+                                }),
+                                shorthand_items: vec![],
+                                value: TSpan {
+                                    data: "300",
+                                    line: 3,
+                                    col: 27,
+                                    offset: 44,
+                                },
+                                source: TSpan {
+                                    data: "width=300",
+                                    line: 3,
+                                    col: 21,
+                                    offset: 38,
+                                },
+                            },
+                            TElementAttribute {
+                                name: Some(TSpan {
+                                    data: "height",
+                                    line: 3,
+                                    col: 32,
+                                    offset: 49,
+                                }),
+                                shorthand_items: vec![],
+                                value: TSpan {
+                                    data: "400",
+                                    line: 3,
+                                    col: 39,
+                                    offset: 56,
+                                },
+                                source: TSpan {
+                                    data: "height=400",
+                                    line: 3,
+                                    col: 32,
+                                    offset: 49,
+                                },
+                            }
+                        ),
+                        source: TSpan {
+                            data: "alt=Sunset,width=300,,height=400",
+                            line: 3,
+                            col: 10,
+                            offset: 27,
+                        }
+                    },
+                    source: TSpan {
+                        data: "foo::bar[alt=Sunset,width=300,,height=400]",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                })],
+                source: TSpan {
+                    data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            })
+        );
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 3,
+                col: 43,
+                offset: 60
+            }
+        );
+
+        assert_eq!(
+            maw.warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: ",",
+                    line: 3,
+                    col: 30,
+                    offset: 47,
+                },
+                warning: WarningType::EmptyAttributeValue,
+            }]
         );
     }
 

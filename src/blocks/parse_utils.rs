@@ -1,15 +1,22 @@
-use crate::{blocks::Block, span::MatchedItem, Span};
+use crate::{
+    blocks::Block,
+    span::MatchedItem,
+    warnings::{MatchAndWarnings, Warning},
+    Span,
+};
 
 /// Parse blocks until end of input or a pre-determined stop condition is
 /// reached.
 pub(crate) fn parse_blocks_until<'src, F>(
     mut source: Span<'src>,
     f: F,
-) -> Option<MatchedItem<'src, Vec<Block<'src>>>>
+) -> MatchAndWarnings<'src, MatchedItem<'src, Vec<Block<'src>>>>
 where
     F: Fn(&Span<'src>) -> bool,
 {
     let mut blocks: Vec<Block<'src>> = vec![];
+    let mut warnings: Vec<Warning<'src>> = vec![];
+
     source = source.discard_empty_lines();
 
     while !source.data().is_empty() {
@@ -17,13 +24,23 @@ where
             break;
         }
 
-        let mi = Block::parse(source)?;
-        source = mi.after;
-        blocks.push(mi.item);
+        let mut maw = Block::parse(source);
+
+        if !maw.warnings.is_empty() {
+            warnings.append(&mut maw.warnings);
+        }
+
+        if let Some(mi) = maw.item {
+            source = mi.after;
+            blocks.push(mi.item);
+        }
     }
 
-    Some(MatchedItem {
-        item: blocks,
-        after: source,
-    })
+    MatchAndWarnings {
+        item: MatchedItem {
+            item: blocks,
+            after: source,
+        },
+        warnings,
+    }
 }
