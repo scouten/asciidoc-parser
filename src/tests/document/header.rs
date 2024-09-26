@@ -173,3 +173,51 @@ fn title_and_attribute() {
         }
     );
 }
+
+#[test]
+fn attribute_without_title() {
+    let mi = Header::parse(Span::new(":foo: bar\n\nblah")).unwrap();
+
+    assert_eq!(
+        mi.item,
+        THeader {
+            title: None,
+            attributes: vec![TAttribute {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+                value: TRawAttributeValue::Value(TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 7,
+                    offset: 6,
+                }),
+                source: TSpan {
+                    data: ":foo: bar\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }],
+            source: TSpan {
+                data: ":foo: bar\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "blah",
+            line: 3,
+            col: 1,
+            offset: 11
+        }
+    );
+}
