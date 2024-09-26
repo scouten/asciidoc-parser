@@ -1,5 +1,3 @@
-#![allow(dead_code)] // TEMPORARY while building
-
 use super::Span;
 
 impl<'src> Span<'src> {
