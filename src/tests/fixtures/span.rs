@@ -17,7 +17,6 @@ impl fmt::Debug for TSpan {
             .field("line", &self.line)
             .field("col", &self.col)
             .field("offset", &self.offset)
-            .field("handle_utf8", &true)
             .finish()
     }
 }
