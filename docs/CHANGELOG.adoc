@@ -8,6 +8,7 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 Added::
 * Add example for how to escape an inline plus passthrough on the prevent substitutions page
+* Document the `align` attribute on the `video` block macro
 
 Changed::
 * Clarify how the author name is partitioned

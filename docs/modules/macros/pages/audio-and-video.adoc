@@ -217,6 +217,11 @@ Also used to specify the service when referring to a video hosted on Vimeo (`vim
 Therefore, the value must be enclosed in double quotes.
 Only applies to YouTube videos.
 
+|`align`
+|`left`, `center`, `right`
+|`align=center`
+|Follows the same alignment rules as a block image.
+
 |`options` (`opts`)
 |`autoplay`, `loop`, `modest`, `nocontrols`, `nofullscreen`, `muted`
 |`opts="autoplay,loop"`
