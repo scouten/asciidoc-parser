@@ -13,7 +13,7 @@ The section title must be prefixed with a section marker, which indicates the se
 The number of equal signs in the marker represents the section level using a 0-based index (e.g., two equal signs represents level 1).
 A section marker can range from two to six equal signs and must be followed by a space.
 
-IMPORTANT: The section title line interpreted as paragraph text if it's found inside of a non-section block unless it marked as a xref:blocks:discrete-headings.adoc[discrete heading].
+IMPORTANT: The section title line is interpreted as paragraph text if it's found inside of a non-section block unless it marked as a xref:blocks:discrete-headings.adoc[discrete heading].
 
 In the HTML output, the section title is represented by a heading tag.
 The number of the heading tag is one more than the section level (e.g., section level 1 becomes an h2 tag).
