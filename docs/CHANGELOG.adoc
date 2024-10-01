@@ -13,6 +13,7 @@ Added::
 Changed::
 * Clarify how the author name is partitioned
 * Clarify that a URL can be used in place of an email address in the author information
+* Clarify that a section title line inside a non-section block is interpreted as a paragraph unless marked as a discrete heading
 
 == Published Q2 2024
 
