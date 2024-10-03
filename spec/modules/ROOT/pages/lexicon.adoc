@@ -9,13 +9,14 @@ The primary purpose of the ASG is to validate that an implementation is complian
 [[attribute]]attribute:: An attribute is a key-value pair that adds, removes, or controls a feature on an <<element>> or document.
 An attribute that is available to a document as a whole is called a document attribute and is typically configured using an attribute entry.
 An attribute that applies to a block or inline element is configured using an <<attrlist>> and is usually described to according to its form, key, or value properties:
-* form: named, <<posattr,positional>>
-* key name: reserved, shorthand, user-defined
+* form: named (aka longhand), <<posattr,positional>>, shorthand if parsed from first positional attribute
+* key name: reserved, user-defined
 * value type: boolean, <<content-attribute,content>>, reserved, user-defined
 
 [[attrlist]]attrlist:: An attrlist is the source text between the opening `[` and closing `]` characters of a <<boxed-attrlist>>.
 The attrlist source text may be empty or contain one or more <<posattr,positional>> or named attributes.
 In some cases, the first positional attribute can encode select attributes (e.g., id, style, roles) in shorthand form.
+(When these attributes are defined using a named attribute, those occurrences are referred to as the longhand form).
 For some inline forms, the designated area for an attrlist is used to hold inline content, either in place of the attrlist or following it.
 That inline content is not parsed as part of the attrlist.
 The attrlist is parsed into a map of attributes that are associated with the node for a block or inline element.
@@ -90,7 +91,7 @@ A node may also have a <<variant>> and a <<form>>.
 
 [[posattr]]positional attribute; posattr:: A positional attribute, also referred to as a posattr, is an <<attribute>> that may be configured on a block or inline element.
 The name of the attribute is implied by the location its value is entered in an <<attrlist>> using a 1-based index.
-//The first positional attribute in an attrlist may contain attribute shorthands if it adheres to the syntax requirements of that element.
+In some cases, the first positional attribute can encode select attributes (e.g., id, style, roles) in shorthand form.
 
 [[source-text]]source text:: The text that makes up the AsciiDoc document.
 Akin to the source code of the AsciiDoc language.

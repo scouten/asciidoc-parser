@@ -495,7 +495,7 @@ The block boundary is determined first, then the inline parsing happens within t
 
 * *Block metadata* is a superset of properties of the block that contains block attributes; the metadata includes specialized attributes such as ID, title, and style; also name, etc.
 * All blocks accommodate zero or more lines of explicit metadata stacked line-wise directly on top of the block content and, if applicable, the opening delimiter line.
-** The optional metadata lines include: zero or more block attribute lines (which populate the block’s attributes), block attrlist (inside block attribute line), the block attributes, optional block title line (many blocks also support a corresponding caption).
+** The optional metadata lines include: zero or more block attribute lines (which populate the block's attributes), block attrlist (inside block attribute line), the block attributes, optional block title line (many blocks also support a corresponding caption).
 ** *SDR* Confirm the terms and their definitions for what we should use to refer to the list of attributes in raw versus parsed form. (attrlist, boxed attrlist, attributes)
 * The shared (but optional) block attributes include: id, style, set of roles, set of options, title, reftext, and data-attributes.
 
@@ -504,6 +504,8 @@ The block boundary is determined first, then the inline parsing happens within t
 * Used to store the block metadata.
 * Can be positional or named.
 * Positional attributes use a 1-based index; index assignment skips over any named attributes (i.e., named attributes don't affect position).
+* Shorthand attributes, such as id, role, and options, may be parsed out of the first positional attribute.
+* To distinguish from the shorthand form of a named attribute, the named variant is refered to as the longhand form.
 * An attrlist is unparsed, CSV data
 ** See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-002-block-attrlist-parsing.adoc?ref_type=heads[SDR-2: Define Parsing Rules for attrlist in Block Attribute Line].
 ** See https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/spec/sdrs/sdr-006-positional-attribute-mapping.adoc?ref_type=heads[SDR-6: Define Parsing Rules for Positional Attribute to Named Attribute Mapping].
