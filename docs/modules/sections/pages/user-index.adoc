@@ -8,6 +8,7 @@ Index terms form a controlled vocabulary that can be used to navigate the docume
 
 Although index terms are always processed, only Asciidoctor PDF and the DocBook toolchain support creating an index catalog automatically.
 To create an index, define a level 1 section (`==`) marked with the style `index` at the end of your document.
+(In a multipart book, the index can be the last level 0 section (`=`)).
 
 [source]
 ----
