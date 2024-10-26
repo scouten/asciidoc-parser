@@ -43,6 +43,9 @@ pub enum WarningType {
 
     #[error("Missing comma after quoted attribute value")]
     MissingCommaAfterQuotedAttributeValue,
+
+    #[error("Closing marker for delimited block not found")]
+    UnterminatedDelimitedBlock,
 }
 
 /// Return type used to signal one or more possible parse error.

@@ -94,3 +94,15 @@ mod is_valid_delimiter {
         assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("___")));
     }
 }
+
+mod parse {
+    use crate::{blocks::RawDelimitedBlock, Span};
+
+    #[test]
+    fn err_invalid_delimiter() {
+        assert!(RawDelimitedBlock::parse(Span::new("")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("...")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("====x")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("==\n==")).is_none());
+    }
+}
