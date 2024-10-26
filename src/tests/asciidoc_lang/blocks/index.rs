@@ -1,6 +1,6 @@
 //! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/blocks/pages/index.adoc?ref_type=heads
 //!
-//! Tracking commit 447cfd22, current as of 2024-02-10.
+//! Tracking commit 447cfd22, current as of 2024-10-26.
 
 // = Blocks
 //

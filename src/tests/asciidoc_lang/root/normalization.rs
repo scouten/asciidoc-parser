@@ -1,6 +1,6 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/commits/main/docs/modules/ROOT/pages/key-concepts.adoc
+//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/ROOT/pages/normalization.adoc?ref_type=heads
 //!
-//! Tracking commit d9a4137e, current as of 2024-02-10.
+//! Tracking commit 08289a9f, current as of 2024-10-26.
 //!
 //! See additional test cases with more edge-case coverage in
 //! `tests/primitives/line.rs`.

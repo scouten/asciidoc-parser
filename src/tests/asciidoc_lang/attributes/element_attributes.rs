@@ -1,6 +1,6 @@
 //! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/attributes/pages/element-attributes.adoc?ref_type=heads
 //!
-//! Tracking commit 76c9fe63, current as of 2024-02-24.
+//! Tracking commit 76c9fe63, current as of 2024-10-26.
 
 // = Element Attributes
 

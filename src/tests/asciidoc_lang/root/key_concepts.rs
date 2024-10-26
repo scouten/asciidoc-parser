@@ -1,6 +1,6 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/commits/main/docs/modules/ROOT/pages/key-concepts.adoc
+//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/ROOT/pages/key-concepts.adoc?ref_type=heads
 //!
-//! Tracking commit 1767ee1e, current as of 2024-01-01.
+//! Tracking commit 1767ee1e, current as of 2024-10-26.
 
 // = Key Concepts
 

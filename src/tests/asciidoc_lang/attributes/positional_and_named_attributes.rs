@@ -1,6 +1,6 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/attributes/pages/element-attributes.adoc?ref_type=heads
+//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/attributes/pages/positional-and-named-attributes.adoc?ref_type=heads
 //!
-//! Tracking commit 3474df92, current as of 2024-03-10.
+//! Tracking commit 3474df92, current as of 2024-10-26.
 
 // = Positional and Named Attributes
 
