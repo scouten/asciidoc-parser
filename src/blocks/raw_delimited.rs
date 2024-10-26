@@ -12,6 +12,15 @@ use crate::{
 
 /// A delimited block that contains verbatim, raw, or comment text. The content
 /// between the matching delimiters is not parsed for block syntax.
+/// 
+/// The following delimiters are recognized as raw delimited blocks:
+/// 
+/// | Delimiter | Content type |
+/// |-----------|--------------|
+/// | `////`    | Comment      |
+/// | `----`    | Listing      |
+/// | `....`    | Literal      |
+/// | `++++`    | Passthrough  |
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RawDelimitedBlock<'src> {
     lines: Vec<Span<'src>>,
