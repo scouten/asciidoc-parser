@@ -109,6 +109,7 @@ mod parse {
     fn err_invalid_delimiter() {
         assert!(RawDelimitedBlock::parse(Span::new("")).is_none());
         assert!(RawDelimitedBlock::parse(Span::new("...")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("++++x")).is_none());
         assert!(RawDelimitedBlock::parse(Span::new("____x")).is_none());
         assert!(RawDelimitedBlock::parse(Span::new("====x")).is_none());
         assert!(RawDelimitedBlock::parse(Span::new("==\n==")).is_none());
