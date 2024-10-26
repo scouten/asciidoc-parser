@@ -16,6 +16,7 @@ jobs:
     name: Unit tests
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
@@ -53,6 +54,7 @@ jobs:
       - name: Upload code coverage results
         if: |
           github.event_name != 'pull_request' ||
+          github.event.pull_request.author_association == 'OWNER' ||
           github.event.pull_request.author_association == 'COLLABORATOR' ||
           github.event.pull_request.author_association == 'MEMBER' ||
           github.event.pull_request.user.login == 'dependabot[bot]'
@@ -66,6 +68,7 @@ jobs:
     name: Unit tests with minimum versions of direct dependencies
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
@@ -95,6 +98,7 @@ jobs:
     name: Preflight crate publish
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
@@ -128,6 +132,7 @@ jobs:
     name: Clippy
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
@@ -154,6 +159,7 @@ jobs:
     name: Enforce Rust code format
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
@@ -177,6 +183,7 @@ jobs:
     name: Preflight docs.rs build
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
@@ -208,6 +215,7 @@ jobs:
     name: License / vulnerability audit
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
@@ -238,6 +246,7 @@ jobs:
     name: Check for unused dependencies
     if: |
       github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'COLLABORATOR' ||
       github.event.pull_request.author_association == 'MEMBER' ||
       github.event.pull_request.user.login == 'dependabot[bot]' ||
