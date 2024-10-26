@@ -132,3 +132,33 @@ mod parse {
         );
     }
 }
+
+mod comment {
+    use crate::{
+        blocks::{ContentModel, RawDelimitedBlock},
+        tests::fixtures::{blocks::TRawDelimitedBlock, TSpan},
+        Span,
+    };
+
+    #[test]
+    fn empty() {
+        let maw = RawDelimitedBlock::parse(Span::new("////\n////")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TRawDelimitedBlock {
+                lines: vec!(),
+                content_model: ContentModel::Raw,
+                context: "comment",
+                source: TSpan {
+                    data: "////\n////",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+    }
+}
