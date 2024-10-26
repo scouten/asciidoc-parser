@@ -33,6 +33,9 @@ pub use r#macro::MacroBlock;
 
 pub(crate) mod parse_utils;
 
+mod raw_delimited;
+pub use raw_delimited::RawDelimitedBlock;
+
 mod section;
 pub use section::SectionBlock;
 
