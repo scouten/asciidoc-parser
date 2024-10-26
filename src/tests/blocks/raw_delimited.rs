@@ -96,13 +96,39 @@ mod is_valid_delimiter {
 }
 
 mod parse {
-    use crate::{blocks::RawDelimitedBlock, Span};
+    use crate::{
+        blocks::RawDelimitedBlock,
+        tests::fixtures::{warnings::TWarning, TSpan},
+        warnings::WarningType,
+        Span,
+    };
 
     #[test]
     fn err_invalid_delimiter() {
         assert!(RawDelimitedBlock::parse(Span::new("")).is_none());
         assert!(RawDelimitedBlock::parse(Span::new("...")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("____x")).is_none());
         assert!(RawDelimitedBlock::parse(Span::new("====x")).is_none());
         assert!(RawDelimitedBlock::parse(Span::new("==\n==")).is_none());
+    }
+
+    #[test]
+    fn err_unterminated() {
+        let maw = RawDelimitedBlock::parse(Span::new("....\nblah blah blah")).unwrap();
+
+        assert!(maw.item.is_none());
+
+        assert_eq!(
+            maw.warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: "....",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warning: WarningType::UnterminatedDelimitedBlock,
+            }]
+        );
     }
 }
