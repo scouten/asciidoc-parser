@@ -1,6 +1,6 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/ROOT/pages/document-structure.adoc
+//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/ROOT/pages/document-structure.adoc?ref_type=heads
 //!
-//! Tracking commit 9765f83b, current as of 2023-12-10.
+//! Tracking commit 9765f83b, current as of 2024-10-26.
 
 // = Document Structure
 // :page-aliases: document.adoc

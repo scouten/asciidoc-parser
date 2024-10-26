@@ -1,6 +1,6 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/commits/main/docs/modules/ROOT/pages/document-processing.adoc
+//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/ROOT/pages/document-processing.adoc?ref_type=heads
 //!
-//! Tracking commit c45aa60, current as of 2024-01-01.
+//! Tracking commit c45aa60, current as of 2024-10-26.
 
 // = Document Processing
 
