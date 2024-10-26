@@ -1,12 +1,15 @@
 [package]
 name = "asciidoc-parser"
 version = "0.1.0"
+description = "Rust SDK for C2PA (Coalition for Content Provenance and Authenticity) implementors"
+authors = ["Eric Scouten <git@scouten.me>"]
 license = "MIT OR Apache-2.0"
+documentation = "https://docs.rs/asciidoc-parser"
+repository = "https://github.com/scouten/asciidoc-parser"
 readme = "README.md"
 edition = "2021"
-authors = ["Eric Scouten <git@scouten.me>"]
 keywords = ["asciidoc", "parser"]
-repository = "https://github.com/scouten/asciidoc-parser"
+categories = ["parser-implementations"]
 rust-version = "1.74.0"
 
 [dependencies]
