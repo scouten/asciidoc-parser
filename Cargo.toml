@@ -1,7 +1,7 @@
 [package]
 name = "asciidoc-parser"
 version = "0.1.0"
-description = "Rust SDK for C2PA (Coalition for Content Provenance and Authenticity) implementors"
+description = "Parser for AsciiDoc format"
 authors = ["Eric Scouten <git@scouten.me>"]
 license = "MIT OR Apache-2.0"
 documentation = "https://docs.rs/asciidoc-parser"
