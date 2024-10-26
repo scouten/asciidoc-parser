@@ -308,3 +308,17 @@ mod comment {
         assert!(lines.next().is_none());
     }
 }
+
+mod example {
+    use crate::{blocks::RawDelimitedBlock, Span};
+
+    #[test]
+    fn empty() {
+        assert!(RawDelimitedBlock::parse(Span::new("====\n====")).is_none());
+    }
+
+    #[test]
+    fn multiple_lines() {
+        assert!(RawDelimitedBlock::parse(Span::new("====\nline1  \nline2\n====")).is_none());
+    }
+}
