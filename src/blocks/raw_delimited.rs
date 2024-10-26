@@ -1,5 +1,3 @@
-#![allow(dead_code)] // TEMPORARY
-
 use std::slice::Iter;
 
 use super::{ContentModel, IsBlock};

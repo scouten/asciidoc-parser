@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
-    blocks::{ContentModel, IsBlock, MacroBlock, SectionBlock, SimpleBlock},
+    blocks::{ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock, SimpleBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning},
@@ -35,6 +35,11 @@ pub enum Block<'src> {
     /// A section helps to partition the document into a content hierarchy.
     /// May also be a part, chapter, or special section.
     Section(SectionBlock<'src>),
+
+    /// A delimited block that contains verbatim, raw, or comment text. The
+    /// content between the matching delimiters is not parsed for block
+    /// syntax.
+    RawDelimited(RawDelimitedBlock<'src>),
 }
 
 impl<'src> Block<'src> {
@@ -49,6 +54,26 @@ impl<'src> Block<'src> {
 
         // Try to discern the block type by scanning the first line.
         let line = source.take_normalized_line();
+
+        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(source) {
+            // If we found an initial delimiter without its matching
+            // closing delimiter, we will issue an unmatched delimiter warning
+            // and attempt to parse this as some other kind of block.
+            if !rdb_maw.warnings.is_empty() {
+                warnings.append(&mut rdb_maw.warnings);
+            }
+
+            if let Some(rdb) = rdb_maw.item {
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::RawDelimited(rdb.item),
+                        after: rdb.after,
+                    }),
+                    warnings,
+                };
+            }
+        }
+
         if line.item.contains("::") {
             let mut macro_block_maw = MacroBlock::parse(source);
 
@@ -109,6 +134,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(_) => ContentModel::Simple,
             Self::Macro(b) => b.content_model(),
             Self::Section(_) => ContentModel::Compound,
+            Self::RawDelimited(b) => b.content_model(),
         }
     }
 
@@ -117,6 +143,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.context(),
             Self::Macro(b) => b.context(),
             Self::Section(b) => b.context(),
+            Self::RawDelimited(b) => b.context(),
         }
     }
 
@@ -125,6 +152,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.nested_blocks(),
             Self::Macro(b) => b.nested_blocks(),
             Self::Section(b) => b.nested_blocks(),
+            Self::RawDelimited(b) => b.nested_blocks(),
         }
     }
 }
@@ -135,6 +163,7 @@ impl<'src> HasSpan<'src> for Block<'src> {
             Self::Simple(b) => b.span(),
             Self::Macro(b) => b.span(),
             Self::Section(b) => b.span(),
+            Self::RawDelimited(b) => b.span(),
         }
     }
 }
