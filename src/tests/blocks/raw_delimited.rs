@@ -704,3 +704,17 @@ mod pass {
         assert!(lines.next().is_none());
     }
 }
+
+mod quote {
+    use crate::{blocks::RawDelimitedBlock, Span};
+
+    #[test]
+    fn empty() {
+        assert!(RawDelimitedBlock::parse(Span::new("____\n____")).is_none());
+    }
+
+    #[test]
+    fn multiple_lines() {
+        assert!(RawDelimitedBlock::parse(Span::new("____\nline1  \nline2\n____")).is_none());
+    }
+}
