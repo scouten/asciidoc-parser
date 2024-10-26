@@ -248,6 +248,7 @@ mod listing {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
+        span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
             TSpan,
@@ -316,6 +317,17 @@ mod listing {
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "----\nline1  \nline2\n----",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -360,6 +372,17 @@ mod listing {
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "----\nline1  \n----/\nline2\n----",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 }
 
@@ -368,6 +391,7 @@ mod pass {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
+        span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
             TSpan,
@@ -398,6 +422,17 @@ mod pass {
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "++++\n++++",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -436,6 +471,17 @@ mod pass {
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "++++\nline1  \nline2\n++++",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -480,5 +526,16 @@ mod pass {
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "++++\nline1  \n++++/\nline2\n++++",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 }
