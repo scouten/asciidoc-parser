@@ -14,10 +14,7 @@ targets = [
 exclude-dev = true
 
 [advisories]
-vulnerability = "deny"
-unmaintained = "deny"
 yanked = "deny"
-notice = "deny"
 
 [bans]
 multiple-versions = "deny"
@@ -27,15 +24,8 @@ wildcards = "deny"
 [licenses]
 allow = [
   "Apache-2.0",
-  "BSD-2-Clause",
-  "BSD-3-Clause",
-  "CC0-1.0",
-  "ISC",
-  "LicenseRef-ring",
   "MIT",
-  "MPL-2.0",
   "Unicode-DFS-2016",
-  "Zlib",
 ]
 confidence-threshold = 0.9
 
