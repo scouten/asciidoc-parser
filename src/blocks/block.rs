@@ -1,7 +1,10 @@
 use std::slice::Iter;
 
 use crate::{
-    blocks::{ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock, SimpleBlock},
+    blocks::{
+        CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock,
+        SimpleBlock,
+    },
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning},
@@ -40,6 +43,9 @@ pub enum Block<'src> {
     /// content between the matching delimiters is not parsed for block
     /// syntax.
     RawDelimited(RawDelimitedBlock<'src>),
+
+    /// A delimited block that can contain other blocks.
+    CompoundDelimited(CompoundDelimitedBlock<'src>),
 }
 
 impl<'src> Block<'src> {
@@ -51,9 +57,6 @@ impl<'src> Block<'src> {
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
-
-        // Try to discern the block type by scanning the first line.
-        let line = source.take_normalized_line();
 
         if let Some(mut rdb_maw) = RawDelimitedBlock::parse(source) {
             // If we found an initial delimiter without its matching
@@ -73,6 +76,28 @@ impl<'src> Block<'src> {
                 };
             }
         }
+
+        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(source) {
+            // If we found an initial delimiter without its matching
+            // closing delimiter, we will issue an unmatched delimiter warning
+            // and attempt to parse this as some other kind of block.
+            if !cdb_maw.warnings.is_empty() {
+                warnings.append(&mut cdb_maw.warnings);
+            }
+
+            if let Some(rdb) = cdb_maw.item {
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::CompoundDelimited(rdb.item),
+                        after: rdb.after,
+                    }),
+                    warnings,
+                };
+            }
+        }
+
+        // Try to discern the block type by scanning the first line.
+        let line = source.take_normalized_line();
 
         if line.item.contains("::") {
             let mut macro_block_maw = MacroBlock::parse(source);
@@ -135,6 +160,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Macro(b) => b.content_model(),
             Self::Section(_) => ContentModel::Compound,
             Self::RawDelimited(b) => b.content_model(),
+            Self::CompoundDelimited(b) => b.content_model(),
         }
     }
 
@@ -144,6 +170,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Macro(b) => b.context(),
             Self::Section(b) => b.context(),
             Self::RawDelimited(b) => b.context(),
+            Self::CompoundDelimited(b) => b.context(),
         }
     }
 
@@ -153,6 +180,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Macro(b) => b.nested_blocks(),
             Self::Section(b) => b.nested_blocks(),
             Self::RawDelimited(b) => b.nested_blocks(),
+            Self::CompoundDelimited(b) => b.nested_blocks(),
         }
     }
 }
@@ -164,6 +192,7 @@ impl<'src> HasSpan<'src> for Block<'src> {
             Self::Macro(b) => b.span(),
             Self::Section(b) => b.span(),
             Self::RawDelimited(b) => b.span(),
+            Self::CompoundDelimited(b) => b.span(),
         }
     }
 }

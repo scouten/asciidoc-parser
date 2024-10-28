@@ -80,35 +80,47 @@ impl<'src> CompoundDelimitedBlock<'src> {
             return None;
         }
 
-        let maw_blocks =
-            parse_blocks_until(delimiter.after, |i| line_is_delimiter(i, &delimiter.item));
+        let mut next = delimiter.after;
+        let closing_delimiter = loop {
+            if next.is_empty() {
+                return Some(MatchAndWarnings {
+                    item: None,
+                    warnings: vec![Warning {
+                        source: delimiter.item,
+                        warning: WarningType::UnterminatedDelimitedBlock,
+                    }],
+                });
+            }
 
-        let closing_delimiter_line = maw_blocks.item.after.take_normalized_line();
+            let line = next.take_normalized_line();
+            if line.item.data() == delimiter.item.data() {
+                break line;
+            }
+            next = line.after;
+        };
 
-        if line_is_delimiter(&closing_delimiter_line.item, &delimiter.item) {
-            let blocks = maw_blocks.item;
-            let source = source.trim_remainder(closing_delimiter_line.after);
+        let inside_delimiters = delimiter.after.trim_remainder(closing_delimiter.item);
 
-            Some(MatchAndWarnings {
-                item: Some(MatchedItem {
-                    item: Self {
-                        blocks: blocks.item,
-                        context: context.into(),
-                        source,
-                    },
-                    after: blocks.after,
-                }),
-                warnings: maw_blocks.warnings,
-            })
-        } else {
-            Some(MatchAndWarnings {
-                item: None,
-                warnings: vec![Warning {
-                    source: delimiter.item,
-                    warning: WarningType::UnterminatedDelimitedBlock,
-                }],
-            })
-        }
+        dbg!(&closing_delimiter.item);
+
+        dbg!(&inside_delimiters);
+
+        let maw_blocks = parse_blocks_until(inside_delimiters, |_| false);
+
+        let blocks = maw_blocks.item;
+        let source = source.trim_remainder(closing_delimiter.after);
+
+        Some(MatchAndWarnings {
+            item: Some(MatchedItem {
+                item: Self {
+                    blocks: blocks.item,
+                    context: context.into(),
+                    source,
+                },
+                after: closing_delimiter.after,
+            }),
+            warnings: maw_blocks.warnings,
+        })
     }
 }
 
@@ -134,5 +146,7 @@ impl<'src> HasSpan<'src> for CompoundDelimitedBlock<'src> {
 
 fn line_is_delimiter<'a>(i: &Span<'a>, delimiter: &Span<'a>) -> bool {
     let line = i.take_normalized_line();
+    dbg!(&line);
+    dbg!(delimiter);
     line.item.data() == delimiter.data()
 }
