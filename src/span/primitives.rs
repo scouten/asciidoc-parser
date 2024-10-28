@@ -95,14 +95,13 @@ impl<'src> Span<'src> {
     ///
     /// Note that the trailing remainder condition is not enforced.
     pub(crate) fn trim_remainder(self, after: Span<'src>) -> Span<'src> {
-        // Sanity check: If after is longer than source, we can't trim.
-        let rlen = after.len();
-        let slen = self.len();
+        let offset = (self.offset + self.len()).min(after.offset);
 
-        if rlen >= slen {
+        if offset <= self.offset {
+            // Invalid input: We'll respond with an empty slice.
             self.slice(0..0)
         } else {
-            let trim_len = slen - rlen;
+            let trim_len = offset - self.offset;
             self.slice(0..trim_len)
         }
     }
