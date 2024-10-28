@@ -16,6 +16,7 @@ Changed::
 * Clarify that a URL can be used in place of an email address in the author information
 * Clarify that a section title line inside a non-section block is interpreted as a paragraph unless marked as a discrete heading
 * Clarify that the index section can be the last level 0 section in a multipart book
+* Clarify that the noopener option on link macros is only available when the window attribute is set
 
 == Published Q2 2024
 

@@ -91,17 +91,27 @@ To enable this behavior, you set the `window` attribute to the special value `_b
 https://asciidoctor.org[Asciidoctor,window=_blank]
 ----
 
-In the HTML output, the value of the `window` attribute is assigned to the `target` attribute on the `<a>` tag (e.g., `target=_blank`) along with the <<noopener and nofollow,`rel=noopener` attribute>>.
+In the HTML output, the value of the `window` attribute is assigned to the `target` attribute on the `<a>` tag (e.g., `target=_blank`).
+If the target is `_blank`, the processor will automatically add the <<noopener and nofollow,`rel=noopener` attribute>> as well.
 
 CAUTION: The underscore at the start of the value `_blank` can unexpectedly form a constrained formatting pair when another underscore appears somewhere else in the line or paragraph, thus causing the macro to break.
 You can avoid this problem either by escaping the underscore at the start of the value (i.e., `+window=\_blank+`) or by using the <<Blank window shorthand>> instead.
 
 === noopener and nofollow
 
-When the value of the `window` attribute is `_blank`, the AsciiDoc processor will also add the `rel="noopener"` attribute to the `<a>` element in the HTML output.
+The `noopener` option is used to control access to the window opened by a link.
+*This option is only available if the `window` attribute is set.*
+This option adds the `noopener` flag to the `rel` attribute on the `<a>` element in the HTML output (e.g., `rel="noopener"`).
+
+When the value of the `window` attribute is `_blank`, the AsciiDoc processor implicitly sets the `noopener` option.
 Doing so is considered a security best practice.
 
-If the window is not `_blank`, you need to enable this behavior explicitly by setting the `noopener` option on the macro:
+[source]
+----
+https://asciidoctor.org[Asciidoctor,window=_blank]
+----
+
+If the window is not `_blank`, you need to enable the `noopener` flag explicitly by setting the `noopener` option on the macro:
 
 [source]
 ----
@@ -109,7 +119,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
 ----
 
 If you don't want the search indexer to follow the link, you can add the `nofollow` option to the macro.
-This option only works if the `noopener` option is set either implicitly or explicitly.
+This option adds the `nofollow` flag to the `rel` attribute on the `<a>` element in the HTML output, alongside `noopener` if present (e.g., `rel="nofollow noopener"`).
 
 [source]
 ----
@@ -123,7 +133,12 @@ or
 https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
 ----
 
-To fine tune indexing within the site, you can specify the nofollow option even when the link does not target a separate window.
+To fine tune indexing within the site, you can specify the `nofollow` option even if the link does not target a separate window.
+
+[source]
+----
+link:post.html[My Post,opts=nofollow]
+----
 
 === Blank window shorthand
 
