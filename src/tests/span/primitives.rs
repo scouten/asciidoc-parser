@@ -567,4 +567,21 @@ mod trim_remainder {
             }
         );
     }
+
+    #[test]
+    fn rem_is_incomplete_subset_of_source() {
+        let source = Span::new("abc\ndef\n");
+        let line1 = source.take_normalized_line();
+        let line2 = line1.after.take_line();
+
+        assert_eq!(
+            source.trim_remainder(line2.item),
+            TSpan {
+                data: "abc\n",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+    }
 }
