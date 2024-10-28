@@ -25,6 +25,9 @@
 mod block;
 pub use block::Block;
 
+mod compound_delimited;
+pub use compound_delimited::CompoundDelimitedBlock;
+
 mod is_block;
 pub use is_block::{ContentModel, IsBlock};
 
