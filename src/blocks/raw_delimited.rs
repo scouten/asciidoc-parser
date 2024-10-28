@@ -31,6 +31,10 @@ impl<'src> RawDelimitedBlock<'src> {
     pub(crate) fn is_valid_delimiter(line: &Span<'src>) -> bool {
         let data = line.data();
 
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/145):
+        // Seek spec clarity: Do the characters after the fourth char
+        // have to match the first four?
+
         if data.len() >= 4 {
             if data.starts_with("////") {
                 data.split_at(4).1.chars().all(|c| c == '/')
