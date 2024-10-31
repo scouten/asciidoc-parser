@@ -792,7 +792,6 @@ mod sidebar {
     }
 }
 
-/*
 mod table {
     use crate::{blocks::CompoundDelimitedBlock, Span};
 
@@ -814,178 +813,20 @@ mod table {
 }
 
 mod pass {
-    use pretty_assertions_sorted::assert_eq;
-
-    use crate::{
-        blocks::{ContentModel, IsBlock, CompoundDelimitedBlock},
-        tests::fixtures::{blocks::TCompoundDelimitedBlock, TSpan},
-        Span,
-    };
+    use crate::{blocks::CompoundDelimitedBlock, Span};
 
     #[test]
     fn empty() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("++++\n++++")).unwrap();
-
-        let mi = maw.item.unwrap().clone();
-
-        assert_eq!(
-            mi.item,
-            TCompoundDelimitedBlock {
-                lines: vec!(),
-                content_model: ContentModel::Raw,
-                context: "pass",
-                source: TSpan {
-                    data: "++++\n++++",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            }
-        );
-
-        assert_eq!(mi.item.content_model(), ContentModel::Raw);
-        assert_eq!(mi.item.context().as_ref(), "pass");
-        assert!(mi.item.lines().next().is_none());
+        assert!(CompoundDelimitedBlock::parse(Span::new("++++\n++++")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("++++\nline1  \nline2\n++++")).unwrap();
-
-        let mi = maw.item.unwrap().clone();
-
-        assert_eq!(
-            mi.item,
-            TCompoundDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    }
-                ),
-                content_model: ContentModel::Raw,
-                context: "pass",
-                source: TSpan {
-                    data: "++++\nline1  \nline2\n++++",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            }
-        );
-
-        assert_eq!(mi.item.content_model(), ContentModel::Raw);
-        assert_eq!(mi.item.context().as_ref(), "pass");
-
-        let mut lines = mi.item.lines();
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            }
-        );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 3,
-                col: 1,
-                offset: 13,
-            }
-        );
-
-        assert!(lines.next().is_none());
-    }
-
-    #[test]
-    fn ignores_delimiter_prefix() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("++++\nline1  \n+++++\nline2\n++++")).unwrap();
-
-        let mi = maw.item.unwrap().clone();
-
-        assert_eq!(
-            mi.item,
-            TCompoundDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "+++++",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 19,
-                    }
-                ),
-                content_model: ContentModel::Raw,
-                context: "pass",
-                source: TSpan {
-                    data: "++++\nline1  \n+++++\nline2\n++++",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            }
-        );
-
-        assert_eq!(mi.item.content_model(), ContentModel::Raw);
-        assert_eq!(mi.item.context().as_ref(), "pass");
-
-        let mut lines = mi.item.lines();
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            }
-        );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "+++++",
-                line: 3,
-                col: 1,
-                offset: 13,
-            }
-        );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 4,
-                col: 1,
-                offset: 19,
-            }
-        );
-
-        assert!(lines.next().is_none());
+        assert!(CompoundDelimitedBlock::parse(Span::new("++++\nline1  \nline2\n++++")).is_none());
     }
 }
+
+/*
 
 mod quote {
     use crate::{blocks::CompoundDelimitedBlock, Span};
