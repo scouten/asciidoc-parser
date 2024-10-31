@@ -826,19 +826,185 @@ mod pass {
     }
 }
 
-/*
-
 mod quote {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock},
+        tests::fixtures::{
+            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            inlines::TInline,
+            TSpan,
+        },
+        Span,
+    };
 
     #[test]
     fn empty() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("____\n____")).is_none());
+        let maw = CompoundDelimitedBlock::parse(Span::new("____\n____")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(),
+                context: "quote",
+                source: TSpan {
+                    data: "____\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "quote");
+        assert!(mi.item.nested_blocks().next().is_none());
     }
 
     #[test]
-    fn multiple_lines() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("____\nline1  \nline2\n____")).is_none());
+    fn multiple_blocks() {
+        let maw = CompoundDelimitedBlock::parse(Span::new("____\nblock1\n\nblock2\n____")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },),),),
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },),),),
+                ),
+                context: "quote",
+                source: TSpan {
+                    data: "____\nblock1\n\nblock2\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "quote");
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block1",
+                line: 2,
+                col: 1,
+                offset: 5,
+            },),),)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block2",
+                line: 4,
+                col: 1,
+                offset: 13,
+            },),),)
+        );
+
+        assert!(blocks.next().is_none());
+    }
+
+    #[test]
+    fn nested_blocks() {
+        let maw =
+            CompoundDelimitedBlock::parse(Span::new("____\nblock1\n\n_____\nblock2\n_____\n____"))
+                .unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },),),),
+                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                            TSpan {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
+                        ),),),),
+                        context: "quote",
+                        source: TSpan {
+                            data: "_____\nblock2\n_____\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                    })
+                ),
+                context: "quote",
+                source: TSpan {
+                    data: "____\nblock1\n\n_____\nblock2\n_____\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "quote");
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block1",
+                line: 2,
+                col: 1,
+                offset: 5,
+            },),),)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                    TSpan {
+                        data: "block2",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
+                ),),),),
+                context: "quote",
+                source: TSpan {
+                    data: "_____\nblock2\n_____\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
+            })
+        );
+
+        assert!(blocks.next().is_none());
     }
 }
-*/
