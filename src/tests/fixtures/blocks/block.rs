@@ -1,6 +1,8 @@
 use crate::{
     blocks::Block,
-    tests::fixtures::blocks::{TMacroBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock},
+    tests::fixtures::blocks::{
+        TCompoundDelimitedBlock, TMacroBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock,
+    },
 };
 
 #[derive(Debug, Eq, PartialEq)]
@@ -9,6 +11,7 @@ pub(crate) enum TBlock {
     Macro(TMacroBlock),
     Section(TSectionBlock),
     RawDelimited(TRawDelimitedBlock),
+    CompoundDelimited(TCompoundDelimitedBlock),
 }
 
 impl<'src> PartialEq<Block<'src>> for TBlock {
@@ -43,6 +46,13 @@ fn tblock_eq(tblock: &TBlock, block: &Block) -> bool {
         TBlock::RawDelimited(ref traw_delimited_block) => match block {
             Block::RawDelimited(ref raw_delimited_block) => {
                 traw_delimited_block == raw_delimited_block
+            }
+            _ => false,
+        },
+
+        TBlock::CompoundDelimited(ref tcompound_delimited_block) => match block {
+            Block::CompoundDelimited(ref compound_delimited_block) => {
+                tcompound_delimited_block == compound_delimited_block
             }
             _ => false,
         },

@@ -318,16 +318,27 @@ mod example {
                         col: 1,
                         offset: 5,
                     },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 13,
-                    },),),),
+                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                            TSpan {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
+                        ),),),),
+                        context: "example",
+                        source: TSpan {
+                            data: "=====\nblock2\n=====\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                    })
                 ),
                 context: "example",
                 source: TSpan {
-                    data: "====\nblock1\n\nblock2\n====",
+                    data: "====\nblock1\n\n=====\nblock2\n=====\n====",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -351,12 +362,23 @@ mod example {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 13,
-            },),),)
+            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                    TSpan {
+                        data: "block2",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
+                ),),),),
+                context: "example",
+                source: TSpan {
+                    data: "=====\nblock2\n=====\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
+            })
         );
 
         assert!(blocks.next().is_none());
