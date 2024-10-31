@@ -427,7 +427,187 @@ mod literal {
     }
 }
 
+mod open {
+    use pretty_assertions_sorted::assert_eq;
 
+    use crate::{
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock},
+        tests::fixtures::{
+            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            inlines::TInline,
+            TSpan,
+        },
+        Span,
+    };
+
+    #[test]
+    fn empty() {
+        let maw = CompoundDelimitedBlock::parse(Span::new("--\n--")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(),
+                context: "open",
+                source: TSpan {
+                    data: "--\n--",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "open");
+        assert!(mi.item.nested_blocks().next().is_none());
+    }
+
+    #[test]
+    fn multiple_blocks() {
+        let maw = CompoundDelimitedBlock::parse(Span::new("--\nblock1\n\nblock2\n--")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 3,
+                    },),),),
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 11,
+                    },),),),
+                ),
+                context: "open",
+                source: TSpan {
+                    data: "--\nblock1\n\nblock2\n--",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "open");
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block1",
+                line: 2,
+                col: 1,
+                offset: 3,
+            },),),)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block2",
+                line: 4,
+                col: 1,
+                offset: 11,
+            },),),)
+        );
+
+        assert!(blocks.next().is_none());
+    }
+
+    #[test]
+    fn nested_blocks() {
+        let maw =
+            CompoundDelimitedBlock::parse(Span::new("--\nblock1\n\n---\nblock2\n---\n--")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 3,
+                    },),),),
+                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                            TSpan {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 15,
+                            },
+                        ),),),),
+                        context: "open",
+                        source: TSpan {
+                            data: "---\nblock2\n---\n",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
+                    })
+                ),
+                context: "open",
+                source: TSpan {
+                    data: "--\nblock1\n\n---\nblock2\n---\n--",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "open");
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block1",
+                line: 2,
+                col: 1,
+                offset: 3,
+            },),),)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                    TSpan {
+                        data: "block2",
+                        line: 5,
+                        col: 1,
+                        offset: 15,
+                    },
+                ),),),),
+                context: "open",
+                source: TSpan {
+                    data: "---\nblock2\n---\n",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },
+            })
+        );
+
+        assert!(blocks.next().is_none());
+    }
+}
 
 /*
 

@@ -31,6 +31,10 @@ impl<'src> CompoundDelimitedBlock<'src> {
     pub(crate) fn is_valid_delimiter(line: &Span<'src>) -> bool {
         let data = line.data();
 
+        if data == "--" || data == "---" {
+            return true;
+        }
+
         // TO DO (https://github.com/scouten/asciidoc-parser/issues/145):
         // Seek spec clarity: Do the characters after the fourth char
         // have to match the first four?
@@ -60,15 +64,15 @@ impl<'src> CompoundDelimitedBlock<'src> {
         source: Span<'src>,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = source.take_normalized_line();
-
-        if delimiter.item.len() < 4 {
-            return None;
-        }
+        let maybe_delimiter_text = delimiter.item.data();
 
         // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
         // Seek spec clarity on whether three hyphens can be used to
         // delimit an open block. Assuming yes for now.
-        let context = match delimiter.item.data().split_at(4).0 {
+        let context = match maybe_delimiter_text
+            .split_at(maybe_delimiter_text.len().min(4))
+            .0
+        {
             "====" => "example",
             "--" | "---" => "open",
             "****" => "sidebar",
@@ -77,6 +81,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
         };
 
         if !Self::is_valid_delimiter(&delimiter.item) {
+            eprintln!("IVD fail");
             return None;
         }
 
