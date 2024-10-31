@@ -609,22 +609,190 @@ mod open {
     }
 }
 
-/*
-
 mod sidebar {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock},
+        tests::fixtures::{
+            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            inlines::TInline,
+            TSpan,
+        },
+        Span,
+    };
 
     #[test]
     fn empty() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("****\n****")).is_none());
+        let maw = CompoundDelimitedBlock::parse(Span::new("****\n****")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(),
+                context: "sidebar",
+                source: TSpan {
+                    data: "****\n****",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert!(mi.item.nested_blocks().next().is_none());
     }
 
     #[test]
-    fn multiple_lines() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("****\nline1  \nline2\n****")).is_none());
+    fn multiple_blocks() {
+        let maw = CompoundDelimitedBlock::parse(Span::new("****\nblock1\n\nblock2\n****")).unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },),),),
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },),),),
+                ),
+                context: "sidebar",
+                source: TSpan {
+                    data: "****\nblock1\n\nblock2\n****",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "sidebar");
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block1",
+                line: 2,
+                col: 1,
+                offset: 5,
+            },),),)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block2",
+                line: 4,
+                col: 1,
+                offset: 13,
+            },),),)
+        );
+
+        assert!(blocks.next().is_none());
+    }
+
+    #[test]
+    fn nested_blocks() {
+        let maw =
+            CompoundDelimitedBlock::parse(Span::new("****\nblock1\n\n*****\nblock2\n*****\n****"))
+                .unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: vec!(
+                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },),),),
+                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                            TSpan {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
+                        ),),),),
+                        context: "sidebar",
+                        source: TSpan {
+                            data: "*****\nblock2\n*****\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                    })
+                ),
+                context: "sidebar",
+                source: TSpan {
+                    data: "****\nblock1\n\n*****\nblock2\n*****\n****",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "sidebar");
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
+                data: "block1",
+                line: 2,
+                col: 1,
+                offset: 5,
+            },),),)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+                    TSpan {
+                        data: "block2",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
+                ),),),),
+                context: "sidebar",
+                source: TSpan {
+                    data: "*****\nblock2\n*****\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
+            })
+        );
+
+        assert!(blocks.next().is_none());
     }
 }
 
+/*
 mod table {
     use crate::{blocks::CompoundDelimitedBlock, Span};
 
