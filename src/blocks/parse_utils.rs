@@ -21,7 +21,6 @@ where
 
     while !source.data().is_empty() {
         if f(&source) {
-            eprintln!("PBU matched condition");
             break;
         }
 

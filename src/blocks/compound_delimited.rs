@@ -101,10 +101,6 @@ impl<'src> CompoundDelimitedBlock<'src> {
 
         let inside_delimiters = delimiter.after.trim_remainder(closing_delimiter.item);
 
-        dbg!(&closing_delimiter.item);
-
-        dbg!(&inside_delimiters);
-
         let maw_blocks = parse_blocks_until(inside_delimiters, |_| false);
 
         let blocks = maw_blocks.item;
@@ -146,7 +142,5 @@ impl<'src> HasSpan<'src> for CompoundDelimitedBlock<'src> {
 
 fn line_is_delimiter<'a>(i: &Span<'a>, delimiter: &Span<'a>) -> bool {
     let line = i.take_normalized_line();
-    dbg!(&line);
-    dbg!(delimiter);
     line.item.data() == delimiter.data()
 }
