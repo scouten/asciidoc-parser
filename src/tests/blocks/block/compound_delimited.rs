@@ -129,7 +129,7 @@ mod example {
             inlines::TInline,
             TSpan,
         },
-        Span,
+        HasSpan, Span,
     };
 
     #[test]
@@ -155,6 +155,16 @@ mod example {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "example");
         assert!(mi.item.nested_blocks().next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "====\n====",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -215,6 +225,16 @@ mod example {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "====\nblock1\n\nblock2\n====",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -297,6 +317,16 @@ mod example {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "====\nblock1\n\n=====\nblock2\n=====\n====",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 }
 
@@ -310,7 +340,7 @@ mod open {
             inlines::TInline,
             TSpan,
         },
-        Span,
+        HasSpan, Span,
     };
 
     #[test]
@@ -336,6 +366,16 @@ mod open {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "open");
         assert!(mi.item.nested_blocks().next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "--\n--",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -396,6 +436,16 @@ mod open {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "--\nblock1\n\nblock2\n--",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -478,6 +528,16 @@ mod open {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "--\nblock1\n\n---\nblock2\n---\n--",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 }
 
@@ -491,7 +551,7 @@ mod sidebar {
             inlines::TInline,
             TSpan,
         },
-        Span,
+        HasSpan, Span,
     };
 
     #[test]
@@ -517,6 +577,16 @@ mod sidebar {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "sidebar");
         assert!(mi.item.nested_blocks().next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "****\n****",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -577,6 +647,16 @@ mod sidebar {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "****\nblock1\n\nblock2\n****",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -659,6 +739,16 @@ mod sidebar {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "****\nblock1\n\n*****\nblock2\n*****\n****",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 }
 
@@ -672,7 +762,7 @@ mod quote {
             inlines::TInline,
             TSpan,
         },
-        Span,
+        HasSpan, Span,
     };
 
     #[test]
@@ -698,6 +788,16 @@ mod quote {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "quote");
         assert!(mi.item.nested_blocks().next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "____\n____",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -758,6 +858,16 @@ mod quote {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "____\nblock1\n\nblock2\n____",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -840,5 +950,15 @@ mod quote {
         );
 
         assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "____\nblock1\n\n_____\nblock2\n_____\n____",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 }
