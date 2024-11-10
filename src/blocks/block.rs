@@ -85,11 +85,11 @@ impl<'src> Block<'src> {
                 warnings.append(&mut cdb_maw.warnings);
             }
 
-            if let Some(rdb) = cdb_maw.item {
+            if let Some(cdb) = cdb_maw.item {
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
-                        item: Self::CompoundDelimited(rdb.item),
-                        after: rdb.after,
+                        item: Self::CompoundDelimited(cdb.item),
+                        after: cdb.after,
                     }),
                     warnings,
                 };
