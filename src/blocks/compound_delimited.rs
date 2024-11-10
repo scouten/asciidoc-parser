@@ -30,6 +30,9 @@ impl<'src> CompoundDelimitedBlock<'src> {
         let data = line.data();
 
         if data == "--" || data == "---" {
+            // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
+            // Seek spec clarity on whether three hyphens can be used to
+            // delimit an open block. Assuming yes for now.
             return true;
         }
 
@@ -40,12 +43,6 @@ impl<'src> CompoundDelimitedBlock<'src> {
         if data.len() >= 4 {
             if data.starts_with("====") {
                 data.split_at(4).1.chars().all(|c| c == '=')
-            } else if data == "--" || data == "---" {
-                // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
-                // Seek spec clarity on whether three hyphens can be used to
-                // delimit an open block. Assuming yes for now.
-
-                true
             } else if data.starts_with("****") {
                 data.split_at(4).1.chars().all(|c| c == '*')
             } else if data.starts_with("____") {
