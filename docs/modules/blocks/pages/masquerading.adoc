@@ -2,7 +2,7 @@
 :page-aliases: masquerade.adoc
 
 The declared block style (i.e., the first positional attribute of the block attribute list) can be used to modify the context of any paragraph and most structural containers.
-This practice is know as block masquerading (meaning to disguise one block as another).
+This practice is known as block masquerading (meaning to disguise one block as another).
 
 When the context of a paragraph is changed using the declared block style, the block retains the simple content model.
 When masquerading the context of a structural container, only contexts that preserve the expected content model are permitted.
