@@ -77,7 +77,7 @@ jobs:
             exit 0;
           fi
 
-          if echo "$PR_TITLE" | grep -E '^chore(\(deps\))?: bump '; then
+          if echo "$PR_TITLE" | grep -E '^(chore|update)(\(deps\))?: (bump|update) '; then
             echo "Exception / OK: Dependabot update pattern"
             exit 0;
           fi
