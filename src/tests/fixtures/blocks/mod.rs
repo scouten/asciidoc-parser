@@ -1,6 +1,9 @@
 mod block;
 pub(crate) use block::TBlock;
 
+mod compound_delimited;
+pub(crate) use compound_delimited::TCompoundDelimitedBlock;
+
 mod r#macro;
 pub(crate) use r#macro::TMacroBlock;
 
