@@ -76,7 +76,6 @@ impl<'src> CompoundDelimitedBlock<'src> {
         };
 
         if !Self::is_valid_delimiter(&delimiter.item) {
-            eprintln!("IVD fail");
             return None;
         }
 
