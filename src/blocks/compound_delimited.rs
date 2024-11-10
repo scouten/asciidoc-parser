@@ -1,5 +1,3 @@
-#![allow(dead_code)] // TEMPORARY
-
 use std::slice::Iter;
 
 use crate::{
@@ -143,9 +141,4 @@ impl<'src> HasSpan<'src> for CompoundDelimitedBlock<'src> {
     fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }
-}
-
-fn line_is_delimiter<'a>(i: &Span<'a>, delimiter: &Span<'a>) -> bool {
-    let line = i.take_normalized_line();
-    line.item.data() == delimiter.data()
 }
