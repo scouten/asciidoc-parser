@@ -15,7 +15,7 @@ The [.term]*span factor* indicates the number columns, rows, or columns and rows
 The first integer, `<n>`, is the column span factor.
 The second integer, which is prefixed with a dot, `.<n>`, is the row span factor.
 
-The [.term]*span operator* is a plus sign (`+`) placed directly after the span factor (`<n>.<n>+`).
+The [.term]*span operator* is a plus sign (`\+`) placed directly after the span factor (`<n>.<n>+`).
 The span operator tells the converter to interpret the span factor as part of a span instead of a duplication.
 
 A span is the first operator in a xref:add-cells-and-rows.adoc#specifiers[cell specifier].
