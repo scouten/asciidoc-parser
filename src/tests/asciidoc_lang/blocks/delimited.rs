@@ -5,7 +5,7 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    blocks::{Block, ContentModel},
+    blocks::{Block, ContentModel, IsBlock},
     tests::fixtures::{
         blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
         inlines::TInline,
@@ -239,30 +239,72 @@ fn structural_containers() {
     // |_n/a_
     // |////
 
+    let mi = Block::parse(Span::new("////\n////"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Raw);
+    assert_eq!(mi.item.context().as_ref(), "comment");
+
     // |example
     // |:example
     // |compound
     // |====
+
+    let mi = Block::parse(Span::new("====\n===="))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().as_ref(), "example");
 
     // |listing
     // |:listing
     // |verbatim
     // |----
 
+    let mi = Block::parse(Span::new("----\n----"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
+    assert_eq!(mi.item.context().as_ref(), "listing");
+
     // |literal
     // |:literal
     // |verbatim
     // |....
+
+    let mi = Block::parse(Span::new("....\n...."))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
+    assert_eq!(mi.item.context().as_ref(), "literal");
 
     // |open
     // |:open
     // |compound
     // |--
 
+    let mi = Block::parse(Span::new("--\n--"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().as_ref(), "open");
+
     // |sidebar
     // |:sidebar
     // |compound
     // |****
+
+    let mi = Block::parse(Span::new("****\n****"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().as_ref(), "sidebar");
 
     // |table
     // |:table
@@ -272,16 +314,34 @@ fn structural_containers() {
     // :===
     // !===
 
+    if false {
+        todo!("Support for table parsing");
+    }
+
     // |pass
     // |:pass
     // |raw
     // |++++
+
+    let mi = Block::parse(Span::new("++++\n++++"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Raw);
+    assert_eq!(mi.item.context().as_ref(), "pass");
 
     // |quote
     // |:quote
     // |compound
     // |____
     // |===
+
+    let mi = Block::parse(Span::new("____\n____"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().as_ref(), "quote");
 
     // You may notice the absence of the source block. That's because source is
     // not a container type. Rather, it's a specialization of the listing (or
