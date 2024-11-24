@@ -29,10 +29,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
     pub(crate) fn is_valid_delimiter(line: &Span<'src>) -> bool {
         let data = line.data();
 
-        if data == "--" || data == "---" {
-            // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
-            // Seek spec clarity on whether three hyphens can be used to
-            // delimit an open block. Assuming yes for now.
+        if data == "--" {
             return true;
         }
 
@@ -69,7 +66,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
             .0
         {
             "====" => "example",
-            "--" | "---" => "open",
+            "--" => "open",
             "****" => "sidebar",
             "____" => "quote",
             _ => return None,
