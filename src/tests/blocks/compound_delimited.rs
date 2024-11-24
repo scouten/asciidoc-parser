@@ -527,6 +527,7 @@ mod open {
 
     #[test]
     fn nested_blocks() {
+        // Spec says three hyphens does NOT mark an open block.
         let maw =
             CompoundDelimitedBlock::parse(Span::new("--\nblock1\n\n---\nblock2\n---\n--")).unwrap();
 
@@ -542,23 +543,34 @@ mod open {
                         col: 1,
                         offset: 3,
                     },),),),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                            TSpan {
+                    TBlock::Simple(TSimpleBlock(TInline::Sequence(
+                        vec![
+                            TInline::Uninterpreted(TSpan {
+                                data: "---",
+                                line: 4,
+                                col: 1,
+                                offset: 11,
+                            }),
+                            TInline::Uninterpreted(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 15,
-                            },
-                        ),),),),
-                        context: "open",
-                        source: TSpan {
+                            }),
+                            TInline::Uninterpreted(TSpan {
+                                data: "---",
+                                line: 6,
+                                col: 1,
+                                offset: 22,
+                            }),
+                        ],
+                        TSpan {
                             data: "---\nblock2\n---\n",
                             line: 4,
                             col: 1,
                             offset: 11,
-                        },
-                    })
+                        }
+                    ),))
                 ),
                 context: "open",
                 source: TSpan {
@@ -586,23 +598,34 @@ mod open {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+            &TBlock::Simple(TSimpleBlock(TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "---",
+                        line: 4,
+                        col: 1,
+                        offset: 11,
+                    }),
+                    TInline::Uninterpreted(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 15,
-                    },
-                ),),),),
-                context: "open",
-                source: TSpan {
+                    }),
+                    TInline::Uninterpreted(TSpan {
+                        data: "---",
+                        line: 6,
+                        col: 1,
+                        offset: 22,
+                    }),
+                ],
+                TSpan {
                     data: "---\nblock2\n---\n",
                     line: 4,
                     col: 1,
                     offset: 11,
-                },
-            })
+                }
+            ),))
         );
 
         assert!(blocks.next().is_none());
