@@ -371,60 +371,154 @@ fn structural_containers() {
     // metadata on the block (specifically the declared block content).
 }
 
-// [#nesting]
-// == Nesting blocks
+#[test]
+fn nesting_blocks() {
+    // [#nesting]
+    // == Nesting blocks
 
-// Using delimited blocks, you can nest blocks inside of one other.
-// (Blocks can also be nested inside sections, list items, and table cells,
-// which is a separate topic).
+    // Using delimited blocks, you can nest blocks inside of one other.
+    // (Blocks can also be nested inside sections, list items, and table cells,
+    // which is a separate topic).
 
-// First, the parent block must have the compound content model.
-// The compound content model means that the block's content is a sequence of
-// zero or more blocks.
+    // First, the parent block must have the compound content model.
+    // The compound content model means that the block's content is a sequence of
+    // zero or more blocks.
 
-// When nesting a block that uses a different structural container from the
-// parent, it's enough to ensure that the child block is entirely inside the
-// parent block. Delimited blocks cannot be interleaved.
+    // When nesting a block that uses a different structural container from the
+    // parent, it's enough to ensure that the child block is entirely inside the
+    // parent block. Delimited blocks cannot be interleaved.
 
-// [source]
-// ....
-// ====
-// Here's a sample AsciiDoc document:
+    // [source]
+    // ....
+    // ====
+    // Here's a sample AsciiDoc document:
 
-// ----
-// = Document Title
-// Author Name
+    // ----
+    // = Document Title
+    // Author Name
 
-// Content goes here.
-// ----
+    // Content goes here.
+    // ----
 
-// The document header is useful, but not required.
-// ====
-// ....
+    // The document header is useful, but not required.
+    // ====
+    // ....
 
-// When nesting a delimited block that uses the same structural container, it's
-// necessary to vary the length of the delimiter lines (i.e., make the length of
-// the delimiter lines for the child block different than the length of the
-// delimiter lines for the parent block). Varying the delimiter line length
-// allows the parser to distinguish one block from another.
+    let block = Block::parse(Span::new(
+        "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap()
+    .item;
 
-// ----
-// ====
-// Here are your options:
+    assert_eq!(
+        block,
+        TBlock::CompoundDelimited(
+            TCompoundDelimitedBlock {
+                blocks: vec![
+                    TBlock::Simple(
+                        TSimpleBlock(
+                            TInline::Uninterpreted(
+                                TSpan {
+                                    data: "Here's a sample AsciiDoc document:",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                            ),
+                        ),
+                    ),
+                    TBlock::RawDelimited(
+                        TRawDelimitedBlock {
+                            lines: vec![
+                                TSpan {
+                                    data: "= Document Title",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 46,
+                                },
+                                TSpan {
+                                    data: "Author Name",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 63,
+                                },
+                                TSpan {
+                                    data: "",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 75,
+                                },
+                                TSpan {
+                                    data: "Content goes here.",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 76,
+                                },
+                            ],
+                            content_model: ContentModel::Verbatim,
+                            context: "listing",
+                            source: TSpan {
+                                data: "----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n",
+                                line: 4,
+                                col: 1,
+                                offset: 41,
+                            },
+                        },
+                    ),
+                    TBlock::Simple(
+                        TSimpleBlock(
+                            TInline::Uninterpreted(
+                                TSpan {
+                                    data: "The document header is useful, but not required.",
+                                    line: 11,
+                                    col: 1,
+                                    offset: 101,
+                                },
+                            ),
+                        ),
+                    ),
+                ],
+                context: "example",
+                source: TSpan {
+                    data: "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },
+        )
+    );
 
-// .Red Pill
-// [%collapsible]
-// ======
-// Escape into the real world.
-// ======
+    // When nesting a delimited block that uses the same structural container,
+    // it's necessary to vary the length of the delimiter lines (i.e., make
+    // the length of the delimiter lines for the child block different than
+    // the length of the delimiter lines for the parent block). Varying the
+    // delimiter line length allows the parser to distinguish one block from
+    // another.
 
-// .Blue Pill
-// [%collapsible]
-// ======
-// Live within the simulated reality without want or fear.
-// ======
-// ====
-// ----
+    // ----
+    // ====
+    // Here are your options:
 
-// The delimiter length for the nested structural container can either be
-// shorter or longer than the parent. That's a personal style choice.
+    // .Red Pill
+    // [%collapsible]
+    // ======
+    // Escape into the real world.
+    // ======
+
+    // .Blue Pill
+    // [%collapsible]
+    // ======
+    // Live within the simulated reality without want or fear.
+    // ======
+    // ====
+    // ----
+
+    if false {
+        todo!("Parse role attribute lines");
+    }
+
+    // The delimiter length for the nested structural container can either be
+    // shorter or longer than the parent. That's a personal style choice.
+}
