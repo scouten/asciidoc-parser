@@ -74,7 +74,8 @@ impl<'src> RawDelimitedBlock<'src> {
         }
 
         let mut lines: Vec<Span<'src>> = vec![];
-        let mut next = delimiter.after;
+        let mut empty_lines: Vec<Span<'src>> = vec![];
+        let mut next = delimiter.after.discard_empty_lines();
 
         while !next.is_empty() {
             // TO DO: Should we retain trailing white space when in Raw content model?
@@ -94,7 +95,13 @@ impl<'src> RawDelimitedBlock<'src> {
                 });
             }
 
-            lines.push(line.item);
+            if line.item.is_empty() {
+                empty_lines.push(line.item);
+            } else {
+                lines.append(&mut empty_lines);
+                lines.push(line.item);
+            }
+
             next = line.after;
         }
 
