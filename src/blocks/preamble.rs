@@ -39,16 +39,17 @@ impl<'src> Preamble<'src> {
 
         // Does this block have a title?
         let maybe_title = source.take_normalized_line();
-        let (title, block_start) = if maybe_title.item.starts_with('.') {
-            let title = maybe_title.item.discard(1);
-            if title.take_whitespace().item.is_empty() {
-                (Some(title), maybe_title.after)
+        let (title, block_start) =
+            if maybe_title.item.starts_with('.') && !maybe_title.item.starts_with("..") {
+                let title = maybe_title.item.discard(1);
+                if title.take_whitespace().item.is_empty() {
+                    (Some(title), maybe_title.after)
+                } else {
+                    (None, source)
+                }
             } else {
                 (None, source)
-            }
-        } else {
-            (None, source)
-        };
+            };
 
         // TO DO: Does this block have an attribute list?
 
