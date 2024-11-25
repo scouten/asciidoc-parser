@@ -58,14 +58,15 @@ mod documents {
                     col: 1,
                     offset: 0
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
                         data: "This is a basic AsciiDoc document.",
                         line: 1,
                         col: 1,
                         offset: 0,
-                    },
-                )))],
+                    },),
+                    title: None
+                })],
                 warnings: vec![],
             }
         );
@@ -112,20 +113,20 @@ mod documents {
                 },
                 blocks: vec![
                     TBlock::Simple(
-                        TSimpleBlock(
-                           TInline::Uninterpreted(TSpan {
+                        TSimpleBlock {
+                           inline: TInline::Uninterpreted(TSpan {
                             data: "This is a basic AsciiDoc document.",
                             line: 1,
                             col: 1,
                             offset: 0,
-                        }))),
-                    TBlock::Simple(TSimpleBlock(
-                        TInline::Uninterpreted(TSpan {
+                        }), title: None }),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
                             data: "This document contains two paragraphs.",
                             line: 3,
                             col: 1,
                             offset: 36,
-                        })))],
+                        }), title: None })],
                         warnings: vec![],
                      }
         );
@@ -195,36 +196,36 @@ mod documents {
                     },
                 blocks: vec![
                     TBlock::Simple(
-                        TSimpleBlock(
-                            TInline::Uninterpreted(TSpan {
+                        TSimpleBlock {
+                            inline: TInline::Uninterpreted(TSpan {
                             data: "This is a basic AsciiDoc document by {author}.",
                             line: 4,
                             col: 1,
                             offset: 33,
-                        }))),
+                        }), title: None }),
                     TBlock::Simple(
-                        TSimpleBlock(
-                            TInline::Sequence(
+                        TSimpleBlock {
+                            inline: TInline::Sequence(
                                 vec![
                                     TInline::Uninterpreted(TSpan {
-                            data: "This document contains two paragraphs.",
-                            line: 6,
-                            col: 1,
-                            offset: 81,
-                        }),
-                        TInline::Uninterpreted(TSpan {
-                            data: "It also has a header that specifies the document title.",
-                            line: 7,
-                            col: 1,
-                            offset: 120,
-                        })],
-                        TSpan {
-                            data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
-                            line: 6,
-                            col: 1,
-                            offset: 81,
-                        })
-                    ))
+                                        data: "This document contains two paragraphs.",
+                                        line: 6,
+                                        col: 1,
+                                        offset: 81,
+                                    }),
+                                    TInline::Uninterpreted(TSpan {
+                                        data: "It also has a header that specifies the document title.",
+                                        line: 7,
+                                        col: 1,
+                                        offset: 120,
+                                    })],
+                                TSpan {
+                                    data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 81,
+                                }),
+                            title: None })
                 ],
                 source: TSpan {
                     data: "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title.",

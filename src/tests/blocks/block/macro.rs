@@ -26,27 +26,30 @@ fn err_inline_syntax() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Macro(TInlineMacro {
-            name: TSpan {
-                data: "foo",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            target: Some(TSpan {
-                data: "bar",
-                line: 1,
-                col: 5,
-                offset: 4,
-            },),
-            attrlist: None,
-            source: TSpan {
-                data: "foo:bar[]",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-        }))),
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Macro(TInlineMacro {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },),
+                attrlist: None,
+                source: TSpan {
+                    data: "foo:bar[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }),
+            title: None
+        }),
     );
 
     assert_eq!(
@@ -78,12 +81,15 @@ fn err_no_attr_list() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "foo::bar",
-            line: 1,
-            col: 1,
-            offset: 0,
-        }))),
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "foo::bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            title: None
+        }),
     );
 
     assert_eq!(
@@ -115,12 +121,15 @@ fn err_attr_list_not_closed() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "foo::bar[blah",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "foo::bar[blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            title: None
+        })
     );
 
     assert_eq!(
@@ -152,48 +161,51 @@ fn err_unexpected_after_attr_list() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Sequence(
-            vec![
-                TInline::Macro(TInlineMacro {
-                    name: TSpan {
-                        data: "foo",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                    target: Some(TSpan {
-                        data: ":bar",
-                        line: 1,
-                        col: 5,
-                        offset: 4,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Macro(TInlineMacro {
+                        name: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        target: Some(TSpan {
+                            data: ":bar",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },),
+                        attrlist: Some(TSpan {
+                            data: "blah",
+                            line: 1,
+                            col: 10,
+                            offset: 9,
+                        },),
+                        source: TSpan {
+                            data: "foo::bar[blah]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
                     },),
-                    attrlist: Some(TSpan {
-                        data: "blah",
+                    TInline::Uninterpreted(TSpan {
+                        data: "bonus",
                         line: 1,
-                        col: 10,
-                        offset: 9,
+                        col: 15,
+                        offset: 14,
                     },),
-                    source: TSpan {
-                        data: "foo::bar[blah]",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                },),
-                TInline::Uninterpreted(TSpan {
-                    data: "bonus",
+                ],
+                TSpan {
+                    data: "foo::bar[blah]bonus",
                     line: 1,
-                    col: 15,
-                    offset: 14,
-                },),
-            ],
-            TSpan {
-                data: "foo::bar[blah]bonus",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        )))
+                    col: 1,
+                    offset: 0,
+                }
+            ),
+            title: None
+        })
     );
 
     assert_eq!(
@@ -248,6 +260,7 @@ fn simplest_block_macro() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -312,6 +325,7 @@ fn has_target() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         })
     );
 
@@ -392,6 +406,7 @@ fn has_target_and_attrlist() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -516,6 +531,7 @@ fn warn_attrlist_has_extra_comma() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 

@@ -9,18 +9,20 @@ use crate::{
 #[derive(Eq, PartialEq)]
 pub(crate) struct TSectionBlock {
     pub level: usize,
-    pub title: TSpan,
+    pub section_title: TSpan,
     pub blocks: Vec<TBlock>,
     pub source: TSpan,
+    pub title: Option<TSpan>,
 }
 
 impl fmt::Debug for TSectionBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SectionBlock")
             .field("level", &self.level)
-            .field("title", &self.title)
+            .field("section_title", &self.section_title)
             .field("blocks", &self.blocks)
             .field("source", &self.source)
+            .field("title", &self.title)
             .finish()
     }
 }
@@ -42,7 +44,7 @@ fn tsection_block_eq(tsection_block: &TSectionBlock, section_block: &SectionBloc
         return false;
     }
 
-    if &tsection_block.title != section_block.title() {
+    if &tsection_block.section_title != section_block.section_title() {
         return false;
     }
 
@@ -57,6 +59,18 @@ fn tsection_block_eq(tsection_block: &TSectionBlock, section_block: &SectionBloc
     {
         if td_block != block {
             return false;
+        }
+    }
+
+    if tsection_block.title.is_some() != section_block.title().is_some() {
+        return false;
+    }
+
+    if let Some(ref tsb_title) = tsection_block.title {
+        if let Some(ref sb_title) = section_block.title() {
+            if tsb_title != sb_title {
+                return false;
+            }
         }
     }
 

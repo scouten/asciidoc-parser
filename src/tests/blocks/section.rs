@@ -18,34 +18,34 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = SectionBlock::parse(Span::new("== Section Title")).unwrap();
+    let b1 = SectionBlock::parse(Span::new("== Section Title"), None).unwrap();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn err_empty_source() {
-    assert!(SectionBlock::parse(Span::new("")).is_none());
+    assert!(SectionBlock::parse(Span::new(""), None).is_none());
 }
 
 #[test]
 fn err_only_spaces() {
-    assert!(SectionBlock::parse(Span::new("    ")).is_none());
+    assert!(SectionBlock::parse(Span::new("    "), None).is_none());
 }
 
 #[test]
 fn err_not_section() {
-    assert!(SectionBlock::parse(Span::new("blah blah")).is_none());
+    assert!(SectionBlock::parse(Span::new("blah blah"), None).is_none());
 }
 
 #[test]
 fn err_missing_space_before_title() {
-    assert!(SectionBlock::parse(Span::new("=blah blah")).is_none());
+    assert!(SectionBlock::parse(Span::new("=blah blah"), None).is_none());
 }
 
 #[test]
 fn simplest_section_block() {
-    let mi = SectionBlock::parse(Span::new("== Section Title"))
+    let mi = SectionBlock::parse(Span::new("== Section Title"), None)
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -56,7 +56,7 @@ fn simplest_section_block() {
         mi.item,
         TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -69,6 +69,7 @@ fn simplest_section_block() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         }
     );
 
@@ -85,7 +86,7 @@ fn simplest_section_block() {
 
 #[test]
 fn has_child_block() {
-    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc"))
+    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc"), None)
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -96,26 +97,28 @@ fn has_child_block() {
         mi.item,
         TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
-                }
-            )))],
+                }),
+                title: None
+            })],
             source: TSpan {
                 data: "== Section Title\n\nabc",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
+            title: None
         }
     );
 
@@ -132,9 +135,10 @@ fn has_child_block() {
 
 #[test]
 fn has_macro_block_with_extra_blank_line() {
-    let mi = SectionBlock::parse(Span::new(
-        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
-    ))
+    let mi = SectionBlock::parse(
+        Span::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n"),
+        None,
+    )
     .unwrap()
     .unwrap_if_no_warnings();
 
@@ -145,7 +149,7 @@ fn has_macro_block_with_extra_blank_line() {
         mi.item,
         TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -243,6 +247,7 @@ fn has_macro_block_with_extra_blank_line() {
                     col: 1,
                     offset: 18,
                 },
+                title: None
             })],
             source: TSpan {
                 data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
@@ -250,6 +255,7 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         }
     );
 
@@ -266,9 +272,10 @@ fn has_macro_block_with_extra_blank_line() {
 
 #[test]
 fn has_child_block_with_errors() {
-    let maw = SectionBlock::parse(Span::new(
-        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
-    ))
+    let maw = SectionBlock::parse(
+        Span::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
+        None,
+    )
     .unwrap();
 
     let mi = maw.item.clone();
@@ -280,7 +287,7 @@ fn has_child_block_with_errors() {
         mi.item,
         TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -378,6 +385,7 @@ fn has_child_block_with_errors() {
                     col: 1,
                     offset: 18,
                 },
+                title: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
@@ -385,6 +393,7 @@ fn has_child_block_with_errors() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         }
     );
 
@@ -414,9 +423,12 @@ fn has_child_block_with_errors() {
 
 #[test]
 fn dont_stop_at_child_section() {
-    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"))
-        .unwrap()
-        .unwrap_if_no_warnings();
+    let mi = SectionBlock::parse(
+        Span::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"),
+        None,
+    )
+    .unwrap()
+    .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
@@ -425,41 +437,46 @@ fn dont_stop_at_child_section() {
         mi.item,
         TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
                 offset: 3,
             },
             blocks: vec![
-                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                    data: "abc",
-                    line: 3,
-                    col: 1,
-                    offset: 18,
-                }),)),
+                TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    }),
+                    title: None
+                }),
                 TBlock::Section(TSectionBlock {
                     level: 2,
-                    title: TSpan {
+                    section_title: TSpan {
                         data: "Section 2",
                         line: 5,
                         col: 5,
                         offset: 27,
                     },
-                    blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                        TSpan {
+                    blocks: vec![TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
                             data: "def",
                             line: 7,
                             col: 1,
                             offset: 38,
-                        }
-                    ),))],
+                        }),
+                        title: None
+                    })],
                     source: TSpan {
                         data: "=== Section 2\n\ndef",
                         line: 5,
                         col: 1,
                         offset: 23,
-                    }
+                    },
+                    title: None
                 })
             ],
             source: TSpan {
@@ -467,7 +484,8 @@ fn dont_stop_at_child_section() {
                 line: 1,
                 col: 1,
                 offset: 0,
-            }
+            },
+            title: None
         }
     );
 
@@ -484,9 +502,12 @@ fn dont_stop_at_child_section() {
 
 #[test]
 fn stop_at_peer_section() {
-    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"))
-        .unwrap()
-        .unwrap_if_no_warnings();
+    let mi = SectionBlock::parse(
+        Span::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"),
+        None,
+    )
+    .unwrap()
+    .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
@@ -495,20 +516,21 @@ fn stop_at_peer_section() {
         mi.item,
         TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
-                }
-            )))],
+                }),
+                title: None
+            })],
             source: TSpan {
                 // TO DO: Fix bug that includes blank lines.
                 data: "== Section Title\n\nabc\n\n",
@@ -516,6 +538,7 @@ fn stop_at_peer_section() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         }
     );
 
@@ -532,9 +555,12 @@ fn stop_at_peer_section() {
 
 #[test]
 fn stop_at_ancestor_section() {
-    let mi = SectionBlock::parse(Span::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"))
-        .unwrap()
-        .unwrap_if_no_warnings();
+    let mi = SectionBlock::parse(
+        Span::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"),
+        None,
+    )
+    .unwrap()
+    .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
@@ -543,20 +569,21 @@ fn stop_at_ancestor_section() {
         mi.item,
         TSectionBlock {
             level: 2,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 5,
                 offset: 4,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 19,
-                }
-            )))],
+                }),
+                title: None
+            })],
             source: TSpan {
                 // TO DO: Fix bug that includes blank lines.
                 data: "=== Section Title\n\nabc\n\n",
@@ -564,6 +591,7 @@ fn stop_at_ancestor_section() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         }
     );
 

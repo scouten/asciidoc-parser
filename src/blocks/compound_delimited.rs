@@ -23,6 +23,7 @@ pub struct CompoundDelimitedBlock<'src> {
     blocks: Vec<Block<'src>>,
     context: CowStr<'src>,
     source: Span<'src>,
+    title: Option<Span<'src>>,
 }
 
 impl<'src> CompoundDelimitedBlock<'src> {
@@ -54,6 +55,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
 
     pub(crate) fn parse(
         source: Span<'src>,
+        title: Option<Span<'src>>,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = source.take_normalized_line();
         let maybe_delimiter_text = delimiter.item.data();
@@ -108,6 +110,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     blocks: blocks.item,
                     context: context.into(),
                     source,
+                    title,
                 },
                 after: closing_delimiter.after,
             }),
@@ -127,6 +130,10 @@ impl<'src> IsBlock<'src> for CompoundDelimitedBlock<'src> {
 
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         self.blocks.iter()
+    }
+
+    fn title(&'src self) -> Option<Span<'src>> {
+        self.title
     }
 }
 

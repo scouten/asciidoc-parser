@@ -25,6 +25,7 @@ pub struct RawDelimitedBlock<'src> {
     content_model: ContentModel,
     context: CowStr<'src>,
     source: Span<'src>,
+    title: Option<Span<'src>>,
 }
 
 impl<'src> RawDelimitedBlock<'src> {
@@ -54,6 +55,7 @@ impl<'src> RawDelimitedBlock<'src> {
 
     pub(crate) fn parse(
         source: Span<'src>,
+        title: Option<Span<'src>>,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = source.take_normalized_line();
 
@@ -88,6 +90,7 @@ impl<'src> RawDelimitedBlock<'src> {
                             content_model,
                             context: context.into(),
                             source: source.trim_remainder(line.after),
+                            title,
                         },
                         after: line.after,
                     }),
@@ -127,6 +130,10 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
 
     fn context(&self) -> CowStr<'src> {
         self.context.clone()
+    }
+
+    fn title(&self) -> Option<Span<'src>> {
+        self.title
     }
 }
 

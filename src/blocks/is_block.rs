@@ -1,6 +1,6 @@
 use std::{fmt::Debug, slice::Iter};
 
-use crate::{blocks::Block, strings::CowStr, HasSpan};
+use crate::{blocks::Block, strings::CowStr, HasSpan, Span};
 
 /// Block elements form the main structure of an AsciiDoc document, starting
 /// with the document itself.
@@ -16,7 +16,7 @@ use crate::{blocks::Block, strings::CowStr, HasSpan};
 /// [Block](crate::blocks::Block) enum but provides a mechanism for third-party
 /// code to extend the behavior of blocks.
 pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
-    /// Returns the [ContentModel] for this block.
+    /// Returns the [`ContentModel`] for this block.
     fn content_model(&self) -> ContentModel;
 
     /// Returns the context for this block.
@@ -43,6 +43,9 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
         const NO_BLOCKS: &[Block<'static>] = &[];
         NO_BLOCKS.iter()
     }
+
+    /// Returns the title for this block, if present.
+    fn title(&'src self) -> Option<Span<'src>>;
 }
 
 /// The content model of a block determines what kind of content the block can

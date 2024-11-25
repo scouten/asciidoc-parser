@@ -45,12 +45,15 @@ fn single_line() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            title: None
+        })
     );
 
     assert_eq!(
@@ -86,28 +89,31 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Sequence(
-            vec![
-                TInline::Uninterpreted(TSpan {
-                    data: "abc",
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }),
+                    TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 2,
+                        col: 1,
+                        offset: 4,
+                    }),
+                ],
+                TSpan {
+                    data: "abc\ndef",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }),
-                TInline::Uninterpreted(TSpan {
-                    data: "def",
-                    line: 2,
-                    col: 1,
-                    offset: 4,
-                }),
-            ],
-            TSpan {
-                data: "abc\ndef",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        )))
+                }
+            ),
+            title: None
+        })
     );
 
     assert_eq!(
@@ -139,12 +145,15 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            title: None
+        })
     );
 
     assert_eq!(

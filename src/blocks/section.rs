@@ -18,14 +18,16 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SectionBlock<'src> {
     level: usize,
-    title: Span<'src>,
+    section_title: Span<'src>,
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
+    title: Option<Span<'src>>,
 }
 
 impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
+        title: Option<Span<'src>>,
     ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
         let source = source.discard_empty_lines();
         let level = parse_title_line(source)?;
@@ -40,9 +42,10 @@ impl<'src> SectionBlock<'src> {
             item: MatchedItem {
                 item: Self {
                     level: level.item.0,
-                    title: level.item.1,
+                    section_title: level.item.1,
                     blocks: blocks.item,
                     source,
+                    title,
                 },
                 after: blocks.after,
             },
@@ -63,9 +66,9 @@ impl<'src> SectionBlock<'src> {
         self.level
     }
 
-    /// Return a [`Span`] describing the section title.
-    pub fn title(&'src self) -> &'src Span<'src> {
-        &self.title
+    /// Return a [`Span`] containing the section title.
+    pub fn section_title(&'src self) -> &'src Span<'src> {
+        &self.section_title
     }
 }
 
@@ -80,6 +83,10 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         self.blocks.iter()
+    }
+
+    fn title(&'src self) -> Option<Span<'src>> {
+        self.title
     }
 }
 

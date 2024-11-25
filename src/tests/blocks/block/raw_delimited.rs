@@ -25,12 +25,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "...",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "...",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("++++x"))
@@ -39,12 +42,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "++++x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "++++x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("____x"))
@@ -53,12 +59,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "____x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "____x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("====x"))
@@ -67,12 +76,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "====x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "====x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
     }
 
@@ -84,28 +96,31 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                vec!(
-                    TInline::Uninterpreted(TSpan {
-                        data: "....",
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec!(
+                        TInline::Uninterpreted(TSpan {
+                            data: "....",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }),
+                        TInline::Uninterpreted(TSpan {
+                            data: "blah blah blah",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        })
+                    ),
+                    TSpan {
+                        data: "....\nblah blah blah",
                         line: 1,
                         col: 1,
                         offset: 0,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "blah blah blah",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    })
+                    }
                 ),
-                TSpan {
-                    data: "....\nblah blah blah",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            )))
+                title: None
+            })
         );
 
         assert_eq!(
@@ -152,7 +167,8 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -190,7 +206,8 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -234,7 +251,8 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -273,7 +291,8 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -311,7 +330,8 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -366,7 +386,8 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -416,7 +437,8 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -465,7 +487,8 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -520,7 +543,8 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 

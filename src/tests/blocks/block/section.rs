@@ -23,12 +23,15 @@ fn err_missing_space_before_title() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "=blah blah",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            title: None
+        })
     );
 
     assert_eq!(
@@ -65,7 +68,7 @@ fn simplest_section_block() {
         mi.item,
         TBlock::Section(TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -78,6 +81,7 @@ fn simplest_section_block() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -107,26 +111,28 @@ fn has_child_block() {
         mi.item,
         TBlock::Section(TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
-                }
-            )))],
+                }),
+                title: None
+            })],
             source: TSpan {
                 data: "== Section Title\n\nabc",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -134,12 +140,15 @@ fn has_child_block() {
 
     assert_eq!(
         nested_blocks.next().unwrap(),
-        &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "abc",
-            line: 3,
-            col: 1,
-            offset: 18,
-        })))
+        &TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 3,
+                col: 1,
+                offset: 18,
+            }),
+            title: None
+        })
     );
 
     assert_eq!(nested_blocks.next(), None);
@@ -177,7 +186,7 @@ fn warn_child_attrlist_has_extra_comma() {
         mi.item,
         TBlock::Section(TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -275,6 +284,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     col: 1,
                     offset: 18,
                 },
+                title: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
@@ -282,6 +292,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 

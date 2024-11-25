@@ -107,17 +107,17 @@ mod parse {
 
     #[test]
     fn err_invalid_delimiter() {
-        assert!(RawDelimitedBlock::parse(Span::new("")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("...")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("++++x")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("____x")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("====x")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("==\n==")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new(""), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("..."), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("++++x"), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("____x"), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("====x"), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("==\n=="), None).is_none());
     }
 
     #[test]
     fn err_unterminated() {
-        let maw = RawDelimitedBlock::parse(Span::new("....\nblah blah blah")).unwrap();
+        let maw = RawDelimitedBlock::parse(Span::new("....\nblah blah blah"), None).unwrap();
 
         assert!(maw.item.is_none());
 
@@ -147,7 +147,7 @@ mod comment {
 
     #[test]
     fn empty() {
-        let maw = RawDelimitedBlock::parse(Span::new("////\n////")).unwrap();
+        let maw = RawDelimitedBlock::parse(Span::new("////\n////"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -162,7 +162,8 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -173,7 +174,7 @@ mod comment {
 
     #[test]
     fn multiple_lines() {
-        let maw = RawDelimitedBlock::parse(Span::new("////\nline1  \nline2\n////")).unwrap();
+        let maw = RawDelimitedBlock::parse(Span::new("////\nline1  \nline2\n////"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -201,7 +202,8 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -234,7 +236,8 @@ mod comment {
 
     #[test]
     fn ignores_delimiter_prefix() {
-        let maw = RawDelimitedBlock::parse(Span::new("////\nline1  \n/////\nline2\n////")).unwrap();
+        let maw =
+            RawDelimitedBlock::parse(Span::new("////\nline1  \n/////\nline2\n////"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -268,7 +271,8 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -315,12 +319,12 @@ mod example {
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("====\n====")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("====\n===="), None).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("====\nline1  \nline2\n====")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("====\nline1  \nline2\n===="), None).is_none());
     }
 }
 
@@ -335,7 +339,7 @@ mod listing {
 
     #[test]
     fn empty() {
-        let maw = RawDelimitedBlock::parse(Span::new("----\n----")).unwrap();
+        let maw = RawDelimitedBlock::parse(Span::new("----\n----"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -350,7 +354,8 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -361,7 +366,7 @@ mod listing {
 
     #[test]
     fn multiple_lines() {
-        let maw = RawDelimitedBlock::parse(Span::new("----\nline1  \nline2\n----")).unwrap();
+        let maw = RawDelimitedBlock::parse(Span::new("----\nline1  \nline2\n----"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -389,7 +394,8 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -422,7 +428,8 @@ mod listing {
 
     #[test]
     fn ignores_delimiter_prefix() {
-        let maw = RawDelimitedBlock::parse(Span::new("----\nline1  \n-----\nline2\n----")).unwrap();
+        let maw =
+            RawDelimitedBlock::parse(Span::new("----\nline1  \n-----\nline2\n----"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -456,7 +463,8 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -503,12 +511,12 @@ mod sidebar {
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("****\n****")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("****\n****"), None).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("****\nline1  \nline2\n****")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("****\nline1  \nline2\n****"), None).is_none());
     }
 }
 
@@ -517,18 +525,18 @@ mod table {
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("|===\n|===")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(",===\n,===")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(":===\n:===")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("!===\n!===")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("|===\n|==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new(",===\n,==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new(":===\n:==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("!===\n!==="), None).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("|===\nline1  \nline2\n|===")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(",===\nline1  \nline2\n,===")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(":===\nline1  \nline2\n:===")).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("!===\nline1  \nline2\n!===")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("|===\nline1  \nline2\n|==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new(",===\nline1  \nline2\n,==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new(":===\nline1  \nline2\n:==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("!===\nline1  \nline2\n!==="), None).is_none());
     }
 }
 
@@ -543,7 +551,7 @@ mod pass {
 
     #[test]
     fn empty() {
-        let maw = RawDelimitedBlock::parse(Span::new("++++\n++++")).unwrap();
+        let maw = RawDelimitedBlock::parse(Span::new("++++\n++++"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -558,7 +566,8 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -569,7 +578,7 @@ mod pass {
 
     #[test]
     fn multiple_lines() {
-        let maw = RawDelimitedBlock::parse(Span::new("++++\nline1  \nline2\n++++")).unwrap();
+        let maw = RawDelimitedBlock::parse(Span::new("++++\nline1  \nline2\n++++"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -597,7 +606,8 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -630,7 +640,8 @@ mod pass {
 
     #[test]
     fn ignores_delimiter_prefix() {
-        let maw = RawDelimitedBlock::parse(Span::new("++++\nline1  \n+++++\nline2\n++++")).unwrap();
+        let maw =
+            RawDelimitedBlock::parse(Span::new("++++\nline1  \n+++++\nline2\n++++"), None).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -664,7 +675,8 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
@@ -711,11 +723,11 @@ mod quote {
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("____\n____")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("____\n____"), None).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("____\nline1  \nline2\n____")).is_none());
+        assert!(RawDelimitedBlock::parse(Span::new("____\nline1  \nline2\n____"), None).is_none());
     }
 }

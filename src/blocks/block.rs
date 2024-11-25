@@ -58,7 +58,20 @@ impl<'src> Block<'src> {
         let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
-        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(source) {
+        // Does this block have a title?
+        let maybe_title = source.take_normalized_line();
+        let (title, source) = if maybe_title.item.starts_with(".") {
+            let title = maybe_title.item.discard(1);
+            if title.take_whitespace().item == title {
+                (Some(title), maybe_title.after)
+            } else {
+                (None, source)
+            }
+        } else {
+            (None, source)
+        };
+
+        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(source, title) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -77,7 +90,7 @@ impl<'src> Block<'src> {
             }
         }
 
-        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(source) {
+        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(source, title) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -100,7 +113,7 @@ impl<'src> Block<'src> {
         let line = source.take_normalized_line();
 
         if line.item.contains("::") {
-            let mut macro_block_maw = MacroBlock::parse(source);
+            let mut macro_block_maw = MacroBlock::parse(source, title);
 
             if let Some(macro_block) = macro_block_maw.item {
                 // Only propagate warnings from macro block parsing if we think this
@@ -124,7 +137,7 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=') {
-            if let Some(mut maw_section_block) = SectionBlock::parse(source) {
+            if let Some(mut maw_section_block) = SectionBlock::parse(source, title) {
                 if !maw_section_block.warnings.is_empty() {
                     warnings.append(&mut maw_section_block.warnings);
                 }
@@ -144,7 +157,7 @@ impl<'src> Block<'src> {
 
         // If no other block kind matches, we can always use SimpleBlock.
         MatchAndWarnings {
-            item: SimpleBlock::parse(source).map(|mi| MatchedItem {
+            item: SimpleBlock::parse(source, title).map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
                 after: mi.after,
             }),
@@ -181,6 +194,16 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.nested_blocks(),
             Self::RawDelimited(b) => b.nested_blocks(),
             Self::CompoundDelimited(b) => b.nested_blocks(),
+        }
+    }
+
+    fn title(&'src self) -> Option<Span<'src>> {
+        match self {
+            Self::Simple(b) => b.title(),
+            Self::Macro(b) => b.title(),
+            Self::Section(b) => b.title(),
+            Self::RawDelimited(b) => b.title(),
+            Self::CompoundDelimited(b) => b.title(),
         }
     }
 }

@@ -21,12 +21,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "===",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "===",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("====x"))
@@ -35,12 +38,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "====x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "====x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("****x"))
@@ -49,12 +55,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "****x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "****x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("____x"))
@@ -63,12 +72,15 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "____x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "____x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                title: None
+            })
         );
     }
 
@@ -80,28 +92,31 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                vec!(
-                    TInline::Uninterpreted(TSpan {
-                        data: "====",
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec!(
+                        TInline::Uninterpreted(TSpan {
+                            data: "====",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }),
+                        TInline::Uninterpreted(TSpan {
+                            data: "blah blah blah",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        })
+                    ),
+                    TSpan {
+                        data: "====\nblah blah blah",
                         line: 1,
                         col: 1,
                         offset: 0,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "blah blah blah",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    })
+                    }
                 ),
-                TSpan {
-                    data: "====\nblah blah blah",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            )))
+                title: None
+            })
         );
 
         assert_eq!(
@@ -148,7 +163,8 @@ mod example {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -177,18 +193,24 @@ mod example {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 13,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },),
+                        title: None
+                    },),
                 ),
                 context: "example",
                 source: TSpan {
@@ -196,7 +218,8 @@ mod example {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -206,22 +229,28 @@ mod example {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 13,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },),
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -247,21 +276,25 @@ mod example {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        title: None
+                    },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                            TSpan {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                            inline: TInline::Uninterpreted(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
-                            },
-                        ),),),),
+                            },),
+                            title: None
+                        },)),
                         context: "example",
                         source: TSpan {
                             data: "=====\nblock2\n=====\n",
@@ -269,7 +302,8 @@ mod example {
                             col: 1,
                             offset: 13,
                         },
-                    })
+                        title: None,
+                    },)
                 ),
                 context: "example",
                 source: TSpan {
@@ -277,7 +311,8 @@ mod example {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -287,25 +322,29 @@ mod example {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
-                    },
-                ),),),),
+                    },),
+                    title: None
+                },),),
                 context: "example",
                 source: TSpan {
                     data: "=====\nblock2\n=====\n",
@@ -313,6 +352,7 @@ mod example {
                     col: 1,
                     offset: 13,
                 },
+                title: None,
             })
         );
 
@@ -359,7 +399,8 @@ mod open {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -388,18 +429,24 @@ mod open {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 3,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 11,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },),
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },),
+                        title: None
+                    },),
                 ),
                 context: "open",
                 source: TSpan {
@@ -407,7 +454,8 @@ mod open {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -417,22 +465,28 @@ mod open {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 3,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 11,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },),
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -458,40 +512,46 @@ mod open {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 3,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                        vec![
-                            TInline::Uninterpreted(TSpan {
-                                data: "---",
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },),
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Sequence(
+                            vec![
+                                TInline::Uninterpreted(TSpan {
+                                    data: "---",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 11,
+                                },),
+                                TInline::Uninterpreted(TSpan {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 15,
+                                },),
+                                TInline::Uninterpreted(TSpan {
+                                    data: "---",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 22,
+                                },),
+                            ],
+                            TSpan {
+                                data: "---\nblock2\n---\n",
                                 line: 4,
                                 col: 1,
                                 offset: 11,
-                            },),
-                            TInline::Uninterpreted(TSpan {
-                                data: "block2",
-                                line: 5,
-                                col: 1,
-                                offset: 15,
-                            },),
-                            TInline::Uninterpreted(TSpan {
-                                data: "---",
-                                line: 6,
-                                col: 1,
-                                offset: 22,
-                            },),
-                        ],
-                        TSpan {
-                            data: "---\nblock2\n---\n",
-                            line: 4,
-                            col: 1,
-                            offset: 11,
-                        },
-                    ),),)
+                            },
+                        ),
+                        title: None
+                    },)
                 ),
                 context: "open",
                 source: TSpan {
@@ -499,7 +559,8 @@ mod open {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -509,44 +570,50 @@ mod open {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 3,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "---",
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec![
+                        TInline::Uninterpreted(TSpan {
+                            data: "---",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },),
+                        TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 15,
+                        },),
+                        TInline::Uninterpreted(TSpan {
+                            data: "---",
+                            line: 6,
+                            col: 1,
+                            offset: 22,
+                        },),
+                    ],
+                    TSpan {
+                        data: "---\nblock2\n---\n",
                         line: 4,
                         col: 1,
                         offset: 11,
-                    },),
-                    TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 5,
-                        col: 1,
-                        offset: 15,
-                    },),
-                    TInline::Uninterpreted(TSpan {
-                        data: "---",
-                        line: 6,
-                        col: 1,
-                        offset: 22,
-                    },),
-                ],
-                TSpan {
-                    data: "---\nblock2\n---\n",
-                    line: 4,
-                    col: 1,
-                    offset: 11,
-                },
-            )))
+                    },
+                ),
+                title: None
+            })
         );
 
         assert!(blocks.next().is_none());
@@ -592,7 +659,8 @@ mod sidebar {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -621,18 +689,24 @@ mod sidebar {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 13,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },),
+                        title: None
+                    },),
                 ),
                 context: "sidebar",
                 source: TSpan {
@@ -640,7 +714,8 @@ mod sidebar {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -650,22 +725,28 @@ mod sidebar {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 13,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },),
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -691,21 +772,25 @@ mod sidebar {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        title: None
+                    },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                            TSpan {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                            inline: TInline::Uninterpreted(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
-                            },
-                        ),),),),
+                            },),
+                            title: None
+                        },)),
                         context: "sidebar",
                         source: TSpan {
                             data: "*****\nblock2\n*****\n",
@@ -713,6 +798,7 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },
+                        title: None,
                     })
                 ),
                 context: "sidebar",
@@ -721,7 +807,8 @@ mod sidebar {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -731,25 +818,29 @@ mod sidebar {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
-                    },
-                ),),),),
+                    },),
+                    title: None
+                },),),
                 context: "sidebar",
                 source: TSpan {
                     data: "*****\nblock2\n*****\n",
@@ -757,6 +848,7 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },
+                title: None,
             })
         );
 
@@ -803,7 +895,8 @@ mod quote {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -832,18 +925,24 @@ mod quote {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 13,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },),
+                        title: None
+                    },),
                 ),
                 context: "quote",
                 source: TSpan {
@@ -851,7 +950,8 @@ mod quote {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
@@ -861,22 +961,28 @@ mod quote {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 13,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },),
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -902,21 +1008,25 @@ mod quote {
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        title: None
+                    },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                            TSpan {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                            inline: TInline::Uninterpreted(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
-                            },
-                        ),),),),
+                            },),
+                            title: None
+                        },),),
                         context: "quote",
                         source: TSpan {
                             data: "_____\nblock2\n_____\n",
@@ -924,6 +1034,7 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
+                        title: None
                     })
                 ),
                 context: "quote",
@@ -932,7 +1043,8 @@ mod quote {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
@@ -942,25 +1054,29 @@ mod quote {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
-                    },
-                ),),),),
+                    },),
+                    title: None
+                },),),
                 context: "quote",
                 source: TSpan {
                     data: "_____\nblock2\n_____\n",
@@ -968,6 +1084,7 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
+                title: None
             })
         );
 
