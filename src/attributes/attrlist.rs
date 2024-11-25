@@ -61,7 +61,7 @@ impl<'src> Attrlist<'src> {
             match after.take_prefix(",") {
                 Some(comma) => {
                     after = comma.after.take_whitespace().after;
-                    if after.starts_with(",") {
+                    if after.starts_with(',') {
                         warnings.push(Warning {
                             source: comma.item,
                             warning: WarningType::EmptyAttributeValue,
