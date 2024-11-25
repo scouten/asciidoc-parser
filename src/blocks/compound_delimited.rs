@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
-    blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
+    blocks::{parse_utils::parse_blocks_until, preamble::Preamble, Block, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -54,10 +54,9 @@ impl<'src> CompoundDelimitedBlock<'src> {
     }
 
     pub(crate) fn parse(
-        source: Span<'src>,
-        title: Option<Span<'src>>,
+        preamble: &Preamble<'src>,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
-        let delimiter = source.take_normalized_line();
+        let delimiter = preamble.block_start.take_normalized_line();
         let maybe_delimiter_text = delimiter.item.data();
 
         // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
@@ -102,7 +101,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
         let maw_blocks = parse_blocks_until(inside_delimiters, |_| false);
 
         let blocks = maw_blocks.item;
-        let source = source.trim_remainder(closing_delimiter.after);
+        let source = preamble.source.trim_remainder(closing_delimiter.after);
 
         Some(MatchAndWarnings {
             item: Some(MatchedItem {
@@ -110,7 +109,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     blocks: blocks.item,
                     context: context.into(),
                     source,
-                    title,
+                    title: preamble.title,
                 },
                 after: closing_delimiter.after,
             }),

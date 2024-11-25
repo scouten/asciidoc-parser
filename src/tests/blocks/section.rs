@@ -3,7 +3,7 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    blocks::{ContentModel, IsBlock, SectionBlock},
+    blocks::{preamble::Preamble, ContentModel, IsBlock, SectionBlock},
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
@@ -12,40 +12,39 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
-    Span,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = SectionBlock::parse(Span::new("== Section Title"), None).unwrap();
+    let b1 = SectionBlock::parse(&Preamble::new("== Section Title")).unwrap();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn err_empty_source() {
-    assert!(SectionBlock::parse(Span::new(""), None).is_none());
+    assert!(SectionBlock::parse(&Preamble::new("")).is_none());
 }
 
 #[test]
 fn err_only_spaces() {
-    assert!(SectionBlock::parse(Span::new("    "), None).is_none());
+    assert!(SectionBlock::parse(&Preamble::new("    ")).is_none());
 }
 
 #[test]
 fn err_not_section() {
-    assert!(SectionBlock::parse(Span::new("blah blah"), None).is_none());
+    assert!(SectionBlock::parse(&Preamble::new("blah blah")).is_none());
 }
 
 #[test]
 fn err_missing_space_before_title() {
-    assert!(SectionBlock::parse(Span::new("=blah blah"), None).is_none());
+    assert!(SectionBlock::parse(&Preamble::new("=blah blah")).is_none());
 }
 
 #[test]
 fn simplest_section_block() {
-    let mi = SectionBlock::parse(Span::new("== Section Title"), None)
+    let mi = SectionBlock::parse(&Preamble::new("== Section Title"))
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -86,7 +85,7 @@ fn simplest_section_block() {
 
 #[test]
 fn has_child_block() {
-    let mi = SectionBlock::parse(Span::new("== Section Title\n\nabc"), None)
+    let mi = SectionBlock::parse(&Preamble::new("== Section Title\n\nabc"))
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -135,10 +134,9 @@ fn has_child_block() {
 
 #[test]
 fn has_macro_block_with_extra_blank_line() {
-    let mi = SectionBlock::parse(
-        Span::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n"),
-        None,
-    )
+    let mi = SectionBlock::parse(&Preamble::new(
+        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
+    ))
     .unwrap()
     .unwrap_if_no_warnings();
 
@@ -272,10 +270,9 @@ fn has_macro_block_with_extra_blank_line() {
 
 #[test]
 fn has_child_block_with_errors() {
-    let maw = SectionBlock::parse(
-        Span::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
-        None,
-    )
+    let maw = SectionBlock::parse(&Preamble::new(
+        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+    ))
     .unwrap();
 
     let mi = maw.item.clone();
@@ -423,10 +420,9 @@ fn has_child_block_with_errors() {
 
 #[test]
 fn dont_stop_at_child_section() {
-    let mi = SectionBlock::parse(
-        Span::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"),
-        None,
-    )
+    let mi = SectionBlock::parse(&Preamble::new(
+        "== Section Title\n\nabc\n\n=== Section 2\n\ndef",
+    ))
     .unwrap()
     .unwrap_if_no_warnings();
 
@@ -502,10 +498,9 @@ fn dont_stop_at_child_section() {
 
 #[test]
 fn stop_at_peer_section() {
-    let mi = SectionBlock::parse(
-        Span::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"),
-        None,
-    )
+    let mi = SectionBlock::parse(&Preamble::new(
+        "== Section Title\n\nabc\n\n== Section 2\n\ndef",
+    ))
     .unwrap()
     .unwrap_if_no_warnings();
 
@@ -555,10 +550,9 @@ fn stop_at_peer_section() {
 
 #[test]
 fn stop_at_ancestor_section() {
-    let mi = SectionBlock::parse(
-        Span::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"),
-        None,
-    )
+    let mi = SectionBlock::parse(&Preamble::new(
+        "=== Section Title\n\nabc\n\n== Section 2\n\ndef",
+    ))
     .unwrap()
     .unwrap_if_no_warnings();
 

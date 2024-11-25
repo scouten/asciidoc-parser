@@ -2,12 +2,12 @@ use std::slice::Iter;
 
 use crate::{
     blocks::{
-        CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock,
-        SimpleBlock,
+        preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock,
+        RawDelimitedBlock, SectionBlock, SimpleBlock,
     },
     span::MatchedItem,
     strings::CowStr,
-    warnings::{MatchAndWarnings, Warning},
+    warnings::MatchAndWarnings,
     HasSpan, Span,
 };
 
@@ -55,23 +55,12 @@ impl<'src> Block<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        let mut warnings: Vec<Warning<'src>> = vec![];
-        let source = source.discard_empty_lines();
+        let MatchAndWarnings {
+            item: preamble,
+            mut warnings,
+        } = Preamble::parse(source);
 
-        // Does this block have a title?
-        let maybe_title = source.take_normalized_line();
-        let (title, source) = if maybe_title.item.starts_with('.') {
-            let title = maybe_title.item.discard(1);
-            if title.take_whitespace().item.is_empty() {
-                (Some(title), maybe_title.after)
-            } else {
-                (None, source)
-            }
-        } else {
-            (None, source)
-        };
-
-        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(source, title) {
+        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&preamble) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -90,7 +79,7 @@ impl<'src> Block<'src> {
             }
         }
 
-        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(source, title) {
+        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&preamble) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -110,10 +99,10 @@ impl<'src> Block<'src> {
         }
 
         // Try to discern the block type by scanning the first line.
-        let line = source.take_normalized_line();
+        let line = preamble.source.take_normalized_line();
 
         if line.item.contains("::") {
-            let mut macro_block_maw = MacroBlock::parse(source, title);
+            let mut macro_block_maw = MacroBlock::parse(&preamble);
 
             if let Some(macro_block) = macro_block_maw.item {
                 // Only propagate warnings from macro block parsing if we think this
@@ -137,7 +126,7 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=') {
-            if let Some(mut maw_section_block) = SectionBlock::parse(source, title) {
+            if let Some(mut maw_section_block) = SectionBlock::parse(&preamble) {
                 if !maw_section_block.warnings.is_empty() {
                     warnings.append(&mut maw_section_block.warnings);
                 }
@@ -157,7 +146,7 @@ impl<'src> Block<'src> {
 
         // If no other block kind matches, we can always use SimpleBlock.
         MatchAndWarnings {
-            item: SimpleBlock::parse(source, title).map(|mi| MatchedItem {
+            item: SimpleBlock::parse(&preamble).map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
                 after: mi.after,
             }),

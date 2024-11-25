@@ -1,5 +1,10 @@
-use super::{ContentModel, IsBlock};
-use crate::{inlines::Inline, span::MatchedItem, strings::CowStr, HasSpan, Span};
+use crate::{
+    blocks::{preamble::Preamble, ContentModel, IsBlock},
+    inlines::Inline,
+    span::MatchedItem,
+    strings::CowStr,
+    HasSpan, Span,
+};
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
@@ -10,16 +15,14 @@ pub struct SimpleBlock<'src> {
 }
 
 impl<'src> SimpleBlock<'src> {
-    pub(crate) fn parse(
-        source: Span<'src>,
-        title: Option<Span<'src>>,
-    ) -> Option<MatchedItem<'src, Self>> {
-        let inline = Inline::parse_lines(source)?;
+    pub(crate) fn parse(preamble: &Preamble<'src>) -> Option<MatchedItem<'src, Self>> {
+        let inline = Inline::parse_lines(preamble.block_start)?;
         Some(MatchedItem {
             item: Self {
                 inline: inline.item,
-                title,
+                title: preamble.title,
             },
+            // TO DO: Fix this so source includes preamble.
             after: inline.after.discard_empty_lines(),
         })
     }

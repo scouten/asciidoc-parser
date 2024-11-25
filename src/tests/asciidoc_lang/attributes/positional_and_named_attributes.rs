@@ -11,9 +11,8 @@ mod positional_attribute {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::MacroBlock,
+        blocks::{preamble::Preamble, MacroBlock},
         tests::fixtures::{attributes::TElementAttribute, TSpan},
-        Span,
     };
 
     // [#positional]
@@ -52,14 +51,13 @@ mod positional_attribute {
 
         // end::pos[]
 
-        let m1 = MacroBlock::parse(Span::new("image::sunset.jpg[Sunset,300,400]"), None)
+        let m1 = MacroBlock::parse(&Preamble::new("image::sunset.jpg[Sunset,300,400]"))
             .unwrap_if_no_warnings()
             .unwrap();
 
-        let m2 = MacroBlock::parse(
-            Span::new("image::sunset.jpg[alt=Sunset,width=300,height=400]"),
-            None,
-        )
+        let m2 = MacroBlock::parse(&Preamble::new(
+            "image::sunset.jpg[alt=Sunset,width=300,height=400]",
+        ))
         .unwrap_if_no_warnings()
         .unwrap();
 

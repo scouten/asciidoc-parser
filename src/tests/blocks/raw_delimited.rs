@@ -99,25 +99,24 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::RawDelimitedBlock,
+        blocks::{preamble::Preamble, RawDelimitedBlock},
         tests::fixtures::{warnings::TWarning, TSpan},
         warnings::WarningType,
-        Span,
     };
 
     #[test]
     fn err_invalid_delimiter() {
-        assert!(RawDelimitedBlock::parse(Span::new(""), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("..."), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("++++x"), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("____x"), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("====x"), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("==\n=="), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("...")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("++++x")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("____x")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("====x")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("==\n==")).is_none());
     }
 
     #[test]
     fn err_unterminated() {
-        let maw = RawDelimitedBlock::parse(Span::new("....\nblah blah blah"), None).unwrap();
+        let maw = RawDelimitedBlock::parse(&Preamble::new("....\nblah blah blah")).unwrap();
 
         assert!(maw.item.is_none());
 
@@ -140,14 +139,13 @@ mod comment {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{ContentModel, IsBlock, RawDelimitedBlock},
+        blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
         tests::fixtures::{blocks::TRawDelimitedBlock, TSpan},
-        Span,
     };
 
     #[test]
     fn empty() {
-        let maw = RawDelimitedBlock::parse(Span::new("////\n////"), None).unwrap();
+        let maw = RawDelimitedBlock::parse(&Preamble::new("////\n////")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -174,7 +172,7 @@ mod comment {
 
     #[test]
     fn multiple_lines() {
-        let maw = RawDelimitedBlock::parse(Span::new("////\nline1  \nline2\n////"), None).unwrap();
+        let maw = RawDelimitedBlock::parse(&Preamble::new("////\nline1  \nline2\n////")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -237,7 +235,7 @@ mod comment {
     #[test]
     fn ignores_delimiter_prefix() {
         let maw =
-            RawDelimitedBlock::parse(Span::new("////\nline1  \n/////\nline2\n////"), None).unwrap();
+            RawDelimitedBlock::parse(&Preamble::new("////\nline1  \n/////\nline2\n////")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -315,16 +313,16 @@ mod comment {
 }
 
 mod example {
-    use crate::{blocks::RawDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, RawDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("====\n===="), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("====\n====")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("====\nline1  \nline2\n===="), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("====\nline1  \nline2\n====")).is_none());
     }
 }
 
@@ -332,14 +330,13 @@ mod listing {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{ContentModel, IsBlock, RawDelimitedBlock},
+        blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
         tests::fixtures::{blocks::TRawDelimitedBlock, TSpan},
-        Span,
     };
 
     #[test]
     fn empty() {
-        let maw = RawDelimitedBlock::parse(Span::new("----\n----"), None).unwrap();
+        let maw = RawDelimitedBlock::parse(&Preamble::new("----\n----")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -366,7 +363,7 @@ mod listing {
 
     #[test]
     fn multiple_lines() {
-        let maw = RawDelimitedBlock::parse(Span::new("----\nline1  \nline2\n----"), None).unwrap();
+        let maw = RawDelimitedBlock::parse(&Preamble::new("----\nline1  \nline2\n----")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -429,7 +426,7 @@ mod listing {
     #[test]
     fn ignores_delimiter_prefix() {
         let maw =
-            RawDelimitedBlock::parse(Span::new("----\nline1  \n-----\nline2\n----"), None).unwrap();
+            RawDelimitedBlock::parse(&Preamble::new("----\nline1  \n-----\nline2\n----")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -507,36 +504,36 @@ mod listing {
 }
 
 mod sidebar {
-    use crate::{blocks::RawDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, RawDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("****\n****"), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("****\n****")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("****\nline1  \nline2\n****"), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("****\nline1  \nline2\n****")).is_none());
     }
 }
 
 mod table {
-    use crate::{blocks::RawDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, RawDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("|===\n|==="), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(",===\n,==="), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(":===\n:==="), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("!===\n!==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("|===\n|===")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new(",===\n,===")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new(":===\n:===")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("!===\n!===")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("|===\nline1  \nline2\n|==="), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(",===\nline1  \nline2\n,==="), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new(":===\nline1  \nline2\n:==="), None).is_none());
-        assert!(RawDelimitedBlock::parse(Span::new("!===\nline1  \nline2\n!==="), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("|===\nline1  \nline2\n|===")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new(",===\nline1  \nline2\n,===")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new(":===\nline1  \nline2\n:===")).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("!===\nline1  \nline2\n!===")).is_none());
     }
 }
 
@@ -544,14 +541,13 @@ mod pass {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{ContentModel, IsBlock, RawDelimitedBlock},
+        blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
         tests::fixtures::{blocks::TRawDelimitedBlock, TSpan},
-        Span,
     };
 
     #[test]
     fn empty() {
-        let maw = RawDelimitedBlock::parse(Span::new("++++\n++++"), None).unwrap();
+        let maw = RawDelimitedBlock::parse(&Preamble::new("++++\n++++")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -578,7 +574,7 @@ mod pass {
 
     #[test]
     fn multiple_lines() {
-        let maw = RawDelimitedBlock::parse(Span::new("++++\nline1  \nline2\n++++"), None).unwrap();
+        let maw = RawDelimitedBlock::parse(&Preamble::new("++++\nline1  \nline2\n++++")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -641,7 +637,7 @@ mod pass {
     #[test]
     fn ignores_delimiter_prefix() {
         let maw =
-            RawDelimitedBlock::parse(Span::new("++++\nline1  \n+++++\nline2\n++++"), None).unwrap();
+            RawDelimitedBlock::parse(&Preamble::new("++++\nline1  \n+++++\nline2\n++++")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -719,15 +715,15 @@ mod pass {
 }
 
 mod quote {
-    use crate::{blocks::RawDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, RawDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(RawDelimitedBlock::parse(Span::new("____\n____"), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("____\n____")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(RawDelimitedBlock::parse(Span::new("____\nline1  \nline2\n____"), None).is_none());
+        assert!(RawDelimitedBlock::parse(&Preamble::new("____\nline1  \nline2\n____")).is_none());
     }
 }

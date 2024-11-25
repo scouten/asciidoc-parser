@@ -1,6 +1,6 @@
 use crate::{
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock},
+    blocks::{preamble::Preamble, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -25,10 +25,9 @@ pub struct MacroBlock<'src> {
 
 impl<'src> MacroBlock<'src> {
     pub(crate) fn parse(
-        source: Span<'src>,
-        title: Option<Span<'src>>,
+        preamble: &Preamble<'src>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        let line = source.take_normalized_line();
+        let line = preamble.block_start.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.item.ends_with(']') {
@@ -86,7 +85,8 @@ impl<'src> MacroBlock<'src> {
                     },
                     attrlist: attrlist.item.item,
                     source: line.item,
-                    title,
+                    // TO DO: Fix this so it includes preamble.
+                    title: preamble.title,
                 },
 
                 after: line.after.discard_empty_lines(),

@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
-    blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
+    blocks::{parse_utils::parse_blocks_until, preamble::Preamble, Block, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::MatchAndWarnings,
@@ -26,10 +26,9 @@ pub struct SectionBlock<'src> {
 
 impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
-        source: Span<'src>,
-        title: Option<Span<'src>>,
+        preamble: &Preamble<'src>,
     ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
-        let source = source.discard_empty_lines();
+        let source = preamble.block_start.discard_empty_lines();
         let level = parse_title_line(source)?;
 
         let maw_blocks =
@@ -45,7 +44,8 @@ impl<'src> SectionBlock<'src> {
                     section_title: level.item.1,
                     blocks: blocks.item,
                     source,
-                    title,
+                    // TO DO: Fix this so it includes preamble.
+                    title: preamble.title,
                 },
                 after: blocks.after,
             },
