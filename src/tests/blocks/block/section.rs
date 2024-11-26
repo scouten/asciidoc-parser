@@ -175,6 +175,87 @@ fn has_child_block() {
 }
 
 #[test]
+fn title() {
+    let mi = Block::parse(Span::new(".other section title\n== Section Title\n\nabc"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
+
+    assert_eq!(
+        mi.item,
+        TBlock::Section(TSectionBlock {
+            level: 1,
+            section_title: TSpan {
+                data: "Section Title",
+                line: 2,
+                col: 4,
+                offset: 24,
+            },
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "abc",
+                    line: 4,
+                    col: 1,
+                    offset: 39,
+                }),
+                title: None
+            })],
+            source: TSpan {
+                data: ".other section title\n== Section Title\n\nabc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "other section title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+        })
+    );
+
+    let mut nested_blocks = mi.item.nested_blocks();
+
+    assert_eq!(
+        nested_blocks.next().unwrap(),
+        &TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 4,
+                col: 1,
+                offset: 39,
+            }),
+            title: None
+        })
+    );
+
+    assert_eq!(nested_blocks.next(), None);
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".other section title\n== Section Title\n\nabc",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 4,
+            col: 4,
+            offset: 42
+        }
+    );
+}
+
+#[test]
 fn warn_child_attrlist_has_extra_comma() {
     let maw = Block::parse(Span::new(
         "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",

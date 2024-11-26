@@ -101,7 +101,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
         let maw_blocks = parse_blocks_until(inside_delimiters, |_| false);
 
         let blocks = maw_blocks.item;
-        let source = preamble.source.trim_remainder(closing_delimiter.after);
+        let source: Span = preamble.source.trim_remainder(closing_delimiter.after);
 
         Some(MatchAndWarnings {
             item: Some(MatchedItem {

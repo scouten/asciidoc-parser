@@ -74,6 +74,9 @@ impl<'src> MacroBlock<'src> {
 
         let attrlist = Attrlist::parse(attrlist);
 
+        let source: Span = preamble.source.trim_remainder(line.after);
+        let source = source.slice(0..source.trim().len());
+
         MatchAndWarnings {
             item: Some(MatchedItem {
                 item: Self {
@@ -84,8 +87,7 @@ impl<'src> MacroBlock<'src> {
                         Some(target.item)
                     },
                     attrlist: attrlist.item.item,
-                    source: line.item,
-                    // TO DO: Fix this so it includes preamble.
+                    source,
                     title: preamble.title,
                 },
 

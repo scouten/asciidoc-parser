@@ -11,18 +11,23 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SimpleBlock<'src> {
     inline: Inline<'src>,
+    source: Span<'src>,
     title: Option<Span<'src>>,
 }
 
 impl<'src> SimpleBlock<'src> {
     pub(crate) fn parse(preamble: &Preamble<'src>) -> Option<MatchedItem<'src, Self>> {
         let inline = Inline::parse_lines(preamble.block_start)?;
+
+        let source: Span = preamble.source.trim_remainder(inline.after);
+        let source = source.slice(0..source.trim().len());
+
         Some(MatchedItem {
             item: Self {
                 inline: inline.item,
+                source,
                 title: preamble.title,
             },
-            // TO DO: Fix this so source includes preamble.
             after: inline.after.discard_empty_lines(),
         })
     }
@@ -49,6 +54,6 @@ impl<'src> IsBlock<'src> for SimpleBlock<'src> {
 
 impl<'src> HasSpan<'src> for SimpleBlock<'src> {
     fn span(&'src self) -> &'src Span<'src> {
-        self.inline.span()
+        &self.source
     }
 }

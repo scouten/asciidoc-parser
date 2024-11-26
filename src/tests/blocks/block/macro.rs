@@ -567,3 +567,69 @@ fn warn_attrlist_has_extra_comma() {
         }]
     );
 }
+
+#[test]
+fn has_title() {
+    let mi = Block::parse(Span::new(".macro title\nfoo::bar[]\n"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Macro(TMacroBlock {
+            name: TSpan {
+                data: "foo",
+                line: 2,
+                col: 1,
+                offset: 13,
+            },
+            target: Some(TSpan {
+                data: "bar",
+                line: 2,
+                col: 6,
+                offset: 18,
+            }),
+            attrlist: TAttrlist {
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 2,
+                    col: 10,
+                    offset: 22,
+                }
+            },
+            source: TSpan {
+                data: ".macro title\nfoo::bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "macro title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },)
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".macro title\nfoo::bar[]",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 24
+        }
+    );
+}

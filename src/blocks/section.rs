@@ -35,7 +35,7 @@ impl<'src> SectionBlock<'src> {
             parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0));
 
         let blocks = maw_blocks.item;
-        let source = source.trim_remainder(blocks.after);
+        let source = preamble.source.trim_remainder(blocks.after);
 
         Some(MatchAndWarnings {
             item: MatchedItem {
@@ -44,7 +44,6 @@ impl<'src> SectionBlock<'src> {
                     section_title: level.item.1,
                     blocks: blocks.item,
                     source,
-                    // TO DO: Fix this so it includes preamble.
                     title: preamble.title,
                 },
                 after: blocks.after,

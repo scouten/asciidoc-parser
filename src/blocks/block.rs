@@ -99,7 +99,7 @@ impl<'src> Block<'src> {
         }
 
         // Try to discern the block type by scanning the first line.
-        let line = preamble.source.take_normalized_line();
+        let line = preamble.block_start.take_normalized_line();
 
         if line.item.contains("::") {
             let mut macro_block_maw = MacroBlock::parse(&preamble);

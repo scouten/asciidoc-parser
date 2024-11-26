@@ -267,6 +267,94 @@ mod example {
     }
 
     #[test]
+    fn title() {
+        let maw = Block::parse(Span::new(".block title \n====\nblock1\n\nblock2\n===="));
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec!(
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 3,
+                            col: 1,
+                            offset: 19,
+                        },),
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 27,
+                        },),
+                        title: None
+                    },),
+                ),
+                context: "example",
+                source: TSpan {
+                    data: ".block title \n====\nblock1\n\nblock2\n====",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(TSpan {
+                    data: "block title",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },),
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().as_ref(), "example");
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                },),
+                title: None
+            },)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 5,
+                    col: 1,
+                    offset: 27,
+                },),
+                title: None
+            },)
+        );
+
+        assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: ".block title \n====\nblock1\n\nblock2\n====",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
     fn nested_blocks() {
         let maw = Block::parse(Span::new("====\nblock1\n\n=====\nblock2\n=====\n===="));
 

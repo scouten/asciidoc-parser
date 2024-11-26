@@ -177,6 +177,50 @@ mod comment {
     }
 
     #[test]
+    fn title() {
+        let mi = Block::parse(Span::new(".comment\n////\nline1  \nline2\n////"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        assert_eq!(
+            mi.item,
+            TBlock::RawDelimited(TRawDelimitedBlock {
+                lines: vec!(
+                    TSpan {
+                        data: "line1",
+                        line: 3,
+                        col: 1,
+                        offset: 14,
+                    },
+                    TSpan {
+                        data: "line2",
+                        line: 4,
+                        col: 1,
+                        offset: 22,
+                    }
+                ),
+                content_model: ContentModel::Raw,
+                context: "comment",
+                source: TSpan {
+                    data: ".comment\n////\nline1  \nline2\n////",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(TSpan {
+                    data: "comment",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },)
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Raw);
+        assert_eq!(mi.item.context().as_ref(), "comment");
+    }
+
+    #[test]
     fn multiple_lines() {
         let mi = Block::parse(Span::new("////\nline1  \nline2\n////"))
             .unwrap_if_no_warnings()
@@ -351,6 +395,61 @@ mod listing {
     }
 
     #[test]
+    fn title() {
+        let mi = Block::parse(Span::new(".listing title\n----\nline1  \nline2\n----"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        assert_eq!(
+            mi.item,
+            TBlock::RawDelimited(TRawDelimitedBlock {
+                lines: vec!(
+                    TSpan {
+                        data: "line1",
+                        line: 3,
+                        col: 1,
+                        offset: 20,
+                    },
+                    TSpan {
+                        data: "line2",
+                        line: 4,
+                        col: 1,
+                        offset: 28,
+                    }
+                ),
+                content_model: ContentModel::Verbatim,
+                context: "listing",
+                source: TSpan {
+                    data: ".listing title\n----\nline1  \nline2\n----",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(TSpan {
+                    data: "listing title",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },)
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
+        assert_eq!(mi.item.context().as_ref(), "listing");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: ".listing title\n----\nline1  \nline2\n----",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
     fn ignores_delimiter_prefix() {
         let mi = Block::parse(Span::new("----\nline1  \n----/\nline2\n----"))
             .unwrap_if_no_warnings()
@@ -500,6 +599,61 @@ mod pass {
             mi.item.span(),
             TSpan {
                 data: "++++\nline1  \nline2\n++++",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn title() {
+        let mi = Block::parse(Span::new(".pass title\n++++\nline1  \nline2\n++++"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        assert_eq!(
+            mi.item,
+            TBlock::RawDelimited(TRawDelimitedBlock {
+                lines: vec!(
+                    TSpan {
+                        data: "line1",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },
+                    TSpan {
+                        data: "line2",
+                        line: 4,
+                        col: 1,
+                        offset: 25,
+                    }
+                ),
+                content_model: ContentModel::Raw,
+                context: "pass",
+                source: TSpan {
+                    data: ".pass title\n++++\nline1  \nline2\n++++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(TSpan {
+                    data: "pass title",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },)
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Raw);
+        assert_eq!(mi.item.context().as_ref(), "pass");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: ".pass title\n++++\nline1  \nline2\n++++",
                 line: 1,
                 col: 1,
                 offset: 0,

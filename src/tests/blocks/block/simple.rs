@@ -138,6 +138,67 @@ fn multiple_lines() {
 }
 
 #[test]
+fn title() {
+    let mi = Block::parse(Span::new(".simple block\nabc\ndef\n"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 2,
+                        col: 1,
+                        offset: 14,
+                    }),
+                    TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    }),
+                ],
+                TSpan {
+                    data: "abc\ndef\n",
+                    line: 2,
+                    col: 1,
+                    offset: 14,
+                }
+            ),
+            title: Some(TSpan {
+                data: "simple block",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },)
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".simple block\nabc\ndef",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 4,
+            col: 1,
+            offset: 22
+        }
+    );
+}
+
+#[test]
 fn consumes_blank_lines_after() {
     let mi = Block::parse(Span::new("abc\n\ndef"))
         .unwrap_if_no_warnings()
