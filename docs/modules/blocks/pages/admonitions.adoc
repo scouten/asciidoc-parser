@@ -4,6 +4,10 @@ There are certain statements you may want to draw attention to by taking them ou
 These are called admonitions.
 This page introduces you to admonition types AsciiDoc provides, how to add admonitions to your document, and how to enhance them using icons or emoji.
 
+NOTE: The examples on this page (and in these docs) use a visual theme that differs from the style provided by AsciiDoc processors such as Asciidoctor.
+The AsciiDoc language does not require that the admonitions be rendered using a particular style.
+The only requirement is that they be offset from the main text and labeled appropriately according to their admonition type.
+
 == Admonition types
 
 The rendered style of an admonition is determined by the assigned type (i.e., name).

@@ -4,6 +4,11 @@ This document summarizes the changes introduced to the AsciiDoc Language Documen
 For a detailed view of what's changed, refer to the repository's
 https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
+== Published Q4 2024
+
+Changed::
+* Clarify that a particular admonition style is not mandated by the AsciiDoc language and that they way they appear in the docs may differ from how they appear when rendered using an AsciiDoc processor such as Asciidoctor.
+
 == Published Q3 2024
 
 Added::
