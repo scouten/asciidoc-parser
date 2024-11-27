@@ -102,7 +102,7 @@ impl<'src> Deref for Span<'src> {
 }
 
 // NOTE: The `Span` API is large. Only the public interface is implemented here.
-// The other modules referenced below implement additional APIs that are only
+// The other modules referenced below implement additional APIs that are
 // available inside this crate only.
 
 mod discard;
@@ -112,6 +112,7 @@ mod primitives;
 mod r#slice;
 mod split;
 mod take;
+mod trim;
 
 pub(crate) use matched_item::MatchedItem;
 
