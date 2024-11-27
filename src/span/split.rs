@@ -1,7 +1,7 @@
 use super::{MatchedItem, Span};
 
 impl<'src> Span<'src> {
-    /// Split the current span into a [`ParseResult<Span>`] at the
+    /// Split the current span into a [`MatchedItem<Span>`] at the
     /// given position.
     pub(crate) fn into_parse_result(self, mut at_index: usize) -> MatchedItem<'src, Self> {
         // Avoid panic if `at_index` is out of range.
