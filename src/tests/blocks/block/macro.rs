@@ -301,6 +301,7 @@ fn simplest_block_macro() {
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
     assert_eq!(mi.item.context().deref(), "paragraph");
     assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.after,

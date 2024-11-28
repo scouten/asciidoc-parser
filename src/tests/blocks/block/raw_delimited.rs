@@ -204,6 +204,7 @@ mod comment {
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -248,6 +249,16 @@ mod comment {
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
+
+        assert_eq!(
+            mi.item.title().unwrap(),
+            TSpan {
+                data: "comment",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
     }
 
     #[test]
@@ -287,6 +298,7 @@ mod comment {
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -332,6 +344,7 @@ mod comment {
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
+        assert!(mi.item.title().is_none());
     }
 }
 
@@ -372,6 +385,7 @@ mod listing {
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -412,6 +426,7 @@ mod listing {
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -469,6 +484,16 @@ mod listing {
         assert_eq!(mi.item.nested_blocks().next(), None);
 
         assert_eq!(
+            mi.item.title().unwrap(),
+            TSpan {
+                data: "listing title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
             mi.item.span(),
             TSpan {
                 data: ".listing title\n----\nline1  \nline2\n----",
@@ -523,6 +548,7 @@ mod listing {
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -574,6 +600,7 @@ mod pass {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -624,6 +651,7 @@ mod pass {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -681,6 +709,16 @@ mod pass {
         assert_eq!(mi.item.nested_blocks().next(), None);
 
         assert_eq!(
+            mi.item.title().unwrap(),
+            TSpan {
+                data: "pass title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
             mi.item.span(),
             TSpan {
                 data: ".pass title\n++++\nline1  \nline2\n++++",
@@ -735,6 +773,7 @@ mod pass {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),

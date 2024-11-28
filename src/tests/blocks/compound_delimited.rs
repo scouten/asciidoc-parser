@@ -253,6 +253,7 @@ mod example {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "example");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -310,6 +311,7 @@ mod example {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "example");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -420,6 +422,7 @@ mod example {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "example");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -542,6 +545,7 @@ mod open {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "open");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -599,6 +603,7 @@ mod open {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "open");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -721,6 +726,7 @@ mod open {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "open");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -823,6 +829,7 @@ mod sidebar {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "sidebar");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -880,6 +887,7 @@ mod sidebar {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -990,6 +998,7 @@ mod sidebar {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -1124,6 +1133,7 @@ mod quote {
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "quote");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -1181,6 +1191,7 @@ mod quote {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "quote");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -1291,6 +1302,7 @@ mod quote {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "quote");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(

@@ -50,6 +50,7 @@ fn simplest_section_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -91,6 +92,7 @@ fn has_child_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -148,6 +150,7 @@ fn has_macro_block_with_extra_blank_line() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -285,6 +288,7 @@ fn has_child_block_with_errors() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -434,6 +438,7 @@ fn dont_stop_at_child_section() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -524,6 +529,7 @@ fn stop_at_peer_section() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -582,6 +588,7 @@ fn stop_at_ancestor_section() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,

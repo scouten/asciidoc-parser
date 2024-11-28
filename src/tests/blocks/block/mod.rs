@@ -43,6 +43,7 @@ mod error_cases {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().deref(), "section");
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item,

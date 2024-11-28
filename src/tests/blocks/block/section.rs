@@ -69,6 +69,7 @@ fn simplest_section_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -112,6 +113,7 @@ fn has_child_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -239,6 +241,16 @@ fn title() {
                 offset: 1,
             },),
         })
+    );
+
+    assert_eq!(
+        mi.item.title().unwrap(),
+        TSpan {
+            data: "other section title",
+            line: 1,
+            col: 2,
+            offset: 1,
+        }
     );
 
     let mut nested_blocks = mi.item.nested_blocks();
