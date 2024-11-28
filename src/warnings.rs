@@ -62,7 +62,7 @@ pub(crate) struct MatchAndWarnings<'src, T> {
     pub(crate) warnings: Vec<Warning<'src>>,
 }
 
-impl<'src, T> MatchAndWarnings<'src, T> {
+impl<T> MatchAndWarnings<'_, T> {
     #[cfg(test)]
     #[inline(always)]
     #[track_caller]

@@ -87,7 +87,7 @@ impl<'src> Span<'src> {
     }
 }
 
-impl<'src> AsRef<str> for Span<'src> {
+impl AsRef<str> for Span<'_> {
     fn as_ref(&self) -> &str {
         self.data
     }

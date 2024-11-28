@@ -15,13 +15,13 @@ impl<'src> PartialEq<RawAttributeValue<'src>> for TRawAttributeValue {
     }
 }
 
-impl<'src> PartialEq<TRawAttributeValue> for RawAttributeValue<'src> {
+impl PartialEq<TRawAttributeValue> for RawAttributeValue<'_> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<TRawAttributeValue> for &RawAttributeValue<'src> {
+impl PartialEq<TRawAttributeValue> for &RawAttributeValue<'_> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }

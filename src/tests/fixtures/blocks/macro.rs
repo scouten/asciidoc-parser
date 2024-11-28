@@ -32,7 +32,7 @@ impl<'src> PartialEq<MacroBlock<'src>> for TMacroBlock {
     }
 }
 
-impl<'src> PartialEq<TMacroBlock> for MacroBlock<'src> {
+impl PartialEq<TMacroBlock> for MacroBlock<'_> {
     fn eq(&self, other: &TMacroBlock) -> bool {
         tmacro_block_eq(other, self)
     }

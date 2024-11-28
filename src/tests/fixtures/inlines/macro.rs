@@ -27,7 +27,7 @@ impl<'src> PartialEq<InlineMacro<'src>> for TInlineMacro {
     }
 }
 
-impl<'src> PartialEq<TInlineMacro> for InlineMacro<'src> {
+impl PartialEq<TInlineMacro> for InlineMacro<'_> {
     fn eq(&self, other: &TInlineMacro) -> bool {
         tinline_macro_eq(other, self)
     }
