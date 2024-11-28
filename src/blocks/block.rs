@@ -7,7 +7,7 @@ use crate::{
     },
     span::MatchedItem,
     strings::CowStr,
-    warnings::MatchAndWarnings,
+    warnings::{MatchAndWarnings, Warning, WarningType},
     HasSpan, Span,
 };
 
@@ -56,7 +56,7 @@ impl<'src> Block<'src> {
         source: Span<'src>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let MatchAndWarnings {
-            item: preamble,
+            item: mut preamble,
             mut warnings,
         } = Preamble::parse(source);
 
@@ -142,6 +142,30 @@ impl<'src> Block<'src> {
 
             // A line starting with `=` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
+        }
+
+        // First, let's look for a fun edge case. Perhaps the text contains a preamble
+        // but no block immediately following. If we're not careful, we could spin in a
+        // loop (for example, `parse_blocks_until`) thinking there will be another
+        // block, but there isn't.
+
+        // The following check disables that spin loop.
+        let simple_block_mi = SimpleBlock::parse(&preamble);
+
+        if simple_block_mi.is_none() && !preamble.is_empty() {
+            // We have a preamble with no block. Treat it as a simple block but issue a
+            // warning.
+
+            warnings.push(Warning {
+                source: preamble.source,
+                warning: WarningType::MissingBlockAfterTitleOrAttributeList,
+            });
+
+            // Remove the preamble content so that SimpleBlock will read the title/attrlist
+            // line(s) as regular content.
+            preamble.title = None;
+            preamble.attrlist = None;
+            preamble.block_start = preamble.source;
         }
 
         // If no other block kind matches, we can always use SimpleBlock.

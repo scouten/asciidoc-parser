@@ -18,7 +18,6 @@ pub(crate) struct Preamble<'src> {
 
     /// The source span as understood when the preamble content was first
     /// encountered. Does not necessarily end at the end of the block.
-    #[allow(dead_code)] // TEMPORARY while building
     pub(crate) source: Span<'src>,
 
     /// The source span after reading the optional title and attribute list.
@@ -63,5 +62,10 @@ impl<'src> Preamble<'src> {
             },
             warnings,
         }
+    }
+
+    /// Return `true` if both `title` and `attrlist` are empty.
+    pub(crate) fn is_empty(&self) -> bool {
+        self.title.is_none() && self.attrlist.is_none()
     }
 }
