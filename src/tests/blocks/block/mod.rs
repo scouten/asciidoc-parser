@@ -26,15 +26,16 @@ mod error_cases {
         tests::fixtures::{
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             inlines::TInline,
+            warnings::TWarning,
             TSpan,
         },
-        warnings::MatchAndWarnings,
+        warnings::{MatchAndWarnings, WarningType},
     };
 
     #[test]
     fn missing_block_after_title_line() {
         let MatchAndWarnings { item: mi, warnings } = SectionBlock::parse(&Preamble::new(
-            "=== Section Title\n\nabc\n\n== Section 2\n\ndef",
+            "=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef",
         ))
         .unwrap();
 
@@ -51,24 +52,56 @@ mod error_cases {
                     col: 5,
                     offset: 4,
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
-                    inline: TInline::Uninterpreted(TSpan {
-                        data: "abc",
-                        line: 3,
-                        col: 1,
-                        offset: 19,
+                blocks: vec![
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "abc",
+                            line: 3,
+                            col: 1,
+                            offset: 19,
+                        }),
+                        source: TSpan {
+                            data: "abc\n",
+                            line: 3,
+                            col: 1,
+                            offset: 19,
+                        },
+                        title: None
                     }),
-                    source: TSpan {
-                        data: "abc\n",
-                        line: 3,
-                        col: 1,
-                        offset: 19,
-                    },
-                    title: None
-                })],
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: ".ancestor section== Section 2",
+                            line: 5,
+                            col: 1,
+                            offset: 24,
+                        },),
+                        source: TSpan {
+                            data: ".ancestor section== Section 2\n",
+                            line: 5,
+                            col: 1,
+                            offset: 24,
+                        },
+                        title: None,
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "def",
+                            line: 7,
+                            col: 1,
+                            offset: 55,
+                        },),
+                        source: TSpan {
+                            data: "def",
+                            line: 7,
+                            col: 1,
+                            offset: 55,
+                        },
+                        title: None,
+                    },),
+                ],
                 source: TSpan {
                     // TO DO: Fix bug that includes blank lines.
-                    data: "=== Section Title\n\nabc\n\n",
+                    data: "=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -80,14 +113,24 @@ mod error_cases {
         assert_eq!(
             mi.after,
             TSpan {
-                data: "== Section 2\n\ndef",
-                line: 5,
-                col: 1,
-                offset: 24
+                data: "",
+                line: 7,
+                col: 4,
+                offset: 58
             }
         );
 
-        dbg!(&warnings);
-        assert!(warnings.is_empty());
+        assert_eq!(
+            warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: ".ancestor section== Section 2\n\ndef",
+                    line: 5,
+                    col: 1,
+                    offset: 24,
+                },
+                warning: WarningType::MissingBlockAfterTitleOrAttributeList,
+            },]
+        );
     }
 }
