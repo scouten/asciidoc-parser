@@ -22,7 +22,8 @@ mod error_cases {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, ContentModel, IsBlock, SectionBlock},
+        blocks::{preamble::Preamble, Block, ContentModel, IsBlock, SectionBlock},
+        span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             inlines::TInline,
@@ -30,6 +31,7 @@ mod error_cases {
             TSpan,
         },
         warnings::{MatchAndWarnings, WarningType},
+        Span,
     };
 
     #[test]
@@ -131,6 +133,60 @@ mod error_cases {
                 },
                 warning: WarningType::MissingBlockAfterTitleOrAttributeList,
             },]
+        );
+    }
+
+    #[test]
+    #[allow(non_snake_case)]
+    fn TEMP_not_title() {
+        // IMPORTANT: This test will fail once we implement support for list items.
+        let mi = Block::parse(Span::new(". abc\ndef"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        assert_eq!(
+            mi.item,
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec![
+                        TInline::Uninterpreted(TSpan {
+                            data: ". abc",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },),
+                        TInline::Uninterpreted(TSpan {
+                            data: "def",
+                            line: 2,
+                            col: 1,
+                            offset: 6,
+                        },),
+                    ],
+                    TSpan {
+                        data: ". abc\ndef",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                ),
+                source: TSpan {
+                    data: ". abc\ndef",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None
+            })
+        );
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: ". abc\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
         );
     }
 }
