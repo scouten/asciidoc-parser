@@ -7,7 +7,6 @@ use crate::{
 /// A preamble represents the common elements that can precede any block type
 /// (title and attribute list). It is used internally to track those values
 /// before the specific block type is fully formed.
-#[derive(Debug)]
 pub(crate) struct Preamble<'src> {
     /// The block's title, if any.
     pub(crate) title: Option<Span<'src>>,
