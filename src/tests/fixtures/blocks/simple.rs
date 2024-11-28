@@ -17,7 +17,7 @@ impl<'src> PartialEq<SimpleBlock<'src>> for TSimpleBlock {
     }
 }
 
-impl<'src> PartialEq<TSimpleBlock> for SimpleBlock<'src> {
+impl PartialEq<TSimpleBlock> for SimpleBlock<'_> {
     fn eq(&self, other: &TSimpleBlock) -> bool {
         tsimple_block_eq(other, self)
     }

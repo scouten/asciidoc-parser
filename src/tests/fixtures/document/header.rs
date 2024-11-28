@@ -29,13 +29,13 @@ impl<'src> PartialEq<Header<'src>> for THeader {
     }
 }
 
-impl<'src> PartialEq<THeader> for Header<'src> {
+impl PartialEq<THeader> for Header<'_> {
     fn eq(&self, other: &THeader) -> bool {
         theader_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<THeader> for &Header<'src> {
+impl PartialEq<THeader> for &Header<'_> {
     fn eq(&self, other: &THeader) -> bool {
         theader_eq(other, self)
     }

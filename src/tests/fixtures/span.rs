@@ -27,13 +27,13 @@ impl<'src> PartialEq<Span<'src>> for TSpan {
     }
 }
 
-impl<'src> PartialEq<TSpan> for Span<'src> {
+impl PartialEq<TSpan> for Span<'_> {
     fn eq(&self, other: &TSpan) -> bool {
         tspan_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<TSpan> for &Span<'src> {
+impl PartialEq<TSpan> for &Span<'_> {
     fn eq(&self, other: &TSpan) -> bool {
         tspan_eq(other, self)
     }

@@ -33,13 +33,13 @@ impl<'src> PartialEq<Document<'src>> for TDocument {
     }
 }
 
-impl<'src> PartialEq<TDocument> for Document<'src> {
+impl PartialEq<TDocument> for Document<'_> {
     fn eq(&self, other: &TDocument) -> bool {
         tdocument_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<TDocument> for &Document<'src> {
+impl PartialEq<TDocument> for &Document<'_> {
     fn eq(&self, other: &TDocument) -> bool {
         tdocument_eq(other, self)
     }

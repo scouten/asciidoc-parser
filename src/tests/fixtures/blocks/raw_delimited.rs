@@ -31,7 +31,7 @@ impl<'src> PartialEq<RawDelimitedBlock<'src>> for TRawDelimitedBlock {
     }
 }
 
-impl<'src> PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'src> {
+impl PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'_> {
     fn eq(&self, other: &TRawDelimitedBlock) -> bool {
         traw_delimited_block_eq(other, self)
     }

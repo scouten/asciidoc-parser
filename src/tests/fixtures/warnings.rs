@@ -26,13 +26,13 @@ impl<'src> PartialEq<Warning<'src>> for TWarning {
     }
 }
 
-impl<'src> PartialEq<TWarning> for Warning<'src> {
+impl PartialEq<TWarning> for Warning<'_> {
     fn eq(&self, other: &TWarning) -> bool {
         twarning_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<TWarning> for &Warning<'src> {
+impl PartialEq<TWarning> for &Warning<'_> {
     fn eq(&self, other: &TWarning) -> bool {
         twarning_eq(other, self)
     }

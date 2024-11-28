@@ -15,13 +15,13 @@ impl<'src> PartialEq<AttributeValue<'src>> for TAttributeValue {
     }
 }
 
-impl<'src> PartialEq<TAttributeValue> for AttributeValue<'src> {
+impl PartialEq<TAttributeValue> for AttributeValue<'_> {
     fn eq(&self, other: &TAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<TAttributeValue> for &AttributeValue<'src> {
+impl PartialEq<TAttributeValue> for &AttributeValue<'_> {
     fn eq(&self, other: &TAttributeValue) -> bool {
         tattribute_value_eq(other, self)
     }

@@ -31,7 +31,7 @@ impl<'src> PartialEq<SectionBlock<'src>> for TSectionBlock {
     }
 }
 
-impl<'src> PartialEq<TSectionBlock> for SectionBlock<'src> {
+impl PartialEq<TSectionBlock> for SectionBlock<'_> {
     fn eq(&self, other: &TSectionBlock) -> bool {
         tsection_block_eq(other, self)
     }
