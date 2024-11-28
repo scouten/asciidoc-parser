@@ -22,6 +22,7 @@ impl fmt::Debug for TRawDelimitedBlock {
             .field("content_model", &self.content_model)
             .field("context", &self.context)
             .field("source", &self.source)
+            .field("title", &self.title)
             .finish()
     }
 }

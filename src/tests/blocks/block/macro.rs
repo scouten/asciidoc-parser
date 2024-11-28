@@ -48,6 +48,12 @@ fn err_inline_syntax() {
                     offset: 0,
                 },
             }),
+            source: TSpan {
+                data: "foo:bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         }),
     );
@@ -88,6 +94,12 @@ fn err_no_attr_list() {
                 col: 1,
                 offset: 0,
             }),
+            source: TSpan {
+                data: "foo::bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         }),
     );
@@ -128,6 +140,12 @@ fn err_attr_list_not_closed() {
                 col: 1,
                 offset: 0,
             }),
+            source: TSpan {
+                data: "foo::bar[blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         })
     );
@@ -204,6 +222,12 @@ fn err_unexpected_after_attr_list() {
                     offset: 0,
                 }
             ),
+            source: TSpan {
+                data: "foo::bar[blah]bonus",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         })
     );

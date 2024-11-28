@@ -28,6 +28,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "===",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -45,6 +51,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "====x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -62,6 +74,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "****x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -79,6 +97,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "____x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -115,6 +139,12 @@ mod parse {
                         offset: 0,
                     }
                 ),
+                source: TSpan {
+                    data: "====\nblah blah blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -200,6 +230,12 @@ mod example {
                             col: 1,
                             offset: 5,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
                         title: None
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -209,6 +245,12 @@ mod example {
                             col: 1,
                             offset: 13,
                         },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
                         title: None
                     },),
                 ),
@@ -236,6 +278,12 @@ mod example {
                     col: 1,
                     offset: 5,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
                 title: None
             },)
         );
@@ -249,6 +297,12 @@ mod example {
                     col: 1,
                     offset: 13,
                 },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
                 title: None
             },)
         );
@@ -283,6 +337,12 @@ mod example {
                             col: 1,
                             offset: 19,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 3,
+                            col: 1,
+                            offset: 19,
+                        },
                         title: None
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -292,6 +352,12 @@ mod example {
                             col: 1,
                             offset: 27,
                         },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 5,
+                            col: 1,
+                            offset: 27,
+                        },
                         title: None
                     },),
                 ),
@@ -324,6 +390,12 @@ mod example {
                     col: 1,
                     offset: 19,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                },
                 title: None
             },)
         );
@@ -337,6 +409,12 @@ mod example {
                     col: 1,
                     offset: 27,
                 },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 5,
+                    col: 1,
+                    offset: 27,
+                },
                 title: None
             },)
         );
@@ -371,6 +449,12 @@ mod example {
                             col: 1,
                             offset: 5,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
                         title: None
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
@@ -381,6 +465,12 @@ mod example {
                                 col: 1,
                                 offset: 19,
                             },),
+                            source: TSpan {
+                                data: "block2\n",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
                             title: None
                         },)),
                         context: "example",
@@ -417,6 +507,12 @@ mod example {
                     col: 1,
                     offset: 5,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
                 title: None
             },)
         );
@@ -431,6 +527,12 @@ mod example {
                         col: 1,
                         offset: 19,
                     },),
+                    source: TSpan {
+                        data: "block2\n",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
                     title: None
                 },),),
                 context: "example",
@@ -524,6 +626,12 @@ mod open {
                             col: 1,
                             offset: 3,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },
                         title: None
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -533,6 +641,12 @@ mod open {
                             col: 1,
                             offset: 11,
                         },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
                         title: None
                     },),
                 ),
@@ -560,6 +674,12 @@ mod open {
                     col: 1,
                     offset: 3,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },
                 title: None
             },)
         );
@@ -573,6 +693,12 @@ mod open {
                     col: 1,
                     offset: 11,
                 },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },
                 title: None
             },)
         );
@@ -607,6 +733,12 @@ mod open {
                             col: 1,
                             offset: 3,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },
                         title: None
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -638,6 +770,12 @@ mod open {
                                 offset: 11,
                             },
                         ),
+                        source: TSpan {
+                            data: "---\nblock2\n---\n",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
                         title: None
                     },)
                 ),
@@ -665,6 +803,12 @@ mod open {
                     col: 1,
                     offset: 3,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },
                 title: None
             },)
         );
@@ -700,6 +844,12 @@ mod open {
                         offset: 11,
                     },
                 ),
+                source: TSpan {
+                    data: "---\nblock2\n---\n",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },
                 title: None
             })
         );
@@ -784,6 +934,12 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
                         title: None
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -793,6 +949,12 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
                         title: None
                     },),
                 ),
@@ -820,6 +982,12 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
                 title: None
             },)
         );
@@ -833,6 +1001,12 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
                 title: None
             },)
         );
@@ -867,6 +1041,12 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
                         title: None
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
@@ -877,6 +1057,12 @@ mod sidebar {
                                 col: 1,
                                 offset: 19,
                             },),
+                            source: TSpan {
+                                data: "block2\n",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
                             title: None
                         },)),
                         context: "sidebar",
@@ -913,6 +1099,12 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
                 title: None
             },)
         );
@@ -927,6 +1119,12 @@ mod sidebar {
                         col: 1,
                         offset: 19,
                     },),
+                    source: TSpan {
+                        data: "block2\n",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
                     title: None
                 },),),
                 context: "sidebar",
@@ -1020,6 +1218,12 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
                         title: None
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -1029,6 +1233,12 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
                         title: None
                     },),
                 ),
@@ -1056,6 +1266,12 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
                 title: None
             },)
         );
@@ -1069,6 +1285,12 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
                 title: None
             },)
         );
@@ -1103,6 +1325,12 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
                         title: None
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
@@ -1113,6 +1341,12 @@ mod quote {
                                 col: 1,
                                 offset: 19,
                             },),
+                            source: TSpan {
+                                data: "block2\n",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
                             title: None
                         },),),
                         context: "quote",
@@ -1149,6 +1383,12 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
                 title: None
             },)
         );
@@ -1163,6 +1403,12 @@ mod quote {
                         col: 1,
                         offset: 19,
                     },),
+                    source: TSpan {
+                        data: "block2\n",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
                     title: None
                 },),),
                 context: "quote",

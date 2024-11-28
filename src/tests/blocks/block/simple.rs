@@ -52,6 +52,12 @@ fn single_line() {
                 col: 1,
                 offset: 0,
             }),
+            source: TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         })
     );
@@ -112,6 +118,12 @@ fn multiple_lines() {
                     offset: 0,
                 }
             ),
+            source: TSpan {
+                data: "abc\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         })
     );
@@ -168,6 +180,12 @@ fn title() {
                     offset: 14,
                 }
             ),
+            source: TSpan {
+                data: ".simple block\nabc\ndef\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: Some(TSpan {
                 data: "simple block",
                 line: 1,
@@ -180,7 +198,7 @@ fn title() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: ".simple block\nabc\ndef",
+            data: ".simple block\nabc\ndef\n",
             line: 1,
             col: 1,
             offset: 0,
@@ -213,6 +231,12 @@ fn consumes_blank_lines_after() {
                 col: 1,
                 offset: 0,
             }),
+            source: TSpan {
+                data: "abc\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         })
     );
@@ -220,7 +244,7 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "abc",
+            data: "abc\n",
             line: 1,
             col: 1,
             offset: 0,

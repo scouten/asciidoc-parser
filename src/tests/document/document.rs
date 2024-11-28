@@ -111,6 +111,12 @@ fn one_simple_block() {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })],
             warnings: vec![],
@@ -147,6 +153,12 @@ fn two_simple_blocks() {
                         col: 1,
                         offset: 0,
                     }),
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
                     title: None
                 }),
                 TBlock::Simple(TSimpleBlock {
@@ -156,6 +168,12 @@ fn two_simple_blocks() {
                         col: 1,
                         offset: 5,
                     }),
+                    source: TSpan {
+                        data: "def",
+                        line: 3,
+                        col: 1,
+                        offset: 5,
+                    },
                     title: None
                 })
             ],
@@ -192,6 +210,12 @@ fn two_blocks_and_title() {
                         col: 1,
                         offset: 17,
                     }),
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },
                     title: None
                 }),
                 TBlock::Simple(TSimpleBlock {
@@ -201,6 +225,12 @@ fn two_blocks_and_title() {
                         col: 1,
                         offset: 22,
                     }),
+                    source: TSpan {
+                        data: "def",
+                        line: 5,
+                        col: 1,
+                        offset: 22,
+                    },
                     title: None
                 })
             ],
@@ -242,6 +272,12 @@ fn extra_space_before_title() {
                     col: 1,
                     offset: 19,
                 }),
+                source: TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                },
                 title: None
             })],
             source: TSpan {
@@ -282,6 +318,12 @@ fn err_bad_header() {
                     col: 1,
                     offset: 8,
                 }),
+                source: TSpan {
+                    data: "not an attribute\n",
+                    line: 2,
+                    col: 1,
+                    offset: 8,
+                },
                 title: None
             })],
             source: TSpan {
@@ -330,7 +372,14 @@ fn err_bad_header_and_bad_macro() {
                     col: 1,
                     offset: 8,
                 }
-            ), title: None }),
+            ),
+            source: TSpan {
+                data: "not an attribute\n",
+                line: 2,
+                col: 1,
+                offset: 8,
+            },
+            title: None }),
             TBlock::Section(
                 TSectionBlock {
                     level: 1,

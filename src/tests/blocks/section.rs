@@ -109,6 +109,12 @@ fn has_child_block() {
                     col: 1,
                     offset: 18,
                 }),
+                source: TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
                 title: None
             })],
             source: TSpan {
@@ -447,6 +453,12 @@ fn dont_stop_at_child_section() {
                         col: 1,
                         offset: 18,
                     }),
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
                     title: None
                 }),
                 TBlock::Section(TSectionBlock {
@@ -464,6 +476,12 @@ fn dont_stop_at_child_section() {
                             col: 1,
                             offset: 38,
                         }),
+                        source: TSpan {
+                            data: "def",
+                            line: 7,
+                            col: 1,
+                            offset: 38,
+                        },
                         title: None
                     })],
                     source: TSpan {
@@ -524,6 +542,12 @@ fn stop_at_peer_section() {
                     col: 1,
                     offset: 18,
                 }),
+                source: TSpan {
+                    data: "abc\n",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
                 title: None
             })],
             source: TSpan {
@@ -576,6 +600,12 @@ fn stop_at_ancestor_section() {
                     col: 1,
                     offset: 19,
                 }),
+                source: TSpan {
+                    data: "abc\n",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                },
                 title: None
             })],
             source: TSpan {

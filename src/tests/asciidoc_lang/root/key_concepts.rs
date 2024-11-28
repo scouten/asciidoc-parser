@@ -298,7 +298,13 @@ mod macros {
                                     offset: 0,
                                 },
                             ),
-                        title: None },
+                            source: TSpan {
+                                data: "Click the button with the image:star.png[Star] to favorite the project.\n",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            title: None },
                     ),
                 ],
                 source: TSpan {

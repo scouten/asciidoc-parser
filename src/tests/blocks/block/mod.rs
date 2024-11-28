@@ -58,6 +58,12 @@ mod error_cases {
                         col: 1,
                         offset: 19,
                     }),
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 3,
+                        col: 1,
+                        offset: 19,
+                    },
                     title: None
                 })],
                 source: TSpan {

@@ -30,6 +30,12 @@ fn err_missing_space_before_title() {
                 col: 1,
                 offset: 0,
             }),
+            source: TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             title: None
         })
     );
@@ -124,6 +130,12 @@ fn has_child_block() {
                     col: 1,
                     offset: 18,
                 }),
+                source: TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
                 title: None
             })],
             source: TSpan {
@@ -147,6 +159,12 @@ fn has_child_block() {
                 col: 1,
                 offset: 18,
             }),
+            source: TSpan {
+                data: "abc",
+                line: 3,
+                col: 1,
+                offset: 18,
+            },
             title: None
         })
     );
@@ -200,6 +218,12 @@ fn title() {
                     col: 1,
                     offset: 39,
                 }),
+                source: TSpan {
+                    data: "abc",
+                    line: 4,
+                    col: 1,
+                    offset: 39,
+                },
                 title: None
             })],
             source: TSpan {
@@ -228,6 +252,12 @@ fn title() {
                 col: 1,
                 offset: 39,
             }),
+            source: TSpan {
+                data: "abc",
+                line: 4,
+                col: 1,
+                offset: 39,
+            },
             title: None
         })
     );

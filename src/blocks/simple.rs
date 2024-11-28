@@ -19,13 +19,10 @@ impl<'src> SimpleBlock<'src> {
     pub(crate) fn parse(preamble: &Preamble<'src>) -> Option<MatchedItem<'src, Self>> {
         let inline = Inline::parse_lines(preamble.block_start)?;
 
-        let source: Span = preamble.source.trim_remainder(inline.after);
-        let source = source.slice(0..source.trim().len());
-
         Some(MatchedItem {
             item: Self {
                 inline: inline.item,
-                source,
+                source: preamble.source.trim_remainder(inline.after),
                 title: preamble.title,
             },
             after: inline.after.discard_empty_lines(),

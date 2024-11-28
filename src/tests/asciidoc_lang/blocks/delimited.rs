@@ -185,6 +185,12 @@ fn linewise_delimiters() {
                         offset: 5,
                     },
                 ),
+                source: TSpan {
+                    data: "This is an example of an example block.\nThat's so meta.\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
                 title: None
             },),],
             context: "example",
@@ -432,6 +438,12 @@ fn nesting_blocks() {
                                     offset: 5,
                                 },
                             ),
+                            source: TSpan {
+                                data: "Here's a sample AsciiDoc document:\n",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
                             title: None,
                         },
                     ),
@@ -484,6 +496,12 @@ fn nesting_blocks() {
                                     offset: 101,
                                 },
                             ),
+                            source: TSpan {
+                                data: "The document header is useful, but not required.\n",
+                                line: 11,
+                                col: 1,
+                                offset: 101,
+                            },
                             title: None,
                         },
                     ),

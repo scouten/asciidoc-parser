@@ -32,6 +32,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "...",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -49,6 +55,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "++++x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -66,6 +78,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "____x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -83,6 +101,12 @@ mod parse {
                     col: 1,
                     offset: 0,
                 }),
+                source: TSpan {
+                    data: "====x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );
@@ -119,6 +143,12 @@ mod parse {
                         offset: 0,
                     }
                 ),
+                source: TSpan {
+                    data: "....\nblah blah blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 title: None
             })
         );

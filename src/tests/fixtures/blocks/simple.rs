@@ -2,12 +2,14 @@ use std::fmt;
 
 use crate::{
     blocks::{IsBlock, SimpleBlock},
+    span::HasSpan,
     tests::fixtures::{inlines::TInline, TSpan},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TSimpleBlock {
     pub inline: TInline,
+    pub source: TSpan,
     pub title: Option<TSpan>,
 }
 
@@ -15,6 +17,7 @@ impl fmt::Debug for TSimpleBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SimpleBlock")
             .field("inline", &self.inline)
+            .field("source", &self.source)
             .field("title", &self.title)
             .finish()
     }
@@ -45,5 +48,5 @@ fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) ->
         }
     }
 
-    &tsimple_block.inline == simple_block.inline()
+    &tsimple_block.source == simple_block.span() && &tsimple_block.inline == simple_block.inline()
 }
