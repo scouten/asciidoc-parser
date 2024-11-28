@@ -30,6 +30,7 @@ fn empty_source() {
 
     assert_eq!(doc.content_model(), ContentModel::Compound);
     assert_eq!(doc.context().deref(), "document");
+    assert!(doc.title().is_none());
 
     assert_eq!(
         doc,
