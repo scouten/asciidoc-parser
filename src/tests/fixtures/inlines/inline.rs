@@ -16,7 +16,7 @@ impl<'src> PartialEq<Inline<'src>> for TInline {
     }
 }
 
-impl<'src> PartialEq<TInline> for Inline<'src> {
+impl PartialEq<TInline> for Inline<'_> {
     fn eq(&self, other: &TInline) -> bool {
         tinline_eq(other, self)
     }

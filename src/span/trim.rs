@@ -1,6 +1,6 @@
 use super::Span;
 
-impl<'src> Span<'src> {
+impl Span<'_> {
     /// Return a [`Span`] that is the same as the source, but with any trailing
     /// whitespace removed.
     #[allow(dead_code)] // TEMPORARY until used

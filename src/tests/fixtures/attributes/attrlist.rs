@@ -27,13 +27,13 @@ impl<'src> PartialEq<Attrlist<'src>> for TAttrlist {
     }
 }
 
-impl<'src> PartialEq<TAttrlist> for Attrlist<'src> {
+impl PartialEq<TAttrlist> for Attrlist<'_> {
     fn eq(&self, other: &TAttrlist) -> bool {
         tattrlist_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<TAttrlist> for &Attrlist<'src> {
+impl PartialEq<TAttrlist> for &Attrlist<'_> {
     fn eq(&self, other: &TAttrlist) -> bool {
         tattrlist_eq(other, self)
     }

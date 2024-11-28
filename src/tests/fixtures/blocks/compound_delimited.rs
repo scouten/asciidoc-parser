@@ -29,7 +29,7 @@ impl<'src> PartialEq<CompoundDelimitedBlock<'src>> for TCompoundDelimitedBlock {
     }
 }
 
-impl<'src> PartialEq<TCompoundDelimitedBlock> for CompoundDelimitedBlock<'src> {
+impl PartialEq<TCompoundDelimitedBlock> for CompoundDelimitedBlock<'_> {
     fn eq(&self, other: &TCompoundDelimitedBlock) -> bool {
         tcompound_delimited_block_eq(other, self)
     }

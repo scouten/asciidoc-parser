@@ -27,13 +27,13 @@ impl<'src> PartialEq<ElementAttribute<'src>> for TElementAttribute {
     }
 }
 
-impl<'src> PartialEq<TElementAttribute> for ElementAttribute<'src> {
+impl PartialEq<TElementAttribute> for ElementAttribute<'_> {
     fn eq(&self, other: &TElementAttribute) -> bool {
         tattribute_eq(other, self)
     }
 }
 
-impl<'src> PartialEq<TElementAttribute> for &ElementAttribute<'src> {
+impl PartialEq<TElementAttribute> for &ElementAttribute<'_> {
     fn eq(&self, other: &TElementAttribute) -> bool {
         tattribute_eq(other, self)
     }

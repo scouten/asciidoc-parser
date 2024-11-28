@@ -1,6 +1,6 @@
 use super::Span;
 
-impl<'src> Span<'src> {
+impl Span<'_> {
     /// Return a new span, discarding the first `n` characters in the input
     /// span.
     pub(crate) fn discard(self, n: usize) -> Self {
