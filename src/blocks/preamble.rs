@@ -36,6 +36,19 @@ impl<'src> Preamble<'src> {
         let warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
+        // Optimization: If this doesn't start with `.` or `#`, the preamble is empty and we can avoid the cost of `take_normalized_line` below.
+        if !(source.starts_with('.') || source.starts_with('#')) {
+            return MatchAndWarnings {
+                item: Self {
+                    title: None,
+                    attrlist: None,
+                    source: source.slice(0..0),
+                    block_start: source,
+                },
+                warnings,
+            };
+        }
+
         // Does this block have a title?
         let maybe_title = source.take_normalized_line();
         let (title, block_start) =
