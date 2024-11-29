@@ -1,8 +1,12 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    inlines::InlineMacro,
-    tests::fixtures::{inlines::TInlineMacro, TSpan},
+    inlines::{Inline, InlineMacro},
+    span::HasSpan,
+    tests::fixtures::{
+        inlines::{TInline, TInlineMacro},
+        TSpan,
+    },
     Span,
 };
 
@@ -40,7 +44,7 @@ fn err_attr_list_not_closed() {
 }
 
 #[test]
-fn simplest_block_macro() {
+fn simplest_inline_macro() {
     let mi = InlineMacro::parse(Span::new("foo:[]")).unwrap();
 
     assert_eq!(
@@ -70,6 +74,51 @@ fn simplest_block_macro() {
             line: 1,
             col: 7,
             offset: 6
+        }
+    );
+}
+
+#[test]
+fn simplest_inline_macro_via_inline_parse() {
+    let mi = Inline::parse(Span::new("foo:[]")).unwrap();
+
+    assert_eq!(
+        mi.item,
+        TInline::Macro(TInlineMacro {
+            name: TSpan {
+                data: "foo",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            target: None,
+            attrlist: None,
+            source: TSpan {
+                data: "foo:[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        })
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 7,
+            offset: 6
+        }
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: "foo:[]",
+            line: 1,
+            col: 1,
+            offset: 0,
         }
     );
 }
