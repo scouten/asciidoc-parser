@@ -7,6 +7,7 @@ use crate::{
 /// A preamble represents the common elements that can precede any block type
 /// (title and attribute list). It is used internally to track those values
 /// before the specific block type is fully formed.
+#[derive(Debug)]
 pub(crate) struct Preamble<'src> {
     /// The block's title, if any.
     pub(crate) title: Option<Span<'src>>,
@@ -36,13 +37,14 @@ impl<'src> Preamble<'src> {
         let warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
-        // Optimization: If this doesn't start with `.` or `#`, the preamble is empty and we can avoid the cost of `take_normalized_line` below.
+        // Optimization: If this doesn't start with `.` or `#`, the preamble is empty
+        // and we can avoid the cost of `take_normalized_line` below.
         if !(source.starts_with('.') || source.starts_with('#')) {
             return MatchAndWarnings {
                 item: Self {
                     title: None,
                     attrlist: None,
-                    source: source.slice(0..0),
+                    source,
                     block_start: source,
                 },
                 warnings,
