@@ -29,6 +29,20 @@ impl<'src> SimpleBlock<'src> {
         })
     }
 
+    pub(crate) fn parse_fast(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+        let inline = Inline::parse_lines(source)?;
+        let source = source.trim_remainder(inline.after);
+
+        Some(MatchedItem {
+            item: Self {
+                inline: inline.item,
+                source,
+                title: None,
+            },
+            after: inline.after.discard_empty_lines(),
+        })
+    }
+
     /// Return the inline content of this block.
     pub fn inline(&self) -> &Inline<'src> {
         &self.inline

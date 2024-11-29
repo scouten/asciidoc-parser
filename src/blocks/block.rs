@@ -55,6 +55,33 @@ impl<'src> Block<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
+        // Optimization: See if we can take the very simplest case right away. This is a
+        // simple block with no special markup with no title or attrlist. If the
+        // simplest case can't be quickly and correctly determined, fall through to the
+        // more accurate/complex logic.
+        if let Some(first_char) = source.chars().next() {
+            if !matches!(first_char, '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_') {
+                let first_line = source.take_line();
+                if !first_line.item.contains("::") {
+                    if let Some(MatchedItem {
+                        item: simple_block,
+                        after,
+                    }) = SimpleBlock::parse_fast(source)
+                    {
+                        return MatchAndWarnings {
+                            item: Some(MatchedItem {
+                                item: Self::Simple(simple_block),
+                                after,
+                            }),
+                            warnings: vec![],
+                        };
+                    }
+                }
+            }
+        }
+
+        // Optimization not possible; start by looking for a preamble (title and/or
+        // attrlist).
         let MatchAndWarnings {
             item: mut preamble,
             mut warnings,
