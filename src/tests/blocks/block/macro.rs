@@ -54,7 +54,8 @@ fn err_inline_syntax() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }),
     );
 
@@ -100,7 +101,8 @@ fn err_no_attr_list() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }),
     );
 
@@ -146,7 +148,8 @@ fn err_attr_list_not_closed() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -228,7 +231,8 @@ fn err_unexpected_after_attr_list() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -285,6 +289,7 @@ fn simplest_block_macro() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         })
     );
 
@@ -302,6 +307,7 @@ fn simplest_block_macro() {
     assert_eq!(mi.item.context().deref(), "paragraph");
     assert_eq!(mi.item.nested_blocks().next(), None);
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.after,
@@ -350,7 +356,8 @@ fn has_target() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -432,6 +439,7 @@ fn has_target_and_macro_attrlist() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         })
     );
 
@@ -557,6 +565,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         })
     );
 
@@ -634,7 +643,8 @@ fn has_title() {
                 line: 1,
                 col: 2,
                 offset: 1,
-            },)
+            },),
+            attrlist: None,
         })
     );
 

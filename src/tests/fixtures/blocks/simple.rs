@@ -3,7 +3,7 @@ use std::fmt;
 use crate::{
     blocks::{IsBlock, SimpleBlock},
     span::HasSpan,
-    tests::fixtures::{inlines::TInline, TSpan},
+    tests::fixtures::{attributes::TAttrlist, inlines::TInline, TSpan},
 };
 
 #[derive(Eq, PartialEq)]
@@ -11,6 +11,7 @@ pub(crate) struct TSimpleBlock {
     pub inline: TInline,
     pub source: TSpan,
     pub title: Option<TSpan>,
+    pub attrlist: Option<TAttrlist>,
 }
 
 impl fmt::Debug for TSimpleBlock {
@@ -19,6 +20,7 @@ impl fmt::Debug for TSimpleBlock {
             .field("inline", &self.inline)
             .field("source", &self.source)
             .field("title", &self.title)
+            .field("attrlist", &self.attrlist)
             .finish()
     }
 }
@@ -43,6 +45,18 @@ fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) ->
     if let Some(ref tsb_title) = tsimple_block.title {
         if let Some(ref sb_title) = simple_block.title() {
             if tsb_title != sb_title {
+                return false;
+            }
+        }
+    }
+
+    if tsimple_block.attrlist.is_some() != simple_block.attrlist().is_some() {
+        return false;
+    }
+
+    if let Some(ref tsb_attrlist) = tsimple_block.attrlist {
+        if let Some(ref sb_attrlist) = simple_block.attrlist() {
+            if &tsb_attrlist != sb_attrlist {
                 return false;
             }
         }

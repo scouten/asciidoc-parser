@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{
     blocks::{CompoundDelimitedBlock, IsBlock},
-    tests::fixtures::{blocks::TBlock, TSpan},
+    tests::fixtures::{attributes::TAttrlist, blocks::TBlock, TSpan},
     HasSpan,
 };
 
@@ -12,6 +12,7 @@ pub(crate) struct TCompoundDelimitedBlock {
     pub context: &'static str,
     pub source: TSpan,
     pub title: Option<TSpan>,
+    pub attrlist: Option<TAttrlist>,
 }
 
 impl fmt::Debug for TCompoundDelimitedBlock {
@@ -21,6 +22,7 @@ impl fmt::Debug for TCompoundDelimitedBlock {
             .field("context", &self.context)
             .field("source", &self.source)
             .field("title", &self.title)
+            .field("attrlist", &self.attrlist)
             .finish()
     }
 }
@@ -66,6 +68,19 @@ fn tcompound_delimited_block_eq(
     if let Some(ref tcdb_title) = tcompound_delimited_block.title {
         if let Some(ref cdb_title) = compound_delimited_block.title() {
             if tcdb_title != cdb_title {
+                return false;
+            }
+        }
+    }
+
+    if tcompound_delimited_block.attrlist.is_some() != compound_delimited_block.attrlist().is_some()
+    {
+        return false;
+    }
+
+    if let Some(ref tcdb_attrlist) = tcompound_delimited_block.attrlist {
+        if let Some(ref cdb_attrlist) = compound_delimited_block.attrlist() {
+            if &tcdb_attrlist != cdb_attrlist {
                 return false;
             }
         }

@@ -71,7 +71,8 @@ mod documents {
                         col: 1,
                         offset: 0,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 })],
                 warnings: vec![],
             }
@@ -132,6 +133,7 @@ mod documents {
                             offset: 0,
                         },
                         title: None,
+                        attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -147,6 +149,7 @@ mod documents {
                             offset: 36,
                         },
                         title: None,
+                        attrlist: None,
                     })],
                 warnings: vec![],
             }
@@ -229,6 +232,7 @@ mod documents {
                             offset: 33,
                         },
                         title: None,
+                        attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Sequence(vec![
@@ -257,6 +261,7 @@ mod documents {
                             offset: 81,
                         },
                         title: None,
+                        attrlist: None,
                     })
                 ],
                 source: TSpan {

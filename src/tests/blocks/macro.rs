@@ -129,6 +129,7 @@ fn simplest_block_macro() {
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
     assert_eq!(mi.item.context().deref(), "paragraph");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -155,7 +156,8 @@ fn simplest_block_macro() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -206,7 +208,8 @@ fn has_target() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -277,7 +280,8 @@ fn has_target_and_attrlist() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -366,7 +370,8 @@ fn err_duplicate_comma() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 

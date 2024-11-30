@@ -52,8 +52,11 @@ mod attrlist {
 
     use crate::{
         attributes::Attrlist,
+        blocks::Block,
         tests::fixtures::{
             attributes::{TAttrlist, TElementAttribute},
+            blocks::{TBlock, TMacroBlock, TSimpleBlock},
+            inlines::TInline,
             TSpan,
         },
         HasSpan, Span,
@@ -253,7 +256,6 @@ mod attrlist {
         );
     }
 
-    #[ignore]
     #[test]
     fn block_attrlist() {
         // For *block elements*, the attribute list is placed inside one or more
@@ -271,13 +273,110 @@ mod attrlist {
         // [style,second-positional,named="value of named"]
         // ----
 
+        let block = Block::parse(Span::new(
+            "[style,second-positional,named=\"value of named\"]\nSimple block\n",
+        ))
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "Simple block",
+                    line: 2,
+                    col: 1,
+                    offset: 49,
+                },),
+                source: TSpan {
+                    data: "[style,second-positional,named=\"value of named\"]\nSimple block\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![
+                        TElementAttribute {
+                            name: None,
+                            shorthand_items: vec![TSpan {
+                                data: "style",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },],
+                            value: TSpan {
+                                data: "style",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },
+                            source: TSpan {
+                                data: "style",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },
+                        },
+                        TElementAttribute {
+                            name: None,
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "second-positional",
+                                line: 1,
+                                col: 8,
+                                offset: 7,
+                            },
+                            source: TSpan {
+                                data: "second-positional",
+                                line: 1,
+                                col: 8,
+                                offset: 7,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "named",
+                                line: 1,
+                                col: 26,
+                                offset: 25,
+                            },),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "value of named",
+                                line: 1,
+                                col: 33,
+                                offset: 32,
+                            },
+                            source: TSpan {
+                                data: "named=\"value of named\"",
+                                line: 1,
+                                col: 26,
+                                offset: 25,
+                            },
+                        },
+                    ],
+                    source: TSpan {
+                        data: "style,second-positional,named=\"value of named\"",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+    }
+
+    #[test]
+    #[ignore]
+    fn avoid_attrlist_with_empty() {
         // WARNING: The opening line of a paragraph may inadvertently match the
         // syntax of a block attribute line. If this happens, append `+{empty}+`
         // to the end of the line to disrupt the syntax match.
-        todo!("Describe block element attrlist");
+        todo!("Describe empty substitution trick");
     }
 
-    #[ignore]
     #[test]
     fn block_macro_attrlist() {
         // For *block and inline macros*, the attribute list is placed between the
@@ -290,11 +389,112 @@ mod attrlist {
         // ----
         // name::target[first-positional,second-positional,named="value of named"]
         // ----
-        todo!("Describe block macro attrlist");
+
+        let block = Block::parse(Span::new(
+            "name::target[first-positional,second-positional,named=\"value of named\"]\n",
+        ))
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
+
+        assert_eq!(
+            block,
+            TBlock::Macro(TMacroBlock {
+                name: TSpan {
+                    data: "name",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: Some(TSpan {
+                    data: "target",
+                    line: 1,
+                    col: 7,
+                    offset: 6,
+                },),
+                macro_attrlist: TAttrlist {
+                    attributes: vec![
+                        TElementAttribute {
+                            name: None,
+                            shorthand_items: vec![TSpan {
+                                data: "first-positional",
+                                line: 1,
+                                col: 14,
+                                offset: 13,
+                            },],
+                            value: TSpan {
+                                data: "first-positional",
+                                line: 1,
+                                col: 14,
+                                offset: 13,
+                            },
+                            source: TSpan {
+                                data: "first-positional",
+                                line: 1,
+                                col: 14,
+                                offset: 13,
+                            },
+                        },
+                        TElementAttribute {
+                            name: None,
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "second-positional",
+                                line: 1,
+                                col: 31,
+                                offset: 30,
+                            },
+                            source: TSpan {
+                                data: "second-positional",
+                                line: 1,
+                                col: 31,
+                                offset: 30,
+                            },
+                        },
+                        TElementAttribute {
+                            name: Some(TSpan {
+                                data: "named",
+                                line: 1,
+                                col: 49,
+                                offset: 48,
+                            },),
+                            shorthand_items: vec![],
+                            value: TSpan {
+                                data: "value of named",
+                                line: 1,
+                                col: 56,
+                                offset: 55,
+                            },
+                            source: TSpan {
+                                data: "named=\"value of named\"",
+                                line: 1,
+                                col: 49,
+                                offset: 48,
+                            },
+                        },
+                    ],
+                    source: TSpan {
+                        data: "first-positional,second-positional,named=\"value of named\"",
+                        line: 1,
+                        col: 14,
+                        offset: 13,
+                    },
+                },
+                source: TSpan {
+                    data:
+                        "name::target[first-positional,second-positional,named=\"value of named\"]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: None,
+            },)
+        );
     }
 
-    #[ignore]
     #[test]
+    #[ignore]
     fn inline_attrlist() {
         // For *formatted text*, the attribute list is placed in the square brackets
         // in front of the text enclosure. However, formatted text only supports
@@ -305,6 +505,7 @@ mod attrlist {
         // ----
         // [#idname.rolename]*text with id and role*
         // ----
+
         todo!("Describe inline attrlists");
     }
 

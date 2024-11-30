@@ -3,6 +3,7 @@
 use std::slice::Iter;
 
 use crate::{
+    attributes::Attrlist,
     blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
     document::Header,
     strings::CowStr,
@@ -98,6 +99,11 @@ impl<'src> IsBlock<'src> for Document<'src> {
 
     fn title(&'src self) -> Option<Span<'src>> {
         // Document title is reflected in the Header.
+        None
+    }
+
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
+        // Document attributes are reflected in the Header.
         None
     }
 }

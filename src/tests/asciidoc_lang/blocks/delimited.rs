@@ -63,6 +63,7 @@ fn overview() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         },)
     );
 
@@ -96,6 +97,7 @@ fn overview() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         },)
     );
 
@@ -191,7 +193,8 @@ fn linewise_delimiters() {
                     col: 1,
                     offset: 5,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },),],
             context: "example",
             source: TSpan {
@@ -201,6 +204,7 @@ fn linewise_delimiters() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         },)
     );
 
@@ -445,6 +449,7 @@ fn nesting_blocks() {
                                 offset: 5,
                             },
                             title: None,
+                                        attrlist: None,
                         },
                     ),
                     TBlock::RawDelimited(
@@ -484,6 +489,7 @@ fn nesting_blocks() {
                                 offset: 41,
                             },
                             title: None,
+                                        attrlist: None,
                         },
                     ),
                     TBlock::Simple(
@@ -503,6 +509,7 @@ fn nesting_blocks() {
                                 offset: 101,
                             },
                             title: None,
+                                        attrlist: None,
                         },
                     ),
                 ],
@@ -514,6 +521,7 @@ fn nesting_blocks() {
                     offset: 0,
                 },
                 title: None,
+                            attrlist: None,
             },
         )
     );

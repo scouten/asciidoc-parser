@@ -51,6 +51,7 @@ fn simplest_section_block() {
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -69,7 +70,8 @@ fn simplest_section_block() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -93,6 +95,7 @@ fn has_child_block() {
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -117,7 +120,8 @@ fn has_child_block() {
                     col: 1,
                     offset: 18,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nabc",
@@ -125,7 +129,8 @@ fn has_child_block() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -151,6 +156,7 @@ fn has_macro_block_with_extra_blank_line() {
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -254,7 +260,8 @@ fn has_macro_block_with_extra_blank_line() {
                     col: 1,
                     offset: 18,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
@@ -263,6 +270,7 @@ fn has_macro_block_with_extra_blank_line() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         }
     );
 
@@ -289,6 +297,7 @@ fn has_child_block_with_errors() {
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -393,6 +402,7 @@ fn has_child_block_with_errors() {
                     offset: 18,
                 },
                 title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
@@ -401,6 +411,7 @@ fn has_child_block_with_errors() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         }
     );
 
@@ -439,6 +450,7 @@ fn dont_stop_at_child_section() {
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -464,7 +476,8 @@ fn dont_stop_at_child_section() {
                         col: 1,
                         offset: 18,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 }),
                 TBlock::Section(TSectionBlock {
                     level: 2,
@@ -487,7 +500,8 @@ fn dont_stop_at_child_section() {
                             col: 1,
                             offset: 38,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     })],
                     source: TSpan {
                         data: "=== Section 2\n\ndef",
@@ -495,7 +509,8 @@ fn dont_stop_at_child_section() {
                         col: 1,
                         offset: 23,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 })
             ],
             source: TSpan {
@@ -504,7 +519,8 @@ fn dont_stop_at_child_section() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -530,6 +546,7 @@ fn stop_at_peer_section() {
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -554,7 +571,8 @@ fn stop_at_peer_section() {
                     col: 1,
                     offset: 18,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 // TO DO: Fix bug that includes blank lines.
@@ -563,7 +581,8 @@ fn stop_at_peer_section() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -589,6 +608,7 @@ fn stop_at_ancestor_section() {
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.item,
@@ -613,7 +633,8 @@ fn stop_at_ancestor_section() {
                     col: 1,
                     offset: 19,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 // TO DO: Fix bug that includes blank lines.
@@ -623,6 +644,7 @@ fn stop_at_ancestor_section() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         }
     );
 

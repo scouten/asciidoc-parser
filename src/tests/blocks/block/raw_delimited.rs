@@ -38,7 +38,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -61,7 +62,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -84,7 +86,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -107,7 +110,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
     }
@@ -149,7 +153,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -199,12 +204,14 @@ mod comment {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -243,7 +250,8 @@ mod comment {
                     line: 1,
                     col: 2,
                     offset: 1,
-                },)
+                },),
+                attrlist: None,
             })
         );
 
@@ -259,6 +267,8 @@ mod comment {
                 offset: 1,
             }
         );
+
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -292,13 +302,15 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -339,12 +351,14 @@ mod comment {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 }
 
@@ -379,13 +393,15 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -419,7 +435,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -427,6 +444,7 @@ mod listing {
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -475,7 +493,8 @@ mod listing {
                     line: 1,
                     col: 2,
                     offset: 1,
-                },)
+                },),
+                attrlist: None,
             })
         );
 
@@ -492,6 +511,8 @@ mod listing {
                 offset: 1,
             }
         );
+
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -541,7 +562,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -549,6 +571,7 @@ mod listing {
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -594,6 +617,7 @@ mod pass {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -601,6 +625,7 @@ mod pass {
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -644,7 +669,8 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -652,6 +678,7 @@ mod pass {
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -700,7 +727,8 @@ mod pass {
                     line: 1,
                     col: 2,
                     offset: 1,
-                },)
+                },),
+                attrlist: None,
             })
         );
 
@@ -717,6 +745,8 @@ mod pass {
                 offset: 1,
             }
         );
+
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -767,6 +797,7 @@ mod pass {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -774,6 +805,7 @@ mod pass {
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),

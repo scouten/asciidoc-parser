@@ -1,6 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
+    attributes::Attrlist,
     blocks::{parse_utils::parse_blocks_until, preamble::Preamble, Block, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
@@ -24,6 +25,7 @@ pub struct CompoundDelimitedBlock<'src> {
     context: CowStr<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    attrlist: Option<Attrlist<'src>>,
 }
 
 impl<'src> CompoundDelimitedBlock<'src> {
@@ -110,6 +112,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     context: context.into(),
                     source,
                     title: preamble.title,
+                    attrlist: preamble.attrlist.clone(),
                 },
                 after: closing_delimiter.after,
             }),
@@ -133,6 +136,10 @@ impl<'src> IsBlock<'src> for CompoundDelimitedBlock<'src> {
 
     fn title(&'src self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
+        self.attrlist.as_ref()
     }
 }
 

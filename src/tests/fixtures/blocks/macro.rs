@@ -13,6 +13,7 @@ pub(crate) struct TMacroBlock {
     pub macro_attrlist: TAttrlist,
     pub source: TSpan,
     pub title: Option<TSpan>,
+    pub attrlist: Option<TAttrlist>,
 }
 
 impl fmt::Debug for TMacroBlock {
@@ -22,6 +23,7 @@ impl fmt::Debug for TMacroBlock {
             .field("target", &self.target)
             .field("macro_attrlist", &self.macro_attrlist)
             .field("source", &self.source)
+            .field("attrlist", &self.attrlist)
             .finish()
     }
 }
@@ -66,6 +68,18 @@ fn tmacro_block_eq(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool
     if let Some(ref tm_title) = tmacro_block.title {
         if let Some(ref m_title) = macro_block.title() {
             if tm_title != m_title {
+                return false;
+            }
+        }
+    }
+
+    if tmacro_block.attrlist.is_some() != macro_block.attrlist().is_some() {
+        return false;
+    }
+
+    if let Some(ref tm_attrlist) = tmacro_block.attrlist {
+        if let Some(ref m_attrlist) = macro_block.attrlist() {
+            if &tm_attrlist != m_attrlist {
                 return false;
             }
         }

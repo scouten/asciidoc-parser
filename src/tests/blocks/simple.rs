@@ -44,13 +44,15 @@ fn single_line() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         },
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
     assert_eq!(mi.item.context().deref(), "paragraph");
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.after,
@@ -98,7 +100,8 @@ fn multiple_lines() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 
@@ -132,7 +135,8 @@ fn consumes_blank_lines_after() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         }
     );
 

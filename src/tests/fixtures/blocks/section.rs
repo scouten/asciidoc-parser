@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{
     blocks::{IsBlock, SectionBlock},
-    tests::fixtures::{blocks::TBlock, TSpan},
+    tests::fixtures::{attributes::TAttrlist, blocks::TBlock, TSpan},
     HasSpan,
 };
 
@@ -13,6 +13,7 @@ pub(crate) struct TSectionBlock {
     pub blocks: Vec<TBlock>,
     pub source: TSpan,
     pub title: Option<TSpan>,
+    pub attrlist: Option<TAttrlist>,
 }
 
 impl fmt::Debug for TSectionBlock {
@@ -23,6 +24,7 @@ impl fmt::Debug for TSectionBlock {
             .field("blocks", &self.blocks)
             .field("source", &self.source)
             .field("title", &self.title)
+            .field("attrlist", &self.attrlist)
             .finish()
     }
 }
@@ -69,6 +71,18 @@ fn tsection_block_eq(tsection_block: &TSectionBlock, section_block: &SectionBloc
     if let Some(ref tsb_title) = tsection_block.title {
         if let Some(ref sb_title) = section_block.title() {
             if tsb_title != sb_title {
+                return false;
+            }
+        }
+    }
+
+    if tsection_block.attrlist.is_some() != section_block.attrlist().is_some() {
+        return false;
+    }
+
+    if let Some(ref tsb_attrlist) = tsection_block.attrlist {
+        if let Some(ref sb_attrlist) = section_block.attrlist() {
+            if &tsb_attrlist != sb_attrlist {
                 return false;
             }
         }

@@ -5,6 +5,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     blocks::{Block, ContentModel, IsBlock},
     tests::fixtures::{
+        attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
         inlines::TInline,
         TSpan,
@@ -58,7 +59,8 @@ fn single_line() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -76,6 +78,7 @@ fn single_line() {
     assert_eq!(mi.item.context().deref(), "paragraph");
     assert_eq!(mi.item.nested_blocks().next(), None);
     assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.after,
@@ -125,7 +128,8 @@ fn multiple_lines() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -192,17 +196,122 @@ fn title() {
                 line: 1,
                 col: 2,
                 offset: 1,
-            },)
+            },),
+            attrlist: None,
         })
+    );
+}
+
+#[test]
+fn attrlist() {
+    let mi = Block::parse(Span::new("[sidebar]\nabc\ndef\n"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 2,
+                        col: 1,
+                        offset: 10,
+                    },),
+                    TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 3,
+                        col: 1,
+                        offset: 14,
+                    },),
+                ],
+                TSpan {
+                    data: "abc\ndef\n",
+                    line: 2,
+                    col: 1,
+                    offset: 10,
+                },
+            ),
+            source: TSpan {
+                data: "[sidebar]\nabc\ndef\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            attrlist: Some(TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "sidebar",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },],
+                    value: TSpan {
+                        data: "sidebar",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    source: TSpan {
+                        data: "sidebar",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },],
+                source: TSpan {
+                    data: "sidebar",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },),
+        },)
     );
 
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: ".simple block\nabc\ndef\n",
+            data: "[sidebar]\nabc\ndef\n",
             line: 1,
             col: 1,
             offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.item.attrlist().unwrap(),
+        TAttrlist {
+            attributes: vec![TElementAttribute {
+                name: None,
+                shorthand_items: vec![TSpan {
+                    data: "sidebar",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },],
+                value: TSpan {
+                    data: "sidebar",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+                source: TSpan {
+                    data: "sidebar",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },],
+            source: TSpan {
+                data: "sidebar",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
         }
     );
 
@@ -212,7 +321,136 @@ fn title() {
             data: "",
             line: 4,
             col: 1,
-            offset: 22
+            offset: 18,
+        }
+    );
+}
+
+#[test]
+fn title_and_attrlist() {
+    let mi = Block::parse(Span::new(".title\n[sidebar]\nabc\ndef\n"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },),
+                    TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 4,
+                        col: 1,
+                        offset: 21,
+                    },),
+                ],
+                TSpan {
+                    data: "abc\ndef\n",
+                    line: 3,
+                    col: 1,
+                    offset: 17,
+                },
+            ),
+            source: TSpan {
+                data: ".title\n[sidebar]\nabc\ndef\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+            attrlist: Some(TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "sidebar",
+                        line: 2,
+                        col: 2,
+                        offset: 8,
+                    },],
+                    value: TSpan {
+                        data: "sidebar",
+                        line: 2,
+                        col: 2,
+                        offset: 8,
+                    },
+                    source: TSpan {
+                        data: "sidebar",
+                        line: 2,
+                        col: 2,
+                        offset: 8,
+                    },
+                },],
+                source: TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },
+            },),
+        },)
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".title\n[sidebar]\nabc\ndef\n",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.item.attrlist().unwrap(),
+        TAttrlist {
+            attributes: vec![TElementAttribute {
+                name: None,
+                shorthand_items: vec![TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },],
+                value: TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },
+                source: TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },
+            },],
+            source: TSpan {
+                data: "sidebar",
+                line: 2,
+                col: 2,
+                offset: 8,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 5,
+            col: 1,
+            offset: 25,
         }
     );
 }
@@ -238,7 +476,8 @@ fn consumes_blank_lines_after() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 

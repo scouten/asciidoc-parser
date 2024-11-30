@@ -201,6 +201,7 @@ mod macros {
                         offset: 0,
                     },
                     title: None,
+                    attrlist: None,
                 })],
                 source: TSpan {
                     data: "image::sunset.jpg[Sunset]\n",
@@ -304,7 +305,9 @@ mod macros {
                                 col: 1,
                                 offset: 0,
                             },
-                            title: None },
+                            title: None,
+                            attrlist: None,
+                        },
                     ),
                 ],
                 source: TSpan {
