@@ -1,5 +1,6 @@
 use crate::{
     attributes::Attrlist,
+    span::MatchedItem,
     warnings::{MatchAndWarnings, Warning},
     Span,
 };
@@ -12,7 +13,6 @@ pub(crate) struct Preamble<'src> {
     pub(crate) title: Option<Span<'src>>,
 
     /// The block's attribute list, if any.
-    #[allow(dead_code)] // TEMPORARY while building
     pub(crate) attrlist: Option<Attrlist<'src>>,
 
     /// The source span as understood when the preamble content was first
@@ -33,7 +33,7 @@ impl<'src> Preamble<'src> {
 
     /// Parse the title and attribute list for a block, if any.
     pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, Self> {
-        let warnings: Vec<Warning<'src>> = vec![];
+        let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
         // Does this block have a title?
@@ -50,12 +50,34 @@ impl<'src> Preamble<'src> {
                 (None, source)
             };
 
-        // TO DO: Does this block have an attribute list?
+        // Does this block have an attribute list?
+        let (attrlist, block_start) = if let Some(first_char) = block_start.chars().next() {
+            if first_char == '[' {
+                let MatchAndWarnings {
+                    item:
+                        MatchedItem {
+                            item: attrlist,
+                            after: block_start,
+                        },
+                    warnings: mut attrlist_warnings,
+                } = Attrlist::parse(block_start);
+
+                if !attrlist_warnings.is_empty() {
+                    warnings.append(&mut attrlist_warnings);
+                }
+
+                (Some(attrlist), block_start)
+            } else {
+                (None, block_start)
+            }
+        } else {
+            (None, block_start)
+        };
 
         MatchAndWarnings {
             item: Self {
                 title,
-                attrlist: None, // temporary
+                attrlist,
                 source,
                 block_start,
             },

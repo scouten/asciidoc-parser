@@ -118,7 +118,8 @@ fn one_simple_block() {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             warnings: vec![],
         }
@@ -160,7 +161,8 @@ fn two_simple_blocks() {
                         col: 1,
                         offset: 0,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
                     inline: TInline::Uninterpreted(TSpan {
@@ -175,7 +177,8 @@ fn two_simple_blocks() {
                         col: 1,
                         offset: 5,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 })
             ],
             warnings: vec![],
@@ -217,7 +220,8 @@ fn two_blocks_and_title() {
                         col: 1,
                         offset: 17,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
                     inline: TInline::Uninterpreted(TSpan {
@@ -232,7 +236,8 @@ fn two_blocks_and_title() {
                         col: 1,
                         offset: 22,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 })
             ],
             source: TSpan {
@@ -279,7 +284,8 @@ fn extra_space_before_title() {
                     col: 1,
                     offset: 19,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: "=   Example Title\n\nabc",
@@ -325,7 +331,8 @@ fn err_bad_header() {
                     col: 1,
                     offset: 8,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: "= Title\nnot an attribute\n",
@@ -380,7 +387,8 @@ fn err_bad_header_and_bad_macro() {
                 col: 1,
                 offset: 8,
             },
-            title: None }),
+            title: None,
+            attrlist: None, }),
             TBlock::Section(
                 TSectionBlock {
                     level: 1,
@@ -493,6 +501,7 @@ fn err_bad_header_and_bad_macro() {
                                     offset: 44,
                                 },
                                 title: None,
+                                attrlist: None,
                             },
                         ),
                     ],
@@ -503,6 +512,7 @@ fn err_bad_header_and_bad_macro() {
                         offset: 26,
                     },
                     title: None,
+                    attrlist: None,
                 },
             )],
             source: TSpan {

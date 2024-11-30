@@ -1,6 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
+    attributes::Attrlist,
     blocks::{
         preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock,
         RawDelimitedBlock, SectionBlock, SimpleBlock,
@@ -62,7 +63,10 @@ impl<'src> Block<'src> {
         // If it does contain any of those markers, we fall through to the more costly
         // tests below which can more accurately classify the upcoming block.
         if let Some(first_char) = source.chars().next() {
-            if !matches!(first_char, '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_') {
+            if !matches!(
+                first_char,
+                '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '['
+            ) {
                 let first_line = source.take_line();
                 if !first_line.item.contains("::") {
                     if let Some(MatchedItem {
@@ -246,6 +250,16 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.title(),
             Self::RawDelimited(b) => b.title(),
             Self::CompoundDelimited(b) => b.title(),
+        }
+    }
+
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
+        match self {
+            Self::Simple(b) => b.attrlist(),
+            Self::Macro(b) => b.attrlist(),
+            Self::Section(b) => b.attrlist(),
+            Self::RawDelimited(b) => b.attrlist(),
+            Self::CompoundDelimited(b) => b.attrlist(),
         }
     }
 }

@@ -69,7 +69,8 @@ mod error_cases {
                             col: 1,
                             offset: 19,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -85,6 +86,7 @@ mod error_cases {
                             offset: 24,
                         },
                         title: None,
+                        attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -100,6 +102,7 @@ mod error_cases {
                             offset: 55,
                         },
                         title: None,
+                        attrlist: None,
                     },),
                 ],
                 source: TSpan {
@@ -110,6 +113,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             }
         );
 
@@ -176,7 +180,8 @@ mod error_cases {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 

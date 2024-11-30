@@ -1,4 +1,5 @@
 use crate::{
+    attributes::Attrlist,
     blocks::{preamble::Preamble, ContentModel, IsBlock},
     inlines::Inline,
     span::MatchedItem,
@@ -13,6 +14,7 @@ pub struct SimpleBlock<'src> {
     inline: Inline<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    attrlist: Option<Attrlist<'src>>,
 }
 
 impl<'src> SimpleBlock<'src> {
@@ -24,6 +26,7 @@ impl<'src> SimpleBlock<'src> {
                 inline: inline.item,
                 source: preamble.source.trim_remainder(inline.after),
                 title: preamble.title,
+                attrlist: preamble.attrlist.clone(),
             },
             after: inline.after.discard_empty_lines(),
         })
@@ -38,6 +41,7 @@ impl<'src> SimpleBlock<'src> {
                 inline: inline.item,
                 source,
                 title: None,
+                attrlist: None,
             },
             after: inline.after.discard_empty_lines(),
         })
@@ -60,6 +64,10 @@ impl<'src> IsBlock<'src> for SimpleBlock<'src> {
 
     fn title(&self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
+        self.attrlist.as_ref()
     }
 }
 

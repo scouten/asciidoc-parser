@@ -38,7 +38,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -61,7 +62,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -84,7 +86,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -107,7 +110,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
     }
@@ -149,7 +153,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -199,6 +204,7 @@ mod comment {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -243,7 +249,8 @@ mod comment {
                     line: 1,
                     col: 2,
                     offset: 1,
-                },)
+                },),
+                attrlist: None,
             })
         );
 
@@ -292,7 +299,8 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -339,6 +347,7 @@ mod comment {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -379,7 +388,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -419,7 +429,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -475,7 +486,8 @@ mod listing {
                     line: 1,
                     col: 2,
                     offset: 1,
-                },)
+                },),
+                attrlist: None,
             })
         );
 
@@ -541,7 +553,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -594,6 +607,7 @@ mod pass {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -644,7 +658,8 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -700,7 +715,8 @@ mod pass {
                     line: 1,
                     col: 2,
                     offset: 1,
-                },)
+                },),
+                attrlist: None,
             })
         );
 
@@ -767,6 +783,7 @@ mod pass {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 

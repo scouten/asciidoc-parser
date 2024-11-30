@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
-    tests::fixtures::TSpan,
+    tests::fixtures::{attributes::TAttrlist, TSpan},
     HasSpan,
 };
 
@@ -13,6 +13,7 @@ pub(crate) struct TRawDelimitedBlock {
     pub context: &'static str,
     pub source: TSpan,
     pub title: Option<TSpan>,
+    pub attrlist: Option<TAttrlist>,
 }
 
 impl fmt::Debug for TRawDelimitedBlock {
@@ -23,6 +24,7 @@ impl fmt::Debug for TRawDelimitedBlock {
             .field("context", &self.context)
             .field("source", &self.source)
             .field("title", &self.title)
+            .field("attrlist", &self.attrlist)
             .finish()
     }
 }
@@ -72,6 +74,18 @@ fn traw_delimited_block_eq(
     if let Some(ref trdb_title) = traw_delimited_block.title {
         if let Some(ref rdb_title) = raw_delimited_block.title() {
             if trdb_title != rdb_title {
+                return false;
+            }
+        }
+    }
+
+    if traw_delimited_block.attrlist.is_some() != raw_delimited_block.attrlist().is_some() {
+        return false;
+    }
+
+    if let Some(ref trdb_attrlist) = traw_delimited_block.attrlist {
+        if let Some(ref rdb_attrlist) = raw_delimited_block.attrlist() {
+            if &trdb_attrlist != rdb_attrlist {
                 return false;
             }
         }

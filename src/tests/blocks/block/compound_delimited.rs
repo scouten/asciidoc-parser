@@ -34,7 +34,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -57,7 +58,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -80,7 +82,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -103,7 +106,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
     }
@@ -145,7 +149,8 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -194,7 +199,8 @@ mod example {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -237,7 +243,8 @@ mod example {
                             col: 1,
                             offset: 5,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -252,7 +259,8 @@ mod example {
                             col: 1,
                             offset: 13,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                 ),
                 context: "example",
@@ -263,6 +271,7 @@ mod example {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -286,7 +295,8 @@ mod example {
                     col: 1,
                     offset: 5,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -305,7 +315,8 @@ mod example {
                     col: 1,
                     offset: 13,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -345,7 +356,8 @@ mod example {
                             col: 1,
                             offset: 19,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -360,7 +372,8 @@ mod example {
                             col: 1,
                             offset: 27,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                 ),
                 context: "example",
@@ -375,7 +388,8 @@ mod example {
                     line: 1,
                     col: 2,
                     offset: 1,
-                },),
+                }),
+                attrlist: None,
             })
         );
 
@@ -408,7 +422,8 @@ mod example {
                     col: 1,
                     offset: 19,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -427,7 +442,8 @@ mod example {
                     col: 1,
                     offset: 27,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -467,7 +483,8 @@ mod example {
                             col: 1,
                             offset: 5,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
@@ -483,7 +500,8 @@ mod example {
                                 col: 1,
                                 offset: 19,
                             },
-                            title: None
+                            title: None,
+                            attrlist: None,
                         },)),
                         context: "example",
                         source: TSpan {
@@ -493,6 +511,7 @@ mod example {
                             offset: 13,
                         },
                         title: None,
+                        attrlist: None,
                     },)
                 ),
                 context: "example",
@@ -503,6 +522,7 @@ mod example {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -526,7 +546,8 @@ mod example {
                     col: 1,
                     offset: 5,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -546,7 +567,8 @@ mod example {
                         col: 1,
                         offset: 19,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 },),),
                 context: "example",
                 source: TSpan {
@@ -556,6 +578,7 @@ mod example {
                     offset: 13,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -604,6 +627,7 @@ mod open {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -646,7 +670,8 @@ mod open {
                             col: 1,
                             offset: 3,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -661,7 +686,8 @@ mod open {
                             col: 1,
                             offset: 11,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                 ),
                 context: "open",
@@ -671,7 +697,8 @@ mod open {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -695,7 +722,8 @@ mod open {
                     col: 1,
                     offset: 3,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -714,7 +742,8 @@ mod open {
                     col: 1,
                     offset: 11,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -754,7 +783,8 @@ mod open {
                             col: 1,
                             offset: 3,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Sequence(
@@ -791,7 +821,8 @@ mod open {
                             col: 1,
                             offset: 11,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },)
                 ),
                 context: "open",
@@ -802,6 +833,7 @@ mod open {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -825,7 +857,8 @@ mod open {
                     col: 1,
                     offset: 3,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -866,7 +899,8 @@ mod open {
                     col: 1,
                     offset: 11,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -915,6 +949,7 @@ mod sidebar {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -957,7 +992,8 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -972,7 +1008,8 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                 ),
                 context: "sidebar",
@@ -983,6 +1020,7 @@ mod sidebar {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -1006,7 +1044,8 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -1025,7 +1064,8 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -1065,7 +1105,8 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
@@ -1081,7 +1122,8 @@ mod sidebar {
                                 col: 1,
                                 offset: 19,
                             },
-                            title: None
+                            title: None,
+                            attrlist: None,
                         },)),
                         context: "sidebar",
                         source: TSpan {
@@ -1091,6 +1133,7 @@ mod sidebar {
                             offset: 13,
                         },
                         title: None,
+                        attrlist: None,
                     })
                 ),
                 context: "sidebar",
@@ -1100,7 +1143,8 @@ mod sidebar {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -1124,7 +1168,8 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -1144,7 +1189,8 @@ mod sidebar {
                         col: 1,
                         offset: 19,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 },),),
                 context: "sidebar",
                 source: TSpan {
@@ -1154,6 +1200,7 @@ mod sidebar {
                     offset: 13,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -1202,6 +1249,7 @@ mod quote {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -1244,7 +1292,8 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
                         inline: TInline::Uninterpreted(TSpan {
@@ -1259,7 +1308,8 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                 ),
                 context: "quote",
@@ -1270,6 +1320,7 @@ mod quote {
                     offset: 0,
                 },
                 title: None,
+                attrlist: None,
             })
         );
 
@@ -1293,7 +1344,8 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -1312,7 +1364,8 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -1352,7 +1405,8 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
@@ -1368,7 +1422,8 @@ mod quote {
                                 col: 1,
                                 offset: 19,
                             },
-                            title: None
+                            title: None,
+                            attrlist: None,
                         },),),
                         context: "quote",
                         source: TSpan {
@@ -1377,7 +1432,8 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
-                        title: None
+                        title: None,
+                        attrlist: None,
                     })
                 ),
                 context: "quote",
@@ -1387,7 +1443,8 @@ mod quote {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 
@@ -1411,7 +1468,8 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             },)
         );
 
@@ -1431,7 +1489,8 @@ mod quote {
                         col: 1,
                         offset: 19,
                     },
-                    title: None
+                    title: None,
+                    attrlist: None,
                 },),),
                 context: "quote",
                 source: TSpan {
@@ -1440,7 +1499,8 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })
         );
 

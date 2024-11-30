@@ -161,7 +161,8 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -202,7 +203,8 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -272,7 +274,8 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -355,7 +358,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -396,7 +400,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -466,7 +471,8 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -569,7 +575,8 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -610,7 +617,8 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 
@@ -680,7 +688,8 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             }
         );
 

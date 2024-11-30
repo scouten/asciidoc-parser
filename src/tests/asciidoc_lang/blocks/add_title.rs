@@ -67,6 +67,7 @@ fn block_title_syntax() {
                                 offset: 43,
                             },
                             title: None,
+                            attrlist: None,
                         },
                     ),
                 ],
@@ -85,6 +86,7 @@ fn block_title_syntax() {
                         offset: 1,
                     },
                 ),
+                attrlist: None,
             },
         )
     );
@@ -167,6 +169,7 @@ fn add_title_to_delimited_block() {
                         offset: 1,
                     },
                 ),
+                attrlist: None,
             },
         )
     );

@@ -21,6 +21,7 @@ pub struct MacroBlock<'src> {
     macro_attrlist: Attrlist<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    attrlist: Option<Attrlist<'src>>,
 }
 
 impl<'src> MacroBlock<'src> {
@@ -89,6 +90,7 @@ impl<'src> MacroBlock<'src> {
                     macro_attrlist: macro_attrlist.item.item,
                     source,
                     title: preamble.title,
+                    attrlist: preamble.attrlist.clone(),
                 },
 
                 after: line.after.discard_empty_lines(),
@@ -111,6 +113,11 @@ impl<'src> MacroBlock<'src> {
     ///
     /// IMPORTANT: This is the list of attributes _within_ the macro block
     /// definition itself.
+    ///
+    /// See also [`attrlist()`] for attributes that can be defined before the
+    /// macro invocation.
+    ///
+    /// [`attrlist()`]: Self::attrlist()
     pub fn macro_attrlist(&'src self) -> &'src Attrlist<'src> {
         &self.macro_attrlist
     }
@@ -132,6 +139,10 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
 
     fn title(&'src self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
+        self.attrlist.as_ref()
     }
 }
 

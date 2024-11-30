@@ -1,6 +1,6 @@
 use std::{fmt::Debug, slice::Iter};
 
-use crate::{blocks::Block, strings::CowStr, HasSpan, Span};
+use crate::{attributes::Attrlist, blocks::Block, strings::CowStr, HasSpan, Span};
 
 /// Block elements form the main structure of an AsciiDoc document, starting
 /// with the document itself.
@@ -45,6 +45,9 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
 
     /// Returns the title for this block, if present.
     fn title(&'src self) -> Option<Span<'src>>;
+
+    /// Returns the attribute list for this block, if present.
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>>;
 }
 
 /// The content model of a block determines what kind of content the block can

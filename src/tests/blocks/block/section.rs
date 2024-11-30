@@ -36,7 +36,8 @@ fn err_missing_space_before_title() {
                 col: 1,
                 offset: 0,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -89,6 +90,7 @@ fn simplest_section_block() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         })
     );
 
@@ -138,7 +140,8 @@ fn has_child_block() {
                     col: 1,
                     offset: 18,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nabc",
@@ -147,6 +150,7 @@ fn has_child_block() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         })
     );
 
@@ -167,7 +171,8 @@ fn has_child_block() {
                 col: 1,
                 offset: 18,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -226,7 +231,8 @@ fn title() {
                     col: 1,
                     offset: 39,
                 },
-                title: None
+                title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: ".other section title\n== Section Title\n\nabc",
@@ -240,6 +246,7 @@ fn title() {
                 col: 2,
                 offset: 1,
             },),
+            attrlist: None,
         })
     );
 
@@ -270,7 +277,8 @@ fn title() {
                 col: 1,
                 offset: 39,
             },
-            title: None
+            title: None,
+            attrlist: None,
         })
     );
 
@@ -408,6 +416,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     offset: 18,
                 },
                 title: None,
+                attrlist: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
@@ -416,6 +425,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 offset: 0,
             },
             title: None,
+            attrlist: None,
         })
     );
 
