@@ -143,6 +143,66 @@ mod error_cases {
     }
 
     #[test]
+    fn missing_close_brace_on_attrlist() {
+        let mi = Block::parse(Span::new(
+            "[incomplete attrlist\n=== Section Title (except it isn't)\n\nabc\n",
+        ))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+        assert_eq!(mi.item.content_model(), ContentModel::Simple);
+        assert_eq!(mi.item.context().deref(), "paragraph");
+        assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
+
+        assert_eq!(
+            mi.item,
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec![
+                        TInline::Uninterpreted(TSpan {
+                            data: "[incomplete attrlist",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },),
+                        TInline::Uninterpreted(TSpan {
+                            data: "=== Section Title (except it isn't)",
+                            line: 2,
+                            col: 1,
+                            offset: 21,
+                        },),
+                    ],
+                    TSpan {
+                        data: "[incomplete attrlist\n=== Section Title (except it isn't)\n",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                ),
+                source: TSpan {
+                    data: "[incomplete attrlist\n=== Section Title (except it isn't)\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: None,
+            },)
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "abc\n",
+                line: 4,
+                col: 1,
+                offset: 58
+            }
+        );
+    }
+
+    #[test]
     #[allow(non_snake_case)]
     fn TEMP_not_title() {
         // IMPORTANT: This test will fail once we implement support for list items.
