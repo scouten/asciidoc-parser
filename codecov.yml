@@ -1,0 +1,29 @@
+comment:
+  layout: "header, diff, flags, components"
+  
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+        branches:
+          - "!main"
+
+  individual_components:
+    - component_id: parser
+      name: AsciiDoc parser code
+      paths:
+        - src/**
+
+    - component_id: spec
+      name: Spec coverage
+      paths:
+        - asciidoc-lang/docs/modules/**
+
+ignore:
+  - "asciidoc-lang/asg/**"
+  - "asciidoc-lang/docs/*"
+  - "asciidoc-lang/docs/**/nav-*.adoc"
+  - "asciidoc-lang/process/**"
+  - "asciidoc-lang/spec/**"
+  - "internal/**"

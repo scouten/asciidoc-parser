@@ -288,3 +288,38 @@ jobs:
         with:
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
+
+  spec_coverage:
+    name: Generate spec coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch spec submodule
+        run: git submodule init && git submodule update
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: llvm-tools-preview
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+    
+      # - name: Generate code coverage
+      #   run: cd sdd && cargo llvm-cov --all-features --lcov --ignore-filename-regex tests --output-path lcov.info
+
+      - name: Upload code coverage results
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: "internal/temp-coverage.json"
+          disable_search: true
+          name: Spec coverage
+          fail_ci_if_error: true
+          verbose: true
