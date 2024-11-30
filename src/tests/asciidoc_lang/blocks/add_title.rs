@@ -7,6 +7,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     blocks::{Block, ContentModel},
     tests::fixtures::{
+        attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
         inlines::TInline,
         TSpan,
@@ -127,8 +128,6 @@ fn add_title_to_delimited_block() {
     .unwrap()
     .item;
 
-    dbg!(&block);
-
     assert_eq!(
         block,
         TBlock::RawDelimited(
@@ -187,168 +186,366 @@ fn add_title_to_delimited_block() {
     // an attribute list.
 }
 
-// == Add a title to a block with attributes
+#[test]
+fn add_title_to_block_with_attributes() {
+    // == Add a title to a block with attributes
 
-// When you're applying attributes to a block, the title is placed on the line
-// above the attribute list (or lists). <<ex-title-list>> shows a delimited
-// source code block that's titled _Specify GitLab CI stages_.
+    // When you're applying attributes to a block, the title is placed on the line
+    // above the attribute list (or lists). <<ex-title-list>> shows a delimited
+    // source code block that's titled _Specify GitLab CI stages_.
 
-// .Add a title to a delimited source code block
-// [source#ex-title-list]
-// ....
-// .Specify GitLab CI stages <.>
-// [source,yaml] <.>
-// ----
-// image: node:16-buster
-// stages: [ init, verify, deploy ]
-// ----
-// ....
-// <.> The block title is entered on a new line.
-// <.> The block's attribute list is entered on a new line directly after the
-// title.
+    // .Add a title to a delimited source code block
+    // [source#ex-title-list]
+    // ....
+    // .Specify GitLab CI stages <.>
+    // [source,yaml] <.>
+    // ----
+    // image: node:16-buster
+    // stages: [ init, verify, deploy ]
+    // ----
+    // ....
+    // <.> The block title is entered on a new line.
+    // <.> The block's attribute list is entered on a new line directly after the
+    // title.
 
-// The result of <<ex-title-list>> is displayed below.
+    // .Specify GitLab CI stages <.>
+    // [source,yaml] <.>
+    // ----
+    // image: node:16-buster
+    // stages: [ init, verify, deploy ]
+    // ----
 
-// [caption=]
-// .Specify GitLab CI stages
-// [source,yaml]
-// ----
-// image: node:16-buster
-// stages: [ init, verify, deploy ]
-// ----
+    let block = Block::parse(Span::new(
+        ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap()
+    .item;
 
-// As shown in <<ex-title-style>>, a block's title is placed above the attribute
-// list when a block isn't delimited.
+    assert_eq!(
+        block,
+        TBlock::RawDelimited(
+            TRawDelimitedBlock {
+                lines: vec![
+                    TSpan {
+                        data: "image: node:16-buster",
+                        line: 4,
+                        col: 1,
+                        offset: 45,
+                    },
+                    TSpan {
+                        data: "stages: [ init, verify, deploy ]",
+                        line: 5,
+                        col: 1,
+                        offset: 67,
+                    },
+                ],
+                content_model: ContentModel::Verbatim,
+                context: "listing",
+                source: TSpan {
+                    data: ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(
+                    TSpan {
+                        data: "Specify GitLab CI stages",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                ),
+                attrlist: Some(
+                    TAttrlist {
+                        attributes: vec![
+                            TElementAttribute {
+                                name: None,
+                                shorthand_items: vec![
+                                    TSpan {
+                                        data: "source",
+                                        line: 2,
+                                        col: 2,
+                                        offset: 27,
+                                    },
+                                ],
+                                value: TSpan {
+                                    data: "source",
+                                    line: 2,
+                                    col: 2,
+                                    offset: 27,
+                                },
+                                source: TSpan {
+                                    data: "source",
+                                    line: 2,
+                                    col: 2,
+                                    offset: 27,
+                                },
+                            },
+                            TElementAttribute {
+                                name: None,
+                                shorthand_items: vec![],
+                                value: TSpan {
+                                    data: "yaml",
+                                    line: 2,
+                                    col: 9,
+                                    offset: 34,
+                                },
+                                source: TSpan {
+                                    data: "yaml",
+                                    line: 2,
+                                    col: 9,
+                                    offset: 34,
+                                },
+                            },
+                        ],
+                        source: TSpan {
+                            data: "source,yaml",
+                            line: 2,
+                            col: 2,
+                            offset: 27,
+                        },
+                    },
+                ),
+            },
+        ));
 
-// .Add a title to a non-delimited block
-// [#ex-title-style]
-// ----
-// .Mint
-// [sidebar]
-// Mint has visions of global conquest.
-// If you don't plant it in a container, it will take over your garden.
-// ----
+    // The result of <<ex-title-list>> is displayed below.
 
-// The result of <<ex-title-style>> is displayed below.
+    // [caption=]
+    // .Specify GitLab CI stages
+    // [source,yaml]
+    // ----
+    // image: node:16-buster
+    // stages: [ init, verify, deploy ]
+    // ----
 
-// .Mint
-// [sidebar]
-// Mint has visions of global conquest.
-// If you don't plant it in a container, it will take over your garden.
+    // As shown in <<ex-title-style>>, a block's title is placed above the
+    // attribute list when a block isn't delimited.
 
-// You may notice that unlike the titles in the previous rendered listing and
-// source block examples, the sidebar's title is centered and displayed inside
-// the sidebar's background. How the title of a block is displayed depends on
-// the converter and stylesheet you're applying to your AsciiDoc documents.
+    // .Add a title to a non-delimited block
+    // [#ex-title-style]
+    // ----
+    // .Mint
+    // [sidebar]
+    // Mint has visions of global conquest.
+    // If you don't plant it in a container, it will take over your garden.
+    // ----
 
-// == Captioned titles
+    let block = Block::parse(Span::new(
+        ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap()
+    .item;
 
-// Several block contexts support captioned titles.
-// A [.term]*captioned title* is a title that's prefixed with a caption label
-// and a number followed by a dot (e.g., `Table 1. Properties`).
+    assert_eq!(block,
+        TBlock::Simple(
+            TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec![
+                        TInline::Uninterpreted(
+                            TSpan {
+                                data: "Mint has visions of global conquest.",
+                                line: 3,
+                                col: 1,
+                                offset: 16,
+                            },
+                        ),
+                        TInline::Uninterpreted(
+                            TSpan {
+                                data: "If you don't plant it in a container, it will take over your garden.",
+                                line: 4,
+                                col: 1,
+                                offset: 53,
+                            },
+                        ),
+                    ],
+                    TSpan {
+                        data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
+                        line: 3,
+                        col: 1,
+                        offset: 16,
+                    },
+                ),
+                source: TSpan {
+                    data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(
+                    TSpan {
+                        data: "Mint",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                ),
+                attrlist: Some(
+                    TAttrlist {
+                        attributes: vec![
+                            TElementAttribute {
+                                name: None,
+                                shorthand_items: vec![
+                                    TSpan {
+                                        data: "sidebar",
+                                        line: 2,
+                                        col: 2,
+                                        offset: 7,
+                                    },
+                                ],
+                                value: TSpan {
+                                    data: "sidebar",
+                                    line: 2,
+                                    col: 2,
+                                    offset: 7,
+                                },
+                                source: TSpan {
+                                    data: "sidebar",
+                                    line: 2,
+                                    col: 2,
+                                    offset: 7,
+                                },
+                            },
+                        ],
+                        source: TSpan {
+                            data: "sidebar",
+                            line: 2,
+                            col: 2,
+                            offset: 7,
+                        },
+                    },
+                ),
+            },
+        ));
 
-// The captioned title is only used if the corresponding caption attribute is
-// set. Otherwise, the original title is displayed.
+    // The result of <<ex-title-style>> is displayed below.
 
-// The following table lists the blocks that support captioned titles and the
-// attributes that the converter uses to generate and control them.
+    // .Mint
+    // [sidebar]
+    // Mint has visions of global conquest.
+    // If you don't plant it in a container, it will take over your garden.
 
-// .Blocks that support captioned titles
-// [cols=1;m;m]
-// |===
-// |Block context | Caption attribute | Counter attribute
+    // You may notice that unlike the titles in the previous rendered listing
+    // and source block examples, the sidebar's title is centered and
+    // displayed inside the sidebar's background. How the title of a block
+    // is displayed depends on the converter and stylesheet you're applying
+    // to your AsciiDoc documents.
+}
 
-// |appendix
-// |appendix-caption
-// |appendix-number
+#[test]
+#[ignore]
+fn captioned_titles() {
+    // == Captioned titles
 
-// |example
-// |example-caption
-// |example-number
+    // Several block contexts support captioned titles.
+    // A [.term]*captioned title* is a title that's prefixed with a caption
+    // label and a number followed by a dot (e.g., `Table 1. Properties`).
 
-// |image
-// |figure-caption
-// |figure-number
+    // The captioned title is only used if the corresponding caption attribute
+    // is set. Otherwise, the original title is displayed.
 
-// |listing, source
-// |listing-caption
-// |listing-number
+    // The following table lists the blocks that support captioned titles and
+    // the attributes that the converter uses to generate and control them.
 
-// |table
-// |table-caption
-// |table-number
-// |===
+    // .Blocks that support captioned titles
+    // [cols=1;m;m]
+    // |===
+    // |Block context | Caption attribute | Counter attribute
 
-// All caption attributes are set by default except for the attribute for
-// listing and source blocks (`listing-caption`). The number is sequential,
-// computed automatically, and stored in a corresponding counter attribute.
+    // |appendix
+    // |appendix-caption
+    // |appendix-number
 
-// Let's assume you've added a title to an example block as follows:
+    // |example
+    // |example-caption
+    // |example-number
 
-// [,asciidoc]
-// ----
-// .Block that supports captioned title
-// ====
-// Block content
-// ====
-// ----
+    // |image
+    // |figure-caption
+    // |figure-number
 
-// The block title will be displayed with a caption label and number, as shown
-// here:
+    // |listing, source
+    // |listing-caption
+    // |listing-number
 
-// :example-caption: Example
-// ifdef::example-number[:prev-example-number: {example-number}]
-// :example-number: 0
+    // |table
+    // |table-caption
+    // |table-number
+    // |===
 
-// .Block that supports captioned title
-// ====
-// Block content
-// ====
+    // All caption attributes are set by default except for the attribute for
+    // listing and source blocks (`listing-caption`). The number is sequential,
+    // computed automatically, and stored in a corresponding counter attribute.
 
-// :!example-caption:
-// ifdef::prev-example-number[:example-number: {prev-example-number}]
-// :!prev-example-number:
+    // Let's assume you've added a title to an example block as follows:
 
-// If you unset the `example-caption` attribute, the caption will not be
-// prepended to the title.
+    // [,asciidoc]
+    // ----
+    // .Block that supports captioned title
+    // ====
+    // Block content
+    // ====
+    // ----
 
-// .Block that supports captioned title
-// ====
-// Block content
-// ====
+    // The block title will be displayed with a caption label and number, as
+    // shown here:
 
-// The counter attribute (e.g., `example-number`) can be used to influence the
-// start number for the first block with that context or the next number
-// selected in the sequence for subsequent occurrences. However, this practice
-// should be used judiciously.
+    // :example-caption: Example
+    // ifdef::example-number[:prev-example-number: {example-number}]
+    // :example-number: 0
 
-// The caption can be overridden using the `caption` attribute on the block.
-// The value of the caption attribute replaces the entire caption, including the
-// space that precedes the title.
+    // .Block that supports captioned title
+    // ====
+    // Block content
+    // ====
 
-// Here's how to define a custom caption on a block:
+    // :!example-caption:
+    // ifdef::prev-example-number[:example-number: {prev-example-number}]
+    // :!prev-example-number:
 
-// [,asciidoc]
-// ----
-// .Block Title
-// [caption="Example {counter:my-example-number:A}: "]
-// ====
-// Block content
-// ====
-// ----
+    // If you unset the `example-caption` attribute, the caption will not be
+    // prepended to the title.
 
-// Here's how the block will be displayed with the custom caption:
+    // .Block that supports captioned title
+    // ====
+    // Block content
+    // ====
 
-// .Block Title
-// [caption="Example {counter:my-example-number:A}: "]
-// ====
-// Block content
-// ====
+    // The counter attribute (e.g., `example-number`) can be used to influence
+    // the start number for the first block with that context or the next
+    // number selected in the sequence for subsequent occurrences. However,
+    // this practice should be used judiciously.
 
-// Notice we've used a counter attribute in the value of the caption attribute
-// to create a custom number sequence.
+    // The caption can be overridden using the `caption` attribute on the block.
+    // The value of the caption attribute replaces the entire caption, including
+    // the space that precedes the title.
 
-// If you refer to a block with a custom caption using an xref, you may not get
-// the result that you expect. Therefore, it's always best to define custom
-// xref:attributes:id.adoc#customize-automatic-xreftext[xreftext] when you
-// define a custom caption.
+    // Here's how to define a custom caption on a block:
+
+    // [,asciidoc]
+    // ----
+    // .Block Title
+    // [caption="Example {counter:my-example-number:A}: "]
+    // ====
+    // Block content
+    // ====
+    // ----
+
+    // Here's how the block will be displayed with the custom caption:
+
+    // .Block Title
+    // [caption="Example {counter:my-example-number:A}: "]
+    // ====
+    // Block content
+    // ====
+
+    // Notice we've used a counter attribute in the value of the caption
+    // attribute to create a custom number sequence.
+
+    // If you refer to a block with a custom caption using an xref, you may not
+    // get the result that you expect. Therefore, it's always best to define
+    // custom xref:attributes:id.adoc#customize-automatic-xreftext[xreftext]
+    // when you define a custom caption.
+}
