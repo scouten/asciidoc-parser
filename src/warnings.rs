@@ -66,6 +66,7 @@ impl<T> MatchAndWarnings<'_, T> {
     #[cfg(test)]
     #[inline(always)]
     #[track_caller]
+    #[allow(clippy::panic)] // since not actually in production code
     pub(crate) fn unwrap_if_no_warnings(self) -> T {
         if self.warnings.is_empty() {
             self.item
