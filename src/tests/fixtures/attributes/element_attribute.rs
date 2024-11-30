@@ -39,20 +39,20 @@ impl PartialEq<TElementAttribute> for &ElementAttribute<'_> {
     }
 }
 
-fn fixture_eq_observed(tattribute: &TElementAttribute, attribute: &ElementAttribute) -> bool {
-    if &tattribute.source != attribute.span() {
+fn fixture_eq_observed(fixture: &TElementAttribute, attribute: &ElementAttribute) -> bool {
+    if &fixture.source != attribute.span() {
         return false;
     }
 
-    if tattribute.value != attribute.raw_value() {
+    if fixture.value != attribute.raw_value() {
         return false;
     }
 
-    if &tattribute.shorthand_items != attribute.shorthand_items() {
+    if &fixture.shorthand_items != attribute.shorthand_items() {
         return false;
     }
 
-    match tattribute.name {
+    match fixture.name {
         Some(ref name) => {
             if let Some(attr_name) = attribute.name() {
                 name == attr_name

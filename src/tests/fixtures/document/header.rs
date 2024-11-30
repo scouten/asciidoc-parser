@@ -41,16 +41,16 @@ impl PartialEq<THeader> for &Header<'_> {
     }
 }
 
-fn fixture_eq_observed(theader: &THeader, header: &Header) -> bool {
-    if &theader.source != header.span() {
+fn fixture_eq_observed(fixture: &THeader, header: &Header) -> bool {
+    if &fixture.source != header.span() {
         return false;
     }
 
-    if theader.title.is_some() != header.title().is_some() {
+    if fixture.title.is_some() != header.title().is_some() {
         return false;
     }
 
-    if let Some(ref th_title) = theader.title {
+    if let Some(ref th_title) = fixture.title {
         if let Some(ref h_title) = header.title() {
             if th_title != h_title {
                 return false;
@@ -58,11 +58,11 @@ fn fixture_eq_observed(theader: &THeader, header: &Header) -> bool {
         }
     }
 
-    if theader.attributes.len() != header.attributes().len() {
+    if fixture.attributes.len() != header.attributes().len() {
         return false;
     }
 
-    for (th_attribute, attribute) in theader.attributes.iter().zip(header.attributes()) {
+    for (th_attribute, attribute) in fixture.attributes.iter().zip(header.attributes()) {
         if th_attribute != attribute {
             return false;
         }

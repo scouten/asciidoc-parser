@@ -33,16 +33,16 @@ impl PartialEq<TInlineMacro> for InlineMacro<'_> {
     }
 }
 
-fn fixture_eq_observed(tinline_macro: &TInlineMacro, inline_macro: &InlineMacro) -> bool {
-    if &tinline_macro.name != inline_macro.name() {
+fn fixture_eq_observed(fixture: &TInlineMacro, inline_macro: &InlineMacro) -> bool {
+    if &fixture.name != inline_macro.name() {
         return false;
     }
 
-    if tinline_macro.target.is_some() != inline_macro.target().is_some() {
+    if fixture.target.is_some() != inline_macro.target().is_some() {
         return false;
     }
 
-    if let Some(ref th_target) = tinline_macro.target {
+    if let Some(ref th_target) = fixture.target {
         if let Some(ref h_target) = inline_macro.target() {
             if &th_target != h_target {
                 return false;
@@ -50,11 +50,11 @@ fn fixture_eq_observed(tinline_macro: &TInlineMacro, inline_macro: &InlineMacro)
         }
     }
 
-    if tinline_macro.attrlist.is_some() != inline_macro.attrlist().is_some() {
+    if fixture.attrlist.is_some() != inline_macro.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref th_attrlist) = tinline_macro.attrlist {
+    if let Some(ref th_attrlist) = fixture.attrlist {
         if let Some(ref h_attrlist) = inline_macro.attrlist() {
             if &th_attrlist != h_attrlist {
                 return false;
@@ -62,5 +62,5 @@ fn fixture_eq_observed(tinline_macro: &TInlineMacro, inline_macro: &InlineMacro)
         }
     }
 
-    &tinline_macro.source == inline_macro.span()
+    &fixture.source == inline_macro.span()
 }

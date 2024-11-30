@@ -40,14 +40,14 @@ impl PartialEq<TCompoundDelimitedBlock> for CompoundDelimitedBlock<'_> {
 }
 
 fn fixture_eq_observed(
-    tcompound_delimited_block: &TCompoundDelimitedBlock,
+    fixture: &TCompoundDelimitedBlock,
     compound_delimited_block: &CompoundDelimitedBlock,
 ) -> bool {
-    if tcompound_delimited_block.blocks.len() != compound_delimited_block.nested_blocks().len() {
+    if fixture.blocks.len() != compound_delimited_block.nested_blocks().len() {
         return false;
     }
 
-    for (td_block, block) in tcompound_delimited_block
+    for (td_block, block) in fixture
         .blocks
         .iter()
         .zip(compound_delimited_block.nested_blocks())
@@ -57,15 +57,15 @@ fn fixture_eq_observed(
         }
     }
 
-    if tcompound_delimited_block.context != compound_delimited_block.context().as_ref() {
+    if fixture.context != compound_delimited_block.context().as_ref() {
         return false;
     }
 
-    if tcompound_delimited_block.title.is_some() != compound_delimited_block.title().is_some() {
+    if fixture.title.is_some() != compound_delimited_block.title().is_some() {
         return false;
     }
 
-    if let Some(ref tcdb_title) = tcompound_delimited_block.title {
+    if let Some(ref tcdb_title) = fixture.title {
         if let Some(ref cdb_title) = compound_delimited_block.title() {
             if tcdb_title != cdb_title {
                 return false;
@@ -73,12 +73,11 @@ fn fixture_eq_observed(
         }
     }
 
-    if tcompound_delimited_block.attrlist.is_some() != compound_delimited_block.attrlist().is_some()
-    {
+    if fixture.attrlist.is_some() != compound_delimited_block.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref tcdb_attrlist) = tcompound_delimited_block.attrlist {
+    if let Some(ref tcdb_attrlist) = fixture.attrlist {
         if let Some(ref cdb_attrlist) = compound_delimited_block.attrlist() {
             if &tcdb_attrlist != cdb_attrlist {
                 return false;
@@ -86,5 +85,5 @@ fn fixture_eq_observed(
         }
     }
 
-    &tcompound_delimited_block.source == compound_delimited_block.span()
+    &fixture.source == compound_delimited_block.span()
 }

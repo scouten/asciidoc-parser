@@ -26,8 +26,8 @@ impl PartialEq<TBlock> for Block<'_> {
     }
 }
 
-fn fixture_eq_observed(tblock: &TBlock, block: &Block) -> bool {
-    match tblock {
+fn fixture_eq_observed(fixture: &TBlock, block: &Block) -> bool {
+    match fixture {
         TBlock::Simple(ref tsimple_block) => match block {
             Block::Simple(ref simple_block) => tsimple_block == simple_block,
             _ => false,

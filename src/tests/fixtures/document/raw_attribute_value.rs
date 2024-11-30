@@ -27,11 +27,8 @@ impl PartialEq<TRawAttributeValue> for &RawAttributeValue<'_> {
     }
 }
 
-fn fixture_eq_observed(
-    tattribute_value: &TRawAttributeValue,
-    attribute_value: &RawAttributeValue,
-) -> bool {
-    match tattribute_value {
+fn fixture_eq_observed(fixture: &TRawAttributeValue, attribute_value: &RawAttributeValue) -> bool {
+    match fixture {
         TRawAttributeValue::Value(ref v) => {
             if let RawAttributeValue::Value(ref av) = attribute_value {
                 v == av

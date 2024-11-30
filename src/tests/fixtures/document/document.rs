@@ -45,30 +45,30 @@ impl PartialEq<TDocument> for &Document<'_> {
     }
 }
 
-fn fixture_eq_observed(tdocument: &TDocument, document: &Document) -> bool {
-    if &tdocument.source != document.span() {
+fn fixture_eq_observed(fixture: &TDocument, document: &Document) -> bool {
+    if &fixture.source != document.span() {
         return false;
     }
 
-    if &tdocument.header != document.header() {
+    if &fixture.header != document.header() {
         return false;
     }
 
-    if tdocument.blocks.len() != document.nested_blocks().len() {
+    if fixture.blocks.len() != document.nested_blocks().len() {
         return false;
     }
 
-    for (td_block, block) in tdocument.blocks.iter().zip(document.nested_blocks()) {
+    for (td_block, block) in fixture.blocks.iter().zip(document.nested_blocks()) {
         if td_block != block {
             return false;
         }
     }
 
-    if tdocument.warnings.len() != document.warnings().len() {
+    if fixture.warnings.len() != document.warnings().len() {
         return false;
     }
 
-    for (td_warning, warning) in tdocument.warnings.iter().zip(document.warnings()) {
+    for (td_warning, warning) in fixture.warnings.iter().zip(document.warnings()) {
         if td_warning != warning {
             return false;
         }

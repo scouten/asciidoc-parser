@@ -40,16 +40,16 @@ impl PartialEq<TMacroBlock> for MacroBlock<'_> {
     }
 }
 
-fn fixture_eq_observed(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool {
-    if &tmacro_block.name != macro_block.name() {
+fn fixture_eq_observed(fixture: &TMacroBlock, macro_block: &MacroBlock) -> bool {
+    if &fixture.name != macro_block.name() {
         return false;
     }
 
-    if tmacro_block.target.is_some() != macro_block.target().is_some() {
+    if fixture.target.is_some() != macro_block.target().is_some() {
         return false;
     }
 
-    if let Some(ref th_target) = tmacro_block.target {
+    if let Some(ref th_target) = fixture.target {
         if let Some(ref h_target) = macro_block.target() {
             if &th_target != h_target {
                 return false;
@@ -57,15 +57,15 @@ fn fixture_eq_observed(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> 
         }
     }
 
-    if tmacro_block.macro_attrlist != *macro_block.macro_attrlist() {
+    if fixture.macro_attrlist != *macro_block.macro_attrlist() {
         return false;
     }
 
-    if tmacro_block.title.is_some() != macro_block.title().is_some() {
+    if fixture.title.is_some() != macro_block.title().is_some() {
         return false;
     }
 
-    if let Some(ref tm_title) = tmacro_block.title {
+    if let Some(ref tm_title) = fixture.title {
         if let Some(ref m_title) = macro_block.title() {
             if tm_title != m_title {
                 return false;
@@ -73,11 +73,11 @@ fn fixture_eq_observed(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> 
         }
     }
 
-    if tmacro_block.attrlist.is_some() != macro_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != macro_block.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref tm_attrlist) = tmacro_block.attrlist {
+    if let Some(ref tm_attrlist) = fixture.attrlist {
         if let Some(ref m_attrlist) = macro_block.attrlist() {
             if &tm_attrlist != m_attrlist {
                 return false;
@@ -85,5 +85,5 @@ fn fixture_eq_observed(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> 
         }
     }
 
-    &tmacro_block.source == macro_block.span()
+    &fixture.source == macro_block.span()
 }

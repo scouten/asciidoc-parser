@@ -42,36 +42,32 @@ impl PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'_> {
 }
 
 fn fixture_eq_observed(
-    traw_delimited_block: &TRawDelimitedBlock,
+    fixture: &TRawDelimitedBlock,
     raw_delimited_block: &RawDelimitedBlock,
 ) -> bool {
-    if traw_delimited_block.lines.len() != raw_delimited_block.lines().len() {
+    if fixture.lines.len() != raw_delimited_block.lines().len() {
         return false;
     }
 
-    for (td_line, line) in traw_delimited_block
-        .lines
-        .iter()
-        .zip(raw_delimited_block.lines())
-    {
+    for (td_line, line) in fixture.lines.iter().zip(raw_delimited_block.lines()) {
         if td_line != line {
             return false;
         }
     }
 
-    if traw_delimited_block.content_model != raw_delimited_block.content_model() {
+    if fixture.content_model != raw_delimited_block.content_model() {
         return false;
     }
 
-    if traw_delimited_block.context != raw_delimited_block.context().as_ref() {
+    if fixture.context != raw_delimited_block.context().as_ref() {
         return false;
     }
 
-    if traw_delimited_block.title.is_some() != raw_delimited_block.title().is_some() {
+    if fixture.title.is_some() != raw_delimited_block.title().is_some() {
         return false;
     }
 
-    if let Some(ref trdb_title) = traw_delimited_block.title {
+    if let Some(ref trdb_title) = fixture.title {
         if let Some(ref rdb_title) = raw_delimited_block.title() {
             if trdb_title != rdb_title {
                 return false;
@@ -79,11 +75,11 @@ fn fixture_eq_observed(
         }
     }
 
-    if traw_delimited_block.attrlist.is_some() != raw_delimited_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != raw_delimited_block.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref trdb_attrlist) = traw_delimited_block.attrlist {
+    if let Some(ref trdb_attrlist) = fixture.attrlist {
         if let Some(ref rdb_attrlist) = raw_delimited_block.attrlist() {
             if &trdb_attrlist != rdb_attrlist {
                 return false;
@@ -91,5 +87,5 @@ fn fixture_eq_observed(
         }
     }
 
-    &traw_delimited_block.source == raw_delimited_block.span()
+    &fixture.source == raw_delimited_block.span()
 }
