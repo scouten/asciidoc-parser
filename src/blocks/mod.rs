@@ -35,6 +35,7 @@ mod r#macro;
 pub use r#macro::MacroBlock;
 
 pub(crate) mod parse_utils;
+pub(crate) mod preamble;
 
 mod raw_delimited;
 pub use raw_delimited::RawDelimitedBlock;

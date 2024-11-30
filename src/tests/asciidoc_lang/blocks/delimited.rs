@@ -62,6 +62,7 @@ fn overview() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         },)
     );
 
@@ -94,6 +95,7 @@ fn overview() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         },)
     );
 
@@ -160,28 +162,37 @@ fn linewise_delimiters() {
     assert_eq!(
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "This is an example of an example block.",
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec![
+                        TInline::Uninterpreted(TSpan {
+                            data: "This is an example of an example block.",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        TInline::Uninterpreted(TSpan {
+                            data: "That's so meta.",
+                            line: 3,
+                            col: 1,
+                            offset: 45,
+                        },),
+                    ],
+                    TSpan {
+                        data: "This is an example of an example block.\nThat's so meta.\n",
                         line: 2,
                         col: 1,
                         offset: 5,
-                    },),
-                    TInline::Uninterpreted(TSpan {
-                        data: "That's so meta.",
-                        line: 3,
-                        col: 1,
-                        offset: 45,
-                    },),
-                ],
-                TSpan {
+                    },
+                ),
+                source: TSpan {
                     data: "This is an example of an example block.\nThat's so meta.\n",
                     line: 2,
                     col: 1,
                     offset: 5,
                 },
-            ),),),],
+                title: None
+            },),],
             context: "example",
             source: TSpan {
                 data: "====\nThis is an example of an example block.\nThat's so meta.\n====",
@@ -189,6 +200,7 @@ fn linewise_delimiters() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         },)
     );
 
@@ -417,8 +429,8 @@ fn nesting_blocks() {
             TCompoundDelimitedBlock {
                 blocks: vec![
                     TBlock::Simple(
-                        TSimpleBlock(
-                            TInline::Uninterpreted(
+                        TSimpleBlock {
+                            inline: TInline::Uninterpreted(
                                 TSpan {
                                     data: "Here's a sample AsciiDoc document:",
                                     line: 2,
@@ -426,7 +438,14 @@ fn nesting_blocks() {
                                     offset: 5,
                                 },
                             ),
-                        ),
+                            source: TSpan {
+                                data: "Here's a sample AsciiDoc document:\n",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            title: None,
+                        },
                     ),
                     TBlock::RawDelimited(
                         TRawDelimitedBlock {
@@ -464,11 +483,12 @@ fn nesting_blocks() {
                                 col: 1,
                                 offset: 41,
                             },
+                            title: None,
                         },
                     ),
                     TBlock::Simple(
-                        TSimpleBlock(
-                            TInline::Uninterpreted(
+                        TSimpleBlock{
+                            inline: TInline::Uninterpreted(
                                 TSpan {
                                     data: "The document header is useful, but not required.",
                                     line: 11,
@@ -476,7 +496,14 @@ fn nesting_blocks() {
                                     offset: 101,
                                 },
                             ),
-                        ),
+                            source: TSpan {
+                                data: "The document header is useful, but not required.\n",
+                                line: 11,
+                                col: 1,
+                                offset: 101,
+                            },
+                            title: None,
+                        },
                     ),
                 ],
                 context: "example",
@@ -486,6 +513,7 @@ fn nesting_blocks() {
                     col: 1,
                     offset: 0,
                 },
+                title: None,
             },
         )
     );

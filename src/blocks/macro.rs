@@ -1,6 +1,6 @@
 use crate::{
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock},
+    blocks::{preamble::Preamble, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -20,13 +20,14 @@ pub struct MacroBlock<'src> {
     target: Option<Span<'src>>,
     attrlist: Attrlist<'src>,
     source: Span<'src>,
+    title: Option<Span<'src>>,
 }
 
 impl<'src> MacroBlock<'src> {
     pub(crate) fn parse(
-        source: Span<'src>,
+        preamble: &Preamble<'src>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        let line = source.take_normalized_line();
+        let line = preamble.block_start.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.item.ends_with(']') {
@@ -73,6 +74,9 @@ impl<'src> MacroBlock<'src> {
 
         let attrlist = Attrlist::parse(attrlist);
 
+        let source: Span = preamble.source.trim_remainder(line.after);
+        let source = source.slice(0..source.trim().len());
+
         MatchAndWarnings {
             item: Some(MatchedItem {
                 item: Self {
@@ -83,7 +87,8 @@ impl<'src> MacroBlock<'src> {
                         Some(target.item)
                     },
                     attrlist: attrlist.item.item,
-                    source: line.item,
+                    source,
+                    title: preamble.title,
                 },
 
                 after: line.after.discard_empty_lines(),
@@ -110,9 +115,8 @@ impl<'src> MacroBlock<'src> {
 
 impl<'src> IsBlock<'src> for MacroBlock<'src> {
     fn content_model(&self) -> ContentModel {
-        // TO DO: We'll probably want different macro types
-        // to provide different content models. For now, just
-        // default to "simple."
+        // TO DO: We'll probably want different macro types to provide different content
+        // models. For now, just default to "simple."
         ContentModel::Simple
     }
 
@@ -121,6 +125,10 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
         // contexts. For now, just default to "paragraph."
 
         "paragraph".into()
+    }
+
+    fn title(&'src self) -> Option<Span<'src>> {
+        self.title
     }
 }
 

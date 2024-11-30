@@ -95,6 +95,11 @@ impl<'src> IsBlock<'src> for Document<'src> {
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         self.blocks.iter()
     }
+
+    fn title(&'src self) -> Option<Span<'src>> {
+        // Document title is reflected in the Header.
+        None
+    }
 }
 
 impl<'src> HasSpan<'src> for Document<'src> {

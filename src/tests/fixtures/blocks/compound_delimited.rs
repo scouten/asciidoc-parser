@@ -11,6 +11,7 @@ pub(crate) struct TCompoundDelimitedBlock {
     pub blocks: Vec<TBlock>,
     pub context: &'static str,
     pub source: TSpan,
+    pub title: Option<TSpan>,
 }
 
 impl fmt::Debug for TCompoundDelimitedBlock {
@@ -19,6 +20,7 @@ impl fmt::Debug for TCompoundDelimitedBlock {
             .field("blocks", &self.blocks)
             .field("context", &self.context)
             .field("source", &self.source)
+            .field("title", &self.title)
             .finish()
     }
 }
@@ -55,6 +57,18 @@ fn tcompound_delimited_block_eq(
 
     if tcompound_delimited_block.context != compound_delimited_block.context().as_ref() {
         return false;
+    }
+
+    if tcompound_delimited_block.title.is_some() != compound_delimited_block.title().is_some() {
+        return false;
+    }
+
+    if let Some(ref tcdb_title) = tcompound_delimited_block.title {
+        if let Some(ref cdb_title) = compound_delimited_block.title() {
+            if tcdb_title != cdb_title {
+                return false;
+            }
+        }
     }
 
     &tcompound_delimited_block.source == compound_delimited_block.span()

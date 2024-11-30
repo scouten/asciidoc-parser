@@ -46,6 +46,9 @@ pub enum WarningType {
 
     #[error("Closing marker for delimited block not found")]
     UnterminatedDelimitedBlock,
+
+    #[error("A block title or attribute list was found without a subsequent block")]
+    MissingBlockAfterTitleOrAttributeList,
 }
 
 /// Return type used to signal one or more possible parse error.

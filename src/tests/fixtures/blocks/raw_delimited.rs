@@ -12,6 +12,7 @@ pub(crate) struct TRawDelimitedBlock {
     pub content_model: ContentModel,
     pub context: &'static str,
     pub source: TSpan,
+    pub title: Option<TSpan>,
 }
 
 impl fmt::Debug for TRawDelimitedBlock {
@@ -21,6 +22,7 @@ impl fmt::Debug for TRawDelimitedBlock {
             .field("content_model", &self.content_model)
             .field("context", &self.context)
             .field("source", &self.source)
+            .field("title", &self.title)
             .finish()
     }
 }
@@ -61,6 +63,18 @@ fn traw_delimited_block_eq(
 
     if traw_delimited_block.context != raw_delimited_block.context().as_ref() {
         return false;
+    }
+
+    if traw_delimited_block.title.is_some() != raw_delimited_block.title().is_some() {
+        return false;
+    }
+
+    if let Some(ref trdb_title) = traw_delimited_block.title {
+        if let Some(ref rdb_title) = raw_delimited_block.title() {
+            if trdb_title != rdb_title {
+                return false;
+            }
+        }
     }
 
     &traw_delimited_block.source == raw_delimited_block.span()

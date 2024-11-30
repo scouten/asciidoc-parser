@@ -165,25 +165,24 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::CompoundDelimitedBlock,
+        blocks::{preamble::Preamble, CompoundDelimitedBlock},
         tests::fixtures::{warnings::TWarning, TSpan},
         warnings::WarningType,
-        Span,
     };
 
     #[test]
     fn err_invalid_delimiter() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new("///")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new("////x")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new("--x")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new("****x")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new("__\n__")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("///")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("////x")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("--x")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("****x")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("__\n__")).is_none());
     }
 
     #[test]
     fn err_unterminated() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("====\nblah blah blah")).unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new("====\nblah blah blah")).unwrap();
 
         assert!(maw.item.is_none());
 
@@ -203,16 +202,18 @@ mod parse {
 }
 
 mod comment {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, CompoundDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("////\n////")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("////\n////")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("////\nline1  \nline2\n////")).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new("////\nline1  \nline2\n////")).is_none()
+        );
     }
 }
 
@@ -220,18 +221,17 @@ mod example {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock},
+        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             inlines::TInline,
             TSpan,
         },
-        Span,
     };
 
     #[test]
     fn empty() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("====\n====")).unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new("====\n====")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -245,18 +245,21 @@ mod example {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "example");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
     fn multiple_blocks() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("====\nblock1\n\nblock2\n====")).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&Preamble::new("====\nblock1\n\nblock2\n====")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -264,18 +267,36 @@ mod example {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 13,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                        title: None
+                    },),
                 ),
                 context: "example",
                 source: TSpan {
@@ -283,32 +304,52 @@ mod example {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "example");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 13,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -316,9 +357,10 @@ mod example {
 
     #[test]
     fn nested_blocks() {
-        let maw =
-            CompoundDelimitedBlock::parse(Span::new("====\nblock1\n\n=====\nblock2\n=====\n===="))
-                .unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new(
+            "====\nblock1\n\n=====\nblock2\n=====\n====",
+        ))
+        .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -326,21 +368,37 @@ mod example {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None
+                    },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                            TSpan {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                            inline: TInline::Uninterpreted(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
+                            },),
+                            source: TSpan {
+                                data: "block2\n",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
                             },
-                        ),),),),
+                            title: None
+                        },),),
                         context: "example",
                         source: TSpan {
                             data: "=====\nblock2\n=====\n",
@@ -348,6 +406,7 @@ mod example {
                             col: 1,
                             offset: 13,
                         },
+                        title: None
                     })
                 ),
                 context: "example",
@@ -356,35 +415,53 @@ mod example {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "example");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
+                    },),
+                    source: TSpan {
+                        data: "block2\n",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
                     },
-                ),),),),
+                    title: None
+                },),),
                 context: "example",
                 source: TSpan {
                     data: "=====\nblock2\n=====\n",
@@ -392,6 +469,7 @@ mod example {
                     col: 1,
                     offset: 13,
                 },
+                title: None,
             })
         );
 
@@ -400,30 +478,34 @@ mod example {
 }
 
 mod listing {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, CompoundDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("----\n----")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("----\n----")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("----\nline1  \nline2\n----")).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new("----\nline1  \nline2\n----")).is_none()
+        );
     }
 }
 
 mod literal {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, CompoundDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("....\n....")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("....\n....")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("....\nline1  \nline2\n....")).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new("....\nline1  \nline2\n....")).is_none()
+        );
     }
 }
 
@@ -431,18 +513,17 @@ mod open {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock},
+        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             inlines::TInline,
             TSpan,
         },
-        Span,
     };
 
     #[test]
     fn empty() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("--\n--")).unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new("--\n--")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -456,18 +537,21 @@ mod open {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "open");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
     fn multiple_blocks() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("--\nblock1\n\nblock2\n--")).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&Preamble::new("--\nblock1\n\nblock2\n--")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -475,18 +559,36 @@ mod open {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 3,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 11,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
+                        title: None
+                    },),
                 ),
                 context: "open",
                 source: TSpan {
@@ -494,32 +596,52 @@ mod open {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "open");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 3,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 11,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -529,7 +651,8 @@ mod open {
     fn nested_blocks() {
         // Spec says three hyphens does NOT mark an open block.
         let maw =
-            CompoundDelimitedBlock::parse(Span::new("--\nblock1\n\n---\nblock2\n---\n--")).unwrap();
+            CompoundDelimitedBlock::parse(&Preamble::new("--\nblock1\n\n---\nblock2\n---\n--"))
+                .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -537,40 +660,58 @@ mod open {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 3,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                        vec![
-                            TInline::Uninterpreted(TSpan {
-                                data: "---",
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Sequence(
+                            vec![
+                                TInline::Uninterpreted(TSpan {
+                                    data: "---",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 11,
+                                }),
+                                TInline::Uninterpreted(TSpan {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 15,
+                                }),
+                                TInline::Uninterpreted(TSpan {
+                                    data: "---",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 22,
+                                }),
+                            ],
+                            TSpan {
+                                data: "---\nblock2\n---\n",
                                 line: 4,
                                 col: 1,
                                 offset: 11,
-                            }),
-                            TInline::Uninterpreted(TSpan {
-                                data: "block2",
-                                line: 5,
-                                col: 1,
-                                offset: 15,
-                            }),
-                            TInline::Uninterpreted(TSpan {
-                                data: "---",
-                                line: 6,
-                                col: 1,
-                                offset: 22,
-                            }),
-                        ],
-                        TSpan {
+                            }
+                        ),
+                        source: TSpan {
                             data: "---\nblock2\n---\n",
                             line: 4,
                             col: 1,
                             offset: 11,
-                        }
-                    ),))
+                        },
+                        title: None
+                    })
                 ),
                 context: "open",
                 source: TSpan {
@@ -578,54 +719,74 @@ mod open {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "open");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 3,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "---",
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec![
+                        TInline::Uninterpreted(TSpan {
+                            data: "---",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        }),
+                        TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 15,
+                        }),
+                        TInline::Uninterpreted(TSpan {
+                            data: "---",
+                            line: 6,
+                            col: 1,
+                            offset: 22,
+                        }),
+                    ],
+                    TSpan {
+                        data: "---\nblock2\n---\n",
                         line: 4,
                         col: 1,
                         offset: 11,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 5,
-                        col: 1,
-                        offset: 15,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "---",
-                        line: 6,
-                        col: 1,
-                        offset: 22,
-                    }),
-                ],
-                TSpan {
+                    }
+                ),
+                source: TSpan {
                     data: "---\nblock2\n---\n",
                     line: 4,
                     col: 1,
                     offset: 11,
-                }
-            ),))
+                },
+                title: None
+            })
         );
 
         assert!(blocks.next().is_none());
@@ -636,18 +797,17 @@ mod sidebar {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock},
+        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             inlines::TInline,
             TSpan,
         },
-        Span,
     };
 
     #[test]
     fn empty() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("****\n****")).unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new("****\n****")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -661,18 +821,21 @@ mod sidebar {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "sidebar");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
     fn multiple_blocks() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("****\nblock1\n\nblock2\n****")).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&Preamble::new("****\nblock1\n\nblock2\n****")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -680,18 +843,36 @@ mod sidebar {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 13,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                        title: None
+                    },),
                 ),
                 context: "sidebar",
                 source: TSpan {
@@ -699,32 +880,52 @@ mod sidebar {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 13,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -732,9 +933,10 @@ mod sidebar {
 
     #[test]
     fn nested_blocks() {
-        let maw =
-            CompoundDelimitedBlock::parse(Span::new("****\nblock1\n\n*****\nblock2\n*****\n****"))
-                .unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new(
+            "****\nblock1\n\n*****\nblock2\n*****\n****",
+        ))
+        .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -742,21 +944,37 @@ mod sidebar {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None
+                    },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                            TSpan {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                            inline: TInline::Uninterpreted(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
+                            },),
+                            source: TSpan {
+                                data: "block2\n",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
                             },
-                        ),),),),
+                            title: None
+                        },),),
                         context: "sidebar",
                         source: TSpan {
                             data: "*****\nblock2\n*****\n",
@@ -764,6 +982,7 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },
+                        title: None,
                     })
                 ),
                 context: "sidebar",
@@ -772,35 +991,53 @@ mod sidebar {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
+                    },),
+                    source: TSpan {
+                        data: "block2\n",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
                     },
-                ),),),),
+                    title: None
+                },),),
                 context: "sidebar",
                 source: TSpan {
                     data: "*****\nblock2\n*****\n",
@@ -808,6 +1045,7 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },
+                title: None
             })
         );
 
@@ -816,36 +1054,46 @@ mod sidebar {
 }
 
 mod table {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, CompoundDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("|===\n|===")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new(",===\n,===")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new(":===\n:===")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new("!===\n!===")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("|===\n|===")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new(",===\n,===")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new(":===\n:===")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("!===\n!===")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("|===\nline1  \nline2\n|===")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new(",===\nline1  \nline2\n,===")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new(":===\nline1  \nline2\n:===")).is_none());
-        assert!(CompoundDelimitedBlock::parse(Span::new("!===\nline1  \nline2\n!===")).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new("|===\nline1  \nline2\n|===")).is_none()
+        );
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new(",===\nline1  \nline2\n,===")).is_none()
+        );
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new(":===\nline1  \nline2\n:===")).is_none()
+        );
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new("!===\nline1  \nline2\n!===")).is_none()
+        );
     }
 }
 
 mod pass {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use crate::blocks::{preamble::Preamble, CompoundDelimitedBlock};
 
     #[test]
     fn empty() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("++++\n++++")).is_none());
+        assert!(CompoundDelimitedBlock::parse(&Preamble::new("++++\n++++")).is_none());
     }
 
     #[test]
     fn multiple_lines() {
-        assert!(CompoundDelimitedBlock::parse(Span::new("++++\nline1  \nline2\n++++")).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&Preamble::new("++++\nline1  \nline2\n++++")).is_none()
+        );
     }
 }
 
@@ -853,18 +1101,17 @@ mod quote {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock},
+        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             inlines::TInline,
             TSpan,
         },
-        Span,
     };
 
     #[test]
     fn empty() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("____\n____")).unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new("____\n____")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -878,18 +1125,21 @@ mod quote {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "quote");
         assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
     fn multiple_blocks() {
-        let maw = CompoundDelimitedBlock::parse(Span::new("____\nblock1\n\nblock2\n____")).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&Preamble::new("____\nblock1\n\nblock2\n____")).unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -897,18 +1147,36 @@ mod quote {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 13,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },),
+                        source: TSpan {
+                            data: "block2\n",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                        title: None
+                    },),
                 ),
                 context: "quote",
                 source: TSpan {
@@ -916,32 +1184,52 @@ mod quote {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "quote");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block2",
-                line: 4,
-                col: 1,
-                offset: 13,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },),
+                source: TSpan {
+                    data: "block2\n",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
+                title: None
+            },)
         );
 
         assert!(blocks.next().is_none());
@@ -949,9 +1237,10 @@ mod quote {
 
     #[test]
     fn nested_blocks() {
-        let maw =
-            CompoundDelimitedBlock::parse(Span::new("____\nblock1\n\n_____\nblock2\n_____\n____"))
-                .unwrap();
+        let maw = CompoundDelimitedBlock::parse(&Preamble::new(
+            "____\nblock1\n\n_____\nblock2\n_____\n____",
+        ))
+        .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -959,21 +1248,37 @@ mod quote {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: vec!(
-                    TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },),),),
+                    TBlock::Simple(TSimpleBlock {
+                        inline: TInline::Uninterpreted(TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },),
+                        source: TSpan {
+                            data: "block1\n",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None
+                    },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                            TSpan {
+                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                            inline: TInline::Uninterpreted(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
+                            },),
+                            source: TSpan {
+                                data: "block2\n",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
                             },
-                        ),),),),
+                            title: None
+                        },),),
                         context: "quote",
                         source: TSpan {
                             data: "_____\nblock2\n_____\n",
@@ -981,6 +1286,7 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
+                        title: None
                     })
                 ),
                 context: "quote",
@@ -989,35 +1295,53 @@ mod quote {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             }
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.context().as_ref(), "quote");
+        assert!(mi.item.title().is_none());
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "block1",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },),),)
+            &TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },),
+                source: TSpan {
+                    data: "block1\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                title: None
+            },)
         );
 
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                    TSpan {
+                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
+                    },),
+                    source: TSpan {
+                        data: "block2\n",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
                     },
-                ),),),),
+                    title: None
+                },),),
                 context: "quote",
                 source: TSpan {
                     data: "_____\nblock2\n_____\n",
@@ -1025,6 +1349,7 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
+                title: None
             })
         );
 

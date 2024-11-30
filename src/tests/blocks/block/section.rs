@@ -23,12 +23,21 @@ fn err_missing_space_before_title() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "=blah blah",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            source: TSpan {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None
+        })
     );
 
     assert_eq!(
@@ -60,12 +69,13 @@ fn simplest_section_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
         TBlock::Section(TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -78,6 +88,7 @@ fn simplest_section_block() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -102,31 +113,40 @@ fn has_child_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.context().deref(), "section");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
         TBlock::Section(TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
-                }
-            )))],
+                }),
+                source: TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+                title: None
+            })],
             source: TSpan {
                 data: "== Section Title\n\nabc",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -134,12 +154,21 @@ fn has_child_block() {
 
     assert_eq!(
         nested_blocks.next().unwrap(),
-        &TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "abc",
-            line: 3,
-            col: 1,
-            offset: 18,
-        })))
+        &TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 3,
+                col: 1,
+                offset: 18,
+            }),
+            source: TSpan {
+                data: "abc",
+                line: 3,
+                col: 1,
+                offset: 18,
+            },
+            title: None
+        })
     );
 
     assert_eq!(nested_blocks.next(), None);
@@ -166,6 +195,109 @@ fn has_child_block() {
 }
 
 #[test]
+fn title() {
+    let mi = Block::parse(Span::new(".other section title\n== Section Title\n\nabc"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert_eq!(mi.item.context().deref(), "section");
+
+    assert_eq!(
+        mi.item,
+        TBlock::Section(TSectionBlock {
+            level: 1,
+            section_title: TSpan {
+                data: "Section Title",
+                line: 2,
+                col: 4,
+                offset: 24,
+            },
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "abc",
+                    line: 4,
+                    col: 1,
+                    offset: 39,
+                }),
+                source: TSpan {
+                    data: "abc",
+                    line: 4,
+                    col: 1,
+                    offset: 39,
+                },
+                title: None
+            })],
+            source: TSpan {
+                data: ".other section title\n== Section Title\n\nabc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "other section title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+        })
+    );
+
+    assert_eq!(
+        mi.item.title().unwrap(),
+        TSpan {
+            data: "other section title",
+            line: 1,
+            col: 2,
+            offset: 1,
+        }
+    );
+
+    let mut nested_blocks = mi.item.nested_blocks();
+
+    assert_eq!(
+        nested_blocks.next().unwrap(),
+        &TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 4,
+                col: 1,
+                offset: 39,
+            }),
+            source: TSpan {
+                data: "abc",
+                line: 4,
+                col: 1,
+                offset: 39,
+            },
+            title: None
+        })
+    );
+
+    assert_eq!(nested_blocks.next(), None);
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".other section title\n== Section Title\n\nabc",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 4,
+            col: 4,
+            offset: 42
+        }
+    );
+}
+
+#[test]
 fn warn_child_attrlist_has_extra_comma() {
     let maw = Block::parse(Span::new(
         "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
@@ -177,7 +309,7 @@ fn warn_child_attrlist_has_extra_comma() {
         mi.item,
         TBlock::Section(TSectionBlock {
             level: 1,
-            title: TSpan {
+            section_title: TSpan {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -275,6 +407,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     col: 1,
                     offset: 18,
                 },
+                title: None,
             })],
             source: TSpan {
                 data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
@@ -282,6 +415,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 

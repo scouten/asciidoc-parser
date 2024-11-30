@@ -30,6 +30,7 @@ fn empty_source() {
 
     assert_eq!(doc.content_model(), ContentModel::Compound);
     assert_eq!(doc.context().deref(), "document");
+    assert!(doc.title().is_none());
 
     assert_eq!(
         doc,
@@ -104,14 +105,21 @@ fn one_simple_block() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "abc",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
-            )))],
+                }),
+                source: TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None
+            })],
             warnings: vec![],
         }
     );
@@ -139,18 +147,36 @@ fn two_simple_blocks() {
                 offset: 0
             },
             blocks: vec![
-                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }))),
-                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                    data: "def",
-                    line: 3,
-                    col: 1,
-                    offset: 5,
-                })))
+                TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }),
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title: None
+                }),
+                TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 3,
+                        col: 1,
+                        offset: 5,
+                    }),
+                    source: TSpan {
+                        data: "def",
+                        line: 3,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title: None
+                })
             ],
             warnings: vec![],
         }
@@ -178,18 +204,36 @@ fn two_blocks_and_title() {
                 }
             },
             blocks: vec![
-                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                    data: "abc",
-                    line: 3,
-                    col: 1,
-                    offset: 17,
-                }))),
-                TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                    data: "def",
-                    line: 5,
-                    col: 1,
-                    offset: 22,
-                })))
+                TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    }),
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },
+                    title: None
+                }),
+                TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 5,
+                        col: 1,
+                        offset: 22,
+                    }),
+                    source: TSpan {
+                        data: "def",
+                        line: 5,
+                        col: 1,
+                        offset: 22,
+                    },
+                    title: None
+                })
             ],
             source: TSpan {
                 data: "= Example Title\n\nabc\n\ndef",
@@ -222,14 +266,21 @@ fn extra_space_before_title() {
                     offset: 0,
                 }
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 19,
-                }
-            )))],
+                }),
+                source: TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                },
+                title: None
+            })],
             source: TSpan {
                 data: "=   Example Title\n\nabc",
                 line: 1,
@@ -261,14 +312,21 @@ fn err_bad_header() {
                     offset: 0,
                 }
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
-                TSpan {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
                     data: "not an attribute",
                     line: 2,
                     col: 1,
                     offset: 8,
-                }
-            )))],
+                }),
+                source: TSpan {
+                    data: "not an attribute\n",
+                    line: 2,
+                    col: 1,
+                    offset: 8,
+                },
+                title: None
+            })],
             source: TSpan {
                 data: "= Title\nnot an attribute\n",
                 line: 1,
@@ -308,18 +366,25 @@ fn err_bad_header_and_bad_macro() {
                     offset: 0,
                 }
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(
+            blocks: vec![TBlock::Simple(TSimpleBlock { inline: TInline::Uninterpreted(
                 TSpan {
                     data: "not an attribute",
                     line: 2,
                     col: 1,
                     offset: 8,
                 }
-            ))),
+            ),
+            source: TSpan {
+                data: "not an attribute\n",
+                line: 2,
+                col: 1,
+                offset: 8,
+            },
+            title: None }),
             TBlock::Section(
                 TSectionBlock {
                     level: 1,
-                    title: TSpan {
+                    section_title: TSpan {
                         data: "Section Title",
                         line: 4,
                         col: 4,
@@ -427,6 +492,7 @@ fn err_bad_header_and_bad_macro() {
                                     col: 1,
                                     offset: 44,
                                 },
+                                title: None,
                             },
                         ),
                     ],
@@ -436,6 +502,7 @@ fn err_bad_header_and_bad_macro() {
                         col: 1,
                         offset: 26,
                     },
+                    title: None,
                 },
             )],
             source: TSpan {

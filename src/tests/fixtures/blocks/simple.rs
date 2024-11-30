@@ -1,13 +1,25 @@
 use std::fmt;
 
-use crate::{blocks::SimpleBlock, tests::fixtures::inlines::TInline};
+use crate::{
+    blocks::{IsBlock, SimpleBlock},
+    span::HasSpan,
+    tests::fixtures::{inlines::TInline, TSpan},
+};
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TSimpleBlock(pub TInline);
+pub(crate) struct TSimpleBlock {
+    pub inline: TInline,
+    pub source: TSpan,
+    pub title: Option<TSpan>,
+}
 
 impl fmt::Debug for TSimpleBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_tuple("SimpleBlock").field(&self.0).finish()
+        f.debug_struct("SimpleBlock")
+            .field("inline", &self.inline)
+            .field("source", &self.source)
+            .field("title", &self.title)
+            .finish()
     }
 }
 
@@ -24,5 +36,17 @@ impl PartialEq<TSimpleBlock> for SimpleBlock<'_> {
 }
 
 fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) -> bool {
-    &tsimple_block.0 == simple_block.inline()
+    if tsimple_block.title.is_some() != simple_block.title().is_some() {
+        return false;
+    }
+
+    if let Some(ref tsb_title) = tsimple_block.title {
+        if let Some(ref sb_title) = simple_block.title() {
+            if tsb_title != sb_title {
+                return false;
+            }
+        }
+    }
+
+    &tsimple_block.source == simple_block.span() && &tsimple_block.inline == simple_block.inline()
 }

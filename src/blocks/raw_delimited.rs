@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
-use super::{ContentModel, IsBlock};
 use crate::{
+    blocks::{preamble::Preamble, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -25,6 +25,7 @@ pub struct RawDelimitedBlock<'src> {
     content_model: ContentModel,
     context: CowStr<'src>,
     source: Span<'src>,
+    title: Option<Span<'src>>,
 }
 
 impl<'src> RawDelimitedBlock<'src> {
@@ -53,9 +54,9 @@ impl<'src> RawDelimitedBlock<'src> {
     }
 
     pub(crate) fn parse(
-        source: Span<'src>,
+        preamble: &Preamble<'src>,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
-        let delimiter = source.take_normalized_line();
+        let delimiter = preamble.block_start.take_normalized_line();
 
         if delimiter.item.len() < 4 {
             return None;
@@ -87,7 +88,8 @@ impl<'src> RawDelimitedBlock<'src> {
                             lines,
                             content_model,
                             context: context.into(),
-                            source: source.trim_remainder(line.after),
+                            source: preamble.source.trim_remainder(line.after),
+                            title: preamble.title,
                         },
                         after: line.after,
                     }),
@@ -127,6 +129,10 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
 
     fn context(&self) -> CowStr<'src> {
         self.context.clone()
+    }
+
+    fn title(&self) -> Option<Span<'src>> {
+        self.title
     }
 }
 

@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
-    blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
+    blocks::{parse_utils::parse_blocks_until, preamble::Preamble, Block, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::MatchAndWarnings,
@@ -18,31 +18,33 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SectionBlock<'src> {
     level: usize,
-    title: Span<'src>,
+    section_title: Span<'src>,
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
+    title: Option<Span<'src>>,
 }
 
 impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
-        source: Span<'src>,
+        preamble: &Preamble<'src>,
     ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
-        let source = source.discard_empty_lines();
+        let source = preamble.block_start.discard_empty_lines();
         let level = parse_title_line(source)?;
 
         let maw_blocks =
             parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0));
 
         let blocks = maw_blocks.item;
-        let source = source.trim_remainder(blocks.after);
+        let source = preamble.source.trim_remainder(blocks.after);
 
         Some(MatchAndWarnings {
             item: MatchedItem {
                 item: Self {
                     level: level.item.0,
-                    title: level.item.1,
+                    section_title: level.item.1,
                     blocks: blocks.item,
                     source,
+                    title: preamble.title,
                 },
                 after: blocks.after,
             },
@@ -63,9 +65,9 @@ impl<'src> SectionBlock<'src> {
         self.level
     }
 
-    /// Return a [`Span`] describing the section title.
-    pub fn title(&'src self) -> &'src Span<'src> {
-        &self.title
+    /// Return a [`Span`] containing the section title.
+    pub fn section_title(&'src self) -> &'src Span<'src> {
+        &self.section_title
     }
 }
 
@@ -80,6 +82,10 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         self.blocks.iter()
+    }
+
+    fn title(&'src self) -> Option<Span<'src>> {
+        self.title
     }
 }
 

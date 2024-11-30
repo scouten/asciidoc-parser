@@ -2,12 +2,12 @@ use std::slice::Iter;
 
 use crate::{
     blocks::{
-        CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock,
-        SimpleBlock,
+        preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock,
+        RawDelimitedBlock, SectionBlock, SimpleBlock,
     },
     span::MatchedItem,
     strings::CowStr,
-    warnings::{MatchAndWarnings, Warning},
+    warnings::{MatchAndWarnings, Warning, WarningType},
     HasSpan, Span,
 };
 
@@ -55,10 +55,41 @@ impl<'src> Block<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        let mut warnings: Vec<Warning<'src>> = vec![];
-        let source = source.discard_empty_lines();
+        // Optimization: If the first line doesn't match any of the early indications
+        // for delimited blocks, titles, or attrlists, we can skip directly to treating
+        // this as a simple block. That saves quite a bit of parsing time.
 
-        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(source) {
+        // If it does contain any of those markers, we fall through to the more costly
+        // tests below which can more accurately classify the upcoming block.
+        if let Some(first_char) = source.chars().next() {
+            if !matches!(first_char, '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_') {
+                let first_line = source.take_line();
+                if !first_line.item.contains("::") {
+                    if let Some(MatchedItem {
+                        item: simple_block,
+                        after,
+                    }) = SimpleBlock::parse_fast(source)
+                    {
+                        return MatchAndWarnings {
+                            item: Some(MatchedItem {
+                                item: Self::Simple(simple_block),
+                                after,
+                            }),
+                            warnings: vec![],
+                        };
+                    }
+                }
+            }
+        }
+
+        // Optimization not possible; start by looking for a preamble (title and/or
+        // attrlist).
+        let MatchAndWarnings {
+            item: mut preamble,
+            mut warnings,
+        } = Preamble::parse(source);
+
+        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&preamble) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -77,7 +108,7 @@ impl<'src> Block<'src> {
             }
         }
 
-        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(source) {
+        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&preamble) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -97,10 +128,10 @@ impl<'src> Block<'src> {
         }
 
         // Try to discern the block type by scanning the first line.
-        let line = source.take_normalized_line();
+        let line = preamble.block_start.take_normalized_line();
 
         if line.item.contains("::") {
-            let mut macro_block_maw = MacroBlock::parse(source);
+            let mut macro_block_maw = MacroBlock::parse(&preamble);
 
             if let Some(macro_block) = macro_block_maw.item {
                 // Only propagate warnings from macro block parsing if we think this
@@ -124,7 +155,7 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=') {
-            if let Some(mut maw_section_block) = SectionBlock::parse(source) {
+            if let Some(mut maw_section_block) = SectionBlock::parse(&preamble) {
                 if !maw_section_block.warnings.is_empty() {
                     warnings.append(&mut maw_section_block.warnings);
                 }
@@ -142,9 +173,33 @@ impl<'src> Block<'src> {
             // don't automatically error out on a parse failure.
         }
 
+        // First, let's look for a fun edge case. Perhaps the text contains a preamble
+        // but no block immediately following. If we're not careful, we could spin in a
+        // loop (for example, `parse_blocks_until`) thinking there will be another
+        // block, but there isn't.
+
+        // The following check disables that spin loop.
+        let simple_block_mi = SimpleBlock::parse(&preamble);
+
+        if simple_block_mi.is_none() && !preamble.is_empty() {
+            // We have a preamble with no block. Treat it as a simple block but issue a
+            // warning.
+
+            warnings.push(Warning {
+                source: preamble.source,
+                warning: WarningType::MissingBlockAfterTitleOrAttributeList,
+            });
+
+            // Remove the preamble content so that SimpleBlock will read the title/attrlist
+            // line(s) as regular content.
+            preamble.title = None;
+            preamble.attrlist = None;
+            preamble.block_start = preamble.source;
+        }
+
         // If no other block kind matches, we can always use SimpleBlock.
         MatchAndWarnings {
-            item: SimpleBlock::parse(source).map(|mi| MatchedItem {
+            item: SimpleBlock::parse(&preamble).map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
                 after: mi.after,
             }),
@@ -181,6 +236,16 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.nested_blocks(),
             Self::RawDelimited(b) => b.nested_blocks(),
             Self::CompoundDelimited(b) => b.nested_blocks(),
+        }
+    }
+
+    fn title(&'src self) -> Option<Span<'src>> {
+        match self {
+            Self::Simple(b) => b.title(),
+            Self::Macro(b) => b.title(),
+            Self::Section(b) => b.title(),
+            Self::RawDelimited(b) => b.title(),
+            Self::CompoundDelimited(b) => b.title(),
         }
     }
 }

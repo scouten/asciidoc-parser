@@ -25,12 +25,21 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "...",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "...",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                source: TSpan {
+                    data: "...",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("++++x"))
@@ -39,12 +48,21 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "++++x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "++++x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                source: TSpan {
+                    data: "++++x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("____x"))
@@ -53,12 +71,21 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "____x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "____x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                source: TSpan {
+                    data: "____x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None
+            })
         );
 
         let mi = Block::parse(Span::new("====x"))
@@ -67,12 +94,21 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-                data: "====x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            })))
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Uninterpreted(TSpan {
+                    data: "====x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                source: TSpan {
+                    data: "====x",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None
+            })
         );
     }
 
@@ -84,28 +120,37 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock(TInline::Sequence(
-                vec!(
-                    TInline::Uninterpreted(TSpan {
-                        data: "....",
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec!(
+                        TInline::Uninterpreted(TSpan {
+                            data: "....",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }),
+                        TInline::Uninterpreted(TSpan {
+                            data: "blah blah blah",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        })
+                    ),
+                    TSpan {
+                        data: "....\nblah blah blah",
                         line: 1,
                         col: 1,
                         offset: 0,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "blah blah blah",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    })
+                    }
                 ),
-                TSpan {
+                source: TSpan {
                     data: "....\nblah blah blah",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
-            )))
+                },
+                title: None
+            })
         );
 
         assert_eq!(
@@ -152,12 +197,68 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
+        assert!(mi.item.title().is_none());
+    }
+
+    #[test]
+    fn title() {
+        let mi = Block::parse(Span::new(".comment\n////\nline1  \nline2\n////"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        assert_eq!(
+            mi.item,
+            TBlock::RawDelimited(TRawDelimitedBlock {
+                lines: vec!(
+                    TSpan {
+                        data: "line1",
+                        line: 3,
+                        col: 1,
+                        offset: 14,
+                    },
+                    TSpan {
+                        data: "line2",
+                        line: 4,
+                        col: 1,
+                        offset: 22,
+                    }
+                ),
+                content_model: ContentModel::Raw,
+                context: "comment",
+                source: TSpan {
+                    data: ".comment\n////\nline1  \nline2\n////",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(TSpan {
+                    data: "comment",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },)
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Raw);
+        assert_eq!(mi.item.context().as_ref(), "comment");
+
+        assert_eq!(
+            mi.item.title().unwrap(),
+            TSpan {
+                data: "comment",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
     }
 
     #[test]
@@ -190,12 +291,14 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -234,12 +337,14 @@ mod comment {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
+        assert!(mi.item.title().is_none());
     }
 }
 
@@ -273,12 +378,14 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
+        assert!(mi.item.title().is_none());
     }
 
     #[test]
@@ -311,7 +418,64 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
+        assert_eq!(mi.item.context().as_ref(), "listing");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "----\nline1  \nline2\n----",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn title() {
+        let mi = Block::parse(Span::new(".listing title\n----\nline1  \nline2\n----"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        assert_eq!(
+            mi.item,
+            TBlock::RawDelimited(TRawDelimitedBlock {
+                lines: vec!(
+                    TSpan {
+                        data: "line1",
+                        line: 3,
+                        col: 1,
+                        offset: 20,
+                    },
+                    TSpan {
+                        data: "line2",
+                        line: 4,
+                        col: 1,
+                        offset: 28,
+                    }
+                ),
+                content_model: ContentModel::Verbatim,
+                context: "listing",
+                source: TSpan {
+                    data: ".listing title\n----\nline1  \nline2\n----",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(TSpan {
+                    data: "listing title",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },)
             })
         );
 
@@ -320,9 +484,19 @@ mod listing {
         assert_eq!(mi.item.nested_blocks().next(), None);
 
         assert_eq!(
+            mi.item.title().unwrap(),
+            TSpan {
+                data: "listing title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
             mi.item.span(),
             TSpan {
-                data: "----\nline1  \nline2\n----",
+                data: ".listing title\n----\nline1  \nline2\n----",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -366,13 +540,15 @@ mod listing {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -416,13 +592,15 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -465,7 +643,64 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Raw);
+        assert_eq!(mi.item.context().as_ref(), "pass");
+        assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "++++\nline1  \nline2\n++++",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn title() {
+        let mi = Block::parse(Span::new(".pass title\n++++\nline1  \nline2\n++++"))
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        assert_eq!(
+            mi.item,
+            TBlock::RawDelimited(TRawDelimitedBlock {
+                lines: vec!(
+                    TSpan {
+                        data: "line1",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },
+                    TSpan {
+                        data: "line2",
+                        line: 4,
+                        col: 1,
+                        offset: 25,
+                    }
+                ),
+                content_model: ContentModel::Raw,
+                context: "pass",
+                source: TSpan {
+                    data: ".pass title\n++++\nline1  \nline2\n++++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: Some(TSpan {
+                    data: "pass title",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },)
             })
         );
 
@@ -474,9 +709,19 @@ mod pass {
         assert_eq!(mi.item.nested_blocks().next(), None);
 
         assert_eq!(
+            mi.item.title().unwrap(),
+            TSpan {
+                data: "pass title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
             mi.item.span(),
             TSpan {
-                data: "++++\nline1  \nline2\n++++",
+                data: ".pass title\n++++\nline1  \nline2\n++++",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -520,13 +765,15 @@ mod pass {
                     line: 1,
                     col: 1,
                     offset: 0,
-                }
+                },
+                title: None,
             })
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
+        assert!(mi.item.title().is_none());
 
         assert_eq!(
             mi.item.span(),

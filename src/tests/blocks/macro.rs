@@ -3,7 +3,7 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    blocks::{ContentModel, IsBlock, MacroBlock},
+    blocks::{preamble::Preamble, ContentModel, IsBlock, MacroBlock},
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::TMacroBlock,
@@ -11,37 +11,37 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
-    Span,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = MacroBlock::parse(Span::new("foo::[]"))
+    let b1 = MacroBlock::parse(&Preamble::new("foo::[]"))
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
+
     let b2 = b1.clone();
     assert_eq!(b1, b2);
 }
 
 #[test]
 fn err_empty_source() {
-    assert!(MacroBlock::parse(Span::new(""))
+    assert!(MacroBlock::parse(&Preamble::new(""))
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_only_spaces() {
-    assert!(MacroBlock::parse(Span::new("    "))
+    assert!(MacroBlock::parse(&Preamble::new("    "))
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_macro_name_not_ident() {
-    let maw = MacroBlock::parse(Span::new("98xyz::bar[blah,blap]"));
+    let maw = MacroBlock::parse(&Preamble::new("98xyz::bar[blah,blap]"));
 
     assert!(maw.item.is_none());
 
@@ -61,7 +61,7 @@ fn err_macro_name_not_ident() {
 
 #[test]
 fn err_missing_double_colon() {
-    let maw = MacroBlock::parse(Span::new("foo:bar[blah,blap]"));
+    let maw = MacroBlock::parse(&Preamble::new("foo:bar[blah,blap]"));
 
     assert!(maw.item.is_none());
 
@@ -81,7 +81,7 @@ fn err_missing_double_colon() {
 
 #[test]
 fn err_missing_attrlist() {
-    let maw = MacroBlock::parse(Span::new("foo::barblah,blap]"));
+    let maw = MacroBlock::parse(&Preamble::new("foo::barblah,blap]"));
 
     assert!(maw.item.is_none());
 
@@ -101,33 +101,34 @@ fn err_missing_attrlist() {
 
 #[test]
 fn err_no_attr_list() {
-    assert!(MacroBlock::parse(Span::new("foo::bar"))
+    assert!(MacroBlock::parse(&Preamble::new("foo::bar"))
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_attr_list_not_closed() {
-    assert!(MacroBlock::parse(Span::new("foo::bar[blah"))
+    assert!(MacroBlock::parse(&Preamble::new("foo::bar[blah"))
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_unexpected_after_attr_list() {
-    assert!(MacroBlock::parse(Span::new("foo::bar[blah]bonus"))
+    assert!(MacroBlock::parse(&Preamble::new("foo::bar[blah]bonus"))
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn simplest_block_macro() {
-    let mi = MacroBlock::parse(Span::new("foo::[]"))
+    let mi = MacroBlock::parse(&Preamble::new("foo::[]"))
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
     assert_eq!(mi.item.context().deref(), "paragraph");
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.item,
@@ -154,6 +155,7 @@ fn simplest_block_macro() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         }
     );
 
@@ -170,7 +172,7 @@ fn simplest_block_macro() {
 
 #[test]
 fn has_target() {
-    let mi = MacroBlock::parse(Span::new("foo::bar[]"))
+    let mi = MacroBlock::parse(&Preamble::new("foo::bar[]"))
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -204,6 +206,7 @@ fn has_target() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         }
     );
 
@@ -220,7 +223,7 @@ fn has_target() {
 
 #[test]
 fn has_target_and_attrlist() {
-    let mi = MacroBlock::parse(Span::new("foo::bar[blah]"))
+    let mi = MacroBlock::parse(&Preamble::new("foo::bar[blah]"))
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -274,6 +277,7 @@ fn has_target_and_attrlist() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         }
     );
 
@@ -290,7 +294,7 @@ fn has_target_and_attrlist() {
 
 #[test]
 fn err_duplicate_comma() {
-    let maw = MacroBlock::parse(Span::new("foo::bar[blah,,blap]"));
+    let maw = MacroBlock::parse(&Preamble::new("foo::bar[blah,,blap]"));
 
     let mi = maw.item.unwrap().clone();
 
@@ -362,6 +366,7 @@ fn err_duplicate_comma() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         }
     );
 

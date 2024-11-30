@@ -26,27 +26,36 @@ fn err_inline_syntax() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Macro(TInlineMacro {
-            name: TSpan {
-                data: "foo",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            target: Some(TSpan {
-                data: "bar",
-                line: 1,
-                col: 5,
-                offset: 4,
-            },),
-            attrlist: None,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Macro(TInlineMacro {
+                name: TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                target: Some(TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },),
+                attrlist: None,
+                source: TSpan {
+                    data: "foo:bar[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }),
             source: TSpan {
                 data: "foo:bar[]",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-        }))),
+            title: None
+        }),
     );
 
     assert_eq!(
@@ -78,12 +87,21 @@ fn err_no_attr_list() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "foo::bar",
-            line: 1,
-            col: 1,
-            offset: 0,
-        }))),
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "foo::bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            source: TSpan {
+                data: "foo::bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None
+        }),
     );
 
     assert_eq!(
@@ -115,12 +133,21 @@ fn err_attr_list_not_closed() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "foo::bar[blah",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "foo::bar[blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            source: TSpan {
+                data: "foo::bar[blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None
+        })
     );
 
     assert_eq!(
@@ -152,48 +179,57 @@ fn err_unexpected_after_attr_list() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Sequence(
-            vec![
-                TInline::Macro(TInlineMacro {
-                    name: TSpan {
-                        data: "foo",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                    target: Some(TSpan {
-                        data: ":bar",
-                        line: 1,
-                        col: 5,
-                        offset: 4,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Macro(TInlineMacro {
+                        name: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        target: Some(TSpan {
+                            data: ":bar",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },),
+                        attrlist: Some(TSpan {
+                            data: "blah",
+                            line: 1,
+                            col: 10,
+                            offset: 9,
+                        },),
+                        source: TSpan {
+                            data: "foo::bar[blah]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
                     },),
-                    attrlist: Some(TSpan {
-                        data: "blah",
+                    TInline::Uninterpreted(TSpan {
+                        data: "bonus",
                         line: 1,
-                        col: 10,
-                        offset: 9,
+                        col: 15,
+                        offset: 14,
                     },),
-                    source: TSpan {
-                        data: "foo::bar[blah]",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                },),
-                TInline::Uninterpreted(TSpan {
-                    data: "bonus",
+                ],
+                TSpan {
+                    data: "foo::bar[blah]bonus",
                     line: 1,
-                    col: 15,
-                    offset: 14,
-                },),
-            ],
-            TSpan {
+                    col: 1,
+                    offset: 0,
+                }
+            ),
+            source: TSpan {
                 data: "foo::bar[blah]bonus",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }
-        )))
+            },
+            title: None
+        })
     );
 
     assert_eq!(
@@ -248,6 +284,7 @@ fn simplest_block_macro() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -264,6 +301,7 @@ fn simplest_block_macro() {
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
     assert_eq!(mi.item.context().deref(), "paragraph");
     assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.after,
@@ -312,6 +350,7 @@ fn has_target() {
                 col: 1,
                 offset: 0,
             },
+            title: None
         })
     );
 
@@ -392,6 +431,7 @@ fn has_target_and_attrlist() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -516,6 +556,7 @@ fn warn_attrlist_has_extra_comma() {
                 col: 1,
                 offset: 0,
             },
+            title: None,
         })
     );
 
@@ -549,5 +590,71 @@ fn warn_attrlist_has_extra_comma() {
             },
             warning: WarningType::EmptyAttributeValue,
         }]
+    );
+}
+
+#[test]
+fn has_title() {
+    let mi = Block::parse(Span::new(".macro title\nfoo::bar[]\n"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Macro(TMacroBlock {
+            name: TSpan {
+                data: "foo",
+                line: 2,
+                col: 1,
+                offset: 13,
+            },
+            target: Some(TSpan {
+                data: "bar",
+                line: 2,
+                col: 6,
+                offset: 18,
+            }),
+            attrlist: TAttrlist {
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 2,
+                    col: 10,
+                    offset: 22,
+                }
+            },
+            source: TSpan {
+                data: ".macro title\nfoo::bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "macro title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },)
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".macro title\nfoo::bar[]",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 24
+        }
     );
 }

@@ -45,12 +45,21 @@ fn single_line() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            source: TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None
+        })
     );
 
     assert_eq!(
@@ -66,6 +75,7 @@ fn single_line() {
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
     assert_eq!(mi.item.context().deref(), "paragraph");
     assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.title().is_none());
 
     assert_eq!(
         mi.after,
@@ -86,28 +96,37 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Sequence(
-            vec![
-                TInline::Uninterpreted(TSpan {
-                    data: "abc",
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }),
+                    TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 2,
+                        col: 1,
+                        offset: 4,
+                    }),
+                ],
+                TSpan {
+                    data: "abc\ndef",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }),
-                TInline::Uninterpreted(TSpan {
-                    data: "def",
-                    line: 2,
-                    col: 1,
-                    offset: 4,
-                }),
-            ],
-            TSpan {
+                }
+            ),
+            source: TSpan {
                 data: "abc\ndef",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }
-        )))
+            },
+            title: None
+        })
     );
 
     assert_eq!(
@@ -132,6 +151,73 @@ fn multiple_lines() {
 }
 
 #[test]
+fn title() {
+    let mi = Block::parse(Span::new(".simple block\nabc\ndef\n"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 2,
+                        col: 1,
+                        offset: 14,
+                    }),
+                    TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    }),
+                ],
+                TSpan {
+                    data: "abc\ndef\n",
+                    line: 2,
+                    col: 1,
+                    offset: 14,
+                }
+            ),
+            source: TSpan {
+                data: ".simple block\nabc\ndef\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "simple block",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },)
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".simple block\nabc\ndef\n",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 4,
+            col: 1,
+            offset: 22
+        }
+    );
+}
+
+#[test]
 fn consumes_blank_lines_after() {
     let mi = Block::parse(Span::new("abc\n\ndef"))
         .unwrap_if_no_warnings()
@@ -139,18 +225,27 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock(TInline::Uninterpreted(TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0,
-        })))
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }),
+            source: TSpan {
+                data: "abc\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None
+        })
     );
 
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "abc",
+            data: "abc\n",
             line: 1,
             col: 1,
             offset: 0,

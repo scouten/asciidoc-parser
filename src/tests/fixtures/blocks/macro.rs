@@ -1,7 +1,7 @@
 use std::fmt;
 
 use crate::{
-    blocks::MacroBlock,
+    blocks::{IsBlock, MacroBlock},
     tests::fixtures::{attributes::TAttrlist, TSpan},
     HasSpan,
 };
@@ -12,6 +12,7 @@ pub(crate) struct TMacroBlock {
     pub target: Option<TSpan>,
     pub attrlist: TAttrlist,
     pub source: TSpan,
+    pub title: Option<TSpan>,
 }
 
 impl fmt::Debug for TMacroBlock {
@@ -56,6 +57,18 @@ fn tmacro_block_eq(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool
 
     if tmacro_block.attrlist != *macro_block.attrlist() {
         return false;
+    }
+
+    if tmacro_block.title.is_some() != macro_block.title().is_some() {
+        return false;
+    }
+
+    if let Some(ref tm_title) = tmacro_block.title {
+        if let Some(ref m_title) = macro_block.title() {
+            if tm_title != m_title {
+                return false;
+            }
+        }
     }
 
     &tmacro_block.source == macro_block.span()
