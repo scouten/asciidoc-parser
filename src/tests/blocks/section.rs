@@ -175,7 +175,7 @@ fn has_macro_block_with_extra_blank_line() {
                     col: 6,
                     offset: 23,
                 }),
-                attrlist: TAttrlist {
+                macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
                             name: Some(TSpan {
@@ -313,7 +313,7 @@ fn has_child_block_with_errors() {
                     col: 6,
                     offset: 23,
                 }),
-                attrlist: TAttrlist {
+                macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
                             name: Some(TSpan {

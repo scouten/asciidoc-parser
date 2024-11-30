@@ -80,7 +80,7 @@ fn err_missing_double_colon() {
 }
 
 #[test]
-fn err_missing_attrlist() {
+fn err_missing_macro_attrlist() {
     let maw = MacroBlock::parse(&Preamble::new("foo::barblah,blap]"));
 
     assert!(maw.item.is_none());
@@ -140,7 +140,7 @@ fn simplest_block_macro() {
                 offset: 0,
             },
             target: None,
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
                     data: "",
@@ -191,7 +191,7 @@ fn has_target() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
                     data: "",
@@ -242,7 +242,7 @@ fn has_target_and_attrlist() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec![TSpan {
@@ -313,7 +313,7 @@ fn err_duplicate_comma() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,

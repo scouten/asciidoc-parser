@@ -165,7 +165,7 @@ mod macros {
                         col: 8,
                         offset: 7,
                     }),
-                    attrlist: TAttrlist {
+                    macro_attrlist: TAttrlist {
                         attributes: vec!(TElementAttribute {
                             name: None,
                             shorthand_items: vec![TSpan {

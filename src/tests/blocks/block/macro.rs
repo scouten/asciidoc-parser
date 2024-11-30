@@ -269,7 +269,7 @@ fn simplest_block_macro() {
                 offset: 0,
             },
             target: None,
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
                     data: "",
@@ -335,7 +335,7 @@ fn has_target() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
                     data: "",
@@ -376,7 +376,7 @@ fn has_target() {
 }
 
 #[test]
-fn has_target_and_attrlist() {
+fn has_target_and_macro_attrlist() {
     let mi = Block::parse(Span::new("foo::bar[blah]"))
         .unwrap_if_no_warnings()
         .unwrap();
@@ -396,7 +396,7 @@ fn has_target_and_attrlist() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec![TSpan {
@@ -457,7 +457,7 @@ fn has_target_and_attrlist() {
 }
 
 #[test]
-fn warn_attrlist_has_extra_comma() {
+fn warn_macro_attrlist_has_extra_comma() {
     let maw = Block::parse(Span::new("foo::bar[alt=Sunset,width=300,,height=400]"));
 
     let mi = maw.item.as_ref().unwrap().clone();
@@ -477,7 +477,7 @@ fn warn_attrlist_has_extra_comma() {
                 col: 6,
                 offset: 5,
             }),
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some(TSpan {
@@ -614,7 +614,7 @@ fn has_title() {
                 col: 6,
                 offset: 18,
             }),
-            attrlist: TAttrlist {
+            macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
                     data: "",
