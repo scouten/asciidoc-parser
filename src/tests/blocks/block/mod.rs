@@ -25,6 +25,7 @@ mod error_cases {
         blocks::{preamble::Preamble, Block, ContentModel, IsBlock, SectionBlock},
         span::HasSpan,
         tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             inlines::TInline,
             warnings::TWarning,
@@ -199,6 +200,142 @@ mod error_cases {
                 col: 1,
                 offset: 58
             }
+        );
+    }
+
+    #[test]
+    fn attrlist_warning_carried_forward() {
+        let MatchAndWarnings { item: mi, warnings } = Block::parse(Span::new(
+            "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n",
+        ));
+
+        let mi = mi.unwrap();
+
+        dbg!(&mi);
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.context().deref(), "section");
+        assert!(mi.item.title().is_none());
+
+        assert_eq!(
+            mi.item.attrlist().unwrap(),
+            TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: Some(TSpan {
+                        data: "alt",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },),
+                    shorthand_items: vec![],
+                    value: TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 7,
+                        offset: 6,
+                    },
+                    source: TSpan {
+                        data: "alt=\"Sunset\"",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },],
+                source: TSpan {
+                    data: "alt=\"Sunset\"width=300",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.item,
+            TBlock::Section(TSectionBlock {
+                level: 2,
+                section_title: TSpan {
+                    data: "Section Title (except it isn't)",
+                    line: 2,
+                    col: 5,
+                    offset: 28,
+                },
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    inline: TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 4,
+                        col: 1,
+                        offset: 61,
+                    },),
+                    source: TSpan {
+                        data: "abc\n",
+                        line: 4,
+                        col: 1,
+                        offset: 61,
+                    },
+                    title: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: Some(TSpan {
+                            data: "alt",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "Sunset",
+                            line: 1,
+                            col: 7,
+                            offset: 6,
+                        },
+                        source: TSpan {
+                            data: "alt=\"Sunset\"",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "alt=\"Sunset\"width=300",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 5,
+                col: 1,
+                offset: 65
+            }
+        );
+
+        assert_eq!(
+            warnings,
+            vec![TWarning {
+                source: TSpan {
+                    data: "width=300",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                },
+                warning: WarningType::MissingCommaAfterQuotedAttributeValue,
+            },]
         );
     }
 
