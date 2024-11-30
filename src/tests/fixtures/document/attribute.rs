@@ -25,32 +25,32 @@ impl fmt::Debug for TAttribute {
 
 impl<'src> PartialEq<Attribute<'src>> for TAttribute {
     fn eq(&self, other: &Attribute<'src>) -> bool {
-        tattribute_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TAttribute> for Attribute<'_> {
     fn eq(&self, other: &TAttribute) -> bool {
-        tattribute_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TAttribute> for &Attribute<'_> {
     fn eq(&self, other: &TAttribute) -> bool {
-        tattribute_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tattribute_eq(tattribute: &TAttribute, attribute: &Attribute) -> bool {
-    if &tattribute.source != attribute.span() {
+fn fixture_eq_observed(fixture: &TAttribute, observed: &Attribute) -> bool {
+    if &fixture.source != observed.span() {
         return false;
     }
 
-    if &tattribute.name != attribute.name() {
+    if &fixture.name != observed.name() {
         return false;
     }
 
-    if &tattribute.value != attribute.raw_value() {
+    if &fixture.value != observed.raw_value() {
         return false;
     }
 

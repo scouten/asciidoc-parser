@@ -22,22 +22,22 @@ impl fmt::Debug for TWarning {
 
 impl<'src> PartialEq<Warning<'src>> for TWarning {
     fn eq(&self, other: &Warning<'src>) -> bool {
-        twarning_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TWarning> for Warning<'_> {
     fn eq(&self, other: &TWarning) -> bool {
-        twarning_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TWarning> for &Warning<'_> {
     fn eq(&self, other: &TWarning) -> bool {
-        twarning_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn twarning_eq(twarning: &TWarning, warning: &Warning) -> bool {
-    twarning.source == warning.source && twarning.warning == warning.warning
+fn fixture_eq_observed(fixture: &TWarning, observed: &Warning) -> bool {
+    fixture.source == observed.source && fixture.warning == observed.warning
 }

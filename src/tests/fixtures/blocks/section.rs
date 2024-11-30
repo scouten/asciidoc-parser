@@ -31,62 +31,58 @@ impl fmt::Debug for TSectionBlock {
 
 impl<'src> PartialEq<SectionBlock<'src>> for TSectionBlock {
     fn eq(&self, other: &SectionBlock<'src>) -> bool {
-        tsection_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TSectionBlock> for SectionBlock<'_> {
     fn eq(&self, other: &TSectionBlock) -> bool {
-        tsection_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tsection_block_eq(tsection_block: &TSectionBlock, section_block: &SectionBlock) -> bool {
-    if tsection_block.level != section_block.level() {
+fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool {
+    if fixture.level != observed.level() {
         return false;
     }
 
-    if &tsection_block.section_title != section_block.section_title() {
+    if &fixture.section_title != observed.section_title() {
         return false;
     }
 
-    if tsection_block.blocks.len() != section_block.nested_blocks().len() {
+    if fixture.blocks.len() != observed.nested_blocks().len() {
         return false;
     }
 
-    for (td_block, block) in tsection_block
-        .blocks
-        .iter()
-        .zip(section_block.nested_blocks())
-    {
-        if td_block != block {
+    for (fixture_block, observed_block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
+        if fixture_block != observed_block {
             return false;
         }
     }
 
-    if tsection_block.title.is_some() != section_block.title().is_some() {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
-    if let Some(ref tsb_title) = tsection_block.title {
-        if let Some(ref sb_title) = section_block.title() {
-            if tsb_title != sb_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
     }
 
-    if tsection_block.attrlist.is_some() != section_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref tsb_attrlist) = tsection_block.attrlist {
-        if let Some(ref sb_attrlist) = section_block.attrlist() {
-            if &tsb_attrlist != sb_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }
     }
 
-    &tsection_block.source == section_block.span()
+    &fixture.source == observed.span()
 }

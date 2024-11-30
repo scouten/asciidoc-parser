@@ -12,42 +12,42 @@ pub(crate) enum TInline {
 
 impl<'src> PartialEq<Inline<'src>> for TInline {
     fn eq(&self, other: &Inline<'src>) -> bool {
-        tinline_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TInline> for Inline<'_> {
     fn eq(&self, other: &TInline) -> bool {
-        tinline_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tinline_eq(tinline: &TInline, inline: &Inline) -> bool {
-    match tinline {
-        TInline::Uninterpreted(ref tspan) => match inline {
-            Inline::Uninterpreted(ref span) => tspan == span,
+fn fixture_eq_observed(fixture: &TInline, observed: &Inline) -> bool {
+    match fixture {
+        TInline::Uninterpreted(ref fixture_span) => match observed {
+            Inline::Uninterpreted(ref observed_span) => fixture_span == observed_span,
             _ => false,
         },
 
-        TInline::Sequence(ref tinlines, ref tspan) => match inline {
-            Inline::Sequence(ref inlines, ref span) => {
-                if tinlines.len() != inlines.len() {
+        TInline::Sequence(ref fixture_inlines, ref fixture_span) => match observed {
+            Inline::Sequence(ref observed_inlines, ref observed_span) => {
+                if fixture_inlines.len() != observed_inlines.len() {
                     return false;
                 }
 
-                for (tinline, inline) in tinlines.iter().zip(inlines.iter()) {
-                    if tinline != inline {
+                for (fixture, observed) in fixture_inlines.iter().zip(observed_inlines.iter()) {
+                    if fixture != observed {
                         return false;
                     }
                 }
 
-                tspan == span
+                fixture_span == observed_span
             }
             _ => false,
         },
 
-        TInline::Macro(ref tinline_macro) => match inline {
-            Inline::Macro(ref inline_macro) => tinline_macro == inline_macro,
+        TInline::Macro(ref fixture_macro) => match observed {
+            Inline::Macro(ref observed_macro) => fixture_macro == observed_macro,
             _ => false,
         },
     }

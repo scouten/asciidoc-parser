@@ -29,62 +29,57 @@ impl fmt::Debug for TCompoundDelimitedBlock {
 
 impl<'src> PartialEq<CompoundDelimitedBlock<'src>> for TCompoundDelimitedBlock {
     fn eq(&self, other: &CompoundDelimitedBlock<'src>) -> bool {
-        tcompound_delimited_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TCompoundDelimitedBlock> for CompoundDelimitedBlock<'_> {
     fn eq(&self, other: &TCompoundDelimitedBlock) -> bool {
-        tcompound_delimited_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tcompound_delimited_block_eq(
-    tcompound_delimited_block: &TCompoundDelimitedBlock,
-    compound_delimited_block: &CompoundDelimitedBlock,
+fn fixture_eq_observed(
+    fixture: &TCompoundDelimitedBlock,
+    observed: &CompoundDelimitedBlock,
 ) -> bool {
-    if tcompound_delimited_block.blocks.len() != compound_delimited_block.nested_blocks().len() {
+    if fixture.blocks.len() != observed.nested_blocks().len() {
         return false;
     }
 
-    for (td_block, block) in tcompound_delimited_block
-        .blocks
-        .iter()
-        .zip(compound_delimited_block.nested_blocks())
-    {
-        if td_block != block {
+    for (fixture_block, observed_block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
+        if fixture_block != observed_block {
             return false;
         }
     }
 
-    if tcompound_delimited_block.context != compound_delimited_block.context().as_ref() {
+    if fixture.context != observed.context().as_ref() {
         return false;
     }
 
-    if tcompound_delimited_block.title.is_some() != compound_delimited_block.title().is_some() {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
-    if let Some(ref tcdb_title) = tcompound_delimited_block.title {
-        if let Some(ref cdb_title) = compound_delimited_block.title() {
+    if let Some(ref tcdb_title) = fixture.title {
+        if let Some(ref cdb_title) = observed.title() {
             if tcdb_title != cdb_title {
                 return false;
             }
         }
     }
 
-    if tcompound_delimited_block.attrlist.is_some() != compound_delimited_block.attrlist().is_some()
-    {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref tcdb_attrlist) = tcompound_delimited_block.attrlist {
-        if let Some(ref cdb_attrlist) = compound_delimited_block.attrlist() {
+    if let Some(ref tcdb_attrlist) = fixture.attrlist {
+        if let Some(ref cdb_attrlist) = observed.attrlist() {
             if &tcdb_attrlist != cdb_attrlist {
                 return false;
             }
         }
     }
 
-    &tcompound_delimited_block.source == compound_delimited_block.span()
+    &fixture.source == observed.span()
 }

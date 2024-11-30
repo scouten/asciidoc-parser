@@ -27,40 +27,40 @@ impl fmt::Debug for TSimpleBlock {
 
 impl<'src> PartialEq<SimpleBlock<'src>> for TSimpleBlock {
     fn eq(&self, other: &SimpleBlock<'src>) -> bool {
-        tsimple_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TSimpleBlock> for SimpleBlock<'_> {
     fn eq(&self, other: &TSimpleBlock) -> bool {
-        tsimple_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) -> bool {
-    if tsimple_block.title.is_some() != simple_block.title().is_some() {
+fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
-    if let Some(ref tsb_title) = tsimple_block.title {
-        if let Some(ref sb_title) = simple_block.title() {
-            if tsb_title != sb_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
     }
 
-    if tsimple_block.attrlist.is_some() != simple_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref tsb_attrlist) = tsimple_block.attrlist {
-        if let Some(ref sb_attrlist) = simple_block.attrlist() {
-            if &tsb_attrlist != sb_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }
     }
 
-    &tsimple_block.source == simple_block.span() && &tsimple_block.inline == simple_block.inline()
+    &fixture.source == observed.span() && &fixture.inline == observed.inline()
 }

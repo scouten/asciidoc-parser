@@ -25,45 +25,47 @@ impl fmt::Debug for THeader {
 
 impl<'src> PartialEq<Header<'src>> for THeader {
     fn eq(&self, other: &Header<'src>) -> bool {
-        theader_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<THeader> for Header<'_> {
     fn eq(&self, other: &THeader) -> bool {
-        theader_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<THeader> for &Header<'_> {
     fn eq(&self, other: &THeader) -> bool {
-        theader_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn theader_eq(theader: &THeader, header: &Header) -> bool {
-    if &theader.source != header.span() {
+fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
+    if &fixture.source != observed.span() {
         return false;
     }
 
-    if theader.title.is_some() != header.title().is_some() {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
-    if let Some(ref th_title) = theader.title {
-        if let Some(ref h_title) = header.title() {
-            if th_title != h_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
     }
 
-    if theader.attributes.len() != header.attributes().len() {
+    if fixture.attributes.len() != observed.attributes().len() {
         return false;
     }
 
-    for (th_attribute, attribute) in theader.attributes.iter().zip(header.attributes()) {
-        if th_attribute != attribute {
+    for (fixture_attribute, observed_attribute) in
+        fixture.attributes.iter().zip(observed.attributes())
+    {
+        if fixture_attribute != observed_attribute {
             return false;
         }
     }

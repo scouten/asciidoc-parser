@@ -23,33 +23,33 @@ impl fmt::Debug for TAttrlist {
 
 impl<'src> PartialEq<Attrlist<'src>> for TAttrlist {
     fn eq(&self, other: &Attrlist<'src>) -> bool {
-        tattrlist_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TAttrlist> for Attrlist<'_> {
     fn eq(&self, other: &TAttrlist) -> bool {
-        tattrlist_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TAttrlist> for &Attrlist<'_> {
     fn eq(&self, other: &TAttrlist) -> bool {
-        tattrlist_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tattrlist_eq(tattrlist: &TAttrlist, attrlist: &Attrlist) -> bool {
-    if &tattrlist.source != attrlist.span() {
+fn fixture_eq_observed(fixture: &TAttrlist, observed: &Attrlist) -> bool {
+    if &fixture.source != observed.span() {
         return false;
     }
 
-    if tattrlist.attributes.len() != attrlist.attributes().len() {
+    if fixture.attributes.len() != observed.attributes().len() {
         return false;
     }
 
-    for (ta_attr, attr) in tattrlist.attributes.iter().zip(attrlist.attributes()) {
-        if ta_attr != attr {
+    for (fixture_attr, observed_attr) in fixture.attributes.iter().zip(observed.attributes()) {
+        if fixture_attr != observed_attr {
             return false;
         }
     }

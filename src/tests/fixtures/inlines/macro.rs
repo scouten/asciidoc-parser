@@ -23,44 +23,44 @@ impl fmt::Debug for TInlineMacro {
 
 impl<'src> PartialEq<InlineMacro<'src>> for TInlineMacro {
     fn eq(&self, other: &InlineMacro<'src>) -> bool {
-        tinline_macro_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TInlineMacro> for InlineMacro<'_> {
     fn eq(&self, other: &TInlineMacro) -> bool {
-        tinline_macro_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tinline_macro_eq(tinline_macro: &TInlineMacro, inline_macro: &InlineMacro) -> bool {
-    if &tinline_macro.name != inline_macro.name() {
+fn fixture_eq_observed(fixture: &TInlineMacro, observed: &InlineMacro) -> bool {
+    if &fixture.name != observed.name() {
         return false;
     }
 
-    if tinline_macro.target.is_some() != inline_macro.target().is_some() {
+    if fixture.target.is_some() != observed.target().is_some() {
         return false;
     }
 
-    if let Some(ref th_target) = tinline_macro.target {
-        if let Some(ref h_target) = inline_macro.target() {
-            if &th_target != h_target {
+    if let Some(ref fixture_target) = fixture.target {
+        if let Some(ref observed_target) = observed.target() {
+            if &fixture_target != observed_target {
                 return false;
             }
         }
     }
 
-    if tinline_macro.attrlist.is_some() != inline_macro.attrlist().is_some() {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref th_attrlist) = tinline_macro.attrlist {
-        if let Some(ref h_attrlist) = inline_macro.attrlist() {
-            if &th_attrlist != h_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }
     }
 
-    &tinline_macro.source == inline_macro.span()
+    &fixture.source == observed.span()
 }

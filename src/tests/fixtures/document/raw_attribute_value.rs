@@ -11,36 +11,33 @@ pub(crate) enum TRawAttributeValue {
 
 impl<'src> PartialEq<RawAttributeValue<'src>> for TRawAttributeValue {
     fn eq(&self, other: &RawAttributeValue<'src>) -> bool {
-        tattribute_value_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TRawAttributeValue> for RawAttributeValue<'_> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
-        tattribute_value_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TRawAttributeValue> for &RawAttributeValue<'_> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
-        tattribute_value_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tattribute_value_eq(
-    tattribute_value: &TRawAttributeValue,
-    attribute_value: &RawAttributeValue,
-) -> bool {
-    match tattribute_value {
-        TRawAttributeValue::Value(ref v) => {
-            if let RawAttributeValue::Value(ref av) = attribute_value {
-                v == av
+fn fixture_eq_observed(fixture: &TRawAttributeValue, observed: &RawAttributeValue) -> bool {
+    match fixture {
+        TRawAttributeValue::Value(ref fixture_value) => {
+            if let RawAttributeValue::Value(ref observed_value) = observed {
+                fixture_value == observed_value
             } else {
                 false
             }
         }
 
-        TRawAttributeValue::Set => attribute_value == &RawAttributeValue::Set,
-        TRawAttributeValue::Unset => attribute_value == &RawAttributeValue::Unset,
+        TRawAttributeValue::Set => observed == &RawAttributeValue::Set,
+        TRawAttributeValue::Unset => observed == &RawAttributeValue::Unset,
     }
 }

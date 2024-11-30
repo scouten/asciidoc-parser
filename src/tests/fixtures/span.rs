@@ -23,25 +23,25 @@ impl fmt::Debug for TSpan {
 
 impl<'src> PartialEq<Span<'src>> for TSpan {
     fn eq(&self, other: &Span<'src>) -> bool {
-        tspan_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TSpan> for Span<'_> {
     fn eq(&self, other: &TSpan) -> bool {
-        tspan_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TSpan> for &Span<'_> {
     fn eq(&self, other: &TSpan) -> bool {
-        tspan_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tspan_eq(tspan: &TSpan, span: &Span) -> bool {
-    tspan.data == span.data()
-        && tspan.line == span.line()
-        && tspan.col == span.col()
-        && tspan.offset == span.byte_offset()
+fn fixture_eq_observed(fixture: &TSpan, observed: &Span) -> bool {
+    fixture.data == observed.data()
+        && fixture.line == observed.line()
+        && fixture.col == observed.col()
+        && fixture.offset == observed.byte_offset()
 }

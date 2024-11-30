@@ -30,60 +30,60 @@ impl fmt::Debug for TMacroBlock {
 
 impl<'src> PartialEq<MacroBlock<'src>> for TMacroBlock {
     fn eq(&self, other: &MacroBlock<'src>) -> bool {
-        tmacro_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TMacroBlock> for MacroBlock<'_> {
     fn eq(&self, other: &TMacroBlock) -> bool {
-        tmacro_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tmacro_block_eq(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool {
-    if &tmacro_block.name != macro_block.name() {
+fn fixture_eq_observed(fixture: &TMacroBlock, observed: &MacroBlock) -> bool {
+    if &fixture.name != observed.name() {
         return false;
     }
 
-    if tmacro_block.target.is_some() != macro_block.target().is_some() {
+    if fixture.target.is_some() != observed.target().is_some() {
         return false;
     }
 
-    if let Some(ref th_target) = tmacro_block.target {
-        if let Some(ref h_target) = macro_block.target() {
-            if &th_target != h_target {
+    if let Some(ref fixture_target) = fixture.target {
+        if let Some(ref observed_target) = observed.target() {
+            if &fixture_target != observed_target {
                 return false;
             }
         }
     }
 
-    if tmacro_block.macro_attrlist != *macro_block.macro_attrlist() {
+    if fixture.macro_attrlist != *observed.macro_attrlist() {
         return false;
     }
 
-    if tmacro_block.title.is_some() != macro_block.title().is_some() {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
-    if let Some(ref tm_title) = tmacro_block.title {
-        if let Some(ref m_title) = macro_block.title() {
-            if tm_title != m_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
     }
 
-    if tmacro_block.attrlist.is_some() != macro_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref tm_attrlist) = tmacro_block.attrlist {
-        if let Some(ref m_attrlist) = macro_block.attrlist() {
-            if &tm_attrlist != m_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }
     }
 
-    &tmacro_block.source == macro_block.span()
+    &fixture.source == observed.span()
 }

@@ -31,65 +31,58 @@ impl fmt::Debug for TRawDelimitedBlock {
 
 impl<'src> PartialEq<RawDelimitedBlock<'src>> for TRawDelimitedBlock {
     fn eq(&self, other: &RawDelimitedBlock<'src>) -> bool {
-        traw_delimited_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'_> {
     fn eq(&self, other: &TRawDelimitedBlock) -> bool {
-        traw_delimited_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn traw_delimited_block_eq(
-    traw_delimited_block: &TRawDelimitedBlock,
-    raw_delimited_block: &RawDelimitedBlock,
-) -> bool {
-    if traw_delimited_block.lines.len() != raw_delimited_block.lines().len() {
+fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBlock) -> bool {
+    if fixture.lines.len() != observed.lines().len() {
         return false;
     }
 
-    for (td_line, line) in traw_delimited_block
-        .lines
-        .iter()
-        .zip(raw_delimited_block.lines())
-    {
-        if td_line != line {
+    for (fixture_line, observed_line) in fixture.lines.iter().zip(observed.lines()) {
+        if fixture_line != observed_line {
             return false;
         }
     }
 
-    if traw_delimited_block.content_model != raw_delimited_block.content_model() {
+    if fixture.content_model != observed.content_model() {
         return false;
     }
 
-    if traw_delimited_block.context != raw_delimited_block.context().as_ref() {
+    if fixture.context != observed.context().as_ref() {
         return false;
     }
 
-    if traw_delimited_block.title.is_some() != raw_delimited_block.title().is_some() {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
-    if let Some(ref trdb_title) = traw_delimited_block.title {
-        if let Some(ref rdb_title) = raw_delimited_block.title() {
-            if trdb_title != rdb_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
     }
 
-    if traw_delimited_block.attrlist.is_some() != raw_delimited_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref trdb_attrlist) = traw_delimited_block.attrlist {
-        if let Some(ref rdb_attrlist) = raw_delimited_block.attrlist() {
-            if &trdb_attrlist != rdb_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }
     }
 
-    &traw_delimited_block.source == raw_delimited_block.span()
+    &fixture.source == observed.span()
 }

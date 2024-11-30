@@ -23,43 +23,43 @@ impl fmt::Debug for TElementAttribute {
 
 impl<'src> PartialEq<ElementAttribute<'src>> for TElementAttribute {
     fn eq(&self, other: &ElementAttribute<'src>) -> bool {
-        tattribute_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TElementAttribute> for ElementAttribute<'_> {
     fn eq(&self, other: &TElementAttribute) -> bool {
-        tattribute_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TElementAttribute> for &ElementAttribute<'_> {
     fn eq(&self, other: &TElementAttribute) -> bool {
-        tattribute_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tattribute_eq(tattribute: &TElementAttribute, attribute: &ElementAttribute) -> bool {
-    if &tattribute.source != attribute.span() {
+fn fixture_eq_observed(fixture: &TElementAttribute, observed: &ElementAttribute) -> bool {
+    if &fixture.source != observed.span() {
         return false;
     }
 
-    if tattribute.value != attribute.raw_value() {
+    if fixture.value != observed.raw_value() {
         return false;
     }
 
-    if &tattribute.shorthand_items != attribute.shorthand_items() {
+    if &fixture.shorthand_items != observed.shorthand_items() {
         return false;
     }
 
-    match tattribute.name {
-        Some(ref name) => {
-            if let Some(attr_name) = attribute.name() {
-                name == attr_name
+    match fixture.name {
+        Some(ref fixture_name) => {
+            if let Some(observed_name) = observed.name() {
+                fixture_name == observed_name
             } else {
                 false
             }
         }
-        None => attribute.name().is_none(),
+        None => observed.name().is_none(),
     }
 }
