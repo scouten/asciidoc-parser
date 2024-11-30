@@ -27,17 +27,17 @@ impl PartialEq<TAttributeValue> for &AttributeValue<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TAttributeValue, attribute_value: &AttributeValue) -> bool {
+fn fixture_eq_observed(fixture: &TAttributeValue, observed: &AttributeValue) -> bool {
     match fixture {
         TAttributeValue::Value(ref v) => {
-            if let AttributeValue::Value(ref av) = attribute_value {
+            if let AttributeValue::Value(ref av) = observed {
                 v == &av.as_ref()
             } else {
                 false
             }
         }
 
-        TAttributeValue::Set => attribute_value == &AttributeValue::Set,
-        TAttributeValue::Unset => attribute_value == &AttributeValue::Unset,
+        TAttributeValue::Set => observed == &AttributeValue::Set,
+        TAttributeValue::Unset => observed == &AttributeValue::Unset,
     }
 }

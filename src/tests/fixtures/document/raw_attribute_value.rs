@@ -27,17 +27,17 @@ impl PartialEq<TRawAttributeValue> for &RawAttributeValue<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TRawAttributeValue, attribute_value: &RawAttributeValue) -> bool {
+fn fixture_eq_observed(fixture: &TRawAttributeValue, observed: &RawAttributeValue) -> bool {
     match fixture {
         TRawAttributeValue::Value(ref v) => {
-            if let RawAttributeValue::Value(ref av) = attribute_value {
+            if let RawAttributeValue::Value(ref av) = observed {
                 v == av
             } else {
                 false
             }
         }
 
-        TRawAttributeValue::Set => attribute_value == &RawAttributeValue::Set,
-        TRawAttributeValue::Unset => attribute_value == &RawAttributeValue::Unset,
+        TRawAttributeValue::Set => observed == &RawAttributeValue::Set,
+        TRawAttributeValue::Unset => observed == &RawAttributeValue::Unset,
     }
 }

@@ -41,16 +41,16 @@ impl PartialEq<TAttribute> for &Attribute<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TAttribute, attribute: &Attribute) -> bool {
-    if &fixture.source != attribute.span() {
+fn fixture_eq_observed(fixture: &TAttribute, observed: &Attribute) -> bool {
+    if &fixture.source != observed.span() {
         return false;
     }
 
-    if &fixture.name != attribute.name() {
+    if &fixture.name != observed.name() {
         return false;
     }
 
-    if &fixture.value != attribute.raw_value() {
+    if &fixture.value != observed.raw_value() {
         return false;
     }
 

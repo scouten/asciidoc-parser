@@ -22,21 +22,21 @@ impl PartialEq<TInline> for Inline<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TInline, inline: &Inline) -> bool {
+fn fixture_eq_observed(fixture: &TInline, observed: &Inline) -> bool {
     match fixture {
-        TInline::Uninterpreted(ref tspan) => match inline {
+        TInline::Uninterpreted(ref tspan) => match observed {
             Inline::Uninterpreted(ref span) => tspan == span,
             _ => false,
         },
 
-        TInline::Sequence(ref tinlines, ref tspan) => match inline {
+        TInline::Sequence(ref tinlines, ref tspan) => match observed {
             Inline::Sequence(ref inlines, ref span) => {
                 if tinlines.len() != inlines.len() {
                     return false;
                 }
 
-                for (fixture, inline) in tinlines.iter().zip(inlines.iter()) {
-                    if fixture != inline {
+                for (fixture, observed) in tinlines.iter().zip(inlines.iter()) {
+                    if fixture != observed {
                         return false;
                     }
                 }
@@ -46,7 +46,7 @@ fn fixture_eq_observed(fixture: &TInline, inline: &Inline) -> bool {
             _ => false,
         },
 
-        TInline::Macro(ref tinline_macro) => match inline {
+        TInline::Macro(ref tinline_macro) => match observed {
             Inline::Macro(ref inline_macro) => tinline_macro == inline_macro,
             _ => false,
         },

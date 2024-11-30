@@ -1,10 +1,9 @@
 use std::{cmp::PartialEq, fmt};
 
-use super::THeader;
 use crate::{
     blocks::IsBlock,
     document::Document,
-    tests::fixtures::{blocks::TBlock, warnings::TWarning, TSpan},
+    tests::fixtures::{blocks::TBlock, document::THeader, warnings::TWarning, TSpan},
     HasSpan,
 };
 
@@ -45,30 +44,30 @@ impl PartialEq<TDocument> for &Document<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TDocument, document: &Document) -> bool {
-    if &fixture.source != document.span() {
+fn fixture_eq_observed(fixture: &TDocument, observed: &Document) -> bool {
+    if &fixture.source != observed.span() {
         return false;
     }
 
-    if &fixture.header != document.header() {
+    if &fixture.header != observed.header() {
         return false;
     }
 
-    if fixture.blocks.len() != document.nested_blocks().len() {
+    if fixture.blocks.len() != observed.nested_blocks().len() {
         return false;
     }
 
-    for (td_block, block) in fixture.blocks.iter().zip(document.nested_blocks()) {
+    for (td_block, block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
         if td_block != block {
             return false;
         }
     }
 
-    if fixture.warnings.len() != document.warnings().len() {
+    if fixture.warnings.len() != observed.warnings().len() {
         return false;
     }
 
-    for (td_warning, warning) in fixture.warnings.iter().zip(document.warnings()) {
+    for (td_warning, warning) in fixture.warnings.iter().zip(observed.warnings()) {
         if td_warning != warning {
             return false;
         }

@@ -39,16 +39,16 @@ impl PartialEq<TAttrlist> for &Attrlist<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TAttrlist, attrlist: &Attrlist) -> bool {
-    if &fixture.source != attrlist.span() {
+fn fixture_eq_observed(fixture: &TAttrlist, observed: &Attrlist) -> bool {
+    if &fixture.source != observed.span() {
         return false;
     }
 
-    if fixture.attributes.len() != attrlist.attributes().len() {
+    if fixture.attributes.len() != observed.attributes().len() {
         return false;
     }
 
-    for (ta_attr, attr) in fixture.attributes.iter().zip(attrlist.attributes()) {
+    for (ta_attr, attr) in fixture.attributes.iter().zip(observed.attributes()) {
         if ta_attr != attr {
             return false;
         }

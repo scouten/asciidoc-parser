@@ -41,49 +41,49 @@ impl PartialEq<TCompoundDelimitedBlock> for CompoundDelimitedBlock<'_> {
 
 fn fixture_eq_observed(
     fixture: &TCompoundDelimitedBlock,
-    compound_delimited_block: &CompoundDelimitedBlock,
+    observed: &CompoundDelimitedBlock,
 ) -> bool {
-    if fixture.blocks.len() != compound_delimited_block.nested_blocks().len() {
+    if fixture.blocks.len() != observed.nested_blocks().len() {
         return false;
     }
 
     for (td_block, block) in fixture
         .blocks
         .iter()
-        .zip(compound_delimited_block.nested_blocks())
+        .zip(observed.nested_blocks())
     {
         if td_block != block {
             return false;
         }
     }
 
-    if fixture.context != compound_delimited_block.context().as_ref() {
+    if fixture.context != observed.context().as_ref() {
         return false;
     }
 
-    if fixture.title.is_some() != compound_delimited_block.title().is_some() {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
     if let Some(ref tcdb_title) = fixture.title {
-        if let Some(ref cdb_title) = compound_delimited_block.title() {
+        if let Some(ref cdb_title) = observed.title() {
             if tcdb_title != cdb_title {
                 return false;
             }
         }
     }
 
-    if fixture.attrlist.is_some() != compound_delimited_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
     if let Some(ref tcdb_attrlist) = fixture.attrlist {
-        if let Some(ref cdb_attrlist) = compound_delimited_block.attrlist() {
+        if let Some(ref cdb_attrlist) = observed.attrlist() {
             if &tcdb_attrlist != cdb_attrlist {
                 return false;
             }
         }
     }
 
-    &fixture.source == compound_delimited_block.span()
+    &fixture.source == observed.span()
 }

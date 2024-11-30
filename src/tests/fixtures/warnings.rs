@@ -38,6 +38,6 @@ impl PartialEq<TWarning> for &Warning<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TWarning, warning: &Warning) -> bool {
-    fixture.source == warning.source && fixture.warning == warning.warning
+fn fixture_eq_observed(fixture: &TWarning, observed: &Warning) -> bool {
+    fixture.source == observed.source && fixture.warning == observed.warning
 }

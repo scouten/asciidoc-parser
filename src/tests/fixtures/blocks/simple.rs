@@ -37,30 +37,30 @@ impl PartialEq<TSimpleBlock> for SimpleBlock<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TSimpleBlock, simple_block: &SimpleBlock) -> bool {
-    if fixture.title.is_some() != simple_block.title().is_some() {
+fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
+    if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
     if let Some(ref tsb_title) = fixture.title {
-        if let Some(ref sb_title) = simple_block.title() {
+        if let Some(ref sb_title) = observed.title() {
             if tsb_title != sb_title {
                 return false;
             }
         }
     }
 
-    if fixture.attrlist.is_some() != simple_block.attrlist().is_some() {
+    if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
     if let Some(ref tsb_attrlist) = fixture.attrlist {
-        if let Some(ref sb_attrlist) = simple_block.attrlist() {
+        if let Some(ref sb_attrlist) = observed.attrlist() {
             if &tsb_attrlist != sb_attrlist {
                 return false;
             }
         }
     }
 
-    &fixture.source == simple_block.span() && &fixture.inline == simple_block.inline()
+    &fixture.source == observed.span() && &fixture.inline == observed.inline()
 }

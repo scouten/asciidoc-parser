@@ -39,9 +39,9 @@ impl PartialEq<TSpan> for &Span<'_> {
     }
 }
 
-fn fixture_eq_observed(fixture: &TSpan, span: &Span) -> bool {
-    fixture.data == span.data()
-        && fixture.line == span.line()
-        && fixture.col == span.col()
-        && fixture.offset == span.byte_offset()
+fn fixture_eq_observed(fixture: &TSpan, observed: &Span) -> bool {
+    fixture.data == observed.data()
+        && fixture.line == observed.line()
+        && fixture.col == observed.col()
+        && fixture.offset == observed.byte_offset()
 }
