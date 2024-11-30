@@ -47,12 +47,8 @@ fn fixture_eq_observed(
         return false;
     }
 
-    for (td_block, block) in fixture
-        .blocks
-        .iter()
-        .zip(observed.nested_blocks())
-    {
-        if td_block != block {
+    for (fixture_block, observed_block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
+        if fixture_block != observed_block {
             return false;
         }
     }

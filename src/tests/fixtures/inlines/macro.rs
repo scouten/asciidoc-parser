@@ -42,9 +42,9 @@ fn fixture_eq_observed(fixture: &TInlineMacro, observed: &InlineMacro) -> bool {
         return false;
     }
 
-    if let Some(ref th_target) = fixture.target {
-        if let Some(ref h_target) = observed.target() {
-            if &th_target != h_target {
+    if let Some(ref fixture_target) = fixture.target {
+        if let Some(ref observed_target) = observed.target() {
+            if &fixture_target != observed_target {
                 return false;
             }
         }
@@ -54,9 +54,9 @@ fn fixture_eq_observed(fixture: &TInlineMacro, observed: &InlineMacro) -> bool {
         return false;
     }
 
-    if let Some(ref th_attrlist) = fixture.attrlist {
-        if let Some(ref h_attrlist) = observed.attrlist() {
-            if &th_attrlist != h_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }

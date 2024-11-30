@@ -48,8 +48,8 @@ fn fixture_eq_observed(fixture: &TAttrlist, observed: &Attrlist) -> bool {
         return false;
     }
 
-    for (ta_attr, attr) in fixture.attributes.iter().zip(observed.attributes()) {
-        if ta_attr != attr {
+    for (fixture_attr, observed_attr) in fixture.attributes.iter().zip(observed.attributes()) {
+        if fixture_attr != observed_attr {
             return false;
         }
     }

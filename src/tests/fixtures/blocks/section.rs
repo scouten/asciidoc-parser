@@ -54,8 +54,8 @@ fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool
         return false;
     }
 
-    for (td_block, block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
-        if td_block != block {
+    for (fixture_block, observed_block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
+        if fixture_block != observed_block {
             return false;
         }
     }
@@ -64,9 +64,9 @@ fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool
         return false;
     }
 
-    if let Some(ref tsb_title) = fixture.title {
-        if let Some(ref sb_title) = observed.title() {
-            if tsb_title != sb_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
@@ -76,9 +76,9 @@ fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool
         return false;
     }
 
-    if let Some(ref tsb_attrlist) = fixture.attrlist {
-        if let Some(ref sb_attrlist) = observed.attrlist() {
-            if &tsb_attrlist != sb_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }

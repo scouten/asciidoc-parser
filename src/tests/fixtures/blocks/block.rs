@@ -28,32 +28,28 @@ impl PartialEq<TBlock> for Block<'_> {
 
 fn fixture_eq_observed(fixture: &TBlock, observed: &Block) -> bool {
     match fixture {
-        TBlock::Simple(ref tsimple_block) => match observed {
-            Block::Simple(ref simple_block) => tsimple_block == simple_block,
+        TBlock::Simple(ref simple_fixture) => match observed {
+            Block::Simple(ref simple_observed) => simple_fixture == simple_observed,
             _ => false,
         },
 
-        TBlock::Macro(ref tmacro_block) => match observed {
-            Block::Macro(ref macro_block) => tmacro_block == macro_block,
+        TBlock::Macro(ref macro_fixture) => match observed {
+            Block::Macro(ref macro_observed) => macro_fixture == macro_observed,
             _ => false,
         },
 
-        TBlock::Section(ref tsection_block) => match observed {
-            Block::Section(ref section_block) => tsection_block == section_block,
+        TBlock::Section(ref section_fixture) => match observed {
+            Block::Section(ref section_observed) => section_fixture == section_observed,
             _ => false,
         },
 
-        TBlock::RawDelimited(ref traw_delimited_block) => match observed {
-            Block::RawDelimited(ref raw_delimited_block) => {
-                traw_delimited_block == raw_delimited_block
-            }
+        TBlock::RawDelimited(ref rdb_fixture) => match observed {
+            Block::RawDelimited(ref rdb_observed) => rdb_fixture == rdb_observed,
             _ => false,
         },
 
-        TBlock::CompoundDelimited(ref tcompound_delimited_block) => match observed {
-            Block::CompoundDelimited(ref compound_delimited_block) => {
-                tcompound_delimited_block == compound_delimited_block
-            }
+        TBlock::CompoundDelimited(ref cdb_fixture) => match observed {
+            Block::CompoundDelimited(ref cdb_observed) => cdb_fixture == cdb_observed,
             _ => false,
         },
     }

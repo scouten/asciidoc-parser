@@ -50,9 +50,9 @@ fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
         return false;
     }
 
-    if let Some(ref th_title) = fixture.title {
-        if let Some(ref h_title) = observed.title() {
-            if th_title != h_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
@@ -62,8 +62,10 @@ fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
         return false;
     }
 
-    for (th_attribute, attribute) in fixture.attributes.iter().zip(observed.attributes()) {
-        if th_attribute != attribute {
+    for (fixture_attribute, observed_attribute) in
+        fixture.attributes.iter().zip(observed.attributes())
+    {
+        if fixture_attribute != observed_attribute {
             return false;
         }
     }

@@ -53,9 +53,9 @@ fn fixture_eq_observed(fixture: &TElementAttribute, observed: &ElementAttribute)
     }
 
     match fixture.name {
-        Some(ref name) => {
-            if let Some(attr_name) = observed.name() {
-                name == attr_name
+        Some(ref fixture_name) => {
+            if let Some(observed_name) = observed.name() {
+                fixture_name == observed_name
             } else {
                 false
             }

@@ -42,9 +42,9 @@ fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
         return false;
     }
 
-    if let Some(ref tsb_title) = fixture.title {
-        if let Some(ref sb_title) = observed.title() {
-            if tsb_title != sb_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
@@ -54,9 +54,9 @@ fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
         return false;
     }
 
-    if let Some(ref tsb_attrlist) = fixture.attrlist {
-        if let Some(ref sb_attrlist) = observed.attrlist() {
-            if &tsb_attrlist != sb_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }

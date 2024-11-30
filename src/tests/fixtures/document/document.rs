@@ -57,8 +57,8 @@ fn fixture_eq_observed(fixture: &TDocument, observed: &Document) -> bool {
         return false;
     }
 
-    for (td_block, block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
-        if td_block != block {
+    for (fixture_block, observed_block) in fixture.blocks.iter().zip(observed.nested_blocks()) {
+        if fixture_block != observed_block {
             return false;
         }
     }
@@ -67,8 +67,8 @@ fn fixture_eq_observed(fixture: &TDocument, observed: &Document) -> bool {
         return false;
     }
 
-    for (td_warning, warning) in fixture.warnings.iter().zip(observed.warnings()) {
-        if td_warning != warning {
+    for (fixture_warning, observed_warning) in fixture.warnings.iter().zip(observed.warnings()) {
+        if fixture_warning != observed_warning {
             return false;
         }
     }

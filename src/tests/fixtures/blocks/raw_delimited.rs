@@ -41,16 +41,13 @@ impl PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'_> {
     }
 }
 
-fn fixture_eq_observed(
-    fixture: &TRawDelimitedBlock,
-    observed: &RawDelimitedBlock,
-) -> bool {
+fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBlock) -> bool {
     if fixture.lines.len() != observed.lines().len() {
         return false;
     }
 
-    for (td_line, line) in fixture.lines.iter().zip(observed.lines()) {
-        if td_line != line {
+    for (fixture_line, observed_line) in fixture.lines.iter().zip(observed.lines()) {
+        if fixture_line != observed_line {
             return false;
         }
     }
@@ -67,9 +64,9 @@ fn fixture_eq_observed(
         return false;
     }
 
-    if let Some(ref trdb_title) = fixture.title {
-        if let Some(ref rdb_title) = observed.title() {
-            if trdb_title != rdb_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
@@ -79,9 +76,9 @@ fn fixture_eq_observed(
         return false;
     }
 
-    if let Some(ref trdb_attrlist) = fixture.attrlist {
-        if let Some(ref rdb_attrlist) = observed.attrlist() {
-            if &trdb_attrlist != rdb_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }

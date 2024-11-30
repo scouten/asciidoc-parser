@@ -49,9 +49,9 @@ fn fixture_eq_observed(fixture: &TMacroBlock, observed: &MacroBlock) -> bool {
         return false;
     }
 
-    if let Some(ref th_target) = fixture.target {
-        if let Some(ref h_target) = observed.target() {
-            if &th_target != h_target {
+    if let Some(ref fixture_target) = fixture.target {
+        if let Some(ref observed_target) = observed.target() {
+            if &fixture_target != observed_target {
                 return false;
             }
         }
@@ -65,9 +65,9 @@ fn fixture_eq_observed(fixture: &TMacroBlock, observed: &MacroBlock) -> bool {
         return false;
     }
 
-    if let Some(ref tm_title) = fixture.title {
-        if let Some(ref m_title) = observed.title() {
-            if tm_title != m_title {
+    if let Some(ref fixture_title) = fixture.title {
+        if let Some(ref observed_title) = observed.title() {
+            if fixture_title != observed_title {
                 return false;
             }
         }
@@ -77,9 +77,9 @@ fn fixture_eq_observed(fixture: &TMacroBlock, observed: &MacroBlock) -> bool {
         return false;
     }
 
-    if let Some(ref tm_attrlist) = fixture.attrlist {
-        if let Some(ref m_attrlist) = observed.attrlist() {
-            if &tm_attrlist != m_attrlist {
+    if let Some(ref fixture_attrlist) = fixture.attrlist {
+        if let Some(ref observed_attrlist) = observed.attrlist() {
+            if &fixture_attrlist != observed_attrlist {
                 return false;
             }
         }
