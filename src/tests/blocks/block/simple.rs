@@ -326,6 +326,135 @@ fn attrlist() {
 }
 
 #[test]
+fn title_and_attrlist() {
+    let mi = Block::parse(Span::new(".title\n[sidebar]\nabc\ndef\n"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Sequence(
+                vec![
+                    TInline::Uninterpreted(TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },),
+                    TInline::Uninterpreted(TSpan {
+                        data: "def",
+                        line: 4,
+                        col: 1,
+                        offset: 21,
+                    },),
+                ],
+                TSpan {
+                    data: "abc\ndef\n",
+                    line: 3,
+                    col: 1,
+                    offset: 17,
+                },
+            ),
+            source: TSpan {
+                data: ".title\n[sidebar]\nabc\ndef\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "title",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+            attrlist: Some(TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "sidebar",
+                        line: 2,
+                        col: 2,
+                        offset: 8,
+                    },],
+                    value: TSpan {
+                        data: "sidebar",
+                        line: 2,
+                        col: 2,
+                        offset: 8,
+                    },
+                    source: TSpan {
+                        data: "sidebar",
+                        line: 2,
+                        col: 2,
+                        offset: 8,
+                    },
+                },],
+                source: TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },
+            },),
+        },)
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ".title\n[sidebar]\nabc\ndef\n",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.item.attrlist().unwrap(),
+        TAttrlist {
+            attributes: vec![TElementAttribute {
+                name: None,
+                shorthand_items: vec![TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },],
+                value: TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },
+                source: TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 8,
+                },
+            },],
+            source: TSpan {
+                data: "sidebar",
+                line: 2,
+                col: 2,
+                offset: 8,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 5,
+            col: 1,
+            offset: 25,
+        }
+    );
+}
+
+#[test]
 fn consumes_blank_lines_after() {
     let mi = Block::parse(Span::new("abc\n\ndef"))
         .unwrap_if_no_warnings()
