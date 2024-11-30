@@ -1,0 +1,3 @@
+[submodule "asciidoc-lang"]
+	path = asciidoc-lang
+	url = https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang.git
