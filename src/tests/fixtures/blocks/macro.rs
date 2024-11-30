@@ -10,7 +10,7 @@ use crate::{
 pub(crate) struct TMacroBlock {
     pub name: TSpan,
     pub target: Option<TSpan>,
-    pub attrlist: TAttrlist,
+    pub macro_attrlist: TAttrlist,
     pub source: TSpan,
     pub title: Option<TSpan>,
 }
@@ -20,7 +20,7 @@ impl fmt::Debug for TMacroBlock {
         f.debug_struct("MacroBlock")
             .field("name", &self.name)
             .field("target", &self.target)
-            .field("attrlist", &self.attrlist)
+            .field("macro_attrlist", &self.macro_attrlist)
             .field("source", &self.source)
             .finish()
     }
@@ -55,7 +55,7 @@ fn tmacro_block_eq(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool
         }
     }
 
-    if tmacro_block.attrlist != *macro_block.attrlist() {
+    if tmacro_block.macro_attrlist != *macro_block.macro_attrlist() {
         return false;
     }
 

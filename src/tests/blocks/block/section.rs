@@ -328,7 +328,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     col: 6,
                     offset: 23,
                 }),
-                attrlist: TAttrlist {
+                macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
                             name: Some(TSpan {

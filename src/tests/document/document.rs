@@ -407,7 +407,7 @@ fn err_bad_header_and_bad_macro() {
                                         offset: 49,
                                     },
                                 ),
-                                attrlist: TAttrlist {
+                                macro_attrlist: TAttrlist {
                                     attributes: vec![
                                         TElementAttribute {
                                             name: Some(

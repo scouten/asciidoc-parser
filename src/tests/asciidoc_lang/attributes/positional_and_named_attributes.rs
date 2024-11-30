@@ -61,8 +61,8 @@ mod positional_attribute {
         .unwrap_if_no_warnings()
         .unwrap();
 
-        let a1 = m1.item.attrlist();
-        let a2 = m2.item.attrlist();
+        let a1 = m1.item.macro_attrlist();
+        let a2 = m2.item.macro_attrlist();
 
         assert_eq!(
             a1.named_or_positional_attribute("alt", 1).unwrap(),

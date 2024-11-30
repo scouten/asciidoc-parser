@@ -18,7 +18,7 @@ use crate::{
 pub struct MacroBlock<'src> {
     name: Span<'src>,
     target: Option<Span<'src>>,
-    attrlist: Attrlist<'src>,
+    macro_attrlist: Attrlist<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
 }
@@ -72,7 +72,7 @@ impl<'src> MacroBlock<'src> {
         let attrlist = open_brace.after.slice(0..open_brace.after.len() - 1);
         // Note that we already checked that this line ends with a close brace.
 
-        let attrlist = Attrlist::parse(attrlist);
+        let macro_attrlist = Attrlist::parse(attrlist);
 
         let source: Span = preamble.source.trim_remainder(line.after);
         let source = source.slice(0..source.trim().len());
@@ -86,14 +86,14 @@ impl<'src> MacroBlock<'src> {
                     } else {
                         Some(target.item)
                     },
-                    attrlist: attrlist.item.item,
+                    macro_attrlist: macro_attrlist.item.item,
                     source,
                     title: preamble.title,
                 },
 
                 after: line.after.discard_empty_lines(),
             }),
-            warnings: attrlist.warnings,
+            warnings: macro_attrlist.warnings,
         }
     }
 
@@ -108,8 +108,11 @@ impl<'src> MacroBlock<'src> {
     }
 
     /// Return the macro's attribute list.
-    pub fn attrlist(&'src self) -> &'src Attrlist<'src> {
-        &self.attrlist
+    ///
+    /// IMPORTANT: This is the list of attributes _within_ the macro block
+    /// definition itself.
+    pub fn macro_attrlist(&'src self) -> &'src Attrlist<'src> {
+        &self.macro_attrlist
     }
 }
 
