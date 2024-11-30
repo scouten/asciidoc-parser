@@ -11,23 +11,23 @@ pub(crate) enum TAttributeValue {
 
 impl<'src> PartialEq<AttributeValue<'src>> for TAttributeValue {
     fn eq(&self, other: &AttributeValue<'src>) -> bool {
-        tattribute_value_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TAttributeValue> for AttributeValue<'_> {
     fn eq(&self, other: &TAttributeValue) -> bool {
-        tattribute_value_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TAttributeValue> for &AttributeValue<'_> {
     fn eq(&self, other: &TAttributeValue) -> bool {
-        tattribute_value_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tattribute_value_eq(
+fn fixture_eq_observed(
     tattribute_value: &TAttributeValue,
     attribute_value: &AttributeValue,
 ) -> bool {

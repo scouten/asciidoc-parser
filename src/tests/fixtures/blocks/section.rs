@@ -31,17 +31,17 @@ impl fmt::Debug for TSectionBlock {
 
 impl<'src> PartialEq<SectionBlock<'src>> for TSectionBlock {
     fn eq(&self, other: &SectionBlock<'src>) -> bool {
-        tsection_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TSectionBlock> for SectionBlock<'_> {
     fn eq(&self, other: &TSectionBlock) -> bool {
-        tsection_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tsection_block_eq(tsection_block: &TSectionBlock, section_block: &SectionBlock) -> bool {
+fn fixture_eq_observed(tsection_block: &TSectionBlock, section_block: &SectionBlock) -> bool {
     if tsection_block.level != section_block.level() {
         return false;
     }

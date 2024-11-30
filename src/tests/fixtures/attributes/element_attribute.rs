@@ -23,23 +23,23 @@ impl fmt::Debug for TElementAttribute {
 
 impl<'src> PartialEq<ElementAttribute<'src>> for TElementAttribute {
     fn eq(&self, other: &ElementAttribute<'src>) -> bool {
-        tattribute_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TElementAttribute> for ElementAttribute<'_> {
     fn eq(&self, other: &TElementAttribute) -> bool {
-        tattribute_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TElementAttribute> for &ElementAttribute<'_> {
     fn eq(&self, other: &TElementAttribute) -> bool {
-        tattribute_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tattribute_eq(tattribute: &TElementAttribute, attribute: &ElementAttribute) -> bool {
+fn fixture_eq_observed(tattribute: &TElementAttribute, attribute: &ElementAttribute) -> bool {
     if &tattribute.source != attribute.span() {
         return false;
     }

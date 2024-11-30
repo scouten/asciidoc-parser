@@ -23,17 +23,17 @@ impl fmt::Debug for TInlineMacro {
 
 impl<'src> PartialEq<InlineMacro<'src>> for TInlineMacro {
     fn eq(&self, other: &InlineMacro<'src>) -> bool {
-        tinline_macro_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TInlineMacro> for InlineMacro<'_> {
     fn eq(&self, other: &TInlineMacro) -> bool {
-        tinline_macro_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tinline_macro_eq(tinline_macro: &TInlineMacro, inline_macro: &InlineMacro) -> bool {
+fn fixture_eq_observed(tinline_macro: &TInlineMacro, inline_macro: &InlineMacro) -> bool {
     if &tinline_macro.name != inline_macro.name() {
         return false;
     }

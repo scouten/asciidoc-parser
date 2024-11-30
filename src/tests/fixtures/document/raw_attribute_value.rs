@@ -11,23 +11,23 @@ pub(crate) enum TRawAttributeValue {
 
 impl<'src> PartialEq<RawAttributeValue<'src>> for TRawAttributeValue {
     fn eq(&self, other: &RawAttributeValue<'src>) -> bool {
-        tattribute_value_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TRawAttributeValue> for RawAttributeValue<'_> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
-        tattribute_value_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TRawAttributeValue> for &RawAttributeValue<'_> {
     fn eq(&self, other: &TRawAttributeValue) -> bool {
-        tattribute_value_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tattribute_value_eq(
+fn fixture_eq_observed(
     tattribute_value: &TRawAttributeValue,
     attribute_value: &RawAttributeValue,
 ) -> bool {

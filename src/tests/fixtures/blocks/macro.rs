@@ -30,17 +30,17 @@ impl fmt::Debug for TMacroBlock {
 
 impl<'src> PartialEq<MacroBlock<'src>> for TMacroBlock {
     fn eq(&self, other: &MacroBlock<'src>) -> bool {
-        tmacro_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TMacroBlock> for MacroBlock<'_> {
     fn eq(&self, other: &TMacroBlock) -> bool {
-        tmacro_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tmacro_block_eq(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool {
+fn fixture_eq_observed(tmacro_block: &TMacroBlock, macro_block: &MacroBlock) -> bool {
     if &tmacro_block.name != macro_block.name() {
         return false;
     }

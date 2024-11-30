@@ -29,17 +29,17 @@ impl fmt::Debug for TCompoundDelimitedBlock {
 
 impl<'src> PartialEq<CompoundDelimitedBlock<'src>> for TCompoundDelimitedBlock {
     fn eq(&self, other: &CompoundDelimitedBlock<'src>) -> bool {
-        tcompound_delimited_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TCompoundDelimitedBlock> for CompoundDelimitedBlock<'_> {
     fn eq(&self, other: &TCompoundDelimitedBlock) -> bool {
-        tcompound_delimited_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tcompound_delimited_block_eq(
+fn fixture_eq_observed(
     tcompound_delimited_block: &TCompoundDelimitedBlock,
     compound_delimited_block: &CompoundDelimitedBlock,
 ) -> bool {

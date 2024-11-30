@@ -27,17 +27,17 @@ impl fmt::Debug for TSimpleBlock {
 
 impl<'src> PartialEq<SimpleBlock<'src>> for TSimpleBlock {
     fn eq(&self, other: &SimpleBlock<'src>) -> bool {
-        tsimple_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TSimpleBlock> for SimpleBlock<'_> {
     fn eq(&self, other: &TSimpleBlock) -> bool {
-        tsimple_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tsimple_block_eq(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) -> bool {
+fn fixture_eq_observed(tsimple_block: &TSimpleBlock, simple_block: &SimpleBlock) -> bool {
     if tsimple_block.title.is_some() != simple_block.title().is_some() {
         return false;
     }

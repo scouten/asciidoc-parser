@@ -25,23 +25,23 @@ impl fmt::Debug for THeader {
 
 impl<'src> PartialEq<Header<'src>> for THeader {
     fn eq(&self, other: &Header<'src>) -> bool {
-        theader_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<THeader> for Header<'_> {
     fn eq(&self, other: &THeader) -> bool {
-        theader_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<THeader> for &Header<'_> {
     fn eq(&self, other: &THeader) -> bool {
-        theader_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn theader_eq(theader: &THeader, header: &Header) -> bool {
+fn fixture_eq_observed(theader: &THeader, header: &Header) -> bool {
     if &theader.source != header.span() {
         return false;
     }

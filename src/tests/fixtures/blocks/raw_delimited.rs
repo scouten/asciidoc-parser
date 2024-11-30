@@ -31,17 +31,17 @@ impl fmt::Debug for TRawDelimitedBlock {
 
 impl<'src> PartialEq<RawDelimitedBlock<'src>> for TRawDelimitedBlock {
     fn eq(&self, other: &RawDelimitedBlock<'src>) -> bool {
-        traw_delimited_block_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'_> {
     fn eq(&self, other: &TRawDelimitedBlock) -> bool {
-        traw_delimited_block_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn traw_delimited_block_eq(
+fn fixture_eq_observed(
     traw_delimited_block: &TRawDelimitedBlock,
     raw_delimited_block: &RawDelimitedBlock,
 ) -> bool {

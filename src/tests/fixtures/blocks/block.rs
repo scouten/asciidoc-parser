@@ -16,17 +16,17 @@ pub(crate) enum TBlock {
 
 impl<'src> PartialEq<Block<'src>> for TBlock {
     fn eq(&self, other: &Block<'src>) -> bool {
-        tblock_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TBlock> for Block<'_> {
     fn eq(&self, other: &TBlock) -> bool {
-        tblock_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tblock_eq(tblock: &TBlock, block: &Block) -> bool {
+fn fixture_eq_observed(tblock: &TBlock, block: &Block) -> bool {
     match tblock {
         TBlock::Simple(ref tsimple_block) => match block {
             Block::Simple(ref simple_block) => tsimple_block == simple_block,

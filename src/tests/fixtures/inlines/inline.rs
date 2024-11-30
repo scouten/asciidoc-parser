@@ -12,17 +12,17 @@ pub(crate) enum TInline {
 
 impl<'src> PartialEq<Inline<'src>> for TInline {
     fn eq(&self, other: &Inline<'src>) -> bool {
-        tinline_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TInline> for Inline<'_> {
     fn eq(&self, other: &TInline) -> bool {
-        tinline_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tinline_eq(tinline: &TInline, inline: &Inline) -> bool {
+fn fixture_eq_observed(tinline: &TInline, inline: &Inline) -> bool {
     match tinline {
         TInline::Uninterpreted(ref tspan) => match inline {
             Inline::Uninterpreted(ref span) => tspan == span,

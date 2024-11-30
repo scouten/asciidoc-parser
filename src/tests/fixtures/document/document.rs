@@ -29,23 +29,23 @@ impl fmt::Debug for TDocument {
 
 impl<'src> PartialEq<Document<'src>> for TDocument {
     fn eq(&self, other: &Document<'src>) -> bool {
-        tdocument_eq(self, other)
+        fixture_eq_observed(self, other)
     }
 }
 
 impl PartialEq<TDocument> for Document<'_> {
     fn eq(&self, other: &TDocument) -> bool {
-        tdocument_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
 impl PartialEq<TDocument> for &Document<'_> {
     fn eq(&self, other: &TDocument) -> bool {
-        tdocument_eq(other, self)
+        fixture_eq_observed(other, self)
     }
 }
 
-fn tdocument_eq(tdocument: &TDocument, document: &Document) -> bool {
+fn fixture_eq_observed(tdocument: &TDocument, document: &Document) -> bool {
     if &tdocument.source != document.span() {
         return false;
     }
