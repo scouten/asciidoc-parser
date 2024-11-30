@@ -211,6 +211,7 @@ mod comment {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -266,6 +267,8 @@ mod comment {
                 offset: 1,
             }
         );
+
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -307,6 +310,7 @@ mod comment {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -354,6 +358,7 @@ mod comment {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 }
 
@@ -396,6 +401,7 @@ mod listing {
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -438,6 +444,7 @@ mod listing {
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -505,6 +512,8 @@ mod listing {
             }
         );
 
+        assert!(mi.item.attrlist().is_none());
+
         assert_eq!(
             mi.item.span(),
             TSpan {
@@ -562,6 +571,7 @@ mod listing {
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -615,6 +625,7 @@ mod pass {
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -667,6 +678,7 @@ mod pass {
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -734,6 +746,8 @@ mod pass {
             }
         );
 
+        assert!(mi.item.attrlist().is_none());
+
         assert_eq!(
             mi.item.span(),
             TSpan {
@@ -791,6 +805,7 @@ mod pass {
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert_eq!(mi.item.nested_blocks().next(), None);
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
             mi.item.span(),

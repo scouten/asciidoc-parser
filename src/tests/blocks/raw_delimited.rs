@@ -170,6 +170,7 @@ mod comment {
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.lines().next().is_none());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -211,6 +212,7 @@ mod comment {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         let mut lines = mi.item.lines();
         assert_eq!(
@@ -282,6 +284,7 @@ mod comment {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "comment");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         let mut lines = mi.item.lines();
         assert_eq!(
@@ -367,6 +370,7 @@ mod listing {
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert!(mi.item.lines().next().is_none());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -408,6 +412,7 @@ mod listing {
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         let mut lines = mi.item.lines();
         assert_eq!(
@@ -479,6 +484,7 @@ mod listing {
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.context().as_ref(), "listing");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         let mut lines = mi.item.lines();
         assert_eq!(
@@ -584,6 +590,7 @@ mod pass {
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert!(mi.item.lines().next().is_none());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
     }
 
     #[test]
@@ -625,6 +632,7 @@ mod pass {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         let mut lines = mi.item.lines();
         assert_eq!(
@@ -696,6 +704,7 @@ mod pass {
         assert_eq!(mi.item.content_model(), ContentModel::Raw);
         assert_eq!(mi.item.context().as_ref(), "pass");
         assert!(mi.item.title().is_none());
+        assert!(mi.item.attrlist().is_none());
 
         let mut lines = mi.item.lines();
         assert_eq!(
