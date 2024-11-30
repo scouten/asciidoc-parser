@@ -55,10 +55,12 @@ impl<'src> Block<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        // Optimization: See if we can take the very simplest case right away. This is a
-        // simple block with no special markup with no title or attrlist. If the
-        // simplest case can't be quickly and correctly determined, fall through to the
-        // more accurate/complex logic.
+        // Optimization: If the first line doesn't match any of the early indications
+        // for delimited blocks, titles, or attrlists, we can skip directly to treating
+        // this as a simple block. That saves quite a bit of parsing time.
+
+        // If it does contain any of those markers, we fall through to the more costly
+        // tests below which can more accurately classify the upcoming block.
         if let Some(first_char) = source.chars().next() {
             if !matches!(first_char, '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_') {
                 let first_line = source.take_line();
