@@ -86,9 +86,9 @@ impl<'src> Preamble<'src> {
     }
 }
 
-fn parse_maybe_attrlist_line<'src>(
-    source: Span<'src>,
-) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Attrlist<'src>>>> {
+fn parse_maybe_attrlist_line(
+    source: Span<'_>,
+) -> Option<MatchAndWarnings<'_, MatchedItem<'_, Attrlist<'_>>>> {
     let first_char = source.chars().next()?;
     if first_char != '[' {
         return None;
