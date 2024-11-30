@@ -51,25 +51,20 @@ impl<'src> Preamble<'src> {
             };
 
         // Does this block have an attribute list?
-        let (attrlist, block_start) = if let Some(first_char) = block_start.chars().next() {
-            if first_char == '[' {
-                let MatchAndWarnings {
-                    item:
-                        MatchedItem {
-                            item: attrlist,
-                            after: block_start,
-                        },
-                    warnings: mut attrlist_warnings,
-                } = Attrlist::parse(block_start);
-
-                if !attrlist_warnings.is_empty() {
-                    warnings.append(&mut attrlist_warnings);
-                }
-
-                (Some(attrlist), block_start)
-            } else {
-                (None, block_start)
+        let (attrlist, block_start) = if let Some(MatchAndWarnings {
+            item:
+                MatchedItem {
+                    item: attrlist,
+                    after: block_start,
+                },
+            warnings: mut attrlist_warnings,
+        }) = parse_maybe_attrlist_line(block_start)
+        {
+            if !attrlist_warnings.is_empty() {
+                warnings.append(&mut attrlist_warnings);
             }
+
+            (Some(attrlist), block_start)
         } else {
             (None, block_start)
         };
@@ -89,4 +84,41 @@ impl<'src> Preamble<'src> {
     pub(crate) fn is_empty(&self) -> bool {
         self.title.is_none() && self.attrlist.is_none()
     }
+}
+
+fn parse_maybe_attrlist_line<'src>(
+    source: Span<'src>,
+) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Attrlist<'src>>>> {
+    let first_char = source.chars().next()?;
+    if first_char != '[' {
+        return None;
+    }
+
+    let MatchedItem {
+        item: line,
+        after: block_start,
+    } = source.take_normalized_line();
+
+    if !line.ends_with(']') {
+        return None;
+    }
+
+    // Drop opening and closing braces now that we know they are there.
+    let attrlist_src = line.slice(1..line.len() - 1);
+
+    let MatchAndWarnings {
+        item: MatchedItem {
+            item: attrlist,
+            after: _,
+        },
+        warnings,
+    } = Attrlist::parse(attrlist_src);
+
+    Some(MatchAndWarnings {
+        item: MatchedItem {
+            item: attrlist,
+            after: block_start,
+        },
+        warnings,
+    })
 }
