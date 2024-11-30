@@ -67,10 +67,13 @@ impl<T> MatchAndWarnings<'_, T> {
     #[inline(always)]
     #[track_caller]
     pub(crate) fn unwrap_if_no_warnings(self) -> T {
-        assert!(
-            self.warnings.is_empty(),
-            "expected self.warnings to be empty"
-        );
-        self.item
+        if self.warnings.is_empty() {
+            self.item
+        } else {
+            panic!(
+                "expected self.warnings to be empty\n\nfound warnings = {warnings:#?}\n",
+                warnings = self.warnings
+            );
+        }
     }
 }
