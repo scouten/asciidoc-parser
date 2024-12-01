@@ -16,4 +16,3 @@ jobs:
           token: ${{ secrets.COVERAGE_ACTIONS_TRIGGER }}
           repository: scouten/asciidoc-parser-coverage
           event-type: adoc-parser-updated
-  
