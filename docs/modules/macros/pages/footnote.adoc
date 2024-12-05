@@ -91,7 +91,7 @@ This limitation may be lifted once the AsciiDoc Language is defined by the speci
 If you use a footnote in a heading, you'll likely find that the footnote index is wrong (either not incremented or out of order).
 That's because headings (section titles and discrete headings) get converted out of document order for the purpose of generating IDs, populating up cross references, and eagerly resolving attribute references.
 
-One way to resolve this problem is to assign an explicit ID and reftext to any heading that contains a footnote.
+The only way to workaround this limitation is by assigning an explicit ID *and* reftext to any heading that contains a footnote.
 For example:
 
 [source]
@@ -102,6 +102,10 @@ See <<heading>>.
 == Headingfootnote:[This is a heading with a footnote]
 ----
 
-Assigning an explicit ID and reftext to a heading will prevent substitutions from being applied before the heading is rendered, hence allowing the footnote macros to be processed in document order.
+Assigning an explicit ID and reftext to a heading will prevent the heading from being converted eagerly (thus deferring the footnote substitution) until the heading is rendered.
+As a result, the footnote macro in the heading will be processed in document order.
+
 This workaround will also prevent the footnote number from reappearing in the text of an xref.
-However, you also have to avoid using any attribute references in the heading, as that also causes substitutions to be applied eagerly, which may result in the footnotes being processed out of document order.
+
+Even with this workaround, you still have to avoid using attribute references in the heading as those also causes the heading to be converted eagerly (which forces substitutions to be applied).
+If you use an attribute reference in the heading, the footnotes will be processed out of document order.
