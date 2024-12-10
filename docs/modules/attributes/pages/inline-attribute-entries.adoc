@@ -3,6 +3,9 @@
 An attribute reference can be used to set or unset an attribute inline as an alternative to a dedicated attribute entry line.
 This mechanism allows you to set or unset an attribute in places where attribute entries lines are not permitted, such as in a normal table cell or a list item.
 
+CAUTION: You're strongly discouraged from using inline attribute entries unless you understand their limitations or they are a last resort for fulfilling a use case.
+It's very likely that this functionality will be removed from the AsciiDoc language since its behavior is difficult to define.
+
 Attributes can be defined inline using the following notation:
 
 ----
@@ -40,4 +43,3 @@ Inline attribute entries are processed when attribute references are replaced, a
 Therefore, the result of the assignment is only available to attribute references that follow it.
 These assignments are not visible in the document model after the document has been loaded.
 
-You're strongly discouraged from using inline attribute entries unless you understand their limitations or they are a last resort for fulfilling a use case.
