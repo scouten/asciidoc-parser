@@ -59,9 +59,10 @@ You can include multiple tags from the same file.
 include::example$include.adoc[tag=target-co-multiple]
 ....
 
-It is also possible to have fine-grained tagged regions inside larger tagged regions.
+It's also possible to have fine-grained tagged regions inside larger tagged regions.
 
-For example, if your include file has the following content:
+In the next example, tagged regions are defined behind line comments.
+By putting each tag behind a line comment, regardless of how the content is included, you don't have to worry about those lines appearing in the rendered document.
 
 ----
 // tag::snippets[]
@@ -75,7 +76,7 @@ snippet b
 // end::snippets[]
 ----
 
-And you include this file using the following include directive:
+Let's assume you include this file using the following include directive:
 
 ----
 \include::file-with-snippets.adoc[tag=snippets]
@@ -89,7 +90,53 @@ snippet a
 snippet b
 ....
 
-Notice that none of the lines with the tag directives are displayed.
+You could also include the whole file without worry that the tags will be rendered:
+
+----
+\include::file-with-snippets.adoc[]
+----
+
+Now let's consider the case when the tags are not placed behind line comments.
+In this case, you need to ensure that xref:tag-filtering[tag filtering] is being used or else those tags will be visible in the rendered document.
+
+----
+text a
+
+tag::snippet-b[]
+snippet b
+end::snippet-b[]
+
+text c
+----
+
+If you only want to include a specific tagged region of the file, use the following include directive:
+
+----
+\include::file-with-snippets.adoc[tag=snippet-b]
+----
+
+The following lines will be selected and displayed:
+
+....
+snippet b
+....
+
+If you want to include the whole file, but also filter out any include tags, use the following include directive:
+
+----
+\include::file-with-snippets.adoc[tag=**]
+----
+
+The following lines will be selected and displayed:
+
+....
+text a
+snippet b
+text c
+....
+
+If you did not specify g filtering, tag directives that aren't behind a line comment (e.g., `tag::snippet-b[]`) will also be printed too.
+Tag filtering is explaied in more detail in the next section.
 
 [#tag-filtering]
 == Tag filtering
