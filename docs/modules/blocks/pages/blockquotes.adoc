@@ -73,6 +73,21 @@ The result of <<ex-quoted>> is displayed below.
 
 include::example$quote.adoc[tag=abbr]
 
+== Excerpt
+
+The quote block can be designated as an excerpt by adding the `excerpt` role.
+The exceptation is that this role makes the quote block appear with the quote decoration.
+
+[source]
+----
+[.excerpt]
+____
+This text is an excerpt from the referenced literature.
+____
+----
+
+The impact of this role is strictly a presentation concern and is thus handled by the styling system, such as the stylesheet for HTML.
+
 == Markdown-style blockquotes
 
 Asciidoctor supports Markdown-style blockquotes.
