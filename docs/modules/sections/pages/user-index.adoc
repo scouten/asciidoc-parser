@@ -44,7 +44,7 @@ Here's an example that shows the two forms in use.
 The Lady of the Lake, her arm clad in the purest shimmering samite,
 held aloft Excalibur from the bosom of the water,
 signifying by divine providence that I, ((Arthur)), <.>
-was to carry Excalibur (((Sword, Broadsword, Excalibur))). <.>
+was to carry Excalibur(((Sword, Broadsword, Excalibur))). <.>
 That is why I am your king. Shut up! Will you shut up?!
 Burn her anyway! I'm not a witch.
 Look, my liege! We found them.
