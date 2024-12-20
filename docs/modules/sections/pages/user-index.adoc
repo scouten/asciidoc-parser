@@ -6,7 +6,9 @@ Index terms form a controlled vocabulary that can be used to navigate the docume
 
 == Index catalog
 
-Although index terms are always processed, only Asciidoctor PDF and the DocBook toolchain support creating an index catalog automatically.
+NOTE: Although index terms are always processed, only Asciidoctor PDF and the DocBook toolchain support creating an index catalog automatically.
+The built-in HTML5 converter in Asciidoctor does not generate an index.
+
 To create an index, define a level 1 section (`==`) marked with the style `index` at the end of your document.
 (In a multipart book, the index can be the last level 0 section (`=`)).
 
@@ -18,9 +20,14 @@ To create an index, define a level 1 section (`==`) marked with the style `index
 
 Both Asciidoctor PDF and the DocBook toolchain will automatically populate an index into this seed section.
 
-WARNING: The built-in HTML5 converter in Asciidoctor does not generate an index.
+The index will consist of term entries that link to (or otherwise cite) the location of each marked index term.
+You learn how to mark an index term in the next section.
 
 == Index terms
+
+Every index term, as well as every occurrence of that index term, must be explicitly marked in the AsciiDoc document.
+It's not enough just to mark the first occurrence of an index term if you want every occurrence to appear in the index.
+Instead, each occurrence you want to be cited in the index must be marked explicitly.
 
 There are two types of index terms in AsciiDoc:
 
