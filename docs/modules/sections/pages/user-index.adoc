@@ -36,7 +36,7 @@ flow index term:: `\indexterm2:[<primary>]` +
 +
 An index term that appears in the flow of text (i.e., a visible term) and in the index.
 This type of index term can only be used to define a primary entry and is case sensitive.
-If you want the entry to appear in the index using a different case, use an adjacent concealed index term, such as +`((term))Term`+.
+If you want the entry to appear in the index using a different case, use an adjacent concealed index term, such as `+((term))Term+`.
 
 concealed index term:: `\indexterm:[<primary>, <secondary>, <tertiary>]` +
 `+(((<primary>, <secondary>, <tertiary>)))+`
