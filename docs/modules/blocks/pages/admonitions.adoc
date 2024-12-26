@@ -25,11 +25,13 @@ The label becomes visible to the reader unless icons are enabled, in which case 
 .Caution vs. Warning
 [#caution-vs-warning]
 ****
-When choosing the admonition type, you may find yourself getting confused between "caution" and "warning" as these words are often used interchangeably.
+When choosing the admonition type, you may find yourself getting confused between "`caution`" and "`warning`" as these words are often used interchangeably.
 Here's a simple rule to help you differentiate the two:
 
 * Use *CAUTION* to advise the reader to _act_ carefully (i.e., exercise care).
 * Use *WARNING* to inform the reader of danger, harm, or consequences that exist.
+
+The word caution in this context translates into attention in French, which is often a good reference for how it should be applied.
 
 To find a deeper analysis, see https://www.differencebetween.com/difference-between-caution-and-vs-warning/.
 ****
