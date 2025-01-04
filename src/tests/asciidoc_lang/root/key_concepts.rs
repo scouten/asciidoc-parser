@@ -70,7 +70,8 @@ In other words, they cannot be resolved using an attribute reference.
 Element attributes enrich or configure the behavior of an element, such as to apply a role or set the width of an image.
 An element attribute is defined using an attribute list on an element, or an available shorthand like a block title line.
 
-"#);
+"#
+);
 
 mod macros {
     use crate::tests::sdd::{non_normative, verifies};
@@ -83,7 +84,8 @@ As you read through this documentation, you'll frequently see references to the 
 A macro is a syntax for representing non-text elements or syntax that expands into text using the provided metadata.
 See https://en.wikipedia.org/wiki/Macro_(computer_science)[macro^] to learn more about the meaning of this term.
 
-"#);
+"#
+    );
 
     use pretty_assertions_sorted::assert_eq;
 
@@ -109,7 +111,8 @@ Here's an example of a block macro:
 image::sunset.jpg[Sunset]
 ----
 
-"#);
+"#
+        );
 
         assert_eq!(
             Document::parse("image::sunset.jpg[Sunset]\n"),
@@ -197,7 +200,8 @@ Here's an example of an inline macro:
 Click the button with the image:star.png[Star] to favorite the project.
 ----
 
-"#);
+"#
+        );
 
         assert_eq!(
             Document::parse(
@@ -307,7 +311,8 @@ In a block macro, the name and target are separated by two colons (`::`) and it 
 In an inline macro, the name and target are separated by a single colon (`:`) and it can be alongside text and other inline elements.
 A block macro is always parsed, whereas an inline macro is only parsed where the macros substitution is enabled.
 
-"#);
+"#
+        );
     }
 }
 

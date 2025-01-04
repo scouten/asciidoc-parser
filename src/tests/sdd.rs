@@ -16,5 +16,10 @@ pub(super) use non_normative;
 macro_rules! verifies( ($($tt:tt)*) => {} );
 pub(super) use verifies;
 
+// Use the to_do_verifies macro to annotate a test block that doesn't yet verify
+// a specific section within the .adoc file that is normative.
+macro_rules! to_do_verifies( ($($tt:tt)*) => {} );
+pub(super) use to_do_verifies;
+
 // All lines in each .adoc file should be covered by either non_normative or
 // verifies.
