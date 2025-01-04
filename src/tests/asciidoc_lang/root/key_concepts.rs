@@ -5,12 +5,11 @@ track_file!("docs/modules/ROOT/pages/key-concepts.adoc");
 
 non_normative!(
     r#"
-// = Key Concepts
+= Key Concepts
 
-// This page introduces you to some of the concepts and terms you'll encounter
-// as you learn about AsciiDoc. Each concept will be covered in more depth later
-// in the documentation. Use this page as a way to start to familiarize yourself
-// with the lingo.
+This page introduces you to some of the concepts and terms you'll encounter as you learn about AsciiDoc.
+Each concept will be covered in more depth later in the documentation.
+Use this page as a way to start to familiarize yourself with the lingo.
 
 == Document
 
@@ -78,11 +77,11 @@ mod macros {
 
     non_normative!(
         r#"
-// == Macros
+== Macros
 
-// As you read through this documentation, you'll frequently see references
-// to the term macro. A macro is a syntax for representing non-text
-// elements or syntax that expands into text using the provided metadata. See https://en.wikipedia.org/wiki/Macro_(computer_science)[macro^] to learn more about the meaning of this term.
+As you read through this documentation, you'll frequently see references to the term macro.
+A macro is a syntax for representing non-text elements or syntax that expands into text using the provided metadata.
+See https://en.wikipedia.org/wiki/Macro_(computer_science)[macro^] to learn more about the meaning of this term.
 
 "#);
 
@@ -103,12 +102,12 @@ mod macros {
     fn block_macro() {
         verifies!(
             r#"
-// Here's an example of a block macro:
+Here's an example of a block macro:
 
-// [source]
-// ----
-// image::sunset.jpg[Sunset]
-// ----
+[source]
+----
+image::sunset.jpg[Sunset]
+----
 
 "#);
 
@@ -191,12 +190,12 @@ mod macros {
     fn inline_macro() {
         verifies!(
             r#"
-// Here's an example of an inline macro:
+Here's an example of an inline macro:
 
-// [source]
-// ----
-// Click the button with the image:star.png[Star] to favorite the project.
-// ----
+[source]
+----
+Click the button with the image:star.png[Star] to favorite the project.
+----
 
 "#);
 
