@@ -11,13 +11,10 @@ pub(super) use track_file;
 macro_rules! non_normative( ($($tt:tt)*) => {} );
 pub(super) use non_normative;
 
-// Use the verifies_spec macro to annotate a test block that verifies a specific
+// Use the verifies macro to annotate a test block that verifies a specific
 // section within the .adoc file that is normative.
-// macro_rules! verifies_spec( ($($tt:tt)*) => {} );
-// pub(super) use verifies_spec;
+macro_rules! verifies( ($($tt:tt)*) => {} );
+pub(super) use verifies;
 
 // All lines in each .adoc file should be covered by either non_normative or
-// verifies_spec, except for:
-//
-// * Document title and header
-// * Blank lines (automatically ignored)
+// verifies.
