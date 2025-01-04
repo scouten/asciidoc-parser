@@ -4,6 +4,10 @@ track_file!("docs/modules/ROOT/pages/index.adoc");
 
 non_normative!(
     r#"
+= AsciiDoc Language Documentation
+:navtitle: Introduction
+:url-asciidoc-lang: https://projects.eclipse.org/projects/technology.asciidoc
+
 == About AsciiDoc
 
 AsciiDoc is a lightweight and semantic markup language primarily designed for writing technical documentation.
