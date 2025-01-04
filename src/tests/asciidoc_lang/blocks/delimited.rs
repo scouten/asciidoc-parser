@@ -454,8 +454,23 @@ The structural container provides a default context and expected content model, 
     );
 }
 
-#[test]
-fn nesting_blocks() {
+mod nesting_blocks {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::{Block, ContentModel},
+        tests::{
+            fixtures::{
+                attributes::{TAttrlist, TElementAttribute},
+                blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+                inlines::TInline,
+                TSpan,
+            },
+            sdd::{non_normative, verifies},
+        },
+        Span,
+    };
+
     non_normative!(
         r#"
 [#nesting]
@@ -473,8 +488,10 @@ Delimited blocks cannot be interleaved.
 "#
     );
 
-    verifies!(
-        r#"
+    #[test]
+    fn different_structural_containers() {
+        verifies!(
+            r#"
 [source]
 ....
 ====
@@ -492,145 +509,350 @@ The document header is useful, but not required.
 ....
 
 "#
-    );
+        );
 
-    let block = Block::parse(Span::new(
-        "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
-    ))
-    .unwrap_if_no_warnings()
-    .unwrap()
-    .item;
+        let block = Block::parse(Span::new(
+            "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
+        ))
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
 
-    assert_eq!(
-        block,
-        TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "Here's a sample AsciiDoc document:",
+        assert_eq!(
+            block,
+            TBlock::CompoundDelimited(
+                TCompoundDelimitedBlock {
+                    blocks: vec![
+                        TBlock::Simple(
+                            TSimpleBlock {
+                                inline: TInline::Uninterpreted(
+                                    TSpan {
+                                        data: "Here's a sample AsciiDoc document:",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 5,
+                                    },
+                                ),
+                                source: TSpan {
+                                    data: "Here's a sample AsciiDoc document:\n",
                                     line: 2,
                                     col: 1,
                                     offset: 5,
                                 },
-                            ),
-                            source: TSpan {
-                                data: "Here's a sample AsciiDoc document:\n",
-                                line: 2,
-                                col: 1,
-                                offset: 5,
+                                title: None,
+                                            attrlist: None,
                             },
-                            title: None,
-                                        attrlist: None,
-                        },
-                    ),
-                    TBlock::RawDelimited(
-                        TRawDelimitedBlock {
-                            lines: vec![
-                                TSpan {
-                                    data: "= Document Title",
-                                    line: 5,
+                        ),
+                        TBlock::RawDelimited(
+                            TRawDelimitedBlock {
+                                lines: vec![
+                                    TSpan {
+                                        data: "= Document Title",
+                                        line: 5,
+                                        col: 1,
+                                        offset: 46,
+                                    },
+                                    TSpan {
+                                        data: "Author Name",
+                                        line: 6,
+                                        col: 1,
+                                        offset: 63,
+                                    },
+                                    TSpan {
+                                        data: "",
+                                        line: 7,
+                                        col: 1,
+                                        offset: 75,
+                                    },
+                                    TSpan {
+                                        data: "Content goes here.",
+                                        line: 8,
+                                        col: 1,
+                                        offset: 76,
+                                    },
+                                ],
+                                content_model: ContentModel::Verbatim,
+                                context: "listing",
+                                source: TSpan {
+                                    data: "----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n",
+                                    line: 4,
                                     col: 1,
-                                    offset: 46,
+                                    offset: 41,
                                 },
-                                TSpan {
-                                    data: "Author Name",
-                                    line: 6,
-                                    col: 1,
-                                    offset: 63,
-                                },
-                                TSpan {
-                                    data: "",
-                                    line: 7,
-                                    col: 1,
-                                    offset: 75,
-                                },
-                                TSpan {
-                                    data: "Content goes here.",
-                                    line: 8,
-                                    col: 1,
-                                    offset: 76,
-                                },
-                            ],
-                            content_model: ContentModel::Verbatim,
-                            context: "listing",
-                            source: TSpan {
-                                data: "----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n",
-                                line: 4,
-                                col: 1,
-                                offset: 41,
+                                title: None,
+                                            attrlist: None,
                             },
-                            title: None,
-                                        attrlist: None,
-                        },
-                    ),
-                    TBlock::Simple(
-                        TSimpleBlock{
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "The document header is useful, but not required.",
+                        ),
+                        TBlock::Simple(
+                            TSimpleBlock{
+                                inline: TInline::Uninterpreted(
+                                    TSpan {
+                                        data: "The document header is useful, but not required.",
+                                        line: 11,
+                                        col: 1,
+                                        offset: 101,
+                                    },
+                                ),
+                                source: TSpan {
+                                    data: "The document header is useful, but not required.\n",
                                     line: 11,
                                     col: 1,
                                     offset: 101,
                                 },
-                            ),
-                            source: TSpan {
-                                data: "The document header is useful, but not required.\n",
-                                line: 11,
-                                col: 1,
-                                offset: 101,
+                                title: None,
+                                            attrlist: None,
                             },
-                            title: None,
-                                        attrlist: None,
-                        },
-                    ),
-                ],
-                context: "example",
-                source: TSpan {
-                    data: "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
+                        ),
+                    ],
+                    context: "example",
+                    source: TSpan {
+                        data: "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title: None,
+                                attrlist: None,
                 },
-                title: None,
-                            attrlist: None,
-            },
-        )
-    );
-
-    // NOT YET COVERED TO EOF:
-
-    // When nesting a delimited block that uses the same structural container,
-    // it's necessary to vary the length of the delimiter lines (i.e., make
-    // the length of the delimiter lines for the child block different than
-    // the length of the delimiter lines for the parent block). Varying the
-    // delimiter line length allows the parser to distinguish one block from
-    // another.
-
-    // ----
-    // ====
-    // Here are your options:
-
-    // .Red Pill
-    // [%collapsible]
-    // ======
-    // Escape into the real world.
-    // ======
-
-    // .Blue Pill
-    // [%collapsible]
-    // ======
-    // Live within the simulated reality without want or fear.
-    // ======
-    // ====
-    // ----
-
-    if false {
-        todo!("Parse role attribute lines");
+            )
+        );
     }
 
-    // The delimiter length for the nested structural container can either be
-    // shorter or longer than the parent. That's a personal style choice.
+    #[test]
+    fn same_structural_container() {
+        verifies!(
+            r#"
+When nesting a delimited block that uses the same structural container, it's necessary to vary the length of the delimiter lines (i.e., make the length of the delimiter lines for the child block different than the length of the delimiter lines for the parent block).
+Varying the delimiter line length allows the parser to distinguish one block from another.
+
+----
+====
+Here are your options:
+
+.Red Pill
+[%collapsible]
+======
+Escape into the real world.
+======
+
+.Blue Pill
+[%collapsible]
+======
+Live within the simulated reality without want or fear.
+======
+====
+----
+
+"#
+        );
+
+        let block = Block::parse(Span::new(
+    "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
+))
+.unwrap_if_no_warnings()
+.unwrap()
+.item;
+
+        dbg!(&block);
+
+        assert_eq!(block,
+            TBlock::CompoundDelimited(
+                TCompoundDelimitedBlock {
+                    blocks: vec![
+                        TBlock::Simple(
+                            TSimpleBlock {
+                                inline: TInline::Uninterpreted(
+                                    TSpan {
+                                        data: "Here are your options:",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 5,
+                                    },
+                                ),
+                                source: TSpan {
+                                    data: "Here are your options:\n",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                                title: None,
+                                attrlist: None,
+                            },
+                        ),
+                        TBlock::CompoundDelimited(
+                            TCompoundDelimitedBlock {
+                                blocks: vec![
+                                    TBlock::Simple(
+                                        TSimpleBlock {
+                                            inline: TInline::Uninterpreted(
+                                                TSpan {
+                                                    data: "Escape into the real world.",
+                                                    line: 7,
+                                                    col: 1,
+                                                    offset: 61,
+                                                },
+                                            ),
+                                            source: TSpan {
+                                                data: "Escape into the real world.\n",
+                                                line: 7,
+                                                col: 1,
+                                                offset: 61,
+                                            },
+                                            title: None,
+                                            attrlist: None,
+                                        },
+                                    ),
+                                ],
+                                context: "example",
+                                source: TSpan {
+                                    data: ".Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 29,
+                                },
+                                title: Some(
+                                    TSpan {
+                                        data: "Red Pill",
+                                        line: 4,
+                                        col: 2,
+                                        offset: 30,
+                                    },
+                                ),
+                                attrlist: Some(
+                                    TAttrlist {
+                                        attributes: vec![
+                                            TElementAttribute {
+                                                name: None,
+                                                shorthand_items: vec![
+                                                    TSpan {
+                                                        data: "%collapsible",
+                                                        line: 5,
+                                                        col: 2,
+                                                        offset: 40,
+                                                    },
+                                                ],
+                                                value: TSpan {
+                                                    data: "%collapsible",
+                                                    line: 5,
+                                                    col: 2,
+                                                    offset: 40,
+                                                },
+                                                source: TSpan {
+                                                    data: "%collapsible",
+                                                    line: 5,
+                                                    col: 2,
+                                                    offset: 40,
+                                                },
+                                            },
+                                        ],
+                                        source: TSpan {
+                                            data: "%collapsible",
+                                            line: 5,
+                                            col: 2,
+                                            offset: 40,
+                                        },
+                                    },
+                                ),
+                            },
+                        ),
+                        TBlock::CompoundDelimited(
+                            TCompoundDelimitedBlock {
+                                blocks: vec![
+                                    TBlock::Simple(
+                                        TSimpleBlock {
+                                            inline: TInline::Uninterpreted(
+                                                TSpan {
+                                                    data: "Live within the simulated reality without want or fear.",
+                                                    line: 13,
+                                                    col: 1,
+                                                    offset: 130,
+                                                },
+                                            ),
+                                            source: TSpan {
+                                                data: "Live within the simulated reality without want or fear.\n",
+                                                line: 13,
+                                                col: 1,
+                                                offset: 130,
+                                            },
+                                            title: None,
+                                            attrlist: None,
+                                        },
+                                    ),
+                                ],
+                                context: "example",
+                                source: TSpan {
+                                    data: ".Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n",
+                                    line: 10,
+                                    col: 1,
+                                    offset: 97,
+                                },
+                                title: Some(
+                                    TSpan {
+                                        data: "Blue Pill",
+                                        line: 10,
+                                        col: 2,
+                                        offset: 98,
+                                    },
+                                ),
+                                attrlist: Some(
+                                    TAttrlist {
+                                        attributes: vec![
+                                            TElementAttribute {
+                                                name: None,
+                                                shorthand_items: vec![
+                                                    TSpan {
+                                                        data: "%collapsible",
+                                                        line: 11,
+                                                        col: 2,
+                                                        offset: 109,
+                                                    },
+                                                ],
+                                                value: TSpan {
+                                                    data: "%collapsible",
+                                                    line: 11,
+                                                    col: 2,
+                                                    offset: 109,
+                                                },
+                                                source: TSpan {
+                                                    data: "%collapsible",
+                                                    line: 11,
+                                                    col: 2,
+                                                    offset: 109,
+                                                },
+                                            },
+                                        ],
+                                        source: TSpan {
+                                            data: "%collapsible",
+                                            line: 11,
+                                            col: 2,
+                                            offset: 109,
+                                        },
+                                    },
+                                ),
+                            },
+                        ),
+                    ],
+                    context: "example",
+                    source: TSpan {
+                        data: "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title: None,
+                    attrlist: None,
+                },
+            ));
+
+        // The delimiter length for the nested structural container can either
+        // be shorter or longer than the parent. That's a personal style
+        // choice.
+    }
+
+    non_normative!(
+        r#"
+The delimiter length for the nested structural container can either be shorter or longer than the parent.
+That's a personal style choice.
+"#
+    );
 }
