@@ -1,51 +1,44 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/attributes/pages/element-attributes.adoc?ref_type=heads
-//!
-//! Tracking commit 76c9fe63, current as of 2024-10-26.
+use crate::tests::sdd::{non_normative, track_file};
 
-// = Element Attributes
+track_file!("docs/modules/attributes/pages/element-attributes.adoc");
+// Tracking commit 76c9fe63, current as of 2024-10-26.
 
-// Element attributes are a powerful means of controlling the built-in settings
-// of individual block and inline elements in the AsciiDoc syntax. They can also
-// be used to add supplemental information, such as citation metadata and
-// fallback content, to certain elements.
+non_normative!(
+    r#"
+= Element Attributes
 
-// == What are element attributes?
+Element attributes are a powerful means of controlling the built-in settings of individual block and inline elements in the AsciiDoc syntax.
+They can also be used to add supplemental information, such as citation metadata and fallback content, to certain elements.
 
-// [.term]*Element attributes* define the built-in and user-defined settings and
-// metadata that can be applied to an individual block element or inline element
-// in a document (including macros). Although the include directive is not
-// technically an element, element attributes can also be defined on an include
-// directive.
+== What are element attributes?
 
-// Element attributes may be positional (value only) or named (key/value pair).
-// Some built-in and extension elements will map a positional attribute to a
-// named attribute. Each element recognizes a predefined set of positional
-// and/or named element attributes. Authors may define any number of custom
-// element attributes for passing information to an extension or document
-// analyzer.
+[.term]*Element attributes* define the built-in and user-defined settings and metadata that can be applied to an individual block element or inline element in a document (including macros).
+Although the include directive is not technically an element, element attributes can also be defined on an include directive.
 
-// Like document attributes, there's no strict schema for element attributes, or
-// for the value of the `options` element attribute. There's a core set of
-// reserved attributes shared by all block elements and most inline elements,
-// which includes id, role, opts, and title. Certain elements may reserve
-// additional attributes and option values. For example, the source block
-// reserves the `lang` attribute to set the source language and the `linenums`
-// option to enable line numbers. The link macro reserves the `window` attribute
-// to change the target window of a link and the `nofollow` option to prevent
-// crawlers from following it. Otherwise, the schema for element attributes is
-// open-ended, thus allowing extensions to use them for their own purpose.
+Element attributes may be positional (value only) or named (key/value pair).
+Some built-in and extension elements will map a positional attribute to a named attribute.
+Each element recognizes a predefined set of positional and/or named element attributes.
+Authors may define any number of custom element attributes for passing information to an extension or document analyzer.
 
-// Element attributes are commonly used for the following purposes:
+Like document attributes, there's no strict schema for element attributes, or for the value of the `options` element attribute.
+There's a core set of reserved attributes shared by all block elements and most inline elements, which includes id, role, opts, and title.
+Certain elements may reserve additional attributes and option values.
+For example, the source block reserves the `lang` attribute to set the source language and the `linenums` option to enable line numbers.
+The link macro reserves the `window` attribute to change the target window of a link and the `nofollow` option to prevent crawlers from following it.
+Otherwise, the schema for element attributes is open-ended, thus allowing extensions to use them for their own purpose.
 
-// * Declare the ID of an element
-// * Turn on or turn off an individual element's built-in features
-// * Configure the built-in features of an individual element
-// * Apply user-defined information, such as citation metadata, fallback text,
-//   link text, and target content, to an individual element
-// * Apply user-defined roles and behaviors to an individual element
+Element attributes are commonly used for the following purposes:
 
-// Unlike document attributes, element attributes are defined directly on the
-// element to which they apply using an <<attribute-list,attribute list>>.
+* Declare the ID of an element
+* Turn on or turn off an individual element's built-in features
+* Configure the built-in features of an individual element
+* Apply user-defined information, such as citation metadata, fallback text, link text, and target content, to an individual element
+* Apply user-defined roles and behaviors to an individual element
+
+Unlike document attributes, element attributes are defined directly on the element to which they apply using an <<attribute-list,attribute list>>.
+
+    "#
+);
 
 mod attrlist {
     use pretty_assertions_sorted::assert_eq;
@@ -53,34 +46,44 @@ mod attrlist {
     use crate::{
         attributes::Attrlist,
         blocks::Block,
-        tests::fixtures::{
-            attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TMacroBlock, TSimpleBlock},
-            inlines::TInline,
-            TSpan,
+        tests::{
+            fixtures::{
+                attributes::{TAttrlist, TElementAttribute},
+                blocks::{TBlock, TMacroBlock, TSimpleBlock},
+                inlines::TInline,
+                TSpan,
+            },
+            sdd::{non_normative, to_do_verifies, verifies},
         },
         HasSpan, Span,
     };
 
-    // [#attribute-list]
-    // == Attribute lists
+    non_normative!(
+        r#"
+[#attribute-list]
+== Attribute lists
+
+Attributes can be assigned to block and inline elements using an [.term]*attribute list* (often abbreviated as attrlist).
+
+"#
+    );
 
     #[test]
     fn anatomy_of_attrlist() {
-        // Attributes can be assigned to block and inline elements using an
-        // [.term]*attribute list* (often abbreviated as attrlist).
+        verifies!(
+            r#"
+.Anatomy of an attribute list
+----
+first-positional,second-positional,named="value of named"
+----
 
-        // .Anatomy of an attribute list
-        // ----
-        // first-positional,second-positional,named="value of named"
-        // ----
+Entries in an attribute list are separated by commas, excluding commas inside quotes.
+The syntax used for an attribute list entry determines whether it's a positional or named attribute.
+The space after the comma separating entries is optional.
+To learn more about how the attribute list is parsed, see xref:positional-and-named-attributes.adoc[].
 
-        // Entries in an attribute list are separated by commas, excluding commas
-        // inside quotes. The syntax used for an attribute list entry determines
-        // whether it's a positional or named attribute. The space after the
-        // comma separating entries is optional. To learn more about how the
-        // attribute list is parsed, see xref:positional-and-named-attributes.
-        // adoc[].
+"#
+        );
 
         const ATTRLIST_EXAMPLE: &str =
             r#"first-positional,second-positional,named="value of named""#;
@@ -258,20 +261,21 @@ mod attrlist {
 
     #[test]
     fn block_attrlist() {
-        // For *block elements*, the attribute list is placed inside one or more
-        // block attribute lines. A block attribute line is any line of text
-        // above the start of a block (e.g., the opening delimiter or simple
-        // content) that begins with `[` and ends with `]`. This line can be
-        // interspersed with other block metadata lines, such as the block
-        // title. The text enclosed in the `[` and `]` boundaries is assumed to
-        // be a valid attribute list and the line is automatically consumed. If
-        // the text cannot be parsed, an error message will be emitted to the
-        // log.
+        verifies!(
+            r#"
+For *block elements*, the attribute list is placed inside one or more block attribute lines.
+A block attribute line is any line of text above the start of a block (e.g., the opening delimiter or simple content) that begins with `[` and ends with `]`.
+This line can be interspersed with other block metadata lines, such as the block title.
+The text enclosed in the `[` and `]` boundaries is assumed to be a valid attribute list and the line is automatically consumed.
+If the text cannot be parsed, an error message will be emitted to the log.
 
-        // .A block attribute line
-        // ----
-        // [style,second-positional,named="value of named"]
-        // ----
+.A block attribute line
+----
+[style,second-positional,named="value of named"]
+----
+
+"#
+        );
 
         let block = Block::parse(Span::new(
             "[style,second-positional,named=\"value of named\"]\nSimple block\n",
@@ -371,24 +375,30 @@ mod attrlist {
     #[test]
     #[ignore]
     fn avoid_attrlist_with_empty() {
-        // WARNING: The opening line of a paragraph may inadvertently match the
-        // syntax of a block attribute line. If this happens, append `+{empty}+`
-        // to the end of the line to disrupt the syntax match.
-        todo!("Describe empty substitution trick");
+        to_do_verifies!(
+            r#"
+WARNING: The opening line of a paragraph may inadvertently match the syntax of a block attribute line.
+If this happens, append `+{empty}+` to the end of the line to disrupt the syntax match.
+
+"#
+        );
     }
 
     #[test]
     fn block_macro_attrlist() {
-        // For *block and inline macros*, the attribute list is placed between the
-        // square brackets of the macro. The text in an attribute list of a block
-        // macro never needs to be escaped. For an inline macro, it may be
-        // necessary to escape the text in the attribute list to avoid
-        // prematurely ending the macro or unwanted substitutions.
+        verifies!(
+            r#"
+For *block and inline macros*, the attribute list is placed between the square brackets of the macro.
+The text in an attribute list of a block macro never needs to be escaped.
+For an inline macro, it may be necessary to escape the text in the attribute list to avoid prematurely ending the macro or unwanted substitutions.
 
-        // .A block macro with an attribute list
-        // ----
-        // name::target[first-positional,second-positional,named="value of named"]
-        // ----
+.A block macro with an attribute list
+----
+name::target[first-positional,second-positional,named="value of named"]
+----
+
+"#
+        );
 
         let block = Block::parse(Span::new(
             "name::target[first-positional,second-positional,named=\"value of named\"]\n",
@@ -496,18 +506,24 @@ mod attrlist {
     #[test]
     #[ignore]
     fn inline_attrlist() {
-        // For *formatted text*, the attribute list is placed in the square brackets
-        // in front of the text enclosure. However, formatted text only supports
-        // a restricted form of the attribute list. Specifically, it does not
-        // support named attributes, only the attribute shorthand syntax.
+        verifies!(
+            r#"
+For *formatted text*, the attribute list is placed in the square brackets in front of the text enclosure.
+However, formatted text only supports a restricted form of the attribute list.
+Specifically, it does not support named attributes, only the attribute shorthand syntax.
 
-        // .Formatted text with an attribute list
-        // ----
-        // [#idname.rolename]*text with id and role*
-        // ----
+.Formatted text with an attribute list
+----
+[#idname.rolename]*text with id and role*
+----
+
+"#
+        );
 
         todo!("Describe inline attrlists");
     }
+
+    // No coverage as yet ...
 
     // Attribute lists:
 

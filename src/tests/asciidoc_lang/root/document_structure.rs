@@ -1,43 +1,59 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/ROOT/pages/document-structure.adoc?ref_type=heads
-//!
-//! Tracking commit 9765f83b, current as of 2024-10-26.
+use crate::tests::sdd::{non_normative, track_file};
 
-// = Document Structure
-// :page-aliases: document.adoc
+track_file!("docs/modules/ROOT/pages/document-structure.adoc");
+// Tracking commit 9765f83b, current as of 2024-10-26.
 
-// On this page, you'll learn about the overall structure of an AsciiDoc
-// document. Don't worry about the details of the syntax at this point.
-// That topic will be covered thoroughly later in the documentation.
-// Right now, we're just aiming to get a sense of what makes up an AsciiDoc
-// document.
+non_normative!(
+    r#"
+= Document Structure
+:page-aliases: document.adoc
+
+On this page, you'll learn about the overall structure of an AsciiDoc document.
+Don't worry about the details of the syntax at this point.
+That topic will be covered thoroughly later in the documentation.
+Right now, we're just aiming to get a sense of what makes up an AsciiDoc document.
+
+"#
+);
 
 mod documents {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
         document::Document,
-        tests::fixtures::{
-            blocks::{TBlock, TSimpleBlock},
-            document::{TAttribute, TDocument, THeader, TRawAttributeValue},
-            inlines::TInline,
-            TSpan,
+        tests::{
+            fixtures::{
+                blocks::{TBlock, TSimpleBlock},
+                document::{TAttribute, TDocument, THeader, TRawAttributeValue},
+                inlines::TInline,
+                TSpan,
+            },
+            sdd::{non_normative, verifies},
         },
     };
 
+    non_normative!(
+        r#"
+== Documents
+
+AsciiDoc is a plain text writing format with no boilerplate enclosure or prologue.
+An AsciiDoc document may consist of only a single sentence (or even a single character, to be academic).
+
+"#
+    );
+
     #[test]
     fn single_sentence() {
-        // == Documents
+        verifies!(
+            r#"
+The following example is a valid AsciiDoc document with a single paragraph containing a single sentence:
 
-        // AsciiDoc is a plain text writing format with no boilerplate enclosure
-        // or prologue. An AsciiDoc document may consist of only a
-        // single sentence (or even a single character, to be academic).
+----
+This is a basic AsciiDoc document.
+----
 
-        // The following example is a valid AsciiDoc document with a single
-        // paragraph containing a single sentence:
-
-        // ----
-        // This is a basic AsciiDoc document.
-        // ----
+"#
+        );
 
         assert_eq!(
             Document::parse("This is a basic AsciiDoc document.\n"),
@@ -81,21 +97,24 @@ mod documents {
 
     #[test]
     fn multiple_paragraphs() {
-        // Of course, you can have more content than a single sentence.
-        // What we want to emphasize here is that it's simple to get started.
+        verifies!(
+            r#"
+Of course, you can have more content than a single sentence.
+What we want to emphasize here is that it's simple to get started.
 
-        // An AsciiDoc document is a series of blocks stacked on top of one another
-        // (by line). These blocks are typically offset from one another by
-        // empty lines (though these may be optional in certain circumstances).
+An AsciiDoc document is a series of blocks stacked on top of one another (by line).
+These blocks are typically offset from one another by empty lines (though these may be optional in certain circumstances).
 
-        // To expand the previous document from one paragraph to two, you'd separate
-        // the two paragraphs by an empty line:
+To expand the previous document from one paragraph to two, you'd separate the two paragraphs by an empty line:
 
-        // ----
-        // This is a basic AsciiDoc document.
+----
+This is a basic AsciiDoc document.
 
-        // This document contains two paragraphs.
-        // ----
+This document contains two paragraphs.
+----
+
+"#
+        );
 
         assert_eq!(
             Document::parse(
@@ -158,26 +177,24 @@ mod documents {
 
     #[test]
     fn header() {
-        // An AsciiDoc document may begin with a document header.
-        // Although the document header is optional, it's often used because it
-        // allows you to specify the document title and to set document-wide
-        // configuration and reusable text in the form of document attributes.
+        verifies!(
+            r#"
+An AsciiDoc document may begin with a document header.
+Although the document header is optional, it's often used because it allows you to specify the document title and to set document-wide configuration and reusable text in the form of document attributes.
 
-        // [source]
-        // ----
-        // = Document Title
-        // :reproducible:
+[source]
+----
+= Document Title
+:reproducible:
 
-        // This is a basic AsciiDoc document by {author}.
+This is a basic AsciiDoc document by {author}.
 
-        // This document contains two paragraphs.
-        // It also has a header that specifies the document title.
-        // ----
+This document contains two paragraphs.
+It also has a header that specifies the document title.
+----
 
-        // Almost any combination of blocks constitutes a valid AsciiDoc document
-        // (with some structural requirements dictated by the
-        // xref:document:doctypes.adoc[document type]). Documents can range from
-        // a single sentence to a multi-part book.
+"#
+        );
 
         assert_eq!(
             Document::parse(
@@ -274,6 +291,14 @@ mod documents {
             }
         );
     }
+
+    non_normative!(
+        r#"
+Almost any combination of blocks constitutes a valid AsciiDoc document (with some structural requirements dictated by the xref:document:doctypes.adoc[document type]).
+Documents can range from a single sentence to a multi-part book.
+
+"#
+    );
 }
 
 mod lines {
@@ -281,31 +306,38 @@ mod lines {
 
     use crate::{
         document::Attribute,
-        tests::fixtures::{
-            document::{TAttribute, TAttributeValue, TRawAttributeValue},
-            TSpan,
+        tests::{
+            fixtures::{
+                document::{TAttribute, TAttributeValue, TRawAttributeValue},
+                TSpan,
+            },
+            sdd::verifies,
         },
         Span,
     };
 
     #[test]
     fn section_title() {
-        // == Lines
+        verifies!(
+            r#"
+== Lines
 
-        // The line is a significant construct in AsciiDoc.
-        // A line is defined as text that's separated on either side by either a newline
-        // character or the boundary of the document. Many aspects of the syntax must
-        // occupy a whole line. That's why we say AsciiDoc is a line-oriented language.
+The line is a significant construct in AsciiDoc.
+A line is defined as text that's separated on either side by either a newline character or the boundary of the document.
+Many aspects of the syntax must occupy a whole line.
+That's why we say AsciiDoc is a line-oriented language.
 
-        // For example, a section title must be on a line by itself.
-        // The same is true for an attribute entry, a block title, a block attribute
-        // list, a block macro, a list item, a block delimiter, and so forth.
+For example, a section title must be on a line by itself.
+The same is true for an attribute entry, a block title, a block attribute list, a block macro, a list item, a block delimiter, and so forth.
 
-        // .Example of a section title, which must occupy a single line
-        // [source]
-        // ----
-        // == Section Title
-        // ----
+.Example of a section title, which must occupy a single line
+[source]
+----
+== Section Title
+----
+
+"#
+        );
 
         let span = Span::new("== Section Title\n");
         let l = span.take_line();
@@ -333,11 +365,16 @@ mod lines {
 
     #[test]
     fn one_line_attribute() {
-        // .Example of an attribute entry, which must also occupy at least one line
-        // [source]
-        // -----
-        // :name: value
-        // -----
+        verifies!(
+            r#"
+.Example of an attribute entry, which must also occupy at least one line
+[source]
+-----
+:name: value
+-----
+
+"#
+        );
 
         let mi = Attribute::parse(Span::new(":name: value\n")).unwrap();
 
@@ -378,12 +415,17 @@ mod lines {
 
     #[test]
     fn two_line_attribute() {
-        // .Example of an attribute entry that extends to two lines
-        // [source]
-        // -----
-        // :name: value \
-        // more value
-        // -----
+        verifies!(
+            r#"
+.Example of an attribute entry that extends to two lines
+[source]
+-----
+:name: value \
+more value
+-----
+
+"#
+        );
 
         let mi = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
 

@@ -40,3 +40,6 @@ harness = false
 
 [package.metadata.cargo-udeps.ignore]
 development = ["criterion"]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(test)'] }

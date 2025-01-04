@@ -1,55 +1,69 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/attributes/pages/positional-and-named-attributes.adoc?ref_type=heads
-//!
-//! Tracking commit 3474df92, current as of 2024-10-26.
+use crate::tests::sdd::{non_normative, track_file};
 
-// = Positional and Named Attributes
+track_file!("docs/modules/attributes/pages/positional-and-named-attributes.adoc");
+// Tracking commit 3474df92, current as of 2024-10-26.
 
-// This page breaks down the difference between positional and named attributes
-// on an element and the rules for parsing an attribute list.
+non_normative!(
+    r#"
+= Positional and Named Attributes
+
+This page breaks down the difference between positional and named attributes on an element and the rules for parsing an attribute list.
+
+"#
+);
 
 mod positional_attribute {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
         blocks::{preamble::Preamble, MacroBlock},
-        tests::fixtures::{attributes::TElementAttribute, TSpan},
+        tests::{
+            fixtures::{attributes::TElementAttribute, TSpan},
+            sdd::{non_normative, verifies},
+        },
     };
 
-    // [#positional]
-    // == Positional attribute
+    non_normative!(
+        r#"
+[#positional]
+== Positional attribute
 
-    // // tag::pos[]
-    // Entries in an attribute list that only consist of a value are referred to
-    // as positional attributes. The position is the 1-based index of the
-    // entry once all named attributes have been removed (so they may be
-    // interspersed).
+// tag::pos[]
+Entries in an attribute list that only consist of a value are referred to as positional attributes.
+The position is the 1-based index of the entry once all named attributes have been removed (so they may be interspersed).
+
+"#
+    );
 
     #[test]
     fn implicit_attribute_name() {
-        // The positional attribute may be dually assigned to an implicit attribute
-        // name if the block or macro defines a mapping for positional attributes.
-        // Here are some examples of those mappings:
+        verifies!(
+            r#"
+The positional attribute may be dually assigned to an implicit attribute name if the block or macro defines a mapping for positional attributes.
+Here are some examples of those mappings:
 
-        // * `icon:` 1 => size
-        // * `image:` and `image::` 1 => alt (text), 2 => width, 3 => height
-        // * Delimited blocks: 1 => block style and attribute shorthand
-        // * Other inline quoted text: 1 => attribute shorthand
-        // * `link:` and `xref:` 1 => text
-        // * Custom blocks and macros can also specify positional attributes
+* `icon:` 1 => size
+* `image:` and `image::` 1 => alt (text), 2 => width, 3 => height
+* Delimited blocks: 1 => block style and attribute shorthand
+* Other inline quoted text: 1 => attribute shorthand
+* `link:` and `xref:` 1 => text
+* Custom blocks and macros can also specify positional attributes
 
-        // For example, the following two image macros are equivalent.
+For example, the following two image macros are equivalent.
 
-        // [source]
-        // ----
-        // image::sunset.jpg[Sunset,300,400]
+[source]
+----
+image::sunset.jpg[Sunset,300,400]
 
-        // image::sunset.jpg[alt=Sunset,width=300,height=400]
-        // ----
+image::sunset.jpg[alt=Sunset,width=300,height=400]
+----
 
-        // The second macro is the same as the first, but written out in longhand
-        // form.
+The second macro is the same as the first, but written out in longhand form.
+// end::pos[]
 
-        // end::pos[]
+
+"#
+        );
 
         let m1 = MacroBlock::parse(&Preamble::new("image::sunset.jpg[Sunset,300,400]"))
             .unwrap_if_no_warnings()
@@ -114,6 +128,8 @@ mod positional_attribute {
             }
         );
     }
+
+    // NO COVERAGE YET:
 
     // === Block style and attribute shorthand
 

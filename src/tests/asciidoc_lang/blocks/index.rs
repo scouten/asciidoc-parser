@@ -1,133 +1,61 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/blocks/pages/index.adoc?ref_type=heads
-//!
-//! Tracking commit 447cfd22, current as of 2024-10-26.
+use crate::tests::sdd::{non_normative, track_file};
 
-// = Blocks
-//
-// Block elements form the main structure of an AsciiDoc document, starting with
-// the document itself.
+track_file!("docs/modules/blocks/pages/index.adoc");
+// Tracking commit 447cfd22, current as of 2024-10-26.
 
-#[ignore]
-#[test]
-fn what_is_a_block() {
-    // == What is a block?
-    //
-    // A block element (aka block) is a discrete, line-oriented chunk of content in
-    // an AsciiDoc document. Once parsed, that chunk of content becomes a block
-    // element in the parsed document model. Certain blocks may contain other
-    // blocks, so we say that blocks can be nested. The converter visits each
-    // block in turn, in document order, converting it to a corresponding chunk of
-    // output.
+non_normative!(
+    r#"
+= Blocks
 
-    todo!("Verify block model.");
-    // NOT SURE this needs a test, really.
-}
+Block elements form the main structure of an AsciiDoc document, starting with the document itself.
 
-#[ignore]
-#[test]
-fn block_forms() {
-    // == Block forms
-    //
-    // How the boundaries of a block are defined in the AsciiDoc syntax varies.
-    // The boundaries of some blocks, like lists, paragraphs, and block macro, are
-    // implicit. Other blocks have boundaries that are explicitly marked using
-    // delimiters (i.e., delimited blocks). The main commonality is that a block
-    // is always line-oriented.
-    //
-    // A _paragraph block_ is defined as a discrete set of contiguous (non-empty)
-    // lines. A _delimited block_ is bounded by delimiter lines.
-    // A _section block_ (aka section) is defined by a section title that's prefixed
-    // by one or more equal signs. The section includes all content that follows
-    // the section title line until the next sibling or parent section title or the
-    // document boundary. A _list block_ is defined by a group of sibling list
-    // items, each denoted by a marker. A _description list_ block is defined by
-    // a sibling group of list items, each denoted by one or more terms.
-    // A _block macro_ is defined by a single line that matches the block macro
-    // syntax. And the _document_ is also a block.
-    //
-    // A block (including its metadata lines) should always be bounded by an empty
-    // line or document boundary on either side.
-    //
-    // Whether or not a block supports nested blocks depends on content model of the
-    // block (and what the syntax allows).
+== What is a block?
 
-    todo!("Redundant: Covered by content_model test below.");
-}
+A block element (aka block) is a discrete, line-oriented chunk of content in an AsciiDoc document.
+Once parsed, that chunk of content becomes a block element in the parsed document model.
+Certain blocks may contain other blocks, so we say that blocks can be nested.
+The converter visits each block in turn, in document order, converting it to a corresponding chunk of output.
 
-mod content_model {
-    use crate::{
-        blocks::{Block, ContentModel, IsBlock},
-        Span,
-    };
+== Block forms
 
-    // == Content model
-    //
-    // The content model of a block determines what kind of content the block can
-    // have (if any) and how that content is processed. The content models of blocks
-    // in AsciiDoc are as follows:
+How the boundaries of a block are defined in the AsciiDoc syntax varies.
+The boundaries of some blocks, like lists, paragraphs, and block macro, are implicit.
+Other blocks have boundaries that are explicitly marked using delimiters (i.e., delimited blocks).
+The main commonality is that a block is always line-oriented.
 
-    #[ignore]
-    #[test]
-    fn compound() {
-        // compound:: a block that may only contain other blocks (e.g., a section)
-        todo!("Add test once a compound block is supported");
-    }
+A _paragraph block_ is defined as a discrete set of contiguous (non-empty) lines.
+A _delimited block_ is bounded by delimiter lines.
+A _section block_ (aka section) is defined by a section title that's prefixed by one or more equal signs.
+The section includes all content that follows the section title line until the next sibling or parent section title or the document boundary.
+A _list block_ is defined by a group of sibling list items, each denoted by a marker.
+A _description list_ block is defined by a sibling group of list items, each denoted by one or more terms.
+A _block macro_ is defined by a single line that matches the block macro syntax.
+And the _document_ is also a block.
 
-    #[test]
-    fn simple() {
-        // simple:: a block that's treated as contiguous lines of paragraph text (and
-        // subject to normal substitutions) (e.g., a paragraph block)
+A block (including its metadata lines) should always be bounded by an empty line or document boundary on either side.
 
-        let block = Block::parse(Span::new("abc"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+Whether or not a block supports nested blocks depends on content model of the block (and what the syntax allows).
 
-        assert_eq!(block.item.content_model(), ContentModel::Simple);
-    }
+== Content model
 
-    #[ignore]
-    #[test]
-    fn verbatim() {
-        // verbatim:: a block that holds verbatim text (displayed "`as is`") (and
-        // subject to verbatim substitutions) (e.g., a listing block)
-        todo!("Add test once a verbatim block is supported");
-    }
+The content model of a block determines what kind of content the block can have (if any) and how that content is processed.
+The content models of blocks in AsciiDoc are as follows:
 
-    #[ignore]
-    #[test]
-    fn raw() {
-        // raw:: a block that holds unprocessed content passed directly through to the
-        // output with no substitutions applied (e.g., a passthrough block)
-        todo!("Add test once a raw block is supported");
-    }
+compound:: a block that may only contain other blocks (e.g., a section)
+simple:: a block that's treated as contiguous lines of paragraph text (and subject to normal substitutions) (e.g., a paragraph block)
+verbatim:: a block that holds verbatim text (displayed "`as is`") (and subject to verbatim substitutions) (e.g., a listing block)
+raw:: a block that holds unprocessed content passed directly through to the output with no substitutions applied (e.g., a passthrough block)
+empty:: a block that has no content (e.g., an image block)
+table:: a special content model reserved for tables that enforces a fixed structure
 
-    #[ignore]
-    #[test]
-    fn empty() {
-        // empty:: a block that has no content (e.g., an image block)
-        todo!("Add test once an empty block is supported");
-    }
+The content model is inferred for all built-in syntax (as determined by the context), but can be configured for custom blocks.
+Blocks may also support different content models under different circumstances.
+The circumstance is determined by the context and style, and in the case of a delimited block, the structural container as well.
 
-    #[ignore]
-    #[test]
-    fn table() {
-        // table:: a special content model reserved for tables that
-        // enforces a fixed structure
-        todo!("Add test once a table block is supported");
-    }
+"#
+);
 
-    #[ignore]
-    #[test]
-    fn custom() {
-        // The content model is inferred for all built-in syntax (as determined by the
-        // context), but can be configured for custom blocks. Blocks may also support
-        // different content models under different circumstances. The circumstance is
-        // determined by the context and style, and in the case of a delimited block,
-        // the structural container as well.
-        todo!("Add test once custom blocks are supported");
-    }
-}
-
+// TO DO: Add coverage for remainder of this file. (May be redundant.)
 mod context {
     use std::ops::Deref;
 

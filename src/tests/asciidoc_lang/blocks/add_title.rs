@@ -1,43 +1,52 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/blocks/pages/add-title.adoc?ref_type=heads
-//!
-//! Tracking commit 62d91913, current as of 2024-11-29.
-
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{Block, ContentModel},
-    tests::fixtures::{
-        attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
-        inlines::TInline,
-        TSpan,
+    tests::{
+        fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
+            blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            inlines::TInline,
+            TSpan,
+        },
+        sdd::{non_normative, track_file, verifies},
     },
     Span,
 };
 
-// = Add a Title to a Block
+track_file!("docs/modules/blocks/pages/add-title.adoc");
+// Tracking commit 62d91913, current as of 2024-11-29.
 
-// You can assign a title to a block, whether it's styled using its style name
-// or delimiters.
+non_normative!(
+    r#"
+= Add a Title to a Block
+
+You can assign a title to a block, whether it's styled using its style name or delimiters.
+
+"#
+);
 
 #[test]
 fn block_title_syntax() {
-    // == Block title syntax
+    verifies!(
+        r#"
+== Block title syntax
 
-    // A block title is defined on its own line directly above the block's attribute
-    // list, opening delimiter, or block content--which ever comes first.
-    // As shown in <<ex-basic>>, the line must begin with a dot (`.`) and
-    // immediately be followed by the text of the title. The block title must
-    // only occupy a single line and thus cannot be wrapped.
+A block title is defined on its own line directly above the block's attribute list, opening delimiter, or block content--which ever comes first.
+As shown in <<ex-basic>>, the line must begin with a dot (`.`) and immediately be followed by the text of the title.
+The block title must only occupy a single line and thus cannot be wrapped.
 
-    // .Block title syntax
-    // [#ex-basic]
-    // ----
-    // .This is the title of a sidebar block
-    // ****
-    // This is the content of the sidebar block.
-    // ****
-    // ----
+.Block title syntax
+[#ex-basic]
+----
+.This is the title of a sidebar block
+****
+This is the content of the sidebar block.
+****
+----
+
+"#
+    );
 
     let block = Block::parse(Span::new(
         ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****\n",
@@ -91,35 +100,42 @@ fn block_title_syntax() {
             },
         )
     );
-
-    // The next sections will show how to add titles to delimited blocks and
-    // blocks with attribute lists.
 }
+
+non_normative!(
+    r#"
+The next sections will show how to add titles to delimited blocks and blocks with attribute lists.
+
+"#
+);
 
 #[test]
 fn add_title_to_delimited_block() {
-    // == Add a title to a delimited block
+    verifies!(
+        r#"
+== Add a title to a delimited block
 
-    // Any delimited block can have a title.
-    // If the block doesn't have an attribute list, enter the title on a new line
-    // directly above the opening delimiter. The delimited literal block in
-    // <<ex-title>> is titled _Terminal Output_.
+Any delimited block can have a title.
+If the block doesn't have an attribute list, enter the title on a new line directly above the opening delimiter.
+The delimited literal block in <<ex-title>> is titled _Terminal Output_.
 
-    // .Add a title to a delimited block
-    // [#ex-title]
-    // ----
-    // .Terminal Output <.>
-    // .... <.>
-    // From github.com:asciidoctor/asciidoctor
-    //  * branch        main   -> FETCH_HEAD
-    // Already up to date.
-    // ....
-    // ----
-    // <.> The block title is entered on a new line.
-    // The title must begin with a dot (`.`).
-    // Don't put a space between the dot and the first character of the title.
-    // <.> If you aren't applying attributes to a block, enter the opening delimiter
-    // on a new line directly after the title.
+.Add a title to a delimited block
+[#ex-title]
+----
+.Terminal Output <.>
+.... <.>
+From github.com:asciidoctor/asciidoctor
+ * branch        main   -> FETCH_HEAD
+Already up to date.
+....
+----
+<.> The block title is entered on a new line.
+The title must begin with a dot (`.`).
+Don't put a space between the dot and the first character of the title.
+<.> If you aren't applying attributes to a block, enter the opening delimiter on a new line directly after the title.
+
+"#
+    );
 
     let block = Block::parse(Span::new(
         ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....\n",
@@ -172,48 +188,48 @@ fn add_title_to_delimited_block() {
             },
         )
     );
-
-    // The result of <<ex-title>> is displayed below.
-
-    // .Terminal Output
-    // ....
-    // From github.com:asciidoctor/asciidoctor
-    //  * branch        main   -> FETCH_HEAD
-    // Already up to date.
-    // ....
-
-    // In the next section, you'll see how a title is placed on a block that has
-    // an attribute list.
 }
+
+non_normative!(
+    r#"
+The result of <<ex-title>> is displayed below.
+
+.Terminal Output
+....
+From github.com:asciidoctor/asciidoctor
+ * branch        main   -> FETCH_HEAD
+Already up to date.
+....
+
+In the next section, you'll see how a title is placed on a block that has an attribute list.
+
+"#
+);
 
 #[test]
 fn add_title_to_block_with_attributes() {
-    // == Add a title to a block with attributes
+    verifies!(
+        r#"
+== Add a title to a block with attributes
 
-    // When you're applying attributes to a block, the title is placed on the line
-    // above the attribute list (or lists). <<ex-title-list>> shows a delimited
-    // source code block that's titled _Specify GitLab CI stages_.
+When you're applying attributes to a block, the title is placed on the line above the attribute list (or lists).
+<<ex-title-list>> shows a delimited source code block that's titled _Specify GitLab CI stages_.
 
-    // .Add a title to a delimited source code block
-    // [source#ex-title-list]
-    // ....
-    // .Specify GitLab CI stages <.>
-    // [source,yaml] <.>
-    // ----
-    // image: node:16-buster
-    // stages: [ init, verify, deploy ]
-    // ----
-    // ....
-    // <.> The block title is entered on a new line.
-    // <.> The block's attribute list is entered on a new line directly after the
-    // title.
+.Add a title to a delimited source code block
+[source#ex-title-list]
+....
+.Specify GitLab CI stages <.>
+[source,yaml] <.>
+----
+image: node:16-buster
+stages: [ init, verify, deploy ]
+----
+....
+<.> The block title is entered on a new line.
+<.> The block's attribute list is entered on a new line directly after the title.
 
-    // .Specify GitLab CI stages <.>
-    // [source,yaml] <.>
-    // ----
-    // image: node:16-buster
-    // stages: [ init, verify, deploy ]
-    // ----
+"#
+    );
 
     let block = Block::parse(Span::new(
         ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
@@ -309,28 +325,40 @@ fn add_title_to_block_with_attributes() {
                 ),
             },
         ));
+}
 
-    // The result of <<ex-title-list>> is displayed below.
+non_normative!(
+    r#"
+The result of <<ex-title-list>> is displayed below.
 
-    // [caption=]
-    // .Specify GitLab CI stages
-    // [source,yaml]
-    // ----
-    // image: node:16-buster
-    // stages: [ init, verify, deploy ]
-    // ----
+[caption=]
+.Specify GitLab CI stages
+[source,yaml]
+----
+image: node:16-buster
+stages: [ init, verify, deploy ]
+----
 
-    // As shown in <<ex-title-style>>, a block's title is placed above the
-    // attribute list when a block isn't delimited.
+"#
+);
 
-    // .Add a title to a non-delimited block
-    // [#ex-title-style]
-    // ----
-    // .Mint
-    // [sidebar]
-    // Mint has visions of global conquest.
-    // If you don't plant it in a container, it will take over your garden.
-    // ----
+#[test]
+fn add_title_to_non_delimited_block() {
+    verifies!(
+        r#"
+As shown in <<ex-title-style>>, a block's title is placed above the attribute list when a block isn't delimited.
+
+.Add a title to a non-delimited block
+[#ex-title-style]
+----
+.Mint
+[sidebar]
+Mint has visions of global conquest.
+If you don't plant it in a container, it will take over your garden.
+----
+
+"#
+    );
 
     let block = Block::parse(Span::new(
         ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
@@ -433,6 +461,21 @@ fn add_title_to_block_with_attributes() {
     // is displayed depends on the converter and stylesheet you're applying
     // to your AsciiDoc documents.
 }
+
+non_normative!(
+    r#"
+The result of <<ex-title-style>> is displayed below.
+
+.Mint
+[sidebar]
+Mint has visions of global conquest.
+If you don't plant it in a container, it will take over your garden.
+
+You may notice that unlike the titles in the previous rendered listing and source block examples, the sidebar's title is centered and displayed inside the sidebar's background.
+How the title of a block is displayed depends on the converter and stylesheet you're applying to your AsciiDoc documents.
+
+"#
+);
 
 #[test]
 #[ignore]

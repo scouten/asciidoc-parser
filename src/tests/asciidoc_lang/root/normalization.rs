@@ -1,35 +1,46 @@
-//! Tracks https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang/-/blob/main/docs/modules/ROOT/pages/normalization.adoc?ref_type=heads
-//!
-//! Tracking commit 08289a9f, current as of 2024-10-26.
-//!
-//! See additional test cases with more edge-case coverage in
-//! `tests/primitives/line.rs`.
-
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{tests::fixtures::TSpan, Span};
+use crate::{
+    tests::{
+        fixtures::TSpan,
+        sdd::{non_normative, track_file, verifies},
+    },
+    Span,
+};
 
-// = Normalization
-//
-// When an AsciiDoc processor reads the AsciiDoc source, the first thing it does
-// is normalize the lines. (This operation can be performed up front or as each
-// line is visited).
-//
-// Normalization consists of the following operations:
-//
-// * Force the encoding to UTF-8 (An AsciiDoc processor always assumes the
-//   content is UTF-8 encoded)
+track_file!("docs/modules/ROOT/pages/normalization.adoc");
+// Tracking commit 08289a9f, current as of 2024-10-26.
+
+// See additional test cases with more edge-case coverage in
+// `tests/primitives/line.rs`.
+
+non_normative!(
+    r#"
+= Normalization
+
+When an AsciiDoc processor reads the AsciiDoc source, the first thing it does is normalize the lines.
+(This operation can be performed up front or as each line is visited).
+"#
+);
 
 #[test]
-fn force_utf8() {
-    // Implicit: The asciidoc-parser crate requires a Rust string slice
-    // as input, which is guaranteed to be UTF-8.
-}
+fn operations() {
+    verifies!(
+        r#"
+Normalization consists of the following operations:
 
-// * Strip trailing spaces from each line (including any end of line character)
+* Force the encoding to UTF-8 (An AsciiDoc processor always assumes the content is UTF-8 encoded)
+* Strip trailing spaces from each line (including any end of line character)
 
-#[test]
-fn strips_trailing_spaces() {
+This normalization is performed independent of any structured context.
+It doesn't matter if the line is part of a literal block or a regular paragraph. All lines get normalized.
+
+"#
+    );
+
+    // NOTE: The UTF-8 normalization is implicit as the asciidoc-parser crate
+    // requires a Rust string slice as input, which is guaranteed to be UTF-8.
+
     let span = Span::new("abc   ");
     let line = span.take_normalized_line();
 
@@ -110,6 +121,8 @@ fn strips_trailing_crlf() {
     );
 }
 
+// No test cases as yet:
+//
 // This normalization is performed independent of any structured context.
 // It doesn't matter if the line is part of a literal block or a regular
 // paragraph. All lines get normalized.
