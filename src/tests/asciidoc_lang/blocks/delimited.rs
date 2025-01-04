@@ -264,7 +264,7 @@ Even in these cases, though, the content model should be chosen to honor the sem
 
 Some structural containers are reused for different purposes, such as the structural container for the quote block being used for a verse block.
 
-    "#
+"#
     );
 
     verifies!(
