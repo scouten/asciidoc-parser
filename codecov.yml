@@ -4,7 +4,7 @@ comment:
 ignore:
   - "sdd/**"
 
-component_mangement:
+component_management:
   default_rules:
     - type: project
   
