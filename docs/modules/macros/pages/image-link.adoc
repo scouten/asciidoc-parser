@@ -1,0 +1,50 @@
+= Add Link to Image
+
+You can turn an image into a link by using the `link` attribute.
+
+== link attribute
+
+The link attribute on a block or image macro acts as though the image is wrapped in a link macro.
+While it's possible to wrap an inline image macro in a link macro, that combination is not well supported and may introduce subtle parsing problems.
+Therefore, you should use the `link` attribute on the image macro instead.
+
+The value of the `link` attribute is akin to the target of the link macro.
+It can point to any URL or relative path.
+
+For a block image macro, the `link` attribute can be added to the block attribute line above the macro or inside the contents of the macro.
+
+----
+[link=https://example.org]
+image::logo.png[Logo]
+----
+
+or
+
+----
+image::logo.png[Logo,link=https://example.org]
+----
+
+For an inline macro, the `link` attribute must be added inside the contents of the macro.
+
+----
+image:apply.jpg[Apply,link=https://apply.example.org] today!
+----
+
+== Link controls
+
+When using the `link` attribute, you can also use the same controls supported by the link macro to control how the link is constructed.
+Those controls are as follows:
+
+* `window` attribute - instructs the browser to open the link in the specified named window
+* `nofollow` option - instructs search engines to not follow the link
+* `noopener` option - instructs the browser to navigate to the target without granting the new browsing context access to the original document
+
+When the value of `window` attribute is *_blank*, the `noopener` option is automatically enabled.
+
+Here's an example that shows how to use these controls.
+
+----
+image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
+----
+
+Refer to the xref:link-macro-attribute-parsing.adoc#target-a-separate-window[Target a separate window] section in the link macro documentation for more information about how these link controls work.

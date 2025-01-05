@@ -1,0 +1,5 @@
+= Breaks
+
+include::partial$thematic-breaks.adoc[]
+
+include::partial$page-breaks.adoc[]

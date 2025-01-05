@@ -1,0 +1,50 @@
+= Using Custom Inline Styles
+
+== Custom style syntax
+
+You can assign built-in roles (e.g., `big` or `underline`) or custom roles (e.g., `term` or `required`) to any formatted text.
+These roles, in turn, can be used to apply styles to the text.
+In HTML, this is done by mapping styles to the role in the stylesheet using a CSS class selector.
+
+.Text with built-in role
+[#ex-built-in]
+----
+include::example$text.adoc[tag=css-co]
+----
+. The first positional attribute is treated as a role.
+You can assign it a custom or built-in CSS class.
+
+The results of <<ex-built-in>> are displayed below.
+
+====
+include::example$text.adoc[tag=css]
+====
+
+Although xref:text-span-built-in-roles.adoc#built-in[built-in roles] such as `big` and `small` are supported by most AsciiDoc processors, it's really better to define your own semantic role names and map styles to them accordingly.
+
+Here's how you can assign a custom role to text so you can apply your own styles to it.
+
+.Text with custom role
+[#ex-custom]
+----
+include::example$text.adoc[tag=css-custom]
+----
+
+When <<ex-custom>> is converted to HTML, the word _asciidoctor_ is enclosed in a `<span>` element and the role `userinput` is used as the element's CSS class.
+
+.HTML output
+[,html]
+----
+include::example$text.adoc[tag=css-custom-html]
+----
+
+The following example shows how you can assign styles to elements that have this role using a CSS class selector.
+
+[,css]
+----
+.userinput {
+  font-family: monospace;
+  font-size: 1.1em;
+  line-height: calc(1 / 1.1);
+}
+----

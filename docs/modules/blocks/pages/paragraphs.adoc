@@ -1,0 +1,24 @@
+= Paragraphs
+
+The primary block type in most documents is the paragraph.
+That's why in AsciiDoc, you don't need to use any special markup or attributes to create paragraphs.
+You can just start typing sentences and that content becomes a paragraph.
+
+This page introduces you to the paragraph in AsciiDoc and explains how to set it apart from other paragraphs.
+
+== Create a paragraph
+
+Adjacent or consecutive lines of text form a paragraph element.
+To start a new paragraph after another element, such as a section title or table, hit the kbd:[RETURN] key twice to insert an empty line, and then continue typing your content.
+
+.Two paragraphs in an AsciiDoc document
+[#ex-paragraph]
+----
+include::example$paragraph.adoc[tag=para]
+----
+
+The result of <<ex-paragraph>> is displayed below.
+
+====
+include::example$paragraph.adoc[tag=para]
+====

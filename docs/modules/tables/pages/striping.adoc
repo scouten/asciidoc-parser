@@ -1,0 +1,76 @@
+= Table Striping
+
+You can add zebra-striping to rows of a table.
+When this feature is enabled, the specified rows are shaded using a background color to create a zebra striping effect.
+
+NOTE: In the HTML output, table striping is done using CSS and thus depends on the stylesheet to supply the necessary styles.
+The default stylesheet for Asciidoctor includes the necessary styles for table striping.
+
+== Striping attributes
+
+Which rows are striped is controlled using the `stripes` attribute on the table.
+The stripes attribute defaults to the value `none` (implied value), which means rows are not striped by default.
+This default can be changed by setting the `table-stripes` document attribute.
+You can override the default value by setting the stripes attribute on the table.
+
+The `stripes` attribute on a table and the `table-stripes` document attribute accept the following values:
+
+* `none` - no rows are shaded (default)
+* `even` - even rows are shaded
+* `odd` - odd rows are shaded
+* `all` - all rows are shaded
+* `hover` - the row under the mouse cursor is shaded (HTML only)
+
+== stripes block attribute
+
+In the following example, the stripes are enabled for even rows in the table body (the row that contains A2 and B2).
+
+[source]
+----
+[cols=2*,stripes=even]
+|===
+|A1
+|B1
+|A2
+|B2
+|A3
+|B3
+|===
+----
+
+Under the covers, the stripes attribute applies the CSS class `stripes-<value>` (e.g., `stripes-none`) to the table tag.
+As a shorthand, you can simply apply the CSS class to the table directly using a role.
+
+[source]
+----
+[.stripes-even,cols=2*]
+|===
+|A1
+|B1
+|A2
+|B2
+|A3
+|B3
+|===
+----
+
+== table-stripes attribute
+
+If you want to apply stripes to all tables in the document, set the `table-stripes` attribute in the document header.
+You can still override this setting per table.
+
+[source]
+----
+= Document Title
+:table-stripes: even
+
+[cols=2*]
+|===
+|A1
+|B1
+|A2
+|B2
+|A3
+|B3
+|===
+----

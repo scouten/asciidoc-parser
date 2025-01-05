@@ -1,0 +1,54 @@
+// tag::indent[]
+ ~/secure/vault/defops
+// end::indent[]
+
+// tag::qr-para[]
+A normal paragraph.
+
+ A literal paragraph.
+ One or more consecutive lines indented by at least one space.
+
+ The text is shown in a fixed-width (typically monospace) font.
+ The lines are preformatted (i.e., as formatted in the source).
+ Spaces and newlines,
+ like the ones in this sentence,
+ are preserved.
+// end::qr-para[]
+
+// tag::b-imp-code[]
+Normal line.
+
+ Indent line by one space to create a literal line.
+
+Normal line.
+// end::b-imp-code[]
+
+// tag::style[]
+[literal]
+error: 1954 Forbidden search
+absolutely fatal: operation lost in the dodecahedron of doom
+Would you like to try again? y/n
+// end::style[]
+
+// tag::block[]
+....
+Kismet: Where is the *defensive operations manual*?
+
+Computer: Calculating ...
+Can not locate object.
+You are not authorized to know it exists.
+
+Kismet: Did the werewolves tell you to say that?
+
+Computer: Calculating ...
+....
+// end::block[]
+
+// tag::b-block[]
+....
+error: 1954 Forbidden search
+absolutely fatal: operation lost in the dodecahedron of doom
+
+Would you like to try again? y/n
+....
+// end::b-block[]

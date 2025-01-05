@@ -1,0 +1,4 @@
+= Nesting Blocks
+:page-archived:
+
+Moved xref:delimited.adoc#nesting[here].

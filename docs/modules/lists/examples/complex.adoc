@@ -1,0 +1,114 @@
+// tag::indent[]
+* The document header in AsciiDoc is optional.
+If present, it must start with a document title.
+
+* Optional author and revision information lines
+immediately follow the document title.
+
+* The document header must be separated from
+  the remainder of the document by one or more
+  empty lines and it cannot contain empty lines.
+// end::indent[]
+
+// tag::cont[]
+* The header in AsciiDoc must start with a document title.
++
+The header is optional.
+// end::cont[]
+
+// tag::complex[]
+* The header in AsciiDoc must start with a document title.
++
+----
+= Document Title
+----
++
+Keep in mind that the header is optional.
+
+* Optional author and revision information lines immediately follow the document title.
++
+----
+= Document Title
+Doc Writer <doc.writer@asciidoc.org>
+v1.0, 2022-01-01
+----
+// end::complex[]
+
+// tag::b-complex[]
+* Every list item has at least one paragraph of content,
+  which may be wrapped, even using a hanging indent.
++
+Additional paragraphs or blocks are adjoined by putting
+a list continuation on a line adjacent to both blocks.
++
+list continuation:: a plus sign (`{plus}`) on a line by itself
+
+* A literal paragraph does not require a list continuation.
+
+ $ cd projects/my-book
+
+* AsciiDoc lists may contain any complex content.
++
+|===
+|Column 1, Header Row |Column 2, Header Row
+
+|Column 1, Row 1
+|Column 2, Row 1
+|===
+// end::b-complex[]
+
+// tag::complex-o[]
+* The header in AsciiDoc must start with a document title.
++
+--
+Here's an example of a document title:
+
+----
+= Document Title
+----
+
+NOTE: The header is optional.
+--
+// end::complex-o[]
+
+// tag::complex-only[]
+. {empty}
++
+----
+print("one")
+----
+. {empty}
++
+----
+print("one")
+----
+// end::complex-only[]
+
+// tag::complex-parent[]
+* parent list item
+** child list item
+
++
+paragraph attached to parent list item
+// end::complex-parent[]
+
+// tag::complex-grandparent[]
+* grandparent list item
+** parent list item
+*** child list item
+
+
++
+paragraph attached to grandparent list item
+// end::complex-grandparent[]
+
+// tag::complex-enclosed[]
+* grandparent list item
++
+--
+** parent list item
+*** child list item
+--
++
+paragraph attached to grandparent list item
+// end::complex-enclosed[]

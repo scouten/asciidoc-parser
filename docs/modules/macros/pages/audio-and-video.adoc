@@ -1,0 +1,230 @@
+= Audio and Video
+:url-video-element: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video
+:url-audio-element: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio
+:url-media-formats: https://developer.mozilla.org/en-US/docs/Web/HTML/Supported_media_formats#Browser_compatibility
+
+== Audio macro syntax
+
+The block audio macro enables you to embed audio streams into your documentation.
+You can embed self-hosted audio files that are supported by the browser.
+
+The audio formats AsciiDoc supports is dictated by the output format, such as the formats supported by the browser when generating HTML.
+While this was once a precarious ordeal, HTML 5 has brought sanity to audio support in the browser by adding a dedicated {url-audio-element}[`<audio>`^] element and by introducing several standard audio formats.
+Those formats are now widely supported across browsers and systems.
+
+For a canonical list of supported web audio formats and their interaction with modern browsers, see the {url-media-formats}[Mozilla Developer Supported Media Formats^] documentation.
+
+.Basic audio file include
+----
+include::example$audio.adoc[tag=basic]
+----
+
+You can control the audio settings using additional attributes on the macro.
+For instance, you can offset the start time of playback using the `start` attribute and enable autoplay using the `autoplay` option.
+
+.Set attributes for local audio playback
+----
+include::example$audio.adoc[tag=attrs]
+----
+
+You can include a caption above the audio using the title attribute.
+
+.Add a caption to the audio
+[source]
+----
+include::example$audio.adoc[tag=caption]
+----
+
+== Video macro syntax
+
+The block video macro enables you to embed videos into your documentation.
+You can embed self-hosted videos or videos shared on popular video hosting sites such as Vimeo and YouTube.
+
+The video formats AsciiDoc supports is dictated by the output format, such as the formats supported by the browser when generating HTML.
+While this was once a precarious ordeal, HTML 5 has brought sanity to video support in the browser by adding a dedicated {url-video-element}[`<video>`^] element and by introducing several standard video formats.
+Those formats are now widely supported across browsers and systems.
+
+For a canonical list of supported web video formats and their interaction with modern browsers, see the {url-media-formats}[Mozilla Developer Supported Media Formats^] documentation.
+
+.A recommendation for serving video to browsers
+****
+Where appropriate, we recommend using a video hosting service like Vimeo or YouTube to serve videos in online documentation.
+These services specialize in streaming optimized video to the browser, with the lowest latency possible given hardware, software, and network capabilities of the device viewing the video.
+
+Vimeo even offers a white label mode so users aren't made aware that the video is being served through its service.
+
+See <<Vimeo and YouTube videos>> for details about how to serve videos from these services.
+****
+
+.Basic video file include
+[source]
+----
+include::example$video.adoc[tag=base]
+----
+
+You can control the video settings using additional attributes on the macro.
+For instance, you can offset the start time of playback using the `start` attribute and enable autoplay using the `autoplay` option.
+
+.Set attributes for local video playback
+[source]
+----
+include::example$video.adoc[tag=attr]
+----
+
+You can include a caption on the video using the title attribute.
+
+.Add a caption to a video
+[source]
+----
+include::example$video.adoc[tag=caption]
+----
+
+=== Vimeo and YouTube videos
+
+The video macro supports embedding videos from external video hosting services like Vimeo and YouTube.
+The AsciiDoc processor, specifically the converter, automatically generates the correct code to embed the video in the HTML output.
+
+To use this feature, put the video ID in the macro target and the name of the hosting service in the first positional attribute.
+
+.Embed a Vimeo video
+[source]
+----
+include::example$video.adoc[tag=vimeo]
+----
+
+.Embed a YouTube video
+[source]
+----
+include::example$video.adoc[tag=youtube]
+----
+
+When embedding a YouTube video, you can specify a playlist to associate with the video using the `list` attribute.
+The playlist must be specified by its ID.
+
+.Embed a YouTube video with a playlist
+[source]
+----
+include::example$video.adoc[tag=youtube-with-list]
+----
+
+Instead of using the `list` attribute, you can specify the ID of the playlist after the video ID in the target, separated by a slash.
+
+.Embed a YouTube video with a playlist in the target
+[source]
+----
+include::example$video.adoc[tag=youtube-with-list-in-target]
+----
+
+Alternatively, you can create a dynamic, unnamed playlist by listing several additional video IDs in the `playlist` attribute.
+
+.Embed a YouTube video with a dynamic playlist
+[source]
+----
+include::example$video.adoc[tag=youtube-with-playlist]
+----
+
+Instead of using the `playlist` attribute, you can create a dynamic, unnamed playlist by listing several video IDs in the target separated by a comma.
+
+.Embed a YouTube video with a dynamic playlist in the target
+[source]
+----
+include::example$video.adoc[tag=youtube-with-playlist-in-target]
+----
+
+== Audio and video attributes and options
+
+.Audio attributes and values
+[%autowidth]
+|===
+|Attribute |Value(s) |Example Syntax |Notes
+
+|`title`
+|User defined text
+|`.Ocean waves`
+|
+
+|`start`
+|User-defined playback start time in seconds.
+|`start=30`
+|
+
+|`end`
+|User-defined playback end time in seconds.
+|`end=90`
+|
+
+|`options` (`opts`)
+|`autoplay`, `loop`, `controls`, `nocontrols`
+|`opts="autoplay,loop"`
+|The controls value is enabled by default
+|===
+
+.Video attributes and values
+[%autowidth]
+|===
+|Attribute |Value(s) |Example Syntax |Notes
+
+|`title`
+|User defined text
+|`.An ocean sunset`
+|
+
+|`poster`
+|A URL to an image to show until the user plays or seeks.
+|`poster=sunset.jpg`
+|Can be specified as the first positional (unnamed) attribute.
+Also used to specify the service when referring to a video hosted on Vimeo (`vimeo`) or YouTube (`youtube`).
+
+|`width`
+|User-defined size in pixels.
+|`width=640`
+|Can be specified as the second positional (unnamed) attribute.
+
+|`height`
+|User-defined size in pixels.
+|`height=480`
+|Can be specified as the third positional (unnamed) attribute.
+
+|`start`
+|User-defined playback start time in seconds.
+|`start=30`
+|
+
+|`end`
+|User-defined playback end time in seconds.
+|`end=90`
+|
+
+|`theme`
+|The YouTube theme to use for the frame.
+|`theme=light`
+|Valid values are `dark` (the default) and `light`.
+
+|`lang`
+|The language used in the YouTube frame.
+|`lang=fr`
+|A BCP 47 language tag (typically a two-letter language code, like `en`).
+
+|`list`
+|The ID of a playlist to associate with a YouTube video.
+|`list=PLabc123`
+|Only applies to YouTube videos.
+
+|`playlist`
+|Additional video IDs to create a dynamic YouTube playlist.
+|`playlist="video-abc,video-xyz"`
+|IDs must be separated by commas.
+Therefore, the value must be enclosed in double quotes.
+Only applies to YouTube videos.
+
+|`align`
+|`left`, `center`, `right`
+|`align=center`
+|Follows the same alignment rules as a block image.
+
+|`options` (`opts`)
+|`autoplay`, `loop`, `modest`, `nocontrols`, `nofullscreen`, `muted`
+|`opts="autoplay,loop"`
+|The controls are enabled by default.
+The `modest` option enables modest branding for a YouTube video.
+|===

@@ -1,0 +1,199 @@
+= Unordered Lists
+:keywords: bulleted list
+
+You can make unordered lists in AsciiDoc by starting lines with a designated marker.
+An unordered list is a list with items prefixed with symbol, such as a disc (aka bullet).
+
+AsciiDoc builds on the well-established convention of using either an asterisk or hyphen to identify a list item.
+Adjacent list items are joined into a single list.
+Unordered lists can be nested by varying the marker character or length (asterisk only).
+List items may contain attached blocks.
+They can also be interleaved with other types of lists.
+
+== Basic unordered list
+
+In the example below, each list item is marked using an asterisk (`+*+`), the AsciiDoc syntax specifying an unordered list item.
+
+----
+include::example$unordered.adoc[tag=base]
+----
+
+A list item's first line of text must be offset from the marker (`+*+`) by at least one space.
+Empty lines are required before and after a list.
+Additionally, empty lines are permitted, but not required, between list items.
+
+.Rendered unordered list
+====
+include::example$unordered.adoc[tag=base]
+====
+
+You can add a title to a list by prefixing the title with a period (`.`).
+
+----
+include::example$unordered.adoc[tag=base-t]
+----
+
+.Rendered unordered list with a title
+====
+include::example$unordered.adoc[tag=base-t]
+====
+
+Was your instinct to use a hyphen (`-`) instead of an asterisk to mark list items?
+Guess what?
+That works too!
+
+----
+include::example$unordered.adoc[tag=base-alt]
+----
+
+You should reserve the hyphen for lists that only have a single level because the hyphen marker (`-`) doesn't work for nested lists.
+Now that we've mentioned nested lists, let's go to the next section and learn how to create lists with multiple levels.
+
+[#separating-lists]
+.Forcing lists apart
+****
+If you have adjacent lists, they have the tendency to want to fuse together.
+To force lists apart, insert a line comment (`//`) surrounded by empty lines between the two lists.
+Here's an example, where the `-` text in the line comment indicates the line serves as an "`end of list`" marker:
+
+----
+include::example$unordered.adoc[tag=divide]
+----
+
+This technique works for all list types.
+See xref:separating.adoc[] for more details.
+****
+
+== Nested unordered list
+
+To nest an item, just add another asterisk (`+*+`) to the marker.
+Continue doing this for each subsequent level.
+
+----
+include::example$unordered.adoc[tag=nest]
+----
+
+.Rendered nested, unordered list
+====
+include::example$unordered.adoc[tag=nest]
+====
+
+If you prefer, you can indent the marker an arbitrary number of spaces from the left margin.
+The indentation is not significant and may aid in visualizing the nesting level.
+
+You can nest unordered lists to any depth.
+Keep in mind, however, that some interfaces will begin flattening lists after a certain depth.
+For instance, GitHub starts flattening list after 10 levels of nesting.
+
+----
+include::example$unordered.adoc[tag=max]
+----
+
+[#ex-deep]
+.Unordered lists can be nested to any depth
+====
+include::example$unordered.adoc[tag=max]
+====
+
+=== Determining list depth
+
+While it would seem as though the number of asterisks represents the nesting level, that's not how depth is determined.
+A new level is created for each unique marker encountered.
+For example, you can create a second level using the hyphen marker instead of two asterisks.
+
+.Using hyphen to mark the second level is not recommended
+----
+include::example$unordered.adoc[tag=nest-alt]
+----
+
+However, it's much more intuitive to follow the convention that the marker length (i.e., number of asterisks) equals the level of nesting.
+The hyphen should only be used as the marker for the first level.
+
+*marker length = level of nesting*
+
+After all, we're shooting for plain text markup that is readable _as is_.
+
+[#markers]
+== Markers
+
+When rendered, an unordered list item is designated by a leading marker (bullet) (not to be confused with the marker used to define the list).
+This marker can be controlled using the list style.
+If no marker is specified, a default marker will be selected by the renderer.
+
+=== Default markers
+
+By default, AsciiDoc assumes that the first three levels of an unordered list will be styled using the markers disc, circle, and squared when rendered.
+Consider the following list:
+
+----
+include::example$unordered.adoc[tag=markers]
+----
+
+.Default alternating markers for nested lists
+====
+include::example$unordered.adoc[tag=markers]
+====
+
+Observe that the marker for the first level is a disc (filled circle), the second level is a circle (outline), and the third level is a square (filled).
+The AsciiDoc processor does not specify these markers explicitly in the model or converted output.
+Rather, these defaults are added by the renderer (e.g., CSS), adhering to a convention established by HTML.
+
+Beyond the third level of nesting, the marker choice is not specified.
+Typically, the renderer will continue to use the square marker, as shown in <<ex-deep,an earlier example>>.
+
+=== Custom markers
+
+AsciiDoc offers numerous marker styles for lists.
+The list marker can be specified using the list's block style.
+
+The unordered list marker can be set using any of the following block styles:
+
+* square
+* circle
+* disc
+* none or no-bullet (indented, but no bullet)
+* unstyled (no indentation or bullet) (not supported in DocBook output)
+
+NOTE: These styles are supported by the default Asciidoctor stylesheet.
+
+When present, the style name is assigned to the unordered list element as follows:
+
+For HTML:: the style name is assigned to the `class` attribute on the `<ul>` element.
+
+For DocBook:: the style name is assigned to the `mark` attribute on the `<itemizedlist>` element.
+
+Here's an unordered list that has square markers:
+
+----
+include::example$unordered.adoc[tag=square]
+----
+
+.A list with square markers
+====
+include::example$unordered.adoc[tag=square]
+====
+
+Once the list style is set, that style is used for all nested lists until it is set again.
+The assumption is that it's no longer possible to infer the alternation, so it stops.
+The inherited style is not specified in the model, but rather applied by the renderer (e.g., CSS).
+For example, if we set the list style to circle on the top-level list, it will be used for all levels.
+
+----
+include::example$unordered.adoc[tag=marker-lock]
+----
+
+.The list style is inherited once set
+====
+include::example$unordered.adoc[tag=marker-lock]
+====
+
+The inherited style can be set or reset at any level.
+
+----
+include::example$unordered.adoc[tag=marker-override]
+----
+
+.The list style can be reset
+====
+include::example$unordered.adoc[tag=marker-override]
+====
