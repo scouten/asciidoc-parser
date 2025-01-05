@@ -1,0 +1,45 @@
+[package]
+name = "asciidoc-parser"
+version = "0.2.0"
+description = "Parser for AsciiDoc format"
+authors = ["Eric Scouten <git@scouten.me>"]
+license = "MIT OR Apache-2.0"
+documentation = "https://docs.rs/asciidoc-parser"
+repository = "https://github.com/scouten/asciidoc-parser"
+readme = "README.md"
+edition = "2021"
+keywords = ["asciidoc", "parser"]
+categories = ["parser-implementations"]
+rust-version = "1.74.0"
+
+[dependencies]
+bytecount = "0.6.7"
+memchr = "2.6.4"
+thiserror = "2.0.1"
+
+[dev-dependencies]
+codspeed-criterion-compat = "2.3.3"
+criterion = "0.5.1"
+pretty_assertions_sorted = "1.2.3"
+
+[[bench]]
+name = "element_attributes"
+harness = false
+
+[[bench]]
+name = "inline_macro"
+harness = false
+
+[[bench]]
+name = "section_with_two_blocks"
+harness = false
+
+[[bench]]
+name = "simple_parse"
+harness = false
+
+[package.metadata.cargo-udeps.ignore]
+development = ["criterion"]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(test)'] }
