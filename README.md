@@ -22,7 +22,7 @@ Note that some components and dependent crates may be licensed under different t
 
 ### License for AsciiDoc language materials
 
-IMPORTANT: This repository contains a snapshot of the AsciiDoc language description which comes with its own license terms. It is not the purpose of _this_ repository to supplant or replace that description; these documents are here as part of tooling to ensure that this crate follows the language description as closely as possible. Please consult https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang for the official language description.
+IMPORTANT: This repository contains a snapshot of the AsciiDoc language description which comes with its own license terms. It is not the purpose of _this_ repository to supplant or replace that description; these documents are here as part of tooling to ensure that this crate follows the language description as closely as possible. Please consult [AsciiDoc Language @ Eclipse GitLab](https://gitlab.eclipse.org/eclipse/asciidoc-lang/asciidoc-lang) for the official language description.
 
 The following applies to content in the `asg` and `spec` folders:
 
