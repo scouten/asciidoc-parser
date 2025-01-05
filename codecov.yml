@@ -4,15 +4,18 @@ comment:
 ignore:
   - "sdd/**"
 
-component_mangement:
+component_management:
   default_rules:
-    - type: project
+    statuses:
+      - type: project
   
   individual_components:
     - component_id: parser
       name: Parser test coverage
-      paths: parser/**
+      paths:
+        - parser/**
     
     - component_id: spec
       name: AsciiDoc spec coverage
-      paths: docs/modules/**
+      paths:
+        - docs/modules/**
