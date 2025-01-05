@@ -1,0 +1,329 @@
+= AsciiDoc Language Documentation Changelog
+
+This document summarizes the changes introduced to the AsciiDoc Language Documentation by quarter.
+For a detailed view of what's changed, refer to the repository's
+https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
+
+== Published Q4 2024
+
+Changed::
+* Clarify that a particular admonition style is not mandated by the AsciiDoc language and that they way they appear in the docs may differ from how they appear when rendered using an AsciiDoc processor such as Asciidoctor.
+
+== Published Q3 2024
+
+Added::
+* Add example for how to escape an inline plus passthrough on the prevent substitutions page
+* Document the `align` attribute on the `video` block macro
+* Add hint for how to define a primary index term with alternate casing
+
+Changed::
+* Clarify how the author name is partitioned
+* Clarify that a URL can be used in place of an email address in the author information
+* Clarify that a section title line inside a non-section block is interpreted as a paragraph unless marked as a discrete heading
+* Clarify that the index section can be the last level 0 section in a multipart book
+* Clarify that the noopener option on link macros is only available when the window attribute is set
+
+== Published Q2 2024
+
+Added::
+* Add example of page break macro with page layout
+* Document the rules for using a preprocessor directive on the same line as the cell separator in an AsciiDoc table cell
+* Add example of how to assign an ID to a table cell
+
+Changed::
+* Clarify that blocks attached to list item must be left-aligned
+* Clarify that list continuations apply to callout and description lists in additional to unordered and ordered lists
+* Clarify that the alt text for a block image must also be enclosed in quotes if it starts with a valid attribute name followed by an equals sign
+* Remove legacy qualifier when refering to block and inline anchor
+
+== Published Q1 2024
+
+Added::
+* Document the `column` role on the page break macro
+
+Changed::
+* Clarify how the width and scaledwidth attributes on an image macro are translated into DocBook and when scaledwidth is ignored
+* Be more clear about where the include tag directives are permitted in an include file
+* Clarify that the include directive allow the encoding to be specified
+
+== Published Q4 2023
+
+Added::
+* Document the `encoding` attribute on the include directive and when to use it
+* Document the `link` attribute and friends on the image macros
+
+Changed::
+* Clarify that line normalization is only applied to include files that are AsciiDoc
+
+== Published Q3 2023
+
+Added::
+* Added clarification for why section levels are limited to 5
+* Document how to escape an ordered list marker
+
+Changed::
+* Clarify that an open block can only masquarade as other paragraph or delimited blocks
+* Clarify how a dot is handled in an xref target by the shorthand xref and the xref macro
+
+== Published Q2 2023
+
+Added::
+* Document muted option on video macro (!10)
+
+Changed::
+* Clarify that footnotes in headings are not officially supported
+* Document the use of the zero-width space character in the em dash and ellipsis replacements
+* Clarify that spaces are not permitted in the target of the link macro and thus must be escaped or encoded
+
+Fixed::
+* Fixed numerous typos and spelling errors (!14)
+
+== Published Q1 2023
+
+Added::
+* Add tip for how to find list of supported source languages for the various syntax highlighters
+
+Changed::
+* Change docs version from latest to pre-spec (#30)
+* Clarify that superscript and subscript formatting is neither constrained nor unconstrained, but rather a specialty hybrid
+* Clarify that first menu item must start with word character or character reference
+* Emphasize that the shorthand syntax for menu is not on a standards track
+* Clarify how the document header is interpreted and point out that no content blocks may proceed it
+
+Fixed::
+* Update docinfo example so it picks up docinfo file
+* Remove redundant admonition about the `experimental` attribute on the UI macros page
+
+Removed::
+* Drop information about obsolete `docinfo1` and `docinfo2` document attributes
+
+== Published Q4 2022
+
+Added::
+* Restore the documentation for the menu macro shorthand syntax
+* Document that the unordered list style inherits when set explicitly
+* Document difference between shell and console source language
+* Document the `labelwidth` and `itemwidth` attributes of a horizontal dlist
+* Add page that documents the `docinfo` attribute and docinfo files
+
+Changed::
+* Clarify which markers are selected by default for a rendered unordered list
+* Be more clear that the source style is not required on a listing block if the source language is set
+* Clarify that source language values are defined by the syntax highlighter library
+* Add example of encoding a colon in the target of a link macro
+* Show full example of mixing AsciiMath and LaTeX math in same document
+* Clarify when line highlighting can be used on a source block and how it works
+
+Fixed::
+* Fix image block example so source matches output
+
+== Published Q3 2022
+
+Added::
+* add more detail about the page break macro
+* add more detail about the thematic break macro
+* add more detail about qanda lists
+* add entries for `table-frame`, `table-grid`, and `table-stripes` to document attribute reference table
+* document `iw` units for `pdfwidth` attribute on image
+* document block captions (captioned titles) and the attributes that are used to generate and control them
+* properly introduce the attribute list, adding a lot more detail about where they can be used
+
+Changed::
+* added subsections to ID attribute page
+* be more clear about how special sections work in a multi-part book
+* clarify that each side of the expression of an `ifeval` directive should have the same type
+* clarify that the default value for `frame` and `grid` attributes on tables can be controlled using `table-frame` and `table-grid` document attributes, respectively
+* clarify that the frame and grid attributes both accept the value `all`
+* clarify in the quick reference where the block title is displayed
+* clarify that formatted text can span multiple, contiguous lines
+
+== Published Q2 2022
+
+Added::
+* document the flattened `backend`, `basebackend`, `doctype`, and `filetype` value attributes (e.g., `backend-html5`)
+* document how to encode link text that contains both an equals sign and quotes
+* document that the `xrefstyle` attribute can be specified on the xref macro to override the xrefstyle value for a single reference
+* document that leading and trailing empty lines are automatically removed from delimited blocks
+* document how to turn off autolinks by removing the macros substitution
+
+Fixed::
+* clarify that multiple role values in the role attribute must be separated by spaces (#114)
+* draw clear association between the type and visual presentation of formatted text (strong=bold, emphasis=italic, etc)
+* change "macro substitution" to "macros substitution" to keep the terminology straight
+
+Changed::
+* specify more precisely when quotes in a named attribute value are unescaped
+* revise text about window attribute on URL and link macros
+* add caution about underscore in window=_blank unexpectedly forming a constrained formatting pair; recommend the shorthand syntax instead
+
+== Published Q1 2022
+
+Added::
+* add section to clarify that substitutions are not applied to the value of attributes defined externally
+* document that double quote in a URL must be encoded using %22
+* add dedicated section with examples for multiple attributes with ifndef directive
+* explicitly state that , and + combinators on ifdef and ifndef directive cannot be combined
+
+Changed::
+* clarify the interpretation of multiple attributes with ifdef directive
+
+== Published Q4 2021
+
+Added::
+* add dedicated section to introduce the attribute shorthand on blocks and formatted text
+* define the term attrlist as the source text that defines attributes for an element or include directive
+* document how to use text formatting markup in the text of an externalized footnote
+* add recommendation to separate consecutive include directives by an empty line unless the intend is to adjoin the content
+* document acceptable values for the image target
+* document that spaces in the image target are encoded when converting to HTML
+* document that when autogenerated section IDs is enabled, and a title contains a forward looking xref, a custom ID is required
+* document how to toggle autogenerated section IDs within the document
+* add section that covers single and plus passthrough with examples
+* add complete documentation for block and line comments, including an intro
+* explicitly document that you can reference the value of another attribute in the value of an attribute entry
+
+Fixed::
+* state that scaledwidth attribute with % value scales the image relative to the content area
+* remove dot from the list of valid characters in an element attribute name; this was never a valid character
+* improve the accuracy of the description for internal cross references
+* fix numerous problems with how the inline anchor is explained
+
+Changed::
+* repurpose the List Continuation page as Complex List Items
+* clarify that user-defined document attributes are stored in the order in which they are defined
+* clarify that the value of the width and height attributes must be an integer value without a unit
+* provide clarity about image sizing attributes in general
+* clarify that the schema for element attributes is open-ended (#87)
+* revise the Document Attributes page so it provides a clearer and more accurate introduction to document attributes
+* clarify what values the target of an include directive accepts
+* rewrite the introduction of single and double curved quotes; add example for straight quotes
+* rewrite the introduction of the apostrophe behavior and syntax; add example for the smart typography replacement
+* split content for internal cross references into sections; add recommended practices
+* improve the description of autogenerated IDs for sections and discrete headings
+* clarify where an attribute entry can be declared; specify that declaring the attribute entry inside a delimited block is undefined
+* clarify that the colophon section can be placed anywhere in a book
+* make a distinction between an absolute and relative URL on the Links intro page
+* promote Literal Monospace section to a page
+* show contexts without leading colon to avoid confusion
+
+== Published Q3 2021
+
+Fixed::
+* clarify that the value of the lang attribute must be a BCP 47 language tag
+* fix textual references that refer to the mailto macro as the email macro
+* fix the terminology pertaining to custom inline styles
+* fix the terminology pertaining to highlighted text
+* slightly clarify the rules for a constrained formatting pair by emphasizing that the text cannot start or end with a space-like character
+* change chapter-label to chapter-signifier
+
+Added::
+* document collapsible blocks (the collapsible and open options on the example structural container) (#34)
+* document how to escape an attribute reference
+* document text span (formerly known as unformatted text)
+* document how newlines in block AsciiMath notation are processed
+* document how newlines in block LaTeX notation are processed
+* document the format attribute on image macros
+* document the fallback attribute on image macros when target is an SVG
+* add the window attribute to the reference table for image macros
+* document the linenums option on source blocks
+* add `pp` to the table of character replacement attributes
+* document the partintro block style (#84)
+* document start and end attributes on audio macro (#74)
+* full document the audio macro, providing both an introduction and examples
+* add the audio macro to the syntax quick reference
+* show example of how to specify alt text that contains a comma
+* document which characters AsciiDoc allows in an ID value and provide recommendations
+* add intro page to passthroughs section
+* document the list and playlist attributes when embedding YouTube videos
+* document the proposed description list with marker list type
+* add block name, context, block style, structural container, and content model to the glossary
+* add block element, inline element, element, and node to the glossary
+* document the valid set of term delimiters for use in a description list (#95)
+
+Changed::
+* rewrite the documentation for blocks to include information about content models, contexts, structural containers, delimited blocks, block masquerading, and nesting delimited blocks
+* provide more details and examples that explain how to use the attribute list of a mailto macro
+* make it more clear that GitHub, GitLab, and the browser preview extensions automatically adjust relfilesuffix
+* rewrite page about multiline attribute values to describe line joiner as a line continuation
+* change mentions of Asciidoctor to AsciiDoc processor where applicable
+* clarify that formatting pairs cannot be overlapped
+* move discrete headings page to blocks module and map to top-level entry in nav (#4)
+* clarify that the custom cell separator on a table must be a single character
+* clarify that the stripes setting on a table is inherited by nested tables
+* to be consistent with MDN, prefer the term element instead of tag when referring to an element node in HTML and XML
+* change -reference.adoc suffix to -ref.adoc for document-attributes-reference.adoc and character-replacement-reference.adoc
+* rewrite explanation of element attributes
+
+== Published Q2 2021
+
+Fixed::
+* update trademarks attribution in README (PR #62)
+* change part-label to part-signifier (PR #64)
+
+Changed::
+* provide clearer example for escaping single quotes in a single-quoted attribute value (PR #60)
+* switch attribute substitution example to autolink to avoid naunce about whether closing square bracket needs to be escaped
+* clarify that additional IDs assigned to section title cannot be used for referencing within the document
+* clarify that only primary ID can be used for referencing section title within the document
+
+== Published Q1 2021
+
+Fixed::
+* Rewrite much of link-macro-attribute-parsing.adoc to reflect the simplified parsing behavior implemented in https://github.com/asciidoctor/asciidoctor/issues/2059.
+* Clarify that a negated tag selects all lines except for those lines containing a tag directive (not simply all lines as it previously suggested)
+* Correct the term "STEM interpreter" to "STEM notation" (#8)
+
+Added::
+* Add example of how to select all lines outside of tagged regions and lines inside a specific tagged region
+* Document attribute list parsing in detail (#43)
+* Document the normalization applied to the AsciiDoc source and AsciiDoc include files (#51)
+
+Changed::
+* Moved content into docs folder (#55)
+* Clarify the rules for include tag filtering; emphasize that the wildcards can only be used once
+* Clarify that including by tag includes all regions marked with that same tag.
+* Standardize on the "link text" term instead of "linked text" (#50)
+
+== Published Q4 2020
+
+These changes were committed and merged into the main branch starting on November 24, 2020.
+
+Fixed::
+* Replace the phrase _lead style_ with the phrase _lead role_
+* Replace the table frame value `topbot` with `ends` (#9)
+* Fix conflict with the built-in preamble ID
+* Replace the document attribute `hardbreaks` with `hardbreaks-option` (#3)
+* Fix links to page fragments (aka deep links)
+* Fix grouping in navigation files
+* Update xrefs to reflect module name change in asciidoctor component
+* Document the substitution values that the inline pass macro accepts; clarify the purpose of this macro (#37)
+* Move callouts for block image example to included line (#39)
+* Added missing leading backslash in examples that shows how to escape an include directive
+
+Added::
+* Import the AsciiDoc syntax quick reference content (#14)
+* Add page about abstract block style to navigation and distinguish from abstract section
+* Integrate the relative link documentation into the link macro page
+* Document where an anchor must be placed for a list item in a description list (#21)
+
+Changed::
+* Rework the reference table for built-in attributes by fixing incorrect values and descriptions, clarifying difference between effective value and implied value, and consolidating column for Header Only (#24)
+* Fold intrinsic attributes reference into document attributes reference (#26)
+* Use the term *pair* instead of *set* when referring to formatting mark complements (#6)
+* Replace the phrase _set of brackets_ with the phrase _pair of brackets_ to align with updated terminology (#6)
+* Replace the phrase _set of delimited lines_ with the phrase _pair of delimited lines_ (#6)
+* Revise the overview page for text formatting and punctuation (#6)
+* Move the hard line breaks section to a dedicated page under the Paragraphs section (#3)
+* Move unordered lists before ordered lists in navigation file
+* Replace fenced code blocks with AsciiDoc source blocks
+* Drop unnecessary quotes in value of `subs` attribute
+* Swap columns in AsciiDoc table cell example
+* Use xref macro for inter-document xrefs
+* Replace the name AsciiDoc Python with AsciiDoc.py
+* Replace the term "master document" with "primary document"
+* Define `navtitle` attribute on start page
+* Rename version from current to latest
+
+Removed::
+* Remove migration in progress notice
+* Remove disabled pages

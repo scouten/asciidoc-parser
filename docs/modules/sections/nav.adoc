@@ -1,0 +1,26 @@
+* Sections
+** xref:titles-and-levels.adoc[]
+*** xref:title-links.adoc[]
+** xref:auto-ids.adoc[]
+*** xref:id-prefix-and-separator.adoc[]
+** xref:custom-ids.adoc[]
+** xref:numbers.adoc[]
+** xref:styles.adoc[]
+*** xref:special-section-titles.adoc[]
+*** xref:special-section-numbers.adoc[]
+// Front matter
+*** xref:colophon.adoc[]
+*** xref:dedication.adoc[]
+// & Epigraph
+*** xref:abstract.adoc[]
+*** xref:abstract-block.adoc[]
+*** xref:preface.adoc[]
+*** xref:parts.adoc[]
+**** xref:part-numbers-and-signifier.adoc[]
+*** xref:chapters.adoc[]
+// Back matter
+*** xref:appendix.adoc[]
+*** xref:glossary.adoc[]
+*** xref:bibliography.adoc[]
+*** xref:user-index.adoc[]
+** xref:section-ref.adoc[]

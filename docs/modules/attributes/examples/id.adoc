@@ -1,0 +1,60 @@
+// tag::block-id-brackets[]
+[[notice]]
+This paragraph gets a lot of attention.
+// end::block-id-brackets[]
+
+// tag::block-id-shorthand[]
+[#notice]
+This paragraph gets a lot of attention.
+// end::block-id-shorthand[]
+
+// tag::anchor[]
+// tag::anchor-brackets[]
+[[bookmark-a]]Inline anchors make arbitrary content referenceable.
+// end::anchor-brackets[]
+
+// tag::anchor-shorthand[]
+[#bookmark-b]#Inline anchors can be applied to a phrase like this one.#
+// end::anchor-shorthand[]
+
+anchor:bookmark-c[]Use a cross reference to link to this location.
+
+[[bookmark-d,last paragraph]]The xreflabel attribute will be used as link text in the cross-reference link.
+// end::anchor[]
+
+// tag::anchor-wrong[]
+[[anchor-point]]* list item with invalid anchor
+// end::anchor-wrong[]
+
+// tag::anchor-list-item[]
+* First item
+* [[step2]]Second item
+* Third item
+// end::anchor-list-item[]
+
+// tag::anchor-dlist-item[]
+[[cpu,CPU]]Central Processing Unit (CPU)::
+The brain of the computer.
+
+[[hard-drive]]Hard drive::
+Permanent storage for operating system and/or user files.
+// end::anchor-dlist-item[]
+
+// tag::anchor-header-extra[]
+[#version-4_9]
+=== [[current]][[latest]]Version 4.9
+// end::anchor-header-extra[]
+
+// tag::anchor-xreflabel[]
+[[tiger-image,Image of a tiger]]
+.This image represents a Bengal tiger also called the Indian tiger
+image::tiger.png[]
+// end::anchor-xreflabel[]
+
+// tag::inline-anchor-brackets[]
+[[tiger-image]]image:tiger.png[Image of a tiger]
+// end::inline-anchor-brackets[]
+
+// tag::inline-anchor-macro[]
+anchor:tiger-image[]image:tiger.png[Image of a tiger]
+// end::inline-anchor-macro[]

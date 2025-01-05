@@ -1,0 +1,102 @@
+// tag::qr-base[]
+* List item
+** Nested list item
+*** Deeper nested list item
+* List item
+ ** Another nested list item
+* List item
+// end::qr-base[]
+
+// tag::base[]
+* Edgar Allan Poe
+* Sheri S. Tepper
+* Bill Bryson
+// end::base[]
+
+// tag::base-t[]
+.Kizmet's Favorite Authors
+* Edgar Allan Poe
+* Sheri S. Tepper
+* Bill Bryson
+// end::base-t[]
+
+// tag::base-alt[]
+- Edgar Allan Poe
+- Sheri S. Tepper
+- Bill Bryson
+// end::base-alt[]
+
+// tag::divide[]
+* Apples
+* Oranges
+
+//-
+
+* Walnuts
+* Almonds
+// end::divide[]
+
+// tag::divide-alt[]
+* Apples
+* Oranges
+
+[]
+. Wash
+. Slice
+// end::divide-alt[]
+
+// tag::nest[]
+.Possible DefOps manual locations
+* West wood maze
+** Maze heart
+*** Reflection pool
+** Secret exit
+* Untracked file in git repository
+// end::nest[]
+
+// tag::max[]
+* Level 1 list item
+** Level 2 list item
+*** Level 3 list item
+**** Level 4 list item
+***** Level 5 list item
+****** etc.
+* Level 1 list item
+// end::max[]
+
+// tag::nest-alt[]
+* Level 1 list item
+- Level 2 list item
+* Level 1 list item
+// end::nest-alt[]
+
+// tag::markers[]
+* disc
+** circle
+*** square
+// end::markers[]
+
+// tag::square[]
+[square]
+* one
+* two
+* three
+// end::square[]
+
+// tag::marker-lock[]
+[circle]
+* circles
+** all
+*** the
+**** way
+***** down
+// end::marker-lock[]
+
+// tag::marker-override[]
+[square]
+* squares
+** up top
+[circle]
+*** circles
+**** down below
+// end::marker-override[]

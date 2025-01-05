@@ -1,0 +1,121 @@
+= Options Attribute
+
+The `options` attribute (often abbreviated as `opts`) is a versatile xref:positional-and-named-attributes.adoc#named[named attribute] that can be assigned one or more values.
+It can be defined globally as document attribute as well as a block attribute on an individual block.
+
+There is no strict schema for options.
+Any options which are not recognized are ignored.
+
+== Assign options to blocks
+
+You can assign one or more options to a block using the shorthand or formal syntax for the `options` attribute.
+
+=== Shorthand options syntax for blocks
+
+To assign an option to a block, prefix the value with a percent sign (`%`) in an attribute list.
+The percent sign implicitly sets the `options` attribute.
+
+.Sidebar block with an option assigned using the shorthand dot
+[source#ex-block]
+----
+[%option]
+****
+This is a sidebar with an option assigned to it, named option.
+****
+----
+
+You can assign multiple options to a block by prefixing each value with a percent sign (`%`).
+
+.Sidebar with two options assigned using the shorthand dot
+[source#ex-two-options]
+----
+[%option1%option2]
+****
+This is a sidebar with two options assigned to it, named option1 and option2.
+****
+----
+
+For instance, consider a table with the three built-in option values, `header`, `footer`, and `autowidth`, assigned to it.
+<<ex-table-short>> shows how the values are assigned using the shorthand notation.
+
+.Table with three options assigned using the shorthand syntax
+[source#ex-table-short]
+----
+[%header%footer%autowidth,cols=2*~]
+|===
+|Cell A1 |Cell B1
+
+|Cell A2 |Cell B2
+
+|Cell A3 |Cell B3
+|===
+----
+
+=== Formal options syntax for blocks
+
+Explicitly set `options` or `opts`, followed by the equals sign (`=`), and then the value in an attribute list.
+
+.Sidebar block with an option assigned using the formal syntax
+[source#ex-block-formal]
+----
+[opts=option]
+****
+This is a sidebar with an option assigned to it, named option.
+****
+----
+
+Separate multiple option values with commas (`,`).
+
+.Sidebar with three options assigned using the formal syntax
+[source#ex-three-roles-formal]
+----
+[opts="option1,option2"]
+****
+This is a sidebar with two options assigned to it, option1 and option2.
+****
+----
+
+Let's revisit the table in <<ex-table-short>> that has the three built-in option values, `header`, `footer`, and `autowidth`, assigned to it using the shorthand notation (`%`).
+Instead of using the shorthand notation, <<ex-table-formal>> shows how the values are assigned using the formal syntax.
+
+.Table with three options assigned using the formal syntax
+[source#ex-table-formal]
+----
+[cols=2*~,opts="header,footer,autowidth"]
+|===
+|Cell A1 |Cell B1
+
+|Cell A2 |Cell B2
+
+|Cell A3 |Cell B3
+|===
+----
+
+== Using options with other attributes
+
+Let's consider `options` when combined with other attributes.
+The following example shows how to structure an attribute list when you have style, role, and options attributes.
+
+.Shorthand
+[source]
+----
+[horizontal.properties%step] <.> <.> <.>
+property 1:: does stuff
+property 2:: does different stuff
+----
+<.> xref:blocks:styles.adoc[The block style attribute], declared as `horizontal` in this example, is a positional attribute.
+A block style value is always placed at the start of the attribute list.
+<.> `properties` is prefixed with a dot (`.`), signifying that it's assigned to the xref:role.adoc[role attribute].
+The role and options attributes can be set in either order, i.e., `[horizontal%step.properties]`.
+<.> The percent sign (`%`) sets the `options` attribute and assigns the `step` value to it.
+
+When you use the formal syntax, the positional and named attributes are separated by commas (`,`).
+
+.Formal
+[source]
+----
+[horizontal,role=properties,opts=step] <.>
+property 1:: does stuff
+property 2:: does different stuff
+----
+<.> Like in the shorthand example, named attributes such as `role` and `options` can be set in any order in the attribute list once any xref:positional-and-named-attributes.adoc#positional[positional attributes] are set.

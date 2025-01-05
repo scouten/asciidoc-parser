@@ -1,0 +1,221 @@
+= Complex List Items
+
+This page covers how to create lists that have complex list items.
+
+A [.term]*complex list item* is a list item that contains block content that follows the principal text (which may be empty).
+This is different from a list item whose principal text spans multiple lines, for which this page draws a distinction.
+The page goes on to explain how to attach a block to a list item in an ancestor list.
+
+In additional to unordered and ordered lists, callout and description lists also support complex list items.
+On this page, the term list item refers to any list item in an unordered, ordered, callout, and description list.
+For a description list, it refers specifically to the description of the list item (not the list item term).
+
+The main focus of the syntax covered on this page is to keep the list continuous (i.e., to prevent the list from breaking).
+
+== Multiline principal text
+
+As with regular paragraph text, the principal text in a list item can span any number of lines as long as those lines are contiguous (i.e., adjacent with no empty lines).
+Multiple lines are combined into a single paragraph and wrap as regular paragraph text.
+This behavior holds even if the lines are indented, as shown in the third bullet in this example:
+
+----
+include::example$complex.adoc[tag=indent]
+----
+
+====
+include::example$complex.adoc[tag=indent]
+====
+
+TIP: When list items contain more than one line of text, leave an empty line between items to make the list easier to read while working in the code.
+An empty line between two list items will not break the list.
+
+=== Empty lines in a list
+
+Empty lines between two items in a list (ordered or unordered) will not break the list.
+For ordered lists, this means the numbering will be continuous rather than restarting at 1.
+(See xref:separating.adoc[] to learn how to force two adjacent lists apart).
+
+If an empty line after a list item is followed by the start of a block, such as a paragraph or delimited block rather than another list item, the list will terminate at this point.
+If this happens, you'll notice that a subsequent list item will be placed into a new list.
+For ordered lists, that means the numbering will restart (at 1).
+
+To keep the list continuous in those cases--such as when you're documenting complex steps in a procedure--you must use a <<list-continuation,list continuation>> to attach blocks to the list item.
+For ordered lists, this will ensure that the numbering continues from one list item to the next rather than being reset.
+
+[#list-continuation]
+== Attach blocks using a list continuation
+
+In addition to the principal text, a list item may contain block elements, including paragraphs, delimited blocks, and block macros.
+To add block elements to a list item, you must "`attach`" them (in a series) using a list continuation.
+This technique works for unordered and ordered lists as well as callout and description lists.
+
+A [.term]*list continuation* is a `{plus}` symbol on a line by itself, immediately adjacent to the block being attached.
+The attached block must be left-aligned, just like all blocks in AsciiDoc.
+
+NOTE: A `{plus}` at the end of a line, rather than on a line by itself, is not a list continuation.
+Instead, it creates a hard line break.
+
+Here's an example of a list item that uses a list continuation:
+
+----
+include::example$complex.adoc[tag=cont]
+----
+
+====
+include::example$complex.adoc[tag=cont]
+====
+
+Using a list continuation, you can attach any number of block elements to a list item.
+Unless the block is inside a delimited block which itself has been attached, each block must be preceded by a list continuation to form a chain of blocks.
+
+Here's an example that attaches both a listing block and an admonition paragraph to the first list item:
+
+[source]
+....
+include::example$complex.adoc[tag=complex]
+....
+
+Here's how the source is rendered:
+
+.A list with complex content
+====
+include::example$complex.adoc[tag=complex]
+====
+
+If you're attaching more than one block to a list item, you're strongly encouraged to wrap the content inside an open block.
+That way, you only need a single list continuation line to attach the open block to the list item.
+Within the open block, you write like you normally would, no longer having to worry about adding list continuations between the blocks to keep them attached to the list item.
+
+Here's an example of wrapping complex list content in an open block:
+
+[source]
+....
+include::example$complex.adoc[tag=complex-o]
+....
+
+Here's how that content is rendered:
+
+.A list with complex content wrapped in an open block
+====
+include::example$complex.adoc[tag=complex-o]
+====
+
+The open block wrapper is also useful if you're including content from a shared file into a list item.
+For example:
+
+----
+* list item
++
+--
+\include::shared-content.adoc[]
+--
+----
+
+By wrapping the include directive in an open block, the content can be used unmodified.
+
+The only limitation of this technique is that the content itself may not contain an open block since open blocks cannot (yet) be nested.
+
+[#drop-principal-text]
+== Drop the principal text
+
+If the principal text of a list item is empty, the node for the principal text is dropped.
+This is how you can get the first block (such as a listing block) to line up with the list marker.
+You can make the principal text empty by using the `+{empty}+` attribute reference.
+
+Here's an example of a list that has items with _only_ complex content.
+
+[source]
+....
+include::example$complex.adoc[tag=complex-only]
+....
+
+Here's how the source is rendered:
+
+.A list with complex content
+====
+include::example$complex.adoc[tag=complex-only]
+====
+
+[#attach-to-ancestor-list]
+== Attach blocks to an ancestor list
+
+Instead of attaching a block to the current list item, you may need to end that list and attach a block to its ancestor instead.
+There are two ways to express this composition in the AsciiDoc syntax.
+You can either enclose the child list in an open block, or you can use insert empty lines above the list continuation to first escape from the nesting.
+Let's look at enclosing the child list in an open block first, since that is the preferred method.
+
+=== Enclose in open block
+
+If you plan to attach blocks to a list item as a sibling of a nested list, the most robust way of creating that structure is to enclose the nested list in an open block.
+That way, it's clear where the nested list ends and the current list item continues.
+
+Here's an example of a list item with a nested list followed by an attached paragraph.
+The open block makes the boundaries of the nested list clear.
+
+[source]
+....
+include::example$complex.adoc[tag=complex-enclosed]
+....
+
+Here's how the source is rendered:
+
+.A nested list enclosed in an open block
+====
+include::example$complex.adoc[tag=complex-enclosed]
+====
+
+The main limitation of this approach is that it can only be used once in the hierarchy (i.e., it can only enclose a single nested list).
+That's because the open block itself cannot be nested.
+If you require more control, then you must use the ancestor list continuation.
+
+=== Ancestor list continuation
+
+Normally, a list continuation will attach a block to the current list item.
+For each empty line you add before the list continuation, the association will move up one level in the nesting.
+In other words, an empty line signals to the list continuation to back out of the current list by one level.
+As a result, the block will be attached to the current item in an ancestor list.
+This syntax is referred to as an [.term]*ancestor list continuation*.
+
+WARNING: The ancestor list continuation is a fragile syntax.
+For one, it may not be apparent to new authors that the empty lines before the list continuation are significant.
+That's because the AsciiDoc syntax generally ignores repeating empty lines.
+There are also scenarios where even these empty lines are collapsed, thus preventing the ancestor list continuation from working as expected.
+Use this feature of the syntax with caution.
+If possible, enclose the nested list in an open block, as described in the previous section.
+
+Here's an example of a paragraph that's attached to the parent list item after the nested list ends.
+The empty line above the list continuation indicates that the block should be attached to current list item in the parent list.
+
+[source]
+....
+include::example$complex.adoc[tag=complex-parent]
+....
+
+Here's how the source is rendered:
+
+.A block attached to the parent list item
+====
+include::example$complex.adoc[tag=complex-parent]
+====
+
+Each empty line that precedes the list continuation signals a move up one level of nesting.
+Here's an example that shows how to attach a paragraph to a grandparent list item using two leading empty lines:
+
+[source]
+....
+include::example$complex.adoc[tag=complex-grandparent]
+....
+
+Here's how the source is rendered:
+
+.A block attached to the grandparent list item
+====
+include::example$complex.adoc[tag=complex-grandparent]
+====
+
+== Summary
+
+On this page, you learned that the principal text of a list item can span multiple contiguous lines, and that those lines can be indented for readability without affecting the output.
+You learned that you can attach any type of block content to a list item using the list continuation.
+You also learned that using this feature in combination with the open block makes it easier to create list items with complex content, to attach blocks to a parent list, or to drop the principal text.
+Finally, you learned that you can use the ancestor list continuation to attach blocks to the current item in an ancestor list, and the risks with doing so.

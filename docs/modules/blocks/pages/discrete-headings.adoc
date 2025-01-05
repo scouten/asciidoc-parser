@@ -1,0 +1,38 @@
+= Discrete Headings
+:page-aliases: sections:discrete-titles.adoc, sections:discrete-headings.adoc
+
+A discrete heading is declared and styled in a manner similar to that of a section title, but:
+
+* it's not part of the section hierarchy,
+* it can be nested in other blocks,
+* it cannot have any child blocks,
+* it's not included in the table of contents.
+
+In other words, it's a unique block element that looks like a section title, but is not an offshoot of a section title.
+
+The `discrete` style effectively demotes the section title to a normal heading.
+Discrete headings are the closest match to headings in other markup languages such as Markdown.
+
+To make a discrete heading, add the `discrete` attribute to any section title.
+Here's an example of a discrete heading in use.
+
+[source]
+----
+**** <.>
+Discrete headings are useful for making headings inside of other blocks, like this sidebar.
+
+[discrete] <.>
+== Discrete Heading <.>
+
+Discrete headings can be used where sections are not permitted.
+****
+----
+<.> A delimiter line that indicates the start of a sidebar block.
+<.> Set the `discrete` attribute above the section title to demote it to a discrete heading.
+<.> The discrete heading is designated by one to six equal signs, just like a regular section title.
+
+Alternately, you may use the `float` attribute to identify a discrete heading.
+In this context, the term "`float`" does not refer to a layout.
+Rather, it means not bound to the section hierarchy.
+The term comes from an older version of AsciiDoc, in which discrete headings were called Floating Titles.
+DocBook refers to a discrete heading as a bridgehead, or free-floating heading.

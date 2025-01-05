@@ -1,0 +1,39 @@
+// tag::csv[]
+[%header,format=csv]
+|===
+Artist,Track,Genre
+Baauer,Harlem Shake,Hip Hop
+The Lumineers,Ho Hey,Folk Rock
+|===
+// end::csv[]
+
+// tag::dsv[]
+[%header,format=dsv]
+|===
+Artist:Track:Genre
+Robyn:Indestructible:Dance
+The Piano Guys:Code Name Vivaldi:Classical
+|===
+// end::dsv[]
+
+// tag::s-csv[]
+,===
+Artist,Track,Genre
+
+Baauer,Harlem Shake,Hip Hop
+,===
+// end::s-csv[]
+
+// tag::s-dsv[]
+:===
+Artist:Track:Genre
+
+Robyn:Indestructible:Dance
+:===
+// end::s-dsv[]
+
+// tag::i-csv[]
+,===
+\include::customers.csv[]
+,===
+// end::i-csv[]

@@ -1,0 +1,50 @@
+= Italic
+// content written and moved upstream from Antora by @graphitefriction
+
+Text is often italicized in order to stress a word or phrase, quote a speaker, or introduce a term.
+Italic text slants slightly to the right, and depending on the font, may have cursive swashes and flourishes.
+
+The italic presentation of text maps to the formatted text type known as *emphasis* in the AsciiDoc language.
+
+== Italic syntax
+
+You can emphasize (aka italicize) a word or phrase by enclosing it in a single pair of underscores (e.g., `+_word_+`) (constrained).
+You can emphasize bounded characters (i.e., characters within a word) by enclosing them in a pair of double underscores (e.g., `+char__act__ers+`) (unconstrained).
+
+.Italic inline formatting
+[#ex-italic]
+----
+An italic _word_, and an italic _phrase of text_.
+
+Italic c__hara__cter__s__ within a word.
+----
+
+You don't need to use double underscores when an entire word or phrase marked as italic is directly followed by a common punctuation mark, such as `;`, `"`, and `!`.
+
+The result of <<ex-italic>> is rendered below.
+
+====
+An italic _word_, and an italic _phrase of text_.
+
+Italic c__hara__cter__s__ within a word.
+====
+
+== Mixing italic with other formatting
+
+You can add multiple emphasis styles to italic text as long as the syntax is placed in the correct order.
+
+.Order of inline formatting syntax
+[#ex-mix]
+----
+`*_monospace bold italic phrase_*` & ``**__char__**``acter``**__s__**``
+----
+
+xref:monospace.adoc[Monospace syntax] (`++`++`) must be the outermost formatting pair.
+xref:bold.adoc[Bold syntax] (`+*+`) must be outside the italics formatting pair.
+Italic syntax is always the innermost formatting pair.
+
+The result of <<ex-mix>> is rendered below.
+
+====
+`*_monospace bold italic phrase_*` & ``**__char__**``acter``**__s__**``
+====

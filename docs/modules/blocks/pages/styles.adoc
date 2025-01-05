@@ -1,0 +1,4 @@
+= Block Style
+:page-archived:
+
+Moved xref:index.adoc#block-style[here].

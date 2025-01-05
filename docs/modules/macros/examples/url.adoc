@@ -1,0 +1,87 @@
+// tag::base[]
+The homepage for the Asciidoctor Project is https://asciidoctor.org.
+
+Chat with other Fedora users in the irc://irc.freenode.org/#fedora[Fedora IRC channel].
+
+Ask questions in the https://chat.asciidoc.org[*community chat*].
+// end::base[]
+
+// tag::base-co[]
+The homepage for the Asciidoctor Project is https://www.asciidoctor.org. <.>
+// end::base-co[]
+
+// tag::irc[]
+Chat with other Fedora users in the irc://irc.freenode.org/#fedora[Fedora IRC channel].
+// end::irc[]
+
+// tag::text[]
+Ask questions in the https://chat.asciidoc.org[*community chat*].
+// end::text[]
+
+// tag::scheme[]
+To see information about your browser, navigate to the link:about:[About Page].
+// end::scheme[]
+
+// tag::unconstrained[]
+search/link:https://ecosia.org[Ecosia]
+// end::unconstrained[]
+
+// tag::linkattrs-h[]
+= Document Title
+
+Let's view the raw HTML of the link:view-source:asciidoctor.org[Asciidoctor homepage,window=_blank].
+// end::linkattrs-h[]
+
+// tag::linkattrs[]
+Let's view the raw HTML of the link:view-source:asciidoctor.org[Asciidoctor homepage,window=_blank].
+// end::linkattrs[]
+
+// tag::linkattrs-s[]
+Let's view the raw HTML of the link:view-source:asciidoctor.org[Asciidoctor homepage^].
+// end::linkattrs-s[]
+
+// tag::css[]
+Chat with other AsciiDoc users in the https://chat.asciidoc.org[*project chat*^,role=green].
+// end::css[]
+
+// tag::link[]
+link:downloads/report.pdf[Get Report]
+// end::link[]
+
+// tag::hash[]
+link:tools.html#editors[]
+// end::hash[]
+
+// tag::b-base[]
+https://asciidoctor.org - automatic!
+
+https://asciidoctor.org[Asciidoctor]
+// end::b-base[]
+
+// tag::bare-email[]
+Email us at hello@example.com to say hello.
+// end::bare-email[]
+
+// tag::b-scheme[]
+devel@discuss.example.org
+
+mailto:devel@discuss.example.org[Discuss]
+
+mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to join!]
+// end::b-scheme[]
+
+// tag::b-linkattrs[]
+https://chat.asciidoc.org[Discuss AsciiDoc,role=external,window=_blank]
+
+https://chat.asciidoc.org[Discuss AsciiDoc^]
+// end::b-linkattrs[]
+
+// tag::b-spaces[]
+link:++https://example.org/?q=[a b]++[URL with special characters]
+
+https://example.org/?q=%5Ba%20b%5D[URL with special characters]
+// end::b-spaces[]
+
+// tag::b-windows[]
+link:\\server\share\whitepaper.pdf[Whitepaper]
+// end::b-windows[]

@@ -1,0 +1,105 @@
+// tag::base[]
+image::sunset.jpg[]
+// end::base[]
+
+// tag::base-co[]
+image::sunset.jpg[] <.> <.>
+// end::base-co[]
+
+// tag::qr-base[]
+image::macros:sunset.jpg[]
+// end::qr-base[]
+
+// tag::alt[]
+image::sunset.jpg[Sunset]
+// end::alt[]
+
+// tag::alt-with-comma[]
+image::sunset.jpg["Mesa Verde Sunset, by JAVH"]
+// end::alt-with-comma[]
+
+// tag::qr-alt[]
+image::macros:sunset.jpg[Sunset]
+// end::qr-alt[]
+
+// tag::attr-co[]
+.A mountain sunset <.>
+[#img-sunset,link=https://www.flickr.com/photos/javh/5448336655] <.>
+image::sunset.jpg[Sunset,200,100] <.> <.>
+// end::attr-co[]
+
+// tag::attr[]
+.A mountain sunset
+[#img-sunset,link=https://www.flickr.com/photos/javh/5448336655]
+image::sunset.jpg[Sunset,200,100]
+// end::attr[]
+
+// tag::qr-attr[]
+.A mountain sunset
+[#img-sunset,caption="Figure 1: ",link=https://www.flickr.com/photos/javh/5448336655]
+image::macros:sunset.jpg[Sunset,200,100]
+// end::qr-attr[]
+
+// tag::ab-url[]
+image::https://asciidoctor.org/images/octocat.jpg[GitHub mascot]
+// end::ab-url[]
+
+// tag::inline[]
+Click image:play.png[] to get the party started.
+
+Click image:pause.png[title=Pause] when you need a break.
+// end::inline[]
+
+// tag::qr-inline[]
+Click image:macros:play.png[] to get the party started.
+
+Click image:macros:pause.png[title=Pause] when you need a break.
+// end::qr-inline[]
+
+// tag::in-role[]
+image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!
+// end::in-role[]
+
+// tag::qr-role[]
+image:macros:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!
+// end::qr-role[]
+
+// tag::role[]
+[.right.text-center]
+image::tiger.png[Tiger,200,200]
+// end::role[]
+
+// tag::float[]
+image::tiger.png[Tiger,200,200,float="right",align="center"]
+// end::float[]
+
+// tag::in-float[]
+image:linux.png[Linux,150,150,float="right"]
+You can find Linux everywhere these days!
+// end::in-float[]
+
+// tag::frame[]
+image:logo.png[role="related thumb right"] Here's text that will wrap around the image to the left.
+// end::frame[]
+
+// tag::url[]
+image::https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Tux,250,350]
+// end::url[]
+
+// tag::in-url[]
+You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.
+// end::in-url[]
+
+// tag::base-url[]
+:imagesdir-old: {imagesdir}
+:imagesdir: https://upload.wikimedia.org/wikipedia/commons
+
+image::3/35/Tux.svg[Tux,250,350]
+
+:imagesdir: {imagesdir-old}
+// end::base-url[]
+
+// tag::data[]
+= Document Title
+:data-uri:
+// end::data[]

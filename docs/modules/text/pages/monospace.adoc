@@ -1,0 +1,53 @@
+= Monospace
+
+In AsciiDoc, a span of text enclosed in a single pair of backticks (`{backtick}`) is displayed using a fixed-width (i.e., monospaced) font.
+Monospace text formatting is typically used to represent text shown in computer terminals or code editors (often referred to as a codespan).
+
+The monospace presentation of text maps to the formatted text type known as *monospaced* in the AsciiDoc language.
+
+== Constrained
+
+Here's an example:
+
+.Constrained monospace syntax
+[#ex-constrain]
+----
+include::example$text.adoc[tag=mono]
+----
+
+The result of <<ex-constrain>> is rendered below.
+
+====
+include::example$text.adoc[tag=mono]
+====
+
+== Unconstrained
+
+As with other types of text formatting, if the text is bounded by word characters on either side, it must be enclosed in a double pair of backtick characters (`{backtick}{backtick}`) in order for the formatting to be applied.
+
+Here's an example:
+
+----
+The command will re``link`` all packages.
+----
+
+== Mixed Formatting
+
+Monospaced text can also be formatted in bold or italic or both, as long as the markup pairs are entered in the right order.
+The monospace markup must be the outermost formatting mark, then the bold marks, then the italic marks.
+
+.Order of inline formatting syntax
+[#ex-mix]
+----
+`*_monospaced bold italic_*`
+----
+
+The result of <<ex-mix>> is rendered below.
+
+====
+`*_monospaced bold italic_*`
+====
+
+== Literal Monospace
+
+To learn how to make monospace text that's not otherwise formatted, see xref:literal-monospace.adoc[].

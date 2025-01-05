@@ -1,0 +1,7 @@
+// tag::delimited[]
+.Optional Title
+****
+Sidebars are used to visually separate auxiliary bits of content
+that supplement the main text.
+****
+// end::delimited[]

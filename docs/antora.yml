@@ -1,0 +1,34 @@
+name: asciidoc
+title: AsciiDoc
+version: pre-spec
+asciidoc:
+  attributes:
+    source-language: asciidoc@
+    xrefstyle: short@
+    listing-caption: Example@
+nav:
+- modules/ROOT/nav-top.adoc
+- modules/blocks/nav-basics.adoc
+- modules/attributes/nav-document.adoc
+- modules/attributes/nav-element.adoc
+- modules/document/nav.adoc
+- modules/sections/nav.adoc
+- modules/blocks/nav-paragraph.adoc
+- modules/blocks/nav-discrete-headings.adoc
+- modules/blocks/nav-breaks.adoc
+- modules/text/nav.adoc
+- modules/lists/nav.adoc
+- modules/macros/nav.adoc
+- modules/blocks/nav-styles.adoc
+- modules/verbatim/nav.adoc
+- modules/tables/nav.adoc
+- modules/stem/nav.adoc
+- modules/blocks/nav-open.adoc
+- modules/blocks/nav-collapsible.adoc
+- modules/ROOT/nav-comment.adoc
+- modules/toc/nav.adoc
+- modules/docinfo/nav.adoc
+- modules/directives/nav.adoc
+- modules/subs/nav.adoc
+- modules/pass/nav.adoc
+- modules/attributes/nav-ref.adoc

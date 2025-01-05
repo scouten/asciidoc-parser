@@ -1,0 +1,78 @@
+// tag::backslash[]
+In /items/\{id}, the id attribute isn't replaced.
+The curly braces around it are preserved.
+
+\*Stars* isn't displayed as bold text.
+The asterisks around it are preserved.
+
+\&sect; appears as an entity reference.
+It's not converted into the section symbol (&sect;).
+
+\=> The backslash prevents the equals sign followed by a greater
+than sign from combining to form a double arrow character (=>).
+
+\[[Word]] is not interpreted as an anchor.
+The double brackets around it are preserved.
+
+[\[[Word]]] is not interpreted as a bibliography anchor.
+The triple brackets around it are preserved.
+
+The URL \https://example.org isn't converted into an active link.
+// end::backslash[]
+
+// tag::double-slash[]
+The text \\__func__ will appear with two underscores
+in front of it and after it.
+It won't be italicized.
+// end::double-slash[]
+
+// tag::subs-in[]
+[source,java,subs="verbatim,quotes"] <.>
+----
+System.out.println("Hello *<name>*") <.>
+----
+// end::subs-in[]
+
+// tag::subs-out[]
+[source,java,subs="verbatim,quotes"]
+----
+System.out.println("Hello *<name>*") // <.> <.>
+----
+// end::subs-out[]
+
+// tag::subs-add[]
+[source,xml,subs="attributes+"]
+----
+<version>{version}</version>
+----
+// end::subs-add[]
+
+// tag::subs-sub[]
+[source,xml,subs="-callouts"]
+.An illegal XML tag
+----
+<1>
+  content inside "1" tag
+</1>
+----
+// end::subs-sub[]
+
+// tag::subs-multi[]
+[source,xml,subs="attributes+,+replacements,-callouts"]
+----
+<version>{version}</version>
+<copyright>(C) ACME</copyright>
+<1>
+  content inside "1" tag
+</1>
+----
+// end::subs-multi[]
+
+// tag::subs-attr[]
+:markup-in-source: verbatim,quotes
+
+[source,java,subs="{markup-in-source}"]
+----
+System.out.println("Hello *bold* text").
+----
+// end::subs-attr[]
