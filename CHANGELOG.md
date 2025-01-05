@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 The format of this changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.1](https://github.com/scouten/asciidoc-parser/compare/v0.2.0...v0.2.1)
+_05 January 2025_
+
+### Fixed
+
+* Add coverage for blocks section ([#171](https://github.com/scouten/asciidoc-parser/pull/171))
+
 ## [0.2.0](https://github.com/scouten/asciidoc-parser/compare/v0.1.1...v0.2.0)
 _30 November 2024_
 
