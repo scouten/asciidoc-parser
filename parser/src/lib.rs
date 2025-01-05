@@ -4,7 +4,7 @@
 #![deny(clippy::unwrap_used)]
 #![deny(missing_docs)]
 #![deny(warnings)]
-#![doc = include_str!("../../README.md")]
+#![doc = include_str!(concat!("../", std::env!("CARGO_PKG_README")))]
 
 pub mod attributes;
 
