@@ -843,10 +843,6 @@ Live within the simulated reality without want or fear.
                     attrlist: None,
                 },
             ));
-
-        // The delimiter length for the nested structural container can either
-        // be shorter or longer than the parent. That's a personal style
-        // choice.
     }
 
     non_normative!(
