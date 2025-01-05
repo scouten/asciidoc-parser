@@ -1,0 +1,18 @@
+comment:
+  layout: "header, diff, flags, components"
+
+ignore:
+  - "sdd/**"
+
+component_mangement:
+  default_rules:
+    - type: project
+  
+  individual_components:
+    - component_id: parser
+      name: Parser test coverage
+      paths: parser/**
+    
+    - component_id: spec
+      name: AsciiDoc spec coverage
+      paths: docs/modules/**
