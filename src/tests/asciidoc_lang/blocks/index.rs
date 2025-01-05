@@ -310,7 +310,7 @@ In the converter, these blocks must be accessed from their parent block.
 mod block_style {
     use crate::{
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::sdd::{non_normative, to_do_verifies},
         Span,
     };
 
