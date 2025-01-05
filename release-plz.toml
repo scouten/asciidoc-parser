@@ -43,3 +43,7 @@ release_commits = "^(feat|fix|update|doc)[(:]"
 name = "parser"
 changelog_path = "./CHANGELOG.md"
 
+[[package]]
+name = "sdd"
+publish = false
+release = false
