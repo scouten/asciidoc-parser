@@ -1,6 +1,9 @@
 comment:
   layout: "header, diff, flags, components"
 
+ignore:
+  - "sdd/**"
+
 component_mangement:
   default_rules:
     - type: project
