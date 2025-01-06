@@ -7,6 +7,9 @@ comment:
   layout: "header, diff, flags, components"
 
 ignore:
+  - "docs/modules/*/nav*.adoc"
+  - "docs/modules/*/examples/**"
+  - "docs/modules/*/partials/**"
   - "sdd/**"
 
 component_management:
