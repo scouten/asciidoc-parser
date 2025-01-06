@@ -172,7 +172,6 @@ All literal blocks implicitly have the verbatim content model because the purpos
     }
 
     #[test]
-    #[ignore]
     fn built_in_contexts() {
         non_normative!(
             r#"
