@@ -53,7 +53,7 @@ fn fixture_eq_observed(
         }
     }
 
-    if fixture.context != observed.context().as_ref() {
+    if fixture.context != observed.raw_context().as_ref() {
         return false;
     }
 

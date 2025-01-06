@@ -58,7 +58,7 @@ impl<'src> IsBlock<'src> for SimpleBlock<'src> {
         ContentModel::Simple
     }
 
-    fn context(&self) -> CowStr<'src> {
+    fn raw_context(&self) -> CowStr<'src> {
         "paragraph".into()
     }
 

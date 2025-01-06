@@ -130,7 +130,7 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
         ContentModel::Simple
     }
 
-    fn context(&self) -> CowStr<'src> {
+    fn raw_context(&self) -> CowStr<'src> {
         // TO DO: We'll probably want different macro types to provide different
         // contexts. For now, just default to "paragraph."
 

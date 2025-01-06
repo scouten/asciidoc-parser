@@ -126,7 +126,7 @@ impl<'src> IsBlock<'src> for CompoundDelimitedBlock<'src> {
         ContentModel::Compound
     }
 
-    fn context(&self) -> CowStr<'src> {
+    fn raw_context(&self) -> CowStr<'src> {
         self.context.clone()
     }
 

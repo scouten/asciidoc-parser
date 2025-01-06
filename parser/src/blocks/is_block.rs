@@ -18,7 +18,7 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// Returns the [`ContentModel`] for this block.
     fn content_model(&self) -> ContentModel;
 
-    /// Returns the context for this block.
+    /// Returns the raw (uninterpreted) context for this block.
     ///
     /// A block’s context is also sometimes referred to as a name, such as an
     /// example block, a sidebar block, an admonition block, or a section.
@@ -31,7 +31,10 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// For that reason, the context is not defined as an enumeration, but
     /// rather as a string type that is optimized for the case where predefined
     /// constants are viable.
-    fn context(&self) -> CowStr<'src>;
+    ///
+    /// A block's context can be replaced by a block style that matches a
+    /// built-in context. That transformation is not performed by this function.
+    fn raw_context(&self) -> CowStr<'src>;
 
     /// Returns an iterator over the nested blocks contained within
     /// this block.
