@@ -1,0 +1,32 @@
+pub(crate) fn is_built_in_context(context: &str) -> bool {
+    matches!(
+        context,
+        "admonition"
+            | "audio"
+            | "colist"
+            | "dlist"
+            | "document"
+            | "example"
+            | "floating_title"
+            | "image"
+            | "list_item"
+            | "listing"
+            | "literal"
+            | "olist"
+            | "open"
+            | "page_break"
+            | "paragraph"
+            | "pass"
+            | "preamble"
+            | "quote"
+            | "section"
+            | "sidebar"
+            | "table"
+            | "table_cell"
+            | "thematic_break"
+            | "toc"
+            | "ulist"
+            | "verse"
+            | "video"
+    )
+}

@@ -59,7 +59,7 @@ mod context {
     use std::ops::Deref;
 
     use crate::{
-        blocks::{Block, ContentModel, IsBlock},
+        blocks::{is_built_in_context, Block, ContentModel, IsBlock},
         tests::sdd::{non_normative, to_do_verifies, verifies},
         Span,
     };
@@ -172,7 +172,6 @@ All literal blocks implicitly have the verbatim content model because the purpos
     }
 
     #[test]
-    #[ignore]
     fn built_in_contexts() {
         non_normative!(
             r#"
@@ -191,88 +190,282 @@ Some processors, such as Asciidoctor.js, store the context as a string instead.
 |===
 |Name | Purpose
 
+"#
+        );
+
+        verifies!(
+            r#"
 |admonition
 |One of five admonition blocks.
 
+"#
+        );
+
+        assert!(is_built_in_context("admonition"));
+
+        verifies!(
+            r#"
 |audio
 |An audio block.
 
+"#
+        );
+
+        assert!(is_built_in_context("audio"));
+
+        verifies!(
+            r#"
 |colist
 |A callout list.
 
+"#
+        );
+
+        assert!(is_built_in_context("colist"));
+
+        verifies!(
+            r#"
 |dlist
 |A description list.
 
+"#
+        );
+
+        assert!(is_built_in_context("dlist"));
+
+        verifies!(
+            r#"
 |document
 |The top-level document or the document in an AsciiDoc table cell
 
+"#
+        );
+
+        assert!(is_built_in_context("document"));
+
+        verifies!(
+            r#"
 |example
 |An example block.
 
+"#
+        );
+
+        assert!(is_built_in_context("example"));
+
+        verifies!(
+            r#"
 |floating_title
 |A discrete heading.
 
+"#
+        );
+
+        assert!(is_built_in_context("floating_title"));
+
+        verifies!(
+            r#"
 |image
 |An image block.
 
+"#
+        );
+
+        assert!(is_built_in_context("image"));
+
+        verifies!(
+            r#"
 |list_item
 |An item in an ordered, unordered, or description list (only relevant inside a list or description list block).
 In a description list, this block is used to represent the term and the description.
 
+"#
+        );
+
+        assert!(is_built_in_context("list_item"));
+
+        verifies!(
+            r#"
 |listing
 |A listing block.
 
+"#
+        );
+
+        assert!(is_built_in_context("listing"));
+
+        verifies!(
+            r#"
 |literal
 |A literal block.
 
+"#
+        );
+
+        assert!(is_built_in_context("literal"));
+
+        verifies!(
+            r#"
 |olist
 |An ordered list.
 
+"#
+        );
+
+        assert!(is_built_in_context("olist"));
+
+        verifies!(
+            r#"
 |open
 |An open block.
 
+"#
+        );
+
+        assert!(is_built_in_context("open"));
+
+        verifies!(
+            r#"
 |page_break
 |A page break.
 
+"#
+        );
+
+        assert!(is_built_in_context("page_break"));
+
+        verifies!(
+            r#"
 |paragraph
 |A paragraph.
 
+"#
+        );
+
+        assert!(is_built_in_context("paragraph"));
+
+        verifies!(
+            r#"
 |pass
 |A passthrough block.
 
+"#
+        );
+
+        assert!(is_built_in_context("pass"));
+
+        verifies!(
+            r#"
 |preamble
 |The preamble of the document.
 
+"#
+        );
+
+        assert!(is_built_in_context("preamble"));
+
+        verifies!(
+            r#"
 |quote
 |A quote block (aka blockquote).
 
+"#
+        );
+
+        assert!(is_built_in_context("quote"));
+
+        verifies!(
+            r#"
 |section
 |A section.
 May also be a part, chapter, or special section.
 
+"#
+        );
+
+        assert!(is_built_in_context("section"));
+
+        verifies!(
+            r#"
 |sidebar
 |A sidebar block.
 
+"#
+        );
+
+        assert!(is_built_in_context("sidebar"));
+
+        verifies!(
+            r#"
 |table
 |A table block.
 
+"#
+        );
+
+        assert!(is_built_in_context("table"));
+
+        verifies!(
+            r#"
 |table_cell
 |A table cell (only relevant inside a table block).
 
+"#
+        );
+
+        assert!(is_built_in_context("table_cell"));
+
+        verifies!(
+            r#"
 |thematic_break
 |A thematic break (aka horizontal rule).
 
+"#
+        );
+
+        assert!(is_built_in_context("thematic_break"));
+
+        verifies!(
+            r#"
 |toc
 |A TOC block (to designate custom TOC placement).
 
+"#
+        );
+
+        assert!(is_built_in_context("toc"));
+
+        verifies!(
+            r#"
 |ulist
 |An unordered list.
 
+"#
+        );
+
+        assert!(is_built_in_context("ulist"));
+
+        verifies!(
+            r#"
 |verse
 |A verse block.
 
+"#
+        );
+
+        assert!(is_built_in_context("verse"));
+
+        verifies!(
+            r#"
 |video
 |A video block.
+"#
+        );
+
+        assert!(is_built_in_context("video"));
+
+        non_normative!(
+            r#"
 |===
 
 NOTE: Each inline element also has a context, but those elements are not (yet) accessible from the parsed document model.
@@ -282,9 +475,11 @@ Additional contexts may be introduced through the use of the block, block macro,
 "#
         );
 
-        // Deemed non-normative because in asciidoc-parser, we don't provide a
-        // list of built-in contexts. (Context is a string, which is inherently
-        // extensible.)
+        // Test a few context names that are not built-in contexts as a spot-check
+        // against false positives.
+        assert!(!is_built_in_context("documentx"));
+        assert!(!is_built_in_context("sentence"));
+        assert!(!is_built_in_context(""));
     }
 
     #[test]

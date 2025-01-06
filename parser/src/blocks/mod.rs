@@ -28,6 +28,10 @@ pub use block::Block;
 mod compound_delimited;
 pub use compound_delimited::CompoundDelimitedBlock;
 
+mod context;
+#[allow(unused)] // TEMPORARY
+pub(crate) use context::is_built_in_context;
+
 mod is_block;
 pub use is_block::{ContentModel, IsBlock};
 
