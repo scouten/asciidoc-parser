@@ -326,8 +326,6 @@ However, note that the lines of a styled paragraph are first parsed like a parag
     .unwrap_if_no_warnings()
     .unwrap();
 
-    dbg!(&mi);
-
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
