@@ -1,9 +1,10 @@
-// use pretty_assertions_sorted::assert_eq;
+use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    blocks::{Block, ContentModel, IsBlock},
     tests::{
         fixtures::{
-            attributes::TAttrlist,
+            attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TMacroBlock, TSimpleBlock},
             document::{TDocument, THeader},
             inlines::TInline,
@@ -11,7 +12,7 @@ use crate::{
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Document,
+    Document, Span,
 };
 
 track_file!("docs/modules/blocks/pages/build-basic-block.adoc");
@@ -224,10 +225,18 @@ You've built a delimited block.
     );
 }
 
-/*
+non_normative!(
+    r#"
 == Build a block from a paragraph
 
 In some cases, you can style a block using the style's name.
+"#
+);
+
+#[test]
+fn single_line_listing() {
+    verifies!(
+        r#"
 If the content is contiguous (not interrupted by empty lines or comment lines), you can assign the block style's name in an attribute list placed above the content.
 This format is often used for single-line listings:
 
@@ -236,6 +245,70 @@ This format is often used for single-line listings:
 include::example$block.adoc[tag=opt-listing]
 ....
 
+"#
+    );
+
+    let mi = Block::parse(Span::new("[listing]\nsudo dnf install asciidoc"))
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "sudo dnf install asciidoc",
+                line: 2,
+                col: 1,
+                offset: 10,
+            },),
+            source: TSpan {
+                data: "[listing]\nsudo dnf install asciidoc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            attrlist: Some(TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "listing",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },],
+                    value: TSpan {
+                        data: "listing",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    source: TSpan {
+                        data: "listing",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },],
+                source: TSpan {
+                    data: "listing",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },),
+        },)
+    );
+
+    assert_eq!(mi.item.raw_context().as_ref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().as_ref(), "listing");
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+}
+
+#[test]
+fn single_line_quote() {
+    verifies!(
+        r#"
 or single-line quotes:
 
 ----
@@ -243,12 +316,81 @@ include::example$block.adoc[tag=quote-name]
 ----
 
 However, note that the lines of a styled paragraph are first parsed like a paragraph, then promoted to the specified block type.
+
+"#
+    );
+
+    let mi = Block::parse(Span::new(
+        "[quote]\nNever do today what you can put off `'til tomorrow.",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap();
+
+    dbg!(&mi);
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "Never do today what you can put off `'til tomorrow.",
+                line: 2,
+                col: 1,
+                offset: 8,
+            },),
+            source: TSpan {
+                data: "[quote]\nNever do today what you can put off `'til tomorrow.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            attrlist: Some(TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "quote",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },],
+                    value: TSpan {
+                        data: "quote",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    source: TSpan {
+                        data: "quote",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },],
+                source: TSpan {
+                    data: "quote",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },),
+        },)
+    );
+
+    assert_eq!(mi.item.raw_context().as_ref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().as_ref(), "quote");
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+}
+
+non_normative!(
+    r#"
 That means that line comments will be dropped, which can impact verbatim blocks such as a listing block.
 Thus, the delimited block form is preferred, especially when creating a verbatim block.
 
-}
+"#
+);
 
-mod summary {
+/* TO DO ...
+
 == Summary of built-in blocks
 // This section is just hanging here for the moment, it's not its final destination, I just didn't want to comment it out.
 
