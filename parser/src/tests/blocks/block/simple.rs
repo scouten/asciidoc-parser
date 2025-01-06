@@ -76,6 +76,7 @@ fn single_line() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
+    assert!(mi.item.declared_style().is_none());
     assert_eq!(mi.item.nested_blocks().next(), None);
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());

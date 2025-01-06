@@ -70,6 +70,7 @@ fn simplest_section_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
+    assert!(mi.item.declared_style().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -116,6 +117,7 @@ fn has_child_block() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
+    assert!(mi.item.declared_style().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -209,6 +211,7 @@ fn title() {
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
+    assert!(mi.item.declared_style().is_none());
 
     assert_eq!(
         mi.item,

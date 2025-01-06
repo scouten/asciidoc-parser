@@ -103,6 +103,7 @@ You can think of the context as the block's type.
             .unwrap();
 
         assert_eq!(mi.item.raw_context().deref(), "section");
+        assert!(mi.item.declared_style().is_none());
     }
 
     #[test]
@@ -309,8 +310,11 @@ In the converter, these blocks must be accessed from their parent block.
 
 mod block_style {
     use crate::{
-        blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies},
+        blocks::{Block, ContentModel, IsBlock},
+        tests::{
+            fixtures::TSpan,
+            sdd::{non_normative, verifies},
+        },
         Span,
     };
 
@@ -335,9 +339,8 @@ The resolved block style, if non-empty, specializes the block's context.
     );
 
     #[test]
-    #[ignore]
     fn source_block() {
-        to_do_verifies!(
+        verifies!(
             r#"
 Consider the following example of a source block:
 
@@ -364,8 +367,18 @@ The context of the block is still the same, but it has additional metadata to in
         .unwrap();
 
         assert_eq!(mi.item.raw_context().as_ref(), "listing");
-        // assert_eq!(mi.item.style(), "source");
-        // assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
+
+        assert_eq!(
+            mi.item.declared_style().unwrap(),
+            TSpan {
+                data: "source",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
     }
 
     // TO DO: Cover the remainder ...
