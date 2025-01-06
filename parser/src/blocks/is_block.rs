@@ -36,6 +36,23 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// built-in context. That transformation is not performed by this function.
     fn raw_context(&self) -> CowStr<'src>;
 
+    /// Returns the declared (uninterpreted) style for this block.
+    ///
+    /// Above some blocks, you may notice a name at the start of the block
+    /// attribute list (e.g., `[source]` or `[verse]`). The first positional
+    /// (unnamed) attribute in the block attribute list is used to declare the
+    /// block style.
+    ///
+    /// The declared block style is the value the author supplies.
+    ///
+    /// That value is then interpreted and resolved. That interpretation is not
+    /// performed by this function.
+    fn declared_style(&'src self) -> Option<Span<'src>> {
+        self.attrlist()
+            .and_then(|attrlist| attrlist.nth_attribute(1))
+            .and_then(|attr| attr.block_style())
+    }
+
     /// Returns an iterator over the nested blocks contained within
     /// this block.
     ///

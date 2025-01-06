@@ -206,6 +206,7 @@ mod example {
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.raw_context().as_ref(), "example");
+        assert!(mi.item.declared_style().is_none());
         assert!(mi.item.nested_blocks().next().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
