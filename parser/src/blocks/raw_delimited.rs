@@ -130,7 +130,7 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
         self.content_model
     }
 
-    fn context(&self) -> CowStr<'src> {
+    fn raw_context(&self) -> CowStr<'src> {
         self.context.clone()
     }
 

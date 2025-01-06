@@ -56,7 +56,7 @@ fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBloc
         return false;
     }
 
-    if fixture.context != observed.context().as_ref() {
+    if fixture.context != observed.raw_context().as_ref() {
         return false;
     }
 

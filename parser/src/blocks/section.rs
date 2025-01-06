@@ -79,7 +79,7 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
         ContentModel::Compound
     }
 
-    fn context(&self) -> CowStr<'src> {
+    fn raw_context(&self) -> CowStr<'src> {
         "section".into()
     }
 

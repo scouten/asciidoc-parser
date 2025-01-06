@@ -223,13 +223,13 @@ impl<'src> IsBlock<'src> for Block<'src> {
         }
     }
 
-    fn context(&self) -> CowStr<'src> {
+    fn raw_context(&self) -> CowStr<'src> {
         match self {
-            Self::Simple(b) => b.context(),
-            Self::Macro(b) => b.context(),
-            Self::Section(b) => b.context(),
-            Self::RawDelimited(b) => b.context(),
-            Self::CompoundDelimited(b) => b.context(),
+            Self::Simple(b) => b.raw_context(),
+            Self::Macro(b) => b.raw_context(),
+            Self::Section(b) => b.raw_context(),
+            Self::RawDelimited(b) => b.raw_context(),
+            Self::CompoundDelimited(b) => b.raw_context(),
         }
     }
 

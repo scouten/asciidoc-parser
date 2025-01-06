@@ -252,7 +252,7 @@ mod example {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "example");
+        assert_eq!(mi.item.raw_context().as_ref(), "example");
         assert!(mi.item.nested_blocks().next().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -315,7 +315,7 @@ mod example {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "example");
+        assert_eq!(mi.item.raw_context().as_ref(), "example");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -433,7 +433,7 @@ mod example {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "example");
+        assert_eq!(mi.item.raw_context().as_ref(), "example");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -560,7 +560,7 @@ mod open {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "open");
+        assert_eq!(mi.item.raw_context().as_ref(), "open");
         assert!(mi.item.nested_blocks().next().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -623,7 +623,7 @@ mod open {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "open");
+        assert_eq!(mi.item.raw_context().as_ref(), "open");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -752,7 +752,7 @@ mod open {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "open");
+        assert_eq!(mi.item.raw_context().as_ref(), "open");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -858,7 +858,7 @@ mod sidebar {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert_eq!(mi.item.raw_context().as_ref(), "sidebar");
         assert!(mi.item.nested_blocks().next().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -921,7 +921,7 @@ mod sidebar {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert_eq!(mi.item.raw_context().as_ref(), "sidebar");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -1039,7 +1039,7 @@ mod sidebar {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "sidebar");
+        assert_eq!(mi.item.raw_context().as_ref(), "sidebar");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -1178,7 +1178,7 @@ mod quote {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "quote");
+        assert_eq!(mi.item.raw_context().as_ref(), "quote");
         assert!(mi.item.nested_blocks().next().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1241,7 +1241,7 @@ mod quote {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "quote");
+        assert_eq!(mi.item.raw_context().as_ref(), "quote");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -1359,7 +1359,7 @@ mod quote {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().as_ref(), "quote");
+        assert_eq!(mi.item.raw_context().as_ref(), "quote");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 

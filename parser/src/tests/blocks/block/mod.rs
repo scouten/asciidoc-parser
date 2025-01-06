@@ -43,7 +43,7 @@ mod error_cases {
         .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().deref(), "section");
+        assert_eq!(mi.item.raw_context().deref(), "section");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -152,7 +152,7 @@ mod error_cases {
         .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Simple);
-        assert_eq!(mi.item.context().deref(), "paragraph");
+        assert_eq!(mi.item.raw_context().deref(), "paragraph");
         assert!(mi.item.title().is_none());
         assert!(mi.item.attrlist().is_none());
 
@@ -214,7 +214,7 @@ mod error_cases {
         dbg!(&mi);
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.context().deref(), "section");
+        assert_eq!(mi.item.raw_context().deref(), "section");
         assert!(mi.item.title().is_none());
 
         assert_eq!(

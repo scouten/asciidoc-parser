@@ -49,7 +49,7 @@ fn simplest_section_block() {
         .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
-    assert_eq!(mi.item.context().deref(), "section");
+    assert_eq!(mi.item.raw_context().deref(), "section");
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -93,7 +93,7 @@ fn has_child_block() {
         .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
-    assert_eq!(mi.item.context().deref(), "section");
+    assert_eq!(mi.item.raw_context().deref(), "section");
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -154,7 +154,7 @@ fn has_macro_block_with_extra_blank_line() {
     .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
-    assert_eq!(mi.item.context().deref(), "section");
+    assert_eq!(mi.item.raw_context().deref(), "section");
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -295,7 +295,7 @@ fn has_child_block_with_errors() {
     let mi = maw.item.clone();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
-    assert_eq!(mi.item.context().deref(), "section");
+    assert_eq!(mi.item.raw_context().deref(), "section");
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -448,7 +448,7 @@ fn dont_stop_at_child_section() {
     .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
-    assert_eq!(mi.item.context().deref(), "section");
+    assert_eq!(mi.item.raw_context().deref(), "section");
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -544,7 +544,7 @@ fn stop_at_peer_section() {
     .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
-    assert_eq!(mi.item.context().deref(), "section");
+    assert_eq!(mi.item.raw_context().deref(), "section");
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -606,7 +606,7 @@ fn stop_at_ancestor_section() {
     .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
-    assert_eq!(mi.item.context().deref(), "section");
+    assert_eq!(mi.item.raw_context().deref(), "section");
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
