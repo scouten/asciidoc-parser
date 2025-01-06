@@ -1,6 +1,11 @@
 use std::{fmt::Debug, slice::Iter};
 
-use crate::{attributes::Attrlist, blocks::Block, strings::CowStr, HasSpan, Span};
+use crate::{
+    attributes::Attrlist,
+    blocks::{is_built_in_context, Block},
+    strings::CowStr,
+    HasSpan, Span,
+};
 
 /// Block elements form the main structure of an AsciiDoc document, starting
 /// with the document itself.
@@ -18,6 +23,36 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// Returns the [`ContentModel`] for this block.
     fn content_model(&self) -> ContentModel;
 
+    /// Returns the resolved context for this block.
+    ///
+    /// A block’s context is also sometimes referred to as a name, such as an
+    /// example block, a sidebar block, an admonition block, or a section.
+    ///
+    /// Every block has a context. The context is often implied by the syntax,
+    /// but can be declared explicitly in certain cases. The context is what
+    /// distinguishes one kind of block from another. You can think of the
+    /// context as the block’s type.
+    ///
+    /// For that reason, the context is not defined as an enumeration, but
+    /// rather as a string type that is optimized for the case where predefined
+    /// constants are viable.
+    ///
+    /// A block's context can be replaced by a block style that matches a
+    /// built-in context. Unlike [`raw_context`], that transformation _is_
+    /// performed by this function.
+    ///
+    /// [`raw_context`]: Self::raw_context
+    fn resolved_context(&'src self) -> CowStr<'src> {
+        if let Some(declared_style) = self.declared_style() {
+            let declared_style = declared_style.data();
+            if is_built_in_context(declared_style) {
+                return declared_style.into();
+            }
+        }
+
+        self.raw_context()
+    }
+
     /// Returns the raw (uninterpreted) context for this block.
     ///
     /// A block’s context is also sometimes referred to as a name, such as an
@@ -33,7 +68,10 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// constants are viable.
     ///
     /// A block's context can be replaced by a block style that matches a
-    /// built-in context. That transformation is not performed by this function.
+    /// built-in context. That transformation is only performed by
+    /// [`resolved_context`], not this function.
+    ///
+    /// [`resolved_context`]: Self::resolved_context
     fn raw_context(&self) -> CowStr<'src>;
 
     /// Returns the declared (uninterpreted) style for this block.

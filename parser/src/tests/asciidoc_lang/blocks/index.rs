@@ -103,6 +103,7 @@ You can think of the context as the block's type.
             .unwrap();
 
         assert_eq!(mi.item.raw_context().deref(), "section");
+        assert_eq!(mi.item.resolved_context().deref(), "section");
         assert!(mi.item.declared_style().is_none());
     }
 
@@ -562,6 +563,7 @@ The context of the block is still the same, but it has additional metadata to in
         .unwrap();
 
         assert_eq!(mi.item.raw_context().as_ref(), "listing");
+        assert_eq!(mi.item.resolved_context().as_ref(), "listing");
 
         assert_eq!(
             mi.item.declared_style().unwrap(),
