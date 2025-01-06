@@ -225,18 +225,13 @@ You've built a delimited block.
     );
 }
 
-non_normative!(
-    r#"
-== Build a block from a paragraph
-
-In some cases, you can style a block using the style's name.
-"#
-);
-
 #[test]
 fn single_line_listing() {
     verifies!(
         r#"
+== Build a block from a paragraph
+
+In some cases, you can style a block using the style's name.
 If the content is contiguous (not interrupted by empty lines or comment lines), you can assign the block style's name in an attribute list placed above the content.
 This format is often used for single-line listings:
 
