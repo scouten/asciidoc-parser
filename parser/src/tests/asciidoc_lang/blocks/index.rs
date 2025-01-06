@@ -474,6 +474,12 @@ Additional contexts may be introduced through the use of the block, block macro,
 
 "#
         );
+
+        // Test a few context names that are not built-in contexts as a spot-check
+        // against false positives.
+        assert!(!is_built_in_context("documentx"));
+        assert!(!is_built_in_context("sentence"));
+        assert!(!is_built_in_context(""));
     }
 
     #[test]
