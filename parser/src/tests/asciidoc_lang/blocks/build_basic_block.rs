@@ -221,6 +221,7 @@ This is more content in the sidebar block.
 That's it.
 You've built a delimited block.
 
+
 "#
     );
 }
