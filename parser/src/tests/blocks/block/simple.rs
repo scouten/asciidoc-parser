@@ -79,6 +79,7 @@ fn single_line() {
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
     assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.id().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 

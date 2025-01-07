@@ -102,6 +102,11 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
         NO_BLOCKS.iter()
     }
 
+    /// Returns the ID for this block, if present.
+    fn id(&'src self) -> Option<Span<'src>> {
+        self.attrlist().and_then(|attrlist| attrlist.id())
+    }
+
     /// Returns the title for this block, if present.
     fn title(&'src self) -> Option<Span<'src>>;
 
