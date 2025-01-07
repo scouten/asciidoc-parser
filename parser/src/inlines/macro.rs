@@ -1,11 +1,11 @@
 use crate::{span::MatchedItem, HasSpan, Span};
 
-/// An inline macro can be used in an inline context to create new inline
+/// An **inline macro** can be used in an inline context to create new inline
 /// content.
 ///
 /// This struct is returned when the inline form of a *named macro* is detected.
 ///
-/// ```ignore
+/// ```asciidoc
 /// <name>:<target>?[<attrlist>?].
 /// ```
 #[derive(Clone, Debug, Eq, PartialEq)]

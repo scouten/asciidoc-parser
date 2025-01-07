@@ -8,7 +8,7 @@ use crate::{
 };
 
 /// The source text that’s used to define attributes for an element is referred
-/// to as an attrlist. An attrlist is always enclosed in a pair of square
+/// to as an **attrlist.** An attrlist is always enclosed in a pair of square
 /// brackets. This applies for block attributes as well as attributes on a block
 /// or inline macro. The processor splits the attrlist into individual attribute
 /// entries, determines whether each entry is a positional or named attribute,
@@ -21,10 +21,10 @@ pub struct Attrlist<'src> {
 }
 
 impl<'src> Attrlist<'src> {
-    /// IMPORTANT: This `source` span passed to this function should NOT include
-    /// the opening or closing square brackets for the attrlist. This is because
-    /// the rules for closing brackets differ when parsing inline, macro, and
-    /// block elements.
+    /// **IMPORTANT:** This `source` span passed to this function should NOT
+    /// include the opening or closing square brackets for the attrlist.
+    /// This is because the rules for closing brackets differ when parsing
+    /// inline, macro, and block elements.
     pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
@@ -113,7 +113,8 @@ impl<'src> Attrlist<'src> {
 
     /// Returns the given (1-based) positional attribute.
     ///
-    /// IMPORTANT: Named attributes with names are disregarded when counting.
+    /// **IMPORTANT:** Named attributes with names are disregarded when
+    /// counting.
     pub fn nth_attribute(&'src self, n: usize) -> Option<&'src ElementAttribute<'src>> {
         if n == 0 {
             None
@@ -149,7 +150,7 @@ impl<'src> Attrlist<'src> {
     /// In the shorthand syntax, you prefix the name with a hash (`#`) in the
     /// first position attribute:
     ///
-    /// ```ignore
+    /// ```asciidoc
     /// [#goals]
     /// * Goal 1
     /// * Goal 2
@@ -157,7 +158,7 @@ impl<'src> Attrlist<'src> {
     ///
     /// In the longhand syntax, you use a standard named attribute:
     ///
-    /// ```ignore
+    /// ```asciidoc
     /// [id=goals]
     /// * Goal 1
     /// * Goal 2
@@ -166,7 +167,7 @@ impl<'src> Attrlist<'src> {
     /// In the legacy block anchor syntax, you surround the name with double
     /// square brackets:
     ///
-    /// ```ignore
+    /// ```asciidoc
     /// [[goals]]
     /// * Goal 1
     /// * Goal 2

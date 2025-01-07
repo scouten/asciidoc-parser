@@ -11,7 +11,7 @@ use crate::{
 ///
 /// This struct is returned when the block form of a *named macro* is detected.
 ///
-/// ```ignore
+/// ```asciidoc
 /// <name>::<target>?[<attrlist>?].
 /// ```
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -111,7 +111,7 @@ impl<'src> MacroBlock<'src> {
 
     /// Return the macro's attribute list.
     ///
-    /// IMPORTANT: This is the list of attributes _within_ the macro block
+    /// **IMPORTANT:** This is the list of attributes _within_ the macro block
     /// definition itself.
     ///
     /// See also [`attrlist()`] for attributes that can be defined before the

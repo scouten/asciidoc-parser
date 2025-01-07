@@ -7,18 +7,19 @@ use crate::{
     HasSpan, Span,
 };
 
-/// Block elements form the main structure of an AsciiDoc document, starting
+/// **Block elements** form the main structure of an AsciiDoc document, starting
 /// with the document itself.
 ///
-/// A block element (aka block) is a discrete, line-oriented chunk of content in
-/// an AsciiDoc document. Once parsed, that chunk of content becomes a block
-/// element in the parsed document model. Certain blocks may contain other
-/// blocks, so we say that blocks can be nested. The converter visits each block
-/// in turn, in document order, converting it to a corresponding chunk of
+/// A block element (aka **block**) is a discrete, line-oriented chunk of
+/// content in an AsciiDoc document. Once parsed, that chunk of content becomes
+/// a block element in the parsed document model. Certain blocks may contain
+/// other blocks, so we say that blocks can be nested. The converter visits each
+/// block in turn, in document order, converting it to a corresponding chunk of
 /// output.
 ///
-/// This trait implements many of the same core methods as the [Block] enum but
-/// provides a mechanism for third-party code to extend the behavior of blocks.
+/// This trait implements many of the same core methods as the [`Block`] enum
+/// but provides a mechanism for third-party code to extend the behavior of
+/// blocks.
 pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// Returns the [`ContentModel`] for this block.
     fn content_model(&self) -> ContentModel;
@@ -38,10 +39,10 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// constants are viable.
     ///
     /// A block's context can be replaced by a block style that matches a
-    /// built-in context. Unlike [`raw_context`], that transformation _is_
+    /// built-in context. Unlike [`raw_context()`], that transformation _is_
     /// performed by this function.
     ///
-    /// [`raw_context`]: Self::raw_context
+    /// [`raw_context()`]: Self::raw_context
     fn resolved_context(&'src self) -> CowStr<'src> {
         if let Some(declared_style) = self.declared_style() {
             let declared_style = declared_style.data();
@@ -69,9 +70,9 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     ///
     /// A block's context can be replaced by a block style that matches a
     /// built-in context. That transformation is only performed by
-    /// [`resolved_context`], not this function.
+    /// [`resolved_context()`], not this function.
     ///
-    /// [`resolved_context`]: Self::resolved_context
+    /// [`resolved_context()`]: Self::resolved_context
     fn raw_context(&self) -> CowStr<'src>;
 
     /// Returns the declared (uninterpreted) style for this block.
@@ -119,7 +120,7 @@ pub enum ContentModel {
     /// subject to normal substitutions) (e.g., a paragraph block)
     Simple,
 
-    /// A block that holds verbatim text (displayed "`as is`") (and subject to
+    /// A block that holds verbatim text (displayed "as is") (and subject to
     /// verbatim substitutions) (e.g., a listing block)
     Verbatim,
 
@@ -127,7 +128,7 @@ pub enum ContentModel {
     /// output with no substitutions applied (e.g., a passthrough block)
     Raw,
 
-    /// Ablock that has no content (e.g., an image block)
+    /// A block that has no content (e.g., an image block)
     Empty,
 
     /// A special content model reserved for tables that enforces a fixed

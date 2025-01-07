@@ -1,7 +1,7 @@
 use crate::{inlines::InlineMacro, span::MatchedItem, HasSpan, Span};
 
-/// An inline element is a phrase (i.e., span of content) within a block element
-/// or one of its attributes in an AsciiDoc document.
+/// An **inline element** is a phrase (i.e., span of content) within a block
+/// element or one of its attributes in an AsciiDoc document.
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum Inline<'src> {

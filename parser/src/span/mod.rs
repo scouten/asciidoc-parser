@@ -27,7 +27,7 @@ use std::ops::Deref;
 /// Annotated with 1-based line and column numbers relative to the
 /// beginning of the overall input stream.
 ///
-/// Called `Span` because its `data` member can be consumed
+/// Called `Span` because its [`data()`] member can be consumed
 /// to yield another `Span` with annotations for the end of the
 /// syntactic element in question.
 ///
@@ -47,6 +47,8 @@ use std::ops::Deref;
 ///     assert_eq!(span.byte_offset(), 0);
 /// }
 /// ```
+///
+/// [`data()`]: Self::data
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Span<'src> {
     data: &'src str,

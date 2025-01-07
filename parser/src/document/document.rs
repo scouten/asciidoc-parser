@@ -43,11 +43,15 @@ impl<'src> Document<'src> {
     /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
     /// UTF-8 prior to parsing.
     ///
-    /// Any UTF-8 string is a valid AsciiDoc document, so there is no `Option`
-    /// or `Result` on this API. There may be any number of character sequences
-    /// that have ambiguous or potentially unintended meanings. For that reason,
-    /// a caller is advised to review the warnings provided via the
-    /// `Self::warnings` iterator.
+    /// # Warnings, not errors
+    ///
+    /// Any UTF-8 string is a valid AsciiDoc document, so this function does not
+    /// return an [`Option`] or [`Result`] data type. There may be any number of
+    /// character sequences that have ambiguous or potentially unintended
+    /// meanings. For that reason, a caller is advised to review the warnings
+    /// provided via the [`warnings()`] iterator.
+    ///
+    /// [`warnings()`]: Self::warnings
     pub fn parse(source: &'src str) -> Self {
         let source = Span::new(source);
         let i = source.discard_empty_lines();

@@ -32,8 +32,8 @@ use std::{
 
 pub(crate) const MAX_INLINE_STR_LEN: usize = 3 * std::mem::size_of::<isize>() - 2;
 
-/// Returned when trying to convert a `&str` into a `InlineStr`
-/// but it fails because it doesn't fit.
+/// Returned when trying to convert a `&str` into an [`InlineStr`] but it fails
+/// because it doesn't fit.
 #[derive(Debug)]
 pub struct StringTooLongError;
 
