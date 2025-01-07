@@ -60,9 +60,9 @@ impl<'src> Span<'src> {
     /// The single or double quote may be included in the string by preceding it
     /// with a backslash. No other backslash escape sequences are recognized.
     ///
-    /// IMPORTANT: The [`Span`] that is returned does not include the start or
-    /// ending quote, but _does_ include (without transformation) any escaped
-    /// quotes.
+    /// **IMPORTANT:** The [`Span`] that is returned does not include the start
+    /// or ending quote, but _does_ include (without transformation) any
+    /// escaped quotes.
     pub(crate) fn take_quoted_string(self) -> Option<MatchedItem<'src, Self>> {
         let mut chars = self.data.char_indices();
 

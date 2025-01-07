@@ -109,7 +109,11 @@ impl<'src> ElementAttribute<'src> {
         &self.name
     }
 
-    /// Return the shorthand items, if parsed via `parse_with_shorthand`.
+    /// Return the shorthand items, if applicable.
+    ///
+    /// Shorthand items are only parsed for certain element attributes. If this
+    /// attribute is not of the appropriate kind, this will return an empty
+    /// list.
     pub fn shorthand_items(&'src self) -> &'src Vec<Span<'src>> {
         &self.shorthand_items
     }
@@ -122,10 +126,10 @@ impl<'src> ElementAttribute<'src> {
             .copied()
     }
 
-    /// Return the id attribute from shorthand syntax.
+    /// Return the ID attribute from shorthand syntax.
     ///
-    /// If multiple id attributes were specified, only the first
-    /// match is returned. (Multiple ids are not supported.)
+    /// If multiple ID attributes were specified, only the first
+    /// match is returned. (Multiple IDs are not supported.)
     pub fn id(&'src self) -> Option<Span<'src>> {
         self.shorthand_items
             .iter()
