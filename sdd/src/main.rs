@@ -87,7 +87,6 @@ fn main() {
 
         emit_adoc_coverage(path, spec_coverage.get(path));
 
-        // println!("            \"1\": 0");
         if count < last_index {
             println!("        }},");
         } else {
@@ -120,31 +119,39 @@ fn parse_rs_file(path: &Path) -> Option<(String, Vec<(String, bool)>)> {
         }
 
         if line.contains("non_normative!(") {
+            // println!("NN+");
             in_non_normative_block = true;
             in_verifies_block = false;
             continue;
         }
 
         if line.contains("verifies!(") {
+            // println!("VF+");
             in_non_normative_block = false;
             in_verifies_block = true;
             continue;
         }
 
         if line.starts_with("\"#") {
+            // println!("QQQ");
             in_non_normative_block = false;
             in_verifies_block = false;
             continue;
         }
 
         if line.ends_with("r#\"") {
+            // println!("<<<");
             continue;
         }
 
         if in_non_normative_block {
+            // println!("NN  {line}");
             lines.push((line, false));
         } else if in_verifies_block {
+            // println!("VF  {line}");
             lines.push((line, true));
+        } else {
+            // println!("--  {line}");
         }
     }
 

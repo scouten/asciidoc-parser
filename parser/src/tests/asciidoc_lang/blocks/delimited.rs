@@ -292,6 +292,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Raw);
     assert_eq!(mi.item.raw_context().as_ref(), "comment");
+    assert_eq!(mi.item.resolved_context().as_ref(), "comment");
 
     verifies!(
         r#"
@@ -309,6 +310,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().as_ref(), "example");
+    assert_eq!(mi.item.resolved_context().as_ref(), "example");
 
     verifies!(
         r#"
@@ -326,6 +328,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
     assert_eq!(mi.item.raw_context().as_ref(), "listing");
+    assert_eq!(mi.item.resolved_context().as_ref(), "listing");
 
     verifies!(
         r#"
@@ -343,6 +346,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
     assert_eq!(mi.item.raw_context().as_ref(), "literal");
+    assert_eq!(mi.item.resolved_context().as_ref(), "literal");
 
     verifies!(
         r#"
@@ -360,6 +364,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().as_ref(), "open");
+    assert_eq!(mi.item.resolved_context().as_ref(), "open");
 
     verifies!(
         r#"
@@ -377,6 +382,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().as_ref(), "sidebar");
+    assert_eq!(mi.item.resolved_context().as_ref(), "sidebar");
 
     to_do_verifies!(
         r#"
@@ -411,6 +417,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Raw);
     assert_eq!(mi.item.raw_context().as_ref(), "pass");
+    assert_eq!(mi.item.resolved_context().as_ref(), "pass");
 
     verifies!(
         r#"
@@ -429,6 +436,7 @@ The table below lists the structural containers, documenting the name, default c
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().as_ref(), "quote");
+    assert_eq!(mi.item.resolved_context().as_ref(), "quote");
 
     non_normative!(
         r#"
