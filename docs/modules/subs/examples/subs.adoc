@@ -17,6 +17,9 @@ The double brackets around it are preserved.
 [\[[Word]]] is not interpreted as a bibliography anchor.
 The triple brackets around it are preserved.
 
+\((DD AND CC) OR (DD AND EE)) is not interpreted as a flow index term.
+The double brackets around it are preserved.
+
 The URL \https://example.org isn't converted into an active link.
 // end::backslash[]
 
