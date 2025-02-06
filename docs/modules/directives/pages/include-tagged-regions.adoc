@@ -136,7 +136,7 @@ text c
 ....
 
 If you did not specify tag filtering, tag directives that aren't behind a line comment (e.g., `tag::snippet-b[]`) will also be printed too.
-Tag filtering is explaied in more detail in the next section.
+Tag filtering is explained in more detail in the next section.
 
 [#tag-filtering]
 == Tag filtering
