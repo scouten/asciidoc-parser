@@ -72,7 +72,7 @@ System.out.println("Hello *<name>*") // <.> <.>
 // end::subs-multi[]
 
 // tag::subs-attr[]
-:markup-in-source: verbatim,quotes
+:markup-in-source: +quotes
 
 [source,java,subs="{markup-in-source}"]
 ----
