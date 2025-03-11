@@ -282,7 +282,7 @@ All content attributes are promoted to properties on the node.
 At this point, the unparsed value is resaved in the attribute map.
 This ensures that the value of every attribute in the map is a string.
 
-The location property on the metadata, if set by the implementation, should start at the first character of the first attibute line and end at the last character before the line that starts the block.
+The location property on the metadata, if set by the implementation, should start at the first character of the first attribute line and end at the last character before the line that starts the block.
 In other words, it encapsulates all the block attribute lines.
 The location property on the node itself should be the first line of the block, not including any block attribute lines.
 By setting it up this way, it's possible to see where the block begins both with and without the block attribute lines.
