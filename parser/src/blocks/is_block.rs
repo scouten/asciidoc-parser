@@ -107,6 +107,14 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
         self.attrlist().and_then(|attrlist| attrlist.id())
     }
 
+    /// Returns any roles specified for this block.
+    fn roles(&'src self) -> Vec<Span<'src>> {
+        match self.attrlist() {
+            Some(attrlist) => attrlist.roles(),
+            None => vec![],
+        }
+    }
+
     /// Returns the title for this block, if present.
     fn title(&'src self) -> Option<Span<'src>>;
 
