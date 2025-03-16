@@ -195,7 +195,7 @@ impl<'src> Attrlist<'src> {
                 if !mi.item.is_empty() {
                     formal_roles.push(mi.item);
                 }
-                role_span = mi.after;
+                role_span = mi.after.take_while(|c| c == ' ').after;
             }
 
             roles.append(&mut formal_roles);
