@@ -992,6 +992,296 @@ mod id {
     }
 }
 
+mod roles {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        attributes::Attrlist,
+        tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
+            TSpan,
+        },
+        HasSpan, Span,
+    };
+
+    #[test]
+    fn via_shorthand_syntax() {
+        let mi = Attrlist::parse(Span::new(".rolename")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: ".rolename",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }],
+                    value: TSpan {
+                        data: ".rolename",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    source: TSpan {
+                        data: ".rolename",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },),
+                source: TSpan {
+                    data: ".rolename",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(mi.item.named_attribute("foo").is_none());
+        assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+        let roles = mi.item.roles();
+        let mut roles = roles.iter();
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "rolename",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: ".rolename",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 10,
+                offset: 9
+            }
+        );
+    }
+
+    #[test]
+    fn via_named_attribute() {
+        let mi = Attrlist::parse(Span::new("foo=bar,role=role1")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "bar",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                        source: TSpan {
+                            data: "foo=bar",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "role",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "role1",
+                            line: 1,
+                            col: 14,
+                            offset: 13,
+                        },
+                        source: TSpan {
+                            data: "role=role1",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "foo=bar,role=role1",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("foo").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },
+                source: TSpan {
+                    data: "foo=bar",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("role").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "role",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "role1",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                },
+                source: TSpan {
+                    data: "role=role1",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                },
+            }
+        );
+
+        let roles = mi.item.roles();
+        let mut roles = roles.iter();
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "role1",
+                line: 1,
+                col: 14,
+                offset: 13,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 19,
+                offset: 18
+            }
+        );
+    }
+
+    #[test]
+    fn shorthand_only_first_attribute() {
+        let mi = Attrlist::parse(Span::new("foo,blah.rolename")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }],
+                        value: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        source: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "blah.rolename",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                        source: TSpan {
+                            data: "blah.rolename",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "foo,blah.rolename",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        let roles = mi.item.roles();
+        assert_eq!(roles.iter().len(), 0);
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 18,
+                offset: 17
+            }
+        );
+    }
+}
+
 #[test]
 fn err_double_comma() {
     let maw = Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400"));
