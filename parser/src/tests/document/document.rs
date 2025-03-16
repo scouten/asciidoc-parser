@@ -33,6 +33,7 @@ fn empty_source() {
     assert_eq!(doc.resolved_context().deref(), "document");
     assert!(doc.declared_style().is_none());
     assert!(doc.id().is_none());
+    assert!(doc.roles().is_empty());
     assert!(doc.title().is_none());
     assert!(doc.attrlist().is_none());
 

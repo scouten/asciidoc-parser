@@ -47,6 +47,7 @@ fn empty_source() {
     assert!(mi.item.named_or_positional_attribute("foo", 42).is_none());
 
     assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
 
     assert_eq!(
         mi.item.span(),
@@ -145,6 +146,7 @@ fn only_positional_attributes() {
     assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
 
     assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
 
     assert_eq!(
         mi.item.nth_attribute(1).unwrap(),
@@ -545,6 +547,7 @@ fn only_named_attributes() {
     assert!(mi.item.nth_attribute(42).is_none());
 
     assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
 
     assert_eq!(
         mi.item.span(),
@@ -763,6 +766,8 @@ mod id {
             }
         );
 
+        assert!(mi.item.roles().is_empty());
+
         assert_eq!(
             mi.item.span(),
             TSpan {
@@ -904,6 +909,8 @@ mod id {
             }
         );
 
+        assert!(mi.item.roles().is_empty());
+
         assert_eq!(
             mi.after,
             TSpan {
@@ -979,6 +986,8 @@ mod id {
         );
 
         assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.roles().is_empty());
 
         assert_eq!(
             mi.after,
