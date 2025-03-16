@@ -177,6 +177,32 @@ impl<'src> Attrlist<'src> {
             .and_then(|attr1| attr1.id())
             .or_else(|| self.named_attribute("id").map(|attr| attr.raw_value()))
     }
+
+    /// Returns any role attributes that were found.
+    pub fn roles(&'src self) -> Vec<Span<'src>> {
+        let mut roles = self
+            .nth_attribute(1)
+            .map(|attr1| attr1.roles())
+            .unwrap_or_default();
+
+        if let Some(role_attr) = self.named_attribute("role") {
+            let mut role_span = role_attr.raw_value();
+            let mut formal_roles: Vec<Span<'_>> = vec![];
+            role_span = role_span.take_while(|c| c == ' ').after;
+
+            while !role_span.is_empty() {
+                let mi = role_span.take_while(|c| c != ' ');
+                if !mi.item.is_empty() {
+                    formal_roles.push(mi.item);
+                }
+                role_span = mi.after.take_while(|c| c == ' ').after;
+            }
+
+            roles.append(&mut formal_roles);
+        }
+
+        roles
+    }
 }
 
 impl<'src> HasSpan<'src> for Attrlist<'src> {
