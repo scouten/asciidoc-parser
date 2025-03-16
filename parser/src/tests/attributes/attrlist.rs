@@ -1484,6 +1484,174 @@ mod roles {
     }
 
     #[test]
+    fn shorthand_role_and_named_attribute_role() {
+        let mi =
+            Attrlist::parse(Span::new("#foo.sh1.sh2,role=na1 na2   na3 ")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![
+                            TSpan {
+                                data: "#foo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            TSpan {
+                                data: ".sh1",
+                                line: 1,
+                                col: 5,
+                                offset: 4,
+                            },
+                            TSpan {
+                                data: ".sh2",
+                                line: 1,
+                                col: 9,
+                                offset: 8,
+                            }
+                        ],
+                        value: TSpan {
+                            data: "#foo.sh1.sh2",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        source: TSpan {
+                            data: "#foo.sh1.sh2",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "role",
+                            line: 1,
+                            col: 14,
+                            offset: 13,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "na1 na2   na3 ",
+                            line: 1,
+                            col: 19,
+                            offset: 18,
+                        },
+                        source: TSpan {
+                            data: "role=na1 na2   na3 ",
+                            line: 1,
+                            col: 14,
+                            offset: 13,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "#foo.sh1.sh2,role=na1 na2   na3 ",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(mi.item.named_attribute("foo").is_none(),);
+
+        assert_eq!(
+            mi.item.named_attribute("role").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "role",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "na1 na2   na3 ",
+                    line: 1,
+                    col: 19,
+                    offset: 18,
+                },
+                source: TSpan {
+                    data: "role=na1 na2   na3 ",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                },
+            }
+        );
+
+        let roles = mi.item.roles();
+        let mut roles = roles.iter();
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "sh1",
+                line: 1,
+                col: 6,
+                offset: 5,
+            }
+        );
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "sh2",
+                line: 1,
+                col: 10,
+                offset: 9,
+            }
+        );
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "na1",
+                line: 1,
+                col: 19,
+                offset: 18,
+            }
+        );
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "na2",
+                line: 1,
+                col: 23,
+                offset: 22,
+            }
+        );
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "na3",
+                line: 1,
+                col: 29,
+                offset: 28,
+            }
+        );
+
+        assert!(roles.next().is_none(),);
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 33,
+                offset: 32
+            }
+        );
+    }
+
+    #[test]
     fn shorthand_only_first_attribute() {
         let mi = Attrlist::parse(Span::new("foo,blah.rolename")).unwrap_if_no_warnings();
 
