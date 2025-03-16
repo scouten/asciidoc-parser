@@ -179,6 +179,26 @@ impl<'src> Attrlist<'src> {
     }
 
     /// Returns any role attributes that were found.
+    ///
+    /// You can assign one or more roles to blocks and most inline elements
+    /// using the `role` attribute. The `role` attribute is a [named attribute].
+    /// Even though the attribute name is singular, it may contain multiple
+    /// (space-separated) roles. Roles may also be defined using a shorthand
+    /// (dot-prefixed) syntax.
+    ///
+    /// A role:
+    /// 1. adds additional semantics to an element
+    /// 2. can be used to apply additional styling to a group of elements (e.g.,
+    ///    via a CSS class selector)
+    /// 3. may activate additional behavior if recognized by the converter
+    ///
+    /// **TIP:** The `role` attribute in AsciiDoc always get mapped to the
+    /// `class` attribute in the HTML output. In other words, role names are
+    /// synonymous with HTML class names, thus allowing output elements to be
+    /// identified and styled in CSS using class selectors (e.g.,
+    /// `sidebarblock.role1`).
+    ///
+    /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
     pub fn roles(&'src self) -> Vec<Span<'src>> {
         let mut roles = self
             .nth_attribute(1)
