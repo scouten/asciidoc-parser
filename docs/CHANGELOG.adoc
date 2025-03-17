@@ -9,6 +9,13 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 Added::
 * Document the endless range for the lines attribute on the include directive
 
+Changed::
+* Clarify that attributes is an implied value of the docinfosubs attribute
+* Include escaping example for flow index term
+
+Fixed::
+* Use correct syntax for concealed index term example (#54)
+
 == Published Q4 2024
 
 Added::
