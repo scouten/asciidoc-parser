@@ -196,6 +196,69 @@ impl<'src> ElementAttribute<'src> {
     }
 
     /// Return any option attributes that were found in shorthand syntax.
+    ///     
+    /// The `options` attribute (often abbreviated as `opts`) is a versatile
+    /// [named attribute] that can be assigned one or more values. It can be
+    /// defined globally as document attribute as well as a block attribute on
+    /// an individual block.
+    ///
+    /// There is no strict schema for options. Any options which are not
+    /// recognized are ignored.
+    ///
+    /// You can assign one or more options to a block using the shorthand or
+    /// formal syntax for the options attribute.
+    ///
+    /// # Shorthand options syntax for blocks
+    ///
+    /// To assign an option to a block, prefix the value with a percent sign
+    /// (`%`) in an attribute list. The percent sign implicitly sets the
+    /// `options` attribute.
+    ///
+    /// ## Example 1: Sidebar block with an option assigned using the shorthand dot
+    ///
+    /// ```asciidoc
+    /// [%option]
+    /// ****
+    /// This is a sidebar with an option assigned to it, named option.
+    /// ****
+    /// ```
+    ///
+    /// You can assign multiple options to a block by prest
+    /// fixing each value with
+    /// a percent sign (`%`).
+    ///
+    /// ## Example 2: Sidebar with two options assigned using the shorthand dot
+    /// ```asciidoc
+    /// [%option1%option2]
+    /// ****
+    /// This is a sidebar with two options assigned to it, named option1 and option2.
+    /// ****
+    /// ```
+    ///
+    /// # Formal options syntax for blocks
+    ///
+    /// Explicitly set `options` or `opts`, followed by the equals sign (`=`),
+    /// and then the value in an attribute list.
+    ///
+    /// ## Example 3. Sidebar block with an option assigned using the formal syntax
+    /// ```asciidoc
+    /// [opts=option]
+    /// ****
+    /// This is a sidebar with an option assigned to it, named option.
+    /// ****
+    /// ```
+    ///
+    /// Separate multiple option values with commas (`,`).
+    ///
+    /// ## Example 4. Sidebar with three options assigned using the formal syntax
+    /// ```asciidoc
+    /// [opts="option1,option2"]
+    /// ****
+    /// This is a sidebar with two options assigned to it, option1 and option2.
+    /// ****
+    /// ```
+    ///
+    /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
     pub fn options(&'src self) -> Vec<Span<'src>> {
         self.shorthand_items
             .iter()
