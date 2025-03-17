@@ -1730,6 +1730,871 @@ mod roles {
     }
 }
 
+mod options {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        attributes::Attrlist,
+        tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
+            TSpan,
+        },
+        HasSpan, Span,
+    };
+
+    #[test]
+    fn via_shorthand_syntax() {
+        let mi = Attrlist::parse(Span::new("%option")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "%option",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }],
+                    value: TSpan {
+                        data: "%option",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    source: TSpan {
+                        data: "%option",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },),
+                source: TSpan {
+                    data: "%option",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(mi.item.named_attribute("foo").is_none());
+        assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+        let options = mi.item.options();
+        let mut options = options.iter();
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert!(options.next().is_none(),);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "%option",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
+    }
+
+    #[test]
+    fn multiple_options_via_shorthand_syntax() {
+        let mi = Attrlist::parse(Span::new("%option1%option2%option3")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![
+                        TSpan {
+                            data: "%option1",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        TSpan {
+                            data: "%option2",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        },
+                        TSpan {
+                            data: "%option3",
+                            line: 1,
+                            col: 17,
+                            offset: 16,
+                        }
+                    ],
+                    value: TSpan {
+                        data: "%option1%option2%option3",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    source: TSpan {
+                        data: "%option1%option2%option3",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },),
+                source: TSpan {
+                    data: "%option1%option2%option3",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(mi.item.named_attribute("foo").is_none());
+        assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+        let options = mi.item.options();
+        let mut options = options.iter();
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option1",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option2",
+                line: 1,
+                col: 10,
+                offset: 9,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option3",
+                line: 1,
+                col: 18,
+                offset: 17,
+            }
+        );
+
+        assert!(options.next().is_none(),);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: "%option1%option2%option3",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 25,
+                offset: 24
+            }
+        );
+    }
+
+    #[test]
+    fn via_options_attribute() {
+        let mi = Attrlist::parse(Span::new("foo=bar,options=option1")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "bar",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                        source: TSpan {
+                            data: "foo=bar",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "options",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "option1",
+                            line: 1,
+                            col: 17,
+                            offset: 16,
+                        },
+                        source: TSpan {
+                            data: "options=option1",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "foo=bar,options=option1",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("foo").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },
+                source: TSpan {
+                    data: "foo=bar",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("options").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "options",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "option1",
+                    line: 1,
+                    col: 17,
+                    offset: 16,
+                },
+                source: TSpan {
+                    data: "options=option1",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                },
+            }
+        );
+
+        let options = mi.item.options();
+        let mut options = options.iter();
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option1",
+                line: 1,
+                col: 17,
+                offset: 16,
+            }
+        );
+
+        assert!(options.next().is_none(),);
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 24,
+                offset: 23
+            }
+        );
+    }
+
+    #[test]
+    fn via_opts_attribute() {
+        let mi = Attrlist::parse(Span::new("foo=bar,opts=option1")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "bar",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                        source: TSpan {
+                            data: "foo=bar",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "opts",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "option1",
+                            line: 1,
+                            col: 14,
+                            offset: 13,
+                        },
+                        source: TSpan {
+                            data: "opts=option1",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "foo=bar,opts=option1",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("foo").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },
+                source: TSpan {
+                    data: "foo=bar",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("opts").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "opts",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "option1",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                },
+                source: TSpan {
+                    data: "opts=option1",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                },
+            }
+        );
+
+        let options = mi.item.options();
+        let mut options = options.iter();
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option1",
+                line: 1,
+                col: 14,
+                offset: 13,
+            }
+        );
+
+        assert!(options.next().is_none(),);
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 21,
+                offset: 20
+            }
+        );
+    }
+
+    #[test]
+    fn multiple_options_via_named_attribute() {
+        let mi = Attrlist::parse(Span::new("foo=bar,options=\"option1,option2,option3\""))
+            .unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "bar",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                        source: TSpan {
+                            data: "foo=bar",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "options",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "option1,option2,option3",
+                            line: 1,
+                            col: 18,
+                            offset: 17,
+                        },
+                        source: TSpan {
+                            data: "options=\"option1,option2,option3\"",
+                            line: 1,
+                            col: 9,
+                            offset: 8,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "foo=bar,options=\"option1,option2,option3\"",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("foo").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "foo",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "bar",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },
+                source: TSpan {
+                    data: "foo=bar",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.item.named_attribute("options").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "options",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "option1,option2,option3",
+                    line: 1,
+                    col: 18,
+                    offset: 17,
+                },
+                source: TSpan {
+                    data: "options=\"option1,option2,option3\"",
+                    line: 1,
+                    col: 9,
+                    offset: 8,
+                },
+            }
+        );
+
+        let options = mi.item.options();
+        let mut options = options.iter();
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option1",
+                line: 1,
+                col: 18,
+                offset: 17,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option2",
+                line: 1,
+                col: 26,
+                offset: 25,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "option3",
+                line: 1,
+                col: 34,
+                offset: 33,
+            }
+        );
+
+        assert!(options.next().is_none(),);
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 42,
+                offset: 41
+            }
+        );
+    }
+
+    #[test]
+    fn shorthand_option_and_named_attribute_option() {
+        let mi = Attrlist::parse(Span::new("#foo%sh1%sh2,options=\"na1,na2,na3\""))
+            .unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![
+                            TSpan {
+                                data: "#foo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            TSpan {
+                                data: "%sh1",
+                                line: 1,
+                                col: 5,
+                                offset: 4,
+                            },
+                            TSpan {
+                                data: "%sh2",
+                                line: 1,
+                                col: 9,
+                                offset: 8,
+                            }
+                        ],
+                        value: TSpan {
+                            data: "#foo%sh1%sh2",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        source: TSpan {
+                            data: "#foo%sh1%sh2",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: Some(TSpan {
+                            data: "options",
+                            line: 1,
+                            col: 14,
+                            offset: 13,
+                        }),
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "na1,na2,na3",
+                            line: 1,
+                            col: 23,
+                            offset: 22,
+                        },
+                        source: TSpan {
+                            data: "options=\"na1,na2,na3\"",
+                            line: 1,
+                            col: 14,
+                            offset: 13,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "#foo%sh1%sh2,options=\"na1,na2,na3\"",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(mi.item.named_attribute("foo").is_none(),);
+
+        assert_eq!(
+            mi.item.named_attribute("options").unwrap(),
+            TElementAttribute {
+                name: Some(TSpan {
+                    data: "options",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                }),
+                shorthand_items: vec![],
+                value: TSpan {
+                    data: "na1,na2,na3",
+                    line: 1,
+                    col: 23,
+                    offset: 22,
+                },
+                source: TSpan {
+                    data: "options=\"na1,na2,na3\"",
+                    line: 1,
+                    col: 14,
+                    offset: 13,
+                },
+            }
+        );
+
+        let options = mi.item.options();
+        let mut options = options.iter();
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "sh1",
+                line: 1,
+                col: 6,
+                offset: 5,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "sh2",
+                line: 1,
+                col: 10,
+                offset: 9,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "na1",
+                line: 1,
+                col: 23,
+                offset: 22,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "na2",
+                line: 1,
+                col: 27,
+                offset: 26,
+            }
+        );
+
+        assert_eq!(
+            options.next().unwrap(),
+            TSpan {
+                data: "na3",
+                line: 1,
+                col: 31,
+                offset: 30,
+            }
+        );
+
+        assert!(options.next().is_none(),);
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 35,
+                offset: 34
+            }
+        );
+    }
+
+    #[test]
+    fn shorthand_only_first_attribute() {
+        let mi = Attrlist::parse(Span::new("foo,blah%option")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        }],
+                        value: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        source: TSpan {
+                            data: "foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![],
+                        value: TSpan {
+                            data: "blah%option",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                        source: TSpan {
+                            data: "blah%option",
+                            line: 1,
+                            col: 5,
+                            offset: 4,
+                        },
+                    },
+                ),
+                source: TSpan {
+                    data: "foo,blah%option",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        let options = mi.item.options();
+        assert_eq!(options.iter().len(), 0);
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 16,
+                offset: 15
+            }
+        );
+    }
+}
+
 #[test]
 fn err_double_comma() {
     let maw = Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400"));
