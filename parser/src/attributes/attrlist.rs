@@ -224,7 +224,7 @@ impl<'src> Attrlist<'src> {
         roles
     }
 
-    /// Returns any role attributes that were found.
+    /// Returns any option attributes that were found.
     ///
     /// The `options` attribute (often abbreviated as `opts`) is a versatile
     /// [named attribute] that can be assigned one or more values. It can be

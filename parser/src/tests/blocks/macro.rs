@@ -132,6 +132,7 @@ fn simplest_block_macro() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 

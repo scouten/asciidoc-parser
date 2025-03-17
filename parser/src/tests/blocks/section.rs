@@ -54,6 +54,7 @@ fn simplest_section_block() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -102,6 +103,7 @@ fn has_child_block() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -167,6 +169,7 @@ fn has_macro_block_with_extra_blank_line() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -312,6 +315,7 @@ fn has_child_block_with_errors() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -469,6 +473,7 @@ fn dont_stop_at_child_section() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -569,6 +574,7 @@ fn stop_at_peer_section() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
@@ -635,6 +641,7 @@ fn stop_at_ancestor_section() {
     assert!(mi.item.declared_style().is_none());
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.attrlist().is_none());
 
