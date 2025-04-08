@@ -417,8 +417,8 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         );
 
         assert_eq!(block.id().unwrap().data(), "rules");
-        assert_eq!(block.roles().iter().next().unwrap().data(), "prominent");
-        assert_eq!(block.options().iter().next().unwrap().data(), "incremental");
+        assert_eq!(block.roles().first().unwrap().data(), "prominent");
+        assert_eq!(block.options().first().unwrap().data(), "incremental");
 
         verifies!(
             r#"
