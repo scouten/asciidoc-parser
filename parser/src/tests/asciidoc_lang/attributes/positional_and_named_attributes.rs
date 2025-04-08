@@ -16,11 +16,17 @@ mod positional_attribute {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, MacroBlock},
+        blocks::{preamble::Preamble, Block, IsBlock, MacroBlock},
         tests::{
-            fixtures::{attributes::TElementAttribute, TSpan},
+            fixtures::{
+                attributes::{TAttrlist, TElementAttribute},
+                blocks::{TBlock, TSectionBlock, TSimpleBlock},
+                inlines::TInline,
+                TSpan,
+            },
             sdd::{non_normative, verifies},
         },
+        Span,
     };
 
     non_normative!(
@@ -60,7 +66,6 @@ image::sunset.jpg[alt=Sunset,width=300,height=400]
 
 The second macro is the same as the first, but written out in longhand form.
 // end::pos[]
-
 
 "#
         );
@@ -127,6 +132,434 @@ The second macro is the same as the first, but written out in longhand form.
                 },
             }
         );
+    }
+
+    #[test]
+    fn block_style_and_attribute_shorthand() {
+        non_normative!(
+            r#"
+=== Block style and attribute shorthand
+
+The first positional attribute on all blocks (including sections) is special.
+It's used to define the xref:blocks:index.adoc#block-style[block style].
+It also supports a shorthand syntax for defining the ID, role, and options attributes.
+This shorthand syntax can also be used on formatted text, even though formatted text doesn't technically support attributes.
+
+The attribute shorthand is inspired by the HAML and Slim template languages as a way of saving the author some typing.
+Instead of having to use the longhand form of a name attribute, it's possible to compress the assignment to a value prefixed by a special marker.
+The markers are mapped as follows:
+
+* `#` - ID
+* `.` - role
+* `%` - option
+
+Each shorthand entry is placed directly adjacent to previous one, starting immediately after the optional block style.
+The order of the entries does not matter, except for the style, which must come first.
+        
+"#
+        );
+
+        verifies!(
+            r#"
+Here's an example that shows how to set an ID on a section using this shorthand syntax:
+
+----
+[#custom-id]
+== Section with Custom ID
+----
+
+"#
+        );
+
+        let block = Block::parse(Span::new("[#custom-id]\n== Section with Custom ID\n"))
+            .unwrap_if_no_warnings()
+            .unwrap()
+            .item;
+
+        assert_eq!(
+            block,
+            TBlock::Section(TSectionBlock {
+                level: 1,
+                section_title: TSpan {
+                    data: "Section with Custom ID",
+                    line: 2,
+                    col: 4,
+                    offset: 16,
+                },
+                blocks: vec![],
+                source: TSpan {
+                    data: "[#custom-id]\n== Section with Custom ID\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "#custom-id",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },],
+                        value: TSpan {
+                            data: "#custom-id",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        source: TSpan {
+                            data: "#custom-id",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "#custom-id",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+
+        assert_eq!(block.id().unwrap().data(), "custom-id");
+
+        verifies!(
+            r#"
+The shorthand entry must follow the block style, if present.
+Here's an example that shows how to set an ID on an appendix section using this shorthand syntax:
+
+----
+[appendix#custom-id]
+== Appendix with Custom ID
+----
+
+"#
+        );
+
+        let block = Block::parse(Span::new(
+            "[appendix#custom-id]\n== Appendix with Custom ID\n",
+        ))
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
+
+        assert_eq!(
+            block,
+            TBlock::Section(TSectionBlock {
+                level: 1,
+                section_title: TSpan {
+                    data: "Appendix with Custom ID",
+                    line: 2,
+                    col: 4,
+                    offset: 24,
+                },
+                blocks: vec![],
+                source: TSpan {
+                    data: "[appendix#custom-id]\n== Appendix with Custom ID\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![
+                            TSpan {
+                                data: "appendix",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },
+                            TSpan {
+                                data: "#custom-id",
+                                line: 1,
+                                col: 10,
+                                offset: 9,
+                            },
+                        ],
+                        value: TSpan {
+                            data: "appendix#custom-id",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        source: TSpan {
+                            data: "appendix#custom-id",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "appendix#custom-id",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+
+        assert_eq!(block.declared_style().unwrap().data(), "appendix");
+        assert_eq!(block.id().unwrap().data(), "custom-id");
+
+        verifies!(
+            r#"
+Here's an example of a block that uses the shorthand syntax to set the ID, a role, and an option for a list.
+Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and sets the option `incremental`.
+
+----
+[#rules.prominent%incremental]
+* Work hard
+* Play hard
+* Be happy
+----
+
+"#
+        );
+
+        let block = Block::parse(Span::new(
+            "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n",
+        ))
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
+
+        // TO DO: This will change when we understand lists.
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                inline: TInline::Sequence(
+                    vec![
+                        TInline::Uninterpreted(TSpan {
+                            data: "* Work hard",
+                            line: 2,
+                            col: 1,
+                            offset: 31,
+                        },),
+                        TInline::Uninterpreted(TSpan {
+                            data: "* Play hard",
+                            line: 3,
+                            col: 1,
+                            offset: 43,
+                        },),
+                        TInline::Uninterpreted(TSpan {
+                            data: "* Be happy",
+                            line: 4,
+                            col: 1,
+                            offset: 55,
+                        },),
+                    ],
+                    TSpan {
+                        data: "* Work hard\n* Play hard\n* Be happy\n",
+                        line: 2,
+                        col: 1,
+                        offset: 31,
+                    },
+                ),
+                source: TSpan {
+                    data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![
+                            TSpan {
+                                data: "#rules",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },
+                            TSpan {
+                                data: ".prominent",
+                                line: 1,
+                                col: 8,
+                                offset: 7,
+                            },
+                            TSpan {
+                                data: "%incremental",
+                                line: 1,
+                                col: 18,
+                                offset: 17,
+                            },
+                        ],
+                        value: TSpan {
+                            data: "#rules.prominent%incremental",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        source: TSpan {
+                            data: "#rules.prominent%incremental",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "#rules.prominent%incremental",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+
+        assert_eq!(block.id().unwrap().data(), "rules");
+        assert_eq!(block.roles().first().unwrap().data(), "prominent");
+        assert_eq!(block.options().first().unwrap().data(), "incremental");
+
+        verifies!(
+            r#"
+A block can have multiple roles and options, so these shorthand entries may be repeated.
+Here's an example that shows how to set several options on a table.
+Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
+
+----
+[%header%footer%autowidth]
+|===
+|Header A |Header B
+|Footer A |Footer B
+|===
+----
+
+"#
+        );
+
+        let block = Block::parse(Span::new(
+            "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
+        ))
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
+
+        dbg!(&block);
+
+        assert_eq!(block, TBlock::Simple(
+            TSimpleBlock {
+                inline: TInline::Sequence(vec!
+                    [
+                        TInline::Uninterpreted(
+                            TSpan {
+                                data: "|===",
+                                line: 2,
+                                col: 1,
+                                offset: 27,
+                            },
+                        ),
+                        TInline::Uninterpreted(
+                            TSpan {
+                                data: "|Header A |Header B",
+                                line: 3,
+                                col: 1,
+                                offset: 32,
+                            },
+                        ),
+                        TInline::Uninterpreted(
+                            TSpan {
+                                data: "|Footer A |Footer B",
+                                line: 4,
+                                col: 1,
+                                offset: 52,
+                            },
+                        ),
+                        TInline::Uninterpreted(
+                            TSpan {
+                                data: "|===",
+                                line: 5,
+                                col: 1,
+                                offset: 72,
+                            },
+                        ),
+                    ],
+                    TSpan {
+                        data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
+                        line: 2,
+                        col: 1,
+                        offset: 27,
+                    },
+                ),
+                source: TSpan {
+                    data: "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                attrlist: Some(
+                    TAttrlist {
+                        attributes: vec![
+                            TElementAttribute {
+                                name: None,
+                                shorthand_items: vec![
+                                    TSpan {
+                                        data: "%header",
+                                        line: 1,
+                                        col: 2,
+                                        offset: 1,
+                                    },
+                                    TSpan {
+                                        data: "%footer",
+                                        line: 1,
+                                        col: 9,
+                                        offset: 8,
+                                    },
+                                    TSpan {
+                                        data: "%autowidth",
+                                        line: 1,
+                                        col: 16,
+                                        offset: 15,
+                                    },
+                                ],
+                                value: TSpan {
+                                    data: "%header%footer%autowidth",
+                                    line: 1,
+                                    col: 2,
+                                    offset: 1,
+                                },
+                                source: TSpan {
+                                    data: "%header%footer%autowidth",
+                                    line: 1,
+                                    col: 2,
+                                    offset: 1,
+                                },
+                            },
+                        ],
+                        source: TSpan {
+                            data: "%header%footer%autowidth",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },
+                ),
+            },
+        ));
+
+        /* NO COVERAGE YET
+
+        This shorthand syntax also appears on formatted text.
+        Here's an example that shows how to set the ID and add a role to a strong phrase.
+        Specifically, this syntax sets the ID to `free-world` and adds the `goals` role.
+
+        ----
+        [#free-world.goals]*free the world*
+        ----
+
+        Formatted text does not support a style, so the first and only positional attribute is always the shorthand syntax.
+
+        */
     }
 
     // NO COVERAGE YET:
