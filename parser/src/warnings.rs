@@ -52,6 +52,9 @@ pub enum WarningType {
 
     #[error("Block anchor name is empty")]
     EmptyBlockAnchorName,
+
+    #[error("Block anchor name contains invalid name characters")]
+    InvalidBlockAnchorName,
 }
 
 /// Return type used to signal one or more possible parse error.

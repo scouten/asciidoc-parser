@@ -144,15 +144,22 @@ fn parse_maybe_block_anchor(
         });
     }
 
-    // TO DO (https://github.com/scouten/asciidoc-parser/issues/204):
-    // Warn when ID characters don't fit the XML "Name" pattern.
+    // Warn if anchor name doesn't match the XML "Name" pattern.
+    let warnings = if anchor_src.is_xml_name() {
+        vec![]
+    } else {
+        vec![Warning {
+            source: anchor_src,
+            warning: WarningType::InvalidBlockAnchorName,
+        }]
+    };
 
     Some(MatchAndWarnings {
         item: MatchedItem {
             item: anchor_src,
             after: block_start,
         },
-        warnings: vec![],
+        warnings,
     })
 }
 
