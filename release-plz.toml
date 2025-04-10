@@ -40,7 +40,7 @@ release_always = false
 release_commits = "^(feat|fix|update|doc)[(:]"
 
 [[package]]
-name = "parser"
+name = "asciidoc-parser"
 changelog_path = "./CHANGELOG.md"
 
 [[package]]
