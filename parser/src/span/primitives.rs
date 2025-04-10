@@ -51,6 +51,36 @@ impl<'src> Span<'src> {
         Some(self.into_parse_result(self.len()))
     }
 
+    /// Returns [`true`] if the span properly forms an [XML Name].
+    ///
+    /// [XML Name]: https://www.w3.org/TR/REC-xml/#NT-Name
+    #[allow(unused)] // TEMPORARY while building
+    pub(crate) fn is_xml_name(self) -> bool {
+        let mut chars = self.data.chars();
+
+        if let Some(c) = chars.next() {
+            match c {
+                ':' | '_' => (),
+                '\u{037e}' => {
+                    return false;
+                }
+                _ => {
+                    if !c.is_alphabetic() {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            return false;
+        }
+
+        chars.all(|c| match c {
+            ':' | '_' | '.' | '-' | '\u{00b7}' => true,
+            '\u{037e}' => false,
+            _ => c.is_alphanumeric(),
+        })
+    }
+
     /// Split the span, consuming one quoted string if found.
     ///
     /// A string is defined as a single quote or double quote character,

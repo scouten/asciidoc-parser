@@ -312,6 +312,25 @@ mod take_attr_name {
     }
 }
 
+#[test]
+fn is_xml_name() {
+    use crate::Span;
+
+    assert!(!Span::new("").is_xml_name());
+    assert!(Span::new("a").is_xml_name());
+    assert!(Span::new("a9").is_xml_name());
+
+    assert!(Span::new("install").is_xml_name());
+    assert!(Span::new("data-structures").is_xml_name());
+    assert!(Span::new("error-handling").is_xml_name());
+    assert!(Span::new("subject-and-body").is_xml_name());
+    assert!(Span::new("unset_an_attribute").is_xml_name());
+
+    assert!(!Span::new("install the gem").is_xml_name());
+    assert!(!Span::new("3 blind mice").is_xml_name());
+    assert!(!Span::new("-about-the-author").is_xml_name());
+}
+
 mod take_quoted_string {
     use pretty_assertions_sorted::assert_eq;
 
