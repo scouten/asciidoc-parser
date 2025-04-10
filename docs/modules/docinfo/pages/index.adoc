@@ -215,7 +215,7 @@ Note that if you use this attribute, only the specified folder will be searched;
 
 Docinfo files may include attribute references.
 Which substitutions get applied is controlled by the `docinfosubs` attribute, which takes a comma-separated list of substitution names.
-The value of this attribute defaults to `attributes`.
+If this attribute is not set, it has an implied default value of `attributes` (i.e., attribute references are resolved).
 
 For example, if you created the following docinfo file:
 

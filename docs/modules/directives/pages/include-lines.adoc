@@ -33,3 +33,9 @@ If you don't know the number of lines in the document, or you don't want to coup
 ----
 include::example$include.adoc[tag=last]
 ----
+
+Alternately, you can leave the end range unspecified and it will default to -1.
+
+----
+include::example$include.adoc[tag=endless]
+----

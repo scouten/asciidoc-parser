@@ -6,7 +6,9 @@ Index terms form a controlled vocabulary that can be used to navigate the docume
 
 == Index catalog
 
-Although index terms are always processed, only Asciidoctor PDF and the DocBook toolchain support creating an index catalog automatically.
+NOTE: Although index terms are always processed, only Asciidoctor PDF and the DocBook toolchain support creating an index catalog automatically.
+The built-in HTML5 converter in Asciidoctor does not generate an index.
+
 To create an index, define a level 1 section (`==`) marked with the style `index` at the end of your document.
 (In a multipart book, the index can be the last level 0 section (`=`)).
 
@@ -18,9 +20,14 @@ To create an index, define a level 1 section (`==`) marked with the style `index
 
 Both Asciidoctor PDF and the DocBook toolchain will automatically populate an index into this seed section.
 
-WARNING: The built-in HTML5 converter in Asciidoctor does not generate an index.
+The index will consist of term entries that link to (or otherwise cite) the location of each marked index term.
+You learn how to mark an index term in the next section.
 
 == Index terms
+
+Every index term, as well as every occurrence of that index term, must be explicitly marked in the AsciiDoc document.
+It's not enough just to mark the first occurrence of an index term if you want every occurrence to appear in the index.
+Instead, each occurrence you want to be cited in the index must be marked explicitly.
 
 There are two types of index terms in AsciiDoc:
 
@@ -29,7 +36,7 @@ flow index term:: `\indexterm2:[<primary>]` +
 +
 An index term that appears in the flow of text (i.e., a visible term) and in the index.
 This type of index term can only be used to define a primary entry and is case sensitive.
-If you want the entry to appear in the index using a different case, use an adjacent concealed index term (e.g., +`((term))Term`+).
+If you want the entry to appear in the index using a different case, use an adjacent concealed index term, such as `+(((term)))Term+`.
 
 concealed index term:: `\indexterm:[<primary>, <secondary>, <tertiary>]` +
 `+(((<primary>, <secondary>, <tertiary>)))+`
@@ -44,7 +51,7 @@ Here's an example that shows the two forms in use.
 The Lady of the Lake, her arm clad in the purest shimmering samite,
 held aloft Excalibur from the bosom of the water,
 signifying by divine providence that I, ((Arthur)), <.>
-was to carry Excalibur (((Sword, Broadsword, Excalibur))). <.>
+was to carry Excalibur(((Sword, Broadsword, Excalibur))). <.>
 That is why I am your king. Shut up! Will you shut up?!
 Burn her anyway! I'm not a witch.
 Look, my liege! We found them.

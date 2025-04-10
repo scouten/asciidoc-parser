@@ -1,6 +1,7 @@
 = Document Title
 
-A document title, while optional, is usually the first element in the document header.
+A document title (aka doctitle) is defined in the document header, typically on the first line of the document.
+Like all elements of the document header, the document title is optional.
 
 == Title syntax
 

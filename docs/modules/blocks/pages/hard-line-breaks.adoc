@@ -3,19 +3,71 @@
 Adjacent lines of regular text in AsciiDoc are combined into a single paragraph when converted.
 That means you can wrap paragraph text in the source document, either at a specific column or by putting each sentence or phrase on its own line.
 The line breaks separating adjacent lines won't appear in the output.
-Instead, the line break will be converted to a single space.
+Instead, the line break will be (effectively) converted to a single space.
 (In fact, all repeating space characters are reduced to a single space, just like in HTML.)
 
 TIP: Hard line breaks are automatically retained in xref:verbatim:literal-blocks.adoc[literal], xref:verbatim:listing-blocks.adoc[listing], xref:verbatim:source-blocks.adoc[source], and xref:verses.adoc[verse] blocks and paragraphs.
 
 If you want line breaks in a paragraph to be preserved, there are several techniques you can use.
-For any single line, you can terminate it with a space followed by a plus sign (i.e., [.pre-wrap]`{empty}\{plus}`).
+For any single line, you can terminate it with a space followed by a plus sign.
 This syntax signals to the processor to end the line in the output with a hard line break.
+
+[source]
+----
+line one +
+line two
+----
+
 To add this behavior to every line in the paragraph, set the `hardbreaks` option on the paragraph instead.
+
+[source]
+----
+[%hardbreaks]
+line one
+line two
+----
+
 Alternately, you can tell the processor to preserve all line breaks in every paragraph in the document by setting the `hardbreaks-option` document attribute, though this option should be used wisely.
 
-To insert an empty line somewhere in a paragraph, you can use the hard line break syntax (i.e., `\{empty}\{plus}`) on a line by itself.
+[source]
+----
+:hardbreaks-option:
+
+line one
+line two
+----
+
+To insert an empty line in the middle of the paragraph, you can use the hard line break syntax on a line by itself.
 This allows you to insert space between lines in the output without introducing separate paragraphs.
+
+[source]
+----
+line one +
+ +
+line three
+----
+
+If you want the paragraph to start with a hard line break, you need to place an `\{empty}` attribute reference at the start of the line.
+That's because a line that starts with a space has a different meaning.
+The `\{empty}` attribute reference allows you to insert nothing at the start of the line.
+
+[source]
+----
+{empty} +
+line two
+----
+
+To be consistent, you can always start an empty line with `\{empty}`.
+
+[source]
+----
+{empty} +
+line two +
+{empty} +
+line four
+----
+
+Note that `empty` is a built-in document attribute in AsciiDoc.
 
 [#per-line]
 == Inline line break syntax
