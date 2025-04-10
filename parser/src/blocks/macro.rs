@@ -21,6 +21,7 @@ pub struct MacroBlock<'src> {
     macro_attrlist: Attrlist<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
@@ -90,6 +91,7 @@ impl<'src> MacroBlock<'src> {
                     macro_attrlist: macro_attrlist.item.item,
                     source,
                     title: preamble.title,
+                    anchor: preamble.anchor.clone(),
                     attrlist: preamble.attrlist.clone(),
                 },
 
@@ -139,6 +141,10 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
 
     fn title(&'src self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        self.anchor
     }
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {

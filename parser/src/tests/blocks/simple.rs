@@ -45,6 +45,7 @@ fn single_line() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         },
     );
@@ -106,6 +107,7 @@ fn multiple_lines() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -141,6 +143,7 @@ fn consumes_blank_lines_after() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );

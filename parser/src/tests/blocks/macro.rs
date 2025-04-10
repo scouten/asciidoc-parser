@@ -162,6 +162,7 @@ fn simplest_block_macro() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -214,6 +215,7 @@ fn has_target() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -286,6 +288,7 @@ fn has_target_and_attrlist() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -376,6 +379,7 @@ fn err_duplicate_comma() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );

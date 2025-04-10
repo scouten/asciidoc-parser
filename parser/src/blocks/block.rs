@@ -197,6 +197,7 @@ impl<'src> Block<'src> {
             // Remove the preamble content so that SimpleBlock will read the title/attrlist
             // line(s) as regular content.
             preamble.title = None;
+            preamble.anchor = None;
             preamble.attrlist = None;
             preamble.block_start = preamble.source;
         }
@@ -250,6 +251,16 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.title(),
             Self::RawDelimited(b) => b.title(),
             Self::CompoundDelimited(b) => b.title(),
+        }
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        match self {
+            Self::Simple(b) => b.anchor(),
+            Self::Macro(b) => b.anchor(),
+            Self::Section(b) => b.anchor(),
+            Self::RawDelimited(b) => b.anchor(),
+            Self::CompoundDelimited(b) => b.anchor(),
         }
     }
 

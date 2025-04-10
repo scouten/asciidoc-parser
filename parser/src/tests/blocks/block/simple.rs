@@ -60,6 +60,7 @@ fn single_line() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -134,6 +135,7 @@ fn multiple_lines() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -202,6 +204,7 @@ fn title() {
                 col: 2,
                 offset: 1,
             },),
+            anchor: None,
             attrlist: None,
         })
     );
@@ -245,6 +248,7 @@ fn attrlist() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
@@ -374,6 +378,7 @@ fn title_and_attrlist() {
                 col: 2,
                 offset: 1,
             },),
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
@@ -482,6 +487,7 @@ fn consumes_blank_lines_after() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );

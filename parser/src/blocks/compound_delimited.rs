@@ -25,6 +25,7 @@ pub struct CompoundDelimitedBlock<'src> {
     context: CowStr<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
@@ -112,6 +113,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     context: context.into(),
                     source,
                     title: preamble.title,
+                    anchor: preamble.anchor.clone(),
                     attrlist: preamble.attrlist.clone(),
                 },
                 after: closing_delimiter.after,
@@ -136,6 +138,10 @@ impl<'src> IsBlock<'src> for CompoundDelimitedBlock<'src> {
 
     fn title(&'src self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        self.anchor
     }
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {

@@ -162,6 +162,7 @@ mod comment {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -210,6 +211,7 @@ mod comment {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -287,6 +289,7 @@ mod comment {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -377,6 +380,7 @@ mod listing {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -425,6 +429,7 @@ mod listing {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -502,6 +507,7 @@ mod listing {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -612,6 +618,7 @@ mod pass {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -660,6 +667,7 @@ mod pass {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -737,6 +745,7 @@ mod pass {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );

@@ -77,6 +77,7 @@ mod error_cases {
                             offset: 19,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
@@ -93,6 +94,7 @@ mod error_cases {
                             offset: 24,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -109,6 +111,7 @@ mod error_cases {
                             offset: 55,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                 ],
@@ -120,6 +123,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -198,6 +202,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -289,6 +294,7 @@ mod error_cases {
                         offset: 61,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },),],
                 source: TSpan {
@@ -298,6 +304,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: Some(TSpan {
@@ -394,6 +401,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })
         );

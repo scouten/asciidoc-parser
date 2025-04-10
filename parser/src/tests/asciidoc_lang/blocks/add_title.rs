@@ -77,6 +77,7 @@ This is the content of the sidebar block.
                                 offset: 43,
                             },
                             title: None,
+                            anchor: None,
                             attrlist: None,
                         },
                     ),
@@ -96,6 +97,7 @@ This is the content of the sidebar block.
                         offset: 1,
                     },
                 ),
+                anchor: None,
                 attrlist: None,
             },
         )
@@ -184,6 +186,7 @@ Don't put a space between the dot and the first character of the title.
                         offset: 1,
                     },
                 ),
+                anchor: None,
                 attrlist: None,
             },
         )
@@ -272,6 +275,7 @@ stages: [ init, verify, deploy ]
                         offset: 1,
                     },
                 ),
+                anchor: None,
                 attrlist: Some(
                     TAttrlist {
                         attributes: vec![
@@ -410,6 +414,7 @@ If you don't plant it in a container, it will take over your garden.
                         offset: 1,
                     },
                 ),
+                anchor: None,
                 attrlist: Some(
                     TAttrlist {
                         attributes: vec![

@@ -247,6 +247,7 @@ mod example {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -288,6 +289,7 @@ mod example {
                             offset: 5,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -304,6 +306,7 @@ mod example {
                             offset: 13,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                 ),
@@ -315,6 +318,7 @@ mod example {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -346,6 +350,7 @@ mod example {
                     offset: 5,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -366,6 +371,7 @@ mod example {
                     offset: 13,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -400,6 +406,7 @@ mod example {
                             offset: 5,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
@@ -417,6 +424,7 @@ mod example {
                                 offset: 19,
                             },
                             title: None,
+                            anchor: None,
                             attrlist: None,
                         },),),
                         context: "example",
@@ -427,6 +435,7 @@ mod example {
                             offset: 13,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     })
                 ),
@@ -438,6 +447,7 @@ mod example {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -469,6 +479,7 @@ mod example {
                     offset: 5,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -490,6 +501,7 @@ mod example {
                         offset: 19,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },),),
                 context: "example",
@@ -500,6 +512,7 @@ mod example {
                     offset: 13,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })
         );
@@ -570,6 +583,7 @@ mod open {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -611,6 +625,7 @@ mod open {
                             offset: 3,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -627,6 +642,7 @@ mod open {
                             offset: 11,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                 ),
@@ -638,6 +654,7 @@ mod open {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -669,6 +686,7 @@ mod open {
                     offset: 3,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -689,6 +707,7 @@ mod open {
                     offset: 11,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -723,6 +742,7 @@ mod open {
                             offset: 3,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -761,6 +781,7 @@ mod open {
                             offset: 11,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     })
                 ),
@@ -772,6 +793,7 @@ mod open {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -803,6 +825,7 @@ mod open {
                     offset: 3,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -845,6 +868,7 @@ mod open {
                     offset: 11,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })
         );
@@ -883,6 +907,7 @@ mod sidebar {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -924,6 +949,7 @@ mod sidebar {
                             offset: 5,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -940,6 +966,7 @@ mod sidebar {
                             offset: 13,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                 ),
@@ -951,6 +978,7 @@ mod sidebar {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -982,6 +1010,7 @@ mod sidebar {
                     offset: 5,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -1002,6 +1031,7 @@ mod sidebar {
                     offset: 13,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -1036,6 +1066,7 @@ mod sidebar {
                             offset: 5,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
@@ -1053,6 +1084,7 @@ mod sidebar {
                                 offset: 19,
                             },
                             title: None,
+                            anchor: None,
                             attrlist: None,
                         },),),
                         context: "sidebar",
@@ -1063,6 +1095,7 @@ mod sidebar {
                             offset: 13,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     })
                 ),
@@ -1074,6 +1107,7 @@ mod sidebar {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -1105,6 +1139,7 @@ mod sidebar {
                     offset: 5,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -1126,6 +1161,7 @@ mod sidebar {
                         offset: 19,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },),),
                 context: "sidebar",
@@ -1136,6 +1172,7 @@ mod sidebar {
                     offset: 13,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })
         );
@@ -1218,6 +1255,7 @@ mod quote {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -1259,6 +1297,7 @@ mod quote {
                             offset: 5,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -1275,6 +1314,7 @@ mod quote {
                             offset: 13,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                 ),
@@ -1286,6 +1326,7 @@ mod quote {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -1317,6 +1358,7 @@ mod quote {
                     offset: 5,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -1337,6 +1379,7 @@ mod quote {
                     offset: 13,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -1371,6 +1414,7 @@ mod quote {
                             offset: 5,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
@@ -1388,6 +1432,7 @@ mod quote {
                                 offset: 19,
                             },
                             title: None,
+                            anchor: None,
                             attrlist: None,
                         },),),
                         context: "quote",
@@ -1398,6 +1443,7 @@ mod quote {
                             offset: 13,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     })
                 ),
@@ -1409,6 +1455,7 @@ mod quote {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -1440,6 +1487,7 @@ mod quote {
                     offset: 5,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -1461,6 +1509,7 @@ mod quote {
                         offset: 19,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },),),
                 context: "quote",
@@ -1471,6 +1520,7 @@ mod quote {
                     offset: 13,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })
         );
