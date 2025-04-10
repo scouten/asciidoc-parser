@@ -512,3 +512,69 @@ fn consumes_blank_lines_after() {
         }
     );
 }
+
+#[test]
+fn with_block_anchor() {
+    let mi = Block::parse(Span::new(
+        "[[notice]]\nThis paragraph gets a lot of attention.\n",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "This paragraph gets a lot of attention.",
+                line: 2,
+                col: 1,
+                offset: 11,
+            }),
+            source: TSpan {
+                data: "[[notice]]\nThis paragraph gets a lot of attention.\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: Some(TSpan {
+                data: "notice",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },),
+            attrlist: None,
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: "[[notice]]\nThis paragraph gets a lot of attention.\n",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.raw_context().deref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().deref(), "paragraph");
+    assert!(mi.item.declared_style().is_none());
+    assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.attrlist().is_none());
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 51
+        }
+    );
+}
