@@ -238,6 +238,9 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// Returns the title for this block, if present.
     fn title(&'src self) -> Option<Span<'src>>;
 
+    /// Returns the anchor for this bloc, if present.
+    fn anchor(&'src self) -> Option<Span<'src>>;
+
     /// Returns the attribute list for this block, if present.
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>>;
 }

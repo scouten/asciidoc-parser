@@ -88,6 +88,7 @@ This is a basic AsciiDoc document.
                         offset: 0,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 })],
                 warnings: vec![],
@@ -152,6 +153,7 @@ This document contains two paragraphs.
                             offset: 0,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
@@ -168,6 +170,7 @@ This document contains two paragraphs.
                             offset: 36,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     })],
                 warnings: vec![],
@@ -249,6 +252,7 @@ It also has a header that specifies the document title.
                             offset: 33,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
@@ -278,6 +282,7 @@ It also has a header that specifies the document title.
                             offset: 81,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     })
                 ],

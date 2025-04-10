@@ -106,6 +106,10 @@ impl<'src> IsBlock<'src> for Document<'src> {
         None
     }
 
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        None
+    }
+
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         // Document attributes are reflected in the Header.
         None

@@ -35,6 +35,7 @@ fn empty_source() {
     assert!(doc.id().is_none());
     assert!(doc.roles().is_empty());
     assert!(doc.title().is_none());
+    assert!(doc.anchor().is_none());
     assert!(doc.attrlist().is_none());
 
     assert_eq!(
@@ -91,8 +92,9 @@ fn only_spaces() {
 
 #[test]
 fn one_simple_block() {
+    let doc = Document::parse("abc");
     assert_eq!(
-        Document::parse("abc"),
+        doc,
         TDocument {
             header: THeader {
                 title: None,
@@ -124,11 +126,14 @@ fn one_simple_block() {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             warnings: vec![],
         }
     );
+
+    assert!(doc.anchor().is_none());
 }
 
 #[test]
@@ -167,6 +172,7 @@ fn two_simple_blocks() {
                         offset: 0,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
@@ -183,6 +189,7 @@ fn two_simple_blocks() {
                         offset: 5,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 })
             ],
@@ -226,6 +233,7 @@ fn two_blocks_and_title() {
                         offset: 17,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
@@ -242,6 +250,7 @@ fn two_blocks_and_title() {
                         offset: 22,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 })
             ],
@@ -290,6 +299,7 @@ fn extra_space_before_title() {
                     offset: 19,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -337,6 +347,7 @@ fn err_bad_header() {
                     offset: 8,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -393,6 +404,7 @@ fn err_bad_header_and_bad_macro() {
                 offset: 8,
             },
             title: None,
+            anchor: None,
             attrlist: None, }),
             TBlock::Section(
                 TSectionBlock {
@@ -506,6 +518,7 @@ fn err_bad_header_and_bad_macro() {
                                     offset: 44,
                                 },
                                 title: None,
+                                anchor: None,
                                 attrlist: None,
                             },
                         ),
@@ -517,6 +530,7 @@ fn err_bad_header_and_bad_macro() {
                         offset: 26,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },
             )],

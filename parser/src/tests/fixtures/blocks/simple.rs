@@ -11,6 +11,7 @@ pub(crate) struct TSimpleBlock {
     pub inline: TInline,
     pub source: TSpan,
     pub title: Option<TSpan>,
+    pub anchor: Option<TSpan>,
     pub attrlist: Option<TAttrlist>,
 }
 
@@ -20,6 +21,7 @@ impl fmt::Debug for TSimpleBlock {
             .field("inline", &self.inline)
             .field("source", &self.source)
             .field("title", &self.title)
+            .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
             .finish()
     }
@@ -45,6 +47,18 @@ fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
     if let Some(ref fixture_title) = fixture.title {
         if let Some(ref observed_title) = observed.title() {
             if fixture_title != observed_title {
+                return false;
+            }
+        }
+    }
+
+    if fixture.anchor.is_some() != observed.anchor().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_anchor) = fixture.anchor {
+        if let Some(ref observed_anchor) = observed.anchor() {
+            if fixture_anchor != observed_anchor {
                 return false;
             }
         }

@@ -23,6 +23,7 @@ pub struct SectionBlock<'src> {
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
@@ -47,6 +48,7 @@ impl<'src> SectionBlock<'src> {
                     blocks: blocks.item,
                     source,
                     title: preamble.title,
+                    anchor: preamble.anchor,
                     attrlist: preamble.attrlist.clone(),
                 },
                 after: blocks.after,
@@ -89,6 +91,10 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 
     fn title(&'src self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        self.anchor
     }
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {

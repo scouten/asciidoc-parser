@@ -50,6 +50,7 @@ mod error_cases {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -77,6 +78,7 @@ mod error_cases {
                             offset: 19,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
@@ -93,6 +95,7 @@ mod error_cases {
                             offset: 24,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
@@ -109,6 +112,7 @@ mod error_cases {
                             offset: 55,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     },),
                 ],
@@ -120,6 +124,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             }
         );
@@ -164,6 +169,7 @@ mod error_cases {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -198,6 +204,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
@@ -231,6 +238,7 @@ mod error_cases {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
 
         assert_eq!(
             mi.item.attrlist().unwrap(),
@@ -289,6 +297,7 @@ mod error_cases {
                         offset: 61,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },),],
                 source: TSpan {
@@ -298,6 +307,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: Some(TSpan {
@@ -394,6 +404,7 @@ mod error_cases {
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })
         );

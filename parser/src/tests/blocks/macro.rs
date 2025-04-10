@@ -134,6 +134,7 @@ fn simplest_block_macro() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -162,6 +163,7 @@ fn simplest_block_macro() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -214,6 +216,7 @@ fn has_target() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -286,6 +289,7 @@ fn has_target_and_attrlist() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -376,6 +380,7 @@ fn err_duplicate_comma() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );

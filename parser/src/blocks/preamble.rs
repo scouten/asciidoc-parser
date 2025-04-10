@@ -1,7 +1,7 @@
 use crate::{
     attributes::Attrlist,
     span::MatchedItem,
-    warnings::{MatchAndWarnings, Warning},
+    warnings::{MatchAndWarnings, Warning, WarningType},
     Span,
 };
 
@@ -11,6 +11,10 @@ use crate::{
 pub(crate) struct Preamble<'src> {
     /// The block's title, if any.
     pub(crate) title: Option<Span<'src>>,
+
+    /// The block's anchor, if any. The span does not include the opening or
+    /// closing square brace pair.
+    pub(crate) anchor: Option<Span<'src>>,
 
     /// The block's attribute list, if any.
     pub(crate) attrlist: Option<Attrlist<'src>>,
@@ -36,6 +40,9 @@ impl<'src> Preamble<'src> {
         let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/203):
+        // Figure out if these items have to appear in specific order.
+
         // Does this block have a title?
         let maybe_title = source.take_normalized_line();
         let (title, block_start) =
@@ -49,6 +56,25 @@ impl<'src> Preamble<'src> {
             } else {
                 (None, source)
             };
+
+        // Does this block have a block anchor?
+        let (anchor, block_start) = if let Some(MatchAndWarnings {
+            item:
+                MatchedItem {
+                    item: anchor,
+                    after: block_start,
+                },
+            warnings: mut attrlist_warnings,
+        }) = parse_maybe_block_anchor(block_start)
+        {
+            if !attrlist_warnings.is_empty() {
+                warnings.append(&mut attrlist_warnings);
+            }
+
+            (Some(anchor), block_start)
+        } else {
+            (None, block_start)
+        };
 
         // Does this block have an attribute list?
         let (attrlist, block_start) = if let Some(MatchAndWarnings {
@@ -72,6 +98,7 @@ impl<'src> Preamble<'src> {
         MatchAndWarnings {
             item: Self {
                 title,
+                anchor,
                 attrlist,
                 source,
                 block_start,
@@ -84,6 +111,49 @@ impl<'src> Preamble<'src> {
     pub(crate) fn is_empty(&self) -> bool {
         self.title.is_none() && self.attrlist.is_none()
     }
+}
+
+fn parse_maybe_block_anchor(
+    source: Span<'_>,
+) -> Option<MatchAndWarnings<'_, MatchedItem<'_, Span<'_>>>> {
+    if !source.starts_with("[[") {
+        return None;
+    }
+
+    let MatchedItem {
+        item: line,
+        after: block_start,
+    } = source.take_normalized_line();
+
+    if !line.ends_with("]]") {
+        return None;
+    }
+
+    // Drop opening and closing brace pairs now that we know they are there.
+    let anchor_src = line.slice(2..line.len() - 2);
+    if anchor_src.is_empty() {
+        return Some(MatchAndWarnings {
+            item: MatchedItem {
+                item: anchor_src,
+                after: block_start,
+            },
+            warnings: vec![Warning {
+                source: anchor_src,
+                warning: WarningType::EmptyBlockAnchorName,
+            }],
+        });
+    }
+
+    // TO DO (https://github.com/scouten/asciidoc-parser/issues/204):
+    // Warn when ID characters don't fit the XML "Name" pattern.
+
+    Some(MatchAndWarnings {
+        item: MatchedItem {
+            item: anchor_src,
+            after: block_start,
+        },
+        warnings: vec![],
+    })
 }
 
 fn parse_maybe_attrlist_line(

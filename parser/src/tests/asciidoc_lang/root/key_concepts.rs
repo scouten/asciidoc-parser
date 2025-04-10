@@ -176,6 +176,7 @@ image::sunset.jpg[Sunset]
                         offset: 0,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 })],
                 source: TSpan {
@@ -286,6 +287,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                                 offset: 0,
                             },
                             title: None,
+                            anchor: None,
                             attrlist: None,
                         },
                     ),

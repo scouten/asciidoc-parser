@@ -49,6 +49,9 @@ pub enum WarningType {
 
     #[error("A block title or attribute list was found without a subsequent block")]
     MissingBlockAfterTitleOrAttributeList,
+
+    #[error("Block anchor name is empty")]
+    EmptyBlockAnchorName,
 }
 
 /// Return type used to signal one or more possible parse error.

@@ -113,6 +113,7 @@ This is more content in the sidebar block.
                         offset: 0,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },
             ),
@@ -136,6 +137,7 @@ This is more content in the sidebar block.
                                     offset: 29,
                                 },
                                 title: None,
+                                anchor: None,
                                 attrlist: None,
                             },
                         ),
@@ -171,6 +173,7 @@ This is more content in the sidebar block.
                                     offset: 66,
                                 },
                                 title: None,
+                                anchor: None,
                                 attrlist: None,
                             },
                         ),
@@ -191,6 +194,7 @@ This is more content in the sidebar block.
                                     offset: 85,
                                 },
                                 title: None,
+                                anchor: None,
                                 attrlist: None,
                             },
                         ),
@@ -203,6 +207,7 @@ This is more content in the sidebar block.
                         offset: 24,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },
             ),
@@ -264,6 +269,7 @@ include::example$block.adoc[tag=opt-listing]
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
@@ -338,6 +344,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,

@@ -14,6 +14,7 @@ pub struct SimpleBlock<'src> {
     inline: Inline<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
@@ -26,6 +27,7 @@ impl<'src> SimpleBlock<'src> {
                 inline: inline.item,
                 source: preamble.source.trim_remainder(inline.after),
                 title: preamble.title,
+                anchor: preamble.anchor,
                 attrlist: preamble.attrlist.clone(),
             },
             after: inline.after.discard_empty_lines(),
@@ -41,6 +43,7 @@ impl<'src> SimpleBlock<'src> {
                 inline: inline.item,
                 source,
                 title: None,
+                anchor: None,
                 attrlist: None,
             },
             after: inline.after.discard_empty_lines(),
@@ -64,6 +67,10 @@ impl<'src> IsBlock<'src> for SimpleBlock<'src> {
 
     fn title(&self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        self.anchor
     }
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {

@@ -45,6 +45,7 @@ fn single_line() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         },
     );
@@ -57,6 +58,7 @@ fn single_line() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -106,6 +108,7 @@ fn multiple_lines() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -141,6 +144,7 @@ fn consumes_blank_lines_after() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );

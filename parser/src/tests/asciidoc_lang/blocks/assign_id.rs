@@ -68,6 +68,7 @@ Content of delimited example block
                     offset: 29,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },),],
             context: "example",
@@ -78,6 +79,7 @@ Content of delimited example block
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
@@ -178,6 +180,7 @@ Roads? Where we're going, we don't need roads.
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
@@ -271,6 +274,7 @@ Roads? Where we're going, we don't need roads.
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(
                     TAttrlist {
                         attributes: vec![

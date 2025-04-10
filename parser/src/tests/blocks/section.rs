@@ -56,6 +56,7 @@ fn simplest_section_block() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -76,6 +77,7 @@ fn simplest_section_block() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -105,6 +107,7 @@ fn has_child_block() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -131,6 +134,7 @@ fn has_child_block() {
                     offset: 18,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -140,6 +144,7 @@ fn has_child_block() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -171,6 +176,7 @@ fn has_macro_block_with_extra_blank_line() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -276,6 +282,7 @@ fn has_macro_block_with_extra_blank_line() {
                     offset: 18,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -285,6 +292,7 @@ fn has_macro_block_with_extra_blank_line() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -317,6 +325,7 @@ fn has_child_block_with_errors() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -422,6 +431,7 @@ fn has_child_block_with_errors() {
                     offset: 18,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -431,6 +441,7 @@ fn has_child_block_with_errors() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -475,6 +486,7 @@ fn dont_stop_at_child_section() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -502,6 +514,7 @@ fn dont_stop_at_child_section() {
                         offset: 18,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 }),
                 TBlock::Section(TSectionBlock {
@@ -526,6 +539,7 @@ fn dont_stop_at_child_section() {
                             offset: 38,
                         },
                         title: None,
+                        anchor: None,
                         attrlist: None,
                     })],
                     source: TSpan {
@@ -535,6 +549,7 @@ fn dont_stop_at_child_section() {
                         offset: 23,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 })
             ],
@@ -545,6 +560,7 @@ fn dont_stop_at_child_section() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -576,6 +592,7 @@ fn stop_at_peer_section() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -602,6 +619,7 @@ fn stop_at_peer_section() {
                     offset: 18,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -612,6 +630,7 @@ fn stop_at_peer_section() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );
@@ -643,6 +662,7 @@ fn stop_at_ancestor_section() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -669,6 +689,7 @@ fn stop_at_ancestor_section() {
                     offset: 19,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -679,6 +700,7 @@ fn stop_at_ancestor_section() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }
     );

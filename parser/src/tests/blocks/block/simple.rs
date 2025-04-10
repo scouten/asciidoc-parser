@@ -8,8 +8,10 @@ use crate::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
         inlines::TInline,
+        warnings::TWarning,
         TSpan,
     },
+    warnings::WarningType,
     HasSpan, Span,
 };
 
@@ -60,6 +62,7 @@ fn single_line() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -83,6 +86,7 @@ fn single_line() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -134,6 +138,7 @@ fn multiple_lines() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -202,6 +207,7 @@ fn title() {
                 col: 2,
                 offset: 1,
             },),
+            anchor: None,
             attrlist: None,
         })
     );
@@ -245,6 +251,7 @@ fn attrlist() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
@@ -286,6 +293,8 @@ fn attrlist() {
             offset: 0,
         }
     );
+
+    assert!(mi.item.anchor().is_none());
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
@@ -374,6 +383,7 @@ fn title_and_attrlist() {
                 col: 2,
                 offset: 1,
             },),
+            anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
@@ -415,6 +425,8 @@ fn title_and_attrlist() {
             offset: 0,
         }
     );
+
+    assert!(mi.item.anchor().is_none());
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
@@ -482,6 +494,7 @@ fn consumes_blank_lines_after() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -503,6 +516,303 @@ fn consumes_blank_lines_after() {
             line: 3,
             col: 1,
             offset: 5
+        }
+    );
+}
+
+#[test]
+fn with_block_anchor() {
+    let mi = Block::parse(Span::new(
+        "[[notice]]\nThis paragraph gets a lot of attention.\n",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "This paragraph gets a lot of attention.",
+                line: 2,
+                col: 1,
+                offset: 11,
+            }),
+            source: TSpan {
+                data: "[[notice]]\nThis paragraph gets a lot of attention.\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: Some(TSpan {
+                data: "notice",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },),
+            attrlist: None,
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: "[[notice]]\nThis paragraph gets a lot of attention.\n",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.raw_context().deref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().deref(), "paragraph");
+    assert!(mi.item.declared_style().is_none());
+    assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
+    assert!(mi.item.title().is_none());
+
+    assert_eq!(
+        mi.item.anchor().unwrap(),
+        TSpan {
+            data: "notice",
+            line: 1,
+            col: 3,
+            offset: 2,
+        }
+    );
+
+    assert!(mi.item.attrlist().is_none());
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 51
+        }
+    );
+}
+
+#[test]
+fn err_empty_block_anchor() {
+    let maw = Block::parse(Span::new("[[]]\nThis paragraph gets a lot of attention.\n"));
+
+    assert_eq!(
+        maw.warnings,
+        vec![TWarning {
+            source: TSpan {
+                data: "",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },
+            warning: WarningType::EmptyBlockAnchorName,
+        },]
+    );
+
+    let mi = maw.item.unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "This paragraph gets a lot of attention.",
+                line: 2,
+                col: 1,
+                offset: 5,
+            }),
+            source: TSpan {
+                data: "[[]]\nThis paragraph gets a lot of attention.\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: Some(TSpan {
+                data: "",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },),
+            attrlist: None,
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: "[[]]\nThis paragraph gets a lot of attention.\n",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.raw_context().deref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().deref(), "paragraph");
+    assert!(mi.item.declared_style().is_none());
+    assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
+    assert!(mi.item.title().is_none());
+
+    assert_eq!(
+        mi.item.anchor().unwrap(),
+        TSpan {
+            data: "",
+            line: 1,
+            col: 3,
+            offset: 2,
+        }
+    );
+
+    assert!(mi.item.attrlist().is_none());
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 45
+        }
+    );
+}
+
+#[test]
+fn unterminated_block_anchor() {
+    let mi = Block::parse(Span::new(
+        "[[notice]\nThis paragraph gets a lot of attention.\n",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TBlock::Simple(TSimpleBlock {
+            inline: TInline::Uninterpreted(TSpan {
+                data: "This paragraph gets a lot of attention.",
+                line: 2,
+                col: 1,
+                offset: 10,
+            }),
+            source: TSpan {
+                data: "[[notice]\nThis paragraph gets a lot of attention.\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: None,
+            attrlist: Some(TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: "[notice",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },],
+                    value: TSpan {
+                        data: "[notice",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    source: TSpan {
+                        data: "[notice",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },],
+                source: TSpan {
+                    data: "[notice",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },),
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: "[[notice]\nThis paragraph gets a lot of attention.\n",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.raw_context().deref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().deref(), "paragraph");
+
+    assert_eq!(
+        mi.item.declared_style().unwrap(),
+        TSpan {
+            data: "[notice",
+            line: 1,
+            col: 2,
+            offset: 1,
+        }
+    );
+
+    assert_eq!(mi.item.nested_blocks().next(), None);
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
+
+    assert_eq!(
+        mi.item.attrlist().unwrap(),
+        TAttrlist {
+            attributes: vec![TElementAttribute {
+                name: None,
+                shorthand_items: vec![TSpan {
+                    data: "[notice",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },],
+                value: TSpan {
+                    data: "[notice",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+                source: TSpan {
+                    data: "[notice",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },],
+            source: TSpan {
+                data: "[notice",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+        },
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 50
         }
     );
 }

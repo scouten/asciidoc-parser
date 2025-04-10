@@ -194,6 +194,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
@@ -266,6 +267,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
@@ -370,6 +372,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
@@ -497,6 +500,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(
                     TAttrlist {
                         attributes: vec![

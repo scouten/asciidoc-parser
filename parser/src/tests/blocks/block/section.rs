@@ -37,6 +37,7 @@ fn err_missing_space_before_title() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -76,6 +77,7 @@ fn simplest_section_block() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -96,6 +98,7 @@ fn simplest_section_block() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -127,6 +130,7 @@ fn has_child_block() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -153,6 +157,7 @@ fn has_child_block() {
                     offset: 18,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -162,6 +167,7 @@ fn has_child_block() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -184,6 +190,7 @@ fn has_child_block() {
                 offset: 18,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -246,6 +253,7 @@ fn title() {
                     offset: 39,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -260,6 +268,7 @@ fn title() {
                 col: 2,
                 offset: 1,
             },),
+            anchor: None,
             attrlist: None,
         })
     );
@@ -278,6 +287,7 @@ fn title() {
         }
     );
 
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     let mut nested_blocks = mi.item.nested_blocks();
@@ -298,6 +308,7 @@ fn title() {
                 offset: 39,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -436,6 +447,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     offset: 18,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             })],
             source: TSpan {
@@ -445,6 +457,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );

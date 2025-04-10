@@ -27,6 +27,7 @@ pub struct RawDelimitedBlock<'src> {
     context: CowStr<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
+    anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
@@ -92,6 +93,7 @@ impl<'src> RawDelimitedBlock<'src> {
                             context: context.into(),
                             source: preamble.source.trim_remainder(line.after),
                             title: preamble.title,
+                            anchor: preamble.anchor,
                             attrlist: preamble.attrlist.clone(),
                         },
                         after: line.after,
@@ -136,6 +138,10 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
 
     fn title(&self) -> Option<Span<'src>> {
         self.title
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        self.anchor
     }
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {

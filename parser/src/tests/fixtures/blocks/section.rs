@@ -13,6 +13,7 @@ pub(crate) struct TSectionBlock {
     pub blocks: Vec<TBlock>,
     pub source: TSpan,
     pub title: Option<TSpan>,
+    pub anchor: Option<TSpan>,
     pub attrlist: Option<TAttrlist>,
 }
 
@@ -24,6 +25,7 @@ impl fmt::Debug for TSectionBlock {
             .field("blocks", &self.blocks)
             .field("source", &self.source)
             .field("title", &self.title)
+            .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
             .finish()
     }
@@ -67,6 +69,18 @@ fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool
     if let Some(ref fixture_title) = fixture.title {
         if let Some(ref observed_title) = observed.title() {
             if fixture_title != observed_title {
+                return false;
+            }
+        }
+    }
+
+    if fixture.anchor.is_some() != observed.anchor().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_anchor) = fixture.anchor {
+        if let Some(ref observed_anchor) = observed.anchor() {
+            if fixture_anchor != observed_anchor {
                 return false;
             }
         }

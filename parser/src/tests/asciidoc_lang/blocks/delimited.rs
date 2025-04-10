@@ -72,6 +72,7 @@ This text will be treated as verbatim content.
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         },)
     );
@@ -114,6 +115,7 @@ The remaining lines define a block's content.
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         },)
     );
@@ -221,6 +223,7 @@ That's so meta.
                     offset: 5,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },),],
             context: "example",
@@ -231,6 +234,7 @@ That's so meta.
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         },)
     );
@@ -548,7 +552,8 @@ The document header is useful, but not required.
                                     offset: 5,
                                 },
                                 title: None,
-                                            attrlist: None,
+                                anchor: None,
+                                attrlist: None,
                             },
                         ),
                         TBlock::RawDelimited(
@@ -588,7 +593,8 @@ The document header is useful, but not required.
                                     offset: 41,
                                 },
                                 title: None,
-                                            attrlist: None,
+                                anchor: None,
+                                attrlist: None,
                             },
                         ),
                         TBlock::Simple(
@@ -608,7 +614,8 @@ The document header is useful, but not required.
                                     offset: 101,
                                 },
                                 title: None,
-                                            attrlist: None,
+                                anchor: None,
+                                attrlist: None,
                             },
                         ),
                     ],
@@ -620,7 +627,8 @@ The document header is useful, but not required.
                         offset: 0,
                     },
                     title: None,
-                                attrlist: None,
+                    anchor: None,
+                    attrlist: None,
                 },
             )
         );
@@ -684,6 +692,7 @@ Live within the simulated reality without want or fear.
                                     offset: 5,
                                 },
                                 title: None,
+                                anchor: None,
                                 attrlist: None,
                             },
                         ),
@@ -707,6 +716,7 @@ Live within the simulated reality without want or fear.
                                                 offset: 61,
                                             },
                                             title: None,
+                                            anchor: None,
                                             attrlist: None,
                                         },
                                     ),
@@ -726,6 +736,7 @@ Live within the simulated reality without want or fear.
                                         offset: 30,
                                     },
                                 ),
+                                anchor: None,
                                 attrlist: Some(
                                     TAttrlist {
                                         attributes: vec![
@@ -783,6 +794,7 @@ Live within the simulated reality without want or fear.
                                                 offset: 130,
                                             },
                                             title: None,
+                                            anchor: None,
                                             attrlist: None,
                                         },
                                     ),
@@ -802,6 +814,7 @@ Live within the simulated reality without want or fear.
                                         offset: 98,
                                     },
                                 ),
+                                anchor: None,
                                 attrlist: Some(
                                     TAttrlist {
                                         attributes: vec![
@@ -848,6 +861,7 @@ Live within the simulated reality without want or fear.
                         offset: 0,
                     },
                     title: None,
+                    anchor: None,
                     attrlist: None,
                 },
             ));

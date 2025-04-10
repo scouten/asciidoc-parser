@@ -55,6 +55,7 @@ fn err_inline_syntax() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }),
     );
@@ -102,6 +103,7 @@ fn err_no_attr_list() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         }),
     );
@@ -149,6 +151,7 @@ fn err_attr_list_not_closed() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -232,6 +235,7 @@ fn err_unexpected_after_attr_list() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -289,6 +293,7 @@ fn simplest_block_macro() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -311,6 +316,7 @@ fn simplest_block_macro() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -361,6 +367,7 @@ fn has_target() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -443,6 +450,7 @@ fn has_target_and_macro_attrlist() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -569,6 +577,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                 offset: 0,
             },
             title: None,
+            anchor: None,
             attrlist: None,
         })
     );
@@ -648,6 +657,7 @@ fn has_title() {
                 col: 2,
                 offset: 1,
             },),
+            anchor: None,
             attrlist: None,
         })
     );

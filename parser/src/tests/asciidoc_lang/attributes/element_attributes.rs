@@ -300,6 +300,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![
                         TElementAttribute {
@@ -498,6 +499,7 @@ name::target[first-positional,second-positional,named="value of named"]
                     offset: 0,
                 },
                 title: None,
+                anchor: None,
                 attrlist: None,
             },)
         );
