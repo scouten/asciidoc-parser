@@ -325,10 +325,14 @@ fn is_xml_name() {
     assert!(Span::new("error-handling").is_xml_name());
     assert!(Span::new("subject-and-body").is_xml_name());
     assert!(Span::new("unset_an_attribute").is_xml_name());
+    assert!(Span::new(":a").is_xml_name());
+    assert!(Span::new("_a").is_xml_name());
 
     assert!(!Span::new("install the gem").is_xml_name());
     assert!(!Span::new("3 blind mice").is_xml_name());
     assert!(!Span::new("-about-the-author").is_xml_name());
+    assert!(!Span::new("\u{037e}abc").is_xml_name());
+    assert!(!Span::new("ab\u{037e}c").is_xml_name());
 }
 
 mod take_quoted_string {
