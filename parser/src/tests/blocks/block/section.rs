@@ -77,6 +77,7 @@ fn simplest_section_block() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -129,6 +130,7 @@ fn has_child_block() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -285,6 +287,7 @@ fn title() {
         }
     );
 
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     let mut nested_blocks = mi.item.nested_blocks();

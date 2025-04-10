@@ -86,6 +86,7 @@ fn single_line() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -293,6 +294,8 @@ fn attrlist() {
         }
     );
 
+    assert!(mi.item.anchor().is_none());
+
     assert_eq!(
         mi.item.attrlist().unwrap(),
         TAttrlist {
@@ -422,6 +425,8 @@ fn title_and_attrlist() {
             offset: 0,
         }
     );
+
+    assert!(mi.item.anchor().is_none());
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
@@ -568,6 +573,17 @@ fn with_block_anchor() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+
+    assert_eq!(
+        mi.item.anchor().unwrap(),
+        TSpan {
+            data: "notice",
+            line: 1,
+            col: 3,
+            offset: 2,
+        }
+    );
+
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -645,6 +661,17 @@ fn err_empty_block_anchor() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+
+    assert_eq!(
+        mi.item.anchor().unwrap(),
+        TSpan {
+            data: "",
+            line: 1,
+            col: 3,
+            offset: 2,
+        }
+    );
+
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(

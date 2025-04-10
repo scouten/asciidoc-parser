@@ -35,6 +35,7 @@ fn empty_source() {
     assert!(doc.id().is_none());
     assert!(doc.roles().is_empty());
     assert!(doc.title().is_none());
+    assert!(doc.anchor().is_none());
     assert!(doc.attrlist().is_none());
 
     assert_eq!(
@@ -91,8 +92,9 @@ fn only_spaces() {
 
 #[test]
 fn one_simple_block() {
+    let doc = Document::parse("abc");
     assert_eq!(
-        Document::parse("abc"),
+        doc,
         TDocument {
             header: THeader {
                 title: None,
@@ -130,6 +132,8 @@ fn one_simple_block() {
             warnings: vec![],
         }
     );
+
+    assert!(doc.anchor().is_none());
 }
 
 #[test]

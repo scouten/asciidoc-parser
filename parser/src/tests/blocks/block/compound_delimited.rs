@@ -219,6 +219,7 @@ mod example {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -297,6 +298,7 @@ mod example {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -435,6 +437,7 @@ mod example {
             }
         );
 
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -570,6 +573,7 @@ mod example {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -685,6 +689,7 @@ mod open {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -763,6 +768,7 @@ mod open {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -908,6 +914,7 @@ mod open {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1033,6 +1040,7 @@ mod sidebar {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -1111,6 +1119,7 @@ mod sidebar {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1246,6 +1255,7 @@ mod sidebar {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1361,6 +1371,7 @@ mod quote {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -1439,6 +1450,7 @@ mod quote {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1574,6 +1586,7 @@ mod quote {
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
