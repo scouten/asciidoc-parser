@@ -91,7 +91,7 @@ impl<'src> MacroBlock<'src> {
                     macro_attrlist: macro_attrlist.item.item,
                     source,
                     title: preamble.title,
-                    anchor: preamble.anchor.clone(),
+                    anchor: preamble.anchor,
                     attrlist: preamble.attrlist.clone(),
                 },
 

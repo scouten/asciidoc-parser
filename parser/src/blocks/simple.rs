@@ -27,7 +27,7 @@ impl<'src> SimpleBlock<'src> {
                 inline: inline.item,
                 source: preamble.source.trim_remainder(inline.after),
                 title: preamble.title,
-                anchor: preamble.anchor.clone(),
+                anchor: preamble.anchor,
                 attrlist: preamble.attrlist.clone(),
             },
             after: inline.after.discard_empty_lines(),

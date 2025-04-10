@@ -113,7 +113,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     context: context.into(),
                     source,
                     title: preamble.title,
-                    anchor: preamble.anchor.clone(),
+                    anchor: preamble.anchor,
                     attrlist: preamble.attrlist.clone(),
                 },
                 after: closing_delimiter.after,

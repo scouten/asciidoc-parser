@@ -48,7 +48,7 @@ impl<'src> SectionBlock<'src> {
                     blocks: blocks.item,
                     source,
                     title: preamble.title,
-                    anchor: preamble.anchor.clone(),
+                    anchor: preamble.anchor,
                     attrlist: preamble.attrlist.clone(),
                 },
                 after: blocks.after,

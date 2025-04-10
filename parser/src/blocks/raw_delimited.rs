@@ -93,7 +93,7 @@ impl<'src> RawDelimitedBlock<'src> {
                             context: context.into(),
                             source: preamble.source.trim_remainder(line.after),
                             title: preamble.title,
-                            anchor: preamble.anchor.clone(),
+                            anchor: preamble.anchor,
                             attrlist: preamble.attrlist.clone(),
                         },
                         after: line.after,
