@@ -383,7 +383,6 @@ This is a sidebar with one role assigned to it, rolename.
     fn formal_role_syntax_multiple() {
         verifies!(
             r#"
-
 Separate multiple role values using spaces.
 Since the value has spaces, it's easier to read if enclosed in quotes, though the quotes are not strictly required.
 
