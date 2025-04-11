@@ -106,7 +106,6 @@ All the language requires in this case is that the value be non-empty.
 
     non_normative!(
         r#"
-        
 When the ID is defined using the shorthand hash syntax or the anchor syntax, the acceptable characters is more limited (for example, spaces are not permitted).
 Regardless, it's not advisable to exploit the ability to use any characters the AsciiDoc syntax allows.
 The reason to be cautious is because the ID is passed through to the output, and not all output formats afford the same latitude.
