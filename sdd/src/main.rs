@@ -159,6 +159,10 @@ fn parse_rs_file(path: &Path) -> Option<(String, Vec<(String, bool)>)> {
 }
 
 fn emit_adoc_coverage(path: &str, coverage: Option<&Vec<(String, bool)>>) {
+    // if !path.contains("/id.adoc") {
+    //     return;
+    // }
+
     let path = format!("../{path}");
     let adoc_file = fs::read(path).unwrap();
 
@@ -177,6 +181,8 @@ fn emit_adoc_coverage(path: &str, coverage: Option<&Vec<(String, bool)>>) {
         let line = line.unwrap();
         let count = count + 1;
 
+        // println!("\n\n{count:4}: {line}");
+
         let coverage_line = coverage_lines.next();
 
         if line.is_empty() {
@@ -184,6 +190,7 @@ fn emit_adoc_coverage(path: &str, coverage: Option<&Vec<(String, bool)>>) {
         }
 
         if let Some((cov_line, is_normative)) = coverage_line {
+            // println!("      {cov_line}");
             if cov_line == &line && *is_normative {
                 output_lines.push(format!("            \"{count}\": 1"));
             }
