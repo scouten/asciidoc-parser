@@ -713,8 +713,6 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
 |===
 ----
 
-}
-
 "#
         );
 
