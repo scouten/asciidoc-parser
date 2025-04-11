@@ -6,6 +6,32 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 The format of this changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.0](https://github.com/scouten/asciidoc-parser/compare/v0.2.0...v0.3.0)
+_11 April 2025_
+
+### Added
+
+* Check block anchor name for valid XML name characters ([#208](https://github.com/scouten/asciidoc-parser/pull/208))
+* Add support for block anchor syntax ([#205](https://github.com/scouten/asciidoc-parser/pull/205))
+* Add `options` accessor to `IsBlock` trait ([#198](https://github.com/scouten/asciidoc-parser/pull/198))
+* Add `options` accessor to `Attrlist` ([#197](https://github.com/scouten/asciidoc-parser/pull/197))
+* Add `roles` accessor to `IsBlock` trait ([#195](https://github.com/scouten/asciidoc-parser/pull/195))
+* Add `roles` accessor to `Attrlist` ([#193](https://github.com/scouten/asciidoc-parser/pull/193))
+* Bump MSRV to 1.81.0 ([#194](https://github.com/scouten/asciidoc-parser/pull/194))
+* Add method `IsBlock::id()` ([#184](https://github.com/scouten/asciidoc-parser/pull/184))
+* Add new trait function `IsBlock::resolved_style` ([#182](https://github.com/scouten/asciidoc-parser/pull/182))
+* Add new method `IsBlock::declared_style` ([#179](https://github.com/scouten/asciidoc-parser/pull/179))
+* Rename `IsBlock::context` to `raw_context` ([#178](https://github.com/scouten/asciidoc-parser/pull/178))
+
+### Fixed
+
+* Add coverage for positional attributes in spec ([#202](https://github.com/scouten/asciidoc-parser/pull/202))
+
+### Other
+
+* Fix link to AsciiDoc repo
+* Add license info for AsciiDoc language snapshot
+
 ## [0.2.0](https://github.com/scouten/asciidoc-parser/compare/v0.1.1...v0.2.0)
 _30 November 2024_
 
