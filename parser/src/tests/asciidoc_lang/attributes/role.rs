@@ -1,4 +1,3 @@
-#![allow(unused)]
 use crate::tests::sdd::{non_normative, track_file};
 
 track_file!("docs/modules/attributes/pages/role.adoc");
@@ -43,12 +42,10 @@ mod assign_roles_to_blocks {
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 inlines::TInline,
-                warnings::TWarning,
                 TSpan,
             },
-            sdd::{non_normative, to_do_verifies, verifies},
+            sdd::{non_normative, verifies},
         },
-        warnings::WarningType,
         Span,
     };
 
