@@ -54,11 +54,7 @@ AsciiDoc does not restrict the set of characters that can be used for an ID when
 
     #[test]
     fn value_non_empty() {
-        verifies!(
-            r#"
-All the language requires in this case is that the value be non-empty.
-            "#
-        );
+        verifies!(r#"All the language requires in this case is that the value be non-empty."#);
 
         let maw = Block::parse(Span::new("[[]]\nThis paragraph gets a lot of attention.\n"));
 
