@@ -1,3 +1,4 @@
+mod document_attributes;
 mod element_attributes;
 mod id;
 mod options;
