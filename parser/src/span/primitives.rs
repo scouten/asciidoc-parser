@@ -3,18 +3,20 @@ use super::{MatchedItem, Span};
 impl<'src> Span<'src> {
     /// Split the span, consuming an identifier if found.
     ///
-    /// NOTE: The concept of "identifier" is not crisply defined in the Asciidoc
-    /// documentation, so – for now – we're borrowing the definition from Rust,
-    /// which is a single alphabetic character or underscore, followed by any
-    /// number of alphanumeric characters or underscores.
+    /// IMPORTANT: This function, is not quite deprecated yet, but its use is
+    /// strongly discourage. The concept of "identifier" is not crisply defined
+    /// in the Asciidoc documentation, so – for now – we're borrowing the
+    /// definition from Rust, which is a single alphabetic character or
+    /// underscore, followed by any number of alphanumeric characters or
+    /// underscores.
+    ///
+    /// Please use more specific functions, such as `take_attr_name` or
+    /// `take_user_attr_name`, when possible.
     pub(crate) fn take_ident(self) -> Option<MatchedItem<'src, Self>> {
         let mut chars = self.data.char_indices();
 
-        if let Some((_, c)) = chars.next() {
-            if !c.is_ascii_alphabetic() && c != '_' {
-                return None;
-            }
-        } else {
+        let (_, c) = chars.next()?;
+        if !c.is_ascii_alphabetic() && c != '_' {
             return None;
         }
 
@@ -29,21 +31,56 @@ impl<'src> Span<'src> {
 
     /// Split the span, consuming an attribute name if found.
     ///
-    /// An attribute name consists of a word character (letter or numeral)
+    /// An [attribute name] consists of a word character (letter or numeral)
     /// followed by any number of word or `-` characters (e.g., `see-also`).
+    ///
+    /// [attribute name]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#attribute-list-parsing
     pub(crate) fn take_attr_name(self) -> Option<MatchedItem<'src, Self>> {
         let mut chars = self.data.char_indices();
 
-        if let Some((_, c)) = chars.next() {
-            if !c.is_ascii_alphanumeric() {
-                return None;
-            }
-        } else {
+        let (_, c) = chars.next()?;
+        if !c.is_ascii_alphanumeric() {
             return None;
         }
 
         for (index, c) in chars {
             if !c.is_ascii_alphanumeric() && c != '-' {
+                return Some(self.into_parse_result(index));
+            }
+        }
+
+        Some(self.into_parse_result(self.len()))
+    }
+
+    /// Split the span, consuming a user-defined attribute name if found.
+    ///
+    /// [User-defined attribute names] must:
+    ///
+    /// * be at least one character long,
+    /// * begin with a word character (`a`-`z`, `0`-`9`, or `_`), and
+    /// * only contain word characters and hyphens (`-`).
+    ///
+    /// A user-defined attribute name cannot contain dots (`.`) or spaces.
+    /// Although uppercase characters are permitted in an attribute name, the
+    /// name is converted to lowercase before being stored. For example,
+    /// `URL-REPO` and `URL-Repo` are treated as `url-repo` when a document is
+    /// loaded or converted. A best practice is to only use lowercase letters in
+    /// the name and avoid starting the name with a number.
+    ///
+    /// IMPORTANT: This function does _not_ perform the lower-case normalization
+    /// defined above.
+    ///
+    /// [User-defined attribute names]: https://docs.asciidoctor.org/asciidoc/latest/attributes/names-and-values/#user-defined
+    pub(crate) fn take_user_attr_name(self) -> Option<MatchedItem<'src, Self>> {
+        let mut chars = self.data.char_indices();
+
+        let (_, c) = chars.next()?;
+        if !c.is_ascii_alphabetic() && c != '_' {
+            return None;
+        }
+
+        for (index, c) in chars {
+            if !c.is_ascii_alphanumeric() && c != '_' && c != '-' {
                 return Some(self.into_parse_result(index));
             }
         }

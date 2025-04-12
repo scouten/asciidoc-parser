@@ -24,7 +24,7 @@ impl<'src> Attribute<'src> {
             colon.after
         };
 
-        let name = line.split_at_match_non_empty(|c| c == ':' || c == '!')?;
+        let name = line.take_user_attr_name()?;
 
         let line = if name.after.starts_with('!') && !unset {
             unset = true;
