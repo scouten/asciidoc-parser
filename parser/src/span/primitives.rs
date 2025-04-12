@@ -54,7 +54,6 @@ impl<'src> Span<'src> {
     /// Returns [`true`] if the span properly forms an [XML Name].
     ///
     /// [XML Name]: https://www.w3.org/TR/REC-xml/#NT-Name
-    #[allow(unused)] // TEMPORARY while building
     pub(crate) fn is_xml_name(self) -> bool {
         let mut chars = self.data.chars();
 
