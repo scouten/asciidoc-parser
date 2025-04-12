@@ -208,111 +208,18 @@ fn err_unset_prefix_and_postfix() {
 }
 
 #[test]
-fn name_can_have_at_sign1() {
-    let mi = Attribute::parse(Span::new(":@invalid:\nblah")).unwrap();
-
-    assert_eq!(
-        mi.item,
-        TAttribute {
-            name: TSpan {
-                data: "@invalid",
-                line: 1,
-                col: 2,
-                offset: 1,
-            },
-            value: TRawAttributeValue::Set,
-            source: TSpan {
-                data: ":@invalid:\n",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        }
-    );
-
-    assert_eq!(mi.item.value(), TAttributeValue::Set);
-
-    assert_eq!(
-        mi.after,
-        TSpan {
-            data: "blah",
-            line: 2,
-            col: 1,
-            offset: 11
-        }
-    );
+fn err_invalid_ident1() {
+    assert!(Attribute::parse(Span::new(":@invalid:\nblah")).is_none());
 }
 
 #[test]
-fn name_can_have_at_sign2() {
-    let mi = Attribute::parse(Span::new(":invalid@:\nblah")).unwrap();
-
-    assert_eq!(
-        mi.item,
-        TAttribute {
-            name: TSpan {
-                data: "invalid@",
-                line: 1,
-                col: 2,
-                offset: 1,
-            },
-            value: TRawAttributeValue::Set,
-            source: TSpan {
-                data: ":invalid@:\n",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        }
-    );
-
-    assert_eq!(mi.item.value(), TAttributeValue::Set);
-
-    assert_eq!(
-        mi.after,
-        TSpan {
-            data: "blah",
-            line: 2,
-            col: 1,
-            offset: 11
-        }
-    );
+fn err_invalid_ident2() {
+    assert!(Attribute::parse(Span::new(":invalid@:\nblah")).is_none());
 }
 
 #[test]
-fn name_can_have_hyphen() {
-    let mi = Attribute::parse(Span::new(":-invalid:\nblah")).unwrap();
-
-    assert_eq!(
-        mi.item,
-        TAttribute {
-            name: TSpan {
-                data: "-invalid",
-                line: 1,
-                col: 2,
-                offset: 1,
-            },
-            value: TRawAttributeValue::Set,
-            source: TSpan {
-                data: ":-invalid:\n",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        }
-    );
-
-    assert_eq!(mi.item.value(), TAttributeValue::Set);
-
-    assert_eq!(
-        mi.after,
-        TSpan {
-            data: "blah",
-            line: 2,
-            col: 1,
-            offset: 11
-        }
-    );
+fn err_invalid_ident3() {
+    assert!(Attribute::parse(Span::new(":-invalid:\nblah")).is_none());
 }
 
 #[test]
