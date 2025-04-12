@@ -4,7 +4,7 @@ impl<'src> Span<'src> {
     /// Split the span, consuming an identifier if found.
     ///
     /// IMPORTANT: This function, is not quite deprecated yet, but its use is
-    /// strongly discourage. The concept of "identifier" is not crisply defined
+    /// strongly discouraged. The concept of "identifier" is not crisply defined
     /// in the Asciidoc documentation, so – for now – we're borrowing the
     /// definition from Rust, which is a single alphabetic character or
     /// underscore, followed by any number of alphanumeric characters or
