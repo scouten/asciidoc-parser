@@ -75,7 +75,7 @@ impl<'src> Span<'src> {
         let mut chars = self.data.char_indices();
 
         let (_, c) = chars.next()?;
-        if !c.is_ascii_alphabetic() && c != '_' {
+        if !c.is_ascii_alphanumeric() && c != '_' {
             return None;
         }
 

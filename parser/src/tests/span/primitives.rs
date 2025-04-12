@@ -364,7 +364,27 @@ mod take_user_attr_name {
     #[test]
     fn numeric() {
         let span = Span::new("94!");
-        assert!(span.take_user_attr_name().is_none());
+        let mi = span.take_user_attr_name().unwrap();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: "94",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "!",
+                line: 1,
+                col: 3,
+                offset: 2
+            }
+        );
     }
 
     #[test]
