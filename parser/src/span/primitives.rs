@@ -3,7 +3,7 @@ use super::{MatchedItem, Span};
 impl<'src> Span<'src> {
     /// Split the span, consuming an identifier if found.
     ///
-    /// IMPORTANT: This function, is not quite deprecated yet, but its use is
+    /// IMPORTANT: This function is not quite deprecated yet, but its use is
     /// strongly discouraged. The concept of "identifier" is not crisply defined
     /// in the Asciidoc documentation, so – for now – we're borrowing the
     /// definition from Rust, which is a single alphabetic character or
