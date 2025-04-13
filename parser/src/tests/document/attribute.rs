@@ -223,7 +223,7 @@ fn err_invalid_ident3() {
 }
 
 #[test]
-fn value_with_continuation() {
+fn value_with_soft_wrap() {
     let mi = Attribute::parse(Span::new(":foo: bar \\\n blah")).unwrap();
 
     assert_eq!(
@@ -259,6 +259,47 @@ fn value_with_continuation() {
             line: 2,
             col: 6,
             offset: 17
+        }
+    );
+}
+
+#[test]
+fn value_with_hard_wrap() {
+    let mi = Attribute::parse(Span::new(":foo: bar + \\\n blah")).unwrap();
+
+    assert_eq!(
+        mi.item,
+        TAttribute {
+            name: TSpan {
+                data: "foo",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+            value: TRawAttributeValue::Value(TSpan {
+                data: "bar + \\\n blah",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }),
+            source: TSpan {
+                data: ":foo: bar + \\\n blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        }
+    );
+
+    assert_eq!(mi.item.value(), TAttributeValue::Value("bar\nblah"));
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 2,
+            col: 6,
+            offset: 19
         }
     );
 }
