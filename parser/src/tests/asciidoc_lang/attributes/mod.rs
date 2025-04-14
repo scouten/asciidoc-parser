@@ -1,4 +1,5 @@
 mod attribute_entries;
+mod custom_attributes;
 mod document_attributes;
 mod element_attributes;
 mod id;
