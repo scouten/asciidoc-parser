@@ -6,6 +6,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 The format of this changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.3.1](https://github.com/scouten/asciidoc-parser/compare/v0.3.0...v0.3.1)
+_14 April 2025_
+
+### Fixed
+
+* Document attribute values that continue with `+` should include a line-end ([#221](https://github.com/scouten/asciidoc-parser/pull/221))
+* User-defined attribute names may start with a digit ([#220](https://github.com/scouten/asciidoc-parser/pull/220))
+* Enforce document attribute name restrictions (revert most of #215) ([#218](https://github.com/scouten/asciidoc-parser/pull/218))
+* Document attribute names are free-form ([#215](https://github.com/scouten/asciidoc-parser/pull/215))
+
 ## [0.3.0](https://github.com/scouten/asciidoc-parser/compare/v0.2.0...v0.3.0)
 _11 April 2025_
 
