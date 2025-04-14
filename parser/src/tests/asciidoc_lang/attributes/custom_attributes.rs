@@ -51,6 +51,7 @@ The attribute's name must:
 * only contain word characters and hyphens.
 
 The name cannot contain dots or spaces.
+
 Although uppercase characters are permitted in an attribute name, the name is converted to lowercase before being stored.
 For example, `URL` and `Url` are treated as `url`.
 A best practice is to only use lowercase letters in the name and avoid starting the name with a number.
