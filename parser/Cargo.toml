@@ -1,6 +1,6 @@
 [package]
 name = "asciidoc-parser"
-version = "0.3.0"
+version = "0.3.1"
 description = "Parser for AsciiDoc format"
 authors = ["Eric Scouten <git@scouten.me>"]
 license = "MIT OR Apache-2.0"
