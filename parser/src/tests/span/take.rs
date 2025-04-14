@@ -355,3 +355,71 @@ mod take_while {
         );
     }
 }
+
+mod take_non_empty_lines {
+    use crate::{tests::fixtures::TSpan, Span};
+
+    #[test]
+    fn empty_source() {
+        let span = Span::new("");
+        assert!(span.take_non_empty_lines().is_none());
+    }
+
+    #[test]
+    fn immediate_false() {
+        let span = Span::new("\nabc");
+        assert!(span.take_non_empty_lines().is_none());
+    }
+
+    #[test]
+    fn match_after_first() {
+        let span = Span::new("abc\n\ndef");
+        let mi = span.take_non_empty_lines().unwrap();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: "abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "\ndef",
+                line: 2,
+                col: 1,
+                offset: 4,
+            }
+        );
+    }
+
+    #[test]
+    fn several_lines() {
+        let span = Span::new("abc\ndef\nline3\nline4\n\ndef");
+        let mi = span.take_non_empty_lines().unwrap();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: "abc\ndef\nline3\nline4",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "\ndef",
+                line: 5,
+                col: 1,
+                offset: 20,
+            }
+        );
+    }
+}

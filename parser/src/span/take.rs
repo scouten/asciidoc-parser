@@ -40,4 +40,28 @@ impl<'src> Span<'src> {
             None => self.into_parse_result(self.data.len()),
         }
     }
+
+    /// If there is at least one non-empty line, split the span at the first
+    /// empty line found or end of span.
+    ///
+    /// Returns `None` if there is not at least one non-empty line at
+    /// beginning of input.
+    #[allow(unused)] // TEMPORARY while refactoring
+    pub(crate) fn take_non_empty_lines(self) -> Option<MatchedItem<'src, Self>> {
+        let mut next = self;
+
+        while let Some(inline) = next.take_non_empty_line() {
+            next = inline.after;
+        }
+
+        let result = self.trim_remainder(next);
+        if result.is_empty() {
+            None
+        } else {
+            Some(MatchedItem {
+                item: result.trim_trailing_whitespace(),
+                after: next,
+            })
+        }
+    }
 }
