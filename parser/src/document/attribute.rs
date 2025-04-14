@@ -91,7 +91,7 @@ pub enum RawAttributeValue<'src> {
     /// boolean `true` or a default value for a built-in attribute.
     Set,
 
-    /// Explicitly unset. This is typically interpreted as boolean 'false'.
+    /// Explicitly unset. This is typically interpreted as boolean `false`.
     Unset,
 }
 
@@ -159,6 +159,6 @@ pub enum AttributeValue<'src> {
     /// boolean `true` or a default value for a built-in attribute.
     Set,
 
-    /// Explicitly unset. This is typically interpreted as boolean 'false'.
+    /// Explicitly unset. This is typically interpreted as boolean `false`.
     Unset,
 }
