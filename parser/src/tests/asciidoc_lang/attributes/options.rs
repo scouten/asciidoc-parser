@@ -1,5 +1,4 @@
-#![allow(unused)]
-use crate::tests::sdd::{non_normative, to_do_verifies, track_file};
+use crate::tests::sdd::{non_normative, track_file};
 
 track_file!("docs/modules/attributes/pages/options.adoc");
 // Tracking commit 6ef733aa, current as of 2025-04-10.
@@ -35,13 +34,10 @@ You can assign one or more options to a block using the shorthand or formal synt
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                inlines::TInline,
-                warnings::TWarning,
                 TSpan,
             },
-            sdd::{non_normative, to_do_verifies, verifies},
+            sdd::{non_normative, verifies},
         },
-        warnings::WarningType,
         Span,
     };
 
@@ -77,16 +73,14 @@ This is a sidebar with an option assigned to it, named option.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is a sidebar with an option assigned to it, named option.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 15,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is a sidebar with an option assigned to it, named option.",
+                                line: 3,
+                                col: 1,
+                                offset: 15,
+                            },
                             source: TSpan {
-                                data: "This is a sidebar with an option assigned to it, named option.\n",
+                                data: "This is a sidebar with an option assigned to it, named option.",
                                 line: 3,
                                 col: 1,
                                 offset: 15,
@@ -189,16 +183,14 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is a sidebar with two options assigned to it, named option1 and option2.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 24,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is a sidebar with two options assigned to it, named option1 and option2.",
+                                line: 3,
+                                col: 1,
+                                offset: 24,
+                            },
                             source: TSpan {
-                                data: "This is a sidebar with two options assigned to it, named option1 and option2.\n",
+                                data: "This is a sidebar with two options assigned to it, named option1 and option2.",
                                 line: 3,
                                 col: 1,
                                 offset: 24,
@@ -322,30 +314,14 @@ For instance, consider a table with the three built-in option values, `header`, 
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "|===",
-                            line: 2,
-                            col: 1,
-                            offset: 36,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "|Cell A1 |Cell B1",
-                            line: 3,
-                            col: 1,
-                            offset: 41,
-                        },),
-                    ],
-                    TSpan {
-                        data: "|===\n|Cell A1 |Cell B1\n",
-                        line: 2,
-                        col: 1,
-                        offset: 36,
-                    },
-                ),
+                content: TSpan {
+                    data: "|===\n|Cell A1 |Cell B1",
+                    line: 2,
+                    col: 1,
+                    offset: 36,
+                },
                 source: TSpan {
-                    data: "[%header%footer%autowidth,cols=2*~]\n|===\n|Cell A1 |Cell B1\n",
+                    data: "[%header%footer%autowidth,cols=2*~]\n|===\n|Cell A1 |Cell B1",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -488,16 +464,14 @@ This is a sidebar with an option assigned to it, named option.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is a sidebar with an option assigned to it, named option.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 19,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is a sidebar with an option assigned to it, named option.",
+                                line: 3,
+                                col: 1,
+                                offset: 19,
+                            },
                             source: TSpan {
-                                data: "This is a sidebar with an option assigned to it, named option.\n",
+                                data: "This is a sidebar with an option assigned to it, named option.",
                                 line: 3,
                                 col: 1,
                                 offset: 19,
@@ -600,16 +574,14 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is a sidebar with two options assigned to it, option1 and option2.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 30,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is a sidebar with two options assigned to it, option1 and option2.",
+                                line: 3,
+                                col: 1,
+                                offset: 30,
+                            },
                             source: TSpan {
-                                data: "This is a sidebar with two options assigned to it, option1 and option2.\n",
+                                data: "This is a sidebar with two options assigned to it, option1 and option2.",
                                 line: 3,
                                 col: 1,
                                 offset: 30,
@@ -727,30 +699,14 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "|===",
-                            line: 2,
-                            col: 1,
-                            offset: 42,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "|Cell A1 |Cell B1",
-                            line: 3,
-                            col: 1,
-                            offset: 47,
-                        },),
-                    ],
-                    TSpan {
-                        data: "|===\n|Cell A1 |Cell B1\n",
-                        line: 2,
-                        col: 1,
-                        offset: 42,
-                    },
-                ),
+                content: TSpan {
+                    data: "|===\n|Cell A1 |Cell B1",
+                    line: 2,
+                    col: 1,
+                    offset: 42,
+                },
                 source: TSpan {
-                    data: "[cols=2*~,opts=\"header,footer,autowidth\"]\n|===\n|Cell A1 |Cell B1\n",
+                    data: "[cols=2*~,opts=\"header,footer,autowidth\"]\n|===\n|Cell A1 |Cell B1",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -865,14 +821,11 @@ Let's consider `options` when combined with other attributes.
         tests::{
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                inlines::TInline,
-                warnings::TWarning,
+                blocks::{TBlock, TSimpleBlock},
                 TSpan,
             },
-            sdd::{non_normative, to_do_verifies, verifies},
+            sdd::{non_normative, verifies},
         },
-        warnings::WarningType,
         Span,
     };
 
@@ -909,32 +862,12 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
         assert_eq!(mi.item,
             TBlock::Simple(
                 TSimpleBlock {
-                    inline: TInline::Sequence(
-                        vec![
-                            TInline::Uninterpreted(
-                                TSpan {
-                                    data: "property 1:: does stuff",
-                                    line: 2,
-                                    col: 1,
-                                    offset: 29,
-                                },
-                            ),
-                            TInline::Uninterpreted(
-                                TSpan {
-                                    data: "property 2:: does different stuff",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 53,
-                                },
-                            ),
-                        ],
-                        TSpan {
-                            data: "property 1:: does stuff\nproperty 2:: does different stuff",
-                            line: 2,
-                            col: 1,
-                            offset: 29,
-                        },
-                    ),
+                    content: TSpan {
+                        data: "property 1:: does stuff\nproperty 2:: does different stuff",
+                        line: 2,
+                        col: 1,
+                        offset: 29,
+                    },
                     source: TSpan {
                         data: "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
                         line: 1,
@@ -1062,32 +995,12 @@ property 2:: does different stuff
         assert_eq!(mi.item,
             TBlock::Simple(
             TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "property 1:: does stuff",
-                                line: 2,
-                                col: 1,
-                                offset: 39,
-                            },
-                        ),
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "property 2:: does different stuff",
-                                line: 3,
-                                col: 1,
-                                offset: 63,
-                            },
-                        ),
-                    ],
-                    TSpan {
-                        data: "property 1:: does stuff\nproperty 2:: does different stuff",
-                        line: 2,
-                        col: 1,
-                        offset: 39,
-                    },
-                ),
+                content: TSpan {
+                    data: "property 1:: does stuff\nproperty 2:: does different stuff",
+                    line: 2,
+                    col: 1,
+                    offset: 39,
+                },
                 source: TSpan {
                     data: "[horizontal,role=properties,opts=step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
                     line: 1,

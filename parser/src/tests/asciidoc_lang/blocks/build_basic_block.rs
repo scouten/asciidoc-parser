@@ -7,7 +7,6 @@ use crate::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TMacroBlock, TSimpleBlock},
             document::{TDocument, THeader},
-            inlines::TInline,
             TSpan,
         },
         sdd::{non_normative, track_file, verifies},
@@ -98,16 +97,14 @@ This is more content in the sidebar block.
         blocks: vec![
             TBlock::Simple(
                 TSimpleBlock {
-                    inline: TInline::Uninterpreted(
-                        TSpan {
-                            data: "Text in your document.",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
-                    ),
+                    content: TSpan {
+                        data: "Text in your document.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
                     source: TSpan {
-                        data: "Text in your document.\n",
+                        data: "Text in your document.",
                         line: 1,
                         col: 1,
                         offset: 0,
@@ -122,16 +119,14 @@ This is more content in the sidebar block.
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                inline: TInline::Uninterpreted(
-                                    TSpan {
-                                        data: "This is content in a sidebar block.",
-                                        line: 4,
-                                        col: 1,
-                                        offset: 29,
-                                    },
-                                ),
+                                content: TSpan {
+                                    data: "This is content in a sidebar block.",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 29,
+                                },
                                 source: TSpan {
-                                    data: "This is content in a sidebar block.\n",
+                                    data: "This is content in a sidebar block.",
                                     line: 4,
                                     col: 1,
                                     offset: 29,
@@ -179,16 +174,14 @@ This is more content in the sidebar block.
                         ),
                         TBlock::Simple(
                             TSimpleBlock {
-                                inline: TInline::Uninterpreted(
-                                    TSpan {
-                                        data: "This is more content in the sidebar block.",
-                                        line: 8,
-                                        col: 1,
-                                        offset: 85,
-                                    },
-                                ),
+                                content: TSpan {
+                                    data: "This is more content in the sidebar block.",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 85,
+                                },
                                 source: TSpan {
-                                    data: "This is more content in the sidebar block.\n",
+                                    data: "This is more content in the sidebar block.",
                                     line: 8,
                                     col: 1,
                                     offset: 85,
@@ -256,12 +249,12 @@ include::example$block.adoc[tag=opt-listing]
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "sudo dnf install asciidoc",
                 line: 2,
                 col: 1,
                 offset: 10,
-            },),
+            },
             source: TSpan {
                 data: "[listing]\nsudo dnf install asciidoc",
                 line: 1,
@@ -331,12 +324,12 @@ However, note that the lines of a styled paragraph are first parsed like a parag
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "Never do today what you can put off `'til tomorrow.",
                 line: 2,
                 col: 1,
                 offset: 8,
-            },),
+            },
             source: TSpan {
                 data: "[quote]\nNever do today what you can put off `'til tomorrow.",
                 line: 1,

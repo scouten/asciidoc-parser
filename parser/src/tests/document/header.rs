@@ -102,7 +102,7 @@ fn trims_trailing_spaces_in_title() {
             }),
             attributes: vec![],
             source: TSpan {
-                data: "= Just the Title   ",
+                data: "= Just the Title",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -149,14 +149,14 @@ fn title_and_attribute() {
                     offset: 23,
                 }),
                 source: TSpan {
-                    data: ":foo: bar\n",
+                    data: ":foo: bar",
                     line: 2,
                     col: 1,
                     offset: 17,
                 }
             }],
             source: TSpan {
-                data: "= Just the Title\n:foo: bar\n",
+                data: "= Just the Title\n:foo: bar",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -197,14 +197,14 @@ fn attribute_without_title() {
                     offset: 6,
                 }),
                 source: TSpan {
-                    data: ":foo: bar\n",
+                    data: ":foo: bar",
                     line: 1,
                     col: 1,
                     offset: 0,
                 }
             }],
             source: TSpan {
-                data: ":foo: bar\n",
+                data: ":foo: bar",
                 line: 1,
                 col: 1,
                 offset: 0,

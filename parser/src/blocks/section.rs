@@ -46,7 +46,7 @@ impl<'src> SectionBlock<'src> {
                     level: level.item.0,
                     section_title: level.item.1,
                     blocks: blocks.item,
-                    source,
+                    source: source.trim_trailing_whitespace(),
                     title: preamble.title,
                     anchor: preamble.anchor,
                     attrlist: preamble.attrlist.clone(),

@@ -111,7 +111,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
                 item: Self {
                     blocks: blocks.item,
                     context: context.into(),
-                    source,
+                    source: source.trim_trailing_whitespace(),
                     title: preamble.title,
                     anchor: preamble.anchor,
                     attrlist: preamble.attrlist.clone(),

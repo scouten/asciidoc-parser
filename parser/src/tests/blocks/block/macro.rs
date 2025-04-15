@@ -7,7 +7,6 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSimpleBlock},
-        inlines::{TInline, TInlineMacro},
         warnings::TWarning,
         TSpan,
     },
@@ -27,27 +26,13 @@ fn err_inline_syntax() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Macro(TInlineMacro {
-                name: TSpan {
-                    data: "foo",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-                target: Some(TSpan {
-                    data: "bar",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
-                },),
-                attrlist: None,
-                source: TSpan {
-                    data: "foo:bar[]",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-            }),
+            content: TSpan {
+                data: "foo:bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+
             source: TSpan {
                 data: "foo:bar[]",
                 line: 1,
@@ -90,12 +75,12 @@ fn err_no_attr_list() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "foo::bar",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }),
+            },
             source: TSpan {
                 data: "foo::bar",
                 line: 1,
@@ -138,12 +123,12 @@ fn err_attr_list_not_closed() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "foo::bar[blah",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }),
+            },
             source: TSpan {
                 data: "foo::bar[blah",
                 line: 1,
@@ -186,48 +171,12 @@ fn err_unexpected_after_attr_list() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Sequence(
-                vec![
-                    TInline::Macro(TInlineMacro {
-                        name: TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
-                        target: Some(TSpan {
-                            data: ":bar",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },),
-                        attrlist: Some(TSpan {
-                            data: "blah",
-                            line: 1,
-                            col: 10,
-                            offset: 9,
-                        },),
-                        source: TSpan {
-                            data: "foo::bar[blah]",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
-                    },),
-                    TInline::Uninterpreted(TSpan {
-                        data: "bonus",
-                        line: 1,
-                        col: 15,
-                        offset: 14,
-                    },),
-                ],
-                TSpan {
-                    data: "foo::bar[blah]bonus",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            ),
+            content: TSpan {
+                data: "foo::bar[blah]bonus",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             source: TSpan {
                 data: "foo::bar[blah]bonus",
                 line: 1,

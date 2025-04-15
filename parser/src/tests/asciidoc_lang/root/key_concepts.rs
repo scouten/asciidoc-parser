@@ -95,7 +95,6 @@ See https://en.wikipedia.org/wiki/Macro_(computer_science)[macro^] to learn more
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TMacroBlock, TSimpleBlock},
             document::{TDocument, THeader},
-            inlines::{TInline, TInlineMacro},
             TSpan,
         },
     };
@@ -180,7 +179,7 @@ image::sunset.jpg[Sunset]
                     attrlist: None,
                 })],
                 source: TSpan {
-                    data: "image::sunset.jpg[Sunset]\n",
+                    data: "image::sunset.jpg[Sunset]",
                     line: 1,
                     col: 1,
                     offset: 0
@@ -222,66 +221,14 @@ Click the button with the image:star.png[Star] to favorite the project.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Sequence(
-                                vec![
-                                    TInline::Uninterpreted(
-                                        TSpan {
-                                            data: "Click the button with the ",
-                                            line: 1,
-                                            col: 1,
-                                            offset: 0,
-                                        },
-                                    ),
-                                    TInline::Macro(
-                                        TInlineMacro {
-                                            name: TSpan {
-                                                data: "image",
-                                                line: 1,
-                                                col: 27,
-                                                offset: 26,
-                                            },
-                                            target: Some(
-                                                TSpan {
-                                                    data: "star.png",
-                                                    line: 1,
-                                                    col: 33,
-                                                    offset: 32,
-                                                },
-                                            ),
-                                            attrlist: Some(
-                                                TSpan {
-                                                    data: "Star",
-                                                    line: 1,
-                                                    col: 42,
-                                                    offset: 41,
-                                                },
-                                            ),
-                                            source: TSpan {
-                                                data: "image:star.png[Star]",
-                                                line: 1,
-                                                col: 27,
-                                                offset: 26,
-                                            },
-                                        },
-                                    ),
-                                    TInline::Uninterpreted(
-                                        TSpan {
-                                            data: " to favorite the project.",
-                                            line: 1,
-                                            col: 47,
-                                            offset: 46,
-                                        },
-                                    ),
-                                ],
-                                TSpan {
-                                    data: "Click the button with the image:star.png[Star] to favorite the project.\n",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "Click the button with the image:star.png[Star] to favorite the project.",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
                             source: TSpan {
-                                data: "Click the button with the image:star.png[Star] to favorite the project.\n",
+                                data: "Click the button with the image:star.png[Star] to favorite the project.",
                                 line: 1,
                                 col: 1,
                                 offset: 0,
@@ -294,7 +241,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                 ],
                 source: TSpan {
                     data:
-                        "Click the button with the image:star.png[Star] to favorite the project.\n",
+                        "Click the button with the image:star.png[Star] to favorite the project.",
                     line: 1,
                     col: 1,
                     offset: 0

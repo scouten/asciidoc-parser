@@ -13,8 +13,6 @@ pub mod blocks;
 pub mod document;
 pub use document::Document;
 
-pub mod inlines;
-
 mod span;
 pub use span::{HasSpan, Span};
 

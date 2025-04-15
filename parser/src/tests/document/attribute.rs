@@ -37,7 +37,7 @@ fn simple_value() {
                 offset: 6,
             }),
             source: TSpan {
-                data: ":foo: bar\n",
+                data: ":foo: bar",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -73,7 +73,7 @@ fn no_value() {
             },
             value: TRawAttributeValue::Set,
             source: TSpan {
-                data: ":foo:\n",
+                data: ":foo:",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -145,7 +145,7 @@ fn unset_prefix() {
             },
             value: TRawAttributeValue::Unset,
             source: TSpan {
-                data: ":!foo:\n",
+                data: ":!foo:",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -181,7 +181,7 @@ fn unset_postfix() {
             },
             value: TRawAttributeValue::Unset,
             source: TSpan {
-                data: ":foo!:\n",
+                data: ":foo!:",
                 line: 1,
                 col: 1,
                 offset: 0,
