@@ -5,7 +5,6 @@ mod parse {
         blocks::Block,
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
-            inlines::TInline,
             warnings::TWarning,
             TSpan,
         },
@@ -22,12 +21,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "===",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }),
+                },
                 source: TSpan {
                     data: "===",
                     line: 1,
@@ -47,12 +46,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "====x",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }),
+                },
                 source: TSpan {
                     data: "====x",
                     line: 1,
@@ -72,12 +71,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "****x",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }),
+                },
                 source: TSpan {
                     data: "****x",
                     line: 1,
@@ -97,12 +96,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "____x",
                     line: 1,
                     col: 1,
                     offset: 0,
-                }),
+                },
                 source: TSpan {
                     data: "____x",
                     line: 1,
@@ -125,28 +124,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec!(
-                        TInline::Uninterpreted(TSpan {
-                            data: "====",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
-                        TInline::Uninterpreted(TSpan {
-                            data: "blah blah blah",
-                            line: 2,
-                            col: 1,
-                            offset: 5,
-                        })
-                    ),
-                    TSpan {
-                        data: "====\nblah blah blah",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }
-                ),
+                content: TSpan {
+                    data: "====\nblah blah blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 source: TSpan {
                     data: "====\nblah blah blah",
                     line: 1,
@@ -181,7 +164,6 @@ mod example {
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            inlines::TInline,
             TSpan,
         },
         HasSpan, Span,
@@ -244,14 +226,14 @@ mod example {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
@@ -261,14 +243,14 @@ mod example {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
                             offset: 13,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block2\n",
+                            data: "block2",
                             line: 4,
                             col: 1,
                             offset: 13,
@@ -305,14 +287,14 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
@@ -326,14 +308,14 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
                     offset: 13,
-                },),
+                },
                 source: TSpan {
-                    data: "block2\n",
+                    data: "block2",
                     line: 4,
                     col: 1,
                     offset: 13,
@@ -368,14 +350,14 @@ mod example {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 3,
                             col: 1,
                             offset: 19,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 3,
                             col: 1,
                             offset: 19,
@@ -385,14 +367,14 @@ mod example {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block2",
                             line: 5,
                             col: 1,
                             offset: 27,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block2\n",
+                            data: "block2",
                             line: 5,
                             col: 1,
                             offset: 27,
@@ -444,14 +426,14 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 3,
                     col: 1,
                     offset: 19,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 3,
                     col: 1,
                     offset: 19,
@@ -465,14 +447,14 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block2",
                     line: 5,
                     col: 1,
                     offset: 27,
-                },),
+                },
                 source: TSpan {
-                    data: "block2\n",
+                    data: "block2",
                     line: 5,
                     col: 1,
                     offset: 27,
@@ -507,14 +489,14 @@ mod example {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
@@ -525,14 +507,14 @@ mod example {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            inline: TInline::Uninterpreted(TSpan {
+                            content: TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
-                            },),
+                            },
                             source: TSpan {
-                                data: "block2\n",
+                                data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
@@ -543,7 +525,7 @@ mod example {
                         },)),
                         context: "example",
                         source: TSpan {
-                            data: "=====\nblock2\n=====\n",
+                            data: "=====\nblock2\n=====",
                             line: 4,
                             col: 1,
                             offset: 13,
@@ -580,14 +562,14 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
@@ -602,14 +584,14 @@ mod example {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    inline: TInline::Uninterpreted(TSpan {
+                    content: TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
-                    },),
+                    },
                     source: TSpan {
-                        data: "block2\n",
+                        data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
@@ -620,7 +602,7 @@ mod example {
                 },),),
                 context: "example",
                 source: TSpan {
-                    data: "=====\nblock2\n=====\n",
+                    data: "=====\nblock2\n=====",
                     line: 4,
                     col: 1,
                     offset: 13,
@@ -652,7 +634,6 @@ mod open {
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            inlines::TInline,
             TSpan,
         },
         HasSpan, Span,
@@ -714,14 +695,14 @@ mod open {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 3,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 3,
@@ -731,14 +712,14 @@ mod open {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
                             offset: 11,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block2\n",
+                            data: "block2",
                             line: 4,
                             col: 1,
                             offset: 11,
@@ -775,14 +756,14 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 3,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 3,
@@ -796,14 +777,14 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
                     offset: 11,
-                },),
+                },
                 source: TSpan {
-                    data: "block2\n",
+                    data: "block2",
                     line: 4,
                     col: 1,
                     offset: 11,
@@ -838,14 +819,14 @@ mod open {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 3,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 3,
@@ -855,36 +836,14 @@ mod open {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Sequence(
-                            vec![
-                                TInline::Uninterpreted(TSpan {
-                                    data: "---",
-                                    line: 4,
-                                    col: 1,
-                                    offset: 11,
-                                },),
-                                TInline::Uninterpreted(TSpan {
-                                    data: "block2",
-                                    line: 5,
-                                    col: 1,
-                                    offset: 15,
-                                },),
-                                TInline::Uninterpreted(TSpan {
-                                    data: "---",
-                                    line: 6,
-                                    col: 1,
-                                    offset: 22,
-                                },),
-                            ],
-                            TSpan {
-                                data: "---\nblock2\n---\n",
-                                line: 4,
-                                col: 1,
-                                offset: 11,
-                            },
-                        ),
+                        content: TSpan {
+                            data: "---\nblock2\n---",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
                         source: TSpan {
-                            data: "---\nblock2\n---\n",
+                            data: "---\nblock2\n---",
                             line: 4,
                             col: 1,
                             offset: 11,
@@ -921,14 +880,14 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 3,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 3,
@@ -942,36 +901,14 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "---",
-                            line: 4,
-                            col: 1,
-                            offset: 11,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "block2",
-                            line: 5,
-                            col: 1,
-                            offset: 15,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "---",
-                            line: 6,
-                            col: 1,
-                            offset: 22,
-                        },),
-                    ],
-                    TSpan {
-                        data: "---\nblock2\n---\n",
-                        line: 4,
-                        col: 1,
-                        offset: 11,
-                    },
-                ),
+                content: TSpan {
+                    data: "---\nblock2\n---",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },
                 source: TSpan {
-                    data: "---\nblock2\n---\n",
+                    data: "---\nblock2\n---",
                     line: 4,
                     col: 1,
                     offset: 11,
@@ -1003,7 +940,6 @@ mod sidebar {
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            inlines::TInline,
             TSpan,
         },
         HasSpan, Span,
@@ -1065,14 +1001,14 @@ mod sidebar {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
@@ -1082,14 +1018,14 @@ mod sidebar {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
                             offset: 13,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block2\n",
+                            data: "block2",
                             line: 4,
                             col: 1,
                             offset: 13,
@@ -1126,14 +1062,14 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
@@ -1147,14 +1083,14 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
                     offset: 13,
-                },),
+                },
                 source: TSpan {
-                    data: "block2\n",
+                    data: "block2",
                     line: 4,
                     col: 1,
                     offset: 13,
@@ -1189,14 +1125,14 @@ mod sidebar {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
@@ -1207,14 +1143,14 @@ mod sidebar {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            inline: TInline::Uninterpreted(TSpan {
+                            content: TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
-                            },),
+                            },
                             source: TSpan {
-                                data: "block2\n",
+                                data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
@@ -1225,7 +1161,7 @@ mod sidebar {
                         },)),
                         context: "sidebar",
                         source: TSpan {
-                            data: "*****\nblock2\n*****\n",
+                            data: "*****\nblock2\n*****",
                             line: 4,
                             col: 1,
                             offset: 13,
@@ -1262,14 +1198,14 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
@@ -1284,14 +1220,14 @@ mod sidebar {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    inline: TInline::Uninterpreted(TSpan {
+                    content: TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
-                    },),
+                    },
                     source: TSpan {
-                        data: "block2\n",
+                        data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
@@ -1302,7 +1238,7 @@ mod sidebar {
                 },),),
                 context: "sidebar",
                 source: TSpan {
-                    data: "*****\nblock2\n*****\n",
+                    data: "*****\nblock2\n*****",
                     line: 4,
                     col: 1,
                     offset: 13,
@@ -1334,7 +1270,6 @@ mod quote {
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            inlines::TInline,
             TSpan,
         },
         HasSpan, Span,
@@ -1396,14 +1331,14 @@ mod quote {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
@@ -1413,14 +1348,14 @@ mod quote {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
                             offset: 13,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block2\n",
+                            data: "block2",
                             line: 4,
                             col: 1,
                             offset: 13,
@@ -1457,14 +1392,14 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
@@ -1478,14 +1413,14 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
                     offset: 13,
-                },),
+                },
                 source: TSpan {
-                    data: "block2\n",
+                    data: "block2",
                     line: 4,
                     col: 1,
                     offset: 13,
@@ -1520,14 +1455,14 @@ mod quote {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
-                        },),
+                        },
                         source: TSpan {
-                            data: "block1\n",
+                            data: "block1",
                             line: 2,
                             col: 1,
                             offset: 5,
@@ -1538,14 +1473,14 @@ mod quote {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            inline: TInline::Uninterpreted(TSpan {
+                            content: TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
-                            },),
+                            },
                             source: TSpan {
-                                data: "block2\n",
+                                data: "block2",
                                 line: 5,
                                 col: 1,
                                 offset: 19,
@@ -1556,7 +1491,7 @@ mod quote {
                         },),),
                         context: "quote",
                         source: TSpan {
-                            data: "_____\nblock2\n_____\n",
+                            data: "_____\nblock2\n_____",
                             line: 4,
                             col: 1,
                             offset: 13,
@@ -1593,14 +1528,14 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
-                },),
+                },
                 source: TSpan {
-                    data: "block1\n",
+                    data: "block1",
                     line: 2,
                     col: 1,
                     offset: 5,
@@ -1615,14 +1550,14 @@ mod quote {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    inline: TInline::Uninterpreted(TSpan {
+                    content: TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
-                    },),
+                    },
                     source: TSpan {
-                        data: "block2\n",
+                        data: "block2",
                         line: 5,
                         col: 1,
                         offset: 19,
@@ -1633,7 +1568,7 @@ mod quote {
                 },),),
                 context: "quote",
                 source: TSpan {
-                    data: "_____\nblock2\n_____\n",
+                    data: "_____\nblock2\n_____",
                     line: 4,
                     col: 1,
                     offset: 13,

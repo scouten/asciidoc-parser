@@ -4,7 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{preamble::Preamble, ContentModel, IsBlock, SimpleBlock},
-    tests::fixtures::{blocks::TSimpleBlock, inlines::TInline, TSpan},
+    tests::fixtures::{blocks::TSimpleBlock, TSpan},
 };
 
 #[test]
@@ -32,12 +32,12 @@ fn single_line() {
     assert_eq!(
         mi.item,
         TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }),
+            },
             source: TSpan {
                 data: "abc",
                 line: 1,
@@ -79,28 +79,12 @@ fn multiple_lines() {
     assert_eq!(
         mi.item,
         TSimpleBlock {
-            inline: TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "abc",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "def",
-                        line: 2,
-                        col: 1,
-                        offset: 4,
-                    })
-                ],
-                TSpan {
-                    data: "abc\ndef",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            ),
+            content: TSpan {
+                data: "abc\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             source: TSpan {
                 data: "abc\ndef",
                 line: 1,
@@ -131,14 +115,14 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item,
         TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }),
+            },
             source: TSpan {
-                data: "abc\n",
+                data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,

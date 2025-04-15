@@ -34,7 +34,6 @@ mod valid_id_characters {
         tests::{
             fixtures::{
                 blocks::{TBlock, TSimpleBlock},
-                inlines::TInline,
                 warnings::TWarning,
                 TSpan,
             },
@@ -80,14 +79,14 @@ All the language requires in this case is that the value be non-empty.
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
                     offset: 5,
-                }),
+                },
                 source: TSpan {
-                    data: "[[]]\nThis paragraph gets a lot of attention.\n",
+                    data: "[[]]\nThis paragraph gets a lot of attention.",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -172,14 +171,14 @@ install the gem
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
                     offset: 17,
-                }),
+                },
                 source: TSpan {
-                    data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.\n",
+                    data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -221,7 +220,6 @@ mod block_assignment {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                inlines::TInline,
                 TSpan,
             },
             sdd::{non_normative, verifies},
@@ -264,28 +262,12 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Goal 1",
-                            line: 2,
-                            col: 1,
-                            offset: 9,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Goal 2",
-                            line: 3,
-                            col: 1,
-                            offset: 18,
-                        },),
-                    ],
-                    TSpan {
-                        data: "* Goal 1\n* Goal 2",
-                        line: 2,
-                        col: 1,
-                        offset: 9,
-                    },
-                ),
+                content: TSpan {
+                    data: "* Goal 1\n* Goal 2",
+                    line: 2,
+                    col: 1,
+                    offset: 9,
+                },
                 source: TSpan {
                     data: "[#goals]\n* Goal 1\n* Goal 2",
                     line: 1,
@@ -352,28 +334,12 @@ In the longhand syntax, you use a standard named attribute.
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Goal 1",
-                            line: 2,
-                            col: 1,
-                            offset: 11,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Goal 2",
-                            line: 3,
-                            col: 1,
-                            offset: 20,
-                        },),
-                    ],
-                    TSpan {
-                        data: "* Goal 1\n* Goal 2",
-                        line: 2,
-                        col: 1,
-                        offset: 11,
-                    },
-                ),
+                content: TSpan {
+                    data: "* Goal 1\n* Goal 2",
+                    line: 2,
+                    col: 1,
+                    offset: 11,
+                },
                 source: TSpan {
                     data: "[id=goals]\n* Goal 1\n* Goal 2",
                     line: 1,
@@ -440,28 +406,12 @@ In the block anchor syntax, you surround the name with double square brackets:
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Goal 1",
-                            line: 2,
-                            col: 1,
-                            offset: 10,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Goal 2",
-                            line: 3,
-                            col: 1,
-                            offset: 19,
-                        },),
-                    ],
-                    TSpan {
-                        data: "* Goal 1\n* Goal 2",
-                        line: 2,
-                        col: 1,
-                        offset: 10,
-                    },
-                ),
+                content: TSpan {
+                    data: "* Goal 1\n* Goal 2",
+                    line: 2,
+                    col: 1,
+                    offset: 10,
+                },
                 source: TSpan {
                     data: "[[goals]]\n* Goal 1\n* Goal 2",
                     line: 1,
@@ -507,16 +457,14 @@ ____
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                inline: TInline::Uninterpreted(
-                                    TSpan {
+                                content: TSpan {
                                         data: "Roads? Where we're going, we don't need roads.",
                                         line: 3,
                                         col: 1,
                                         offset: 42,
                                     },
-                                ),
                                 source: TSpan {
-                                    data: "Roads? Where we're going, we don't need roads.\n",
+                                    data: "Roads? Where we're going, we don't need roads.",
                                     line: 3,
                                     col: 1,
                                     offset: 42,

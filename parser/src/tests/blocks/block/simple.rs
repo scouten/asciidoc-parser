@@ -7,7 +7,6 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
-        inlines::TInline,
         warnings::TWarning,
         TSpan,
     },
@@ -49,12 +48,12 @@ fn single_line() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }),
+            },
             source: TSpan {
                 data: "abc",
                 line: 1,
@@ -109,28 +108,12 @@ fn multiple_lines() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "abc",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "def",
-                        line: 2,
-                        col: 1,
-                        offset: 4,
-                    }),
-                ],
-                TSpan {
-                    data: "abc\ndef",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            ),
+            content: TSpan {
+                data: "abc\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
             source: TSpan {
                 data: "abc\ndef",
                 line: 1,
@@ -173,30 +156,14 @@ fn title() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "abc",
-                        line: 2,
-                        col: 1,
-                        offset: 14,
-                    }),
-                    TInline::Uninterpreted(TSpan {
-                        data: "def",
-                        line: 3,
-                        col: 1,
-                        offset: 18,
-                    }),
-                ],
-                TSpan {
-                    data: "abc\ndef\n",
-                    line: 2,
-                    col: 1,
-                    offset: 14,
-                }
-            ),
+            content: TSpan {
+                data: "abc\ndef",
+                line: 2,
+                col: 1,
+                offset: 14,
+            },
             source: TSpan {
-                data: ".simple block\nabc\ndef\n",
+                data: ".simple block\nabc\ndef",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -222,30 +189,14 @@ fn attrlist() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "abc",
-                        line: 2,
-                        col: 1,
-                        offset: 10,
-                    },),
-                    TInline::Uninterpreted(TSpan {
-                        data: "def",
-                        line: 3,
-                        col: 1,
-                        offset: 14,
-                    },),
-                ],
-                TSpan {
-                    data: "abc\ndef\n",
-                    line: 2,
-                    col: 1,
-                    offset: 10,
-                },
-            ),
+            content: TSpan {
+                data: "abc\ndef",
+                line: 2,
+                col: 1,
+                offset: 10,
+            },
             source: TSpan {
-                data: "[sidebar]\nabc\ndef\n",
+                data: "[sidebar]\nabc\ndef",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -287,7 +238,7 @@ fn attrlist() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "[sidebar]\nabc\ndef\n",
+            data: "[sidebar]\nabc\ndef",
             line: 1,
             col: 1,
             offset: 0,
@@ -349,30 +300,14 @@ fn title_and_attrlist() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Sequence(
-                vec![
-                    TInline::Uninterpreted(TSpan {
-                        data: "abc",
-                        line: 3,
-                        col: 1,
-                        offset: 17,
-                    },),
-                    TInline::Uninterpreted(TSpan {
-                        data: "def",
-                        line: 4,
-                        col: 1,
-                        offset: 21,
-                    },),
-                ],
-                TSpan {
-                    data: "abc\ndef\n",
-                    line: 3,
-                    col: 1,
-                    offset: 17,
-                },
-            ),
+            content: TSpan {
+                data: "abc\ndef",
+                line: 3,
+                col: 1,
+                offset: 17,
+            },
             source: TSpan {
-                data: ".title\n[sidebar]\nabc\ndef\n",
+                data: ".title\n[sidebar]\nabc\ndef",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -419,7 +354,7 @@ fn title_and_attrlist() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: ".title\n[sidebar]\nabc\ndef\n",
+            data: ".title\n[sidebar]\nabc\ndef",
             line: 1,
             col: 1,
             offset: 0,
@@ -481,14 +416,14 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,
-            }),
+            },
             source: TSpan {
-                data: "abc\n",
+                data: "abc",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -502,7 +437,7 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "abc\n",
+            data: "abc",
             line: 1,
             col: 1,
             offset: 0,
@@ -531,14 +466,14 @@ fn with_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
                 offset: 11,
-            }),
+            },
             source: TSpan {
-                data: "[[notice]]\nThis paragraph gets a lot of attention.\n",
+                data: "[[notice]]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -557,7 +492,7 @@ fn with_block_anchor() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "[[notice]]\nThis paragraph gets a lot of attention.\n",
+            data: "[[notice]]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
             offset: 0,
@@ -619,14 +554,14 @@ fn err_empty_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
                 offset: 5,
-            }),
+            },
             source: TSpan {
-                data: "[[]]\nThis paragraph gets a lot of attention.\n",
+                data: "[[]]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -645,7 +580,7 @@ fn err_empty_block_anchor() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "[[]]\nThis paragraph gets a lot of attention.\n",
+            data: "[[]]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
             offset: 0,
@@ -709,14 +644,14 @@ fn err_invalid_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
                 offset: 17,
-            }),
+            },
             source: TSpan {
-                data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.\n",
+                data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -735,7 +670,7 @@ fn err_invalid_block_anchor() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.\n",
+            data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
             offset: 0,
@@ -786,14 +721,14 @@ fn unterminated_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
                 offset: 10,
-            }),
+            },
             source: TSpan {
-                data: "[[notice]\nThis paragraph gets a lot of attention.\n",
+                data: "[[notice]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -835,7 +770,7 @@ fn unterminated_block_anchor() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "[[notice]\nThis paragraph gets a lot of attention.\n",
+            data: "[[notice]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
             offset: 0,

@@ -21,7 +21,6 @@ mod positional_attribute {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSectionBlock, TSimpleBlock},
-                inlines::TInline,
                 TSpan,
             },
             sdd::{non_normative, verifies},
@@ -188,7 +187,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                 },
                 blocks: vec![],
                 source: TSpan {
-                    data: "[#custom-id]\n== Section with Custom ID\n",
+                    data: "[#custom-id]\n== Section with Custom ID",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -261,7 +260,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                 },
                 blocks: vec![],
                 source: TSpan {
-                    data: "[appendix#custom-id]\n== Appendix with Custom ID\n",
+                    data: "[appendix#custom-id]\n== Appendix with Custom ID",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -337,36 +336,14 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         assert_eq!(
             block,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Work hard",
-                            line: 2,
-                            col: 1,
-                            offset: 31,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Play hard",
-                            line: 3,
-                            col: 1,
-                            offset: 43,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "* Be happy",
-                            line: 4,
-                            col: 1,
-                            offset: 55,
-                        },),
-                    ],
-                    TSpan {
-                        data: "* Work hard\n* Play hard\n* Be happy\n",
-                        line: 2,
-                        col: 1,
-                        offset: 31,
-                    },
-                ),
+                content: TSpan {
+                    data: "* Work hard\n* Play hard\n* Be happy",
+                    line: 2,
+                    col: 1,
+                    offset: 31,
+                },
                 source: TSpan {
-                    data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n",
+                    data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -447,54 +424,16 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
         .unwrap()
         .item;
 
-        dbg!(&block);
-
         assert_eq!(block, TBlock::Simple(
             TSimpleBlock {
-                inline: TInline::Sequence(vec!
-                    [
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "|===",
-                                line: 2,
-                                col: 1,
-                                offset: 27,
-                            },
-                        ),
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "|Header A |Header B",
-                                line: 3,
-                                col: 1,
-                                offset: 32,
-                            },
-                        ),
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "|Footer A |Footer B",
-                                line: 4,
-                                col: 1,
-                                offset: 52,
-                            },
-                        ),
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "|===",
-                                line: 5,
-                                col: 1,
-                                offset: 72,
-                            },
-                        ),
-                    ],
-                    TSpan {
-                        data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
-                        line: 2,
-                        col: 1,
-                        offset: 27,
-                    },
-                ),
+                content: TSpan {
+                    data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
+                    line: 2,
+                    col: 1,
+                    offset: 27,
+                },
                 source: TSpan {
-                    data: "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
+                    data: "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                     line: 1,
                     col: 1,
                     offset: 0,

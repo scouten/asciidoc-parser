@@ -6,7 +6,6 @@ use crate::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            inlines::TInline,
             TSpan,
         },
         sdd::{non_normative, track_file, verifies},
@@ -55,14 +54,14 @@ Content of delimited example block
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "Content of delimited example block",
                     line: 3,
                     col: 1,
                     offset: 29,
-                },),
+                },
                 source: TSpan {
-                    data: "Content of delimited example block\n",
+                    data: "Content of delimited example block",
                     line: 3,
                     col: 1,
                     offset: 29,
@@ -167,12 +166,12 @@ Roads? Where we're going, we don't need roads.
     assert_eq!(
         block,
         TBlock::Simple(TSimpleBlock {
-            inline: TInline::Uninterpreted(TSpan {
+            content: TSpan {
                 data: "Roads? Where we're going, we don't need roads.",
                 line: 2,
                 col: 1,
                 offset: 14,
-            },),
+            },
             source: TSpan {
                 data: "[quote#roads]\nRoads? Where we're going, we don't need roads.",
                 line: 1,
@@ -250,23 +249,21 @@ Roads? Where we're going, we don't need roads.
     );
 
     let block = Block::parse(Span::new(
-    "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
-))
-.unwrap_if_no_warnings()
-.unwrap()
-.item;
+        "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
+    ))
+    .unwrap_if_no_warnings()
+    .unwrap()
+    .item;
 
     assert_eq!(block,
         TBlock:: Simple(
             TSimpleBlock {
-                inline: TInline::Uninterpreted(
-                    TSpan {
-                        data: "Roads? Where we're going, we don't need roads.",
-                        line: 2,
-                        col: 1,
-                        offset: 50,
-                    },
-                ),
+                content: TSpan {
+                    data: "Roads? Where we're going, we don't need roads.",
+                    line: 2,
+                    col: 1,
+                    offset: 50,
+                },
                 source: TSpan {
                     data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
                     line: 1,

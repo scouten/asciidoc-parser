@@ -72,7 +72,7 @@ impl<'src> Document<'src> {
         Self {
             header,
             blocks: maw_blocks.item.item,
-            source,
+            source: source.trim_trailing_whitespace(),
             warnings,
         }
     }

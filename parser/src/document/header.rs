@@ -71,7 +71,7 @@ impl<'src> Header<'src> {
                 item: Self {
                     title,
                     attributes,
-                    source,
+                    source: source.trim_trailing_whitespace(),
                 },
                 after,
             },

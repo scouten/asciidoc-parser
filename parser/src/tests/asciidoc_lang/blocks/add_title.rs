@@ -6,7 +6,6 @@ use crate::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
-            inlines::TInline,
             TSpan,
         },
         sdd::{non_normative, track_file, verifies},
@@ -62,16 +61,14 @@ This is the content of the sidebar block.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is the content of the sidebar block.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 43,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is the content of the sidebar block.",
+                                line: 3,
+                                col: 1,
+                                offset: 43,
+                            },
                             source: TSpan {
-                                data: "This is the content of the sidebar block.\n",
+                                data: "This is the content of the sidebar block.",
                                 line: 3,
                                 col: 1,
                                 offset: 43,
@@ -84,7 +81,7 @@ This is the content of the sidebar block.
                 ],
                 context: "sidebar",
                 source: TSpan {
-                    data: ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****\n",
+                    data: ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -173,7 +170,7 @@ Don't put a space between the dot and the first character of the title.
                 content_model: ContentModel::Verbatim,
                 context: "literal",
                 source: TSpan {
-                    data: ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....\n",
+                    data: ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -374,34 +371,14 @@ If you don't plant it in a container, it will take over your garden.
     assert_eq!(block,
         TBlock::Simple(
             TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "Mint has visions of global conquest.",
-                                line: 3,
-                                col: 1,
-                                offset: 16,
-                            },
-                        ),
-                        TInline::Uninterpreted(
-                            TSpan {
-                                data: "If you don't plant it in a container, it will take over your garden.",
-                                line: 4,
-                                col: 1,
-                                offset: 53,
-                            },
-                        ),
-                    ],
-                    TSpan {
-                        data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
-                        line: 3,
-                        col: 1,
-                        offset: 16,
-                    },
-                ),
+                content: TSpan {
+                    data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
+                    line: 3,
+                    col: 1,
+                    offset: 16,
+                },
                 source: TSpan {
-                    data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
+                    data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                     line: 1,
                     col: 1,
                     offset: 0,

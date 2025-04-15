@@ -41,7 +41,6 @@ mod assign_roles_to_blocks {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                inlines::TInline,
                 TSpan,
             },
             sdd::{non_normative, verifies},
@@ -88,16 +87,14 @@ This is a sidebar with a role assigned to it, rolename.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is a sidebar with a role assigned to it, rolename.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 17,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is a sidebar with a role assigned to it, rolename.",
+                                line: 3,
+                                col: 1,
+                                offset: 17,
+                            },
                             source: TSpan {
-                                data: "This is a sidebar with a role assigned to it, rolename.\n",
+                                data: "This is a sidebar with a role assigned to it, rolename.",
                                 line: 3,
                                 col: 1,
                                 offset: 17,
@@ -183,64 +180,70 @@ The role values are turned into a space-separated list of values, `role1 role2`.
 .unwrap();
 
         assert_eq!(mi.item, TBlock::CompoundDelimited(
-    TCompoundDelimitedBlock {
-        blocks: vec![
-            TBlock::Simple(
-                TSimpleBlock {
-                    inline: TInline::Uninterpreted(
-                        TSpan {
-                            data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                            line: 3,
-                            col: 1,
-                            offset: 20,
+            TCompoundDelimitedBlock {
+                blocks: vec![
+                    TBlock::Simple(
+                        TSimpleBlock {
+                            content: TSpan {
+                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                                line: 3,
+                                col: 1,
+                                offset: 20,
+                            },
+                            source: TSpan {
+                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                                line: 3,
+                                col: 1,
+                                offset: 20,
+                            },
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
                         },
                     ),
-                    source: TSpan {
-                        data: "This is a sidebar with two roles assigned to it, role1 and role2.\n",
-                        line: 3,
-                        col: 1,
-                        offset: 20,
-                    },
-                    title: None,
-                    anchor: None,
-                    attrlist: None,
+                ],
+                context: "sidebar",
+                source: TSpan {
+                    data: "[.role1.role2]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
                 },
-            ),
-        ],
-        context: "sidebar",
-        source: TSpan {
-            data: "[.role1.role2]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
-            line: 1,
-            col: 1,
-            offset: 0,
-        },
-        title: None,
-        anchor: None,
-        attrlist: Some(
-            TAttrlist {
-                attributes: vec![
-                    TElementAttribute {
-                        name: None,
-                        shorthand_items: vec![
-                            TSpan {
-                                data: ".role1",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
-                            TSpan {
-                                data: ".role2",
-                                line: 1,
-                                col: 8,
-                                offset: 7,
+                title: None,
+                anchor: None,
+                attrlist: Some(
+                    TAttrlist {
+                        attributes: vec![
+                            TElementAttribute {
+                                name: None,
+                                shorthand_items: vec![
+                                    TSpan {
+                                        data: ".role1",
+                                        line: 1,
+                                        col: 2,
+                                        offset: 1,
+                                    },
+                                    TSpan {
+                                        data: ".role2",
+                                        line: 1,
+                                        col: 8,
+                                        offset: 7,
+                                    },
+                                ],
+                                value: TSpan {
+                                    data: ".role1.role2",
+                                    line: 1,
+                                    col: 2,
+                                    offset: 1,
+                                },
+                                source: TSpan {
+                                    data: ".role1.role2",
+                                    line: 1,
+                                    col: 2,
+                                    offset: 1,
+                                },
                             },
                         ],
-                        value: TSpan {
-                            data: ".role1.role2",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
                         source: TSpan {
                             data: ".role1.role2",
                             line: 1,
@@ -248,17 +251,9 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                             offset: 1,
                         },
                     },
-                ],
-                source: TSpan {
-                    data: ".role1.role2",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },
+                ),
             },
-        ),
-    },
-));
+        ));
     }
 
     #[test]
@@ -293,16 +288,14 @@ This is a sidebar with one role assigned to it, rolename.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is a sidebar with one role assigned to it, rolename.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 21,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is a sidebar with one role assigned to it, rolename.",
+                                line: 3,
+                                col: 1,
+                                offset: 21,
+                            },
                             source: TSpan {
-                                data: "This is a sidebar with one role assigned to it, rolename.\n",
+                                data: "This is a sidebar with one role assigned to it, rolename.",
                                 line: 3,
                                 col: 1,
                                 offset: 21,
@@ -407,16 +400,14 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            inline: TInline::Uninterpreted(
-                                TSpan {
-                                    data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 26,
-                                },
-                            ),
+                            content: TSpan {
+                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                                line: 3,
+                                col: 1,
+                                offset: 26,
+                            },
                             source: TSpan {
-                                data: "This is a sidebar with two roles assigned to it, role1 and role2.\n",
+                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 line: 3,
                                 col: 1,
                                 offset: 26,

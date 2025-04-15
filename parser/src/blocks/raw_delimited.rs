@@ -91,7 +91,10 @@ impl<'src> RawDelimitedBlock<'src> {
                             lines,
                             content_model,
                             context: context.into(),
-                            source: preamble.source.trim_remainder(line.after),
+                            source: preamble
+                                .source
+                                .trim_remainder(line.after)
+                                .trim_trailing_whitespace(),
                             title: preamble.title,
                             anchor: preamble.anchor,
                             attrlist: preamble.attrlist.clone(),

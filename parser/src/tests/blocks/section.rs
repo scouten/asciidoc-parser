@@ -7,7 +7,6 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
-        inlines::TInline,
         warnings::TWarning,
         TSpan,
     },
@@ -121,12 +120,12 @@ fn has_child_block() {
                 offset: 3,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
-                }),
+                },
                 source: TSpan {
                     data: "abc",
                     line: 3,
@@ -286,7 +285,7 @@ fn has_macro_block_with_extra_blank_line() {
                 attrlist: None,
             })],
             source: TSpan {
-                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
+                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -501,14 +500,14 @@ fn dont_stop_at_child_section() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    inline: TInline::Uninterpreted(TSpan {
+                    content: TSpan {
                         data: "abc",
                         line: 3,
                         col: 1,
                         offset: 18,
-                    }),
+                    },
                     source: TSpan {
-                        data: "abc\n",
+                        data: "abc",
                         line: 3,
                         col: 1,
                         offset: 18,
@@ -526,12 +525,12 @@ fn dont_stop_at_child_section() {
                         offset: 27,
                     },
                     blocks: vec![TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "def",
                             line: 7,
                             col: 1,
                             offset: 38,
-                        }),
+                        },
                         source: TSpan {
                             data: "def",
                             line: 7,
@@ -606,14 +605,14 @@ fn stop_at_peer_section() {
                 offset: 3,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
-                }),
+                },
                 source: TSpan {
-                    data: "abc\n",
+                    data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
@@ -623,8 +622,7 @@ fn stop_at_peer_section() {
                 attrlist: None,
             })],
             source: TSpan {
-                // TO DO: Fix bug that includes blank lines.
-                data: "== Section Title\n\nabc\n\n",
+                data: "== Section Title\n\nabc",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -676,14 +674,14 @@ fn stop_at_ancestor_section() {
                 offset: 4,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                inline: TInline::Uninterpreted(TSpan {
+                content: TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 19,
-                }),
+                },
                 source: TSpan {
-                    data: "abc\n",
+                    data: "abc",
                     line: 3,
                     col: 1,
                     offset: 19,
@@ -693,8 +691,7 @@ fn stop_at_ancestor_section() {
                 attrlist: None,
             })],
             source: TSpan {
-                // TO DO: Fix bug that includes blank lines.
-                data: "=== Section Title\n\nabc\n\n",
+                data: "=== Section Title\n\nabc",
                 line: 1,
                 col: 1,
                 offset: 0,

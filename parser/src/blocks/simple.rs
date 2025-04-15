@@ -1,7 +1,6 @@
 use crate::{
     attributes::Attrlist,
     blocks::{preamble::Preamble, ContentModel, IsBlock},
-    inlines::Inline,
     span::MatchedItem,
     strings::CowStr,
     HasSpan, Span,
@@ -11,7 +10,7 @@ use crate::{
 /// normal substitutions) (e.g., a paragraph block).
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SimpleBlock<'src> {
-    inline: Inline<'src>,
+    content: Span<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
     anchor: Option<Span<'src>>,
@@ -20,39 +19,41 @@ pub struct SimpleBlock<'src> {
 
 impl<'src> SimpleBlock<'src> {
     pub(crate) fn parse(preamble: &Preamble<'src>) -> Option<MatchedItem<'src, Self>> {
-        let inline = Inline::parse_lines(preamble.block_start)?;
+        let source = preamble.block_start.take_non_empty_lines()?;
 
         Some(MatchedItem {
             item: Self {
-                inline: inline.item,
-                source: preamble.source.trim_remainder(inline.after),
+                content: source.item,
+                source: preamble
+                    .source
+                    .trim_remainder(source.after)
+                    .trim_trailing_whitespace(),
                 title: preamble.title,
                 anchor: preamble.anchor,
                 attrlist: preamble.attrlist.clone(),
             },
-            after: inline.after.discard_empty_lines(),
+            after: source.after.discard_empty_lines(),
         })
     }
 
     pub(crate) fn parse_fast(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
-        let inline = Inline::parse_lines(source)?;
-        let source = source.trim_remainder(inline.after);
+        let source = source.take_non_empty_lines()?;
 
         Some(MatchedItem {
             item: Self {
-                inline: inline.item,
-                source,
+                content: source.item,
+                source: source.item,
                 title: None,
                 anchor: None,
                 attrlist: None,
             },
-            after: inline.after.discard_empty_lines(),
+            after: source.after.discard_empty_lines(),
         })
     }
 
-    /// Return the inline content of this block.
-    pub fn inline(&self) -> &Inline<'src> {
-        &self.inline
+    /// Return the raw content of this block.
+    pub fn content(&self) -> &Span<'src> {
+        &self.content
     }
 }
 

@@ -10,7 +10,6 @@ mod attributes;
 mod blocks;
 mod document;
 pub(crate) mod fixtures;
-mod inlines;
 pub(crate) mod sdd;
 mod span;
 mod strings;

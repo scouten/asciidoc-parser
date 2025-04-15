@@ -3,12 +3,12 @@ use std::fmt;
 use crate::{
     blocks::{IsBlock, SimpleBlock},
     span::HasSpan,
-    tests::fixtures::{attributes::TAttrlist, inlines::TInline, TSpan},
+    tests::fixtures::{attributes::TAttrlist, TSpan},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TSimpleBlock {
-    pub inline: TInline,
+    pub content: TSpan,
     pub source: TSpan,
     pub title: Option<TSpan>,
     pub anchor: Option<TSpan>,
@@ -18,7 +18,7 @@ pub(crate) struct TSimpleBlock {
 impl fmt::Debug for TSimpleBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SimpleBlock")
-            .field("inline", &self.inline)
+            .field("content", &self.content)
             .field("source", &self.source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
@@ -76,5 +76,5 @@ fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
         }
     }
 
-    &fixture.source == observed.span() && &fixture.inline == observed.inline()
+    &fixture.source == observed.span() && &fixture.content == observed.content()
 }

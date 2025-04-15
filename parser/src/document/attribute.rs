@@ -50,7 +50,7 @@ impl<'src> Attribute<'src> {
             item: Self {
                 name: name.item,
                 value,
-                source,
+                source: source.trim_trailing_whitespace(),
             },
             after: attr_line.after,
         })

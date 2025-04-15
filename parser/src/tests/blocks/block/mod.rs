@@ -27,7 +27,6 @@ mod error_cases {
         tests::fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
-            inlines::TInline,
             warnings::TWarning,
             TSpan,
         },
@@ -65,14 +64,14 @@ mod error_cases {
                 },
                 blocks: vec![
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "abc",
                             line: 3,
                             col: 1,
                             offset: 19,
-                        }),
+                        },
                         source: TSpan {
-                            data: "abc\n",
+                            data: "abc",
                             line: 3,
                             col: 1,
                             offset: 19,
@@ -82,14 +81,14 @@ mod error_cases {
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: ".ancestor section== Section 2",
                             line: 5,
                             col: 1,
                             offset: 24,
-                        },),
+                        },
                         source: TSpan {
-                            data: ".ancestor section== Section 2\n",
+                            data: ".ancestor section== Section 2",
                             line: 5,
                             col: 1,
                             offset: 24,
@@ -99,12 +98,12 @@ mod error_cases {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        inline: TInline::Uninterpreted(TSpan {
+                        content: TSpan {
                             data: "def",
                             line: 7,
                             col: 1,
                             offset: 55,
-                        },),
+                        },
                         source: TSpan {
                             data: "def",
                             line: 7,
@@ -175,30 +174,14 @@ mod error_cases {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: "[incomplete attrlist",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "=== Section Title (except it isn't)",
-                            line: 2,
-                            col: 1,
-                            offset: 21,
-                        },),
-                    ],
-                    TSpan {
-                        data: "[incomplete attrlist\n=== Section Title (except it isn't)\n",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                ),
+                content: TSpan {
+                    data: "[incomplete attrlist\n=== Section Title (except it isn't)",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 source: TSpan {
-                    data: "[incomplete attrlist\n=== Section Title (except it isn't)\n",
+                    data: "[incomplete attrlist\n=== Section Title (except it isn't)",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -227,8 +210,6 @@ mod error_cases {
         ));
 
         let mi = mi.unwrap();
-
-        dbg!(&mi);
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
         assert_eq!(mi.item.raw_context().deref(), "section");
@@ -284,14 +265,14 @@ mod error_cases {
                     offset: 28,
                 },
                 blocks: vec![TBlock::Simple(TSimpleBlock {
-                    inline: TInline::Uninterpreted(TSpan {
+                    content: TSpan {
                         data: "abc",
                         line: 4,
                         col: 1,
                         offset: 61,
-                    },),
+                    },
                     source: TSpan {
-                        data: "abc\n",
+                        data: "abc",
                         line: 4,
                         col: 1,
                         offset: 61,
@@ -301,7 +282,7 @@ mod error_cases {
                     attrlist: None,
                 },),],
                 source: TSpan {
-                    data: "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n",
+                    data: "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -375,28 +356,12 @@ mod error_cases {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                inline: TInline::Sequence(
-                    vec![
-                        TInline::Uninterpreted(TSpan {
-                            data: ". abc",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },),
-                        TInline::Uninterpreted(TSpan {
-                            data: "def",
-                            line: 2,
-                            col: 1,
-                            offset: 6,
-                        },),
-                    ],
-                    TSpan {
-                        data: ". abc\ndef",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                ),
+                content: TSpan {
+                    data: ". abc\ndef",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
                 source: TSpan {
                     data: ". abc\ndef",
                     line: 1,
