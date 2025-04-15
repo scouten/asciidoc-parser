@@ -67,8 +67,8 @@ impl<'src> Attribute<'src> {
     }
 
     /// Return the attribute's interpolated value.
-    pub fn value(&'src self) -> AttributeValue<'src> {
-        self.value.as_attribute_value()
+    pub fn value(&'src self) -> InterpretedValue<'src> {
+        self.value.as_interpreted_value()
     }
 }
 
@@ -96,9 +96,9 @@ pub enum RawAttributeValue<'src> {
 }
 
 impl<'src> RawAttributeValue<'src> {
-    /// Convert this to an [`AttributeValue`], resolving any interpolation
+    /// Convert this to an [`InterpretedValue`], resolving any interpolation
     /// necessary if the value contains a textual value.
-    pub fn as_attribute_value(&self) -> AttributeValue<'src> {
+    pub fn as_interpreted_value(&self) -> InterpretedValue<'src> {
         match self {
             Self::Value(span) => {
                 let data = span.data();
@@ -133,14 +133,14 @@ impl<'src> RawAttributeValue<'src> {
                         .collect();
 
                     let value = value.join("");
-                    AttributeValue::Value(CowStr::from(value))
+                    InterpretedValue::Value(CowStr::from(value))
                 } else {
-                    AttributeValue::Value(CowStr::Borrowed(data))
+                    InterpretedValue::Value(CowStr::Borrowed(data))
                 }
             }
 
-            Self::Set => AttributeValue::Set,
-            Self::Unset => AttributeValue::Unset,
+            Self::Set => InterpretedValue::Set,
+            Self::Unset => InterpretedValue::Unset,
         }
     }
 }
@@ -151,7 +151,7 @@ impl<'src> RawAttributeValue<'src> {
 /// have any continuation markers resolved, but will no longer
 /// contain a reference to the [`Span`] that contains the value.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum AttributeValue<'src> {
+pub enum InterpretedValue<'src> {
     /// A custom value with all necessary interpolations applied.
     Value(CowStr<'src>),
 
