@@ -17,7 +17,7 @@ The built-in attribute names are listed in the xref:document-attributes-ref.adoc
 
 mod valid_user_defined_names {
     use crate::{
-        document::{Attribute, AttributeValue},
+        document::{Attribute, InterpretedValue},
         tests::{
             fixtures::{
                 document::{TAttribute, TRawAttributeValue},
@@ -72,7 +72,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 
     #[test]
@@ -100,7 +100,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
 
         let mi = Attribute::parse(Span::new(":_abc:")).unwrap();
 
@@ -123,7 +123,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 
     #[test]
@@ -152,7 +152,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 
     #[test]
@@ -180,7 +180,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
 
         let mi = Attribute::parse(Span::new(":URL-REPO:")).unwrap();
 
@@ -203,7 +203,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 }
 

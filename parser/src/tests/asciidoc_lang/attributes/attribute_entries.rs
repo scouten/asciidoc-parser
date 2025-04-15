@@ -1,5 +1,5 @@
 use crate::{
-    document::{Attribute, AttributeValue},
+    document::{Attribute, InterpretedValue},
     tests::{
         fixtures::{
             document::{TAttribute, TRawAttributeValue},
@@ -68,7 +68,7 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
         }
     );
 
-    assert_eq!(mi.item.value(), AttributeValue::Set);
+    assert_eq!(mi.item.value(), InterpretedValue::Set);
 }
 
 #[test]
@@ -114,7 +114,7 @@ At the end of the value, press kbd:[Enter].
         }
     );
 
-    if let AttributeValue::Value(value) = mi.item.value() {
+    if let InterpretedValue::Value(value) = mi.item.value() {
         assert_eq!(value.as_ref(), "value of the attribute");
     } else {
         panic!("unexpected value type {v:?}", v = mi.item.value());

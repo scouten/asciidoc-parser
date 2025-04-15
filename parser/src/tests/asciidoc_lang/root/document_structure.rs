@@ -299,7 +299,7 @@ mod lines {
         document::Attribute,
         tests::{
             fixtures::{
-                document::{TAttribute, TAttributeValue, TRawAttributeValue},
+                document::{TAttribute, TInterpretedValue, TRawAttributeValue},
                 TSpan,
             },
             sdd::verifies,
@@ -444,7 +444,10 @@ more value
             }
         );
 
-        assert_eq!(mi.item.value(), TAttributeValue::Value("value more value"));
+        assert_eq!(
+            mi.item.value(),
+            TInterpretedValue::Value("value more value")
+        );
 
         assert_eq!(
             mi.after,

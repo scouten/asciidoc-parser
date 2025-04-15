@@ -2,7 +2,7 @@ use crate::{
     document::Attribute,
     tests::{
         fixtures::{
-            document::{TAttribute, TAttributeValue, TRawAttributeValue},
+            document::{TAttribute, TInterpretedValue, TRawAttributeValue},
             TSpan,
         },
         sdd::{non_normative, track_file, verifies},
@@ -26,7 +26,7 @@ When you find yourself typing the same text repeatedly, or text that often needs
 
 mod user_defined_names {
     use crate::{
-        document::{Attribute, AttributeValue},
+        document::{Attribute, InterpretedValue},
         tests::{
             fixtures::{
                 document::{TAttribute, TRawAttributeValue},
@@ -84,7 +84,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 
     #[test]
@@ -112,7 +112,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
 
         let mi = Attribute::parse(Span::new(":_abc:")).unwrap();
 
@@ -135,7 +135,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 
     #[test]
@@ -164,7 +164,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 
     #[test]
@@ -192,7 +192,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
 
         let mi = Attribute::parse(Span::new(":Url:")).unwrap();
 
@@ -215,7 +215,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), AttributeValue::Set);
+        assert_eq!(mi.item.value(), InterpretedValue::Set);
     }
 }
 
@@ -276,7 +276,7 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
         },
     });
 
-    assert_eq!(mi.item.value(), TAttributeValue::Value("Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."));
+    assert_eq!(mi.item.value(), TInterpretedValue::Value("Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."));
 
     let mi = Attribute::parse(Span::new(
         ":url-repo: https://github.com/asciidoctor/asciidoctor",
@@ -309,6 +309,6 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 
     assert_eq!(
         mi.item.value(),
-        TAttributeValue::Value("https://github.com/asciidoctor/asciidoctor")
+        TInterpretedValue::Value("https://github.com/asciidoctor/asciidoctor")
     );
 }
