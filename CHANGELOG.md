@@ -6,6 +6,16 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 The format of this changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.4.0](https://github.com/scouten/asciidoc-parser/compare/v0.3.1...v0.4.0)
+_16 April 2025_
+
+### Added
+
+* [**breaking**] Revert rename `AttributeValue` to `InterpretedValue` ([#229](https://github.com/scouten/asciidoc-parser/pull/229)) ([#230](https://github.com/scouten/asciidoc-parser/pull/230))
+* [**breaking**] Rename `AttributeValue` to `InterpretedValue` ([#229](https://github.com/scouten/asciidoc-parser/pull/229))
+* [**breaking**] Remove inline content model ([#228](https://github.com/scouten/asciidoc-parser/pull/228))
+* Add new fn `Span::take_non_empty_lines` ([#225](https://github.com/scouten/asciidoc-parser/pull/225))
+
 ## [0.3.1](https://github.com/scouten/asciidoc-parser/compare/v0.3.0...v0.3.1)
 _14 April 2025_
 
