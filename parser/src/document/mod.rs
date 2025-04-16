@@ -1,7 +1,7 @@
 //! Describes the top-level document structure.
 
 mod attribute;
-pub use attribute::{Attribute, InterpretedValue, RawAttributeValue};
+pub use attribute::{Attribute, AttributeValue, RawAttributeValue};
 
 mod document;
 pub use document::Document;

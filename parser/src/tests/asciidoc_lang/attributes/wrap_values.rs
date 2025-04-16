@@ -1,5 +1,5 @@
 use crate::{
-    document::{Attribute, InterpretedValue},
+    document::{Attribute, AttributeValue},
     strings::CowStr,
     tests::{
         fixtures::{
@@ -78,7 +78,7 @@ If the line continuation is missing, the processor will assume it has found the 
         },
     });
 
-    assert_eq!(mi.item.value(), InterpretedValue::Value(
+    assert_eq!(mi.item.value(), AttributeValue::Value(
         CowStr::Boxed("If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source.".to_string().into_boxed_str())
         ),
     );
@@ -140,7 +140,7 @@ This syntax ensures that the newlines are preserved in the output as hard line b
 
     assert_eq!(
         mi.item.value(),
-        InterpretedValue::Value(CowStr::Boxed(
+        AttributeValue::Value(CowStr::Boxed(
             "Write your docs in text,\nAsciiDoc makes it easy,\nNow get back to work!"
                 .to_string()
                 .into_boxed_str()

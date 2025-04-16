@@ -273,8 +273,8 @@ impl<'src> ElementAttribute<'src> {
     }
 
     //-/ Return the attribute's interpolated value.
-    // pub fn value(&'src self) -> InterpretedValue<'src> {
-    //     self.value.as_interpreted_value()
+    // pub fn value(&'src self) -> AttributeValue<'src> {
+    //     self.value.as_attribute_value()
     // }
 }
 

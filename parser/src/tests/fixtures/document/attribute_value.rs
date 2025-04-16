@@ -1,43 +1,43 @@
 use std::cmp::PartialEq;
 
-use crate::document::InterpretedValue;
+use crate::document::AttributeValue;
 
 #[derive(Debug, Eq, PartialEq)]
-pub(crate) enum TInterpretedValue {
+pub(crate) enum TAttributeValue {
     Value(&'static str),
     Set,
     Unset,
 }
 
-impl<'src> PartialEq<InterpretedValue<'src>> for TInterpretedValue {
-    fn eq(&self, other: &InterpretedValue<'src>) -> bool {
+impl<'src> PartialEq<AttributeValue<'src>> for TAttributeValue {
+    fn eq(&self, other: &AttributeValue<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TInterpretedValue> for InterpretedValue<'_> {
-    fn eq(&self, other: &TInterpretedValue) -> bool {
+impl PartialEq<TAttributeValue> for AttributeValue<'_> {
+    fn eq(&self, other: &TAttributeValue) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TInterpretedValue> for &InterpretedValue<'_> {
-    fn eq(&self, other: &TInterpretedValue) -> bool {
+impl PartialEq<TAttributeValue> for &AttributeValue<'_> {
+    fn eq(&self, other: &TAttributeValue) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TInterpretedValue, observed: &InterpretedValue) -> bool {
+fn fixture_eq_observed(fixture: &TAttributeValue, observed: &AttributeValue) -> bool {
     match fixture {
-        TInterpretedValue::Value(ref fixture_value) => {
-            if let InterpretedValue::Value(ref observed_value) = observed {
+        TAttributeValue::Value(ref fixture_value) => {
+            if let AttributeValue::Value(ref observed_value) = observed {
                 fixture_value == &observed_value.as_ref()
             } else {
                 false
             }
         }
 
-        TInterpretedValue::Set => observed == &InterpretedValue::Set,
-        TInterpretedValue::Unset => observed == &InterpretedValue::Unset,
+        TAttributeValue::Set => observed == &AttributeValue::Set,
+        TAttributeValue::Unset => observed == &AttributeValue::Unset,
     }
 }
