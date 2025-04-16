@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     document::Attribute,
     tests::fixtures::{
-        document::{TAttribute, TInterpretedValue, TRawAttributeValue},
+        document::{TAttribute, TAttributeValue, TRawAttributeValue},
         TSpan,
     },
     Span,
@@ -45,7 +45,7 @@ fn simple_value() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar"));
+    assert_eq!(mi.item.value(), TAttributeValue::Value("bar"));
 
     assert_eq!(
         mi.after,
@@ -81,7 +81,7 @@ fn no_value() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Set);
+    assert_eq!(mi.item.value(), TAttributeValue::Set);
 
     assert_eq!(
         mi.after,
@@ -117,7 +117,7 @@ fn name_with_hyphens() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Set);
+    assert_eq!(mi.item.value(), TAttributeValue::Set);
 
     assert_eq!(
         mi.after,
@@ -153,7 +153,7 @@ fn unset_prefix() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Unset);
+    assert_eq!(mi.item.value(), TAttributeValue::Unset);
 
     assert_eq!(
         mi.after,
@@ -189,7 +189,7 @@ fn unset_postfix() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Unset);
+    assert_eq!(mi.item.value(), TAttributeValue::Unset);
 
     assert_eq!(
         mi.after,
@@ -250,7 +250,7 @@ fn value_with_soft_wrap() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar blah"));
+    assert_eq!(mi.item.value(), TAttributeValue::Value("bar blah"));
 
     assert_eq!(
         mi.after,
@@ -291,7 +291,7 @@ fn value_with_hard_wrap() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar\nblah"));
+    assert_eq!(mi.item.value(), TAttributeValue::Value("bar\nblah"));
 
     assert_eq!(
         mi.after,
