@@ -3,6 +3,8 @@
 mod attribute;
 pub use attribute::{Attribute, InterpretedValue, RawAttributeValue};
 
+mod attribute_value;
+
 mod document;
 pub use document::Document;
 
