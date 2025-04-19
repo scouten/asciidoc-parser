@@ -13,6 +13,9 @@ pub mod blocks;
 pub mod document;
 pub use document::Document;
 
+pub mod parser;
+pub use parser::Parser;
+
 mod span;
 pub use span::{HasSpan, Span};
 

@@ -8,7 +8,7 @@ use crate::{
     document::Header,
     strings::CowStr,
     warnings::Warning,
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// A document represents the top-level block element in AsciiDoc. It consists
@@ -52,7 +52,7 @@ impl<'src> Document<'src> {
     /// provided via the [`warnings()`] iterator.
     ///
     /// [`warnings()`]: Self::warnings
-    pub fn parse(source: &'src str) -> Self {
+    pub(crate) fn parse(source: &'src str, _parser: &mut Parser) -> Self {
         let source = Span::new(source);
         let i = source.discard_empty_lines();
         let i = if i.is_empty() { source } else { i };
