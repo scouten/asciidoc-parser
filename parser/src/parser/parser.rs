@@ -30,7 +30,7 @@ impl Parser {
     /// meanings. For that reason, a caller is advised to review the warnings
     /// provided via the [`warnings()`] iterator.
     ///
-    /// [`warnings()`]: Self::warnings
+    /// [`warnings()`]: Document::warnings
     pub fn parse<'src>(&self, source: &'src str) -> Document<'src> {
         let mut temp_copy = self.clone();
         Document::parse(source, &mut temp_copy)
