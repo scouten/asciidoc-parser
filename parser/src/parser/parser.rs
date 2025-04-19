@@ -11,10 +11,10 @@ impl Parser {
     /// Note that the document references the underlying source string and
     /// necessarily has the same lifetime as the source.
     ///
-    /// The `Document` data structure returned by this call and nearly all data
-    /// structures contained within it are gated by the lifetime of the `source`
-    /// text passed in to this function. For that reason all of those data
-    /// structures are given the lifetime `'src`.
+    /// The [`Document`] data structure returned by this call and nearly all
+    /// data structures contained within it are gated by the lifetime of the
+    /// `source` text passed in to this function. For that reason all of
+    /// those data structures are given the lifetime `'src`.
     ///
     /// **IMPORTANT:** The AsciiDoc language documentation states that UTF-16
     /// encoding is allowed if a byte-order-mark (BOM) is present at the
