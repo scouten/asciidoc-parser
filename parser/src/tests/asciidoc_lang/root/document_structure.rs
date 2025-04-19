@@ -20,7 +20,6 @@ mod documents {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        document::Document,
         tests::{
             fixtures::{
                 blocks::{TBlock, TSimpleBlock},
@@ -29,6 +28,7 @@ mod documents {
             },
             sdd::{non_normative, verifies},
         },
+        Parser,
     };
 
     non_normative!(
@@ -55,7 +55,7 @@ This is a basic AsciiDoc document.
         );
 
         assert_eq!(
-            Document::parse("This is a basic AsciiDoc document.\n"),
+            Parser::default().parse("This is a basic AsciiDoc document.\n"),
             TDocument {
                 header: THeader {
                     title: None,
@@ -117,7 +117,7 @@ This document contains two paragraphs.
         );
 
         assert_eq!(
-            Document::parse(
+            Parser::default().parse(
                 "This is a basic AsciiDoc document.\n\nThis document contains two paragraphs.\n"
             ),
             TDocument {
@@ -199,7 +199,7 @@ It also has a header that specifies the document title.
         );
 
         assert_eq!(
-            Document::parse(
+            Parser::default().parse(
                 "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title."
             ),
             TDocument {

@@ -74,7 +74,20 @@ An element attribute is defined using an attribute list on an element, or an ava
 );
 
 mod macros {
-    use crate::tests::sdd::{non_normative, verifies};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        tests::{
+            fixtures::{
+                attributes::{TAttrlist, TElementAttribute},
+                blocks::{TBlock, TMacroBlock, TSimpleBlock},
+                document::{TDocument, THeader},
+                TSpan,
+            },
+            sdd::{non_normative, verifies},
+        },
+        Parser,
+    };
 
     non_normative!(
         r#"
@@ -86,18 +99,6 @@ See https://en.wikipedia.org/wiki/Macro_(computer_science)[macro^] to learn more
 
 "#
     );
-
-    use pretty_assertions_sorted::assert_eq;
-
-    use crate::{
-        document::Document,
-        tests::fixtures::{
-            attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TMacroBlock, TSimpleBlock},
-            document::{TDocument, THeader},
-            TSpan,
-        },
-    };
 
     #[test]
     fn block_macro() {
@@ -114,7 +115,7 @@ image::sunset.jpg[Sunset]
         );
 
         assert_eq!(
-            Document::parse("image::sunset.jpg[Sunset]\n"),
+            Parser::default().parse("image::sunset.jpg[Sunset]\n"),
             TDocument {
                 header: THeader {
                     title: None,
@@ -204,7 +205,7 @@ Click the button with the image:star.png[Star] to favorite the project.
         );
 
         assert_eq!(
-            Document::parse(
+            Parser::default().parse(
                 "Click the button with the image:star.png[Star] to favorite the project.\n"
             ),
             TDocument {

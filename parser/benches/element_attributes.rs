@@ -1,4 +1,4 @@
-use asciidoc_parser::Document;
+use asciidoc_parser::Parser;
 use codspeed_criterion_compat::{black_box, criterion_group, criterion_main, Criterion};
 
 const BENCH_NAME: &str = "element attributes";
@@ -15,8 +15,9 @@ ghi
 "#;
 
 pub fn perf(c: &mut Criterion) {
+    let parser = Parser::default();
     c.bench_function(BENCH_NAME, |b| {
-        b.iter(|| Document::parse(black_box(PARSE_TEXT)))
+        b.iter(|| parser.parse(black_box(PARSE_TEXT)))
     });
 }
 

@@ -4,7 +4,6 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{ContentModel, IsBlock},
-    document::Document,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
@@ -13,19 +12,20 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
+    Parser,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let doc1 = Document::parse("");
+    let doc1 = Parser::default().parse("");
     let doc2 = doc1.clone();
     assert_eq!(doc1, doc2);
 }
 
 #[test]
 fn empty_source() {
-    let doc = Document::parse("");
+    let doc = Parser::default().parse("");
 
     assert_eq!(doc.content_model(), ContentModel::Compound);
     assert_eq!(doc.raw_context().deref(), "document");
@@ -65,7 +65,7 @@ fn empty_source() {
 #[test]
 fn only_spaces() {
     assert_eq!(
-        Document::parse("    "),
+        Parser::default().parse("    "),
         TDocument {
             header: THeader {
                 title: None,
@@ -91,7 +91,7 @@ fn only_spaces() {
 
 #[test]
 fn one_simple_block() {
-    let doc = Document::parse("abc");
+    let doc = Parser::default().parse("abc");
     assert_eq!(
         doc,
         TDocument {
@@ -138,7 +138,7 @@ fn one_simple_block() {
 #[test]
 fn two_simple_blocks() {
     assert_eq!(
-        Document::parse("abc\n\ndef"),
+        Parser::default().parse("abc\n\ndef"),
         TDocument {
             header: THeader {
                 title: None,
@@ -200,7 +200,7 @@ fn two_simple_blocks() {
 #[test]
 fn two_blocks_and_title() {
     assert_eq!(
-        Document::parse("= Example Title\n\nabc\n\ndef"),
+        Parser::default().parse("= Example Title\n\nabc\n\ndef"),
         TDocument {
             header: THeader {
                 title: Some(TSpan {
@@ -267,7 +267,7 @@ fn two_blocks_and_title() {
 #[test]
 fn extra_space_before_title() {
     assert_eq!(
-        Document::parse("=   Example Title\n\nabc"),
+        Parser::default().parse("=   Example Title\n\nabc"),
         TDocument {
             header: THeader {
                 title: Some(TSpan {
@@ -315,7 +315,7 @@ fn extra_space_before_title() {
 #[test]
 fn err_bad_header() {
     assert_eq!(
-        Document::parse("= Title\nnot an attribute\n"),
+        Parser::default().parse("= Title\nnot an attribute\n"),
         TDocument {
             header: THeader {
                 title: Some(TSpan {
@@ -371,7 +371,7 @@ fn err_bad_header() {
 #[test]
 fn err_bad_header_and_bad_macro() {
     assert_eq!(
-        Document::parse("= Title\nnot an attribute\n\n== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
+        Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
         TDocument {
             header: THeader {
                 title: Some(TSpan {
