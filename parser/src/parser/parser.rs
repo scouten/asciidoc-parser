@@ -45,6 +45,37 @@ impl<'p> Parser<'p> {
         Document::parse(source, &mut temp_copy)
     }
 
+    /// Retrieves the current interpreted value of a [document attribute].
+    ///
+    /// Each document holds a set of name-value pairs called document
+    /// attributes. These attributes provide a means of configuring the AsciiDoc
+    /// processor, declaring document metadata, and defining reusable content.
+    /// This page introduces document attributes and answers some questions
+    /// about the terminology used when referring to them.
+    ///
+    /// ## What are document attributes?
+    ///
+    /// Document attributes are effectively document-scoped variables for the
+    /// AsciiDoc language. The AsciiDoc language defines a set of built-in
+    /// attributes, and also allows the author (or extensions) to define
+    /// additional document attributes, which may replace built-in attributes
+    /// when permitted.
+    ///
+    /// Built-in attributes either provide access to read-only information about
+    /// the document and its environment or allow the author to configure
+    /// behavior of the AsciiDoc processor for a whole document or select
+    /// regions. Built-in attributes are effectively unordered. User-defined
+    /// attribute serve as a powerful text replacement tool. User-defined
+    /// attributes are stored in the order in which they are defined.
+    ///
+    /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
+    pub fn attribute_value<N: AsRef<str>>(self, name: N) -> InterpretedValue<'p> {
+        self.attribute_values
+            .get(name.as_ref())
+            .map(|av| av.value.clone())
+            .unwrap_or(InterpretedValue::Unset)
+    }
+
     /// Sets the value of an [intrinsic attribute].
     ///
     /// Intrinsic attributes are set automatically by the processor. These
@@ -64,7 +95,7 @@ impl<'p> Parser<'p> {
     /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
     ///
     /// [`with_intrinsic_attribute_bool()`]: Self::with_intrinsic_attribute_bool
-    pub fn with_intrinsic_attribute<N: ToString, V: ToString>(
+    pub fn with_intrinsic_attribute<N: AsRef<str>, V: AsRef<str>>(
         mut self,
         name: N,
         value: V,
@@ -73,11 +104,11 @@ impl<'p> Parser<'p> {
         let attribute_value = AttributeValue {
             allowable_value: AllowableValue::Any,
             modification_context,
-            value: InterpretedValue::Value(value.to_string().into()),
+            value: InterpretedValue::Value(value.as_ref().to_string().into()),
         };
 
         self.attribute_values
-            .insert(name.to_string(), attribute_value);
+            .insert(name.as_ref().to_string(), attribute_value);
 
         self
     }
@@ -104,7 +135,7 @@ impl<'p> Parser<'p> {
     /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
     ///
     /// [`with_intrinsic_attribute()`]: Self::with_intrinsic_attribute
-    pub fn with_intrinsic_attribute_bool<N: ToString>(
+    pub fn with_intrinsic_attribute_bool<N: AsRef<str>>(
         mut self,
         name: N,
         value: bool,
@@ -121,7 +152,7 @@ impl<'p> Parser<'p> {
         };
 
         self.attribute_values
-            .insert(name.to_string(), attribute_value);
+            .insert(name.as_ref().to_string(), attribute_value);
 
         self
     }
