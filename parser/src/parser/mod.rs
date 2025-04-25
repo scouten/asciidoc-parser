@@ -1,4 +1,3 @@
-#![allow(unused)] // DO NOT MERGE
 //! The [`Parser`] struct and its related structs allow a caller to configure
 //! how AsciiDoc parsing occurs and then to initiate the parsing process.
 
