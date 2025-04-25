@@ -3,8 +3,8 @@
 //! how AsciiDoc parsing occurs and then to initiate the parsing process.
 
 mod attribute_value;
-pub use attribute_value::AllowableValue;
-pub(crate) use attribute_value::{AttributeValue, ModificationContext};
+pub(crate) use attribute_value::AttributeValue;
+pub use attribute_value::{AllowableValue, ModificationContext};
 
 mod parser;
 pub use parser::Parser;

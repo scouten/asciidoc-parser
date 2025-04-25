@@ -3,12 +3,9 @@ use crate::document::InterpretedValue;
 /// Document attributes are used either to configure behavior in the processor
 /// or to relay information about the document and its environment.
 ///
-/// Unless otherwise marked, these attributes can be modified (set or unset)
-/// from the API using the `:attributes` option, from the CLI using the `-a`
-/// option, or in the document (often in the document header) using an attribute
-/// entry.
-///
-/// TO DO: Update above statement to reflect the API defined for Rust crate.
+/// Attribute values can be established via the API using the
+/// [`Parser::with_intrinsic_attribute`] or
+/// [`Parser::with_intrinsic_attribute_bool`] functions.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct AttributeValue<'src> {
     /// Allowable values for the attribute.
@@ -46,7 +43,7 @@ pub enum AllowableValue<'src> {
 
 /// Allowable context(s) for modification of this attribute value.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) enum ModificationContext {
+pub enum ModificationContext {
     /// Value can only be configured via API.
     ApiOnly,
 

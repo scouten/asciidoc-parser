@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 
-use crate::{parser::AttributeValue, Document};
+use crate::{
+    document::InterpretedValue,
+    parser::{AllowableValue, AttributeValue, ModificationContext},
+    Document,
+};
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
 /// how AsciiDoc parsing occurs and then to initiate the parsing process.
@@ -39,5 +43,86 @@ impl<'p> Parser<'p> {
     pub fn parse<'src>(&self, source: &'src str) -> Document<'src> {
         let mut temp_copy = self.clone();
         Document::parse(source, &mut temp_copy)
+    }
+
+    /// Sets the value of an [intrinsic attribute].
+    ///
+    /// Intrinsic attributes are set automatically by the processor. These
+    /// attributes provide information about the document being processed (e.g.,
+    /// `docfile`), the security mode under which the processor is running
+    /// (e.g., `safe-mode-name`), and information about the user’s environment
+    /// (e.g., `user-home`).
+    ///
+    /// The [`modification_context`](ModificationContext) establishes whether
+    /// the value can be subsequently modified by the document header and/or in
+    /// the document body.
+    ///
+    /// Subsequent calls to this function or [`with_intrinsic_attribute_bool()`]
+    /// are always permitted. The last such call for any given attribute name
+    /// takes precendence.
+    ///
+    /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
+    ///
+    /// [`with_intrinsic_attribute_bool()`]: Self::with_intrinsic_attribute_bool
+    pub fn with_intrinsic_attribute<N: ToString, V: ToString>(
+        mut self,
+        name: N,
+        value: V,
+        modification_context: ModificationContext,
+    ) -> Self {
+        let attribute_value = AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context,
+            value: InterpretedValue::Value(value.to_string().into()),
+        };
+
+        self.attribute_values
+            .insert(name.to_string(), attribute_value);
+
+        self
+    }
+
+    /// Sets the value of an [intrinsic attribute] from a boolean flag.
+    ///
+    /// A boolean `true` is interpreted as "set." A boolean `false` is
+    /// interpreted as "unset."
+    ///
+    /// Intrinsic attributes are set automatically by the processor. These
+    /// attributes provide information about the document being processed (e.g.,
+    /// `docfile`), the security mode under which the processor is running
+    /// (e.g., `safe-mode-name`), and information about the user’s environment
+    /// (e.g., `user-home`).
+    ///
+    /// The [`modification_context`](ModificationContext) establishes whether
+    /// the value can be subsequently modified by the document header and/or in
+    /// the document body.
+    ///
+    /// Subsequent calls to this function or [`with_intrinsic_attribute()`] are
+    /// always permitted. The last such call for any given attribute name takes
+    /// precendence.
+    ///
+    /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
+    ///
+    /// [`with_intrinsic_attribute()`]: Self::with_intrinsic_attribute
+    pub fn with_intrinsic_attribute_bool<N: ToString>(
+        mut self,
+        name: N,
+        value: bool,
+        modification_context: ModificationContext,
+    ) -> Self {
+        let attribute_value = AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context,
+            value: if value {
+                InterpretedValue::Set
+            } else {
+                InterpretedValue::Unset
+            },
+        };
+
+        self.attribute_values
+            .insert(name.to_string(), attribute_value);
+
+        self
     }
 }
