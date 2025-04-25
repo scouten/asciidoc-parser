@@ -69,7 +69,7 @@ impl<'p> Parser<'p> {
     /// attributes are stored in the order in which they are defined.
     ///
     /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
-    pub fn attribute_value<N: AsRef<str>>(self, name: N) -> InterpretedValue<'p> {
+    pub fn attribute_value<N: AsRef<str>>(&self, name: N) -> InterpretedValue<'p> {
         self.attribute_values
             .get(name.as_ref())
             .map(|av| av.value.clone())
