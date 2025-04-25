@@ -1,11 +1,16 @@
-use crate::Document;
+use std::collections::HashMap;
+
+use crate::{parser::AttributeValue, Document};
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
 /// how AsciiDoc parsing occurs and then to initiate the parsing process.
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Parser {}
+pub struct Parser<'p> {
+    /// Attribute values at current state of parsing.
+    pub(crate) attribute_values: HashMap<String, AttributeValue<'p>>,
+}
 
-impl Parser {
+impl<'p> Parser<'p> {
     /// Parse a UTF-8 string as an AsciiDoc document.
     ///
     /// Note that the document references the underlying source string and

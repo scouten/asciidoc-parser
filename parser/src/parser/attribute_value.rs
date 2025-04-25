@@ -1,4 +1,3 @@
-#![allow(unused)] // DO NOT MERGE
 use crate::document::InterpretedValue;
 
 /// Document attributes are used either to configure behavior in the processor
@@ -24,7 +23,7 @@ pub(crate) struct AttributeValue<'src> {
 
 /// Allowable values for the attribute.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) enum AllowableValue<'src> {
+pub enum AllowableValue<'src> {
     /// Any value is accepted.
     Any,
 
