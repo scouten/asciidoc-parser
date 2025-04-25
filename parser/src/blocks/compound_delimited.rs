@@ -6,7 +6,7 @@ use crate::{
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// A delimited block that can contain other blocks.
@@ -101,7 +101,8 @@ impl<'src> CompoundDelimitedBlock<'src> {
 
         let inside_delimiters = delimiter.after.trim_remainder(closing_delimiter.item);
 
-        let maw_blocks = parse_blocks_until(inside_delimiters, |_| false);
+        let mut bogus_parser = Parser::default();
+        let maw_blocks = parse_blocks_until(inside_delimiters, |_| false, &mut bogus_parser);
 
         let blocks = maw_blocks.item;
         let source = preamble.source.trim_remainder(closing_delimiter.after);

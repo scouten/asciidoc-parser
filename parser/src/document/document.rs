@@ -52,18 +52,18 @@ impl<'src> Document<'src> {
     /// provided via the [`warnings()`] iterator.
     ///
     /// [`warnings()`]: Self::warnings
-    pub(crate) fn parse(source: &'src str, _parser: &mut Parser) -> Self {
+    pub(crate) fn parse(source: &'src str, parser: &mut Parser) -> Self {
         let source = Span::new(source);
         let i = source.discard_empty_lines();
         let i = if i.is_empty() { source } else { i };
 
-        let mi = Header::parse(i);
+        let mi = Header::parse(i, parser);
         let i = mi.item.after;
 
         let header = mi.item.item;
         let mut warnings = mi.warnings;
 
-        let mut maw_blocks = parse_blocks_until(i, |_| false);
+        let mut maw_blocks = parse_blocks_until(i, |_| false, parser);
 
         if !maw_blocks.warnings.is_empty() {
             warnings.append(&mut maw_blocks.warnings);

@@ -2,7 +2,7 @@ use crate::{
     blocks::Block,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning},
-    Span,
+    Parser, Span,
 };
 
 /// Parse blocks until end of input or a pre-determined stop condition is
@@ -10,6 +10,7 @@ use crate::{
 pub(crate) fn parse_blocks_until<'src, F>(
     mut source: Span<'src>,
     f: F,
+    _parser: &mut Parser,
 ) -> MatchAndWarnings<'src, MatchedItem<'src, Vec<Block<'src>>>>
 where
     F: Fn(&Span<'src>) -> bool,
