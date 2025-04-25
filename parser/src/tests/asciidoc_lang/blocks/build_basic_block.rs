@@ -11,7 +11,7 @@ use crate::{
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Document, Span,
+    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/build-basic-block.adoc");
@@ -79,7 +79,7 @@ This is more content in the sidebar block.
 "#
     );
 
-    let doc = Document::parse(
+    let doc = Parser::default().parse(
     "Text in your document.\n\n****\nThis is content in a sidebar block.\n\nimage::name.png[]\n\nThis is more content in the sidebar block.\n****",
 );
 
