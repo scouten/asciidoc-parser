@@ -8,7 +8,7 @@ use crate::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSimpleBlock},
         warnings::TWarning,
-        TSpan,
+        TContent, TSpan,
     },
     warnings::WarningType,
     HasSpan, Parser, Span,
@@ -28,13 +28,12 @@ fn err_inline_syntax() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TSpan {
+            content: TContent::Basic(TSpan {
                 data: "foo:bar[]",
                 line: 1,
                 col: 1,
                 offset: 0,
-            },
-
+            }),
             source: TSpan {
                 data: "foo:bar[]",
                 line: 1,
@@ -79,12 +78,12 @@ fn err_no_attr_list() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TSpan {
+            content: TContent::Basic(TSpan {
                 data: "foo::bar",
                 line: 1,
                 col: 1,
                 offset: 0,
-            },
+            }),
             source: TSpan {
                 data: "foo::bar",
                 line: 1,
@@ -129,12 +128,12 @@ fn err_attr_list_not_closed() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TSpan {
+            content: TContent::Basic(TSpan {
                 data: "foo::bar[blah",
                 line: 1,
                 col: 1,
                 offset: 0,
-            },
+            }),
             source: TSpan {
                 data: "foo::bar[blah",
                 line: 1,
@@ -179,12 +178,12 @@ fn err_unexpected_after_attr_list() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TSpan {
+            content: TContent::Basic(TSpan {
                 data: "foo::bar[blah]bonus",
                 line: 1,
                 col: 1,
                 offset: 0,
-            },
+            }),
             source: TSpan {
                 data: "foo::bar[blah]bonus",
                 line: 1,

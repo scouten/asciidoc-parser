@@ -28,7 +28,7 @@ mod error_cases {
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             warnings::TWarning,
-            TSpan,
+            TContent, TSpan,
         },
         warnings::{MatchAndWarnings, WarningType},
         Parser, Span,
@@ -67,12 +67,12 @@ mod error_cases {
                 },
                 blocks: vec![
                     TBlock::Simple(TSimpleBlock {
-                        content: TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "abc",
                             line: 3,
                             col: 1,
                             offset: 19,
-                        },
+                        }),
                         source: TSpan {
                             data: "abc",
                             line: 3,
@@ -84,12 +84,12 @@ mod error_cases {
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
-                        content: TSpan {
+                        content: TContent::Basic(TSpan {
                             data: ".ancestor section== Section 2",
                             line: 5,
                             col: 1,
                             offset: 24,
-                        },
+                        }),
                         source: TSpan {
                             data: ".ancestor section== Section 2",
                             line: 5,
@@ -101,12 +101,12 @@ mod error_cases {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "def",
                             line: 7,
                             col: 1,
                             offset: 55,
-                        },
+                        }),
                         source: TSpan {
                             data: "def",
                             line: 7,
@@ -180,12 +180,12 @@ mod error_cases {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Basic(TSpan {
                     data: "[incomplete attrlist\n=== Section Title (except it isn't)",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: "[incomplete attrlist\n=== Section Title (except it isn't)",
                     line: 1,
@@ -274,12 +274,12 @@ mod error_cases {
                     offset: 28,
                 },
                 blocks: vec![TBlock::Simple(TSimpleBlock {
-                    content: TSpan {
+                    content: TContent::Basic(TSpan {
                         data: "abc",
                         line: 4,
                         col: 1,
                         offset: 61,
-                    },
+                    }),
                     source: TSpan {
                         data: "abc",
                         line: 4,
@@ -367,12 +367,12 @@ mod error_cases {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Basic(TSpan {
                     data: ". abc\ndef",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: ". abc\ndef",
                     line: 1,

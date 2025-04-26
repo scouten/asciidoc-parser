@@ -6,7 +6,7 @@ use crate::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
-            TSpan,
+            TContent, TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -63,12 +63,12 @@ This is the content of the sidebar block.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is the content of the sidebar block.",
                                 line: 3,
                                 col: 1,
                                 offset: 43,
-                            },
+                            }),
                             source: TSpan {
                                 data: "This is the content of the sidebar block.",
                                 line: 3,
@@ -379,12 +379,12 @@ If you don't plant it in a container, it will take over your garden.
     assert_eq!(block,
         TBlock::Simple(
             TSimpleBlock {
-                content: TSpan {
+                content: TContent::Basic(TSpan {
                     data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                     line: 3,
                     col: 1,
                     offset: 16,
-                },
+                }),
                 source: TSpan {
                     data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                     line: 1,

@@ -3,14 +3,14 @@ use crate::{
     blocks::{preamble::Preamble, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
-    HasSpan, Parser, Span,
+    Content, HasSpan, Parser, Span,
 };
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SimpleBlock<'src> {
-    content: Span<'src>,
+    content: Content<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
     anchor: Option<Span<'src>>,
@@ -26,7 +26,7 @@ impl<'src> SimpleBlock<'src> {
 
         Some(MatchedItem {
             item: Self {
-                content: source.item,
+                content: source.item.into(),
                 source: preamble
                     .source
                     .trim_remainder(source.after)
@@ -47,7 +47,7 @@ impl<'src> SimpleBlock<'src> {
 
         Some(MatchedItem {
             item: Self {
-                content: source.item,
+                content: source.item.into(),
                 source: source.item,
                 title: None,
                 anchor: None,
@@ -57,8 +57,8 @@ impl<'src> SimpleBlock<'src> {
         })
     }
 
-    /// Return the raw content of this block.
-    pub fn content(&self) -> &Span<'src> {
+    /// Return the interpreted content of this block.
+    pub fn content(&self) -> &Content<'src> {
         &self.content
     }
 }

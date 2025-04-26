@@ -41,7 +41,7 @@ mod assign_roles_to_blocks {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                TSpan,
+                TContent, TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -92,12 +92,12 @@ This is a sidebar with a role assigned to it, rolename.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with a role assigned to it, rolename.",
                                 line: 3,
                                 col: 1,
                                 offset: 17,
-                            },
+                            }),
                             source: TSpan {
                                 data: "This is a sidebar with a role assigned to it, rolename.",
                                 line: 3,
@@ -191,12 +191,12 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 line: 3,
                                 col: 1,
                                 offset: 20,
-                            },
+                            }),
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 line: 3,
@@ -297,12 +297,12 @@ This is a sidebar with one role assigned to it, rolename.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with one role assigned to it, rolename.",
                                 line: 3,
                                 col: 1,
                                 offset: 21,
-                            },
+                            }),
                             source: TSpan {
                                 data: "This is a sidebar with one role assigned to it, rolename.",
                                 line: 3,
@@ -411,12 +411,12 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 line: 3,
                                 col: 1,
                                 offset: 26,
-                            },
+                            }),
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 line: 3,
