@@ -188,3 +188,9 @@ pub enum Content<'src> {
     /// The line break character, `+`, is replaced with (what?).
     LineBreak(Span<'src>),
 }
+
+impl<'src> From<&Span<'src>> for Content<'src> {
+    fn from(span: &Span<'src>) -> Self {
+        Self::Passthrough(*span)
+    }
+}
