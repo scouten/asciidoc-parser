@@ -181,7 +181,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
         let mut parser = Parser::default();
 
         let mi = Block::parse(Span::new(
-    "[.role1.role2]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
+            "[.role1.role2]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
