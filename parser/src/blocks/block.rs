@@ -9,7 +9,7 @@ use crate::{
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// **Block elements** form the main structure of an AsciiDoc document, starting
@@ -55,6 +55,7 @@ impl<'src> Block<'src> {
     /// Consumes any blank lines before and after the block.
     pub(crate) fn parse(
         source: Span<'src>,
+        parser: &mut Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         // Optimization: If the first line doesn't match any of the early indications
         // for delimited blocks, titles, or attrlists, we can skip directly to treating
@@ -72,7 +73,7 @@ impl<'src> Block<'src> {
                     if let Some(MatchedItem {
                         item: simple_block,
                         after,
-                    }) = SimpleBlock::parse_fast(source)
+                    }) = SimpleBlock::parse_fast(source, parser)
                     {
                         return MatchAndWarnings {
                             item: Some(MatchedItem {
@@ -91,9 +92,9 @@ impl<'src> Block<'src> {
         let MatchAndWarnings {
             item: mut preamble,
             mut warnings,
-        } = Preamble::parse(source);
+        } = Preamble::parse(source, parser);
 
-        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&preamble) {
+        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&preamble, parser) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -112,7 +113,7 @@ impl<'src> Block<'src> {
             }
         }
 
-        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&preamble) {
+        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&preamble, parser) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -135,7 +136,7 @@ impl<'src> Block<'src> {
         let line = preamble.block_start.take_normalized_line();
 
         if line.item.contains("::") {
-            let mut macro_block_maw = MacroBlock::parse(&preamble);
+            let mut macro_block_maw = MacroBlock::parse(&preamble, parser);
 
             if let Some(macro_block) = macro_block_maw.item {
                 // Only propagate warnings from macro block parsing if we think this
@@ -159,7 +160,7 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=') {
-            if let Some(mut maw_section_block) = SectionBlock::parse(&preamble) {
+            if let Some(mut maw_section_block) = SectionBlock::parse(&preamble, parser) {
                 if !maw_section_block.warnings.is_empty() {
                     warnings.append(&mut maw_section_block.warnings);
                 }
@@ -183,7 +184,7 @@ impl<'src> Block<'src> {
         // block, but there isn't.
 
         // The following check disables that spin loop.
-        let simple_block_mi = SimpleBlock::parse(&preamble);
+        let simple_block_mi = SimpleBlock::parse(&preamble, parser);
 
         if simple_block_mi.is_none() && !preamble.is_empty() {
             // We have a preamble with no block. Treat it as a simple block but issue a
@@ -204,7 +205,7 @@ impl<'src> Block<'src> {
 
         // If no other block kind matches, we can always use SimpleBlock.
         MatchAndWarnings {
-            item: SimpleBlock::parse(&preamble).map(|mi| MatchedItem {
+            item: SimpleBlock::parse(&preamble, parser).map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
                 after: mi.after,
             }),

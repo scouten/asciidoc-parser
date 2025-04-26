@@ -45,7 +45,7 @@ mod assign_roles_to_blocks {
             },
             sdd::{non_normative, verifies},
         },
-        Span,
+        Parser, Span,
     };
 
     non_normative!(
@@ -76,9 +76,14 @@ This is a sidebar with a role assigned to it, rolename.
 "#
         );
 
-        let mi = Block::parse(Span::new(
-            "[.rolename]\n****\nThis is a sidebar with a role assigned to it, rolename.\n****",
-        ))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new(
+                "[.rolename]\n****\nThis is a sidebar with a role assigned to it, rolename.\n****",
+            ),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -173,11 +178,13 @@ The role values are turned into a space-separated list of values, `role1 role2`.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
     "[.role1.role2]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
-))
-.unwrap_if_no_warnings()
-.unwrap();
+        ), &mut parser)
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(mi.item, TBlock::CompoundDelimited(
             TCompoundDelimitedBlock {
@@ -277,9 +284,11 @@ This is a sidebar with one role assigned to it, rolename.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[role=rolename]\n****\nThis is a sidebar with one role assigned to it, rolename.\n****",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -388,11 +397,13 @@ This is a sidebar with two roles assigned to it, role1 and role2.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
-    "[role=\"role1 role2\"]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
-))
-.unwrap_if_no_warnings()
-.unwrap();
+            "[role=\"role1 role2\"]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****"
+        ), &mut parser)
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(mi.item,
         TBlock::CompoundDelimited(

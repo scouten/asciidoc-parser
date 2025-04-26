@@ -9,16 +9,20 @@ mod parse {
             TSpan,
         },
         warnings::WarningType,
-        Span,
+        Parser, Span,
     };
 
     #[test]
     fn err_invalid_delimiter() {
-        assert!(Block::parse(Span::new(""))
+        let mut parser = Parser::default();
+
+        assert!(Block::parse(Span::new(""), &mut parser)
             .unwrap_if_no_warnings()
             .is_none());
 
-        let mi = Block::parse(Span::new("..."))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("..."), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -43,7 +47,9 @@ mod parse {
             })
         );
 
-        let mi = Block::parse(Span::new("++++x"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("++++x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -68,7 +74,9 @@ mod parse {
             })
         );
 
-        let mi = Block::parse(Span::new("____x"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("____x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -93,7 +101,9 @@ mod parse {
             })
         );
 
-        let mi = Block::parse(Span::new("====x"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("====x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -121,7 +131,9 @@ mod parse {
 
     #[test]
     fn err_unterminated() {
-        let maw = Block::parse(Span::new("....\nblah blah blah"));
+        let mut parser = Parser::default();
+
+        let maw = Block::parse(Span::new("....\nblah blah blah"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -170,12 +182,14 @@ mod comment {
             blocks::{TBlock, TRawDelimitedBlock},
             TSpan,
         },
-        Span,
+        Parser, Span,
     };
 
     #[test]
     fn empty() {
-        let mi = Block::parse(Span::new("////\n////"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("////\n////"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -211,9 +225,14 @@ mod comment {
 
     #[test]
     fn title() {
-        let mi = Block::parse(Span::new(".comment\n////\nline1  \nline2\n////"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new(".comment\n////\nline1  \nline2\n////"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
@@ -275,7 +294,9 @@ mod comment {
 
     #[test]
     fn multiple_lines() {
-        let mi = Block::parse(Span::new("////\nline1  \nline2\n////"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("////\nline1  \nline2\n////"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -324,7 +345,9 @@ mod comment {
 
     #[test]
     fn ignores_delimiter_prefix() {
-        let mi = Block::parse(Span::new("////\nline1  \n/////\nline2\n////"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("////\nline1  \n/////\nline2\n////"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -388,12 +411,14 @@ mod listing {
             blocks::{TBlock, TRawDelimitedBlock},
             TSpan,
         },
-        Span,
+        Parser, Span,
     };
 
     #[test]
     fn empty() {
-        let mi = Block::parse(Span::new("----\n----"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("----\n----"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -429,7 +454,9 @@ mod listing {
 
     #[test]
     fn multiple_lines() {
-        let mi = Block::parse(Span::new("----\nline1  \nline2\n----"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("----\nline1  \nline2\n----"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -489,9 +516,14 @@ mod listing {
 
     #[test]
     fn title() {
-        let mi = Block::parse(Span::new(".listing title\n----\nline1  \nline2\n----"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new(".listing title\n----\nline1  \nline2\n----"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
@@ -564,7 +596,9 @@ mod listing {
 
     #[test]
     fn ignores_delimiter_prefix() {
-        let mi = Block::parse(Span::new("----\nline1  \n----/\nline2\n----"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("----\nline1  \n----/\nline2\n----"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -639,12 +673,14 @@ mod pass {
             blocks::{TBlock, TRawDelimitedBlock},
             TSpan,
         },
-        Span,
+        Parser, Span,
     };
 
     #[test]
     fn empty() {
-        let mi = Block::parse(Span::new("++++\n++++"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("++++\n++++"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -691,7 +727,9 @@ mod pass {
 
     #[test]
     fn multiple_lines() {
-        let mi = Block::parse(Span::new("++++\nline1  \nline2\n++++"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("++++\nline1  \nline2\n++++"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -751,9 +789,14 @@ mod pass {
 
     #[test]
     fn title() {
-        let mi = Block::parse(Span::new(".pass title\n++++\nline1  \nline2\n++++"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new(".pass title\n++++\nline1  \nline2\n++++"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
@@ -826,7 +869,9 @@ mod pass {
 
     #[test]
     fn ignores_delimiter_prefix() {
-        let mi = Block::parse(Span::new("++++\nline1  \n++++/\nline2\n++++"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("++++\nline1  \n++++/\nline2\n++++"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 

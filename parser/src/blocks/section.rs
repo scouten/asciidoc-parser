@@ -30,6 +30,7 @@ pub struct SectionBlock<'src> {
 impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
+        _parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
         let source = preamble.block_start.discard_empty_lines();
         let level = parse_title_line(source)?;

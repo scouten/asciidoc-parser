@@ -25,7 +25,7 @@ mod positional_attribute {
             },
             sdd::{non_normative, verifies},
         },
-        Span,
+        Parser, Span,
     };
 
     non_normative!(
@@ -69,13 +69,21 @@ The second macro is the same as the first, but written out in longhand form.
 "#
         );
 
-        let m1 = MacroBlock::parse(&Preamble::new("image::sunset.jpg[Sunset,300,400]"))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mut parser = Parser::default();
 
-        let m2 = MacroBlock::parse(&Preamble::new(
-            "image::sunset.jpg[alt=Sunset,width=300,height=400]",
-        ))
+        let m1 = MacroBlock::parse(
+            &Preamble::new("image::sunset.jpg[Sunset,300,400]"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+        let mut parser = Parser::default();
+
+        let m2 = MacroBlock::parse(
+            &Preamble::new("image::sunset.jpg[alt=Sunset,width=300,height=400]"),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -170,10 +178,15 @@ Here's an example that shows how to set an ID on a section using this shorthand 
 "#
         );
 
-        let block = Block::parse(Span::new("[#custom-id]\n== Section with Custom ID\n"))
-            .unwrap_if_no_warnings()
-            .unwrap()
-            .item;
+        let mut parser = Parser::default();
+
+        let block = Block::parse(
+            Span::new("[#custom-id]\n== Section with Custom ID\n"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
 
         assert_eq!(
             block,
@@ -241,9 +254,12 @@ Here's an example that shows how to set an ID on an appendix section using this 
 "#
         );
 
-        let block = Block::parse(Span::new(
-            "[appendix#custom-id]\n== Appendix with Custom ID\n",
-        ))
+        let mut parser = Parser::default();
+
+        let block = Block::parse(
+            Span::new("[appendix#custom-id]\n== Appendix with Custom ID\n"),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -325,9 +341,12 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
 "#
         );
 
-        let block = Block::parse(Span::new(
-            "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n",
-        ))
+        let mut parser = Parser::default();
+
+        let block = Block::parse(
+            Span::new("[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n"),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -417,9 +436,11 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let block = Block::parse(Span::new(
             "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap()
         .item;

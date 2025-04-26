@@ -9,12 +9,14 @@ mod parse {
             TSpan,
         },
         warnings::WarningType,
-        Span,
+        Parser, Span,
     };
 
     #[test]
     fn err_invalid_delimiter() {
-        let mi = Block::parse(Span::new("==="))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("==="), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -39,7 +41,9 @@ mod parse {
             })
         );
 
-        let mi = Block::parse(Span::new("====x"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("====x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -64,7 +68,9 @@ mod parse {
             })
         );
 
-        let mi = Block::parse(Span::new("****x"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("****x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -89,7 +95,9 @@ mod parse {
             })
         );
 
-        let mi = Block::parse(Span::new("____x"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("____x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -117,7 +125,8 @@ mod parse {
 
     #[test]
     fn err_unterminated() {
-        let maw = Block::parse(Span::new("====\nblah blah blah"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("====\nblah blah blah"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -166,12 +175,13 @@ mod example {
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             TSpan,
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     #[test]
     fn empty() {
-        let maw = Block::parse(Span::new("====\n===="));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("====\n===="), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -217,7 +227,8 @@ mod example {
 
     #[test]
     fn multiple_blocks() {
-        let maw = Block::parse(Span::new("====\nblock1\n\nblock2\n===="));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("====\nblock1\n\nblock2\n===="), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -341,7 +352,12 @@ mod example {
 
     #[test]
     fn title() {
-        let maw = Block::parse(Span::new(".block title \n====\nblock1\n\nblock2\n===="));
+        let mut parser = Parser::default();
+
+        let maw = Block::parse(
+            Span::new(".block title \n====\nblock1\n\nblock2\n===="),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 
@@ -480,7 +496,12 @@ mod example {
 
     #[test]
     fn nested_blocks() {
-        let maw = Block::parse(Span::new("====\nblock1\n\n=====\nblock2\n=====\n===="));
+        let mut parser = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 
@@ -636,12 +657,13 @@ mod open {
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             TSpan,
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     #[test]
     fn empty() {
-        let maw = Block::parse(Span::new("--\n--"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("--\n--"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -686,7 +708,8 @@ mod open {
 
     #[test]
     fn multiple_blocks() {
-        let maw = Block::parse(Span::new("--\nblock1\n\nblock2\n--"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("--\nblock1\n\nblock2\n--"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -810,7 +833,8 @@ mod open {
 
     #[test]
     fn nested_blocks() {
-        let maw = Block::parse(Span::new("--\nblock1\n\n---\nblock2\n---\n--"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("--\nblock1\n\n---\nblock2\n---\n--"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -942,12 +966,13 @@ mod sidebar {
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             TSpan,
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     #[test]
     fn empty() {
-        let maw = Block::parse(Span::new("****\n****"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("****\n****"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -992,7 +1017,8 @@ mod sidebar {
 
     #[test]
     fn multiple_blocks() {
-        let maw = Block::parse(Span::new("****\nblock1\n\nblock2\n****"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("****\nblock1\n\nblock2\n****"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -1116,7 +1142,12 @@ mod sidebar {
 
     #[test]
     fn nested_blocks() {
-        let maw = Block::parse(Span::new("****\nblock1\n\n*****\nblock2\n*****\n****"));
+        let mut parser = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 
@@ -1272,12 +1303,13 @@ mod quote {
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             TSpan,
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     #[test]
     fn empty() {
-        let maw = Block::parse(Span::new("____\n____"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("____\n____"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -1322,7 +1354,8 @@ mod quote {
 
     #[test]
     fn multiple_blocks() {
-        let maw = Block::parse(Span::new("____\nblock1\n\nblock2\n____"));
+        let mut parser = Parser::default();
+        let maw = Block::parse(Span::new("____\nblock1\n\nblock2\n____"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
@@ -1446,7 +1479,12 @@ mod quote {
 
     #[test]
     fn nested_blocks() {
-        let maw = Block::parse(Span::new("____\nblock1\n\n_____\nblock2\n_____\n____"));
+        let mut parser = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 

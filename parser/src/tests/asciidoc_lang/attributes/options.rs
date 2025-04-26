@@ -38,7 +38,7 @@ You can assign one or more options to a block using the shorthand or formal synt
             },
             sdd::{non_normative, verifies},
         },
-        Span,
+        Parser, Span,
     };
 
     #[test]
@@ -62,9 +62,11 @@ This is a sidebar with an option assigned to it, named option.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[%option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -172,9 +174,11 @@ This is a sidebar with two options assigned to it, named option1 and option2.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[%option1%option2]\n****\nThis is a sidebar with two options assigned to it, named option1 and option2.\n****",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -303,9 +307,11 @@ For instance, consider a table with the three built-in option values, `header`, 
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[%header%footer%autowidth,cols=2*~]\n|===\n|Cell A1 |Cell B1\n\n|Cell A2 |Cell B2\n\n|Cell A3 |Cell B3\n|===",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -453,9 +459,11 @@ This is a sidebar with an option assigned to it, named option.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[opts=option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -563,9 +571,11 @@ This is a sidebar with two options assigned to it, option1 and option2.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[opts=\"option1,option2\"]\n****\nThis is a sidebar with two options assigned to it, option1 and option2.\n****",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -688,9 +698,11 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[cols=2*~,opts=\"header,footer,autowidth\"]\n|===\n|Cell A1 |Cell B1\n\n|Cell A2 |Cell B2\n\n|Cell A3 |Cell B3\n|===",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -826,7 +838,7 @@ Let's consider `options` when combined with other attributes.
             },
             sdd::{non_normative, verifies},
         },
-        Span,
+        Parser, Span,
     };
 
     #[test]
@@ -851,9 +863,11 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -984,9 +998,11 @@ property 2:: does different stuff
 "#
         );
 
+        let mut parser = Parser::default();
+
         let mi = Block::parse(Span::new(
             "[horizontal,role=properties,opts=step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 

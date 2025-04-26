@@ -4,7 +4,7 @@ use crate::{
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// A macro block can be used in a block context to create a new block element.
@@ -28,6 +28,7 @@ pub struct MacroBlock<'src> {
 impl<'src> MacroBlock<'src> {
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
+        _parser: &mut Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let line = preamble.block_start.take_normalized_line();
 

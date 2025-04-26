@@ -40,7 +40,7 @@ mod valid_id_characters {
             sdd::{non_normative, verifies},
         },
         warnings::WarningType,
-        Span,
+        Parser, Span,
     };
 
     non_normative!(
@@ -59,7 +59,12 @@ All the language requires in this case is that the value be non-empty.
 "#
         );
 
-        let maw = Block::parse(Span::new("[[]]\nThis paragraph gets a lot of attention.\n"));
+        let mut parser = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
+            &mut parser,
+        );
 
         assert_eq!(
             maw.warnings,
@@ -149,9 +154,12 @@ install the gem
 "#
         );
 
-        let maw = Block::parse(Span::new(
-            "[[3 blind mice]]\nThis paragraph gets a lot of attention.\n",
-        ));
+        let mut parser = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
+            &mut parser,
+        );
 
         assert_eq!(
             maw.warnings,
@@ -224,7 +232,7 @@ mod block_assignment {
             },
             sdd::{non_normative, verifies},
         },
-        Span,
+        Parser, Span,
     };
 
     non_normative!(
@@ -253,7 +261,9 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
 "#
         );
 
-        let mi = Block::parse(Span::new("[#goals]\n* Goal 1\n* Goal 2"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("[#goals]\n* Goal 1\n* Goal 2"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -325,7 +335,9 @@ In the longhand syntax, you use a standard named attribute.
 "#
         );
 
-        let mi = Block::parse(Span::new("[id=goals]\n* Goal 1\n* Goal 2"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("[id=goals]\n* Goal 1\n* Goal 2"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -397,7 +409,9 @@ In the block anchor syntax, you surround the name with double square brackets:
 "#
         );
 
-        let mi = Block::parse(Span::new("[[goals]]\n* Goal 1\n* Goal 2"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("[[goals]]\n* Goal 1\n* Goal 2"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -448,7 +462,9 @@ ____
 "#
         );
 
-        let mi = Block::parse(Span::new("[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 

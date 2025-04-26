@@ -54,7 +54,7 @@ mod attrlist {
             },
             sdd::{non_normative, to_do_verifies, verifies},
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     non_normative!(
@@ -276,9 +276,12 @@ If the text cannot be parsed, an error message will be emitted to the log.
 "#
         );
 
-        let block = Block::parse(Span::new(
-            "[style,second-positional,named=\"value of named\"]\nSimple block\n",
-        ))
+        let mut parser = Parser::default();
+
+        let block = Block::parse(
+            Span::new("[style,second-positional,named=\"value of named\"]\nSimple block\n"),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -400,9 +403,13 @@ name::target[first-positional,second-positional,named="value of named"]
 "#
         );
 
-        let block = Block::parse(Span::new(
-            "name::target[first-positional,second-positional,named=\"value of named\"]\n",
-        ))
+        let mut parser = Parser::default();
+        let block = Block::parse(
+            Span::new(
+                "name::target[first-positional,second-positional,named=\"value of named\"]\n",
+            ),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap()
         .item;

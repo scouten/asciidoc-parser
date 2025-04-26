@@ -61,7 +61,7 @@ mod context {
     use crate::{
         blocks::{is_built_in_context, Block, ContentModel, IsBlock},
         tests::sdd::{non_normative, to_do_verifies, verifies},
-        Span,
+        Parser, Span,
     };
 
     non_normative!(
@@ -98,9 +98,14 @@ You can think of the context as the block's type.
 "#
         );
 
-        let mi = Block::parse(Span::new("== Section Title\n\nContent of section."))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new("== Section Title\n\nContent of section."),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(mi.item.raw_context().deref(), "section");
         assert_eq!(mi.item.resolved_context().deref(), "section");
@@ -149,9 +154,14 @@ For example, all sections implicitly have the compound content model because a s
 "#
         );
 
-        let mi = Block::parse(Span::new("== Section Title\n\nContent of section."))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new("== Section Title\n\nContent of section."),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
     }
@@ -165,7 +175,10 @@ All literal blocks implicitly have the verbatim content model because the purpos
 
 "#
         );
-        let mi = Block::parse(Span::new("....\nliteral text\n...."))
+
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new("....\nliteral text\n...."), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -511,7 +524,7 @@ mod block_style {
             fixtures::TSpan,
             sdd::{non_normative, verifies},
         },
-        Span,
+        Parser, Span,
     };
 
     non_normative!(
@@ -556,9 +569,12 @@ The context of the block is still the same, but it has additional metadata to in
 "#
         );
 
-        let mi = Block::parse(Span::new(
-            "[source,ruby]\n----\nputs \"Hello, World!\"\n----",
-        ))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new("[source,ruby]\n----\nputs \"Hello, World!\"\n----"),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap();
 

@@ -11,39 +11,49 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
+    Parser,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = SectionBlock::parse(&Preamble::new("== Section Title")).unwrap();
+    let mut parser = Parser::default();
+
+    let b1 = SectionBlock::parse(&Preamble::new("== Section Title"), &mut parser).unwrap();
+
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn err_empty_source() {
-    assert!(SectionBlock::parse(&Preamble::new("")).is_none());
+    let mut parser = Parser::default();
+    assert!(SectionBlock::parse(&Preamble::new(""), &mut parser).is_none());
 }
 
 #[test]
 fn err_only_spaces() {
-    assert!(SectionBlock::parse(&Preamble::new("    ")).is_none());
+    let mut parser = Parser::default();
+    assert!(SectionBlock::parse(&Preamble::new("    "), &mut parser).is_none());
 }
 
 #[test]
 fn err_not_section() {
-    assert!(SectionBlock::parse(&Preamble::new("blah blah")).is_none());
+    let mut parser = Parser::default();
+    assert!(SectionBlock::parse(&Preamble::new("blah blah"), &mut parser).is_none());
 }
 
 #[test]
 fn err_missing_space_before_title() {
-    assert!(SectionBlock::parse(&Preamble::new("=blah blah")).is_none());
+    let mut parser = Parser::default();
+    assert!(SectionBlock::parse(&Preamble::new("=blah blah"), &mut parser).is_none());
 }
 
 #[test]
 fn simplest_section_block() {
-    let mi = SectionBlock::parse(&Preamble::new("== Section Title"))
+    let mut parser = Parser::default();
+
+    let mi = SectionBlock::parse(&Preamble::new("== Section Title"), &mut parser)
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -94,7 +104,9 @@ fn simplest_section_block() {
 
 #[test]
 fn has_child_block() {
-    let mi = SectionBlock::parse(&Preamble::new("== Section Title\n\nabc"))
+    let mut parser = Parser::default();
+
+    let mi = SectionBlock::parse(&Preamble::new("== Section Title\n\nabc"), &mut parser)
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -161,9 +173,12 @@ fn has_child_block() {
 
 #[test]
 fn has_macro_block_with_extra_blank_line() {
-    let mi = SectionBlock::parse(&Preamble::new(
-        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n",
-    ))
+    let mut parser = Parser::default();
+
+    let mi = SectionBlock::parse(
+        &Preamble::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n"),
+        &mut parser,
+    )
     .unwrap()
     .unwrap_if_no_warnings();
 
@@ -309,9 +324,12 @@ fn has_macro_block_with_extra_blank_line() {
 
 #[test]
 fn has_child_block_with_errors() {
-    let maw = SectionBlock::parse(&Preamble::new(
-        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
-    ))
+    let mut parser = Parser::default();
+
+    let maw = SectionBlock::parse(
+        &Preamble::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
+        &mut parser,
+    )
     .unwrap();
 
     let mi = maw.item.clone();
@@ -471,9 +489,12 @@ fn has_child_block_with_errors() {
 
 #[test]
 fn dont_stop_at_child_section() {
-    let mi = SectionBlock::parse(&Preamble::new(
-        "== Section Title\n\nabc\n\n=== Section 2\n\ndef",
-    ))
+    let mut parser = Parser::default();
+
+    let mi = SectionBlock::parse(
+        &Preamble::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"),
+        &mut parser,
+    )
     .unwrap()
     .unwrap_if_no_warnings();
 
@@ -577,9 +598,12 @@ fn dont_stop_at_child_section() {
 
 #[test]
 fn stop_at_peer_section() {
-    let mi = SectionBlock::parse(&Preamble::new(
-        "== Section Title\n\nabc\n\n== Section 2\n\ndef",
-    ))
+    let mut parser = Parser::default();
+
+    let mi = SectionBlock::parse(
+        &Preamble::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"),
+        &mut parser,
+    )
     .unwrap()
     .unwrap_if_no_warnings();
 
@@ -646,9 +670,12 @@ fn stop_at_peer_section() {
 
 #[test]
 fn stop_at_ancestor_section() {
-    let mi = SectionBlock::parse(&Preamble::new(
-        "=== Section Title\n\nabc\n\n== Section 2\n\ndef",
-    ))
+    let mut parser = Parser::default();
+
+    let mi = SectionBlock::parse(
+        &Preamble::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"),
+        &mut parser,
+    )
     .unwrap()
     .unwrap_if_no_warnings();
 

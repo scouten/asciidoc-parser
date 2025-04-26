@@ -58,6 +58,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
 
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
+        _parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = preamble.block_start.take_normalized_line();
         let maybe_delimiter_text = delimiter.item.data();
