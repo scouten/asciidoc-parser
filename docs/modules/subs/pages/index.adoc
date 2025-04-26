@@ -25,7 +25,7 @@ Otherwise, the substitutions transform that text.
 Substitutions replace references, formatting marks, characters and character sequences, and macros.
 Substitutions are organized into types and those types are bundled into groups.
 This page provides an overview of these classifications.
-Subsequence pages go into detail about each substitution type.
+Subsequent pages go into detail about each substitution type.
 
 == Substitution types
 
