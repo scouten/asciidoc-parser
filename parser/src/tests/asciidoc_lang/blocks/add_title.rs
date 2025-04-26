@@ -63,7 +63,7 @@ This is the content of the sidebar block.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is the content of the sidebar block.",
                                 line: 3,
                                 col: 1,
@@ -379,7 +379,7 @@ If you don't plant it in a container, it will take over your garden.
     assert_eq!(block,
         TBlock::Simple(
             TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                     line: 3,
                     col: 1,

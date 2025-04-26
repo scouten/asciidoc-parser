@@ -307,7 +307,7 @@ mod example {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -324,7 +324,7 @@ mod example {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -369,7 +369,7 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -390,7 +390,7 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -428,7 +428,7 @@ mod example {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -446,7 +446,7 @@ mod example {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -502,7 +502,7 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -524,7 +524,7 @@ mod example {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    content: TContent::Passthrough(TSpan {
+                    content: TContent::Basic(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -669,7 +669,7 @@ mod open {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -686,7 +686,7 @@ mod open {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -731,7 +731,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -752,7 +752,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -791,7 +791,7 @@ mod open {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -808,7 +808,7 @@ mod open {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "---\nblock2\n---",
                             line: 4,
                             col: 1,
@@ -853,7 +853,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -874,7 +874,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "---\nblock2\n---",
                     line: 4,
                     col: 1,
@@ -962,7 +962,7 @@ mod sidebar {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -979,7 +979,7 @@ mod sidebar {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -1024,7 +1024,7 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1045,7 +1045,7 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -1083,7 +1083,7 @@ mod sidebar {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1101,7 +1101,7 @@ mod sidebar {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -1157,7 +1157,7 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1179,7 +1179,7 @@ mod sidebar {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    content: TContent::Passthrough(TSpan {
+                    content: TContent::Basic(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -1355,7 +1355,7 @@ mod quote {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1372,7 +1372,7 @@ mod quote {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -1417,7 +1417,7 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1438,7 +1438,7 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -1476,7 +1476,7 @@ mod quote {
             TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1494,7 +1494,7 @@ mod quote {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -1550,7 +1550,7 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1572,7 +1572,7 @@ mod quote {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    content: TContent::Passthrough(TSpan {
+                    content: TContent::Basic(TSpan {
                         data: "block2",
                         line: 5,
                         col: 1,

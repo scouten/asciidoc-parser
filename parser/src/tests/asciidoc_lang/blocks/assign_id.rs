@@ -57,7 +57,7 @@ Content of delimited example block
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "Content of delimited example block",
                     line: 3,
                     col: 1,
@@ -172,7 +172,7 @@ Roads? Where we're going, we don't need roads.
     assert_eq!(
         block,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "Roads? Where we're going, we don't need roads.",
                 line: 2,
                 col: 1,
@@ -266,7 +266,7 @@ Roads? Where we're going, we don't need roads.
     assert_eq!(block,
         TBlock:: Simple(
             TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "Roads? Where we're going, we don't need roads.",
                     line: 2,
                     col: 1,

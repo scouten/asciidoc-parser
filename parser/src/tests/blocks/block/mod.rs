@@ -67,7 +67,7 @@ mod error_cases {
                 },
                 blocks: vec![
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "abc",
                             line: 3,
                             col: 1,
@@ -84,7 +84,7 @@ mod error_cases {
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: ".ancestor section== Section 2",
                             line: 5,
                             col: 1,
@@ -101,7 +101,7 @@ mod error_cases {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "def",
                             line: 7,
                             col: 1,
@@ -180,7 +180,7 @@ mod error_cases {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "[incomplete attrlist\n=== Section Title (except it isn't)",
                     line: 1,
                     col: 1,
@@ -274,7 +274,7 @@ mod error_cases {
                     offset: 28,
                 },
                 blocks: vec![TBlock::Simple(TSimpleBlock {
-                    content: TContent::Passthrough(TSpan {
+                    content: TContent::Basic(TSpan {
                         data: "abc",
                         line: 4,
                         col: 1,
@@ -367,7 +367,7 @@ mod error_cases {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: ". abc\ndef",
                     line: 1,
                     col: 1,

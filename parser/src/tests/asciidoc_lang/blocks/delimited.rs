@@ -205,7 +205,7 @@ That's so meta.
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "This is an example of an example block.\nThat's so meta.",
                     line: 2,
                     col: 1,
@@ -549,7 +549,7 @@ The document header is useful, but not required.
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TContent::Passthrough(TSpan {
+                                content: TContent::Basic(TSpan {
                                     data: "Here's a sample AsciiDoc document:",
                                     line: 2,
                                     col: 1,
@@ -609,7 +609,7 @@ The document header is useful, but not required.
                         ),
                         TBlock::Simple(
                             TSimpleBlock{
-                                content: TContent::Passthrough(TSpan {
+                                content: TContent::Basic(TSpan {
                                     data: "The document header is useful, but not required.",
                                     line: 11,
                                     col: 1,
@@ -685,7 +685,7 @@ Live within the simulated reality without want or fear.
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TContent::Passthrough(TSpan {
+                                content: TContent::Basic(TSpan {
                                     data: "Here are your options:",
                                     line: 2,
                                     col: 1,
@@ -707,7 +707,7 @@ Live within the simulated reality without want or fear.
                                 blocks: vec![
                                     TBlock::Simple(
                                         TSimpleBlock {
-                                            content: TContent::Passthrough(TSpan {
+                                            content: TContent::Basic(TSpan {
                                                 data: "Escape into the real world.",
                                                 line: 7,
                                                 col: 1,
@@ -783,7 +783,7 @@ Live within the simulated reality without want or fear.
                                 blocks: vec![
                                     TBlock::Simple(
                                         TSimpleBlock {
-                                            content: TContent::Passthrough(TSpan {
+                                            content: TContent::Basic(TSpan {
                                                 data: "Live within the simulated reality without want or fear.",
                                                 line: 13,
                                                 col: 1,

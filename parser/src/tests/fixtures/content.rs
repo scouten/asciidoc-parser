@@ -5,7 +5,7 @@ use crate::{tests::fixtures::TSpan, Content};
 #[allow(unused)] // TEMPORARY while building
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) enum TContent {
-    Passthrough(TSpan),
+    Basic(TSpan),
 
     Sequence {
         source: TSpan,
@@ -100,8 +100,8 @@ impl PartialEq<TContent> for &Content<'_> {
 
 fn fixture_eq_observed(fixture: &TContent, observed: &Content) -> bool {
     match fixture {
-        TContent::Passthrough(f_span) => match observed {
-            Content::Passthrough(ref o_span) => f_span == o_span,
+        TContent::Basic(f_span) => match observed {
+            Content::Basic(ref o_span) => f_span == o_span,
             _ => false,
         },
 

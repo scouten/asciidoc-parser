@@ -13,7 +13,7 @@ use crate::Span;
 pub enum Content<'src> {
     /// The content of this [`Span`] should be passed through without further
     /// interpretation.
-    Passthrough(Span<'src>),
+    Basic(Span<'src>),
 
     /// Represents a series of [`Content`] items of varying types.
     Sequence {
@@ -191,6 +191,6 @@ pub enum Content<'src> {
 
 impl<'src> From<Span<'src>> for Content<'src> {
     fn from(span: Span<'src>) -> Self {
-        Self::Passthrough(span)
+        Self::Basic(span)
     }
 }

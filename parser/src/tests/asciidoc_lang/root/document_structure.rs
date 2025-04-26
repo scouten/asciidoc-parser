@@ -74,7 +74,7 @@ This is a basic AsciiDoc document.
                     offset: 0
                 },
                 blocks: vec![TBlock::Simple(TSimpleBlock {
-                    content: TContent::Passthrough(TSpan {
+                    content: TContent::Basic(TSpan {
                         data: "This is a basic AsciiDoc document.",
                         line: 1,
                         col: 1,
@@ -139,7 +139,7 @@ This document contains two paragraphs.
                 },
                 blocks: vec![
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "This is a basic AsciiDoc document.",
                             line: 1,
                             col: 1,
@@ -156,7 +156,7 @@ This document contains two paragraphs.
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "This document contains two paragraphs.",
                             line: 3,
                             col: 1,
@@ -238,7 +238,7 @@ It also has a header that specifies the document title.
                 },
                 blocks: vec![
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "This is a basic AsciiDoc document by {author}.",
                             line: 4,
                             col: 1,
@@ -255,7 +255,7 @@ It also has a header that specifies the document title.
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Passthrough(TSpan {
+                        content: TContent::Basic(TSpan {
                             data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                             line: 6,
                             col: 1,

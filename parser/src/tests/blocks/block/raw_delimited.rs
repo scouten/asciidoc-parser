@@ -29,7 +29,7 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "...",
                     line: 1,
                     col: 1,
@@ -56,7 +56,7 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "++++x",
                     line: 1,
                     col: 1,
@@ -83,7 +83,7 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "____x",
                     line: 1,
                     col: 1,
@@ -110,7 +110,7 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "====x",
                     line: 1,
                     col: 1,
@@ -139,7 +139,7 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "....\nblah blah blah",
                     line: 1,
                     col: 1,

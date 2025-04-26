@@ -39,7 +39,7 @@ fn single_line() {
     assert_eq!(
         mi.item,
         TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -87,7 +87,7 @@ fn multiple_lines() {
     assert_eq!(
         mi.item,
         TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc\ndef",
                 line: 1,
                 col: 1,
@@ -124,7 +124,7 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item,
         TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,

@@ -84,7 +84,7 @@ All the language requires in this case is that the value be non-empty.
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
@@ -179,7 +179,7 @@ install the gem
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
@@ -272,7 +272,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "* Goal 1\n* Goal 2",
                     line: 2,
                     col: 1,
@@ -346,7 +346,7 @@ In the longhand syntax, you use a standard named attribute.
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "* Goal 1\n* Goal 2",
                     line: 2,
                     col: 1,
@@ -420,7 +420,7 @@ In the block anchor syntax, you surround the name with double square brackets:
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "* Goal 1\n* Goal 2",
                     line: 2,
                     col: 1,
@@ -473,7 +473,7 @@ ____
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TContent::Passthrough(TSpan {
+                                content: TContent::Basic(TSpan {
                                         data: "Roads? Where we're going, we don't need roads.",
                                         line: 3,
                                         col: 1,

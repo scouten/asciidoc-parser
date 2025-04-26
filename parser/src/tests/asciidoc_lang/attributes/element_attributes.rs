@@ -289,7 +289,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
         assert_eq!(
             block,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "Simple block",
                     line: 2,
                     col: 1,

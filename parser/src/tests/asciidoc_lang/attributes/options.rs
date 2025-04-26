@@ -75,7 +75,7 @@ This is a sidebar with an option assigned to it, named option.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with an option assigned to it, named option.",
                                 line: 3,
                                 col: 1,
@@ -187,7 +187,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with two options assigned to it, named option1 and option2.",
                                 line: 3,
                                 col: 1,
@@ -320,7 +320,7 @@ For instance, consider a table with the three built-in option values, `header`, 
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "|===\n|Cell A1 |Cell B1",
                     line: 2,
                     col: 1,
@@ -472,7 +472,7 @@ This is a sidebar with an option assigned to it, named option.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with an option assigned to it, named option.",
                                 line: 3,
                                 col: 1,
@@ -584,7 +584,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Passthrough(TSpan {
+                            content: TContent::Basic(TSpan {
                                 data: "This is a sidebar with two options assigned to it, option1 and option2.",
                                 line: 3,
                                 col: 1,
@@ -711,7 +711,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "|===\n|Cell A1 |Cell B1",
                     line: 2,
                     col: 1,
@@ -876,7 +876,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
         assert_eq!(mi.item,
             TBlock::Simple(
                 TSimpleBlock {
-                    content: TContent::Passthrough(TSpan {
+                    content: TContent::Basic(TSpan {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",
                         line: 2,
                         col: 1,
@@ -1011,7 +1011,7 @@ property 2:: does different stuff
         assert_eq!(mi.item,
             TBlock::Simple(
             TSimpleBlock {
-                content: TContent::Passthrough(TSpan {
+                content: TContent::Basic(TSpan {
                     data: "property 1:: does stuff\nproperty 2:: does different stuff",
                     line: 2,
                     col: 1,

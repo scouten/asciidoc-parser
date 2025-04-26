@@ -56,7 +56,7 @@ fn single_line() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -118,7 +118,7 @@ fn multiple_lines() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc\ndef",
                 line: 1,
                 col: 1,
@@ -168,7 +168,7 @@ fn title() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc\ndef",
                 line: 2,
                 col: 1,
@@ -203,7 +203,7 @@ fn attrlist() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc\ndef",
                 line: 2,
                 col: 1,
@@ -316,7 +316,7 @@ fn title_and_attrlist() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc\ndef",
                 line: 3,
                 col: 1,
@@ -434,7 +434,7 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -487,7 +487,7 @@ fn with_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
@@ -580,7 +580,7 @@ fn err_empty_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
@@ -673,7 +673,7 @@ fn err_invalid_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
@@ -753,7 +753,7 @@ fn unterminated_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Passthrough(TSpan {
+            content: TContent::Basic(TSpan {
                 data: "This paragraph gets a lot of attention.",
                 line: 2,
                 col: 1,
