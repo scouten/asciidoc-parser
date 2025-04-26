@@ -23,7 +23,6 @@ fn impl_clone() {
 #[test]
 fn only_title() {
     let mut parser = Parser::default();
-
     let mi = Header::parse(Span::new("= Just the Title"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
@@ -61,7 +60,6 @@ fn trims_leading_spaces_in_title() {
     // This is totally a judgement call on my part. As far as I can tell,
     // the language doesn't describe behavior here.
     let mut parser = Parser::default();
-
     let mi = Header::parse(Span::new("=    Just the Title"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
@@ -97,7 +95,6 @@ fn trims_leading_spaces_in_title() {
 #[test]
 fn trims_trailing_spaces_in_title() {
     let mut parser = Parser::default();
-
     let mi = Header::parse(Span::new("= Just the Title   "), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
@@ -192,7 +189,6 @@ fn title_and_attribute() {
 #[test]
 fn attribute_without_title() {
     let mut parser = Parser::default();
-
     let mi = Header::parse(Span::new(":foo: bar\n\nblah"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(

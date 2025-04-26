@@ -132,7 +132,6 @@ mod parse {
     #[test]
     fn err_unterminated() {
         let mut parser = Parser::default();
-
         let maw = Block::parse(Span::new("....\nblah blah blah"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
