@@ -10,6 +10,9 @@ pub mod attributes;
 
 pub mod blocks;
 
+mod content;
+pub use content::Content;
+
 pub mod document;
 pub use document::Document;
 
