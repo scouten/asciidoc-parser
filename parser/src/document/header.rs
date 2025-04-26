@@ -4,7 +4,7 @@ use crate::{
     document::Attribute,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// An AsciiDoc document may begin with a document header. The document header
@@ -18,7 +18,10 @@ pub struct Header<'src> {
 }
 
 impl<'src> Header<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+        _parser: &mut Parser,
+    ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let original_src = source;
 
         let mut attributes: Vec<Attribute> = vec![];

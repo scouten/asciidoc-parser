@@ -6,7 +6,7 @@ use crate::{
     span::MatchedItem,
     strings::CowStr,
     warnings::MatchAndWarnings,
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// Sections partition the document into a content hierarchy. A section is an
@@ -30,12 +30,16 @@ pub struct SectionBlock<'src> {
 impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
+        parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
         let source = preamble.block_start.discard_empty_lines();
         let level = parse_title_line(source)?;
 
-        let maw_blocks =
-            parse_blocks_until(level.after, |i| peer_or_ancestor_section(*i, level.item.0));
+        let maw_blocks = parse_blocks_until(
+            level.after,
+            |i| peer_or_ancestor_section(*i, level.item.0),
+            parser,
+        );
 
         let blocks = maw_blocks.item;
         let source = preamble.source.trim_remainder(blocks.after);

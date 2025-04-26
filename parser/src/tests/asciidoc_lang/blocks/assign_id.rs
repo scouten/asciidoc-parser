@@ -10,7 +10,7 @@ use crate::{
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Span,
+    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/assign-id.adoc");
@@ -43,9 +43,12 @@ Content of delimited example block
 "#
     );
 
-    let block = Block::parse(Span::new(
-        "[#the-id-of-this-block]\n====\nContent of delimited example block\n====",
-    ))
+    let mut parser = Parser::default();
+
+    let block = Block::parse(
+        Span::new("[#the-id-of-this-block]\n====\nContent of delimited example block\n===="),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -156,9 +159,12 @@ Roads? Where we're going, we don't need roads.
 "#
     );
 
-    let block = Block::parse(Span::new(
-        "[quote#roads]\nRoads? Where we're going, we don't need roads.",
-    ))
+    let mut parser = Parser::default();
+
+    let block = Block::parse(
+        Span::new("[quote#roads]\nRoads? Where we're going, we don't need roads."),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -248,9 +254,11 @@ Roads? Where we're going, we don't need roads.
 "#
     );
 
+    let mut parser = Parser::default();
+
     let block = Block::parse(Span::new(
         "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
-    ))
+    ), &mut parser)
     .unwrap_if_no_warnings()
     .unwrap()
     .item;

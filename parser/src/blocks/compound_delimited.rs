@@ -6,7 +6,7 @@ use crate::{
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// A delimited block that can contain other blocks.
@@ -58,6 +58,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
 
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
+        parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = preamble.block_start.take_normalized_line();
         let maybe_delimiter_text = delimiter.item.data();
@@ -101,7 +102,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
 
         let inside_delimiters = delimiter.after.trim_remainder(closing_delimiter.item);
 
-        let maw_blocks = parse_blocks_until(inside_delimiters, |_| false);
+        let maw_blocks = parse_blocks_until(inside_delimiters, |_| false, parser);
 
         let blocks = maw_blocks.item;
         let source = preamble.source.trim_remainder(closing_delimiter.after);

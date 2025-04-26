@@ -3,7 +3,7 @@ use crate::{
     blocks::{preamble::Preamble, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
@@ -18,7 +18,10 @@ pub struct SimpleBlock<'src> {
 }
 
 impl<'src> SimpleBlock<'src> {
-    pub(crate) fn parse(preamble: &Preamble<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(
+        preamble: &Preamble<'src>,
+        _parser: &mut Parser,
+    ) -> Option<MatchedItem<'src, Self>> {
         let source = preamble.block_start.take_non_empty_lines()?;
 
         Some(MatchedItem {
@@ -36,7 +39,10 @@ impl<'src> SimpleBlock<'src> {
         })
     }
 
-    pub(crate) fn parse_fast(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse_fast(
+        source: Span<'src>,
+        _parser: &mut Parser,
+    ) -> Option<MatchedItem<'src, Self>> {
         let source = source.take_non_empty_lines()?;
 
         Some(MatchedItem {

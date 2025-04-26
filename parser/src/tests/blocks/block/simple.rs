@@ -11,13 +11,15 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = Block::parse(Span::new("abc"))
+    let mut parser = Parser::default();
+
+    let b1 = Block::parse(Span::new("abc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -27,21 +29,27 @@ fn impl_clone() {
 
 #[test]
 fn err_empty_source() {
-    assert!(Block::parse(Span::new(""))
+    let mut parser = Parser::default();
+
+    assert!(Block::parse(Span::new(""), &mut parser)
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_only_spaces() {
-    assert!(Block::parse(Span::new("    "))
+    let mut parser = Parser::default();
+
+    assert!(Block::parse(Span::new("    "), &mut parser)
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn single_line() {
-    let mi = Block::parse(Span::new("abc"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("abc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -101,7 +109,9 @@ fn single_line() {
 
 #[test]
 fn multiple_lines() {
-    let mi = Block::parse(Span::new("abc\ndef"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("abc\ndef"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -149,7 +159,9 @@ fn multiple_lines() {
 
 #[test]
 fn title() {
-    let mi = Block::parse(Span::new(".simple block\nabc\ndef\n"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new(".simple block\nabc\ndef\n"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -182,7 +194,9 @@ fn title() {
 
 #[test]
 fn attrlist() {
-    let mi = Block::parse(Span::new("[sidebar]\nabc\ndef\n"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("[sidebar]\nabc\ndef\n"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -293,7 +307,9 @@ fn attrlist() {
 
 #[test]
 fn title_and_attrlist() {
-    let mi = Block::parse(Span::new(".title\n[sidebar]\nabc\ndef\n"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new(".title\n[sidebar]\nabc\ndef\n"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -409,7 +425,9 @@ fn title_and_attrlist() {
 
 #[test]
 fn consumes_blank_lines_after() {
-    let mi = Block::parse(Span::new("abc\n\ndef"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("abc\n\ndef"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -457,9 +475,12 @@ fn consumes_blank_lines_after() {
 
 #[test]
 fn with_block_anchor() {
-    let mi = Block::parse(Span::new(
-        "[[notice]]\nThis paragraph gets a lot of attention.\n",
-    ))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(
+        Span::new("[[notice]]\nThis paragraph gets a lot of attention.\n"),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap();
 
@@ -534,7 +555,12 @@ fn with_block_anchor() {
 
 #[test]
 fn err_empty_block_anchor() {
-    let maw = Block::parse(Span::new("[[]]\nThis paragraph gets a lot of attention.\n"));
+    let mut parser = Parser::default();
+
+    let maw = Block::parse(
+        Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
+        &mut parser,
+    );
 
     assert_eq!(
         maw.warnings,
@@ -622,9 +648,12 @@ fn err_empty_block_anchor() {
 
 #[test]
 fn err_invalid_block_anchor() {
-    let maw = Block::parse(Span::new(
-        "[[3 blind mice]]\nThis paragraph gets a lot of attention.\n",
-    ));
+    let mut parser = Parser::default();
+
+    let maw = Block::parse(
+        Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
+        &mut parser,
+    );
 
     assert_eq!(
         maw.warnings,
@@ -712,9 +741,12 @@ fn err_invalid_block_anchor() {
 
 #[test]
 fn unterminated_block_anchor() {
-    let mi = Block::parse(Span::new(
-        "[[notice]\nThis paragraph gets a lot of attention.\n",
-    ))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(
+        Span::new("[[notice]\nThis paragraph gets a lot of attention.\n"),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap();
 

@@ -11,12 +11,15 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
+    Parser,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = MacroBlock::parse(&Preamble::new("foo::[]"))
+    let mut parser = Parser::default();
+
+    let b1 = MacroBlock::parse(&Preamble::new("foo::[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -27,21 +30,26 @@ fn impl_clone() {
 
 #[test]
 fn err_empty_source() {
-    assert!(MacroBlock::parse(&Preamble::new(""))
+    let mut parser = Parser::default();
+
+    assert!(MacroBlock::parse(&Preamble::new(""), &mut parser)
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_only_spaces() {
-    assert!(MacroBlock::parse(&Preamble::new("    "))
+    let mut parser = Parser::default();
+
+    assert!(MacroBlock::parse(&Preamble::new("    "), &mut parser)
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_macro_name_not_ident() {
-    let maw = MacroBlock::parse(&Preamble::new("98xyz::bar[blah,blap]"));
+    let mut parser = Parser::default();
+    let maw = MacroBlock::parse(&Preamble::new("98xyz::bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -61,7 +69,8 @@ fn err_macro_name_not_ident() {
 
 #[test]
 fn err_missing_double_colon() {
-    let maw = MacroBlock::parse(&Preamble::new("foo:bar[blah,blap]"));
+    let mut parser = Parser::default();
+    let maw = MacroBlock::parse(&Preamble::new("foo:bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -81,7 +90,8 @@ fn err_missing_double_colon() {
 
 #[test]
 fn err_missing_macro_attrlist() {
-    let maw = MacroBlock::parse(&Preamble::new("foo::barblah,blap]"));
+    let mut parser = Parser::default();
+    let maw = MacroBlock::parse(&Preamble::new("foo::barblah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -101,28 +111,40 @@ fn err_missing_macro_attrlist() {
 
 #[test]
 fn err_no_attr_list() {
-    assert!(MacroBlock::parse(&Preamble::new("foo::bar"))
+    let mut parser = Parser::default();
+
+    assert!(MacroBlock::parse(&Preamble::new("foo::bar"), &mut parser)
         .unwrap_if_no_warnings()
         .is_none());
 }
 
 #[test]
 fn err_attr_list_not_closed() {
-    assert!(MacroBlock::parse(&Preamble::new("foo::bar[blah"))
-        .unwrap_if_no_warnings()
-        .is_none());
+    let mut parser = Parser::default();
+
+    assert!(
+        MacroBlock::parse(&Preamble::new("foo::bar[blah"), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]
 fn err_unexpected_after_attr_list() {
-    assert!(MacroBlock::parse(&Preamble::new("foo::bar[blah]bonus"))
-        .unwrap_if_no_warnings()
-        .is_none());
+    let mut parser = Parser::default();
+
+    assert!(
+        MacroBlock::parse(&Preamble::new("foo::bar[blah]bonus"), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]
 fn simplest_block_macro() {
-    let mi = MacroBlock::parse(&Preamble::new("foo::[]"))
+    let mut parser = Parser::default();
+
+    let mi = MacroBlock::parse(&Preamble::new("foo::[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -181,7 +203,9 @@ fn simplest_block_macro() {
 
 #[test]
 fn has_target() {
-    let mi = MacroBlock::parse(&Preamble::new("foo::bar[]"))
+    let mut parser = Parser::default();
+
+    let mi = MacroBlock::parse(&Preamble::new("foo::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -234,7 +258,9 @@ fn has_target() {
 
 #[test]
 fn has_target_and_attrlist() {
-    let mi = MacroBlock::parse(&Preamble::new("foo::bar[blah]"))
+    let mut parser = Parser::default();
+
+    let mi = MacroBlock::parse(&Preamble::new("foo::bar[blah]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -307,7 +333,8 @@ fn has_target_and_attrlist() {
 
 #[test]
 fn err_duplicate_comma() {
-    let maw = MacroBlock::parse(&Preamble::new("foo::bar[blah,,blap]"));
+    let mut parser = Parser::default();
+    let maw = MacroBlock::parse(&Preamble::new("foo::bar[blah,,blap]"), &mut parser);
 
     let mi = maw.item.unwrap().clone();
 

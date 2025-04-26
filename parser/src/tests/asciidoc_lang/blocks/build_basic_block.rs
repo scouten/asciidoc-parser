@@ -242,9 +242,14 @@ include::example$block.adoc[tag=opt-listing]
 "#
     );
 
-    let mi = Block::parse(Span::new("[listing]\nsudo dnf install asciidoc"))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(
+        Span::new("[listing]\nsudo dnf install asciidoc"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings()
+    .unwrap();
 
     assert_eq!(
         mi.item,
@@ -315,9 +320,12 @@ However, note that the lines of a styled paragraph are first parsed like a parag
 "#
     );
 
-    let mi = Block::parse(Span::new(
-        "[quote]\nNever do today what you can put off `'til tomorrow.",
-    ))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(
+        Span::new("[quote]\nNever do today what you can put off `'til tomorrow."),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap();
 

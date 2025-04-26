@@ -11,7 +11,7 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 // NOTE: The "error" cases from the MacroBlock parser test suite are not
@@ -19,7 +19,9 @@ use crate::{
 
 #[test]
 fn err_inline_syntax() {
-    let mi = Block::parse(Span::new("foo:bar[]"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("foo:bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -68,7 +70,9 @@ fn err_inline_syntax() {
 
 #[test]
 fn err_no_attr_list() {
-    let mi = Block::parse(Span::new("foo::bar"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("foo::bar"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -116,7 +120,9 @@ fn err_no_attr_list() {
 
 #[test]
 fn err_attr_list_not_closed() {
-    let mi = Block::parse(Span::new("foo::bar[blah"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("foo::bar[blah"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -164,7 +170,9 @@ fn err_attr_list_not_closed() {
 
 #[test]
 fn err_unexpected_after_attr_list() {
-    let mi = Block::parse(Span::new("foo::bar[blah]bonus"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("foo::bar[blah]bonus"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -212,7 +220,9 @@ fn err_unexpected_after_attr_list() {
 
 #[test]
 fn simplest_block_macro() {
-    let mi = Block::parse(Span::new("foo::[]"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("foo::[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -281,7 +291,9 @@ fn simplest_block_macro() {
 
 #[test]
 fn has_target() {
-    let mi = Block::parse(Span::new("foo::bar[]"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("foo::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -344,7 +356,9 @@ fn has_target() {
 
 #[test]
 fn has_target_and_macro_attrlist() {
-    let mi = Block::parse(Span::new("foo::bar[blah]"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("foo::bar[blah]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -427,7 +441,12 @@ fn has_target_and_macro_attrlist() {
 
 #[test]
 fn warn_macro_attrlist_has_extra_comma() {
-    let maw = Block::parse(Span::new("foo::bar[alt=Sunset,width=300,,height=400]"));
+    let mut parser = Parser::default();
+
+    let maw = Block::parse(
+        Span::new("foo::bar[alt=Sunset,width=300,,height=400]"),
+        &mut parser,
+    );
 
     let mi = maw.item.as_ref().unwrap().clone();
 
@@ -566,7 +585,9 @@ fn warn_macro_attrlist_has_extra_comma() {
 
 #[test]
 fn has_title() {
-    let mi = Block::parse(Span::new(".macro title\nfoo::bar[]\n"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new(".macro title\nfoo::bar[]\n"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 

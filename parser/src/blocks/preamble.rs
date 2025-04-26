@@ -2,7 +2,7 @@ use crate::{
     attributes::Attrlist,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    Span,
+    Parser, Span,
 };
 
 /// A preamble represents the common elements that can precede any block type
@@ -32,11 +32,12 @@ impl<'src> Preamble<'src> {
     /// (For testing only) Parse the preamble from a raw text constant.
     #[cfg(test)]
     pub(crate) fn new(data: &'src str) -> Self {
-        Self::parse(Span::new(data)).item
+        let mut temp_parser = Parser::default();
+        Self::parse(Span::new(data), &mut temp_parser).item
     }
 
     /// Parse the title and attribute list for a block, if any.
-    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, Self> {
+    pub(crate) fn parse(source: Span<'src>, _parser: &mut Parser) -> MatchAndWarnings<'src, Self> {
         let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 

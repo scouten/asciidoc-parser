@@ -31,14 +31,17 @@ mod error_cases {
             TSpan,
         },
         warnings::{MatchAndWarnings, WarningType},
-        Span,
+        Parser, Span,
     };
 
     #[test]
     fn missing_block_after_title_line() {
-        let MatchAndWarnings { item: mi, warnings } = SectionBlock::parse(&Preamble::new(
-            "=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef",
-        ))
+        let mut parser = Parser::default();
+
+        let MatchAndWarnings { item: mi, warnings } = SectionBlock::parse(
+            &Preamble::new("=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef"),
+            &mut parser,
+        )
         .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Compound);
@@ -154,9 +157,12 @@ mod error_cases {
 
     #[test]
     fn missing_close_brace_on_attrlist() {
-        let mi = Block::parse(Span::new(
-            "[incomplete attrlist\n=== Section Title (except it isn't)\n\nabc\n",
-        ))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(
+            Span::new("[incomplete attrlist\n=== Section Title (except it isn't)\n\nabc\n"),
+            &mut parser,
+        )
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -205,9 +211,12 @@ mod error_cases {
 
     #[test]
     fn attrlist_warning_carried_forward() {
-        let MatchAndWarnings { item: mi, warnings } = Block::parse(Span::new(
-            "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n",
-        ));
+        let mut parser = Parser::default();
+
+        let MatchAndWarnings { item: mi, warnings } = Block::parse(
+            Span::new("[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n"),
+            &mut parser,
+        );
 
         let mi = mi.unwrap();
 
@@ -349,7 +358,9 @@ mod error_cases {
     #[allow(non_snake_case)]
     fn TEMP_not_title() {
         // IMPORTANT: This test will fail once we implement support for list items.
-        let mi = Block::parse(Span::new(". abc\ndef"))
+        let mut parser = Parser::default();
+
+        let mi = Block::parse(Span::new(". abc\ndef"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 

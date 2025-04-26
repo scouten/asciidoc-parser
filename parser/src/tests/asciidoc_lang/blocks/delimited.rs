@@ -11,7 +11,7 @@ use crate::{
         sdd::{non_normative, to_do_verifies, track_file, verifies},
     },
     warnings::WarningType,
-    Span,
+    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/delimited.adoc");
@@ -46,9 +46,12 @@ This text will be treated as verbatim content.
 "#
     );
 
-    let block = Block::parse(Span::new(
-        "....\nThis text will be treated as verbatim content.\n....",
-    ))
+    let mut parser = Parser::default();
+
+    let block = Block::parse(
+        Span::new("....\nThis text will be treated as verbatim content.\n...."),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -89,9 +92,12 @@ The remaining lines define a block's content.
 "#
     );
 
-    let block = Block::parse(Span::new(
-        "....\n\n\nThis text will be treated as verbatim content.\n\n\n....",
-    ))
+    let mut parser = Parser::default();
+
+    let block = Block::parse(
+        Span::new("....\n\n\nThis text will be treated as verbatim content.\n\n\n...."),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -148,9 +154,12 @@ The block metadata (block attribute and anchor lines) goes above the opening del
 "#
     );
 
-    let maw_block = Block::parse(Span::new(
-        "....\nThis text will be treated as verbatim content.\n.....",
-    ));
+    let mut parser = Parser::default();
+
+    let maw_block = Block::parse(
+        Span::new("....\nThis text will be treated as verbatim content.\n....."),
+        &mut parser,
+    );
 
     assert_eq!(
         maw_block.warnings,
@@ -182,9 +191,12 @@ That's so meta.
 "#
     );
 
-    let block = Block::parse(Span::new(
-        "====\nThis is an example of an example block.\nThat's so meta.\n====",
-    ))
+    let mut parser = Parser::default();
+
+    let block = Block::parse(
+        Span::new("====\nThis is an example of an example block.\nThat's so meta.\n===="),
+        &mut parser,
+    )
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -273,7 +285,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("////\n////"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("////\n////"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -291,7 +305,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("====\n===="))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("====\n===="), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -309,7 +325,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("----\n----"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("----\n----"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -327,7 +345,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("....\n...."))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("....\n...."), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -345,7 +365,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("--\n--"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("--\n--"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -363,7 +385,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("****\n****"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("****\n****"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -398,7 +422,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("++++\n++++"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("++++\n++++"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -417,7 +443,9 @@ The table below lists the structural containers, documenting the name, default c
 "#
     );
 
-    let mi = Block::parse(Span::new("____\n____"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("____\n____"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -462,7 +490,7 @@ mod nesting_blocks {
             },
             sdd::{non_normative, verifies},
         },
-        Span,
+        Parser, Span,
     };
 
     non_normative!(
@@ -505,9 +533,11 @@ The document header is useful, but not required.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let block = Block::parse(Span::new(
             "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
-        ))
+        ), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -640,12 +670,14 @@ Live within the simulated reality without want or fear.
 "#
         );
 
+        let mut parser = Parser::default();
+
         let block = Block::parse(Span::new(
-    "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
-))
-.unwrap_if_no_warnings()
-.unwrap()
-.item;
+            "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
+        ), &mut parser)
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
 
         assert_eq!(block,
             TBlock::CompoundDelimited(

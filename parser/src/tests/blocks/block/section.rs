@@ -11,12 +11,14 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 #[test]
 fn err_missing_space_before_title() {
-    let mi = Block::parse(Span::new("=blah blah"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("=blah blah"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -64,7 +66,9 @@ fn err_missing_space_before_title() {
 
 #[test]
 fn simplest_section_block() {
-    let mi = Block::parse(Span::new("== Section Title"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("== Section Title"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -117,7 +121,9 @@ fn simplest_section_block() {
 
 #[test]
 fn has_child_block() {
-    let mi = Block::parse(Span::new("== Section Title\n\nabc"))
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(Span::new("== Section Title\n\nabc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -219,9 +225,14 @@ fn has_child_block() {
 
 #[test]
 fn title() {
-    let mi = Block::parse(Span::new(".other section title\n== Section Title\n\nabc"))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mut parser = Parser::default();
+
+    let mi = Block::parse(
+        Span::new(".other section title\n== Section Title\n\nabc"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings()
+    .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -337,9 +348,12 @@ fn title() {
 
 #[test]
 fn warn_child_attrlist_has_extra_comma() {
-    let maw = Block::parse(Span::new(
-        "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
-    ));
+    let mut parser = Parser::default();
+
+    let maw = Block::parse(
+        Span::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
+        &mut parser,
+    );
 
     let mi = maw.item.as_ref().unwrap().clone();
 

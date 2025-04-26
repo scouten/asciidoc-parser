@@ -6,7 +6,7 @@ use crate::{
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// A delimited block that contains verbatim, raw, or comment text. The content
@@ -58,6 +58,7 @@ impl<'src> RawDelimitedBlock<'src> {
 
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
+        _parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = preamble.block_start.take_normalized_line();
 

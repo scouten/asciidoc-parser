@@ -10,7 +10,7 @@ use crate::{
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Span,
+    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/add-title.adoc");
@@ -47,9 +47,11 @@ This is the content of the sidebar block.
 "#
     );
 
+    let mut parser = Parser::default();
+
     let block = Block::parse(Span::new(
         ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****\n",
-    ))
+    ), &mut parser)
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -136,9 +138,11 @@ Don't put a space between the dot and the first character of the title.
 "#
     );
 
+    let mut parser = Parser::default();
+
     let block = Block::parse(Span::new(
         ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....\n",
-    ))
+    ), &mut parser)
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -231,9 +235,11 @@ stages: [ init, verify, deploy ]
 "#
     );
 
+    let mut parser = Parser::default();
+
     let block = Block::parse(Span::new(
         ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
-    ))
+    ), &mut parser)
     .unwrap_if_no_warnings()
     .unwrap()
     .item;
@@ -361,9 +367,11 @@ If you don't plant it in a container, it will take over your garden.
 "#
     );
 
+    let mut parser = Parser::default();
+
     let block = Block::parse(Span::new(
         ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
-    ))
+    ), &mut parser)
     .unwrap_if_no_warnings()
     .unwrap()
     .item;

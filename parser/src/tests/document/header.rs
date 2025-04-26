@@ -6,20 +6,24 @@ use crate::{
         document::{TAttribute, THeader, TRawAttributeValue},
         TSpan,
     },
-    Span,
+    Parser, Span,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Header::parse(Span::new("= Title")).unwrap_if_no_warnings();
+    let mut parser = Parser::default();
+
+    let h1 = Header::parse(Span::new("= Title"), &mut parser).unwrap_if_no_warnings();
     let h2 = h1.clone();
+
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn only_title() {
-    let mi = Header::parse(Span::new("= Just the Title")).unwrap_if_no_warnings();
+    let mut parser = Parser::default();
+    let mi = Header::parse(Span::new("= Just the Title"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -55,7 +59,8 @@ fn only_title() {
 fn trims_leading_spaces_in_title() {
     // This is totally a judgement call on my part. As far as I can tell,
     // the language doesn't describe behavior here.
-    let mi = Header::parse(Span::new("=    Just the Title")).unwrap_if_no_warnings();
+    let mut parser = Parser::default();
+    let mi = Header::parse(Span::new("=    Just the Title"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -89,7 +94,8 @@ fn trims_leading_spaces_in_title() {
 
 #[test]
 fn trims_trailing_spaces_in_title() {
-    let mi = Header::parse(Span::new("= Just the Title   ")).unwrap_if_no_warnings();
+    let mut parser = Parser::default();
+    let mi = Header::parse(Span::new("= Just the Title   "), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -123,8 +129,13 @@ fn trims_trailing_spaces_in_title() {
 
 #[test]
 fn title_and_attribute() {
-    let mi =
-        Header::parse(Span::new("= Just the Title\n:foo: bar\n\nblah")).unwrap_if_no_warnings();
+    let mut parser = Parser::default();
+
+    let mi = Header::parse(
+        Span::new("= Just the Title\n:foo: bar\n\nblah"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -177,7 +188,8 @@ fn title_and_attribute() {
 
 #[test]
 fn attribute_without_title() {
-    let mi = Header::parse(Span::new(":foo: bar\n\nblah")).unwrap_if_no_warnings();
+    let mut parser = Parser::default();
+    let mi = Header::parse(Span::new(":foo: bar\n\nblah"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
