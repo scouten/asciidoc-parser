@@ -6,7 +6,7 @@ mod parse {
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
             warnings::TWarning,
-            TSpan,
+            TContent, TSpan,
         },
         warnings::WarningType,
         Parser, Span,
@@ -29,12 +29,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "...",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: "...",
                     line: 1,
@@ -56,12 +56,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "++++x",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: "++++x",
                     line: 1,
@@ -83,12 +83,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "____x",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: "____x",
                     line: 1,
@@ -110,12 +110,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "====x",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: "====x",
                     line: 1,
@@ -139,12 +139,12 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "....\nblah blah blah",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: "....\nblah blah blah",
                     line: 1,

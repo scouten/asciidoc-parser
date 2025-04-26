@@ -6,7 +6,7 @@ use crate::{
         fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             warnings::TWarning,
-            TSpan,
+            TContent, TSpan,
         },
         sdd::{non_normative, to_do_verifies, track_file, verifies},
     },
@@ -205,12 +205,12 @@ That's so meta.
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "This is an example of an example block.\nThat's so meta.",
                     line: 2,
                     col: 1,
                     offset: 5,
-                },
+                }),
                 source: TSpan {
                     data: "This is an example of an example block.\nThat's so meta.",
                     line: 2,
@@ -486,7 +486,7 @@ mod nesting_blocks {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
-                TSpan,
+                TContent, TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -549,12 +549,12 @@ The document header is useful, but not required.
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TSpan {
+                                content: TContent::Passthrough(TSpan {
                                     data: "Here's a sample AsciiDoc document:",
                                     line: 2,
                                     col: 1,
                                     offset: 5,
-                                },
+                                }),
                                 source: TSpan {
                                     data: "Here's a sample AsciiDoc document:",
                                     line: 2,
@@ -609,12 +609,12 @@ The document header is useful, but not required.
                         ),
                         TBlock::Simple(
                             TSimpleBlock{
-                                content: TSpan {
+                                content: TContent::Passthrough(TSpan {
                                     data: "The document header is useful, but not required.",
                                     line: 11,
                                     col: 1,
                                     offset: 101,
-                                },
+                                }),
                                 source: TSpan {
                                     data: "The document header is useful, but not required.",
                                     line: 11,
@@ -685,12 +685,12 @@ Live within the simulated reality without want or fear.
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TSpan {
+                                content: TContent::Passthrough(TSpan {
                                     data: "Here are your options:",
                                     line: 2,
                                     col: 1,
                                     offset: 5,
-                                },
+                                }),
                                 source: TSpan {
                                     data: "Here are your options:",
                                     line: 2,
@@ -707,12 +707,12 @@ Live within the simulated reality without want or fear.
                                 blocks: vec![
                                     TBlock::Simple(
                                         TSimpleBlock {
-                                            content: TSpan {
+                                            content: TContent::Passthrough(TSpan {
                                                 data: "Escape into the real world.",
                                                 line: 7,
                                                 col: 1,
                                                 offset: 61,
-                                            },
+                                            }),
                                             source: TSpan {
                                                 data: "Escape into the real world.",
                                                 line: 7,
@@ -783,12 +783,12 @@ Live within the simulated reality without want or fear.
                                 blocks: vec![
                                     TBlock::Simple(
                                         TSimpleBlock {
-                                            content: TSpan {
+                                            content: TContent::Passthrough(TSpan {
                                                 data: "Live within the simulated reality without want or fear.",
                                                 line: 13,
                                                 col: 1,
                                                 offset: 130,
-                                            },
+                                            }),
                                             source: TSpan {
                                                 data: "Live within the simulated reality without want or fear.",
                                                 line: 13,

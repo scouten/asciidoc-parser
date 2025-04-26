@@ -189,8 +189,8 @@ pub enum Content<'src> {
     LineBreak(Span<'src>),
 }
 
-impl<'src> From<&Span<'src>> for Content<'src> {
-    fn from(span: &Span<'src>) -> Self {
-        Self::Passthrough(*span)
+impl<'src> From<Span<'src>> for Content<'src> {
+    fn from(span: Span<'src>) -> Self {
+        Self::Passthrough(span)
     }
 }

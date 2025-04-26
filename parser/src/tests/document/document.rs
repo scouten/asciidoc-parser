@@ -9,7 +9,7 @@ use crate::{
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
         document::{TDocument, THeader},
         warnings::TWarning,
-        TSpan,
+        TContent, TSpan,
     },
     warnings::WarningType,
     Parser,
@@ -112,12 +112,12 @@ fn one_simple_block() {
                 offset: 0
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "abc",
                     line: 1,
                     col: 1,
                     offset: 0,
-                },
+                }),
                 source: TSpan {
                     data: "abc",
                     line: 1,
@@ -158,12 +158,12 @@ fn two_simple_blocks() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    content: TSpan {
+                    content: TContent::Passthrough(TSpan {
                         data: "abc",
                         line: 1,
                         col: 1,
                         offset: 0,
-                    },
+                    }),
                     source: TSpan {
                         data: "abc",
                         line: 1,
@@ -175,12 +175,12 @@ fn two_simple_blocks() {
                     attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
-                    content: TSpan {
+                    content: TContent::Passthrough(TSpan {
                         data: "def",
                         line: 3,
                         col: 1,
                         offset: 5,
-                    },
+                    }),
                     source: TSpan {
                         data: "def",
                         line: 3,
@@ -219,12 +219,12 @@ fn two_blocks_and_title() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    content: TSpan {
+                    content: TContent::Passthrough(TSpan {
                         data: "abc",
                         line: 3,
                         col: 1,
                         offset: 17,
-                    },
+                    }),
                     source: TSpan {
                         data: "abc",
                         line: 3,
@@ -236,12 +236,12 @@ fn two_blocks_and_title() {
                     attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
-                    content: TSpan {
+                    content: TContent::Passthrough(TSpan {
                         data: "def",
                         line: 5,
                         col: 1,
                         offset: 22,
-                    },
+                    }),
                     source: TSpan {
                         data: "def",
                         line: 5,
@@ -285,12 +285,12 @@ fn extra_space_before_title() {
                 }
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 19,
-                },
+                }),
                 source: TSpan {
                     data: "abc",
                     line: 3,
@@ -333,12 +333,12 @@ fn err_bad_header() {
                 }
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "not an attribute",
                     line: 2,
                     col: 1,
                     offset: 8,
-                },
+                }),
                 source: TSpan {
                     data: "not an attribute",
                     line: 2,
@@ -390,12 +390,12 @@ fn err_bad_header_and_bad_macro() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    content: TSpan {
+                    content: TContent::Passthrough(TSpan {
                         data: "not an attribute",
                         line: 2,
                         col: 1,
                         offset: 8,
-                    },
+                    }),
                     source: TSpan {
                         data: "not an attribute",
                         line: 2,

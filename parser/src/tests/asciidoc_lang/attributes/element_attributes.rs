@@ -50,7 +50,7 @@ mod attrlist {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMacroBlock, TSimpleBlock},
-                TSpan,
+                TContent, TSpan,
             },
             sdd::{non_normative, to_do_verifies, verifies},
         },
@@ -289,12 +289,12 @@ If the text cannot be parsed, an error message will be emitted to the log.
         assert_eq!(
             block,
             TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "Simple block",
                     line: 2,
                     col: 1,
                     offset: 49,
-                },
+                }),
                 source: TSpan {
                     data: "[style,second-positional,named=\"value of named\"]\nSimple block",
                     line: 1,

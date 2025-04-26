@@ -8,7 +8,7 @@ use crate::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
         warnings::TWarning,
-        TSpan,
+        TContent, TSpan,
     },
     warnings::WarningType,
     HasSpan, Parser, Span,
@@ -25,12 +25,12 @@ fn err_missing_space_before_title() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TSpan {
+            content: TContent::Passthrough(TSpan {
                 data: "=blah blah",
                 line: 1,
                 col: 1,
                 offset: 0,
-            },
+            }),
             source: TSpan {
                 data: "=blah blah",
                 line: 1,
@@ -149,12 +149,12 @@ fn has_child_block() {
                 offset: 3,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "abc",
                     line: 3,
                     col: 1,
                     offset: 18,
-                },
+                }),
                 source: TSpan {
                     data: "abc",
                     line: 3,
@@ -182,12 +182,12 @@ fn has_child_block() {
     assert_eq!(
         nested_blocks.next().unwrap(),
         &TBlock::Simple(TSimpleBlock {
-            content: TSpan {
+            content: TContent::Passthrough(TSpan {
                 data: "abc",
                 line: 3,
                 col: 1,
                 offset: 18,
-            },
+            }),
             source: TSpan {
                 data: "abc",
                 line: 3,
@@ -250,12 +250,12 @@ fn title() {
                 offset: 24,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TSpan {
+                content: TContent::Passthrough(TSpan {
                     data: "abc",
                     line: 4,
                     col: 1,
                     offset: 39,
-                },
+                }),
                 source: TSpan {
                     data: "abc",
                     line: 4,
@@ -305,12 +305,12 @@ fn title() {
     assert_eq!(
         nested_blocks.next().unwrap(),
         &TBlock::Simple(TSimpleBlock {
-            content: TSpan {
+            content: TContent::Passthrough(TSpan {
                 data: "abc",
                 line: 4,
                 col: 1,
                 offset: 39,
-            },
+            }),
             source: TSpan {
                 data: "abc",
                 line: 4,
