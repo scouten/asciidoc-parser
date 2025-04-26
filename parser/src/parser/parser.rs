@@ -1,11 +1,20 @@
-use crate::Document;
+use std::collections::HashMap;
+
+use crate::{
+    document::InterpretedValue,
+    parser::{AllowableValue, AttributeValue, ModificationContext},
+    Document,
+};
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
 /// how AsciiDoc parsing occurs and then to initiate the parsing process.
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Parser {}
+pub struct Parser<'p> {
+    /// Attribute values at current state of parsing.
+    pub(crate) attribute_values: HashMap<String, AttributeValue<'p>>,
+}
 
-impl Parser {
+impl<'p> Parser<'p> {
     /// Parse a UTF-8 string as an AsciiDoc document.
     ///
     /// Note that the document references the underlying source string and
@@ -34,5 +43,117 @@ impl Parser {
     pub fn parse<'src>(&self, source: &'src str) -> Document<'src> {
         let mut temp_copy = self.clone();
         Document::parse(source, &mut temp_copy)
+    }
+
+    /// Retrieves the current interpreted value of a [document attribute].
+    ///
+    /// Each document holds a set of name-value pairs called document
+    /// attributes. These attributes provide a means of configuring the AsciiDoc
+    /// processor, declaring document metadata, and defining reusable content.
+    /// This page introduces document attributes and answers some questions
+    /// about the terminology used when referring to them.
+    ///
+    /// ## What are document attributes?
+    ///
+    /// Document attributes are effectively document-scoped variables for the
+    /// AsciiDoc language. The AsciiDoc language defines a set of built-in
+    /// attributes, and also allows the author (or extensions) to define
+    /// additional document attributes, which may replace built-in attributes
+    /// when permitted.
+    ///
+    /// Built-in attributes either provide access to read-only information about
+    /// the document and its environment or allow the author to configure
+    /// behavior of the AsciiDoc processor for a whole document or select
+    /// regions. Built-in attributes are effectively unordered. User-defined
+    /// attribute serve as a powerful text replacement tool. User-defined
+    /// attributes are stored in the order in which they are defined.
+    ///
+    /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
+    pub fn attribute_value<N: AsRef<str>>(&self, name: N) -> InterpretedValue<'p> {
+        self.attribute_values
+            .get(name.as_ref())
+            .map(|av| av.value.clone())
+            .unwrap_or(InterpretedValue::Unset)
+    }
+
+    /// Sets the value of an [intrinsic attribute].
+    ///
+    /// Intrinsic attributes are set automatically by the processor. These
+    /// attributes provide information about the document being processed (e.g.,
+    /// `docfile`), the security mode under which the processor is running
+    /// (e.g., `safe-mode-name`), and information about the user’s environment
+    /// (e.g., `user-home`).
+    ///
+    /// The [`modification_context`](ModificationContext) establishes whether
+    /// the value can be subsequently modified by the document header and/or in
+    /// the document body.
+    ///
+    /// Subsequent calls to this function or [`with_intrinsic_attribute_bool()`]
+    /// are always permitted. The last such call for any given attribute name
+    /// takes precendence.
+    ///
+    /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
+    ///
+    /// [`with_intrinsic_attribute_bool()`]: Self::with_intrinsic_attribute_bool
+    pub fn with_intrinsic_attribute<N: AsRef<str>, V: AsRef<str>>(
+        mut self,
+        name: N,
+        value: V,
+        modification_context: ModificationContext,
+    ) -> Self {
+        let attribute_value = AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context,
+            value: InterpretedValue::Value(value.as_ref().to_string().into()),
+        };
+
+        self.attribute_values
+            .insert(name.as_ref().to_string(), attribute_value);
+
+        self
+    }
+
+    /// Sets the value of an [intrinsic attribute] from a boolean flag.
+    ///
+    /// A boolean `true` is interpreted as "set." A boolean `false` is
+    /// interpreted as "unset."
+    ///
+    /// Intrinsic attributes are set automatically by the processor. These
+    /// attributes provide information about the document being processed (e.g.,
+    /// `docfile`), the security mode under which the processor is running
+    /// (e.g., `safe-mode-name`), and information about the user’s environment
+    /// (e.g., `user-home`).
+    ///
+    /// The [`modification_context`](ModificationContext) establishes whether
+    /// the value can be subsequently modified by the document header and/or in
+    /// the document body.
+    ///
+    /// Subsequent calls to this function or [`with_intrinsic_attribute()`] are
+    /// always permitted. The last such call for any given attribute name takes
+    /// precendence.
+    ///
+    /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
+    ///
+    /// [`with_intrinsic_attribute()`]: Self::with_intrinsic_attribute
+    pub fn with_intrinsic_attribute_bool<N: AsRef<str>>(
+        mut self,
+        name: N,
+        value: bool,
+        modification_context: ModificationContext,
+    ) -> Self {
+        let attribute_value = AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context,
+            value: if value {
+                InterpretedValue::Set
+            } else {
+                InterpretedValue::Unset
+            },
+        };
+
+        self.attribute_values
+            .insert(name.as_ref().to_string(), attribute_value);
+
+        self
     }
 }
