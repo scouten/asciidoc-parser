@@ -9,6 +9,10 @@ The format of this changelog is based on [Keep a Changelog](https://keepachangel
 ## [0.4.0](https://github.com/scouten/asciidoc-parser/compare/v0.3.1...v0.4.0)
 _27 April 2025_
 
+### Major change
+
+In this release, I replaced the previous "inline content" model with a new `Content` model which more accurately matches the manner in which Asciidoc handles [content substitutions](https://docs.asciidoctor.org/asciidoc/latest/subs/).
+
 ### Added
 
 * Change `RawDelimitedBlock` to use `Content` for its inner body ([#238](https://github.com/scouten/asciidoc-parser/pull/238))
