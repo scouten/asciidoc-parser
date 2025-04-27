@@ -8,6 +8,7 @@
 mod asciidoc_lang;
 mod attributes;
 mod blocks;
+mod content;
 mod document;
 pub(crate) mod fixtures;
 mod parser;
