@@ -85,13 +85,17 @@ pub enum SpanOrSubstitution<'src> {
     Span(Span<'src>),
 
     /// A region of text where a substitition occurred.
-    Substitution {
-        /// The original text before substitution.
-        original: Span<'src>,
+    Substitution(Substitution<'src>),
+}
 
-        /// The replacement value.
-        replacement: &'src str,
-    },
+/// A [`Substitition`] describes a single substitution made to the original
+/// source text.
+pub struct Substitution<'src> {
+    /// The original text before substitution.
+    pub original: Span<'src>,
+
+    /// The replacement value.
+    pub replacement: &'src str,
 }
 
 /// The [`Content::spans_and_substitions()`] function returns an iterator of
