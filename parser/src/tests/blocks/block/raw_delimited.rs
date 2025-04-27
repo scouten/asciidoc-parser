@@ -179,7 +179,7 @@ mod comment {
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
-            TSpan,
+            TContent, TSpan,
         },
         Parser, Span,
     };
@@ -195,7 +195,12 @@ mod comment {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(),
+                content: TContent::Basic(TSpan {
+                    data: "",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -236,20 +241,12 @@ mod comment {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 3,
-                        col: 1,
-                        offset: 14,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 22,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 3,
+                    col: 1,
+                    offset: 14,
+                }),
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -302,20 +299,12 @@ mod comment {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -353,26 +342,12 @@ mod comment {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "/////",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 19,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \n/////\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -408,7 +383,7 @@ mod listing {
         span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
-            TSpan,
+            TContent, TSpan,
         },
         Parser, Span,
     };
@@ -424,7 +399,12 @@ mod listing {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(),
+                content: TContent::Basic(TSpan {
+                    data: "",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -462,20 +442,12 @@ mod listing {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -527,20 +499,12 @@ mod listing {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 3,
-                        col: 1,
-                        offset: 20,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 28,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 3,
+                    col: 1,
+                    offset: 20,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -604,26 +568,12 @@ mod listing {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "----/",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 19,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \n----/\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -670,7 +620,7 @@ mod pass {
         span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
-            TSpan,
+            TContent, TSpan,
         },
         Parser, Span,
     };
@@ -686,7 +636,12 @@ mod pass {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(),
+                content: TContent::Basic(TSpan {
+                    data: "",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -735,20 +690,12 @@ mod pass {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -800,20 +747,12 @@ mod pass {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 3,
-                        col: 1,
-                        offset: 17,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 25,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 3,
+                    col: 1,
+                    offset: 17,
+                }),
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -877,26 +816,12 @@ mod pass {
         assert_eq!(
             mi.item,
             TBlock::RawDelimited(TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "++++/",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 19,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \n++++/\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {

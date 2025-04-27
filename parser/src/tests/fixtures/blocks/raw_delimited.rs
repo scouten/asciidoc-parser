@@ -2,13 +2,13 @@ use std::fmt;
 
 use crate::{
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
-    tests::fixtures::{attributes::TAttrlist, TSpan},
+    tests::fixtures::{attributes::TAttrlist, TContent, TSpan},
     HasSpan,
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TRawDelimitedBlock {
-    pub lines: Vec<TSpan>,
+    pub content: TContent,
     pub content_model: ContentModel,
     pub context: &'static str,
     pub source: TSpan,
@@ -20,7 +20,7 @@ pub(crate) struct TRawDelimitedBlock {
 impl fmt::Debug for TRawDelimitedBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("RawDelimitedBlock")
-            .field("lines", &self.lines)
+            .field("content", &self.content)
             .field("content_model", &self.content_model)
             .field("context", &self.context)
             .field("source", &self.source)
@@ -44,14 +44,8 @@ impl PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'_> {
 }
 
 fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBlock) -> bool {
-    if fixture.lines.len() != observed.lines().len() {
+    if &fixture.content != observed.content() {
         return false;
-    }
-
-    for (fixture_line, observed_line) in fixture.lines.iter().zip(observed.lines()) {
-        if fixture_line != observed_line {
-            return false;
-        }
     }
 
     if fixture.content_model != observed.content_model() {
