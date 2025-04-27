@@ -189,7 +189,7 @@ pub enum Content<'src> {
     LineBreak(Span<'src>),
 }
 
-impl<'src> Content<'src> {
+impl Content<'_> {
     #[allow(unused)] // TEMPORARY (maybe only used for testing)
     /// Returns `true` if `self` contains no text.
     pub(crate) fn is_empty(&self) -> bool {
