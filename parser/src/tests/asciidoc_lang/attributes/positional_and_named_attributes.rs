@@ -355,12 +355,15 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         assert_eq!(
             block,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "* Work hard\n* Play hard\n* Be happy",
-                    line: 2,
-                    col: 1,
-                    offset: 31,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "* Work hard\n* Play hard\n* Be happy",
+                        line: 2,
+                        col: 1,
+                        offset: 31,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy",
                     line: 1,
@@ -447,12 +450,15 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 
         assert_eq!(block, TBlock::Simple(
             TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
-                    line: 2,
-                    col: 1,
-                    offset: 27,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
+                        line: 2,
+                        col: 1,
+                        offset: 27,
+                    },
+                    rendered: None,
+                },
                 source: TSpan {
                     data: "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                     line: 1,

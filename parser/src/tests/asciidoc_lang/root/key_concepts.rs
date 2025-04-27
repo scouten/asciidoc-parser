@@ -222,12 +222,15 @@ Click the button with the image:star.png[Star] to favorite the project.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "Click the button with the image:star.png[Star] to favorite the project.",
-                                line: 1,
-                                col: 1,
-                                offset: 0,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "Click the button with the image:star.png[Star] to favorite the project.",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                rendered: None,
+                            },
                             source: TSpan {
                                 data: "Click the button with the image:star.png[Star] to favorite the project.",
                                 line: 1,

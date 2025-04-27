@@ -289,12 +289,15 @@ If the text cannot be parsed, an error message will be emitted to the log.
         assert_eq!(
             block,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "Simple block",
-                    line: 2,
-                    col: 1,
-                    offset: 49,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "Simple block",
+                        line: 2,
+                        col: 1,
+                        offset: 49,
+                    },
+                    rendered: None,
+                },
                 source: TSpan {
                     data: "[style,second-positional,named=\"value of named\"]\nSimple block",
                     line: 1,

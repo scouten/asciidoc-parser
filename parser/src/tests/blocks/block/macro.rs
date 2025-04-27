@@ -28,12 +28,15 @@ fn err_inline_syntax() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "foo:bar[]",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "foo:bar[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: None
+            },
             source: TSpan {
                 data: "foo:bar[]",
                 line: 1,
@@ -78,12 +81,15 @@ fn err_no_attr_list() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "foo::bar",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "foo::bar",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: None
+            },
             source: TSpan {
                 data: "foo::bar",
                 line: 1,
@@ -128,12 +134,15 @@ fn err_attr_list_not_closed() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "foo::bar[blah",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "foo::bar[blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: None
+            },
             source: TSpan {
                 data: "foo::bar[blah",
                 line: 1,
@@ -178,12 +187,15 @@ fn err_unexpected_after_attr_list() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "foo::bar[blah]bonus",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "foo::bar[blah]bonus",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: None
+            },
             source: TSpan {
                 data: "foo::bar[blah]bonus",
                 line: 1,

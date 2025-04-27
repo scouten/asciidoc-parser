@@ -92,12 +92,15 @@ This is a sidebar with a role assigned to it, rolename.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "This is a sidebar with a role assigned to it, rolename.",
-                                line: 3,
-                                col: 1,
-                                offset: 17,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "This is a sidebar with a role assigned to it, rolename.",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 17,
+                                },
+                                rendered: None,
+                            },
                             source: TSpan {
                                 data: "This is a sidebar with a role assigned to it, rolename.",
                                 line: 3,
@@ -191,12 +194,15 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                line: 3,
-                                col: 1,
-                                offset: 20,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 20,
+                                },
+                                rendered: None,
+                            },
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 line: 3,
@@ -297,12 +303,15 @@ This is a sidebar with one role assigned to it, rolename.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "This is a sidebar with one role assigned to it, rolename.",
-                                line: 3,
-                                col: 1,
-                                offset: 21,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "This is a sidebar with one role assigned to it, rolename.",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 21,
+                                },
+                                rendered: None,
+                            },
                             source: TSpan {
                                 data: "This is a sidebar with one role assigned to it, rolename.",
                                 line: 3,
@@ -411,12 +420,15 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                line: 3,
-                                col: 1,
-                                offset: 26,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 26,
+                                },
+                                rendered: None,
+                            },
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 line: 3,

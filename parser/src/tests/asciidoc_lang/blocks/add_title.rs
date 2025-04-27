@@ -63,12 +63,15 @@ This is the content of the sidebar block.
                 blocks: vec![
                     TBlock::Simple(
                         TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "This is the content of the sidebar block.",
-                                line: 3,
-                                col: 1,
-                                offset: 43,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "This is the content of the sidebar block.",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 43,
+                                },
+                                rendered: None,
+                            },
                             source: TSpan {
                                 data: "This is the content of the sidebar block.",
                                 line: 3,
@@ -151,12 +154,15 @@ Don't put a space between the dot and the first character of the title.
         block,
         TBlock::RawDelimited(
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
-                    line: 3,
-                    col: 1,
-                    offset: 22,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
+                        line: 3,
+                        col: 1,
+                        offset: 22,
+                    },
+                    rendered: None,
+                },
                 content_model: ContentModel::Verbatim,
                 context: "literal",
                 source: TSpan {
@@ -234,12 +240,15 @@ stages: [ init, verify, deploy ]
         block,
         TBlock::RawDelimited(
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
-                    line: 4,
-                    col: 1,
-                    offset: 45,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
+                        line: 4,
+                        col: 1,
+                        offset: 45,
+                    },
+                    rendered: None,
+                },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -357,12 +366,15 @@ If you don't plant it in a container, it will take over your garden.
     assert_eq!(block,
         TBlock::Simple(
             TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
-                    line: 3,
-                    col: 1,
-                    offset: 16,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
+                        line: 3,
+                        col: 1,
+                        offset: 16,
+                    },
+                    rendered: None,
+                },
                 source: TSpan {
                     data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                     line: 1,

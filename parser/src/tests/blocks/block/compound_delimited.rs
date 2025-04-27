@@ -23,12 +23,15 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "===",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "===",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "===",
                     line: 1,
@@ -50,12 +53,15 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "====x",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "====x",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "====x",
                     line: 1,
@@ -77,12 +83,15 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "****x",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "****x",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "****x",
                     line: 1,
@@ -104,12 +113,15 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "____x",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "____x",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "____x",
                     line: 1,
@@ -133,12 +145,15 @@ mod parse {
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "====\nblah blah blah",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "====\nblah blah blah",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "====\nblah blah blah",
                     line: 1,
@@ -237,12 +252,15 @@ mod example {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 5,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -254,12 +272,15 @@ mod example {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block2",
-                            line: 4,
-                            col: 1,
-                            offset: 13,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block2",
                             line: 4,
@@ -298,12 +319,15 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -319,12 +343,15 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block2",
-                    line: 4,
-                    col: 1,
-                    offset: 13,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block2",
                     line: 4,
@@ -366,12 +393,15 @@ mod example {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 3,
-                            col: 1,
-                            offset: 19,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 3,
+                                col: 1,
+                                offset: 19,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 3,
@@ -383,12 +413,15 @@ mod example {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block2",
-                            line: 5,
-                            col: 1,
-                            offset: 27,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 27,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block2",
                             line: 5,
@@ -442,12 +475,15 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 3,
-                    col: 1,
-                    offset: 19,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 3,
+                        col: 1,
+                        offset: 19,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 3,
@@ -463,12 +499,15 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block2",
-                    line: 5,
-                    col: 1,
-                    offset: 27,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block2",
+                        line: 5,
+                        col: 1,
+                        offset: 27,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block2",
                     line: 5,
@@ -510,12 +549,15 @@ mod example {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 5,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -528,12 +570,15 @@ mod example {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "block2",
-                                line: 5,
-                                col: 1,
-                                offset: 19,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                rendered: None
+                            },
                             source: TSpan {
                                 data: "block2",
                                 line: 5,
@@ -583,12 +628,15 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -605,12 +653,15 @@ mod example {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "block2",
-                        line: 5,
-                        col: 1,
-                        offset: 19,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        rendered: None
+                    },
                     source: TSpan {
                         data: "block2",
                         line: 5,
@@ -718,12 +769,15 @@ mod open {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 3,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 3,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -735,12 +789,15 @@ mod open {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block2",
-                            line: 4,
-                            col: 1,
-                            offset: 11,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 11,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block2",
                             line: 4,
@@ -779,12 +836,15 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 3,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 3,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -800,12 +860,15 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block2",
-                    line: 4,
-                    col: 1,
-                    offset: 11,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 11,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block2",
                     line: 4,
@@ -843,12 +906,15 @@ mod open {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 3,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 3,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -860,12 +926,15 @@ mod open {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "---\nblock2\n---",
-                            line: 4,
-                            col: 1,
-                            offset: 11,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "---\nblock2\n---",
+                                line: 4,
+                                col: 1,
+                                offset: 11,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "---\nblock2\n---",
                             line: 4,
@@ -904,12 +973,15 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 3,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 3,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -925,12 +997,15 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "---\nblock2\n---",
-                    line: 4,
-                    col: 1,
-                    offset: 11,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "---\nblock2\n---",
+                        line: 4,
+                        col: 1,
+                        offset: 11,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "---\nblock2\n---",
                     line: 4,
@@ -1027,12 +1102,15 @@ mod sidebar {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 5,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -1044,12 +1122,15 @@ mod sidebar {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block2",
-                            line: 4,
-                            col: 1,
-                            offset: 13,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block2",
                             line: 4,
@@ -1088,12 +1169,15 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -1109,12 +1193,15 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block2",
-                    line: 4,
-                    col: 1,
-                    offset: 13,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block2",
                     line: 4,
@@ -1156,12 +1243,15 @@ mod sidebar {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 5,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -1174,12 +1264,15 @@ mod sidebar {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "block2",
-                                line: 5,
-                                col: 1,
-                                offset: 19,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                rendered: None
+                            },
                             source: TSpan {
                                 data: "block2",
                                 line: 5,
@@ -1229,12 +1322,15 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -1251,12 +1347,15 @@ mod sidebar {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "block2",
-                        line: 5,
-                        col: 1,
-                        offset: 19,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        rendered: None
+                    },
                     source: TSpan {
                         data: "block2",
                         line: 5,
@@ -1364,12 +1463,15 @@ mod quote {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 5,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -1381,12 +1483,15 @@ mod quote {
                         attrlist: None,
                     },),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block2",
-                            line: 4,
-                            col: 1,
-                            offset: 13,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block2",
                             line: 4,
@@ -1425,12 +1530,15 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -1446,12 +1554,15 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block2",
-                    line: 4,
-                    col: 1,
-                    offset: 13,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block2",
                     line: 4,
@@ -1493,12 +1604,15 @@ mod quote {
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 5,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            rendered: None
+                        },
                         source: TSpan {
                             data: "block1",
                             line: 2,
@@ -1511,12 +1625,15 @@ mod quote {
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: vec!(TBlock::Simple(TSimpleBlock {
-                            content: TContent::Basic(TSpan {
-                                data: "block2",
-                                line: 5,
-                                col: 1,
-                                offset: 19,
-                            }),
+                            content: TContent {
+                                original: TSpan {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                rendered: None
+                            },
                             source: TSpan {
                                 data: "block2",
                                 line: 5,
@@ -1566,12 +1683,15 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "block1",
                     line: 2,
@@ -1588,12 +1708,15 @@ mod quote {
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: vec!(TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "block2",
-                        line: 5,
-                        col: 1,
-                        offset: 19,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        rendered: None
+                    },
                     source: TSpan {
                         data: "block2",
                         line: 5,

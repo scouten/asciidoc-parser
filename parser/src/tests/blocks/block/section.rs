@@ -25,12 +25,15 @@ fn err_missing_space_before_title() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "=blah blah",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "=blah blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: None
+            },
             source: TSpan {
                 data: "=blah blah",
                 line: 1,
@@ -149,12 +152,15 @@ fn has_child_block() {
                 offset: 3,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "abc",
-                    line: 3,
-                    col: 1,
-                    offset: 18,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "abc",
                     line: 3,
@@ -182,12 +188,15 @@ fn has_child_block() {
     assert_eq!(
         nested_blocks.next().unwrap(),
         &TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc",
-                line: 3,
-                col: 1,
-                offset: 18,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+                rendered: None
+            },
             source: TSpan {
                 data: "abc",
                 line: 3,
@@ -250,12 +259,15 @@ fn title() {
                 offset: 24,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "abc",
-                    line: 4,
-                    col: 1,
-                    offset: 39,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "abc",
+                        line: 4,
+                        col: 1,
+                        offset: 39,
+                    },
+                    rendered: None
+                },
                 source: TSpan {
                     data: "abc",
                     line: 4,
@@ -305,12 +317,15 @@ fn title() {
     assert_eq!(
         nested_blocks.next().unwrap(),
         &TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc",
-                line: 4,
-                col: 1,
-                offset: 39,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc",
+                    line: 4,
+                    col: 1,
+                    offset: 39,
+                },
+                rendered: None
+            },
             source: TSpan {
                 data: "abc",
                 line: 4,
