@@ -155,7 +155,7 @@ mod comment {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
         Parser,
     };
 
@@ -169,7 +169,12 @@ mod comment {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(),
+                content: TContent::Basic(TSpan {
+                    data: "",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -188,7 +193,7 @@ mod comment {
         assert_eq!(mi.item.raw_context().as_ref(), "comment");
         assert_eq!(mi.item.resolved_context().as_ref(), "comment");
         assert!(mi.item.declared_style().is_none());
-        assert!(mi.item.lines().next().is_none());
+        assert!(mi.item.content().is_empty());
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
@@ -210,20 +215,12 @@ mod comment {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -249,28 +246,15 @@ mod comment {
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
-        let mut lines = mi.item.lines();
         assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
+            mi.item.content(),
+            TContent::Basic(TSpan {
+                data: "line1  \nline2",
                 line: 2,
                 col: 1,
                 offset: 5,
-            }
+            },)
         );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 3,
-                col: 1,
-                offset: 13,
-            }
-        );
-
-        assert!(lines.next().is_none());
     }
 
     #[test]
@@ -288,26 +272,12 @@ mod comment {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "/////",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 19,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \n/////\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -333,38 +303,15 @@ mod comment {
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
-        let mut lines = mi.item.lines();
         assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
+            mi.item.content(),
+            TContent::Basic(TSpan {
+                data: "line1  \n/////\nline2",
                 line: 2,
                 col: 1,
                 offset: 5,
-            }
+            },)
         );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "/////",
-                line: 3,
-                col: 1,
-                offset: 13,
-            }
-        );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 4,
-                col: 1,
-                offset: 19,
-            }
-        );
-
-        assert!(lines.next().is_none());
     }
 }
 
@@ -397,7 +344,7 @@ mod listing {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
         Parser,
     };
 
@@ -411,7 +358,12 @@ mod listing {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(),
+                content: TContent::Basic(TSpan {
+                    data: "",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -430,7 +382,7 @@ mod listing {
         assert_eq!(mi.item.raw_context().as_ref(), "listing");
         assert_eq!(mi.item.resolved_context().as_ref(), "listing");
         assert!(mi.item.declared_style().is_none());
-        assert!(mi.item.lines().next().is_none());
+        assert!(mi.item.content().is_empty());
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
@@ -452,20 +404,12 @@ mod listing {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -491,28 +435,15 @@ mod listing {
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
-        let mut lines = mi.item.lines();
         assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
+            mi.item.content(),
+            TContent::Basic(TSpan {
+                data: "line1  \nline2",
                 line: 2,
                 col: 1,
                 offset: 5,
-            }
+            },)
         );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 3,
-                col: 1,
-                offset: 13,
-            }
-        );
-
-        assert!(lines.next().is_none());
     }
 
     #[test]
@@ -530,26 +461,12 @@ mod listing {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "-----",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 19,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \n-----\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -575,38 +492,25 @@ mod listing {
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
-        let mut lines = mi.item.lines();
         assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
+            mi.item.content(),
+            TContent::Basic(TSpan {
+                data: "line1  \n-----\nline2",
                 line: 2,
                 col: 1,
                 offset: 5,
-            }
+            },)
         );
 
         assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "-----",
-                line: 3,
+            mi.item.content(),
+            TContent::Basic(TSpan {
+                data: "line1  \n-----\nline2",
+                line: 2,
                 col: 1,
-                offset: 13,
-            }
+                offset: 5,
+            },)
         );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 4,
-                col: 1,
-                offset: 19,
-            }
-        );
-
-        assert!(lines.next().is_none());
     }
 }
 
@@ -691,7 +595,7 @@ mod pass {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
         Parser,
     };
 
@@ -705,7 +609,12 @@ mod pass {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(),
+                content: TContent::Basic(TSpan {
+                    data: "",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -724,7 +633,7 @@ mod pass {
         assert_eq!(mi.item.raw_context().as_ref(), "pass");
         assert_eq!(mi.item.resolved_context().as_ref(), "pass");
         assert!(mi.item.declared_style().is_none());
-        assert!(mi.item.lines().next().is_none());
+        assert!(mi.item.content().is_empty());
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
@@ -746,20 +655,12 @@ mod pass {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -785,28 +686,15 @@ mod pass {
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
-        let mut lines = mi.item.lines();
         assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
+            mi.item.content(),
+            TContent::Basic(TSpan {
+                data: "line1  \nline2",
                 line: 2,
                 col: 1,
                 offset: 5,
-            }
+            },)
         );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 3,
-                col: 1,
-                offset: 13,
-            }
-        );
-
-        assert!(lines.next().is_none());
     }
 
     #[test]
@@ -824,26 +712,12 @@ mod pass {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                lines: vec!(
-                    TSpan {
-                        data: "line1",
-                        line: 2,
-                        col: 1,
-                        offset: 5,
-                    },
-                    TSpan {
-                        data: "+++++",
-                        line: 3,
-                        col: 1,
-                        offset: 13,
-                    },
-                    TSpan {
-                        data: "line2",
-                        line: 4,
-                        col: 1,
-                        offset: 19,
-                    }
-                ),
+                content: TContent::Basic(TSpan {
+                    data: "line1  \n+++++\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                }),
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -869,38 +743,15 @@ mod pass {
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
 
-        let mut lines = mi.item.lines();
         assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line1",
+            mi.item.content(),
+            TContent::Basic(TSpan {
+                data: "line1  \n+++++\nline2",
                 line: 2,
                 col: 1,
                 offset: 5,
-            }
+            },)
         );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "+++++",
-                line: 3,
-                col: 1,
-                offset: 13,
-            }
-        );
-
-        assert_eq!(
-            lines.next().unwrap(),
-            TSpan {
-                data: "line2",
-                line: 4,
-                col: 1,
-                offset: 19,
-            }
-        );
-
-        assert!(lines.next().is_none());
     }
 }
 

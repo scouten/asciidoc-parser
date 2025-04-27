@@ -151,26 +151,12 @@ Don't put a space between the dot and the first character of the title.
         block,
         TBlock::RawDelimited(
             TRawDelimitedBlock {
-                lines: vec![
-                    TSpan {
-                        data: "From github.com:asciidoctor/asciidoctor",
-                        line: 3,
-                        col: 1,
-                        offset: 22,
-                    },
-                    TSpan {
-                        data: "* branch        main   -> FETCH_HEAD",
-                        line: 4,
-                        col: 1,
-                        offset: 62,
-                    },
-                    TSpan {
-                        data: "Already up to date.",
-                        line: 5,
-                        col: 1,
-                        offset: 99,
-                    },
-                ],
+                content: TContent::Basic(TSpan {
+                    data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
+                    line: 3,
+                    col: 1,
+                    offset: 22,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "literal",
                 source: TSpan {
@@ -248,20 +234,12 @@ stages: [ init, verify, deploy ]
         block,
         TBlock::RawDelimited(
             TRawDelimitedBlock {
-                lines: vec![
-                    TSpan {
-                        data: "image: node:16-buster",
-                        line: 4,
-                        col: 1,
-                        offset: 45,
-                    },
-                    TSpan {
-                        data: "stages: [ init, verify, deploy ]",
-                        line: 5,
-                        col: 1,
-                        offset: 67,
-                    },
-                ],
+                content: TContent::Basic(TSpan {
+                    data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
+                    line: 4,
+                    col: 1,
+                    offset: 45,
+                }),
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {

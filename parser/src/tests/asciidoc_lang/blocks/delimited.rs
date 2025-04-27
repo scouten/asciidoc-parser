@@ -59,12 +59,12 @@ This text will be treated as verbatim content.
     assert_eq!(
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
-            lines: vec![TSpan {
+            content: TContent::Basic(TSpan {
                 data: "This text will be treated as verbatim content.",
                 line: 2,
                 col: 1,
                 offset: 5,
-            },],
+            }),
             content_model: ContentModel::Verbatim,
             context: "literal",
             source: TSpan {
@@ -105,12 +105,12 @@ The remaining lines define a block's content.
     assert_eq!(
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
-            lines: vec![TSpan {
-                data: "This text will be treated as verbatim content.",
-                line: 4,
+            content: TContent::Basic(TSpan {
+                data: "\n\nThis text will be treated as verbatim content.\n\n",
+                line: 2,
                 col: 1,
-                offset: 7,
-            },],
+                offset: 5,
+            }),
             content_model: ContentModel::Verbatim,
             context: "literal",
             source: TSpan {
@@ -568,32 +568,12 @@ The document header is useful, but not required.
                         ),
                         TBlock::RawDelimited(
                             TRawDelimitedBlock {
-                                lines: vec![
-                                    TSpan {
-                                        data: "= Document Title",
-                                        line: 5,
-                                        col: 1,
-                                        offset: 46,
-                                    },
-                                    TSpan {
-                                        data: "Author Name",
-                                        line: 6,
-                                        col: 1,
-                                        offset: 63,
-                                    },
-                                    TSpan {
-                                        data: "",
-                                        line: 7,
-                                        col: 1,
-                                        offset: 75,
-                                    },
-                                    TSpan {
-                                        data: "Content goes here.",
-                                        line: 8,
-                                        col: 1,
-                                        offset: 76,
-                                    },
-                                ],
+                                content: TContent::Basic(TSpan {
+                                    data: "= Document Title\nAuthor Name\n\nContent goes here.",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 46,
+                                }),
                                 content_model: ContentModel::Verbatim,
                                 context: "listing",
                                 source: TSpan {

@@ -189,6 +189,17 @@ pub enum Content<'src> {
     LineBreak(Span<'src>),
 }
 
+impl Content<'_> {
+    #[allow(unused)] // TEMPORARY (maybe only used for testing)
+    /// Returns `true` if `self` contains no text.
+    pub(crate) fn is_empty(&self) -> bool {
+        match self {
+            Self::Basic(span) => span.is_empty(),
+            _ => false,
+        }
+    }
+}
+
 impl<'src> From<Span<'src>> for Content<'src> {
     fn from(span: Span<'src>) -> Self {
         Self::Basic(span)

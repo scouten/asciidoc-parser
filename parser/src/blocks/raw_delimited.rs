@@ -1,12 +1,10 @@
-use std::slice::Iter;
-
 use crate::{
     attributes::Attrlist,
     blocks::{preamble::Preamble, ContentModel, IsBlock},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
+    Content, HasSpan, Parser, Span,
 };
 
 /// A delimited block that contains verbatim, raw, or comment text. The content
@@ -22,7 +20,7 @@ use crate::{
 /// | `++++`    | Passthrough  |
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RawDelimitedBlock<'src> {
-    lines: Vec<Span<'src>>,
+    content: Content<'src>,
     content_model: ContentModel,
     context: CowStr<'src>,
     source: Span<'src>,
@@ -78,24 +76,24 @@ impl<'src> RawDelimitedBlock<'src> {
             return None;
         }
 
-        let mut lines: Vec<Span<'src>> = vec![];
-        let mut empty_lines: Vec<Span<'src>> = vec![];
-        let mut next = delimiter.after.discard_empty_lines();
+        let content_start = delimiter.after;
+        let mut next = content_start;
 
         while !next.is_empty() {
-            // TO DO: Should we retain trailing white space when in Raw content model?
             let line = next.take_normalized_line();
             if line.item.data() == delimiter.item.data() {
+                let content = content_start.trim_remainder(next).trim_trailing_line_end();
+
                 return Some(MatchAndWarnings {
                     item: Some(MatchedItem {
                         item: Self {
-                            lines,
+                            content: content.into(),
                             content_model,
                             context: context.into(),
                             source: preamble
                                 .source
                                 .trim_remainder(line.after)
-                                .trim_trailing_whitespace(),
+                                .trim_trailing_line_end(),
                             title: preamble.title,
                             anchor: preamble.anchor,
                             attrlist: preamble.attrlist.clone(),
@@ -104,13 +102,6 @@ impl<'src> RawDelimitedBlock<'src> {
                     }),
                     warnings: vec![],
                 });
-            }
-
-            if line.item.is_empty() {
-                empty_lines.push(line.item);
-            } else {
-                lines.append(&mut empty_lines);
-                lines.push(line.item);
             }
 
             next = line.after;
@@ -125,9 +116,9 @@ impl<'src> RawDelimitedBlock<'src> {
         })
     }
 
-    /// Return an iterator over the lines in this delimited block.
-    pub fn lines(&'src self) -> Iter<'src, Span<'src>> {
-        self.lines.iter()
+    /// Return the interpreted content of this block.
+    pub fn content(&self) -> &Content<'src> {
+        &self.content
     }
 }
 
