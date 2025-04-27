@@ -6,6 +6,24 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 The format of this changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.4.0](https://github.com/scouten/asciidoc-parser/compare/v0.3.1...v0.4.0)
+_27 April 2025_
+
+### Major change
+
+In this release, I replaced the previous "inline content" model with a new `Content` model which more accurately matches the manner in which Asciidoc handles [content substitutions](https://docs.asciidoctor.org/asciidoc/latest/subs/).
+
+### Added
+
+* Change `RawDelimitedBlock` to use `Content` for its inner body ([#238](https://github.com/scouten/asciidoc-parser/pull/238))
+* Introduce `Content` model for rendered block content ([#236](https://github.com/scouten/asciidoc-parser/pull/236))
+* Plumb `&mut Parser` through to the block-level parsers ([#235](https://github.com/scouten/asciidoc-parser/pull/235))
+* Add internal `AttributeValue` struct for a single document attribute value ([#232](https://github.com/scouten/asciidoc-parser/pull/232))
+* [**breaking**] Introduce new `Parser` struct which can configure and initiate parsing ([#233](https://github.com/scouten/asciidoc-parser/pull/233))
+* [**breaking**] Rename `AttributeValue` to `InterpretedValue` ([#229](https://github.com/scouten/asciidoc-parser/pull/229))
+* [**breaking**] Remove inline content model ([#228](https://github.com/scouten/asciidoc-parser/pull/228))
+* Add new fn `Span::take_non_empty_lines` ([#225](https://github.com/scouten/asciidoc-parser/pull/225))
+
 ## [0.3.1](https://github.com/scouten/asciidoc-parser/compare/v0.3.0...v0.3.1)
 _14 April 2025_
 
