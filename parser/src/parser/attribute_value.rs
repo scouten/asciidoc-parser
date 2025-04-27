@@ -4,8 +4,11 @@ use crate::document::InterpretedValue;
 /// or to relay information about the document and its environment.
 ///
 /// Attribute values can be established via the API using the
-/// [`Parser::with_intrinsic_attribute`] or
-/// [`Parser::with_intrinsic_attribute_bool`] functions.
+/// [`Parser::with_intrinsic_attribute()`] or
+/// [`Parser::with_intrinsic_attribute_bool()`] functions.
+///
+/// [`Parser::with_intrinsic_attribute()`]: crate::Parser::with_intrinsic_attribute
+/// [`Parser::with_intrinsic_attribute_bool()`]: crate::Parser::with_intrinsic_attribute_bool
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct AttributeValue<'src> {
     /// Allowable values for the attribute.
