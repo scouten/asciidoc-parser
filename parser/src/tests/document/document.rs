@@ -7,9 +7,10 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        content::TContent,
         document::{TDocument, THeader},
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     Parser,
@@ -119,7 +120,8 @@ fn one_simple_block() {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -168,7 +170,8 @@ fn two_simple_blocks() {
                             col: 1,
                             offset: 0,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -188,7 +191,8 @@ fn two_simple_blocks() {
                             col: 1,
                             offset: 5,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "def",
@@ -235,7 +239,8 @@ fn two_blocks_and_title() {
                             col: 1,
                             offset: 17,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -255,7 +260,8 @@ fn two_blocks_and_title() {
                             col: 1,
                             offset: 22,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "def",
@@ -307,7 +313,8 @@ fn extra_space_before_title() {
                         col: 1,
                         offset: 19,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -358,7 +365,8 @@ fn err_bad_header() {
                         col: 1,
                         offset: 8,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "not an attribute",
@@ -419,6 +427,7 @@ fn err_bad_header_and_bad_macro() {
                             offset: 8,
                         },
                         rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "not an attribute",

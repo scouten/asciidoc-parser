@@ -34,8 +34,9 @@ mod valid_id_characters {
         tests::{
             fixtures::{
                 blocks::{TBlock, TSimpleBlock},
+                content::TContent,
                 warnings::TWarning,
-                TContent, TSpan,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -91,7 +92,8 @@ All the language requires in this case is that the value be non-empty.
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[[]]\nThis paragraph gets a lot of attention.",
@@ -189,7 +191,8 @@ install the gem
                         col: 1,
                         offset: 17,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
@@ -234,7 +237,8 @@ mod block_assignment {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -285,7 +289,8 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                         col: 1,
                         offset: 9,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[#goals]\n* Goal 1\n* Goal 2",
@@ -362,7 +367,8 @@ In the longhand syntax, you use a standard named attribute.
                         col: 1,
                         offset: 11,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[id=goals]\n* Goal 1\n* Goal 2",
@@ -439,7 +445,8 @@ In the block anchor syntax, you surround the name with double square brackets:
                         col: 1,
                         offset: 10,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[[goals]]\n* Goal 1\n* Goal 2",
@@ -496,6 +503,7 @@ ____
                                         offset: 42,
                                     },
                                     rendered: None,
+                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "Roads? Where we're going, we don't need roads.",

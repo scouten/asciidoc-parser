@@ -17,6 +17,9 @@ pub struct Content<'src> {
 
     /// The possibly-modified text after substititions have been performed.
     rendered: Option<String>,
+
+    /// Ordered list of substitutions applied to the original span.
+    substitutions: Vec<Substitution<'src>>,
 }
 
 impl<'src> Content<'src> {
@@ -73,6 +76,7 @@ impl<'src> From<Span<'src>> for Content<'src> {
         Self {
             original: span,
             rendered: None,
+            substitutions: vec![],
         }
     }
 }
@@ -90,6 +94,7 @@ pub enum SpanOrSubstitution<'src> {
 
 /// A [`Substitition`] describes a single substitution made to the original
 /// source text.
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Substitution<'src> {
     /// The original text before substitution.
     pub original: Span<'src>,

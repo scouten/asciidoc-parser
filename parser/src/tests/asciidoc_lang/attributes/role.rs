@@ -41,7 +41,8 @@ mod assign_roles_to_blocks {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -100,6 +101,7 @@ This is a sidebar with a role assigned to it, rolename.
                                     offset: 17,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with a role assigned to it, rolename.",
@@ -202,6 +204,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                                     offset: 20,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
@@ -311,6 +314,7 @@ This is a sidebar with one role assigned to it, rolename.
                                     offset: 21,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with one role assigned to it, rolename.",
@@ -428,6 +432,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                                     offset: 26,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",

@@ -27,8 +27,9 @@ mod error_cases {
         tests::fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
+            content::TContent,
             warnings::TWarning,
-            TContent, TSpan,
+            TSpan,
         },
         warnings::{MatchAndWarnings, WarningType},
         Parser, Span,
@@ -74,7 +75,8 @@ mod error_cases {
                                 col: 1,
                                 offset: 19,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "abc",
@@ -94,7 +96,8 @@ mod error_cases {
                                 col: 1,
                                 offset: 24,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: ".ancestor section== Section 2",
@@ -114,7 +117,8 @@ mod error_cases {
                                 col: 1,
                                 offset: 55,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "def",
@@ -196,7 +200,8 @@ mod error_cases {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[incomplete attrlist\n=== Section Title (except it isn't)",
@@ -293,7 +298,8 @@ mod error_cases {
                             col: 1,
                             offset: 61,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -389,7 +395,8 @@ mod error_cases {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: ". abc\ndef",

@@ -6,7 +6,8 @@ use crate::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -71,6 +72,7 @@ This is the content of the sidebar block.
                                     offset: 43,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is the content of the sidebar block.",
@@ -162,6 +164,7 @@ Don't put a space between the dot and the first character of the title.
                         offset: 22,
                     },
                     rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "literal",
@@ -248,6 +251,7 @@ stages: [ init, verify, deploy ]
                         offset: 45,
                     },
                     rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -374,6 +378,7 @@ If you don't plant it in a container, it will take over your garden.
                         offset: 16,
                     },
                     rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",

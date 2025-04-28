@@ -7,8 +7,9 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
+        content::TContent,
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     HasSpan, Parser, Span,
@@ -63,7 +64,8 @@ fn single_line() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",
@@ -128,7 +130,8 @@ fn multiple_lines() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc\ndef",
@@ -181,7 +184,8 @@ fn title() {
                     col: 1,
                     offset: 14,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: ".simple block\nabc\ndef",
@@ -219,7 +223,8 @@ fn attrlist() {
                     col: 1,
                     offset: 10,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[sidebar]\nabc\ndef",
@@ -335,7 +340,8 @@ fn title_and_attrlist() {
                     col: 1,
                     offset: 17,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: ".title\n[sidebar]\nabc\ndef",
@@ -456,7 +462,8 @@ fn consumes_blank_lines_after() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",
@@ -512,7 +519,8 @@ fn with_block_anchor() {
                     col: 1,
                     offset: 11,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[notice]]\nThis paragraph gets a lot of attention.",
@@ -608,7 +616,8 @@ fn err_empty_block_anchor() {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[]]\nThis paragraph gets a lot of attention.",
@@ -704,7 +713,8 @@ fn err_invalid_block_anchor() {
                     col: 1,
                     offset: 17,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
@@ -787,7 +797,8 @@ fn unterminated_block_anchor() {
                     col: 1,
                     offset: 10,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[notice]\nThis paragraph gets a lot of attention.",

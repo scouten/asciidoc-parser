@@ -6,8 +6,9 @@ use crate::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TMacroBlock, TSimpleBlock},
+            content::TContent,
             document::{TDocument, THeader},
-            TContent, TSpan,
+            TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -105,6 +106,7 @@ This is more content in the sidebar block.
                             offset: 0,
                         },
                         rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "Text in your document.",
@@ -130,6 +132,7 @@ This is more content in the sidebar block.
                                         offset: 29,
                                     },
                                     rendered: None,
+                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "This is content in a sidebar block.",
@@ -188,6 +191,7 @@ This is more content in the sidebar block.
                                         offset: 85,
                                     },
                                     rendered: None,
+                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "This is more content in the sidebar block.",
@@ -270,7 +274,8 @@ include::example$block.adoc[tag=opt-listing]
                     col: 1,
                     offset: 10,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[listing]\nsudo dnf install asciidoc",
@@ -351,7 +356,8 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                     col: 1,
                     offset: 8,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[quote]\nNever do today what you can put off `'til tomorrow.",

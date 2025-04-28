@@ -7,8 +7,9 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        content::TContent,
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     HasSpan, Parser, Span,
@@ -32,7 +33,8 @@ fn err_missing_space_before_title() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "=blah blah",
@@ -159,7 +161,8 @@ fn has_child_block() {
                         col: 1,
                         offset: 18,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -195,7 +198,8 @@ fn has_child_block() {
                     col: 1,
                     offset: 18,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",
@@ -266,7 +270,8 @@ fn title() {
                         col: 1,
                         offset: 39,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -324,7 +329,8 @@ fn title() {
                     col: 1,
                     offset: 39,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",

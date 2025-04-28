@@ -7,8 +7,9 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        content::TContent,
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     Parser,
@@ -139,7 +140,8 @@ fn has_child_block() {
                         col: 1,
                         offset: 18,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -531,7 +533,8 @@ fn dont_stop_at_child_section() {
                             col: 1,
                             offset: 18,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -559,7 +562,8 @@ fn dont_stop_at_child_section() {
                                 col: 1,
                                 offset: 38,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "def",
@@ -645,7 +649,8 @@ fn stop_at_peer_section() {
                         col: 1,
                         offset: 18,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -720,7 +725,8 @@ fn stop_at_ancestor_section() {
                         col: 1,
                         offset: 19,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",

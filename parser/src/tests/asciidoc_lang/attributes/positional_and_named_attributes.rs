@@ -21,7 +21,8 @@ mod positional_attribute {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSectionBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -362,7 +363,8 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                         col: 1,
                         offset: 31,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy",
@@ -458,6 +460,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                         offset: 27,
                     },
                     rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===",

@@ -4,7 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{preamble::Preamble, ContentModel, IsBlock, SimpleBlock},
-    tests::fixtures::{blocks::TSimpleBlock, TContent, TSpan},
+    tests::fixtures::{blocks::TSimpleBlock, content::TContent, TSpan},
     Parser,
 };
 
@@ -46,7 +46,8 @@ fn single_line() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",
@@ -97,7 +98,8 @@ fn multiple_lines() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc\ndef",
@@ -137,7 +139,8 @@ fn consumes_blank_lines_after() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",

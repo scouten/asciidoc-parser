@@ -5,8 +5,9 @@ use crate::{
     tests::{
         fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            content::TContent,
             warnings::TWarning,
-            TContent, TSpan,
+            TSpan,
         },
         sdd::{non_normative, to_do_verifies, track_file, verifies},
     },
@@ -66,7 +67,8 @@ This text will be treated as verbatim content.
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             content_model: ContentModel::Verbatim,
             context: "literal",
@@ -115,7 +117,8 @@ The remaining lines define a block's content.
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             content_model: ContentModel::Verbatim,
             context: "literal",
@@ -218,7 +221,8 @@ That's so meta.
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "This is an example of an example block.\nThat's so meta.",
@@ -495,7 +499,8 @@ mod nesting_blocks {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -566,6 +571,7 @@ The document header is useful, but not required.
                                         offset: 5,
                                     },
                                     rendered: None,
+                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "Here's a sample AsciiDoc document:",
@@ -588,6 +594,7 @@ The document header is useful, but not required.
                                         offset: 46,
                                     },
                                     rendered: None,
+                                    substitutions: vec!(),
                                 },
                                 content_model: ContentModel::Verbatim,
                                 context: "listing",
@@ -612,6 +619,7 @@ The document header is useful, but not required.
                                         offset: 101,
                                     },
                                     rendered: None,
+                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "The document header is useful, but not required.",
@@ -691,6 +699,7 @@ Live within the simulated reality without want or fear.
                                         offset: 5,
                                     },
                                     rendered: None,
+                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "Here are your options:",
@@ -716,6 +725,7 @@ Live within the simulated reality without want or fear.
                                                     offset: 61,
                                                 },
                                                 rendered: None,
+                                                substitutions: vec!(),
                                             },
                                             source: TSpan {
                                                 data: "Escape into the real world.",
@@ -795,6 +805,7 @@ Live within the simulated reality without want or fear.
                                                     offset: 130,
                                                 },
                                                 rendered: None,
+                                                substitutions: vec!(),
                                             },
                                             source: TSpan {
                                                 data: "Live within the simulated reality without want or fear.",

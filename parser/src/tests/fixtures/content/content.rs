@@ -1,11 +1,15 @@
 use std::cmp::PartialEq;
 
-use crate::{tests::fixtures::TSpan, Content};
+use crate::{
+    tests::fixtures::{content::TSubstitution, TSpan},
+    Content,
+};
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) struct TContent {
     pub original: TSpan,
     pub rendered: Option<&'static str>,
+    pub substitutions: Vec<TSubstitution>,
 }
 
 impl<'src> PartialEq<Content<'src>> for TContent {

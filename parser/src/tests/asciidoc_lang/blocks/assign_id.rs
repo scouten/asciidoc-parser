@@ -6,7 +6,8 @@ use crate::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -64,7 +65,8 @@ Content of delimited example block
                         col: 1,
                         offset: 29,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "Content of delimited example block",
@@ -182,7 +184,8 @@ Roads? Where we're going, we don't need roads.
                     col: 1,
                     offset: 14,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[quote#roads]\nRoads? Where we're going, we don't need roads.",
@@ -280,6 +283,7 @@ Roads? Where we're going, we don't need roads.
                         offset: 50,
                     },
                     rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",

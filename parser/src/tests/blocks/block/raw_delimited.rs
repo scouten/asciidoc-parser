@@ -5,8 +5,9 @@ mod parse {
         blocks::Block,
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
+            content::TContent,
             warnings::TWarning,
-            TContent, TSpan,
+            TSpan,
         },
         warnings::WarningType,
         Parser, Span,
@@ -36,7 +37,8 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "...",
@@ -66,7 +68,8 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "++++x",
@@ -96,7 +99,8 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "____x",
@@ -126,7 +130,8 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "====x",
@@ -158,7 +163,8 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "....\nblah blah blah",
@@ -194,7 +200,8 @@ mod comment {
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         Parser, Span,
     };
@@ -217,7 +224,8 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -266,7 +274,8 @@ mod comment {
                         col: 1,
                         offset: 14,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -327,7 +336,8 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -373,7 +383,8 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -410,7 +421,8 @@ mod listing {
         span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         Parser, Span,
     };
@@ -433,7 +445,8 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -479,7 +492,8 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -539,7 +553,8 @@ mod listing {
                         col: 1,
                         offset: 20,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -611,7 +626,8 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -659,7 +675,8 @@ mod pass {
         span::HasSpan,
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         Parser, Span,
     };
@@ -682,7 +699,8 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -739,7 +757,8 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -799,7 +818,8 @@ mod pass {
                         col: 1,
                         offset: 17,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -871,7 +891,8 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",

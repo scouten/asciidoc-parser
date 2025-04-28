@@ -7,8 +7,9 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSimpleBlock},
+        content::TContent,
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     HasSpan, Parser, Span,
@@ -35,7 +36,8 @@ fn err_inline_syntax() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "foo:bar[]",
@@ -88,7 +90,8 @@ fn err_no_attr_list() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "foo::bar",
@@ -141,7 +144,8 @@ fn err_attr_list_not_closed() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "foo::bar[blah",
@@ -194,7 +198,8 @@ fn err_unexpected_after_attr_list() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             },
             source: TSpan {
                 data: "foo::bar[blah]bonus",

@@ -23,8 +23,9 @@ mod documents {
         tests::{
             fixtures::{
                 blocks::{TBlock, TSimpleBlock},
+                content::TContent,
                 document::{TAttribute, TDocument, THeader, TRawAttributeValue},
-                TContent, TSpan,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -81,7 +82,8 @@ This is a basic AsciiDoc document.
                             col: 1,
                             offset: 0,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "This is a basic AsciiDoc document.",
@@ -150,6 +152,7 @@ This document contains two paragraphs.
                                 offset: 0,
                             },
                             rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This is a basic AsciiDoc document.",
@@ -170,6 +173,7 @@ This document contains two paragraphs.
                                 offset: 36,
                             },
                             rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This document contains two paragraphs.",
@@ -255,6 +259,7 @@ It also has a header that specifies the document title.
                                 offset: 33,
                             },
                             rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This is a basic AsciiDoc document by {author}.",
@@ -275,6 +280,7 @@ It also has a header that specifies the document title.
                                 offset: 81,
                             },
                             rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",

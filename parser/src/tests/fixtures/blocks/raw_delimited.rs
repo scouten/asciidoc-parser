@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
-    tests::fixtures::{attributes::TAttrlist, TContent, TSpan},
+    tests::fixtures::{attributes::TAttrlist, content::TContent, TSpan},
     HasSpan,
 };
 

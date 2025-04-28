@@ -248,7 +248,8 @@ mod example {
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         Parser,
     };
@@ -314,7 +315,8 @@ mod example {
                                 col: 1,
                                 offset: 5,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -334,7 +336,8 @@ mod example {
                                 col: 1,
                                 offset: 13,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -382,7 +385,8 @@ mod example {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -406,7 +410,8 @@ mod example {
                         col: 1,
                         offset: 13,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -447,7 +452,8 @@ mod example {
                                 col: 1,
                                 offset: 5,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -468,7 +474,8 @@ mod example {
                                     col: 1,
                                     offset: 19,
                                 },
-                                rendered: None
+                                rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "block2",
@@ -527,7 +534,8 @@ mod example {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -552,7 +560,8 @@ mod example {
                             col: 1,
                             offset: 19,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "block2",
@@ -636,7 +645,8 @@ mod open {
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         Parser,
     };
@@ -700,7 +710,8 @@ mod open {
                                 col: 1,
                                 offset: 3,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -720,7 +731,8 @@ mod open {
                                 col: 1,
                                 offset: 11,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -768,7 +780,8 @@ mod open {
                         col: 1,
                         offset: 3,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -792,7 +805,8 @@ mod open {
                         col: 1,
                         offset: 11,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -834,7 +848,8 @@ mod open {
                                 col: 1,
                                 offset: 3,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -854,7 +869,8 @@ mod open {
                                 col: 1,
                                 offset: 11,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "---\nblock2\n---",
@@ -902,7 +918,8 @@ mod open {
                         col: 1,
                         offset: 3,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -926,7 +943,8 @@ mod open {
                         col: 1,
                         offset: 11,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "---\nblock2\n---",
@@ -951,7 +969,8 @@ mod sidebar {
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         Parser,
     };
@@ -1017,7 +1036,8 @@ mod sidebar {
                                 col: 1,
                                 offset: 5,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1037,7 +1057,8 @@ mod sidebar {
                                 col: 1,
                                 offset: 13,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -1085,7 +1106,8 @@ mod sidebar {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1109,7 +1131,8 @@ mod sidebar {
                         col: 1,
                         offset: 13,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -1150,7 +1173,8 @@ mod sidebar {
                                 col: 1,
                                 offset: 5,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1171,7 +1195,8 @@ mod sidebar {
                                     col: 1,
                                     offset: 19,
                                 },
-                                rendered: None
+                                rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "block2",
@@ -1230,7 +1255,8 @@ mod sidebar {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1255,7 +1281,8 @@ mod sidebar {
                             col: 1,
                             offset: 19,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "block2",
@@ -1368,7 +1395,8 @@ mod quote {
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         Parser,
     };
@@ -1434,7 +1462,8 @@ mod quote {
                                 col: 1,
                                 offset: 5,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1454,7 +1483,8 @@ mod quote {
                                 col: 1,
                                 offset: 13,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -1502,7 +1532,8 @@ mod quote {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1526,7 +1557,8 @@ mod quote {
                         col: 1,
                         offset: 13,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -1567,7 +1599,8 @@ mod quote {
                                 col: 1,
                                 offset: 5,
                             },
-                            rendered: None
+                            rendered: None,
+                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1588,7 +1621,8 @@ mod quote {
                                     col: 1,
                                     offset: 19,
                                 },
-                                rendered: None
+                                rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "block2",
@@ -1647,7 +1681,8 @@ mod quote {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1672,7 +1707,8 @@ mod quote {
                             col: 1,
                             offset: 19,
                         },
-                        rendered: None
+                        rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "block2",

@@ -155,7 +155,7 @@ mod comment {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
 
@@ -176,7 +176,8 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -225,7 +226,8 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -261,7 +263,8 @@ mod comment {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             }
         );
     }
@@ -288,7 +291,8 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -324,7 +328,8 @@ mod comment {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             }
         );
     }
@@ -359,7 +364,7 @@ mod listing {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
 
@@ -380,7 +385,8 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -429,7 +435,8 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -465,7 +472,8 @@ mod listing {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             }
         );
     }
@@ -492,7 +500,8 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -528,7 +537,8 @@ mod listing {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             }
         );
 
@@ -541,7 +551,8 @@ mod listing {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             }
         );
     }
@@ -628,7 +639,7 @@ mod pass {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
 
@@ -649,7 +660,8 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -698,7 +710,8 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -734,7 +747,8 @@ mod pass {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             }
         );
     }
@@ -761,7 +775,8 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -797,7 +812,8 @@ mod pass {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None
+                rendered: None,
+                substitutions: vec!(),
             }
         );
     }

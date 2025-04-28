@@ -34,7 +34,8 @@ You can assign one or more options to a block using the shorthand or formal synt
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -83,6 +84,7 @@ This is a sidebar with an option assigned to it, named option.
                                     offset: 15,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with an option assigned to it, named option.",
@@ -198,6 +200,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                                     offset: 24,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with two options assigned to it, named option1 and option2.",
@@ -333,7 +336,8 @@ For instance, consider a table with the three built-in option values, `header`, 
                         col: 1,
                         offset: 36,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[%header%footer%autowidth,cols=2*~]\n|===\n|Cell A1 |Cell B1",
@@ -489,6 +493,7 @@ This is a sidebar with an option assigned to it, named option.
                                     offset: 19,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with an option assigned to it, named option.",
@@ -604,6 +609,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                                     offset: 30,
                                 },
                                 rendered: None,
+                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with two options assigned to it, option1 and option2.",
@@ -733,7 +739,8 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                         col: 1,
                         offset: 42,
                     },
-                    rendered: None
+                    rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[cols=2*~,opts=\"header,footer,autowidth\"]\n|===\n|Cell A1 |Cell B1",
@@ -852,7 +859,8 @@ Let's consider `options` when combined with other attributes.
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -902,6 +910,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                             offset: 29,
                         },
                         rendered: None,
+                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
@@ -1040,6 +1049,7 @@ property 2:: does different stuff
                         offset: 39,
                     },
                     rendered: None,
+                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[horizontal,role=properties,opts=step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
