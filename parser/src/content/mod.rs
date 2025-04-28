@@ -84,6 +84,7 @@ impl<'src> From<Span<'src>> for Content<'src> {
 /// The [`Content::spans_and_substitions()`] function returns an iterator that
 /// yields this type, which contains unaltered text from the original source
 /// file interspersed with regions of substituted text ("substitutions").
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum SpanOrSubstitution<'src> {
     /// A region of unaltered text from the original source file.
     Span(Span<'src>),
