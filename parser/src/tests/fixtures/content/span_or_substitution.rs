@@ -32,7 +32,7 @@ impl PartialEq<TSpanOrSubstitution> for &SpanOrSubstitution<'_> {
 fn fixture_eq_observed(fixture: &TSpanOrSubstitution, observed: &SpanOrSubstitution) -> bool {
     match fixture {
         TSpanOrSubstitution::Span(ref f_span) => match observed {
-            &SpanOrSubstitution::Span(ref o_span) => f_span == o_span,
+            SpanOrSubstitution::Span(o_span) => f_span == o_span,
             _ => false,
         },
 
