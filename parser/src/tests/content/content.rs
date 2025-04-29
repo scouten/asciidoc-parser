@@ -181,7 +181,7 @@ mod replace_str {
                 data: " text",
                 line: 1,
                 col: 16,
-                offset: 15st,
+                offset: 15,
             })
         );
 

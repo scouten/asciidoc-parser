@@ -157,7 +157,7 @@ pub struct SpansAndSubstitutions<'src, 'c: 'src> {
     last_original_end: usize,
 }
 
-impl<'src, 'c> SpansAndSubstitutions<'src, 'c> {
+impl<'c> SpansAndSubstitutions<'_, 'c> {
     fn new(content: &'c Content) -> Self {
         Self {
             content,
@@ -167,7 +167,7 @@ impl<'src, 'c> SpansAndSubstitutions<'src, 'c> {
     }
 }
 
-impl<'src, 'c> Iterator for SpansAndSubstitutions<'src, 'c> {
+impl<'src> Iterator for SpansAndSubstitutions<'src, '_> {
     type Item = SpanOrSubstitution<'src>;
 
     fn next(&mut self) -> Option<SpanOrSubstitution<'src>> {
