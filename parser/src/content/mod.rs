@@ -69,6 +69,45 @@ impl<'src> Content<'src> {
             original: self.original,
         }
     }
+
+    /// Replaces an exact string with another exact string.
+    ///
+    /// Like [`str::replace`], but does the change in place and records
+    /// annotations about the character offsets of the replacement for use in
+    /// future calls to [`Self::spans_and_substitutions`].
+    ///
+    /// [`str::replace`]: https://doc.rust-lang.org/std/primitive.str.html#method.replace
+    pub(crate) fn replace_str(&mut self, from: &str, to: &str) {
+        // Shortcut. If no match for pattern, we don't need to modify anything.
+        let haystack = self
+            .rendered
+            .as_ref()
+            .map(|s| s.as_str())
+            .unwrap_or_else(|| self.original.data());
+
+        if !haystack.contains(&from) {
+            return;
+        }
+
+        // Set result capacity to self.len() when from.len() <= to.len()
+        let default_capacity = if to.len() <= from.len() {
+            haystack.len()
+        } else {
+            0
+        };
+
+        let mut result = String::with_capacity(default_capacity);
+        let mut last_end = 0;
+        todo!("OK, here's the fun part!");
+
+        // for (start, part) in haystack.match_indices(from) {
+        //     result.push_str(unsafe { self.get_unchecked(last_end..start) });
+        //     result.push_str(to);
+        //     last_end = start + part.len();
+        // }
+        // result.push_str(unsafe { self.get_unchecked(last_end..self.len()) });
+        // result
+    }
 }
 
 impl<'src> From<Span<'src>> for Content<'src> {
