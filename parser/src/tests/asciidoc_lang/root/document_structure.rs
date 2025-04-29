@@ -82,7 +82,7 @@ This is a basic AsciiDoc document.
                             col: 1,
                             offset: 0,
                         },
-                        rendered: None,
+                        rendered: "This is a basic AsciiDoc document.",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -151,7 +151,7 @@ This document contains two paragraphs.
                                 col: 1,
                                 offset: 0,
                             },
-                            rendered: None,
+                            rendered: "This is a basic AsciiDoc document.",
                             substitutions: vec!(),
                         },
                         source: TSpan {
@@ -172,7 +172,7 @@ This document contains two paragraphs.
                                 col: 1,
                                 offset: 36,
                             },
-                            rendered: None,
+                            rendered: "This document contains two paragraphs.",
                             substitutions: vec!(),
                         },
                         source: TSpan {
@@ -258,7 +258,7 @@ It also has a header that specifies the document title.
                                 col: 1,
                                 offset: 33,
                             },
-                            rendered: None,
+                            rendered: "This is a basic AsciiDoc document by {author}.",
                             substitutions: vec!(),
                         },
                         source: TSpan {
@@ -279,7 +279,7 @@ It also has a header that specifies the document title.
                                 col: 1,
                                 offset: 81,
                             },
-                            rendered: None,
+                            rendered: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                             substitutions: vec!(),
                         },
                         source: TSpan {

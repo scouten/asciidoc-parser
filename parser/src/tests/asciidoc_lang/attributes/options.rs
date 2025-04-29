@@ -83,7 +83,7 @@ This is a sidebar with an option assigned to it, named option.
                                     col: 1,
                                     offset: 15,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with an option assigned to it, named option.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {
@@ -199,7 +199,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                                     col: 1,
                                     offset: 24,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with two options assigned to it, named option1 and option2.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {
@@ -336,7 +336,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                         col: 1,
                         offset: 36,
                     },
-                    rendered: None,
+                    rendered: "|===\n|Cell A1 |Cell B1",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -492,7 +492,7 @@ This is a sidebar with an option assigned to it, named option.
                                     col: 1,
                                     offset: 19,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with an option assigned to it, named option.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {
@@ -608,7 +608,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                                     col: 1,
                                     offset: 30,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with two options assigned to it, option1 and option2.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {
@@ -739,7 +739,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                         col: 1,
                         offset: 42,
                     },
-                    rendered: None,
+                    rendered: "|===\n|Cell A1 |Cell B1",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -909,7 +909,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                             col: 1,
                             offset: 29,
                         },
-                        rendered: None,
+                        rendered: "property 1:: does stuff\nproperty 2:: does different stuff",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -1048,7 +1048,7 @@ property 2:: does different stuff
                         col: 1,
                         offset: 39,
                     },
-                    rendered: None,
+                    rendered: "property 1:: does stuff\nproperty 2:: does different stuff",
                     substitutions: vec!(),
                 },
                 source: TSpan {

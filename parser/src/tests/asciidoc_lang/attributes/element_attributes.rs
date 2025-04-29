@@ -297,7 +297,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                         col: 1,
                         offset: 49,
                     },
-                    rendered: None,
+                    rendered: "Simple block",
                     substitutions: vec!(),
                 },
                 source: TSpan {

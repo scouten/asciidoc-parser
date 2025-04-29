@@ -100,7 +100,7 @@ This is a sidebar with a role assigned to it, rolename.
                                     col: 1,
                                     offset: 17,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with a role assigned to it, rolename.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {
@@ -203,7 +203,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                                     col: 1,
                                     offset: 20,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {
@@ -313,7 +313,7 @@ This is a sidebar with one role assigned to it, rolename.
                                     col: 1,
                                     offset: 21,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with one role assigned to it, rolename.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {
@@ -431,7 +431,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                                     col: 1,
                                     offset: 26,
                                 },
-                                rendered: None,
+                                rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
                                 substitutions: vec!(),
                             },
                             source: TSpan {

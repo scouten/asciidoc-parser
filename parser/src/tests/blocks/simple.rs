@@ -46,7 +46,7 @@ fn single_line() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "abc",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -98,7 +98,7 @@ fn multiple_lines() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "abc\ndef",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -139,7 +139,7 @@ fn consumes_blank_lines_after() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "abc",
                 substitutions: vec!(),
             },
             source: TSpan {

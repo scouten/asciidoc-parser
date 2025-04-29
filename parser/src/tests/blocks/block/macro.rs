@@ -36,7 +36,7 @@ fn err_inline_syntax() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "foo:bar[]",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -90,7 +90,7 @@ fn err_no_attr_list() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "foo::bar",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -144,7 +144,7 @@ fn err_attr_list_not_closed() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "foo::bar[blah",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -198,7 +198,7 @@ fn err_unexpected_after_attr_list() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "foo::bar[blah]bonus",
                 substitutions: vec!(),
             },
             source: TSpan {

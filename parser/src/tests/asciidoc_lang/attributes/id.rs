@@ -92,7 +92,7 @@ All the language requires in this case is that the value be non-empty.
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "This paragraph gets a lot of attention.",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -191,7 +191,7 @@ install the gem
                         col: 1,
                         offset: 17,
                     },
-                    rendered: None,
+                    rendered: "This paragraph gets a lot of attention.",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -289,7 +289,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                         col: 1,
                         offset: 9,
                     },
-                    rendered: None,
+                    rendered: "* Goal 1\n* Goal 2",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -367,7 +367,7 @@ In the longhand syntax, you use a standard named attribute.
                         col: 1,
                         offset: 11,
                     },
-                    rendered: None,
+                    rendered: "* Goal 1\n* Goal 2",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -445,7 +445,7 @@ In the block anchor syntax, you surround the name with double square brackets:
                         col: 1,
                         offset: 10,
                     },
-                    rendered: None,
+                    rendered: "* Goal 1\n* Goal 2",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -502,7 +502,7 @@ ____
                                         col: 1,
                                         offset: 42,
                                     },
-                                    rendered: None,
+                                    rendered: "Roads? Where we're going, we don't need roads.",
                                     substitutions: vec!(),
                                 },
                                 source: TSpan {

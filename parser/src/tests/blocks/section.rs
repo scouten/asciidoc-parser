@@ -140,7 +140,7 @@ fn has_child_block() {
                         col: 1,
                         offset: 18,
                     },
-                    rendered: None,
+                    rendered: "abc",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -533,7 +533,7 @@ fn dont_stop_at_child_section() {
                             col: 1,
                             offset: 18,
                         },
-                        rendered: None,
+                        rendered: "abc",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -562,7 +562,7 @@ fn dont_stop_at_child_section() {
                                 col: 1,
                                 offset: 38,
                             },
-                            rendered: None,
+                            rendered: "def",
                             substitutions: vec!(),
                         },
                         source: TSpan {
@@ -649,7 +649,7 @@ fn stop_at_peer_section() {
                         col: 1,
                         offset: 18,
                     },
-                    rendered: None,
+                    rendered: "abc",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -725,7 +725,7 @@ fn stop_at_ancestor_section() {
                         col: 1,
                         offset: 19,
                     },
-                    rendered: None,
+                    rendered: "abc",
                     substitutions: vec!(),
                 },
                 source: TSpan {

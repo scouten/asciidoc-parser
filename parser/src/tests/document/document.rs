@@ -120,7 +120,7 @@ fn one_simple_block() {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None,
+                    rendered: "abc",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -170,7 +170,7 @@ fn two_simple_blocks() {
                             col: 1,
                             offset: 0,
                         },
-                        rendered: None,
+                        rendered: "abc",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -191,7 +191,7 @@ fn two_simple_blocks() {
                             col: 1,
                             offset: 5,
                         },
-                        rendered: None,
+                        rendered: "def",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -239,7 +239,7 @@ fn two_blocks_and_title() {
                             col: 1,
                             offset: 17,
                         },
-                        rendered: None,
+                        rendered: "abc",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -260,7 +260,7 @@ fn two_blocks_and_title() {
                             col: 1,
                             offset: 22,
                         },
-                        rendered: None,
+                        rendered: "def",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -313,7 +313,7 @@ fn extra_space_before_title() {
                         col: 1,
                         offset: 19,
                     },
-                    rendered: None,
+                    rendered: "abc",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -365,7 +365,7 @@ fn err_bad_header() {
                         col: 1,
                         offset: 8,
                     },
-                    rendered: None,
+                    rendered: "not an attribute",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -426,7 +426,7 @@ fn err_bad_header_and_bad_macro() {
                             col: 1,
                             offset: 8,
                         },
-                        rendered: None,
+                        rendered: "not an attribute",
                         substitutions: vec!(),
                     },
                     source: TSpan {

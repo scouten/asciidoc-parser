@@ -64,7 +64,7 @@ fn single_line() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "abc",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -130,7 +130,7 @@ fn multiple_lines() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "abc\ndef",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -184,7 +184,7 @@ fn title() {
                     col: 1,
                     offset: 14,
                 },
-                rendered: None,
+                rendered: "abc\ndef",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -223,7 +223,7 @@ fn attrlist() {
                     col: 1,
                     offset: 10,
                 },
-                rendered: None,
+                rendered: "abc\ndef",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -340,7 +340,7 @@ fn title_and_attrlist() {
                     col: 1,
                     offset: 17,
                 },
-                rendered: None,
+                rendered: "abc\ndef",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -462,7 +462,7 @@ fn consumes_blank_lines_after() {
                     col: 1,
                     offset: 0,
                 },
-                rendered: None,
+                rendered: "abc",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -519,7 +519,7 @@ fn with_block_anchor() {
                     col: 1,
                     offset: 11,
                 },
-                rendered: None,
+                rendered: "This paragraph gets a lot of attention.",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -616,7 +616,7 @@ fn err_empty_block_anchor() {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "This paragraph gets a lot of attention.",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -713,7 +713,7 @@ fn err_invalid_block_anchor() {
                     col: 1,
                     offset: 17,
                 },
-                rendered: None,
+                rendered: "This paragraph gets a lot of attention.",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -797,7 +797,7 @@ fn unterminated_block_anchor() {
                     col: 1,
                     offset: 10,
                 },
-                rendered: None,
+                rendered: "This paragraph gets a lot of attention.",
                 substitutions: vec!(),
             },
             source: TSpan {

@@ -105,7 +105,7 @@ This is more content in the sidebar block.
                             col: 1,
                             offset: 0,
                         },
-                        rendered: None,
+                        rendered: "Text in your document.",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -131,7 +131,7 @@ This is more content in the sidebar block.
                                         col: 1,
                                         offset: 29,
                                     },
-                                    rendered: None,
+                                    rendered: "This is content in a sidebar block.",
                                     substitutions: vec!(),
                                 },
                                 source: TSpan {
@@ -190,7 +190,7 @@ This is more content in the sidebar block.
                                         col: 1,
                                         offset: 85,
                                     },
-                                    rendered: None,
+                                    rendered: "This is more content in the sidebar block.",
                                     substitutions: vec!(),
                                 },
                                 source: TSpan {
@@ -274,7 +274,7 @@ include::example$block.adoc[tag=opt-listing]
                     col: 1,
                     offset: 10,
                 },
-                rendered: None,
+                rendered: "sudo dnf install asciidoc",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -356,7 +356,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                     col: 1,
                     offset: 8,
                 },
-                rendered: None,
+                rendered: "Never do today what you can put off `'til tomorrow.",
                 substitutions: vec!(),
             },
             source: TSpan {

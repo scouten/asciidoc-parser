@@ -75,7 +75,7 @@ mod error_cases {
                                 col: 1,
                                 offset: 19,
                             },
-                            rendered: None,
+                            rendered: "abc",
                             substitutions: vec!(),
                         },
                         source: TSpan {
@@ -96,7 +96,7 @@ mod error_cases {
                                 col: 1,
                                 offset: 24,
                             },
-                            rendered: None,
+                            rendered: ".ancestor section== Section 2",
                             substitutions: vec!(),
                         },
                         source: TSpan {
@@ -117,7 +117,7 @@ mod error_cases {
                                 col: 1,
                                 offset: 55,
                             },
-                            rendered: None,
+                            rendered: "def",
                             substitutions: vec!(),
                         },
                         source: TSpan {
@@ -200,7 +200,7 @@ mod error_cases {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None,
+                    rendered: "[incomplete attrlist\n=== Section Title (except it isn't)",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -298,7 +298,7 @@ mod error_cases {
                             col: 1,
                             offset: 61,
                         },
-                        rendered: None,
+                        rendered: "abc",
                         substitutions: vec!(),
                     },
                     source: TSpan {
@@ -395,7 +395,7 @@ mod error_cases {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: None,
+                    rendered: ". abc\ndef",
                     substitutions: vec!(),
                 },
                 source: TSpan {

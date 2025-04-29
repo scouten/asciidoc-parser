@@ -8,7 +8,7 @@ use crate::{
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) struct TContent {
     pub original: TSpan,
-    pub rendered: Option<&'static str>,
+    pub rendered: &'static str,
     pub substitutions: Vec<TSubstitution>,
 }
 
@@ -31,5 +31,5 @@ impl PartialEq<TContent> for &Content<'_> {
 }
 
 fn fixture_eq_observed(fixture: &TContent, observed: &Content) -> bool {
-    fixture.original == observed.original() && fixture.rendered == observed.rendered_if_changed()
+    fixture.original == observed.original() && fixture.rendered == observed.rendered()
 }

@@ -363,7 +363,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                         col: 1,
                         offset: 31,
                     },
-                    rendered: None,
+                    rendered: "* Work hard\n* Play hard\n* Be happy",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -459,7 +459,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                         col: 1,
                         offset: 27,
                     },
-                    rendered: None,
+                    rendered: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                     substitutions: vec!(),
                 },
                 source: TSpan {

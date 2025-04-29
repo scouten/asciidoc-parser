@@ -65,7 +65,7 @@ Content of delimited example block
                         col: 1,
                         offset: 29,
                     },
-                    rendered: None,
+                    rendered: "Content of delimited example block",
                     substitutions: vec!(),
                 },
                 source: TSpan {
@@ -184,7 +184,7 @@ Roads? Where we're going, we don't need roads.
                     col: 1,
                     offset: 14,
                 },
-                rendered: None,
+                rendered: "Roads? Where we're going, we don't need roads.",
                 substitutions: vec!(),
             },
             source: TSpan {
@@ -282,7 +282,7 @@ Roads? Where we're going, we don't need roads.
                         col: 1,
                         offset: 50,
                     },
-                    rendered: None,
+                    rendered: "Roads? Where we're going, we don't need roads.",
                     substitutions: vec!(),
                 },
                 source: TSpan {

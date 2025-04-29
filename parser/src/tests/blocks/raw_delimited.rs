@@ -176,7 +176,7 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
@@ -226,7 +226,7 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "line1  \nline2",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
@@ -263,7 +263,7 @@ mod comment {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "line1  \nline2",
                 substitutions: vec!(),
             }
         );
@@ -291,7 +291,7 @@ mod comment {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "line1  \n/////\nline2",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
@@ -328,7 +328,7 @@ mod comment {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "line1  \n/////\nline2",
                 substitutions: vec!(),
             }
         );
@@ -385,7 +385,7 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
@@ -435,7 +435,7 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "line1  \nline2",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
@@ -472,7 +472,7 @@ mod listing {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "line1  \nline2",
                 substitutions: vec!(),
             }
         );
@@ -500,7 +500,7 @@ mod listing {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "line1  \n-----\nline2",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
@@ -537,7 +537,7 @@ mod listing {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "line1  \n-----\nline2",
                 substitutions: vec!(),
             }
         );
@@ -551,7 +551,7 @@ mod listing {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "line1  \n-----\nline2",
                 substitutions: vec!(),
             }
         );
@@ -660,7 +660,7 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
@@ -710,7 +710,7 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "line1  \nline2",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
@@ -747,7 +747,7 @@ mod pass {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "line1  \nline2",
                 substitutions: vec!(),
             }
         );
@@ -775,7 +775,7 @@ mod pass {
                         col: 1,
                         offset: 5,
                     },
-                    rendered: None,
+                    rendered: "line1  \n+++++\nline2",
                     substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
@@ -812,7 +812,7 @@ mod pass {
                     col: 1,
                     offset: 5,
                 },
-                rendered: None,
+                rendered: "line1  \n+++++\nline2",
                 substitutions: vec!(),
             }
         );
