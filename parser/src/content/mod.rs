@@ -60,7 +60,7 @@ impl<'src> Content<'src> {
 
     /// Returns an iterator that can be used to identify regions of unaltered
     /// text vs those where substitutions occurred.
-    pub fn spans_and_substitions(&self) -> SpansAndSubstitutions<'src> {
+    pub fn spans_and_substitutions(&self) -> SpansAndSubstitutions<'src> {
         if self.rendered.is_some() {
             todo!("Implement iterator when substitions have occurred");
         }
@@ -74,7 +74,7 @@ impl<'src> Content<'src> {
     ///
     /// Like [`str::replace`], but does the change in place and records
     /// annotations about the character offsets of the replacement for use in
-    /// future calls to [`Self::spans_and_substitutions`].
+    /// future calls to [`Content::spans_and_substitutions()`].
     ///
     /// [`str::replace`]: https://doc.rust-lang.org/std/primitive.str.html#method.replace
     pub(crate) fn replace_str(&mut self, from: &str, to: &str) {
@@ -120,7 +120,7 @@ impl<'src> From<Span<'src>> for Content<'src> {
     }
 }
 
-/// The [`Content::spans_and_substitions()`] function returns an iterator that
+/// The [`Content::spans_and_substitutions()`] function returns an iterator that
 /// yields this type, which contains unaltered text from the original source
 /// file interspersed with regions of substituted text ("substitutions").
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -132,7 +132,7 @@ pub enum SpanOrSubstitution<'src> {
     Substitution(Substitution<'src>),
 }
 
-/// A [`Substitition`] describes a single substitution made to the original
+/// A [`Substitution`] describes a single substitution made to the original
 /// source text.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Substitution<'src> {
@@ -143,7 +143,7 @@ pub struct Substitution<'src> {
     pub replacement: &'src str,
 }
 
-/// The [`Content::spans_and_substitions()`] function returns an iterator of
+/// The [`Content::spans_and_substitutions()`] function returns an iterator of
 /// this type, which can be used to identify regions of unaltered text vs those
 /// where substitutions occurred.
 #[derive(Debug)]
