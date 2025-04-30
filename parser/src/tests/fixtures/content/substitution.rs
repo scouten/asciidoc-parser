@@ -1,4 +1,4 @@
-use crate::{content::Substitution, tests::fixtures::TSpan};
+use crate::{tests::fixtures::TSpan, Substitution};
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) struct TSubstitution {

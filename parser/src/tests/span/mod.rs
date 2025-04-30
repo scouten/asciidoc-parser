@@ -63,6 +63,7 @@ mod split_at_match_non_empty {
     }
 }
 
+mod content;
 mod discard;
 mod line;
 mod parse_result;

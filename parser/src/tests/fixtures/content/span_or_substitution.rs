@@ -1,8 +1,8 @@
 #![allow(unused)]
 
 use crate::{
-    content::SpanOrSubstitution,
     tests::fixtures::{content::TSubstitution, TSpan},
+    SpanOrSubstitution,
 };
 
 #[derive(Debug, Eq, PartialEq)]
