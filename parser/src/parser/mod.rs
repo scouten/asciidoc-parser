@@ -10,7 +10,7 @@ mod parser;
 pub use parser::Parser;
 
 #[cfg(test)]
-#[cfg_attr(coverage_nightly, coverage(off))]
+#[cfg_attr(coverage, coverage(off))]
 mod tests {
     #[test]
     fn what_happens() {
