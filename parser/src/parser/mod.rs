@@ -7,3 +7,10 @@ pub use attribute_value::{AllowableValue, ModificationContext};
 
 mod parser;
 pub use parser::Parser;
+
+mod tests {
+    #[test]
+    fn what_happens() {
+        assert_eq!(2 + 2, 4);
+    }
+}
