@@ -42,4 +42,5 @@ harness = false
 development = ["criterion"]
 
 [lints.rust]
-unexpected_cfgs = { level = "warn", check-cfg = ['cfg(test)'] }
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(coverage,coverage_nightly)'] }
+
