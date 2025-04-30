@@ -76,7 +76,6 @@ mod error_cases {
                                 offset: 19,
                             },
                             rendered: "abc",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "abc",
@@ -97,7 +96,6 @@ mod error_cases {
                                 offset: 24,
                             },
                             rendered: ".ancestor section== Section 2",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: ".ancestor section== Section 2",
@@ -118,7 +116,6 @@ mod error_cases {
                                 offset: 55,
                             },
                             rendered: "def",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "def",
@@ -201,7 +198,6 @@ mod error_cases {
                         offset: 0,
                     },
                     rendered: "[incomplete attrlist\n=== Section Title (except it isn't)",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[incomplete attrlist\n=== Section Title (except it isn't)",
@@ -299,7 +295,6 @@ mod error_cases {
                             offset: 61,
                         },
                         rendered: "abc",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -396,7 +391,6 @@ mod error_cases {
                         offset: 0,
                     },
                     rendered: ". abc\ndef",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: ". abc\ndef",

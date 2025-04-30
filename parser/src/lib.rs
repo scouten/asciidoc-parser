@@ -17,7 +17,7 @@ pub mod parser;
 pub use parser::Parser;
 
 mod span;
-pub use span::{Content, HasSpan, Span, SpanOrSubstitution, SpansAndSubstitutions, Substitution};
+pub use span::{Content, HasSpan, Span};
 
 pub mod strings;
 

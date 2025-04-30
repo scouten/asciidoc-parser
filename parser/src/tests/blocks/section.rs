@@ -141,7 +141,6 @@ fn has_child_block() {
                         offset: 18,
                     },
                     rendered: "abc",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -534,7 +533,6 @@ fn dont_stop_at_child_section() {
                             offset: 18,
                         },
                         rendered: "abc",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -563,7 +561,6 @@ fn dont_stop_at_child_section() {
                                 offset: 38,
                             },
                             rendered: "def",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "def",
@@ -650,7 +647,6 @@ fn stop_at_peer_section() {
                         offset: 18,
                     },
                     rendered: "abc",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -726,7 +722,6 @@ fn stop_at_ancestor_section() {
                         offset: 19,
                     },
                     rendered: "abc",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",

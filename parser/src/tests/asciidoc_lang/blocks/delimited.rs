@@ -68,7 +68,6 @@ This text will be treated as verbatim content.
                     offset: 5,
                 },
                 rendered: "This text will be treated as verbatim content.",
-                substitutions: vec!(),
             },
             content_model: ContentModel::Verbatim,
             context: "literal",
@@ -118,7 +117,6 @@ The remaining lines define a block's content.
                     offset: 5,
                 },
                 rendered: "\n\nThis text will be treated as verbatim content.\n\n",
-                substitutions: vec!(),
             },
             content_model: ContentModel::Verbatim,
             context: "literal",
@@ -222,7 +220,6 @@ That's so meta.
                         offset: 5,
                     },
                     rendered: "This is an example of an example block.\nThat's so meta.",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "This is an example of an example block.\nThat's so meta.",
@@ -571,7 +568,6 @@ The document header is useful, but not required.
                                         offset: 5,
                                     },
                                     rendered: "Here's a sample AsciiDoc document:",
-                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "Here's a sample AsciiDoc document:",
@@ -594,7 +590,6 @@ The document header is useful, but not required.
                                         offset: 46,
                                     },
                                     rendered: "= Document Title\nAuthor Name\n\nContent goes here.",
-                                    substitutions: vec!(),
                                 },
                                 content_model: ContentModel::Verbatim,
                                 context: "listing",
@@ -619,7 +614,6 @@ The document header is useful, but not required.
                                         offset: 101,
                                     },
                                     rendered: "The document header is useful, but not required.",
-                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "The document header is useful, but not required.",
@@ -699,7 +693,6 @@ Live within the simulated reality without want or fear.
                                         offset: 5,
                                     },
                                     rendered: "Here are your options:",
-                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "Here are your options:",
@@ -725,7 +718,6 @@ Live within the simulated reality without want or fear.
                                                     offset: 61,
                                                 },
                                                 rendered: "Escape into the real world.",
-                                                substitutions: vec!(),
                                             },
                                             source: TSpan {
                                                 data: "Escape into the real world.",
@@ -805,7 +797,6 @@ Live within the simulated reality without want or fear.
                                                     offset: 130,
                                                 },
                                                 rendered: "Live within the simulated reality without want or fear.",
-                                                substitutions: vec!(),
                                             },
                                             source: TSpan {
                                                 data: "Live within the simulated reality without want or fear.",

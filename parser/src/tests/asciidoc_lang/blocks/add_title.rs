@@ -72,7 +72,6 @@ This is the content of the sidebar block.
                                     offset: 43,
                                 },
                                 rendered: "This is the content of the sidebar block.",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is the content of the sidebar block.",
@@ -164,7 +163,6 @@ Don't put a space between the dot and the first character of the title.
                         offset: 22,
                     },
                     rendered: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "literal",
@@ -251,7 +249,6 @@ stages: [ init, verify, deploy ]
                         offset: 45,
                     },
                     rendered: "image: node:16-buster\nstages: [ init, verify, deploy ]",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -378,7 +375,6 @@ If you don't plant it in a container, it will take over your garden.
                         offset: 16,
                     },
                     rendered: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",

@@ -83,7 +83,6 @@ This is a basic AsciiDoc document.
                             offset: 0,
                         },
                         rendered: "This is a basic AsciiDoc document.",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "This is a basic AsciiDoc document.",
@@ -152,7 +151,6 @@ This document contains two paragraphs.
                                 offset: 0,
                             },
                             rendered: "This is a basic AsciiDoc document.",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This is a basic AsciiDoc document.",
@@ -173,7 +171,6 @@ This document contains two paragraphs.
                                 offset: 36,
                             },
                             rendered: "This document contains two paragraphs.",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This document contains two paragraphs.",
@@ -259,7 +256,6 @@ It also has a header that specifies the document title.
                                 offset: 33,
                             },
                             rendered: "This is a basic AsciiDoc document by {author}.",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This is a basic AsciiDoc document by {author}.",
@@ -280,7 +276,6 @@ It also has a header that specifies the document title.
                                 offset: 81,
                             },
                             rendered: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",

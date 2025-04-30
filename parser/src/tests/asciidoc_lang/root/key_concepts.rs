@@ -231,7 +231,6 @@ Click the button with the image:star.png[Star] to favorite the project.
                                     offset: 0,
                                 },
                                 rendered: "Click the button with the image:star.png[Star] to favorite the project.",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "Click the button with the image:star.png[Star] to favorite the project.",

@@ -121,7 +121,6 @@ fn one_simple_block() {
                         offset: 0,
                     },
                     rendered: "abc",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -171,7 +170,6 @@ fn two_simple_blocks() {
                             offset: 0,
                         },
                         rendered: "abc",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -192,7 +190,6 @@ fn two_simple_blocks() {
                             offset: 5,
                         },
                         rendered: "def",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "def",
@@ -240,7 +237,6 @@ fn two_blocks_and_title() {
                             offset: 17,
                         },
                         rendered: "abc",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "abc",
@@ -261,7 +257,6 @@ fn two_blocks_and_title() {
                             offset: 22,
                         },
                         rendered: "def",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "def",
@@ -314,7 +309,6 @@ fn extra_space_before_title() {
                         offset: 19,
                     },
                     rendered: "abc",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -366,7 +360,6 @@ fn err_bad_header() {
                         offset: 8,
                     },
                     rendered: "not an attribute",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "not an attribute",
@@ -427,7 +420,6 @@ fn err_bad_header_and_bad_macro() {
                             offset: 8,
                         },
                         rendered: "not an attribute",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "not an attribute",

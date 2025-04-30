@@ -101,7 +101,6 @@ This is a sidebar with a role assigned to it, rolename.
                                     offset: 17,
                                 },
                                 rendered: "This is a sidebar with a role assigned to it, rolename.",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with a role assigned to it, rolename.",
@@ -204,7 +203,6 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                                     offset: 20,
                                 },
                                 rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",
@@ -314,7 +312,6 @@ This is a sidebar with one role assigned to it, rolename.
                                     offset: 21,
                                 },
                                 rendered: "This is a sidebar with one role assigned to it, rolename.",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with one role assigned to it, rolename.",
@@ -432,7 +429,6 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                                     offset: 26,
                                 },
                                 rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "This is a sidebar with two roles assigned to it, role1 and role2.",

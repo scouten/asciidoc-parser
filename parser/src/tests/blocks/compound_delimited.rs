@@ -316,7 +316,6 @@ mod example {
                                 offset: 5,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -337,7 +336,6 @@ mod example {
                                 offset: 13,
                             },
                             rendered: "block2",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -386,7 +384,6 @@ mod example {
                         offset: 5,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -411,7 +408,6 @@ mod example {
                         offset: 13,
                     },
                     rendered: "block2",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -453,7 +449,6 @@ mod example {
                                 offset: 5,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -475,7 +470,6 @@ mod example {
                                     offset: 19,
                                 },
                                 rendered: "block2",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "block2",
@@ -535,7 +529,6 @@ mod example {
                         offset: 5,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -561,7 +554,6 @@ mod example {
                             offset: 19,
                         },
                         rendered: "block2",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "block2",
@@ -711,7 +703,6 @@ mod open {
                                 offset: 3,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -732,7 +723,6 @@ mod open {
                                 offset: 11,
                             },
                             rendered: "block2",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -781,7 +771,6 @@ mod open {
                         offset: 3,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -806,7 +795,6 @@ mod open {
                         offset: 11,
                     },
                     rendered: "block2",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -849,7 +837,6 @@ mod open {
                                 offset: 3,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -870,7 +857,6 @@ mod open {
                                 offset: 11,
                             },
                             rendered: "---\nblock2\n---",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "---\nblock2\n---",
@@ -919,7 +905,6 @@ mod open {
                         offset: 3,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -944,7 +929,6 @@ mod open {
                         offset: 11,
                     },
                     rendered: "---\nblock2\n---",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "---\nblock2\n---",
@@ -1037,7 +1021,6 @@ mod sidebar {
                                 offset: 5,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1058,7 +1041,6 @@ mod sidebar {
                                 offset: 13,
                             },
                             rendered: "block2",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -1107,7 +1089,6 @@ mod sidebar {
                         offset: 5,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1132,7 +1113,6 @@ mod sidebar {
                         offset: 13,
                     },
                     rendered: "block2",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -1174,7 +1154,6 @@ mod sidebar {
                                 offset: 5,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1196,7 +1175,6 @@ mod sidebar {
                                     offset: 19,
                                 },
                                 rendered: "block2",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "block2",
@@ -1256,7 +1234,6 @@ mod sidebar {
                         offset: 5,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1282,7 +1259,6 @@ mod sidebar {
                             offset: 19,
                         },
                         rendered: "block2",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "block2",
@@ -1463,7 +1439,6 @@ mod quote {
                                 offset: 5,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1484,7 +1459,6 @@ mod quote {
                                 offset: 13,
                             },
                             rendered: "block2",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block2",
@@ -1533,7 +1507,6 @@ mod quote {
                         offset: 5,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1558,7 +1531,6 @@ mod quote {
                         offset: 13,
                     },
                     rendered: "block2",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block2",
@@ -1600,7 +1572,6 @@ mod quote {
                                 offset: 5,
                             },
                             rendered: "block1",
-                            substitutions: vec!(),
                         },
                         source: TSpan {
                             data: "block1",
@@ -1622,7 +1593,6 @@ mod quote {
                                     offset: 19,
                                 },
                                 rendered: "block2",
-                                substitutions: vec!(),
                             },
                             source: TSpan {
                                 data: "block2",
@@ -1682,7 +1652,6 @@ mod quote {
                         offset: 5,
                     },
                     rendered: "block1",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "block1",
@@ -1708,7 +1677,6 @@ mod quote {
                             offset: 19,
                         },
                         rendered: "block2",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "block2",

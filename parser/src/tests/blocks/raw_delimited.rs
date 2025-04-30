@@ -177,7 +177,6 @@ mod comment {
                         offset: 5,
                     },
                     rendered: "",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -227,7 +226,6 @@ mod comment {
                         offset: 5,
                     },
                     rendered: "line1  \nline2",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -264,7 +262,6 @@ mod comment {
                     offset: 5,
                 },
                 rendered: "line1  \nline2",
-                substitutions: vec!(),
             }
         );
     }
@@ -292,7 +289,6 @@ mod comment {
                         offset: 5,
                     },
                     rendered: "line1  \n/////\nline2",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
@@ -329,7 +325,6 @@ mod comment {
                     offset: 5,
                 },
                 rendered: "line1  \n/////\nline2",
-                substitutions: vec!(),
             }
         );
     }
@@ -386,7 +381,6 @@ mod listing {
                         offset: 5,
                     },
                     rendered: "",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -436,7 +430,6 @@ mod listing {
                         offset: 5,
                     },
                     rendered: "line1  \nline2",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -473,7 +466,6 @@ mod listing {
                     offset: 5,
                 },
                 rendered: "line1  \nline2",
-                substitutions: vec!(),
             }
         );
     }
@@ -501,7 +493,6 @@ mod listing {
                         offset: 5,
                     },
                     rendered: "line1  \n-----\nline2",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
@@ -538,7 +529,6 @@ mod listing {
                     offset: 5,
                 },
                 rendered: "line1  \n-----\nline2",
-                substitutions: vec!(),
             }
         );
 
@@ -552,7 +542,6 @@ mod listing {
                     offset: 5,
                 },
                 rendered: "line1  \n-----\nline2",
-                substitutions: vec!(),
             }
         );
     }
@@ -661,7 +650,6 @@ mod pass {
                         offset: 5,
                     },
                     rendered: "",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -711,7 +699,6 @@ mod pass {
                         offset: 5,
                     },
                     rendered: "line1  \nline2",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -748,7 +735,6 @@ mod pass {
                     offset: 5,
                 },
                 rendered: "line1  \nline2",
-                substitutions: vec!(),
             }
         );
     }
@@ -776,7 +762,6 @@ mod pass {
                         offset: 5,
                     },
                     rendered: "line1  \n+++++\nline2",
-                    substitutions: vec!(),
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
@@ -813,7 +798,6 @@ mod pass {
                     offset: 5,
                 },
                 rendered: "line1  \n+++++\nline2",
-                substitutions: vec!(),
             }
         );
     }

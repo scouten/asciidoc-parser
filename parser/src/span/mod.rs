@@ -109,7 +109,7 @@ impl<'src> Deref for Span<'src> {
 // exported publicly.)
 
 pub(crate) mod content;
-pub use content::{Content, SpanOrSubstitution, SpansAndSubstitutions, Substitution};
+pub use content::Content;
 
 mod discard;
 mod line;

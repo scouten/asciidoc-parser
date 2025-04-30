@@ -298,7 +298,6 @@ If the text cannot be parsed, an error message will be emitted to the log.
                         offset: 49,
                     },
                     rendered: "Simple block",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[style,second-positional,named=\"value of named\"]\nSimple block",

@@ -106,7 +106,6 @@ This is more content in the sidebar block.
                             offset: 0,
                         },
                         rendered: "Text in your document.",
-                        substitutions: vec!(),
                     },
                     source: TSpan {
                         data: "Text in your document.",
@@ -132,7 +131,6 @@ This is more content in the sidebar block.
                                         offset: 29,
                                     },
                                     rendered: "This is content in a sidebar block.",
-                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "This is content in a sidebar block.",
@@ -191,7 +189,6 @@ This is more content in the sidebar block.
                                         offset: 85,
                                     },
                                     rendered: "This is more content in the sidebar block.",
-                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "This is more content in the sidebar block.",
@@ -275,7 +272,6 @@ include::example$block.adoc[tag=opt-listing]
                     offset: 10,
                 },
                 rendered: "sudo dnf install asciidoc",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[listing]\nsudo dnf install asciidoc",
@@ -357,7 +353,6 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                     offset: 8,
                 },
                 rendered: "Never do today what you can put off `'til tomorrow.",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[quote]\nNever do today what you can put off `'til tomorrow.",

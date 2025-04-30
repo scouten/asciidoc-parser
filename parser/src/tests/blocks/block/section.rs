@@ -34,7 +34,6 @@ fn err_missing_space_before_title() {
                     offset: 0,
                 },
                 rendered: "=blah blah",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "=blah blah",
@@ -162,7 +161,6 @@ fn has_child_block() {
                         offset: 18,
                     },
                     rendered: "abc",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -199,7 +197,6 @@ fn has_child_block() {
                     offset: 18,
                 },
                 rendered: "abc",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",
@@ -271,7 +268,6 @@ fn title() {
                         offset: 39,
                     },
                     rendered: "abc",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "abc",
@@ -330,7 +326,6 @@ fn title() {
                     offset: 39,
                 },
                 rendered: "abc",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",

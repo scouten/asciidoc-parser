@@ -66,7 +66,6 @@ Content of delimited example block
                         offset: 29,
                     },
                     rendered: "Content of delimited example block",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "Content of delimited example block",
@@ -185,7 +184,6 @@ Roads? Where we're going, we don't need roads.
                     offset: 14,
                 },
                 rendered: "Roads? Where we're going, we don't need roads.",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[quote#roads]\nRoads? Where we're going, we don't need roads.",
@@ -283,7 +281,6 @@ Roads? Where we're going, we don't need roads.
                         offset: 50,
                     },
                     rendered: "Roads? Where we're going, we don't need roads.",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",

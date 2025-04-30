@@ -65,7 +65,6 @@ fn single_line() {
                     offset: 0,
                 },
                 rendered: "abc",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",
@@ -131,7 +130,6 @@ fn multiple_lines() {
                     offset: 0,
                 },
                 rendered: "abc\ndef",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc\ndef",
@@ -185,7 +183,6 @@ fn title() {
                     offset: 14,
                 },
                 rendered: "abc\ndef",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: ".simple block\nabc\ndef",
@@ -224,7 +221,6 @@ fn attrlist() {
                     offset: 10,
                 },
                 rendered: "abc\ndef",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[sidebar]\nabc\ndef",
@@ -341,7 +337,6 @@ fn title_and_attrlist() {
                     offset: 17,
                 },
                 rendered: "abc\ndef",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: ".title\n[sidebar]\nabc\ndef",
@@ -463,7 +458,6 @@ fn consumes_blank_lines_after() {
                     offset: 0,
                 },
                 rendered: "abc",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "abc",
@@ -520,7 +514,6 @@ fn with_block_anchor() {
                     offset: 11,
                 },
                 rendered: "This paragraph gets a lot of attention.",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[notice]]\nThis paragraph gets a lot of attention.",
@@ -617,7 +610,6 @@ fn err_empty_block_anchor() {
                     offset: 5,
                 },
                 rendered: "This paragraph gets a lot of attention.",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[]]\nThis paragraph gets a lot of attention.",
@@ -714,7 +706,6 @@ fn err_invalid_block_anchor() {
                     offset: 17,
                 },
                 rendered: "This paragraph gets a lot of attention.",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
@@ -798,7 +789,6 @@ fn unterminated_block_anchor() {
                     offset: 10,
                 },
                 rendered: "This paragraph gets a lot of attention.",
-                substitutions: vec!(),
             },
             source: TSpan {
                 data: "[[notice]\nThis paragraph gets a lot of attention.",

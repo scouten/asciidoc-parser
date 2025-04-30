@@ -93,7 +93,6 @@ All the language requires in this case is that the value be non-empty.
                         offset: 5,
                     },
                     rendered: "This paragraph gets a lot of attention.",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[[]]\nThis paragraph gets a lot of attention.",
@@ -192,7 +191,6 @@ install the gem
                         offset: 17,
                     },
                     rendered: "This paragraph gets a lot of attention.",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
@@ -290,7 +288,6 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                         offset: 9,
                     },
                     rendered: "* Goal 1\n* Goal 2",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[#goals]\n* Goal 1\n* Goal 2",
@@ -368,7 +365,6 @@ In the longhand syntax, you use a standard named attribute.
                         offset: 11,
                     },
                     rendered: "* Goal 1\n* Goal 2",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[id=goals]\n* Goal 1\n* Goal 2",
@@ -446,7 +442,6 @@ In the block anchor syntax, you surround the name with double square brackets:
                         offset: 10,
                     },
                     rendered: "* Goal 1\n* Goal 2",
-                    substitutions: vec!(),
                 },
                 source: TSpan {
                     data: "[[goals]]\n* Goal 1\n* Goal 2",
@@ -503,7 +498,6 @@ ____
                                         offset: 42,
                                     },
                                     rendered: "Roads? Where we're going, we don't need roads.",
-                                    substitutions: vec!(),
                                 },
                                 source: TSpan {
                                     data: "Roads? Where we're going, we don't need roads.",
