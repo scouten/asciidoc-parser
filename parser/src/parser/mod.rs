@@ -12,5 +12,9 @@ mod tests {
     #[test]
     fn what_happens() {
         assert_eq!(2 + 2, 4);
+        
+        if false {
+            assert_eq!(2 + 2, 5);
+        }
     }
 }
