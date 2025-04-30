@@ -10,9 +10,6 @@ pub mod attributes;
 
 pub mod blocks;
 
-mod content;
-pub use content::Content;
-
 pub mod document;
 pub use document::Document;
 
@@ -20,7 +17,7 @@ pub mod parser;
 pub use parser::Parser;
 
 mod span;
-pub use span::{HasSpan, Span};
+pub use span::{Content, HasSpan, Span};
 
 pub mod strings;
 

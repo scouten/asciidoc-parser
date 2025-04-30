@@ -7,8 +7,9 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
+        content::TContent,
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     HasSpan, Parser, Span,
@@ -56,12 +57,15 @@ fn single_line() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "abc",
+            },
             source: TSpan {
                 data: "abc",
                 line: 1,
@@ -118,12 +122,15 @@ fn multiple_lines() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc\ndef",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc\ndef",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "abc\ndef",
+            },
             source: TSpan {
                 data: "abc\ndef",
                 line: 1,
@@ -168,12 +175,15 @@ fn title() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc\ndef",
-                line: 2,
-                col: 1,
-                offset: 14,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc\ndef",
+                    line: 2,
+                    col: 1,
+                    offset: 14,
+                },
+                rendered: "abc\ndef",
+            },
             source: TSpan {
                 data: ".simple block\nabc\ndef",
                 line: 1,
@@ -203,12 +213,15 @@ fn attrlist() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc\ndef",
-                line: 2,
-                col: 1,
-                offset: 10,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc\ndef",
+                    line: 2,
+                    col: 1,
+                    offset: 10,
+                },
+                rendered: "abc\ndef",
+            },
             source: TSpan {
                 data: "[sidebar]\nabc\ndef",
                 line: 1,
@@ -316,12 +329,15 @@ fn title_and_attrlist() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc\ndef",
-                line: 3,
-                col: 1,
-                offset: 17,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc\ndef",
+                    line: 3,
+                    col: 1,
+                    offset: 17,
+                },
+                rendered: "abc\ndef",
+            },
             source: TSpan {
                 data: ".title\n[sidebar]\nabc\ndef",
                 line: 1,
@@ -434,12 +450,15 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "abc",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "abc",
+            },
             source: TSpan {
                 data: "abc",
                 line: 1,
@@ -487,12 +506,15 @@ fn with_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "This paragraph gets a lot of attention.",
-                line: 2,
-                col: 1,
-                offset: 11,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "This paragraph gets a lot of attention.",
+                    line: 2,
+                    col: 1,
+                    offset: 11,
+                },
+                rendered: "This paragraph gets a lot of attention.",
+            },
             source: TSpan {
                 data: "[[notice]]\nThis paragraph gets a lot of attention.",
                 line: 1,
@@ -580,12 +602,15 @@ fn err_empty_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "This paragraph gets a lot of attention.",
-                line: 2,
-                col: 1,
-                offset: 5,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "This paragraph gets a lot of attention.",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "This paragraph gets a lot of attention.",
+            },
             source: TSpan {
                 data: "[[]]\nThis paragraph gets a lot of attention.",
                 line: 1,
@@ -673,12 +698,15 @@ fn err_invalid_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "This paragraph gets a lot of attention.",
-                line: 2,
-                col: 1,
-                offset: 17,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "This paragraph gets a lot of attention.",
+                    line: 2,
+                    col: 1,
+                    offset: 17,
+                },
+                rendered: "This paragraph gets a lot of attention.",
+            },
             source: TSpan {
                 data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
                 line: 1,
@@ -753,12 +781,15 @@ fn unterminated_block_anchor() {
     assert_eq!(
         mi.item,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "This paragraph gets a lot of attention.",
-                line: 2,
-                col: 1,
-                offset: 10,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "This paragraph gets a lot of attention.",
+                    line: 2,
+                    col: 1,
+                    offset: 10,
+                },
+                rendered: "This paragraph gets a lot of attention.",
+            },
             source: TSpan {
                 data: "[[notice]\nThis paragraph gets a lot of attention.",
                 line: 1,

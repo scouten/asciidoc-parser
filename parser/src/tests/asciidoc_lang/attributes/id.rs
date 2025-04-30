@@ -34,8 +34,9 @@ mod valid_id_characters {
         tests::{
             fixtures::{
                 blocks::{TBlock, TSimpleBlock},
+                content::TContent,
                 warnings::TWarning,
-                TContent, TSpan,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -84,12 +85,15 @@ All the language requires in this case is that the value be non-empty.
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "This paragraph gets a lot of attention.",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "This paragraph gets a lot of attention.",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "This paragraph gets a lot of attention.",
+                },
                 source: TSpan {
                     data: "[[]]\nThis paragraph gets a lot of attention.",
                     line: 1,
@@ -179,12 +183,15 @@ install the gem
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "This paragraph gets a lot of attention.",
-                    line: 2,
-                    col: 1,
-                    offset: 17,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "This paragraph gets a lot of attention.",
+                        line: 2,
+                        col: 1,
+                        offset: 17,
+                    },
+                    rendered: "This paragraph gets a lot of attention.",
+                },
                 source: TSpan {
                     data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
                     line: 1,
@@ -228,7 +235,8 @@ mod block_assignment {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -272,12 +280,15 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "* Goal 1\n* Goal 2",
-                    line: 2,
-                    col: 1,
-                    offset: 9,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "* Goal 1\n* Goal 2",
+                        line: 2,
+                        col: 1,
+                        offset: 9,
+                    },
+                    rendered: "* Goal 1\n* Goal 2",
+                },
                 source: TSpan {
                     data: "[#goals]\n* Goal 1\n* Goal 2",
                     line: 1,
@@ -346,12 +357,15 @@ In the longhand syntax, you use a standard named attribute.
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "* Goal 1\n* Goal 2",
-                    line: 2,
-                    col: 1,
-                    offset: 11,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "* Goal 1\n* Goal 2",
+                        line: 2,
+                        col: 1,
+                        offset: 11,
+                    },
+                    rendered: "* Goal 1\n* Goal 2",
+                },
                 source: TSpan {
                     data: "[id=goals]\n* Goal 1\n* Goal 2",
                     line: 1,
@@ -420,12 +434,15 @@ In the block anchor syntax, you surround the name with double square brackets:
         assert_eq!(
             mi.item,
             TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "* Goal 1\n* Goal 2",
-                    line: 2,
-                    col: 1,
-                    offset: 10,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "* Goal 1\n* Goal 2",
+                        line: 2,
+                        col: 1,
+                        offset: 10,
+                    },
+                    rendered: "* Goal 1\n* Goal 2",
+                },
                 source: TSpan {
                     data: "[[goals]]\n* Goal 1\n* Goal 2",
                     line: 1,
@@ -473,12 +490,15 @@ ____
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TContent::Basic(TSpan {
+                                content: TContent {
+                                    original: TSpan {
                                         data: "Roads? Where we're going, we don't need roads.",
                                         line: 3,
                                         col: 1,
                                         offset: 42,
-                                    }),
+                                    },
+                                    rendered: "Roads? Where we're going, we don't need roads.",
+                                },
                                 source: TSpan {
                                     data: "Roads? Where we're going, we don't need roads.",
                                     line: 3,

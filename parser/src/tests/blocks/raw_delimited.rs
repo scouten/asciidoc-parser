@@ -155,7 +155,7 @@ mod comment {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
 
@@ -169,12 +169,15 @@ mod comment {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "",
+                },
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -215,12 +218,15 @@ mod comment {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "line1  \nline2",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "line1  \nline2",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "line1  \nline2",
+                },
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -248,12 +254,15 @@ mod comment {
 
         assert_eq!(
             mi.item.content(),
-            TContent::Basic(TSpan {
-                data: "line1  \nline2",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },)
+            TContent {
+                original: TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "line1  \nline2",
+            }
         );
     }
 
@@ -272,12 +281,15 @@ mod comment {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "line1  \n/////\nline2",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "line1  \n/////\nline2",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "line1  \n/////\nline2",
+                },
                 content_model: ContentModel::Raw,
                 context: "comment",
                 source: TSpan {
@@ -305,12 +317,15 @@ mod comment {
 
         assert_eq!(
             mi.item.content(),
-            TContent::Basic(TSpan {
-                data: "line1  \n/////\nline2",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },)
+            TContent {
+                original: TSpan {
+                    data: "line1  \n/////\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "line1  \n/////\nline2",
+            }
         );
     }
 }
@@ -344,7 +359,7 @@ mod listing {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
 
@@ -358,12 +373,15 @@ mod listing {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "",
+                },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -404,12 +422,15 @@ mod listing {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "line1  \nline2",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "line1  \nline2",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "line1  \nline2",
+                },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -437,12 +458,15 @@ mod listing {
 
         assert_eq!(
             mi.item.content(),
-            TContent::Basic(TSpan {
-                data: "line1  \nline2",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },)
+            TContent {
+                original: TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "line1  \nline2",
+            }
         );
     }
 
@@ -461,12 +485,15 @@ mod listing {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "line1  \n-----\nline2",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "line1  \n-----\nline2",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "line1  \n-----\nline2",
+                },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
                 source: TSpan {
@@ -494,22 +521,28 @@ mod listing {
 
         assert_eq!(
             mi.item.content(),
-            TContent::Basic(TSpan {
-                data: "line1  \n-----\nline2",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },)
+            TContent {
+                original: TSpan {
+                    data: "line1  \n-----\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "line1  \n-----\nline2",
+            }
         );
 
         assert_eq!(
             mi.item.content(),
-            TContent::Basic(TSpan {
-                data: "line1  \n-----\nline2",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },)
+            TContent {
+                original: TSpan {
+                    data: "line1  \n-----\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "line1  \n-----\nline2",
+            }
         );
     }
 }
@@ -595,7 +628,7 @@ mod pass {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        tests::fixtures::{blocks::TRawDelimitedBlock, TContent, TSpan},
+        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
 
@@ -609,12 +642,15 @@ mod pass {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "",
+                },
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -655,12 +691,15 @@ mod pass {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "line1  \nline2",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "line1  \nline2",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "line1  \nline2",
+                },
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -688,12 +727,15 @@ mod pass {
 
         assert_eq!(
             mi.item.content(),
-            TContent::Basic(TSpan {
-                data: "line1  \nline2",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },)
+            TContent {
+                original: TSpan {
+                    data: "line1  \nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "line1  \nline2",
+            }
         );
     }
 
@@ -712,12 +754,15 @@ mod pass {
         assert_eq!(
             mi.item,
             TRawDelimitedBlock {
-                content: TContent::Basic(TSpan {
-                    data: "line1  \n+++++\nline2",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "line1  \n+++++\nline2",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "line1  \n+++++\nline2",
+                },
                 content_model: ContentModel::Raw,
                 context: "pass",
                 source: TSpan {
@@ -745,12 +790,15 @@ mod pass {
 
         assert_eq!(
             mi.item.content(),
-            TContent::Basic(TSpan {
-                data: "line1  \n+++++\nline2",
-                line: 2,
-                col: 1,
-                offset: 5,
-            },)
+            TContent {
+                original: TSpan {
+                    data: "line1  \n+++++\nline2",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "line1  \n+++++\nline2",
+            }
         );
     }
 }

@@ -5,8 +5,9 @@ use crate::{
     tests::{
         fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            content::TContent,
             warnings::TWarning,
-            TContent, TSpan,
+            TSpan,
         },
         sdd::{non_normative, to_do_verifies, track_file, verifies},
     },
@@ -59,12 +60,15 @@ This text will be treated as verbatim content.
     assert_eq!(
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
-            content: TContent::Basic(TSpan {
-                data: "This text will be treated as verbatim content.",
-                line: 2,
-                col: 1,
-                offset: 5,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "This text will be treated as verbatim content.",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "This text will be treated as verbatim content.",
+            },
             content_model: ContentModel::Verbatim,
             context: "literal",
             source: TSpan {
@@ -105,12 +109,15 @@ The remaining lines define a block's content.
     assert_eq!(
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
-            content: TContent::Basic(TSpan {
-                data: "\n\nThis text will be treated as verbatim content.\n\n",
-                line: 2,
-                col: 1,
-                offset: 5,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "\n\nThis text will be treated as verbatim content.\n\n",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                rendered: "\n\nThis text will be treated as verbatim content.\n\n",
+            },
             content_model: ContentModel::Verbatim,
             context: "literal",
             source: TSpan {
@@ -205,12 +212,15 @@ That's so meta.
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "This is an example of an example block.\nThat's so meta.",
-                    line: 2,
-                    col: 1,
-                    offset: 5,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "This is an example of an example block.\nThat's so meta.",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "This is an example of an example block.\nThat's so meta.",
+                },
                 source: TSpan {
                     data: "This is an example of an example block.\nThat's so meta.",
                     line: 2,
@@ -486,7 +496,8 @@ mod nesting_blocks {
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
-                TContent, TSpan,
+                content::TContent,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -549,12 +560,15 @@ The document header is useful, but not required.
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TContent::Basic(TSpan {
-                                    data: "Here's a sample AsciiDoc document:",
-                                    line: 2,
-                                    col: 1,
-                                    offset: 5,
-                                }),
+                                content: TContent {
+                                    original: TSpan {
+                                        data: "Here's a sample AsciiDoc document:",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 5,
+                                    },
+                                    rendered: "Here's a sample AsciiDoc document:",
+                                },
                                 source: TSpan {
                                     data: "Here's a sample AsciiDoc document:",
                                     line: 2,
@@ -568,12 +582,15 @@ The document header is useful, but not required.
                         ),
                         TBlock::RawDelimited(
                             TRawDelimitedBlock {
-                                content: TContent::Basic(TSpan {
-                                    data: "= Document Title\nAuthor Name\n\nContent goes here.",
-                                    line: 5,
-                                    col: 1,
-                                    offset: 46,
-                                }),
+                                content: TContent {
+                                    original: TSpan {
+                                        data: "= Document Title\nAuthor Name\n\nContent goes here.",
+                                        line: 5,
+                                        col: 1,
+                                        offset: 46,
+                                    },
+                                    rendered: "= Document Title\nAuthor Name\n\nContent goes here.",
+                                },
                                 content_model: ContentModel::Verbatim,
                                 context: "listing",
                                 source: TSpan {
@@ -589,12 +606,15 @@ The document header is useful, but not required.
                         ),
                         TBlock::Simple(
                             TSimpleBlock{
-                                content: TContent::Basic(TSpan {
-                                    data: "The document header is useful, but not required.",
-                                    line: 11,
-                                    col: 1,
-                                    offset: 101,
-                                }),
+                                content: TContent {
+                                    original: TSpan {
+                                        data: "The document header is useful, but not required.",
+                                        line: 11,
+                                        col: 1,
+                                        offset: 101,
+                                    },
+                                    rendered: "The document header is useful, but not required.",
+                                },
                                 source: TSpan {
                                     data: "The document header is useful, but not required.",
                                     line: 11,
@@ -665,12 +685,15 @@ Live within the simulated reality without want or fear.
                     blocks: vec![
                         TBlock::Simple(
                             TSimpleBlock {
-                                content: TContent::Basic(TSpan {
-                                    data: "Here are your options:",
-                                    line: 2,
-                                    col: 1,
-                                    offset: 5,
-                                }),
+                                content: TContent {
+                                    original: TSpan {
+                                        data: "Here are your options:",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 5,
+                                    },
+                                    rendered: "Here are your options:",
+                                },
                                 source: TSpan {
                                     data: "Here are your options:",
                                     line: 2,
@@ -687,12 +710,15 @@ Live within the simulated reality without want or fear.
                                 blocks: vec![
                                     TBlock::Simple(
                                         TSimpleBlock {
-                                            content: TContent::Basic(TSpan {
-                                                data: "Escape into the real world.",
-                                                line: 7,
-                                                col: 1,
-                                                offset: 61,
-                                            }),
+                                            content: TContent {
+                                                original: TSpan {
+                                                    data: "Escape into the real world.",
+                                                    line: 7,
+                                                    col: 1,
+                                                    offset: 61,
+                                                },
+                                                rendered: "Escape into the real world.",
+                                            },
                                             source: TSpan {
                                                 data: "Escape into the real world.",
                                                 line: 7,
@@ -763,12 +789,15 @@ Live within the simulated reality without want or fear.
                                 blocks: vec![
                                     TBlock::Simple(
                                         TSimpleBlock {
-                                            content: TContent::Basic(TSpan {
-                                                data: "Live within the simulated reality without want or fear.",
-                                                line: 13,
-                                                col: 1,
-                                                offset: 130,
-                                            }),
+                                            content: TContent {
+                                                original: TSpan {
+                                                    data: "Live within the simulated reality without want or fear.",
+                                                    line: 13,
+                                                    col: 1,
+                                                    offset: 130,
+                                                },
+                                                rendered: "Live within the simulated reality without want or fear.",
+                                            },
                                             source: TSpan {
                                                 data: "Live within the simulated reality without want or fear.",
                                                 line: 13,

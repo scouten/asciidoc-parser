@@ -7,9 +7,10 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        content::TContent,
         document::{TDocument, THeader},
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     Parser,
@@ -112,12 +113,15 @@ fn one_simple_block() {
                 offset: 0
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "abc",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "abc",
+                },
                 source: TSpan {
                     data: "abc",
                     line: 1,
@@ -158,12 +162,15 @@ fn two_simple_blocks() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "abc",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "abc",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "abc",
+                    },
                     source: TSpan {
                         data: "abc",
                         line: 1,
@@ -175,12 +182,15 @@ fn two_simple_blocks() {
                     attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "def",
-                        line: 3,
-                        col: 1,
-                        offset: 5,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "def",
+                            line: 3,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "def",
+                    },
                     source: TSpan {
                         data: "def",
                         line: 3,
@@ -219,12 +229,15 @@ fn two_blocks_and_title() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "abc",
-                        line: 3,
-                        col: 1,
-                        offset: 17,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "abc",
+                            line: 3,
+                            col: 1,
+                            offset: 17,
+                        },
+                        rendered: "abc",
+                    },
                     source: TSpan {
                         data: "abc",
                         line: 3,
@@ -236,12 +249,15 @@ fn two_blocks_and_title() {
                     attrlist: None,
                 }),
                 TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "def",
-                        line: 5,
-                        col: 1,
-                        offset: 22,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "def",
+                            line: 5,
+                            col: 1,
+                            offset: 22,
+                        },
+                        rendered: "def",
+                    },
                     source: TSpan {
                         data: "def",
                         line: 5,
@@ -285,12 +301,15 @@ fn extra_space_before_title() {
                 }
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "abc",
-                    line: 3,
-                    col: 1,
-                    offset: 19,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 19,
+                    },
+                    rendered: "abc",
+                },
                 source: TSpan {
                     data: "abc",
                     line: 3,
@@ -333,12 +352,15 @@ fn err_bad_header() {
                 }
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "not an attribute",
-                    line: 2,
-                    col: 1,
-                    offset: 8,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "not an attribute",
+                        line: 2,
+                        col: 1,
+                        offset: 8,
+                    },
+                    rendered: "not an attribute",
+                },
                 source: TSpan {
                     data: "not an attribute",
                     line: 2,
@@ -390,12 +412,15 @@ fn err_bad_header_and_bad_macro() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "not an attribute",
-                        line: 2,
-                        col: 1,
-                        offset: 8,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "not an attribute",
+                            line: 2,
+                            col: 1,
+                            offset: 8,
+                        },
+                        rendered: "not an attribute",
+                    },
                     source: TSpan {
                         data: "not an attribute",
                         line: 2,

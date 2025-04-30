@@ -105,7 +105,11 @@ impl<'src> Deref for Span<'src> {
 
 // NOTE: The `Span` API is large. Only the public interface is implemented here.
 // The other modules referenced below implement additional APIs that are
-// available inside this crate only.
+// available inside this crate only. (Exception: `Content` is defined here and
+// exported publicly.)
+
+pub(crate) mod content;
+pub use content::Content;
 
 mod discard;
 mod line;

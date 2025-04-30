@@ -6,7 +6,8 @@ use crate::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            TContent, TSpan,
+            content::TContent,
+            TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -57,12 +58,15 @@ Content of delimited example block
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "Content of delimited example block",
-                    line: 3,
-                    col: 1,
-                    offset: 29,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "Content of delimited example block",
+                        line: 3,
+                        col: 1,
+                        offset: 29,
+                    },
+                    rendered: "Content of delimited example block",
+                },
                 source: TSpan {
                     data: "Content of delimited example block",
                     line: 3,
@@ -172,12 +176,15 @@ Roads? Where we're going, we don't need roads.
     assert_eq!(
         block,
         TBlock::Simple(TSimpleBlock {
-            content: TContent::Basic(TSpan {
-                data: "Roads? Where we're going, we don't need roads.",
-                line: 2,
-                col: 1,
-                offset: 14,
-            }),
+            content: TContent {
+                original: TSpan {
+                    data: "Roads? Where we're going, we don't need roads.",
+                    line: 2,
+                    col: 1,
+                    offset: 14,
+                },
+                rendered: "Roads? Where we're going, we don't need roads.",
+            },
             source: TSpan {
                 data: "[quote#roads]\nRoads? Where we're going, we don't need roads.",
                 line: 1,
@@ -266,12 +273,15 @@ Roads? Where we're going, we don't need roads.
     assert_eq!(block,
         TBlock:: Simple(
             TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "Roads? Where we're going, we don't need roads.",
-                    line: 2,
-                    col: 1,
-                    offset: 50,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "Roads? Where we're going, we don't need roads.",
+                        line: 2,
+                        col: 1,
+                        offset: 50,
+                    },
+                    rendered: "Roads? Where we're going, we don't need roads.",
+                },
                 source: TSpan {
                     data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
                     line: 1,

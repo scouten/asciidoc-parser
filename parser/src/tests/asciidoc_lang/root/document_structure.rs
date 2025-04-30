@@ -23,8 +23,9 @@ mod documents {
         tests::{
             fixtures::{
                 blocks::{TBlock, TSimpleBlock},
+                content::TContent,
                 document::{TAttribute, TDocument, THeader, TRawAttributeValue},
-                TContent, TSpan,
+                TSpan,
             },
             sdd::{non_normative, verifies},
         },
@@ -74,12 +75,15 @@ This is a basic AsciiDoc document.
                     offset: 0
                 },
                 blocks: vec![TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "This is a basic AsciiDoc document.",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a basic AsciiDoc document.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "This is a basic AsciiDoc document.",
+                    },
                     source: TSpan {
                         data: "This is a basic AsciiDoc document.",
                         line: 1,
@@ -139,12 +143,15 @@ This document contains two paragraphs.
                 },
                 blocks: vec![
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "This is a basic AsciiDoc document.",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "This is a basic AsciiDoc document.",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            rendered: "This is a basic AsciiDoc document.",
+                        },
                         source: TSpan {
                             data: "This is a basic AsciiDoc document.",
                             line: 1,
@@ -156,12 +163,15 @@ This document contains two paragraphs.
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "This document contains two paragraphs.",
-                            line: 3,
-                            col: 1,
-                            offset: 36,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "This document contains two paragraphs.",
+                                line: 3,
+                                col: 1,
+                                offset: 36,
+                            },
+                            rendered: "This document contains two paragraphs.",
+                        },
                         source: TSpan {
                             data: "This document contains two paragraphs.",
                             line: 3,
@@ -238,12 +248,15 @@ It also has a header that specifies the document title.
                 },
                 blocks: vec![
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "This is a basic AsciiDoc document by {author}.",
-                            line: 4,
-                            col: 1,
-                            offset: 33,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "This is a basic AsciiDoc document by {author}.",
+                                line: 4,
+                                col: 1,
+                                offset: 33,
+                            },
+                            rendered: "This is a basic AsciiDoc document by {author}.",
+                        },
                         source: TSpan {
                             data: "This is a basic AsciiDoc document by {author}.",
                             line: 4,
@@ -255,12 +268,15 @@ It also has a header that specifies the document title.
                         attrlist: None,
                     }),
                     TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
-                            line: 6,
-                            col: 1,
-                            offset: 81,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
+                                line: 6,
+                                col: 1,
+                                offset: 81,
+                            },
+                            rendered: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
+                        },
                         source: TSpan {
                             data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                             line: 6,

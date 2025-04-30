@@ -7,8 +7,9 @@ use crate::{
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        content::TContent,
         warnings::TWarning,
-        TContent, TSpan,
+        TSpan,
     },
     warnings::WarningType,
     Parser,
@@ -132,12 +133,15 @@ fn has_child_block() {
                 offset: 3,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "abc",
-                    line: 3,
-                    col: 1,
-                    offset: 18,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                    rendered: "abc",
+                },
                 source: TSpan {
                     data: "abc",
                     line: 3,
@@ -521,12 +525,15 @@ fn dont_stop_at_child_section() {
             },
             blocks: vec![
                 TBlock::Simple(TSimpleBlock {
-                    content: TContent::Basic(TSpan {
-                        data: "abc",
-                        line: 3,
-                        col: 1,
-                        offset: 18,
-                    }),
+                    content: TContent {
+                        original: TSpan {
+                            data: "abc",
+                            line: 3,
+                            col: 1,
+                            offset: 18,
+                        },
+                        rendered: "abc",
+                    },
                     source: TSpan {
                         data: "abc",
                         line: 3,
@@ -546,12 +553,15 @@ fn dont_stop_at_child_section() {
                         offset: 27,
                     },
                     blocks: vec![TBlock::Simple(TSimpleBlock {
-                        content: TContent::Basic(TSpan {
-                            data: "def",
-                            line: 7,
-                            col: 1,
-                            offset: 38,
-                        }),
+                        content: TContent {
+                            original: TSpan {
+                                data: "def",
+                                line: 7,
+                                col: 1,
+                                offset: 38,
+                            },
+                            rendered: "def",
+                        },
                         source: TSpan {
                             data: "def",
                             line: 7,
@@ -629,12 +639,15 @@ fn stop_at_peer_section() {
                 offset: 3,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "abc",
-                    line: 3,
-                    col: 1,
-                    offset: 18,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                    rendered: "abc",
+                },
                 source: TSpan {
                     data: "abc",
                     line: 3,
@@ -701,12 +714,15 @@ fn stop_at_ancestor_section() {
                 offset: 4,
             },
             blocks: vec![TBlock::Simple(TSimpleBlock {
-                content: TContent::Basic(TSpan {
-                    data: "abc",
-                    line: 3,
-                    col: 1,
-                    offset: 19,
-                }),
+                content: TContent {
+                    original: TSpan {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 19,
+                    },
+                    rendered: "abc",
+                },
                 source: TSpan {
                     data: "abc",
                     line: 3,
