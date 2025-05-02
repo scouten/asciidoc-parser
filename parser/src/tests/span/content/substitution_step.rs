@@ -28,3 +28,16 @@ mod special_characters {
         );
     }
 }
+
+mod callouts {
+    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Span};
+
+    #[test]
+    #[should_panic]
+    fn not_yet_implemented() {
+        let mut content = Content::from(Span::new(""));
+        SubstitutionStep::Callouts.apply(&mut content);
+        assert!(content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed(""));
+    }
+}
