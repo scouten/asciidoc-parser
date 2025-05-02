@@ -34,7 +34,7 @@ pub(crate) enum SubstitutionStep {
 }
 
 impl SubstitutionStep {
-    pub(crate) fn apply<'src>(&self, content: &mut Content<'src>) {
+    pub(crate) fn apply(&self, content: &mut Content<'_>) {
         match self {
             Self::SpecialCharacters => {
                 apply_special_characters(content);
@@ -46,8 +46,8 @@ impl SubstitutionStep {
     }
 }
 
-fn apply_special_characters<'src>(content: &mut Content<'src>) {
-    if !content.rendered.contains(&['<', '>', '&']) {
+fn apply_special_characters(content: &mut Content<'_>) {
+    if !content.rendered.contains(['<', '>', '&']) {
         return;
     }
 
