@@ -15,6 +15,7 @@ rust-version = "1.81.0"
 [dependencies]
 bytecount = "0.6.7"
 memchr = "2.6.4"
+regex = "1.11.1"
 thiserror = "2.0.1"
 
 [dev-dependencies]
