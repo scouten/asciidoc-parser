@@ -1,3 +1,5 @@
+use crate::span::Content;
+
 /// Each substitution type replaces characters, markup, attribute references,
 /// and macros in text with the appropriate output for a given converter. When a
 /// document is processed, up to six substitution types may be carried out
@@ -29,4 +31,32 @@ pub(crate) enum SubstitutionStep {
 
     /// Processes callouts in literal, listing, and source blocks.
     Callouts,
+}
+
+impl SubstitutionStep {
+    pub(crate) fn apply<'src>(&self, content: &mut Content<'src>) {
+        match self {
+            Self::SpecialCharacters => {
+                apply_special_characters(content);
+            }
+            _ => {
+                todo!("Implement apply for {self:?}");
+            }
+        }
+    }
+}
+
+fn apply_special_characters<'src>(content: &mut Content<'src>) {
+    if !content.rendered.contains(&['<', '>', '&']) {
+        return;
+    }
+
+    // TO DO: Can we optimize down to one .replace?
+    let new_rendered = content
+        .rendered
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;");
+
+    content.rendered = new_rendered.into();
 }
