@@ -137,11 +137,7 @@ impl Replacer for QuoteReplacer {
         dbg!(caps);
         dbg!(&dst);
 
-        // dst.push_str(&caps["first"]);
-        // dst.push_str(" ");
-        // dst.push_str(&caps["last"]);
-
-        // if match[0].start_with? RS
+        // if match[0].start_with? RS (RS == '\\')
         //     if scope == :constrained && (attrs = match[2])
         //         unescaped_attrs = %([#{attrs}])
         //     else
