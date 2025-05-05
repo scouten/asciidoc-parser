@@ -84,8 +84,6 @@ struct QuoteSub {
     pattern: Regex,
 }
 
-const QUOTE_ATTR_LIST_RXT: &str = "\\[([^\\[\\]]+)\\]";
-
 // Adapted from QUOTE_SUBS in Ruby Asciidoctor implementation,
 // found in https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor.rb#L440.
 //
@@ -96,17 +94,15 @@ const QUOTE_ATTR_LIST_RXT: &str = "\\[([^\\[\\]]+)\\]";
 //   looks like the `\b{end-half}` pattern can take its place. (This pattern
 //   requires that a non-word character or end of haystack follow the match
 //   point.)
+// * `#{CC_ALL}` just means any character (`.`).
+// * Replace `#{QuoteAttributeListRxt}` with `\\[([^\\[\\]]+)\\]`. (This seems
+//   preferable to having yet another level of backslash escaping.)
 static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
     vec![QuoteSub {
         type_: QuoteType::Strong,
         scope: QuoteScope::Constrained,
-        pattern: Regex::new("\\b{start-half}\\*(\\S|\\S.*?\\S)\\*\\b{end-half}").unwrap(),
-        // NOTE: Removed (?:#{QuoteAttributeListRxt})? to bootstrap
-        //       [:strong, :constrained,
-        // /(^|[^#{CC_WORD};:}])(?:#{QuoteAttributeListRxt})?\*(\S|\S#{CC_ALL}*?\S)\*(?!#{CG_WORD})/
-        // m],
-
-        // pattern: Regex::new(&format!("\\?(?:{QUOTE_ATTR_LIST_RXT})?\\*\\*(.+?)\\*\\*")).unwrap(),
+        pattern: Regex::new(r#"\b{start-half}(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#)
+            .unwrap(),
     }]
 });
 
@@ -126,11 +122,9 @@ impl<'r> Replacer for QuoteReplacer<'r> {
         dbg!(caps);
         dbg!(&dest);
 
-        let unescaped_attrs: Option<&str> = if caps[0].starts_with('\\') {
+        let unescaped_attrs: Option<String> = if caps[0].starts_with('\\') {
             match self.scope {
-                QuoteScope::Constrained => {
-                    todo!("{}", "unescaped_attrs = %([#{attrs}])");
-                }
+                QuoteScope::Constrained => Some(format!("[{attrs}]", attrs = &caps[1])),
                 QuoteScope::Unconstrained => {
                     dest.push_str(&caps[0][1..]);
                     return;
@@ -139,6 +133,8 @@ impl<'r> Replacer for QuoteReplacer<'r> {
         } else {
             None
         };
+
+        dbg!(&unescaped_attrs);
 
         match self.scope {
             QuoteScope::Constrained => {
@@ -161,7 +157,7 @@ impl<'r> Replacer for QuoteReplacer<'r> {
 
                 // TEMPORARY: POC with simplest possible implementation for now.
                 self.renderer
-                    .render_quoted_substitition(self.type_, self.scope, &caps[1], dest);
+                    .render_quoted_substitition(self.type_, self.scope, &caps[2], dest);
             }
 
             QuoteScope::Unconstrained => {
