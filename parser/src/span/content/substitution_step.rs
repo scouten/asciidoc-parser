@@ -2,7 +2,10 @@ use std::{borrow::Cow, sync::LazyLock};
 
 use regex::{Captures, Regex, Replacer};
 
-use crate::span::Content;
+use crate::{
+    parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType},
+    span::Content,
+};
 
 /// Each substitution type replaces characters, markup, attribute references,
 /// and macros in text with the appropriate output for a given converter. When a
@@ -38,16 +41,18 @@ pub(crate) enum SubstitutionStep {
 }
 
 impl SubstitutionStep {
-    pub(crate) fn apply(&self, content: &mut Content<'_>) {
+    pub(crate) fn apply(
+        &self,
+        content: &mut Content<'_>,
+        renderer: &dyn InlineSubstitutionRenderer,
+    ) {
         match self {
             Self::SpecialCharacters => {
-                apply_special_characters(content);
+                apply_special_characters(content, renderer);
             }
-
             Self::Quotes => {
-                apply_quotes(content);
+                apply_quotes(content, renderer);
             }
-
             _ => {
                 todo!("Implement apply for {self:?}");
             }
@@ -55,11 +60,12 @@ impl SubstitutionStep {
     }
 }
 
-fn apply_special_characters(content: &mut Content<'_>) {
+fn apply_special_characters(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRenderer) {
     if !content.rendered.contains(['<', '>', '&']) {
         return;
     }
 
+    // TO DO: Use the renderer.
     // TO DO: Can we optimize down to one .replace?
     let new_rendered = content
         .rendered
@@ -72,27 +78,9 @@ fn apply_special_characters(content: &mut Content<'_>) {
 
 static QUOTED_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| Regex::new("[*_`#^~]").unwrap());
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum QuoteSubType {
-    Strong,
-    DoubleQuote,
-    SingleQuote,
-    Monospaced,
-    Emphasis,
-    Mark,
-    Superscript,
-    Subscript,
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum QuoteSubScope {
-    Constrained,
-    Unconstrained,
-}
-
 struct QuoteSub {
-    type_: QuoteSubType,
-    scope: QuoteSubScope,
+    type_: QuoteType,
+    scope: QuoteScope,
     pattern: Regex,
 }
 
@@ -110,8 +98,8 @@ const QUOTE_ATTR_LIST_RXT: &str = "\\[([^\\[\\]]+)\\]";
 //   point.)
 static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
     vec![QuoteSub {
-        type_: QuoteSubType::Strong,
-        scope: QuoteSubScope::Constrained,
+        type_: QuoteType::Strong,
+        scope: QuoteScope::Constrained,
         pattern: Regex::new("\\b{start-half}\\*(\\S|\\S.*?\\S)\\*\\b{end-half}").unwrap(),
         // NOTE: Removed (?:#{QuoteAttributeListRxt})? to bootstrap
         //       [:strong, :constrained,
@@ -123,30 +111,37 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-struct QuoteReplacer {
-    type_: QuoteSubType,
-    scope: QuoteSubScope,
+struct QuoteReplacer<'r> {
+    type_: QuoteType,
+    scope: QuoteScope,
+    renderer: &'r dyn InlineSubstitutionRenderer,
 }
 
-impl Replacer for QuoteReplacer {
-    fn replace_append(&mut self, caps: &Captures<'_>, dst: &mut String) {
-        // Adaapted from Asciidoctor#convert_quoted_text, found in
+impl<'r> Replacer for QuoteReplacer<'r> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        // Adapted from Asciidoctor#convert_quoted_text, found in
         // https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor/substitutors.rb#L1419-L1445.
 
         dbg!(&self);
         dbg!(caps);
-        dbg!(&dst);
+        dbg!(&dest);
 
-        // if match[0].start_with? RS (RS == '\\')
-        //     if scope == :constrained && (attrs = match[2])
-        //         unescaped_attrs = %([#{attrs}])
-        //     else
-        //         return match[0].slice 1, match[0].length
-        //     end
-        // end
+        let unescaped_attrs: Option<&str> = if caps[0].starts_with('\\') {
+            match self.scope {
+                QuoteScope::Constrained => {
+                    todo!("{}", "unescaped_attrs = %([#{attrs}])");
+                }
+                QuoteScope::Unconstrained => {
+                    dest.push_str(&caps[0][1..]);
+                    return;
+                }
+            }
+        } else {
+            None
+        };
 
         match self.scope {
-            QuoteSubScope::Constrained => {
+            QuoteScope::Constrained => {
                 if false {
                     todo!(
                         "{}",
@@ -165,12 +160,11 @@ impl Replacer for QuoteReplacer {
                 }
 
                 // TEMPORARY: POC with simplest possible implementation for now.
-                dst.push_str("<em>");
-                dst.push_str(&caps[1]);
-                dst.push_str("</em>");
+                self.renderer
+                    .render_quoted_substitition(self.type_, self.scope, &caps[1], dest);
             }
 
-            QuoteSubScope::Unconstrained => {
+            QuoteScope::Unconstrained => {
                 todo!(
                     r#"
                     if (attrlist = match[1])
@@ -186,7 +180,7 @@ impl Replacer for QuoteReplacer {
     }
 }
 
-fn apply_quotes(content: &mut Content<'_>) {
+fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRenderer) {
     if !QUOTED_TEXT_SNIFF.is_match(content.rendered.as_ref()) {
         eprintln!("QT sniff said no match");
         return;
@@ -198,6 +192,7 @@ fn apply_quotes(content: &mut Content<'_>) {
         let replacer = QuoteReplacer {
             type_: sub.type_,
             scope: sub.scope,
+            renderer,
         };
 
         dbg!(&replacer);
