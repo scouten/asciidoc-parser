@@ -5,5 +5,10 @@ mod attribute_value;
 pub(crate) use attribute_value::AttributeValue;
 pub use attribute_value::{AllowableValue, ModificationContext};
 
+mod inline_substitution_renderer;
+pub use inline_substitution_renderer::{
+    HtmlSubstitutionRenderer, InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter,
+};
+
 mod parser;
 pub use parser::Parser;

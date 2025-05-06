@@ -17,7 +17,7 @@ pub struct Content<'src> {
     original: Span<'src>,
 
     /// The possibly-modified text after substititions have been performed.
-    rendered: CowStr<'src>,
+    pub(crate) rendered: CowStr<'src>,
 }
 
 impl<'src> Content<'src> {
@@ -54,3 +54,6 @@ impl<'src> From<Span<'src>> for Content<'src> {
         }
     }
 }
+
+mod substitution_step;
+pub(crate) use substitution_step::SubstitutionStep;
