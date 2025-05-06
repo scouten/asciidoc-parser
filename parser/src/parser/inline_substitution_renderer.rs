@@ -21,6 +21,7 @@ pub trait InlineSubstitutionRenderer: Debug {
         &self,
         type_: QuoteType,
         scope: QuoteScope,
+        id: Option<String>,
         body: &str,
         dest: &mut String,
     );
@@ -43,6 +44,7 @@ pub enum QuoteType {
     Mark,
     Superscript,
     Subscript,
+    Unquoted,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -75,6 +77,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         &self,
         type_: QuoteType,
         _scope: QuoteScope,
+        _id: Option<String>,
         body: &str,
         dest: &mut String,
     ) {

@@ -3,6 +3,7 @@ use std::{borrow::Cow, sync::LazyLock};
 use regex::{Captures, Regex, Replacer};
 
 use crate::{
+    attributes::Attrlist,
     parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType},
     span::Content,
 };
@@ -118,9 +119,9 @@ impl<'r> Replacer for QuoteReplacer<'r> {
         // Adapted from Asciidoctor#convert_quoted_text, found in
         // https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor/substitutors.rb#L1419-L1445.
 
-        dbg!(&self);
-        dbg!(caps);
-        dbg!(&dest);
+        // dbg!(&self);
+        // dbg!(caps);
+        // dbg!(&dest);
 
         let unescaped_attrs: Option<String> = if caps[0].starts_with('\\') {
             match self.scope {
@@ -134,30 +135,47 @@ impl<'r> Replacer for QuoteReplacer<'r> {
             None
         };
 
-        dbg!(&unescaped_attrs);
+        // dbg!(&unescaped_attrs);
 
         match self.scope {
             QuoteScope::Constrained => {
-                if false {
-                    todo!(
-                        "{}",
-                        r##"
-                        if unescaped_attrs
-                            %(#{unescaped_attrs}#{Inline.new(self, :quoted, match[3], type: type).convert})
-                        else
-                            if (attrlist = match[2])
-                            id = (attributes = parse_quoted_text_attributes attrlist)['id']
-                            type = :unquoted if type == :mark
-                            end
-                            %(#{match[1]}#{Inline.new(self, :quoted, match[3], type: type, id: id, attributes: attributes).convert})
-                        end
-                    "##
-                    );
-                }
+                if let Some(attrs) = unescaped_attrs {
+                    dest.push_str(&attrs);
+                    self.renderer
+                        .render_quoted_substitition(self.type_, self.scope, None, &caps[2], dest);
+                } else {
+                    let (id, type_): (Option<String>, QuoteType) =
+                        if let Some(attrlist) = caps.get(1) {
+                            let type_ = if self.type_ == QuoteType::Mark {
+                                QuoteType::Unquoted
+                            } else {
+                                self.type_
+                            };
 
-                // TEMPORARY: POC with simplest possible implementation for now.
-                self.renderer
-                    .render_quoted_substitition(self.type_, self.scope, &caps[2], dest);
+                            let attrlist = Attrlist::parse(crate::Span::new(attrlist.as_str()))
+                                .item
+                                .item;
+
+                            let id = attrlist.id().map(|s| s.to_string());
+                            (id, type_)
+                        } else {
+                            (None, self.type_)
+                        };
+
+                    // todo!(
+                    //     "{}",
+                    //     r#"
+                    //         if (attrlist = match[2])
+                    //             id = (attributes = parse_quoted_text_attributes attrlist)['id']
+                    //             type = :unquoted if type == :mark
+                    //         end
+                    //         %(#{match[1]}#{Inline.new(self, :quoted, match[3], type: type, id:
+                    // id, attributes: attributes).convert})     "#
+                    // );
+
+                    self.renderer
+                        .render_quoted_substitition(self.type_, self.scope, id, &caps[2], dest);
+                }
             }
 
             QuoteScope::Unconstrained => {
