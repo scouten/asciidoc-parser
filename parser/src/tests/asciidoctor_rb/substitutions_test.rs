@@ -88,11 +88,6 @@ mod quotes {
         todo!(
             "{}",
             r###"
-    test 'single-line double-quoted string' do
-      para = block_from_string '"`a few quoted words`"'
-      assert_equal '&#8220;a few quoted words&#8221;', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line double-quoted string' do
       para = block_from_string %(#{BACKSLASH}``a few quoted words''), attributes: { 'compat-mode' => '' }
       assert_equal %q(&#8216;`a few quoted words&#8217;'), para.sub_quotes(para.source)

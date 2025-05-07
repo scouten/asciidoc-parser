@@ -99,12 +99,22 @@ struct QuoteSub {
 // * Replace `#{QuoteAttributeListRxt}` with `\\[([^\\[\\]]+)\\]`. (This seems
 //   preferable to having yet another level of backslash escaping.)
 static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
-    vec![QuoteSub {
-        type_: QuoteType::Strong,
-        scope: QuoteScope::Constrained,
-        pattern: Regex::new(r#"\b{start-half}(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#)
-            .unwrap(),
-    }]
+    vec![
+        QuoteSub {
+            // *strong*
+            type_: QuoteType::Strong,
+            scope: QuoteScope::Constrained,
+            pattern: Regex::new(r#"\b{start-half}(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#)
+                .unwrap(),
+        },
+        QuoteSub {
+            // "`double-quoted`"
+            type_: QuoteType::DoubleQuote,
+            scope: QuoteScope::Constrained,
+            pattern: Regex::new(r#"\b{start-half}(?:\[([^\[\]]+)\])?"`(\S|\S.*?\S)`"\b{end-half}"#)
+                .unwrap(),
+        },
+    ]
 });
 
 #[derive(Debug)]

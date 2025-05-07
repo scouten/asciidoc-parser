@@ -89,6 +89,12 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("</em>");
             }
 
+            QuoteType::DoubleQuote => {
+                dest.push_str("&#8220;");
+                dest.push_str(body);
+                dest.push_str("&#8221;");
+            }
+
             _ => {
                 todo!("Render substitution for {type_:?}");
             }
