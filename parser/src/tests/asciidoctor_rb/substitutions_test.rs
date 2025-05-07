@@ -1,8 +1,8 @@
 // Adapted from Asciidoctor's #convert_quoted_text, found in
 // https://github.com/asciidoctor/asciidoctor/blob/main/test/substitutions_test.rb.
 //
-// IMPORTANT: In porting this, I've disregarded compatibility mode and alternate
-// (non-HTML) back ends.
+// IMPORTANT: In porting this, I've disregarded compatibility mode (stated
+// limitation of `asciidoc-parser` crate) and alternate (non-HTML) back ends.
 
 mod dispatcher {
     #[ignore]
