@@ -250,20 +250,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn multi_line_constrained_marked_string() {
+        let mut content = Content::from(Span::new("#a few\nwords#"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("<mark>a few\nwords</mark>".to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line constrained marked string' do
-      #para = block_from_string %(#a few\nwords#), attributes: { 'compat-mode' => '' }
-      #assert_equal %(a few\nwords), para.sub_quotes(para.source)
-
-      para = block_from_string %(#a few\nwords#)
-      assert_equal %(<mark>a few\nwords</mark>), para.sub_quotes(para.source)
-    end
-
     test 'constrained marked string should not match entity references' do
       para = block_from_string '111 #mark a# 222 "`quote a`" 333 #mark b# 444'
       assert_equal %(111 <mark>mark a</mark> 222 &#8220;quote a&#8221; 333 <mark>mark b</mark> 444), para.sub_quotes(para.source)
