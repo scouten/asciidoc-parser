@@ -186,20 +186,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn multi_line_single_quoted_string() {
+        let mut content = Content::from(Span::new("'`a few\nquoted words`'"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "&#8216;a few\nquoted words&#8217;"
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line single-quoted string' do
-      para = block_from_string %(`a few\nquoted words'), attributes: { 'compat-mode' => '' }
-      assert_equal %(&#8216;a few\nquoted words&#8217;), para.sub_quotes(para.source)
-
-      para = block_from_string %('`a few\nquoted words`')
-      assert_equal %(&#8216;a few\nquoted words&#8217;), para.sub_quotes(para.source)
-    end
-
     test 'single-quoted string with inline single quote' do
       para = block_from_string %q(`That isn't what I did.'), attributes: { 'compat-mode' => '' }
       assert_equal %q(&#8216;That isn't what I did.&#8217;), para.sub_quotes(para.source)
