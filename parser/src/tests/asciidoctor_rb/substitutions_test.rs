@@ -202,20 +202,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_quoted_string_with_inline_single_quote() {
+        let mut content = Content::from(Span::new(r#"'`That isn't what I did.`'"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"&#8216;That isn't what I did.&#8217;"#.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-quoted string with inline single quote' do
-      para = block_from_string %q(`That isn't what I did.'), attributes: { 'compat-mode' => '' }
-      assert_equal %q(&#8216;That isn't what I did.&#8217;), para.sub_quotes(para.source)
-
-      para = block_from_string %q('`That isn't what I did.`')
-      assert_equal %q(&#8216;That isn't what I did.&#8217;), para.sub_quotes(para.source)
-    end
-
     test 'single-quoted string with inline backquote' do
       para = block_from_string %q(`Here`s Johnny!'), attributes: { 'compat-mode' => '' }
       assert_equal '&#8216;Here`s Johnny!&#8217;', para.sub_quotes(para.source)
