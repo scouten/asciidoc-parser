@@ -123,6 +123,12 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             .unwrap(),
         },
         QuoteSub {
+            // ``monospaced``
+            type_: QuoteType::Monospaced,
+            scope: QuoteScope::Unconstrained,
+            pattern: Regex::new(r#"(?:\[([^\[\]]+)\])?``(\S+?)``"#).unwrap(),
+        },
+        QuoteSub {
             // ^superscript^
             type_: QuoteType::Superscript,
             scope: QuoteScope::Unconstrained,
