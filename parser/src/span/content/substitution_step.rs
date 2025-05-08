@@ -123,6 +123,17 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             .unwrap(),
         },
         QuoteSub {
+            // '`single-quoted`'
+            type_: QuoteType::SingleQuote,
+            scope: QuoteScope::Constrained,
+            pattern: RegexBuilder::new(
+                r#"\b{start-half}(?:\[([^\[\]]+)\])?'`(\S|\S.*?\S)`'\b{end-half}"#,
+            )
+            .dot_matches_new_line(true)
+            .build()
+            .unwrap(),
+        },
+        QuoteSub {
             // ``monospaced``
             type_: QuoteType::Monospaced,
             scope: QuoteScope::Unconstrained,

@@ -162,23 +162,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_line_single_quoted_string() {
+        let mut content = Content::from(Span::new(r#"'`a few quoted words`'"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"&#8216;a few quoted words&#8217;"#.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-line single-quoted string' do
-      para = block_from_string %q(`a few quoted words'), attributes: { 'compat-mode' => '' }
-      assert_equal '&#8216;a few quoted words&#8217;', para.sub_quotes(para.source)
-
-      para = block_from_string %q('`a few quoted words`')
-      assert_equal '&#8216;a few quoted words&#8217;', para.sub_quotes(para.source)
-
-      para = block_from_string %q('`a few quoted words`'), backend: 'docbook'
-      assert_equal '<quote role="single">a few quoted words</quote>', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line single-quoted string' do
       para = block_from_string %(#{BACKSLASH}`a few quoted words'), attributes: { 'compat-mode' => '' }
       assert_equal %(`a few quoted words'), para.sub_quotes(para.source)
