@@ -118,20 +118,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn double_quoted_string_with_inline_backquote() {
+        let mut content = Content::from(Span::new(r#""`Here`s Johnny!`""#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"&#8220;Here`s Johnny!&#8221;"#.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'double-quoted string with inline backquote' do
-      para = block_from_string %q(``Here`s Johnny!''), attributes: { 'compat-mode' => '' }
-      assert_equal '&#8220;Here`s Johnny!&#8221;', para.sub_quotes(para.source)
-
-      para = block_from_string '"`Here`s Johnny!`"'
-      assert_equal '&#8220;Here`s Johnny!&#8221;', para.sub_quotes(para.source)
-    end
-
     test 'double-quoted string around monospaced text' do
       para = block_from_string '"``E=mc^2^` is the solution!`"'
       assert_equal '&#8220;`E=mc<sup>2</sup>` is the solution!&#8221;', para.apply_subs(para.source)
