@@ -226,20 +226,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_line_constrained_marked_string() {
+        let mut content = Content::from(Span::new(r#"#a few words#"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"<mark>a few words</mark>"#.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-line constrained marked string' do
-      #para = block_from_string('#a few words#', attributes: { 'compat-mode' => '' })
-      #assert_equal 'a few words', para.sub_quotes(para.source)
-
-      para = block_from_string '#a few words#'
-      assert_equal '<mark>a few words</mark>', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line constrained marked string' do
       para = block_from_string %(#{BACKSLASH}#a few words#)
       assert_equal '#a few words#', para.sub_quotes(para.source)

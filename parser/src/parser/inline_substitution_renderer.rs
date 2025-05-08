@@ -107,6 +107,12 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("</code>");
             }
 
+            QuoteType::Mark => {
+                dest.push_str("<mark>");
+                dest.push_str(body);
+                dest.push_str("</mark>");
+            }
+
             QuoteType::Superscript => {
                 dest.push_str("<sup>");
                 dest.push_str(body);
