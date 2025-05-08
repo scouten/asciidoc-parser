@@ -74,11 +74,19 @@ mod quotes {
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
-            CowStr::Boxed(
-                "&#8220;a few quoted words&#8221;"
-                    .to_string()
-                    .into_boxed_str()
-            )
+            CowStr::Boxed(r#"&#8220;a few quoted words&#8221;"#.to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn escaped_single_line_double_quoted_string() {
+        let mut content = Content::from(Span::new(r#"\"`a few quoted words`""#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#""`a few quoted words`""#.to_string().into_boxed_str())
         );
     }
 
@@ -88,20 +96,6 @@ mod quotes {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line double-quoted string' do
-      para = block_from_string %(#{BACKSLASH}``a few quoted words''), attributes: { 'compat-mode' => '' }
-      assert_equal %q(&#8216;`a few quoted words&#8217;'), para.sub_quotes(para.source)
-
-      para = block_from_string %(#{BACKSLASH * 2}``a few quoted words''), attributes: { 'compat-mode' => '' }
-      assert_equal %q(``a few quoted words''), para.sub_quotes(para.source)
-
-      para = block_from_string %(#{BACKSLASH}"`a few quoted words`")
-      assert_equal '"`a few quoted words`"', para.sub_quotes(para.source)
-
-      para = block_from_string %(#{BACKSLASH * 2}"`a few quoted words`")
-      assert_equal %(#{BACKSLASH}"`a few quoted words`"), para.sub_quotes(para.source)
-    end
-
     test 'multi-line double-quoted string' do
       para = block_from_string %(``a few\nquoted words''), attributes: { 'compat-mode' => '' }
       assert_equal %(&#8220;a few\nquoted words&#8221;), para.sub_quotes(para.source)

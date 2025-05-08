@@ -133,19 +133,24 @@ impl<'r> Replacer for QuoteReplacer<'r> {
         // dbg!(caps);
         // dbg!(&dest);
 
-        let unescaped_attrs: Option<String> = if caps[0].starts_with('\\') {
-            match self.scope {
-                QuoteScope::Constrained => Some(format!("[{attrs}]", attrs = &caps[1])),
-                QuoteScope::Unconstrained => {
-                    dest.push_str(&caps[0][1..]);
-                    return;
-                }
+        // Rust Regex doesn't support look-around, so we compensate by looking at the
+        // tail of the destination buffer.
+        let unescaped_attrs: Option<String> = if dest.ends_with('\\') {
+            let maybe_attrs = caps.get(1).map(|a| a.as_str());
+            if self.scope == QuoteScope::Constrained && maybe_attrs.is_some() {
+                Some(format!(
+                    "[{attrs}]",
+                    attrs = maybe_attrs.unwrap_or_default()
+                ))
+            } else {
+                // Remove the trailing backslash.
+                dest.truncate(dest.len() - 1);
+                dest.push_str(&caps[0]);
+                return;
             }
         } else {
             None
         };
-
-        // dbg!(&unescaped_attrs);
 
         match self.scope {
             QuoteScope::Constrained => {
