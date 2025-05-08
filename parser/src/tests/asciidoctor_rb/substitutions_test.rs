@@ -90,20 +90,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn multi_line_double_quoted_string() {
+        let mut content = Content::from(Span::new("\"`a few\nquoted words`\""));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "&#8220;a few\nquoted words&#8221;"
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line double-quoted string' do
-      para = block_from_string %(``a few\nquoted words''), attributes: { 'compat-mode' => '' }
-      assert_equal %(&#8220;a few\nquoted words&#8221;), para.sub_quotes(para.source)
-
-      para = block_from_string %("`a few\nquoted words`")
-      assert_equal %(&#8220;a few\nquoted words&#8221;), para.sub_quotes(para.source)
-    end
-
     test 'double-quoted string with inline single quote' do
       para = block_from_string %q(``Here's Johnny!''), attributes: { 'compat-mode' => '' }
       assert_equal %q(&#8220;Here's Johnny!&#8221;), para.sub_quotes(para.source)

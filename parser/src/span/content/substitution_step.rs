@@ -1,6 +1,6 @@
 use std::{borrow::Cow, sync::LazyLock};
 
-use regex::{Captures, Regex, Replacer};
+use regex::{Captures, Regex, RegexBuilder, Replacer};
 
 use crate::{
     attributes::Attrlist,
@@ -104,15 +104,23 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // *strong*
             type_: QuoteType::Strong,
             scope: QuoteScope::Constrained,
-            pattern: Regex::new(r#"\b{start-half}(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#)
-                .unwrap(),
+            pattern: RegexBuilder::new(
+                r#"\b{start-half}(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#,
+            )
+            .dot_matches_new_line(true)
+            .build()
+            .unwrap(),
         },
         QuoteSub {
             // "`double-quoted`"
             type_: QuoteType::DoubleQuote,
             scope: QuoteScope::Constrained,
-            pattern: Regex::new(r#"\b{start-half}(?:\[([^\[\]]+)\])?"`(\S|\S.*?\S)`"\b{end-half}"#)
-                .unwrap(),
+            pattern: RegexBuilder::new(
+                r#"\b{start-half}(?:\[([^\[\]]+)\])?"`(\S|\S.*?\S)`"\b{end-half}"#,
+            )
+            .dot_matches_new_line(true)
+            .build()
+            .unwrap(),
         },
     ]
 });
