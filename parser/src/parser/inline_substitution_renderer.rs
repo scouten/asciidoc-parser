@@ -95,6 +95,12 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("&#8221;");
             }
 
+            QuoteType::Superscript => {
+                dest.push_str("<sup>");
+                dest.push_str(body);
+                dest.push_str("</sup>");
+            }
+
             _ => {
                 todo!("Render substitution for {type_:?}");
             }

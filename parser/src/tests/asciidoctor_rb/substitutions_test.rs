@@ -130,6 +130,22 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn double_quoted_string_around_almost_monospaced_text() {
+        let mut content = Content::from(Span::new(r#""``E=mc^2^` is the solution!`""#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                r#"&#8220;`E=mc<sup>2</sup>` is the solution!&#8221;"#
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
@@ -137,9 +153,6 @@ mod quotes {
             "{}",
             r###"
     test 'double-quoted string around monospaced text' do
-      para = block_from_string '"``E=mc^2^` is the solution!`"'
-      assert_equal '&#8220;`E=mc<sup>2</sup>` is the solution!&#8221;', para.apply_subs(para.source)
-
       para = block_from_string '"```E=mc^2^`` is the solution!`"'
       assert_equal '&#8220;<code>E=mc<sup>2</sup></code> is the solution!&#8221;', para.apply_subs(para.source)
     end

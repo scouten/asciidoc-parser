@@ -122,6 +122,12 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             .build()
             .unwrap(),
         },
+        QuoteSub {
+            // ^superscript^
+            type_: QuoteType::Superscript,
+            scope: QuoteScope::Unconstrained,
+            pattern: Regex::new(r#"(?:\[([^\[\]]+)\])?\^(\S+?)\^"#).unwrap(),
+        },
     ]
 });
 
@@ -202,16 +208,23 @@ impl<'r> Replacer for QuoteReplacer<'r> {
             }
 
             QuoteScope::Unconstrained => {
-                todo!(
-                    r#"
-                    if (attrlist = match[1])
-                        id = (attributes = parse_quoted_text_attributes attrlist)['id']
-                        type = :unquoted if type == :mark
-                    end
-                        Inline.new(self, :quoted, match[2], type: type, id: id, attributes: attributes).convert
-                    end
-"#
-                );
+                let attrlist: Option<Attrlist<'_>> = if let Some(attrlist) = caps.get(1) {
+                    todo!(
+                        "{}",
+                        r#"
+                            id = (attributes = parse_quoted_text_attributes attrlist)['id']
+                            type = :unquoted if type == :mark
+                        end
+                        "#
+                    );
+                } else {
+                    None
+                };
+
+                let id = attrlist.and_then(|a| a.id().map(|s| s.data().to_string()));
+
+                self.renderer
+                    .render_quoted_substitition(self.type_, self.scope, id, &caps[2], dest);
             }
         }
     }
