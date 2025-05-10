@@ -194,10 +194,11 @@ impl<'r> Replacer for QuoteReplacer<'r> {
             QuoteScope::Constrained => {
                 if let Some(attrs) = unescaped_attrs {
                     dest.push_str(&attrs);
-                    self.renderer
-                        .render_quoted_substitition(self.type_, self.scope, None, &caps[3], dest);
+                    self.renderer.render_quoted_substitition(
+                        self.type_, self.scope, None, None, &caps[3], dest,
+                    );
                 } else {
-                    let (id, type_): (Option<String>, QuoteType) =
+                    let (attrlist, type_): (Option<Attrlist<'_>>, QuoteType) =
                         if let Some(attrlist) = caps.get(2) {
                             let type_ = if self.type_ == QuoteType::Mark {
                                 QuoteType::Unquoted
@@ -205,12 +206,14 @@ impl<'r> Replacer for QuoteReplacer<'r> {
                                 self.type_
                             };
 
-                            let attrlist = Attrlist::parse(crate::Span::new(attrlist.as_str()))
-                                .item
-                                .item;
-
-                            let id = attrlist.id().map(|s| s.to_string());
-                            (id, type_)
+                            (
+                                Some(
+                                    Attrlist::parse(crate::Span::new(attrlist.as_str()))
+                                        .item
+                                        .item,
+                                ),
+                                type_,
+                            )
                         } else {
                             (None, self.type_)
                         };
@@ -219,32 +222,44 @@ impl<'r> Replacer for QuoteReplacer<'r> {
                         dest.push_str(prefix.as_str());
                     }
 
-                    self.renderer
-                        .render_quoted_substitition(self.type_, self.scope, id, &caps[3], dest);
+                    let id = attrlist
+                        .as_ref()
+                        .and_then(|a| a.id().map(|s| s.to_string()));
+
+                    self.renderer.render_quoted_substitition(
+                        self.type_, self.scope, attrlist, id, &caps[3], dest,
+                    );
                 }
             }
 
             QuoteScope::Unconstrained => {
-                let (id, type_): (Option<String>, QuoteType) = if let Some(attrlist) = caps.get(1) {
-                    let type_ = if self.type_ == QuoteType::Mark {
-                        QuoteType::Unquoted
+                let (attrlist, type_): (Option<Attrlist<'_>>, QuoteType) =
+                    if let Some(attrlist) = caps.get(1) {
+                        let type_ = if self.type_ == QuoteType::Mark {
+                            QuoteType::Unquoted
+                        } else {
+                            self.type_
+                        };
+
+                        (
+                            Some(
+                                Attrlist::parse(crate::Span::new(attrlist.as_str()))
+                                    .item
+                                    .item,
+                            ),
+                            type_,
+                        )
                     } else {
-                        self.type_
+                        (None, self.type_)
                     };
 
-                    let attrlist = Attrlist::parse(crate::Span::new(attrlist.as_str()))
-                        .item
-                        .item;
+                let id = attrlist
+                    .as_ref()
+                    .and_then(|a| a.id().map(|s| s.to_string()));
 
-                    let id = attrlist.id().map(|s| s.to_string());
-                    (id, type_)
-                } else {
-                    (None, self.type_)
-                };
-
-                self.renderer
-                    .render_quoted_substitition(self.type_, self.scope, id, &caps[2], dest);
-                // TO DO: We'll need to pass parsed attributes through to RQS.
+                self.renderer.render_quoted_substitition(
+                    self.type_, self.scope, attrlist, id, &caps[2], dest,
+                );
             }
         }
     }

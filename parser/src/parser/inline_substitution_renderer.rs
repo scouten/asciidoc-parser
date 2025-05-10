@@ -2,6 +2,8 @@
 
 use std::fmt::Debug;
 
+use crate::attributes::Attrlist;
+
 /// An implementation of `InlineSubstitutionRenderer` is used when converting
 /// the basic raw text of a simple block to the format which will ultimately be
 /// presented in the final converted output.
@@ -21,6 +23,7 @@ pub trait InlineSubstitutionRenderer: Debug {
         &self,
         type_: QuoteType,
         scope: QuoteScope,
+        attrlist: Option<Attrlist<'_>>,
         id: Option<String>,
         body: &str,
         dest: &mut String,
@@ -77,6 +80,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         &self,
         type_: QuoteType,
         _scope: QuoteScope,
+        _attrlist: Option<Attrlist<'_>>,
         _id: Option<String>,
         body: &str,
         dest: &mut String,
