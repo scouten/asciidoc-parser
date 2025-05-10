@@ -409,17 +409,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn constrained_strong_string_containing_an_asterisk() {
+        let mut content = Content::from(Span::new("*bl*ck*-eye"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("<strong>bl*ck</strong>-eye".to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'constrained strong string containing an asterisk' do
-      para = block_from_string '*bl*ck*-eye'
-      assert_equal '<strong>bl*ck</strong>-eye', para.sub_quotes(para.source)
-    end
-
     test 'constrained strong string containing an asterisk and multibyte word chars' do
       para = block_from_string '*黑*眼圈*'
       assert_equal '<strong>黑*眼圈</strong>', para.sub_quotes(para.source)
