@@ -356,7 +356,8 @@ mod quotes {
 
     #[ignore]
     #[test]
-    fn todo_migrate_from_ruby() {
+    fn should_ignore_enclosing_square_brackets_when_processing_formatted_text_with_attribute() {
+        // DEFER until Parser::parse includes substitutions.
         todo!(
             "{}",
             r###"
@@ -364,12 +365,28 @@ mod quotes {
       doc = document_from_string 'nums = [1, 2, 3, [.blue]#4#]', doctype: :inline
       assert_equal 'nums = [1, 2, 3, <span class="blue">4</span>]', doc.convert
     end
+          "###
+        );
+    }
 
-    test 'single-line constrained strong string' do
-      para = block_from_string '*a few strong words*'
-      assert_equal '<strong>a few strong words</strong>', para.sub_quotes(para.source)
-    end
+    #[test]
+    fn single_line_constrained_strong_string() {
+        let mut content = Content::from(Span::new(r#"*a few strong words*"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"<strong>a few strong words</strong>"#.to_string().into_boxed_str())
+        );
+    }
 
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
     test 'escaped single-line constrained strong string' do
       para = block_from_string %(#{BACKSLASH}*a few strong words*)
       assert_equal '*a few strong words*', para.sub_quotes(para.source)
