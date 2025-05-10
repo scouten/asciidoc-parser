@@ -262,17 +262,26 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn constrained_marked_string_should_not_match_entity_references() {
+        let mut content = Content::from(Span::new(
+            r##"111 #mark a# 222 "`quote a`" 333 #mark b# 444"##,
+        ));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r##"111 <mark>mark a</mark> 222 &#8220;quote a&#8221; 333 <mark>mark b</mark> 444"##.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'constrained marked string should not match entity references' do
-      para = block_from_string '111 #mark a# 222 "`quote a`" 333 #mark b# 444'
-      assert_equal %(111 <mark>mark a</mark> 222 &#8220;quote a&#8221; 333 <mark>mark b</mark> 444), para.sub_quotes(para.source)
-    end
-
     test 'single-line unconstrained marked string' do
       #para = block_from_string('##--anything goes ##', attributes: { 'compat-mode' => '' })
       #assert_equal '--anything goes ', para.sub_quotes(para.source)
