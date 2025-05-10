@@ -393,17 +393,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn multi_line_constrained_strong_string() {
+        let mut content = Content::from(Span::new("*a few\nstrong words*"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "<strong>a few\nstrong words</strong>"
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line constrained strong string' do
-      para = block_from_string %(*a few\nstrong words*)
-      assert_equal %(<strong>a few\nstrong words</strong>), para.sub_quotes(para.source)
-    end
-
     test 'constrained strong string containing an asterisk' do
       para = block_from_string '*bl*ck*-eye'
       assert_equal '<strong>bl*ck</strong>-eye', para.sub_quotes(para.source)
