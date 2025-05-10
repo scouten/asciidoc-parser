@@ -473,17 +473,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn multi_line_constrained_emphasized_quote_variation_string() {
+        let mut content = Content::from(Span::new("_a few\nemphasized words_"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("<em>a few\nemphasized words</em>")
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line constrained emphasized quote variation string' do
-      para = block_from_string %(_a few\nemphasized words_)
-      assert_equal %(<em>a few\nemphasized words</em>), para.sub_quotes(para.source)
-    end
-
     test 'single-quoted string containing an emphasized phrase' do
       para = block_from_string %q(`I told him, 'Just go for it!''), attributes: { 'compat-mode' => '' }
       assert_equal '&#8216;I told him, <em>Just go for it!</em>&#8217;', para.sub_quotes(para.source)
