@@ -461,18 +461,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn escaped_single_quoted_string() {
+        let mut content = Content::from(Span::new(r#"\'a few emphasized words'"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"\'a few emphasized words'"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single quoted string' do
-      para = block_from_string %(#{BACKSLASH}'a few emphasized words')
-      # NOTE the \' is replaced with ' by the :replacements substitution, later in the substitution pipeline
-      assert_equal %(#{BACKSLASH}'a few emphasized words'), para.sub_quotes(para.source)
-    end
-
     test 'multi-line constrained emphasized quote variation string' do
       para = block_from_string %(_a few\nemphasized words_)
       assert_equal %(<em>a few\nemphasized words</em>), para.sub_quotes(para.source)
