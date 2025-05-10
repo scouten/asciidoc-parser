@@ -503,7 +503,7 @@ mod quotes {
         let mut content = Content::from(Span::new(r#"'Here\'s Johnny!'"#));
         let r = HtmlSubstitutionRenderer {};
         SubstitutionStep::Quotes.apply(&mut content, &r);
-        // ^^^ This needs to be the full substitution group, not just the Quotes
+        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"'Here's Johnny!'"#));
@@ -514,25 +514,31 @@ mod quotes {
         let mut content = Content::from(Span::new(r#"_a few emphasized words_"#));
         let r = HtmlSubstitutionRenderer {};
         SubstitutionStep::Quotes.apply(&mut content, &r);
-        // ^^^ This needs to be the full substitution group, not just the Quotes
-        // substition.
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<em>a few emphasized words</em>"#)
         );
     }
+
+    #[test]
+    fn escaped_single_line_constrained_emphasized_underline_variation_string() {
+        let mut content = Content::from(Span::new(r#"\_a few emphasized words_"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"_a few emphasized words_"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line constrained emphasized underline variation string' do
-      para = block_from_string %(#{BACKSLASH}_a few emphasized words_)
-      assert_equal '_a few emphasized words_', para.sub_quotes(para.source)
-    end
-
     test 'multi-line constrained emphasized underline variation string' do
       para = block_from_string %(_a few\nemphasized words_)
       assert_equal %(<em>a few\nemphasized words</em>), para.sub_quotes(para.source)
