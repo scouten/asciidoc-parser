@@ -144,13 +144,13 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // ``monospaced``
             type_: QuoteType::Monospaced,
             scope: QuoteScope::Unconstrained,
-            pattern: Regex::new(r#"(?:\[([^\[\]]+)\])?``(\S+?)``"#).unwrap(),
+            pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?``(\S+?)``"#).unwrap(),
         },
         QuoteSub {
             // ##mark##
             type_: QuoteType::Mark,
             scope: QuoteScope::Unconstrained,
-            pattern: Regex::new(r#"(?:\[([^\[\]]+)\])?##(.+?)##"#).unwrap(),
+            pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?##(.+?)##"#).unwrap(),
         },
         QuoteSub {
             // #mark#
@@ -167,7 +167,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // ^superscript^
             type_: QuoteType::Superscript,
             scope: QuoteScope::Unconstrained,
-            pattern: Regex::new(r#"(?:\[([^\[\]]+)\])?\^(\S+?)\^"#).unwrap(),
+            pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?\^(\S+?)\^"#).unwrap(),
         },
     ]
 });
