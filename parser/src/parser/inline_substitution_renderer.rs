@@ -129,6 +129,13 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("</code>");
             }
 
+            QuoteType::Emphasis => {
+                // TO DO: How will we use scope here?
+                dest.push_str("<em>");
+                dest.push_str(body);
+                dest.push_str("</em>");
+            }
+
             QuoteType::Mark => {
                 if roles.is_empty() {
                     dest.push_str("<mark>");

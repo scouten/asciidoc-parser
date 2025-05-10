@@ -147,6 +147,17 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?``(\S+?)``"#).unwrap(),
         },
         QuoteSub {
+            // _emphasis_
+            type_: QuoteType::Emphasis,
+            scope: QuoteScope::Constrained,
+            pattern: RegexBuilder::new(
+                r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?_(\S|\S.*?\S)_\b{end-half}"#,
+            )
+            .dot_matches_new_line(true)
+            .build()
+            .unwrap(),
+        },
+        QuoteSub {
             // ##mark##
             type_: QuoteType::Mark,
             scope: QuoteScope::Unconstrained,

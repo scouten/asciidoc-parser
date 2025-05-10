@@ -433,17 +433,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_line_constrained_quote_variation_emphasized_string() {
+        let mut content = Content::from(Span::new("_a few emphasized words_"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "<em>a few emphasized words</em>"
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-line constrained quote variation emphasized string' do
-      para = block_from_string '_a few emphasized words_'
-      assert_equal '<em>a few emphasized words</em>', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line constrained quote variation emphasized string' do
       para = block_from_string %(#{BACKSLASH}_a few emphasized words_)
       assert_equal '_a few emphasized words_', para.sub_quotes(para.source)
