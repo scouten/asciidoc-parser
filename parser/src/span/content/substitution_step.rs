@@ -150,7 +150,10 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // ##mark##
             type_: QuoteType::Mark,
             scope: QuoteScope::Unconstrained,
-            pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?##(.+?)##"#).unwrap(),
+            pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?##(.+?)##"#)
+                .dot_matches_new_line(true)
+                .build()
+                .unwrap(),
         },
         QuoteSub {
             // #mark#

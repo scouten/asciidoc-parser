@@ -304,20 +304,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn multi_line_unconstrained_marked_string() {
+        let mut content = Content::from(Span::new("##--anything\ngoes ##"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "<mark>--anything\ngoes </mark>"
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line unconstrained marked string' do
-      #para = block_from_string %(##--anything\ngoes ##), attributes: { 'compat-mode' => '' }
-      #assert_equal %(--anything\ngoes ), para.sub_quotes(para.source)
-
-      para = block_from_string %(##--anything\ngoes ##)
-      assert_equal %(<mark>--anything\ngoes </mark>), para.sub_quotes(para.source)
-    end
-
     test 'single-line constrained marked string with role' do
       para = block_from_string '[statement]#a few words#'
       assert_equal '<span class="statement">a few words</span>', para.sub_quotes(para.source)
