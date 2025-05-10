@@ -80,11 +80,29 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         &self,
         type_: QuoteType,
         _scope: QuoteScope,
-        _attrlist: Option<Attrlist<'_>>,
+        attrlist: Option<Attrlist<'_>>,
         _id: Option<String>,
         body: &str,
         dest: &mut String,
     ) {
+        // TO DO: Check this assumption: A block style contributes to the list of styles
+        // that is otherwise built from `role` attribute(s).
+        //
+        // Inspired by https://github.com/asciidoctor/asciidoctor/blob/main/test/substitutions_test.rb#L201-L204.
+
+        let mut roles: Vec<&str> = attrlist
+            .as_ref()
+            .map(|a| a.roles().iter().map(|r| r.data()).collect())
+            .unwrap_or_default();
+
+        if let Some(block_style) = attrlist
+            .as_ref()
+            .and_then(|a| a.nth_attribute(1))
+            .and_then(|attr1| attr1.block_style())
+        {
+            roles.insert(0, block_style.data());
+        }
+
         match type_ {
             QuoteType::Strong => {
                 // TO DO: How will we use scope here?
@@ -112,9 +130,18 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             }
 
             QuoteType::Mark => {
-                dest.push_str("<mark>");
-                dest.push_str(body);
-                dest.push_str("</mark>");
+                if roles.is_empty() {
+                    dest.push_str("<mark>");
+                    dest.push_str(body);
+                    dest.push_str("</mark>");
+                } else {
+                    let roles = roles.join(" ");
+                    dest.push_str("<span class=\"");
+                    dest.push_str(&roles);
+                    dest.push_str("\">");
+                    dest.push_str(body);
+                    dest.push_str("</span>");
+                }
             }
 
             QuoteType::Superscript => {

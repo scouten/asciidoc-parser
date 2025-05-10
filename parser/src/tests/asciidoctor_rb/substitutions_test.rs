@@ -320,17 +320,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_line_constrained_marked_string_with_role() {
+        let mut content = Content::from(Span::new(r##"[statement]#a few words#"##));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                r#"<span class="statement">a few words</span>"#
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+    
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-line constrained marked string with role' do
-      para = block_from_string '[statement]#a few words#'
-      assert_equal '<span class="statement">a few words</span>', para.sub_quotes(para.source)
-    end
-
     test 'does not recognize attribute list with left square bracket on formatted text' do
       para = block_from_string 'key: [ *before [.redacted]#redacted# after* ]'
       assert_equal 'key: [ <strong>before <span class="redacted">redacted</span> after</strong> ]', para.sub_quotes(para.source)
