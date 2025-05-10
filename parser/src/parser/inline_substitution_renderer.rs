@@ -106,9 +106,9 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         match type_ {
             QuoteType::Strong => {
                 // TO DO: How will we use scope here?
-                dest.push_str("<em>");
+                dest.push_str("<strong>");
                 dest.push_str(body);
-                dest.push_str("</em>");
+                dest.push_str("</strong>");
             }
 
             QuoteType::DoubleQuote => {

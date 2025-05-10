@@ -79,7 +79,11 @@ mod quotes {
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
-            CowStr::Boxed("One <em>word</em> is strong.".to_string().into_boxed_str())
+            CowStr::Boxed(
+                "One <strong>word</strong> is strong."
+                    .to_string()
+                    .into_boxed_str()
+            )
         );
     }
 }

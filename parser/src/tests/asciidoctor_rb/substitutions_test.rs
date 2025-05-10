@@ -335,18 +335,31 @@ mod quotes {
             )
         );
     }
-    
+
+    #[test]
+    fn does_not_recognize_attribute_list_with_left_square_bracket_on_formatted_text() {
+        let mut content = Content::from(Span::new(
+            r##"key: [ *before [.redacted]#redacted# after* ]"##,
+        ));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                r#"key: [ <strong>before <span class="redacted">redacted</span> after</strong> ]"#
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'does not recognize attribute list with left square bracket on formatted text' do
-      para = block_from_string 'key: [ *before [.redacted]#redacted# after* ]'
-      assert_equal 'key: [ <strong>before <span class="redacted">redacted</span> after</strong> ]', para.sub_quotes(para.source)
-    end
-
     test 'should ignore enclosing square brackets when processing formatted text with attribute list' do
       doc = document_from_string 'nums = [1, 2, 3, [.blue]#4#]', doctype: :inline
       assert_equal 'nums = [1, 2, 3, <span class="blue">4</span>]', doc.convert
