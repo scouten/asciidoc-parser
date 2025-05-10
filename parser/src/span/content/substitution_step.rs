@@ -105,7 +105,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             type_: QuoteType::Strong,
             scope: QuoteScope::Constrained,
             pattern: RegexBuilder::new(
-                r#"\b{start-half}(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#,
+                r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#,
             )
             .dot_matches_new_line(true)
             .build()
@@ -116,7 +116,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             type_: QuoteType::DoubleQuote,
             scope: QuoteScope::Constrained,
             pattern: RegexBuilder::new(
-                r#"\b{start-half}(?:\[([^\[\]]+)\])?"`(\S|\S.*?\S)`"\b{end-half}"#,
+                r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?"`(\S|\S.*?\S)`"\b{end-half}"#,
             )
             .dot_matches_new_line(true)
             .build()
@@ -127,7 +127,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             type_: QuoteType::SingleQuote,
             scope: QuoteScope::Constrained,
             pattern: RegexBuilder::new(
-                r#"\b{start-half}(?:\[([^\[\]]+)\])?'`(\S|\S.*?\S)`'\b{end-half}"#,
+                r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?'`(\S|\S.*?\S)`'\b{end-half}"#,
             )
             .dot_matches_new_line(true)
             .build()
@@ -144,7 +144,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             type_: QuoteType::Mark,
             scope: QuoteScope::Constrained,
             pattern: RegexBuilder::new(
-                r#"\b{start-half}(?:\[([^\[\]]+)\])?#(\S|\S.*?\S)#\b{end-half}"#,
+                r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?#(\S|\S.*?\S)#\b{end-half}"#,
             )
             .dot_matches_new_line(true)
             .build()
@@ -171,23 +171,19 @@ impl<'r> Replacer for QuoteReplacer<'r> {
         // Adapted from Asciidoctor#convert_quoted_text, found in
         // https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor/substitutors.rb#L1419-L1445.
 
-        // dbg!(&self);
-        // dbg!(caps);
-        // dbg!(&dest);
+        dbg!(&self);
+        dbg!(caps);
+        dbg!(&dest);
 
-        // Rust Regex doesn't support look-around, so we compensate by looking at the
-        // tail of the destination buffer.
-        let unescaped_attrs: Option<String> = if dest.ends_with('\\') {
-            let maybe_attrs = caps.get(1).map(|a| a.as_str());
+        let unescaped_attrs: Option<String> = if caps[0].starts_with('\\') {
+            let maybe_attrs = caps.get(2).map(|a| a.as_str());
             if self.scope == QuoteScope::Constrained && maybe_attrs.is_some() {
                 Some(format!(
                     "[{attrs}]",
                     attrs = maybe_attrs.unwrap_or_default()
                 ))
             } else {
-                // Remove the trailing backslash.
-                dest.truncate(dest.len() - 1);
-                dest.push_str(&caps[0]);
+                dest.push_str(&caps[0][1..]);
                 return;
             }
         } else {
@@ -199,10 +195,10 @@ impl<'r> Replacer for QuoteReplacer<'r> {
                 if let Some(attrs) = unescaped_attrs {
                     dest.push_str(&attrs);
                     self.renderer
-                        .render_quoted_substitition(self.type_, self.scope, None, &caps[2], dest);
+                        .render_quoted_substitition(self.type_, self.scope, None, &caps[3], dest);
                 } else {
                     let (id, type_): (Option<String>, QuoteType) =
-                        if let Some(attrlist) = caps.get(1) {
+                        if let Some(attrlist) = caps.get(2) {
                             let type_ = if self.type_ == QuoteType::Mark {
                                 QuoteType::Unquoted
                             } else {
@@ -219,40 +215,36 @@ impl<'r> Replacer for QuoteReplacer<'r> {
                             (None, self.type_)
                         };
 
-                    // todo!(
-                    //     "{}",
-                    //     r#"
-                    //         if (attrlist = match[2])
-                    //             id = (attributes = parse_quoted_text_attributes attrlist)['id']
-                    //             type = :unquoted if type == :mark
-                    //         end
-                    //         %(#{match[1]}#{Inline.new(self, :quoted, match[3], type: type, id:
-                    // id, attributes: attributes).convert})     "#
-                    // );
+                    if let Some(prefix) = caps.get(1) {
+                        dest.push_str(prefix.as_str());
+                    }
 
                     self.renderer
-                        .render_quoted_substitition(self.type_, self.scope, id, &caps[2], dest);
+                        .render_quoted_substitition(self.type_, self.scope, id, &caps[3], dest);
                 }
             }
 
             QuoteScope::Unconstrained => {
-                let attrlist: Option<Attrlist<'_>> = if let Some(attrlist) = caps.get(1) {
-                    todo!(
-                        "{}",
-                        r#"
-                            id = (attributes = parse_quoted_text_attributes attrlist)['id']
-                            type = :unquoted if type == :mark
-                        end
-                        "#
-                    );
-                } else {
-                    None
-                };
+                let (id, type_): (Option<String>, QuoteType) = if let Some(attrlist) = caps.get(1) {
+                    let type_ = if self.type_ == QuoteType::Mark {
+                        QuoteType::Unquoted
+                    } else {
+                        self.type_
+                    };
 
-                let id = attrlist.and_then(|a| a.id().map(|s| s.data().to_string()));
+                    let attrlist = Attrlist::parse(crate::Span::new(attrlist.as_str()))
+                        .item
+                        .item;
+
+                    let id = attrlist.id().map(|s| s.to_string());
+                    (id, type_)
+                } else {
+                    (None, self.type_)
+                };
 
                 self.renderer
                     .render_quoted_substitition(self.type_, self.scope, id, &caps[2], dest);
+                // TO DO: We'll need to pass parsed attributes through to RQS.
             }
         }
     }
