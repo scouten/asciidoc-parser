@@ -485,20 +485,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_quoted_string_containing_an_emphasized_phrase() {
+        let mut content = Content::from(Span::new(r#"'`I told him, 'Just go for it!'`'"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"&#8216;I told him, 'Just go for it!'&#8217;"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-quoted string containing an emphasized phrase' do
-      para = block_from_string %q(`I told him, 'Just go for it!''), attributes: { 'compat-mode' => '' }
-      assert_equal '&#8216;I told him, <em>Just go for it!</em>&#8217;', para.sub_quotes(para.source)
-
-      para = block_from_string %q('`I told him, 'Just go for it!'`')
-      assert_equal %q(&#8216;I told him, 'Just go for it!'&#8217;), para.sub_quotes(para.source)
-    end
-
     test 'escaped single-quotes inside emphasized words are restored' do
       para = block_from_string %('Here#{BACKSLASH}'s Johnny!'), attributes: { 'compat-mode' => '' }
       assert_equal %q(<em>Here's Johnny!</em>), para.apply_subs(para.source)
