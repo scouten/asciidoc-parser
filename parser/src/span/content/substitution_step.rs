@@ -90,7 +90,8 @@ struct QuoteSub {
 //
 // Translation notes:
 // * The `\m` modifier on Ruby regex means the `.` pattern *can* match a new
-//   line. This appears to translate to `?m?` in Rust regex syntax.
+//   line. We use the `.dot_matches_new_line(true)` option on `RegexBuilder` to
+//   implement this instead.
 // * The `(?!#{CG_WORD})` look-ahead syntax is not available in Rust regex. It
 //   looks like the `\b{end-half}` pattern can take its place. (This pattern
 //   requires that a non-word character or end of haystack follow the match
@@ -291,5 +292,3 @@ fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRend
 
     content.rendered = result.into();
 }
-
-// https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor/substitutors.rb#L1419-L1445
