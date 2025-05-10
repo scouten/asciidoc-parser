@@ -499,18 +499,22 @@ mod quotes {
 
     #[ignore]
     #[test]
+    fn escaped_single_quotes_inside_emphasized_words_are_restored() {
+        let mut content = Content::from(Span::new(r#"'Here\'s Johnny!'"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        // ^^^ This needs to be the full substitution group, not just the Quotes
+        // substition.
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed(r#"'Here's Johnny!'"#));
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-quotes inside emphasized words are restored' do
-      para = block_from_string %('Here#{BACKSLASH}'s Johnny!'), attributes: { 'compat-mode' => '' }
-      assert_equal %q(<em>Here's Johnny!</em>), para.apply_subs(para.source)
-
-      para = block_from_string %('Here#{BACKSLASH}'s Johnny!')
-      assert_equal %q('Here's Johnny!'), para.apply_subs(para.source)
-    end
-
     test 'single-line constrained emphasized underline variation string' do
       para = block_from_string '_a few emphasized words_'
       assert_equal '<em>a few emphasized words</em>', para.sub_quotes(para.source)
