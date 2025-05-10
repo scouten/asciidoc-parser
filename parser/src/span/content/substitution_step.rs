@@ -99,6 +99,12 @@ struct QuoteSub {
 // * `#{CC_ALL}` just means any character (`.`).
 // * Replace `#{QuoteAttributeListRxt}` with `\\[([^\\[\\]]+)\\]`. (This seems
 //   preferable to having yet another level of backslash escaping.)
+//
+// Notes from the original Ruby implementation:
+// * Unconstrained quotes can appear anywhere.
+// * Constrained quotes must be bordered by non-word characters.
+// * NOTE: These substitutions are processed in the order they appear here and
+//   the order in which they are replaced is important.
 static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
     vec![
         QuoteSub {
@@ -139,6 +145,12 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             type_: QuoteType::Monospaced,
             scope: QuoteScope::Unconstrained,
             pattern: Regex::new(r#"(?:\[([^\[\]]+)\])?``(\S+?)``"#).unwrap(),
+        },
+        QuoteSub {
+            // ##mark##
+            type_: QuoteType::Mark,
+            scope: QuoteScope::Unconstrained,
+            pattern: Regex::new(r#"(?:\[([^\[\]]+)\])?##(.+?)##"#).unwrap(),
         },
         QuoteSub {
             // #mark#

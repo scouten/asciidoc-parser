@@ -276,20 +276,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_line_unconstrained_marked_string() {
+        let mut content = Content::from(Span::new(r###"##--anything goes ##"###));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                r###"<mark>--anything goes </mark>"###
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-line unconstrained marked string' do
-      #para = block_from_string('##--anything goes ##', attributes: { 'compat-mode' => '' })
-      #assert_equal '--anything goes ', para.sub_quotes(para.source)
-
-      para = block_from_string '##--anything goes ##'
-      assert_equal '<mark>--anything goes </mark>', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line unconstrained marked string' do
       para = block_from_string %(#{BACKSLASH}#{BACKSLASH}##--anything goes ##)
       assert_equal '##--anything goes ##', para.sub_quotes(para.source)
