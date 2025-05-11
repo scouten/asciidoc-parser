@@ -723,7 +723,6 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("<em>Git</em>Hub"));
     }
 
-
     #[test]
     fn escaped_single_line_unconstrained_emphasized_characters() {
         let mut content = Content::from(Span::new(r#"\__Git__Hub"#));
@@ -733,17 +732,21 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("__Git__Hub"));
     }
 
+    #[test]
+    fn escaped_single_line_unconstrained_emphasized_characters_around_word() {
+        let mut content = Content::from(Span::new(r#"\\__GitHub__"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("__GitHub__"));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line unconstrained emphasized chars around word' do
-      para = block_from_string %(#{BACKSLASH}#{BACKSLASH}__GitHub__)
-      assert_equal '__GitHub__', para.sub_quotes(para.source)
-    end
-
     test 'multi-line unconstrained emphasized chars' do
       para = block_from_string %(__G\ni\nt\n__Hub)
       assert_equal %(<em>G\ni\nt\n</em>Hub), para.sub_quotes(para.source)
