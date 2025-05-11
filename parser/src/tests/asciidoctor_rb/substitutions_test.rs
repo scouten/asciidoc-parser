@@ -714,17 +714,21 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn single_line_unconstrained_emphasized_characters() {
+        let mut content = Content::from(Span::new("__Git__Hub"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("<em>Git</em>Hub"));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-line unconstrained emphasized chars' do
-      para = block_from_string '__Git__Hub'
-      assert_equal '<em>Git</em>Hub', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line unconstrained emphasized chars' do
       para = block_from_string %(#{BACKSLASH}__Git__Hub)
       assert_equal '__Git__Hub', para.sub_quotes(para.source)
