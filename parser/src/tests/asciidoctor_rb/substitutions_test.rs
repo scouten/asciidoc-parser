@@ -648,17 +648,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn escaped_single_line_unconstrained_strong_chars() {
+        let mut content = Content::from(Span::new(r#"\**Git**Hub"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("<strong>*Git</strong>*Hub")
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line unconstrained strong chars' do
-      para = block_from_string %(#{BACKSLASH}**Git**Hub)
-      assert_equal '<strong>*Git</strong>*Hub', para.sub_quotes(para.source)
-    end
-
     test 'multi-line unconstrained strong chars' do
       para = block_from_string %(**G\ni\nt\n**Hub)
       assert_equal %(<strong>G\ni\nt\n</strong>Hub), para.sub_quotes(para.source)
