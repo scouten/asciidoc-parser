@@ -672,17 +672,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn unconstrained_strong_chars_with_inline_asterisk() {
+        let mut content = Content::from(Span::new("**bl*ck**-eye"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("<strong>bl*ck</strong>-eye")
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'unconstrained strong chars with inline asterisk' do
-      para = block_from_string '**bl*ck**-eye'
-      assert_equal '<strong>bl*ck</strong>-eye', para.sub_quotes(para.source)
-    end
-
     test 'unconstrained strong chars with role' do
       para = block_from_string 'Git[blue]**Hub**'
       assert_equal 'Git<strong class="blue">Hub</strong>', para.sub_quotes(para.source)
