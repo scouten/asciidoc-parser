@@ -696,18 +696,30 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn escaped_unconstrained_strong_chars_with_role() {
+        // NOTE copied from the Ruby Asciidoctor test suite:
+        // # TODO this is not the same result as AsciiDoc, though I don't understand why
+        // AsciiDoc gets what it gets.
+
+        // FWIW we get the same (possibly incorrect) result in Rust as the Ruby
+        // implementation.
+        let mut content = Content::from(Span::new(r#"Git\[blue]**Hub**"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"Git[blue]<strong>*Hub</strong>*"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    # TODO this is not the same result as AsciiDoc, though I don't understand why AsciiDoc gets what it gets
-    test 'escaped unconstrained strong chars with role' do
-      para = block_from_string %(Git#{BACKSLASH}[blue]**Hub**)
-      assert_equal 'Git[blue]<strong>*Hub</strong>*', para.sub_quotes(para.source)
-    end
-
     test 'single-line unconstrained emphasized chars' do
       para = block_from_string '__Git__Hub'
       assert_equal '<em>Git</em>Hub', para.sub_quotes(para.source)
