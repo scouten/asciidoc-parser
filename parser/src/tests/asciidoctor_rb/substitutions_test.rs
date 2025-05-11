@@ -533,17 +533,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn multi_line_constrained_emphasized_underline_variation_string() {
+        let mut content = Content::from(Span::new("_a few\nemphasized words_"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("<em>a few\nemphasized words</em>")
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line constrained emphasized underline variation string' do
-      para = block_from_string %(_a few\nemphasized words_)
-      assert_equal %(<em>a few\nemphasized words</em>), para.sub_quotes(para.source)
-    end
-
     # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
     test 'single-line constrained monospaced string' do
       para = block_from_string %(`a few <{monospaced}> words`), attributes: { 'monospaced' => 'monospaced', 'compat-mode' => '' }
