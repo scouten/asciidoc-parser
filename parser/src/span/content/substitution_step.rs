@@ -111,7 +111,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // **strong**
             type_: QuoteType::Strong,
             scope: QuoteScope::Unconstrained,
-            pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?\*\*(\S+?)\*\*"#)
+            pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?\*\*(.+?)\*\*"#)
                 .dot_matches_new_line(true)
                 .build()
                 .unwrap(),
