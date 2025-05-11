@@ -547,7 +547,8 @@ mod quotes {
 
     #[ignore]
     #[test]
-    fn todo_migrate_from_ruby() {
+    fn todo_constrained_monospaced() {
+        // Not ready to port these yet because we don't have passthrough support.
         todo!(
             "{}",
             r###"
@@ -631,12 +632,28 @@ mod quotes {
       para = block_from_string %(`a few\n<{monospaced}> words`), attributes: { 'monospaced' => 'monospaced' }
       assert_equal "<code>a few\n&lt;monospaced&gt; words</code>", para.apply_subs(para.source)
     end
+    "###
+        );
+    }
 
-    test 'single-line unconstrained strong chars' do
-      para = block_from_string '**Git**Hub'
-      assert_equal '<strong>Git</strong>Hub', para.sub_quotes(para.source)
-    end
+    #[test]
+    fn single_line_unconstrained_strong_chars() {
+        let mut content = Content::from(Span::new(r#"**Git**Hub"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("<strong>Git</strong>Hub")
+        );
+    }
 
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
     test 'escaped single-line unconstrained strong chars' do
       para = block_from_string %(#{BACKSLASH}**Git**Hub)
       assert_equal '<strong>*Git</strong>*Hub', para.sub_quotes(para.source)

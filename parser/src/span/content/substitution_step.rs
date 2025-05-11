@@ -108,6 +108,15 @@ struct QuoteSub {
 static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
     vec![
         QuoteSub {
+            // **strong**
+            type_: QuoteType::Strong,
+            scope: QuoteScope::Unconstrained,
+            pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?\*\*(\S+?)\*\*"#)
+                .dot_matches_new_line(true)
+                .build()
+                .unwrap(),
+        },
+        QuoteSub {
             // *strong*
             type_: QuoteType::Strong,
             scope: QuoteScope::Constrained,
