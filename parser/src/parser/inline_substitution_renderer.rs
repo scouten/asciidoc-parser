@@ -81,7 +81,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         type_: QuoteType,
         _scope: QuoteScope,
         attrlist: Option<Attrlist<'_>>,
-        _id: Option<String>,
+        id: Option<String>,
         body: &str,
         dest: &mut String,
     ) {
@@ -89,6 +89,8 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         // that is otherwise built from `role` attribute(s).
         //
         // Inspired by https://github.com/asciidoctor/asciidoctor/blob/main/test/substitutions_test.rb#L201-L204.
+
+        // TO DO: How will we use scope here?
 
         let mut roles: Vec<&str> = attrlist
             .as_ref()
@@ -105,10 +107,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
 
         match type_ {
             QuoteType::Strong => {
-                // TO DO: How will we use scope here?
-                dest.push_str("<strong>");
-                dest.push_str(body);
-                dest.push_str("</strong>");
+                wrap_body_in_html_tag(attrlist.as_ref(), "strong", id, roles, body, dest);
             }
 
             QuoteType::DoubleQuote => {
@@ -124,37 +123,23 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             }
 
             QuoteType::Monospaced => {
-                dest.push_str("<code>");
-                dest.push_str(body);
-                dest.push_str("</code>");
+                wrap_body_in_html_tag(attrlist.as_ref(), "code", id, roles, body, dest);
             }
 
             QuoteType::Emphasis => {
-                // TO DO: How will we use scope here?
-                dest.push_str("<em>");
-                dest.push_str(body);
-                dest.push_str("</em>");
+                wrap_body_in_html_tag(attrlist.as_ref(), "em", id, roles, body, dest);
             }
 
             QuoteType::Mark => {
                 if roles.is_empty() {
-                    dest.push_str("<mark>");
-                    dest.push_str(body);
-                    dest.push_str("</mark>");
+                    wrap_body_in_html_tag(attrlist.as_ref(), "mark", id, roles, body, dest);
                 } else {
-                    let roles = roles.join(" ");
-                    dest.push_str("<span class=\"");
-                    dest.push_str(&roles);
-                    dest.push_str("\">");
-                    dest.push_str(body);
-                    dest.push_str("</span>");
+                    wrap_body_in_html_tag(attrlist.as_ref(), "span", id, roles, body, dest);
                 }
             }
 
             QuoteType::Superscript => {
-                dest.push_str("<sup>");
-                dest.push_str(body);
-                dest.push_str("</sup>");
+                wrap_body_in_html_tag(attrlist.as_ref(), "sup", id, roles, body, dest);
             }
 
             _ => {
@@ -162,4 +147,29 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             }
         }
     }
+}
+
+fn wrap_body_in_html_tag(
+    _attrlist: Option<&Attrlist<'_>>,
+    tag: &'static str,
+    _id: Option<String>,
+    roles: Vec<&str>,
+    body: &str,
+    dest: &mut String,
+) {
+    dest.push_str("<");
+    dest.push_str(tag);
+
+    if !roles.is_empty() {
+        let roles = roles.join(" ");
+        dest.push_str(" class=\"");
+        dest.push_str(&roles);
+        dest.push_str("\"");
+    }
+
+    dest.push_str(">");
+    dest.push_str(body);
+    dest.push_str("</");
+    dest.push_str(tag);
+    dest.push_str(">");
 }

@@ -684,17 +684,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn unconstrained_strong_chars_with_role() {
+        let mut content = Content::from(Span::new("Git[blue]**Hub**"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"Git<strong class="blue">Hub</strong>"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'unconstrained strong chars with role' do
-      para = block_from_string 'Git[blue]**Hub**'
-      assert_equal 'Git<strong class="blue">Hub</strong>', para.sub_quotes(para.source)
-    end
-
     # TODO this is not the same result as AsciiDoc, though I don't understand why AsciiDoc gets what it gets
     test 'escaped unconstrained strong chars with role' do
       para = block_from_string %(Git#{BACKSLASH}[blue]**Hub**)
