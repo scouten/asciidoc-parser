@@ -157,19 +157,19 @@ fn wrap_body_in_html_tag(
     body: &str,
     dest: &mut String,
 ) {
-    dest.push_str("<");
+    dest.push('<');
     dest.push_str(tag);
 
     if !roles.is_empty() {
         let roles = roles.join(" ");
         dest.push_str(" class=\"");
         dest.push_str(&roles);
-        dest.push_str("\"");
+        dest.push('"');
     }
 
-    dest.push_str(">");
+    dest.push('>');
     dest.push_str(body);
     dest.push_str("</");
     dest.push_str(tag);
-    dest.push_str(">");
+    dest.push('>');
 }

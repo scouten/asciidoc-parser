@@ -105,6 +105,7 @@ struct QuoteSub {
 // * Constrained quotes must be bordered by non-word characters.
 // * NOTE: These substitutions are processed in the order they appear here and
 //   the order in which they are replaced is important.
+#[allow(clippy::unwrap_used)]
 static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
     vec![
         QuoteSub {
@@ -228,7 +229,7 @@ struct QuoteReplacer<'r> {
     renderer: &'r dyn InlineSubstitutionRenderer,
 }
 
-impl<'r> Replacer for QuoteReplacer<'r> {
+impl Replacer for QuoteReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         // Adapted from Asciidoctor#convert_quoted_text, found in
         // https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor/substitutors.rb#L1419-L1445.
