@@ -156,6 +156,20 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?``(\S+?)``"#).unwrap(),
         },
         QuoteSub {
+            // `monospaced`
+            type_: QuoteType::Monospaced,
+            scope: QuoteScope::Constrained,
+            pattern: RegexBuilder::new(
+                r#"(^|[^\w&;:"'`}])(?:\[([^\[\]]+)\])?`(\S|\S.*?\S)`\b{end-half}"#,
+                // NB: We don't have look-ahead in Rust Regex, so we might miss some edge cases
+                // because Ruby's version matches `(?![#{CC_WORD}"'`])` which is slightly more
+                // detailed than our `\b{end-half}`.
+            )
+            .dot_matches_new_line(true)
+            .build()
+            .unwrap(),
+        },
+        QuoteSub {
             // __emphasis__
             type_: QuoteType::Emphasis,
             scope: QuoteScope::Unconstrained,
