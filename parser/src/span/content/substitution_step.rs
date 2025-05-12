@@ -77,6 +77,7 @@ fn apply_special_characters(content: &mut Content<'_>, renderer: &dyn InlineSubs
     content.rendered = new_rendered.into();
 }
 
+#[allow(clippy::unwrap_used)]
 static QUOTED_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| Regex::new("[*_`#^~]").unwrap());
 
 struct QuoteSub {
