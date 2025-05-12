@@ -880,18 +880,28 @@ mod quotes {
         );
     }
 
+    #[test]
+    #[ignore]
+    fn escaped_single_line_constrained_passthrough_string() {
+        // TO DO (based on Ruby test): Must use `apply_subs` because constrained
+        // monospaced is handled as a passthrough. (IOW we need full substitution groups
+        // to run this test.)
+        let mut content = Content::from(Span::new(r#"[x-]\+leave it alone+"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"[x-]+leave it alone+"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'escaped single-line constrained passthrough string with forced compat role' do
-      para = block_from_string %([x-]#{BACKSLASH}+leave it alone+)
-      assert_equal '[x-]+leave it alone+', para.apply_subs(para.source)
-    end
-
     test 'single-line unconstrained monospaced chars' do
       para = block_from_string 'Git++Hub++', attributes: { 'compat-mode' => '' }
       assert_equal 'Git<code>Hub</code>', para.sub_quotes(para.source)
