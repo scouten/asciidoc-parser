@@ -926,23 +926,39 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git``Hub``"#));
     }
 
+    #[test]
+    #[ignore]
+    fn multi_line_unconstrained_monospaced_chars_unknown_syntax() {
+        // TO DO: I don't recognize this syntax.
+        // Also it may require full substitution, not just quotes.
+        let mut content = Content::from(Span::new("Git[x-]++\nH\nu\nb++"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("Git<code>\nH\nu\nb</code>")
+        );
+    }
+
+    #[test]
+    fn multi_line_unconstrained_monospaced_chars() {
+        let mut content = Content::from(Span::new("Git``\nH\nu\nb``"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("Git<code>\nH\nu\nb</code>")
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'multi-line unconstrained monospaced chars' do
-      para = block_from_string %(Git++\nH\nu\nb++), attributes: { 'compat-mode' => '' }
-      assert_equal %(Git<code>\nH\nu\nb</code>), para.sub_quotes(para.source)
-
-      para = block_from_string %(Git[x-]++\nH\nu\nb++)
-      assert_equal %(Git<code>\nH\nu\nb</code>), para.apply_subs(para.source)
-
-      para = block_from_string %(Git``\nH\nu\nb``)
-      assert_equal %(Git<code>\nH\nu\nb</code>), para.sub_quotes(para.source)
-    end
-
     test 'single-line superscript chars' do
       para = block_from_string %(x^2^ = x * x, e = mc^2^, there's a 1^st^ time for everything)
       assert_equal %(x<sup>2</sup> = x * x, e = mc<sup>2</sup>, there\'s a 1<sup>st</sup> time for everything), para.sub_quotes(para.source)
