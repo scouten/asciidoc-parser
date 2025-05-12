@@ -750,17 +750,24 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("<em>G\ni\nt\n</em>Hub"));
     }
 
+    #[test]
+    fn unconstrained_emphasis_chars_with_role() {
+        let mut content = Content::from(Span::new("[gray]__Git__Hub"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"<em class="gray">Git</em>Hub"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'unconstrained emphasis chars with role' do
-      para = block_from_string '[gray]__Git__Hub'
-      assert_equal '<em class="gray">Git</em>Hub', para.sub_quotes(para.source)
-    end
-
     test 'escaped unconstrained emphasis chars with role' do
       para = block_from_string %(#{BACKSLASH}[gray]__Git__Hub)
       assert_equal '[gray]__Git__Hub', para.sub_quotes(para.source)
