@@ -798,23 +798,40 @@ mod quotes {
         );
     }
 
+    #[test]
+    #[ignore]
+    fn single_line_constrained_monospaced_chars_with_role_unknown_syntax() {
+        // TO DO: I don't recognize this syntax.
+        // Also it may require full substitution, not just quotes.
+        let mut content =
+            Content::from(Span::new("call [method x-]+save()+ to persist the changes"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"call <code class="method">save()</code> to persist the changes"#)
+        );
+    }
+
+    #[test]
+    fn single_line_constrained_monospaced_chars_with_role() {
+        let mut content = Content::from(Span::new("call [method]`save()` to persist the changes"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"call <code class="method">save()</code> to persist the changes"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'single-line constrained monospaced chars with role' do
-      para = block_from_string 'call [method]+save()+ to persist the changes', attributes: { 'compat-mode' => '' }
-      assert_equal 'call <code class="method">save()</code> to persist the changes', para.sub_quotes(para.source)
-
-      para = block_from_string 'call [method x-]+save()+ to persist the changes'
-      assert_equal 'call <code class="method">save()</code> to persist the changes', para.apply_subs(para.source)
-
-      para = block_from_string 'call [method]`save()` to persist the changes'
-      assert_equal 'call <code class="method">save()</code> to persist the changes', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line constrained monospaced chars' do
       para = block_from_string %(call #{BACKSLASH}+save()+ to persist the changes), attributes: { 'compat-mode' => '' }
       assert_equal 'call +save()+ to persist the changes', para.sub_quotes(para.source)
