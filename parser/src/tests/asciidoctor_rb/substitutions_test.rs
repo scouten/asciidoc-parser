@@ -762,17 +762,21 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn escaped_unconstrained_emphasis_chars_with_role() {
+        let mut content = Content::from(Span::new("\\[gray]__Git__Hub"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed(r#"[gray]__Git__Hub"#));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped unconstrained emphasis chars with role' do
-      para = block_from_string %(#{BACKSLASH}[gray]__Git__Hub)
-      assert_equal '[gray]__Git__Hub', para.sub_quotes(para.source)
-    end
-
     test 'single-line constrained monospaced chars' do
       para = block_from_string 'call +save()+ to persist the changes', attributes: { 'compat-mode' => '' }
       assert_equal 'call <code>save()</code> to persist the changes', para.sub_quotes(para.source)
