@@ -826,20 +826,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn escaped_single_line_constrained_monospaced_chars() {
+        let mut content = Content::from(Span::new(r#"call \`save()` to persist the changes"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"call `save()` to persist the changes"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line constrained monospaced chars' do
-      para = block_from_string %(call #{BACKSLASH}+save()+ to persist the changes), attributes: { 'compat-mode' => '' }
-      assert_equal 'call +save()+ to persist the changes', para.sub_quotes(para.source)
-
-      para = block_from_string %(call #{BACKSLASH}`save()` to persist the changes)
-      assert_equal 'call `save()` to persist the changes', para.sub_quotes(para.source)
-    end
-
     test 'escaped single-line constrained monospaced chars with role' do
       para = block_from_string %(call [method]#{BACKSLASH}+save()+ to persist the changes), attributes: { 'compat-mode' => '' }
       assert_equal 'call [method]+save()+ to persist the changes', para.sub_quotes(para.source)
