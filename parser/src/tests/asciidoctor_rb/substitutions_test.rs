@@ -917,23 +917,21 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git<code>Hub</code>"#));
     }
 
+    #[test]
+    fn escaped_single_line_unconstrained_monospaced_chars() {
+        let mut content = Content::from(Span::new(r#"Git\``Hub``"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed(r#"Git``Hub``"#));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line unconstrained monospaced chars' do
-      para = block_from_string %(Git#{BACKSLASH}++Hub++), attributes: { 'compat-mode' => '' }
-      assert_equal 'Git+<code>Hub</code>+', para.sub_quotes(para.source)
-
-      para = block_from_string %(Git#{BACKSLASH * 2}++Hub++), attributes: { 'compat-mode' => '' }
-      assert_equal 'Git++Hub++', para.sub_quotes(para.source)
-
-      para = block_from_string %(Git#{BACKSLASH}``Hub``)
-      assert_equal 'Git``Hub``', para.sub_quotes(para.source)
-    end
-
     test 'multi-line unconstrained monospaced chars' do
       para = block_from_string %(Git++\nH\nu\nb++), attributes: { 'compat-mode' => '' }
       assert_equal %(Git<code>\nH\nu\nb</code>), para.sub_quotes(para.source)
