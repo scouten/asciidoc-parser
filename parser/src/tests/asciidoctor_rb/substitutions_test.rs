@@ -967,17 +967,21 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn escaped_single_line_superscript_chars() {
+        let mut content = Content::from(Span::new(r#"x\^2^ = x * x"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("x^2^ = x * x"));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line superscript chars' do
-      para = block_from_string %(x#{BACKSLASH}^2^ = x * x)
-      assert_equal 'x^2^ = x * x', para.sub_quotes(para.source)
-    end
-
     test 'does not match superscript across whitespace' do
       para = block_from_string %(x^(n\n-\n1)^)
       assert_equal para.source, para.sub_quotes(para.source)
