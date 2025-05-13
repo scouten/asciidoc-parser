@@ -1015,17 +1015,21 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn does_not_match_adjacent_superscript_chars() {
+        let mut content = Content::from(Span::new("a ^^ b"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("a ^^ b"));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'does not match adjacent superscript chars' do
-      para = block_from_string 'a ^^ b'
-      assert_equal 'a ^^ b', para.sub_quotes(para.source)
-    end
-
     test 'does not confuse superscript and links with blank window shorthand' do
       para = block_from_string 'http://localhost[Text^] on the 21^st^ and 22^nd^'
       assert_equal '<a href="http://localhost" target="_blank" rel="noopener">Text</a> on the 21<sup>st</sup> and 22<sup>nd</sup>', para.content
