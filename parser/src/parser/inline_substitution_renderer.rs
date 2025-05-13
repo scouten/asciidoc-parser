@@ -142,6 +142,10 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 wrap_body_in_html_tag(attrlist.as_ref(), "sup", id, roles, body, dest);
             }
 
+            QuoteType::Subscript => {
+                wrap_body_in_html_tag(attrlist.as_ref(), "sub", id, roles, body, dest);
+            }
+
             _ => {
                 todo!("Render substitution for {type_:?}");
             }

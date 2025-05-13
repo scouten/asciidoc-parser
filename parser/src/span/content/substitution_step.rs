@@ -232,6 +232,13 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?\^(\S+?)\^"#).unwrap(),
         },
+        QuoteSub {
+            // ~subscript~
+            type_: QuoteType::Subscript,
+            scope: QuoteScope::Unconstrained,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?~(\S+?)~"#).unwrap(),
+        },
     ]
 });
 
