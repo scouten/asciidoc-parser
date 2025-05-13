@@ -1162,11 +1162,6 @@ mod quotes {
         todo!(
             "{}",
             r###"
-    test 'quoted text with id and role shorthand using docbook backend' do
-      para = block_from_string '[#bond.white.red-background]#007#', backend: 'docbook'
-      assert_equal '<anchor xml:id="bond" xreflabel="007"/><phrase role="white red-background">007</phrase>', para.sub_quotes(para.source)
-    end
-
     test 'should not assign role attribute if shorthand style has no roles' do
       para = block_from_string '[#idname]*blah*'
       assert_equal '<strong id="idname">blah</strong>', para.content
