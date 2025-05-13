@@ -1026,15 +1026,29 @@ mod quotes {
 
     #[ignore]
     #[test]
+    fn does_not_confuse_superscript_and_links_with_blank_window_shorthand() {
+        let mut content = Content::from(Span::new(
+            "http://localhost[Text^] on the 21^st^ and 22^nd^",
+        ));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
+        // substition.
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(
+                r#"<a href="http://localhost" target="_blank" rel="noopener">Text</a> on the 21<sup>st</sup> and 22<sup>nd</sup>"#
+            )
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'does not confuse superscript and links with blank window shorthand' do
-      para = block_from_string 'http://localhost[Text^] on the 21^st^ and 22^nd^'
-      assert_equal '<a href="http://localhost" target="_blank" rel="noopener">Text</a> on the 21<sup>st</sup> and 22<sup>nd</sup>', para.content
-    end
-
     test 'single-line subscript chars' do
       para = block_from_string 'H~2~O'
       assert_equal 'H<sub>2</sub>O', para.sub_quotes(para.source)
