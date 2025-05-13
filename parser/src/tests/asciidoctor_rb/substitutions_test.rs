@@ -1120,17 +1120,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn quoted_text_with_id_and_role_shorthand() {
+        let mut content = Content::from(Span::new("[#bond.white.red-background]#007#"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"<span id="bond" class="white red-background">007</span>"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'quoted text with id and role shorthand' do
-      para = block_from_string '[#bond.white.red-background]#007#'
-      assert_equal '<span id="bond" class="white red-background">007</span>', para.sub_quotes(para.source)
-    end
-
     test 'quoted text with id and role shorthand with roles before id' do
       para = block_from_string '[.white.red-background#bond]#007#'
       assert_equal '<span id="bond" class="white red-background">007</span>', para.sub_quotes(para.source)
