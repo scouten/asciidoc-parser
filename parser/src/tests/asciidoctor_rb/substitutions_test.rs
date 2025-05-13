@@ -987,20 +987,40 @@ mod quotes {
 
     #[ignore]
     #[test]
+    fn allow_spaces_in_superscript_if_spaces_are_inserted_using_an_attribute_reference() {
+        let mut content = Content::from(Span::new("Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^."));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
+        // substition.
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("Night <sup>A poem by Jane Kondo</sup>.")
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn allow_spaces_in_superscript_if_text_is_wrapped_in_a_passthrough() {
+        let mut content = Content::from(Span::new("Night ^+A poem by Jane Kondo+^."));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
+        // substition.
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("Night <sup>A poem by Jane Kondo</sup>.")
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'allow spaces in superscript if spaces are inserted using an attribute reference' do
-      para = block_from_string 'Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^.'
-      assert_equal 'Night <sup>A poem by Jane Kondo</sup>.', para.apply_subs(para.source)
-    end
-
-    test 'allow spaces in superscript if text is wrapped in a passthrough' do
-      para = block_from_string 'Night ^+A poem by Jane Kondo+^.'
-      assert_equal 'Night <sup>A poem by Jane Kondo</sup>.', para.apply_subs(para.source)
-    end
-
     test 'does not match adjacent superscript chars' do
       para = block_from_string 'a ^^ b'
       assert_equal 'a ^^ b', para.sub_quotes(para.source)
