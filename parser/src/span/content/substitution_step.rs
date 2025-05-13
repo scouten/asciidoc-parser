@@ -77,8 +77,10 @@ fn apply_special_characters(content: &mut Content<'_>, renderer: &dyn InlineSubs
     content.rendered = new_rendered.into();
 }
 
-#[allow(clippy::unwrap_used)]
-static QUOTED_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| Regex::new("[*_`#^~]").unwrap());
+static QUOTED_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new("[*_`#^~]").unwrap()
+});
 
 struct QuoteSub {
     type_: QuoteType,
@@ -106,13 +108,13 @@ struct QuoteSub {
 // * Constrained quotes must be bordered by non-word characters.
 // * NOTE: These substitutions are processed in the order they appear here and
 //   the order in which they are replaced is important.
-#[allow(clippy::unwrap_used)]
 static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
     vec![
         QuoteSub {
             // **strong**
             type_: QuoteType::Strong,
             scope: QuoteScope::Unconstrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?\*\*(.+?)\*\*"#)
                 .dot_matches_new_line(true)
                 .build()
@@ -122,6 +124,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // *strong*
             type_: QuoteType::Strong,
             scope: QuoteScope::Constrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(
                 r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?\*(\S|\S.*?\S)\*\b{end-half}"#,
             )
@@ -133,6 +136,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // "`double-quoted`"
             type_: QuoteType::DoubleQuote,
             scope: QuoteScope::Constrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(
                 r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?"`(\S|\S.*?\S)`"\b{end-half}"#,
             )
@@ -144,6 +148,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // '`single-quoted`'
             type_: QuoteType::SingleQuote,
             scope: QuoteScope::Constrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(
                 r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?'`(\S|\S.*?\S)`'\b{end-half}"#,
             )
@@ -155,6 +160,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // ``monospaced``
             type_: QuoteType::Monospaced,
             scope: QuoteScope::Unconstrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?``(.+?)``"#)
                 .dot_matches_new_line(true)
                 .build()
@@ -164,6 +170,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // `monospaced`
             type_: QuoteType::Monospaced,
             scope: QuoteScope::Constrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(
                 r#"(^|[^\w&;:"'`}])(?:\[([^\[\]]+)\])?`(\S|\S.*?\S)`\b{end-half}"#,
                 // NB: We don't have look-ahead in Rust Regex, so we might miss some edge cases
@@ -178,6 +185,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // __emphasis__
             type_: QuoteType::Emphasis,
             scope: QuoteScope::Unconstrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?__(.+?)__"#)
                 .dot_matches_new_line(true)
                 .build()
@@ -187,6 +195,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // _emphasis_
             type_: QuoteType::Emphasis,
             scope: QuoteScope::Constrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(
                 r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?_(\S|\S.*?\S)_\b{end-half}"#,
             )
@@ -198,6 +207,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // ##mark##
             type_: QuoteType::Mark,
             scope: QuoteScope::Unconstrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(r#"\\?(?:\[([^\[\]]+)\])?##(.+?)##"#)
                 .dot_matches_new_line(true)
                 .build()
@@ -207,6 +217,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // #mark#
             type_: QuoteType::Mark,
             scope: QuoteScope::Constrained,
+            #[allow(clippy::unwrap_used)]
             pattern: RegexBuilder::new(
                 r#"(^|[^\w&;:}])(?:\[([^\[\]]+)\])?#(\S|\S.*?\S)#\b{end-half}"#,
             )
@@ -218,6 +229,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
             // ^superscript^
             type_: QuoteType::Superscript,
             scope: QuoteScope::Unconstrained,
+            #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"\\?(?:\[([^\[\]]+)\])?\^(\S+?)\^"#).unwrap(),
         },
     ]
