@@ -1061,17 +1061,24 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("H~2~O"));
     }
 
+    #[test]
+    fn does_not_match_subscript_across_whitespace() {
+        let mut content = Content::from(Span::new("project~ view\non\nGitHub~"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("project~ view\non\nGitHub~")
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'does not match subscript across whitespace' do
-      para = block_from_string %(project~ view\non\nGitHub~)
-      assert_equal para.source, para.sub_quotes(para.source)
-    end
-
     test 'does not match adjacent subscript chars' do
       para = block_from_string 'a ~~ b'
       assert_equal 'a ~~ b', para.sub_quotes(para.source)
