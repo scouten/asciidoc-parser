@@ -1082,18 +1082,26 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("a ~~ b"));
     }
 
+    #[test]
+    fn does_not_match_subscript_across_distinct_urls() {
+        let mut content = Content::from(Span::new(
+            "http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]",
+        ));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed("http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]")
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-
-    test 'does not match subscript across distinct URLs' do
-      para = block_from_string 'http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]'
-      assert_equal para.source, para.sub_quotes(para.source)
-    end
-
     test 'quoted text with role shorthand' do
       para = block_from_string '[.white.red-background]#alert#'
       assert_equal '<span class="white red-background">alert</span>', para.sub_quotes(para.source)
