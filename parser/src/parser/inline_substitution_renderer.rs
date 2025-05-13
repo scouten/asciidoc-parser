@@ -81,7 +81,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         type_: QuoteType,
         _scope: QuoteScope,
         attrlist: Option<Attrlist<'_>>,
-        id: Option<String>,
+        mut id: Option<String>,
         body: &str,
         dest: &mut String,
     ) {
@@ -103,6 +103,14 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             .and_then(|attr1| attr1.block_style())
         {
             roles.insert(0, block_style.data());
+        }
+
+        if id.is_none() {
+            id = attrlist
+                .as_ref()
+                .and_then(|a| a.nth_attribute(1))
+                .and_then(|attr1| attr1.id())
+                .map(|span| span.data().to_owned())
         }
 
         match type_ {
@@ -131,7 +139,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             }
 
             QuoteType::Mark => {
-                if roles.is_empty() {
+                if roles.is_empty() && id.is_none() {
                     wrap_body_in_html_tag(attrlist.as_ref(), "mark", id, roles, body, dest);
                 } else {
                     wrap_body_in_html_tag(attrlist.as_ref(), "span", id, roles, body, dest);
@@ -156,13 +164,19 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
 fn wrap_body_in_html_tag(
     _attrlist: Option<&Attrlist<'_>>,
     tag: &'static str,
-    _id: Option<String>,
+    id: Option<String>,
     roles: Vec<&str>,
     body: &str,
     dest: &mut String,
 ) {
     dest.push('<');
     dest.push_str(tag);
+
+    if let Some(id) = id.as_ref() {
+        dest.push_str(" id=\"");
+        dest.push_str(id);
+        dest.push('"');
+    }
 
     if !roles.is_empty() {
         let roles = roles.join(" ");
