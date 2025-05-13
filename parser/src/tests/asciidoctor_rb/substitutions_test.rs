@@ -976,17 +976,21 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("x^2^ = x * x"));
     }
 
+    #[test]
+    fn does_not_match_superscript_across_whitespace() {
+        let mut content = Content::from(Span::new("x^(n\n-\n1)^"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("x^(n\n-\n1)^"));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'does not match superscript across whitespace' do
-      para = block_from_string %(x^(n\n-\n1)^)
-      assert_equal para.source, para.sub_quotes(para.source)
-    end
-
     test 'allow spaces in superscript if spaces are inserted using an attribute reference' do
       para = block_from_string 'Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^.'
       assert_equal 'Night <sup>A poem by Jane Kondo</sup>.', para.apply_subs(para.source)
