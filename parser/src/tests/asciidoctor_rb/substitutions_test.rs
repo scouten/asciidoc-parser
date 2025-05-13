@@ -1073,16 +1073,21 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn does_not_match_adjacent_subscript_chars() {
+        let mut content = Content::from(Span::new("a ~~ b"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("a ~~ b"));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'does not match adjacent subscript chars' do
-      para = block_from_string 'a ~~ b'
-      assert_equal 'a ~~ b', para.sub_quotes(para.source)
-    end
 
     test 'does not match subscript across distinct URLs' do
       para = block_from_string 'http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]'
