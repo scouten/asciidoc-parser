@@ -1052,17 +1052,21 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("H<sub>2</sub>O"));
     }
 
+    #[test]
+    fn escaped_single_line_subscript_chars() {
+        let mut content = Content::from(Span::new(r#"H\~2~O"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("H~2~O"));
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'escaped single-line subscript chars' do
-      para = block_from_string %(H#{BACKSLASH}~2~O)
-      assert_equal 'H~2~O', para.sub_quotes(para.source)
-    end
-
     test 'does not match subscript across whitespace' do
       para = block_from_string %(project~ view\non\nGitHub~)
       assert_equal para.source, para.sub_quotes(para.source)
