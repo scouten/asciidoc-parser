@@ -7,7 +7,7 @@ To turn section titles into links, enable the `sectlinks` attribute.
 The default Asciidoctor stylesheet displays linked section titles with the same color and styles as unlinked section titles.
 
 [#anchor]
-== Add &sect; to section titles
+== Add &#167; to section titles
 
 When the `sectanchors` attribute is enabled on a document, an anchor (empty link) is added before the section title.
-The default Asciidoctor stylesheet renders the anchor as a section entity (*&sect;*) that floats to the left of the section title.
+The default Asciidoctor stylesheet renders the anchor as a section entity (*&#167;*) that floats to the left of the section title.
