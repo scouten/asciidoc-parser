@@ -11,7 +11,7 @@ The text pass:q,a[<del>strike _{docname}_</del>] is marked as deleted.
 // end::in-macro-subs[]
 
 // tag::s-macro[]
-The text pass:q[<del>strike *this*</del>] is marked as deleted inside of which the word "`me`" is bold.
+The text pass:q[<del>strike *this*</del>] is marked as deleted, inside of which the word "`me`" is bold.
 // end::s-macro[]
 
 // tag::3p[]
