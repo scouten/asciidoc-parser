@@ -308,7 +308,7 @@ fn parse_shorthand_items<'src>(
                     });
                     span = after_delimiter;
                 } else {
-                    shorthand_items.push(span);
+                    shorthand_items.push(span.trim_trailing_whitespace());
                     span = span.discard_all();
                 }
             }
@@ -321,7 +321,7 @@ fn parse_shorthand_items<'src>(
             }
             Some(index) => {
                 let mi: MatchedItem<Span> = span.into_parse_result(index + 1);
-                shorthand_items.push(mi.item);
+                shorthand_items.push(mi.item.trim_trailing_whitespace());
                 span = mi.after;
             }
         }
