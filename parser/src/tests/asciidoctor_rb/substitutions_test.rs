@@ -1168,17 +1168,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn should_remove_trailing_spaces_from_role_defined_using_shorthand() {
+        let mut content = Content::from(Span::new("[.rolename ]*blah*"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"<strong class="rolename">blah</strong>"#.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'should remove trailing spaces from role defined using shorthand' do
-      para = block_from_string '[.rolename ]*blah*'
-      assert_equal '<strong class="rolename">blah</strong>', para.content
-    end
-
     test 'should allow role to be defined using attribute reference' do
       input = '[{rolename}]#phrase#'
       result = convert_string_to_embedded input, doctype: 'inline', attributes: { 'rolename' => 'red' }
