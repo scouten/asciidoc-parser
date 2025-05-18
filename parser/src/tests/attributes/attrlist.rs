@@ -1090,6 +1090,82 @@ mod roles {
     }
 
     #[test]
+    fn via_shorthand_syntax_trim_trailing_whitespace() {
+        let mi = Attrlist::parse(Span::new(".rolename ")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![TSpan {
+                        data: ".rolename",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }],
+                    value: TSpan {
+                        data: ".rolename ",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    source: TSpan {
+                        data: ".rolename ",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },),
+                source: TSpan {
+                    data: ".rolename ",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(mi.item.named_attribute("foo").is_none());
+        assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+        let roles = mi.item.roles();
+        let mut roles = roles.iter();
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "rolename",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert!(roles.next().is_none(),);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: ".rolename ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 11,
+                offset: 10
+            }
+        );
+    }
+
+    #[test]
     fn multiple_roles_via_shorthand_syntax() {
         let mi = Attrlist::parse(Span::new(".role1.role2.role3")).unwrap_if_no_warnings();
 
@@ -1195,6 +1271,116 @@ mod roles {
                 line: 1,
                 col: 19,
                 offset: 18
+            }
+        );
+    }
+
+    #[test]
+    fn multiple_roles_via_shorthand_syntax_trim_whitespace() {
+        let mi = Attrlist::parse(Span::new(".role1 .role2 .role3 ")).unwrap_if_no_warnings();
+
+        assert_eq!(
+            mi.item,
+            TAttrlist {
+                attributes: vec!(TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![
+                        TSpan {
+                            data: ".role1",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        TSpan {
+                            data: ".role2",
+                            line: 1,
+                            col: 8,
+                            offset: 7,
+                        },
+                        TSpan {
+                            data: ".role3",
+                            line: 1,
+                            col: 15,
+                            offset: 14,
+                        }
+                    ],
+                    value: TSpan {
+                        data: ".role1 .role2 .role3 ",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    source: TSpan {
+                        data: ".role1 .role2 .role3 ",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },),
+                source: TSpan {
+                    data: ".role1 .role2 .role3 ",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert!(mi.item.named_attribute("foo").is_none());
+        assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+        let roles = mi.item.roles();
+        let mut roles = roles.iter();
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "role1",
+                line: 1,
+                col: 2,
+                offset: 1,
+            }
+        );
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "role2",
+                line: 1,
+                col: 9,
+                offset: 8,
+            }
+        );
+
+        assert_eq!(
+            roles.next().unwrap(),
+            TSpan {
+                data: "role3",
+                line: 1,
+                col: 16,
+                offset: 15,
+            }
+        );
+
+        assert!(roles.next().is_none(),);
+
+        assert_eq!(
+            mi.item.span(),
+            TSpan {
+                data: ".role1 .role2 .role3 ",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 22,
+                offset: 21
             }
         );
     }
