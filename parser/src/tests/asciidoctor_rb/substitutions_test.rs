@@ -1156,17 +1156,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn should_not_assign_role_attribute_if_shorthand_style_has_no_roles() {
+        let mut content = Content::from(Span::new("[#idname]*blah*"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"<strong id="idname">blah</strong>"#)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'should not assign role attribute if shorthand style has no roles' do
-      para = block_from_string '[#idname]*blah*'
-      assert_equal '<strong id="idname">blah</strong>', para.content
-    end
-
     test 'should remove trailing spaces from role defined using shorthand' do
       para = block_from_string '[.rolename ]*blah*'
       assert_equal '<strong class="rolename">blah</strong>', para.content
