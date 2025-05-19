@@ -1205,17 +1205,25 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn should_remove_leading_and_trailing_spaces_around_role_after_ignoring_attributes_after_comma()
+    {
+        let mut content = Content::from(Span::new("[ red , foobar]#alert#"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"<span class="red">alert</span>"#.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'should remove leading and trailing spaces around role after ignoring attributes after comma' do
-      para = block_from_string '[ red , foobar]#alert#'
-      assert_equal '<span class="red">alert</span>', para.sub_quotes(para.source)
-    end
-
     test 'should not assign role if value before comma is empty' do
       para = block_from_string '[,]#anonymous#'
       assert_equal 'anonymous', para.sub_quotes(para.source)

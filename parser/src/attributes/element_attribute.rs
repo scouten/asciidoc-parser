@@ -292,7 +292,13 @@ fn parse_shorthand_items<'src>(
 
     // Look for block style selector.
     if let Some(block_style_pr) = span.split_at_match_non_empty(is_shorthand_delimiter) {
-        shorthand_items.push(block_style_pr.item);
+        shorthand_items.push(
+            block_style_pr
+                .item
+                .discard_whitespace()
+                .trim_trailing_whitespace(),
+        );
+
         span = block_style_pr.after;
     }
 
