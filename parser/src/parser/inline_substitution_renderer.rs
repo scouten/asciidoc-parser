@@ -154,8 +154,12 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 wrap_body_in_html_tag(attrlist.as_ref(), "sub", id, roles, body, dest);
             }
 
-            _ => {
-                todo!("Render substitution for {type_:?}");
+            QuoteType::Unquoted => {
+                if roles.is_empty() && id.is_none() {
+                    dest.push_str(body);
+                } else {
+                    wrap_body_in_html_tag(attrlist.as_ref(), "span", id, roles, body, dest);
+                }
             }
         }
     }

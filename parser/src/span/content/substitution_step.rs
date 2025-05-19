@@ -310,7 +310,7 @@ impl Replacer for QuoteReplacer<'_> {
                         .and_then(|a| a.id().map(|s| s.to_string()));
 
                     self.renderer.render_quoted_substitition(
-                        self.type_, self.scope, attrlist, id, &caps[3], dest,
+                        type_, self.scope, attrlist, id, &caps[3], dest,
                     );
                 }
             }
@@ -340,9 +340,8 @@ impl Replacer for QuoteReplacer<'_> {
                     .as_ref()
                     .and_then(|a| a.id().map(|s| s.to_string()));
 
-                self.renderer.render_quoted_substitition(
-                    self.type_, self.scope, attrlist, id, &caps[2], dest,
-                );
+                self.renderer
+                    .render_quoted_substitition(type_, self.scope, attrlist, id, &caps[2], dest);
             }
         }
     }

@@ -1218,17 +1218,24 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn should_not_assign_role_if_value_before_comma_is_empty() {
+        let mut content = Content::from(Span::new("[,]#anonymous#"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("anonymous".to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-    test 'should not assign role if value before comma is empty' do
-      para = block_from_string '[,]#anonymous#'
-      assert_equal 'anonymous', para.sub_quotes(para.source)
-    end
-
     test 'inline passthrough with id and role set using shorthand' do
       %w(#idname.rolename .rolename#idname).each do |attrlist|
         para = block_from_string %([#{attrlist}]+pass+)
