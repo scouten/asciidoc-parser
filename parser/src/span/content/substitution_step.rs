@@ -4,7 +4,7 @@ use regex::{Captures, Regex, RegexBuilder, Replacer};
 
 use crate::{
     attributes::Attrlist,
-    parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType},
+    parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter},
     span::Content,
 };
 
@@ -66,16 +66,40 @@ fn apply_special_characters(content: &mut Content<'_>, renderer: &dyn InlineSubs
         return;
     }
 
-    // TO DO: Use the renderer.
-    // TO DO: Can we optimize down to one .replace?
-    let new_rendered = content
-        .rendered
-        .replace('&', "&amp;")
-        .replace('<', "&lt;")
-        .replace('>', "&gt;");
+    let mut result: Cow<'_, str> = content.rendered.to_string().into();
+    let replacer = SpecialCharacterReplacer { renderer };
 
-    content.rendered = new_rendered.into();
+    if let Cow::Owned(new_result) = SPECIAL_CHARS.replace_all(&result, replacer) {
+        result = new_result.into();
+    }
+
+    content.rendered = result.into();
 }
+
+#[derive(Debug)]
+struct SpecialCharacterReplacer<'r> {
+    renderer: &'r dyn InlineSubstitutionRenderer,
+}
+
+impl Replacer for SpecialCharacterReplacer<'_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        if let Some(which) = match caps[0].as_ref() {
+            "<" => Some(SpecialCharacter::Lt),
+            ">" => Some(SpecialCharacter::Gt),
+            "&" => Some(SpecialCharacter::Ampersand),
+            _ => None,
+        } {
+            self.renderer.render_special_character(which, dest);
+        } else {
+            dest.push_str(caps[0].as_ref());
+        }
+    }
+}
+
+static SPECIAL_CHARS: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new("[<>&]").unwrap()
+});
 
 static QUOTED_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
@@ -349,7 +373,6 @@ impl Replacer for QuoteReplacer<'_> {
 
 fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRenderer) {
     if !QUOTED_TEXT_SNIFF.is_match(content.rendered.as_ref()) {
-        eprintln!("QT sniff said no match");
         return;
     }
 
@@ -361,8 +384,6 @@ fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRend
             scope: sub.scope,
             renderer,
         };
-
-        dbg!(&replacer);
 
         if let Cow::Owned(new_result) = sub.pattern.replace_all(&result, replacer) {
             result = new_result.into();
