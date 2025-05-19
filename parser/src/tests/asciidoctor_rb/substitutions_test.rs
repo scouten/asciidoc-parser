@@ -1232,17 +1232,39 @@ mod quotes {
 
     #[ignore]
     #[test]
-    fn todo_migrate_from_ruby() {
-        todo!(
-            "{}",
-            r###"
-    test 'inline passthrough with id and role set using shorthand' do
-      %w(#idname.rolename .rolename#idname).each do |attrlist|
-        para = block_from_string %([#{attrlist}]+pass+)
-        assert_equal '<span id="idname" class="rolename">pass</span>', para.content
-      end
-    end
-"###
+    fn inline_passthrough_with_id_and_role_set_using_shorthand_1() {
+        // TODO: Restore this test when we apply macro substitutions.
+        // Passthroughs are processed in that layer.
+        let mut content = Content::from(Span::new("[#idname.rolename]+pass+"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                r#"<span id="idname" class="rolename">pass</span>"#
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn inline_passthrough_with_id_and_role_set_using_shorthand_2() {
+        // TODO: Restore this test when we apply macro substitutions.
+        // Passthroughs are processed in that layer.
+        let mut content = Content::from(Span::new("[.rolename#idname]+pass+"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                r#"<span id="idname" class="rolename">pass</span>"#
+                    .to_string()
+                    .into_boxed_str()
+            )
         );
     }
 }
