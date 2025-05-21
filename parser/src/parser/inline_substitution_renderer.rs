@@ -116,13 +116,6 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         body: &str,
         dest: &mut String,
     ) {
-        // TO DO: Check this assumption: A block style contributes to the list of styles
-        // that is otherwise built from `role` attribute(s).
-        //
-        // Inspired by https://github.com/asciidoctor/asciidoctor/blob/main/test/substitutions_test.rb#L201-L204.
-
-        // TO DO: How will we use scope here?
-
         let mut roles: Vec<&str> = attrlist
             .as_ref()
             .map(|a| a.roles().iter().map(|r| r.data()).collect())
