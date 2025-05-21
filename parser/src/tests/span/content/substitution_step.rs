@@ -98,6 +98,18 @@ mod quotes {
             )
         );
     }
+
+    #[test]
+    fn marked_string_with_id() {
+        let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::Quotes.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"<span id="id">a few words</span>"#.to_string().into_boxed_str())
+        );
+    }
 }
 
 mod callouts {
