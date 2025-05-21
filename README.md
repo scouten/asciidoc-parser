@@ -11,6 +11,7 @@ You're welcome to follow along and contribute with the understanding that I may 
 ## Known limitations
 
 * Parsing UTF-16 content is not supported. (UTF-16 documents must be re-encoded to UTF-8 prior to parsing with this crate.) I have no plans to support UTF-16 content.
+* There is no support for [`compat-mode`](https://docs.asciidoctor.org/asciidoctor/latest/migrate/asciidoc-py/#compatibility-mode).
 
 ## Licenses
 

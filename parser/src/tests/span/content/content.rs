@@ -65,8 +65,6 @@ mod replace_str {
         let mut content = Content::from(Span::new("some matching < text"));
         content.replace_str("<", "&lt;");
 
-        dbg!(&content);
-
         assert_eq!(
             content,
             TContent {
