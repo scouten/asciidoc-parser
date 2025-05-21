@@ -1,5 +1,3 @@
-#![allow(missing_docs)] // TEMPORARY while building
-
 use std::fmt::Debug;
 
 use crate::attributes::Attrlist;
@@ -16,9 +14,11 @@ pub trait InlineSubstitutionRenderer: Debug {
     /// The renderer should write the appropriate rendering to `dest`.
     fn render_special_character(&self, type_: SpecialCharacter, dest: &mut String);
 
-    /// Renders the content of a [NEED LINK] quote substitution.
+    /// Renders the content of a [quote substitution].
     ///
     /// The renderer should write the appropriate rendering to `dest`.
+    ///
+    /// [quote substitution]: https://docs.asciidoctor.org/asciidoc/latest/subs/quotes/
     fn render_quoted_substitition(
         &self,
         type_: QuoteType,
@@ -30,34 +30,65 @@ pub trait InlineSubstitutionRenderer: Debug {
     );
 }
 
+/// Specifies which special character is being replaced in a call to
+/// [`InlineSubstitutionRenderer::render_special_character`].
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SpecialCharacter {
+    /// Replace `<` character.
     Lt,
+
+    /// Replace `>` character.
     Gt,
+
+    /// Replace `&` character.
     Ampersand,
 }
 
+/// Specifies which [quote type] is being rendered.
+///
+/// [quote type]: https://docs.asciidoctor.org/asciidoc/latest/subs/quotes/
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum QuoteType {
+    /// Strong (often bold) formatting.
     Strong,
+
+    /// Word(s) surrounded by smart double quotes.
     DoubleQuote,
+
+    /// Word(s) surrounded by smart single quotes.
     SingleQuote,
+
+    /// Monospace (code) formatting.
     Monospaced,
+
+    /// Emphasis (often italic) formatting.
     Emphasis,
+
+    /// Text range (span) formatted with zero or more styles.
     Mark,
+
+    /// Superscript formatting.
     Superscript,
+
+    /// Subscript formatting.
     Subscript,
+
+    /// Surrounds a block of text that may need a `<span>` or similar tag.
     Unquoted,
 }
 
+/// Specifies whether the block is aligned to word boundaries or not.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum QuoteScope {
+    /// The quoted section was aligned to word boundaries.
     Constrained,
+
+    /// The quoted section may not have been aligned to word boundaries.
     Unconstrained,
 }
 
-/// Implementation of `InlineSubstitutionHandler` that renders substitutions for
-/// common HTML-based applications.
+/// Implementation of [`InlineSubstitutionRenderer`] that renders substitutions
+/// for common HTML-based applications.
 #[derive(Debug)]
 pub struct HtmlSubstitutionRenderer {}
 
