@@ -214,7 +214,6 @@ fn wrap_body_in_html_tag(
     }
 
     if !roles.is_empty() {
-        dbg!(&roles);
         let roles = roles.join(" ");
         dest.push_str(" class=\"");
         dest.push_str(&roles);

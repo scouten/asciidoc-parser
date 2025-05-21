@@ -278,10 +278,6 @@ impl Replacer for QuoteReplacer<'_> {
         // Adapted from Asciidoctor#convert_quoted_text, found in
         // https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor/substitutors.rb#L1419-L1445.
 
-        dbg!(&self);
-        dbg!(caps);
-        dbg!(&dest);
-
         let unescaped_attrs: Option<String> = if caps[0].starts_with('\\') {
             let maybe_attrs = caps.get(2).map(|a| a.as_str());
             if self.scope == QuoteScope::Constrained && maybe_attrs.is_some() {
