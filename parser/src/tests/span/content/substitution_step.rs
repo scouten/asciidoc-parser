@@ -33,6 +33,18 @@ mod special_characters {
             CowStr::Boxed("bl&lt;ah&gt;".to_string().into_boxed_str())
         );
     }
+
+    #[test]
+    fn match_amp() {
+        let mut content = Content::from(Span::new("bl<a&h>"));
+        let r = HtmlSubstitutionRenderer {};
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &r);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;a&amp;h&gt;".to_string().into_boxed_str())
+        );
+    }
 }
 
 mod quotes {
