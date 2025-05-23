@@ -14,7 +14,6 @@ pub struct Parser<'p> {
     /// Attribute values at current state of parsing.
     pub(crate) attribute_values: HashMap<String, AttributeValue<'p>>,
 
-    #[allow(unused)]
     /// Specifies how the basic raw text of a simple block will be converted to
     /// the format which will ultimately be presented in the final output.
     ///
