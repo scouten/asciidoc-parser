@@ -61,16 +61,13 @@ mod dispatcher {
 }
 
 mod quotes {
-    use crate::{
-        parser::HtmlSubstitutionRenderer, span::content::SubstitutionStep, strings::CowStr,
-        Content, Span,
-    };
+    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
 
     #[test]
     fn single_line_double_quoted_string() {
         let mut content = Content::from(Span::new(r#""`a few quoted words`""#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -81,8 +78,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_double_quoted_string() {
         let mut content = Content::from(Span::new(r#"\"`a few quoted words`""#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -93,8 +90,8 @@ mod quotes {
     #[test]
     fn multi_line_double_quoted_string() {
         let mut content = Content::from(Span::new("\"`a few\nquoted words`\""));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -109,8 +106,8 @@ mod quotes {
     #[test]
     fn double_quoted_string_with_inline_single_quote() {
         let mut content = Content::from(Span::new(r#""`Here's Johnny!`""#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -121,8 +118,8 @@ mod quotes {
     #[test]
     fn double_quoted_string_with_inline_backquote() {
         let mut content = Content::from(Span::new(r#""`Here`s Johnny!`""#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -133,8 +130,8 @@ mod quotes {
     #[test]
     fn double_quoted_string_around_almost_monospaced_text() {
         let mut content = Content::from(Span::new(r#""``E=mc^2^` is the solution!`""#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -149,8 +146,8 @@ mod quotes {
     #[test]
     fn double_quoted_string_around_monospaced_text() {
         let mut content = Content::from(Span::new(r#""```E=mc^2^`` is the solution!`""#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -165,8 +162,8 @@ mod quotes {
     #[test]
     fn single_line_single_quoted_string() {
         let mut content = Content::from(Span::new(r#"'`a few quoted words`'"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -177,8 +174,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_single_quoted_string() {
         let mut content = Content::from(Span::new(r#"\'`a few quoted words`'"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -189,8 +186,8 @@ mod quotes {
     #[test]
     fn multi_line_single_quoted_string() {
         let mut content = Content::from(Span::new("'`a few\nquoted words`'"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -205,8 +202,8 @@ mod quotes {
     #[test]
     fn single_quoted_string_with_inline_single_quote() {
         let mut content = Content::from(Span::new(r#"'`That isn't what I did.`'"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -217,8 +214,8 @@ mod quotes {
     #[test]
     fn single_quoted_string_with_inline_backquote() {
         let mut content = Content::from(Span::new(r#"'`Here`s Johnny!`'"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -229,8 +226,8 @@ mod quotes {
     #[test]
     fn single_line_constrained_marked_string() {
         let mut content = Content::from(Span::new(r#"#a few words#"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -241,8 +238,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_constrained_marked_string() {
         let mut content = Content::from(Span::new(r#"\#a few words#"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -253,8 +250,8 @@ mod quotes {
     #[test]
     fn multi_line_constrained_marked_string() {
         let mut content = Content::from(Span::new("#a few\nwords#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -267,8 +264,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             r##"111 #mark a# 222 "`quote a`" 333 #mark b# 444"##,
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -279,8 +276,8 @@ mod quotes {
     #[test]
     fn single_line_unconstrained_marked_string() {
         let mut content = Content::from(Span::new(r###"##--anything goes ##"###));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -295,8 +292,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_unconstrained_marked_string() {
         let mut content = Content::from(Span::new(r###"\\##--anything goes ##"###));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -307,8 +304,8 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_marked_string() {
         let mut content = Content::from(Span::new("##--anything\ngoes ##"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -323,8 +320,8 @@ mod quotes {
     #[test]
     fn single_line_constrained_marked_string_with_role() {
         let mut content = Content::from(Span::new(r##"[statement]#a few words#"##));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -341,8 +338,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             r##"key: [ *before [.redacted]#redacted# after* ]"##,
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -372,8 +369,8 @@ mod quotes {
     #[test]
     fn single_line_constrained_strong_string() {
         let mut content = Content::from(Span::new(r#"*a few strong words*"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -384,8 +381,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_constrained_strong_string() {
         let mut content = Content::from(Span::new(r#"\*a few strong words*"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -396,8 +393,8 @@ mod quotes {
     #[test]
     fn multi_line_constrained_strong_string() {
         let mut content = Content::from(Span::new("*a few\nstrong words*"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -412,8 +409,8 @@ mod quotes {
     #[test]
     fn constrained_strong_string_containing_an_asterisk() {
         let mut content = Content::from(Span::new("*bl*ck*-eye"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -424,8 +421,8 @@ mod quotes {
     #[test]
     fn constrained_strong_string_containing_an_asterisk_and_multibyte_word_chars() {
         let mut content = Content::from(Span::new("*黑*眼圈*"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -436,8 +433,8 @@ mod quotes {
     #[test]
     fn single_line_constrained_quote_variation_emphasized_string() {
         let mut content = Content::from(Span::new("_a few emphasized words_"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -452,8 +449,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_constrained_quote_variation_emphasized_string() {
         let mut content = Content::from(Span::new("\\_a few emphasized words_"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -464,8 +461,8 @@ mod quotes {
     #[test]
     fn escaped_single_quoted_string() {
         let mut content = Content::from(Span::new(r#"\'a few emphasized words'"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -476,8 +473,8 @@ mod quotes {
     #[test]
     fn multi_line_constrained_emphasized_quote_variation_string() {
         let mut content = Content::from(Span::new("_a few\nemphasized words_"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -488,8 +485,8 @@ mod quotes {
     #[test]
     fn single_quoted_string_containing_an_emphasized_phrase() {
         let mut content = Content::from(Span::new(r#"'`I told him, 'Just go for it!'`'"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -501,8 +498,8 @@ mod quotes {
     #[test]
     fn escaped_single_quotes_inside_emphasized_words_are_restored() {
         let mut content = Content::from(Span::new(r#"'Here\'s Johnny!'"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
@@ -512,8 +509,8 @@ mod quotes {
     #[test]
     fn single_line_constrained_emphasized_underline_variation_string() {
         let mut content = Content::from(Span::new(r#"_a few emphasized words_"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -524,8 +521,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_constrained_emphasized_underline_variation_string() {
         let mut content = Content::from(Span::new(r#"\_a few emphasized words_"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -536,8 +533,8 @@ mod quotes {
     #[test]
     fn multi_line_constrained_emphasized_underline_variation_string() {
         let mut content = Content::from(Span::new("_a few\nemphasized words_"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -639,8 +636,8 @@ mod quotes {
     #[test]
     fn single_line_unconstrained_strong_chars() {
         let mut content = Content::from(Span::new(r#"**Git**Hub"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -651,8 +648,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_unconstrained_strong_chars() {
         let mut content = Content::from(Span::new(r#"\**Git**Hub"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -663,8 +660,8 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_strong_chars() {
         let mut content = Content::from(Span::new("**G\ni\nt\n**Hub"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -675,8 +672,8 @@ mod quotes {
     #[test]
     fn unconstrained_strong_chars_with_inline_asterisk() {
         let mut content = Content::from(Span::new("**bl*ck**-eye"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -687,8 +684,8 @@ mod quotes {
     #[test]
     fn unconstrained_strong_chars_with_role() {
         let mut content = Content::from(Span::new("Git[blue]**Hub**"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -705,8 +702,8 @@ mod quotes {
         // FWIW we get the same (possibly incorrect) result in Rust as the Ruby
         // implementation.
         let mut content = Content::from(Span::new(r#"Git\[blue]**Hub**"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -717,8 +714,8 @@ mod quotes {
     #[test]
     fn single_line_unconstrained_emphasized_characters() {
         let mut content = Content::from(Span::new("__Git__Hub"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("<em>Git</em>Hub"));
     }
@@ -726,8 +723,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_unconstrained_emphasized_characters() {
         let mut content = Content::from(Span::new(r#"\__Git__Hub"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("__Git__Hub"));
     }
@@ -735,8 +732,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_unconstrained_emphasized_characters_around_word() {
         let mut content = Content::from(Span::new(r#"\\__GitHub__"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("__GitHub__"));
     }
@@ -744,8 +741,8 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_emphasized_chars() {
         let mut content = Content::from(Span::new("__G\ni\nt\n__Hub"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("<em>G\ni\nt\n</em>Hub"));
     }
@@ -753,8 +750,8 @@ mod quotes {
     #[test]
     fn unconstrained_emphasis_chars_with_role() {
         let mut content = Content::from(Span::new("[gray]__Git__Hub"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -765,8 +762,8 @@ mod quotes {
     #[test]
     fn escaped_unconstrained_emphasis_chars_with_role() {
         let mut content = Content::from(Span::new("\\[gray]__Git__Hub"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"[gray]__Git__Hub"#));
     }
@@ -777,8 +774,8 @@ mod quotes {
         // TO DO: I don't recognize this syntax.
         // Also it may require full substitution, not just quotes.
         let mut content = Content::from(Span::new("call [x-]+save()+ to persist the changes"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -789,8 +786,8 @@ mod quotes {
     #[test]
     fn single_line_constrained_monospaced_charsd() {
         let mut content = Content::from(Span::new("call `save()` to persist the changes"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -805,8 +802,8 @@ mod quotes {
         // Also it may require full substitution, not just quotes.
         let mut content =
             Content::from(Span::new("call [method x-]+save()+ to persist the changes"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -817,8 +814,8 @@ mod quotes {
     #[test]
     fn single_line_constrained_monospaced_chars_with_role() {
         let mut content = Content::from(Span::new("call [method]`save()` to persist the changes"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -829,8 +826,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_constrained_monospaced_chars() {
         let mut content = Content::from(Span::new(r#"call \`save()` to persist the changes"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -843,8 +840,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             r#"call [method]\`save()` to persist the changes"#,
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -857,8 +854,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             r#"call \[method]`save()` to persist the changes"#,
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -871,8 +868,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             r#"call \[method]\`save()` to persist the changes"#,
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -887,8 +884,8 @@ mod quotes {
         // monospaced is handled as a passthrough. (IOW we need full substitution groups
         // to run this test.)
         let mut content = Content::from(Span::new(r#"[x-]\+leave it alone+"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -902,8 +899,8 @@ mod quotes {
         // TO DO: I don't recognize this syntax.
         // Also it may require full substitution, not just quotes.
         let mut content = Content::from(Span::new("Git[x-]++Hub++"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git<code>Hub</code>"#));
     }
@@ -911,8 +908,8 @@ mod quotes {
     #[test]
     fn single_line_unconstrained_monospaced_chars() {
         let mut content = Content::from(Span::new("Git``Hub``"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git<code>Hub</code>"#));
     }
@@ -920,8 +917,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_unconstrained_monospaced_chars() {
         let mut content = Content::from(Span::new(r#"Git\``Hub``"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git``Hub``"#));
     }
@@ -932,8 +929,8 @@ mod quotes {
         // TO DO: I don't recognize this syntax.
         // Also it may require full substitution, not just quotes.
         let mut content = Content::from(Span::new("Git[x-]++\nH\nu\nb++"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -944,8 +941,8 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_monospaced_chars() {
         let mut content = Content::from(Span::new("Git``\nH\nu\nb``"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -958,8 +955,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             "x^2^ = x * x, e = mc^2^, there's a 1^st^ time for everything",
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -970,8 +967,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_superscript_chars() {
         let mut content = Content::from(Span::new(r#"x\^2^ = x * x"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("x^2^ = x * x"));
     }
@@ -979,8 +976,8 @@ mod quotes {
     #[test]
     fn does_not_match_superscript_across_whitespace() {
         let mut content = Content::from(Span::new("x^(n\n-\n1)^"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("x^(n\n-\n1)^"));
     }
@@ -989,8 +986,8 @@ mod quotes {
     #[test]
     fn allow_spaces_in_superscript_if_spaces_are_inserted_using_an_attribute_reference() {
         let mut content = Content::from(Span::new("Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^."));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
@@ -1004,8 +1001,8 @@ mod quotes {
     #[test]
     fn allow_spaces_in_superscript_if_text_is_wrapped_in_a_passthrough() {
         let mut content = Content::from(Span::new("Night ^+A poem by Jane Kondo+^."));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
@@ -1018,8 +1015,8 @@ mod quotes {
     #[test]
     fn does_not_match_adjacent_superscript_chars() {
         let mut content = Content::from(Span::new("a ^^ b"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("a ^^ b"));
     }
@@ -1030,8 +1027,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             "http://localhost[Text^] on the 21^st^ and 22^nd^",
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
@@ -1046,8 +1043,8 @@ mod quotes {
     #[test]
     fn single_line_subscript_chars() {
         let mut content = Content::from(Span::new("H~2~O"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("H<sub>2</sub>O"));
     }
@@ -1055,8 +1052,8 @@ mod quotes {
     #[test]
     fn escaped_single_line_subscript_chars() {
         let mut content = Content::from(Span::new(r#"H\~2~O"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("H~2~O"));
     }
@@ -1064,8 +1061,8 @@ mod quotes {
     #[test]
     fn does_not_match_subscript_across_whitespace() {
         let mut content = Content::from(Span::new("project~ view\non\nGitHub~"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1076,8 +1073,8 @@ mod quotes {
     #[test]
     fn does_not_match_adjacent_subscript_chars() {
         let mut content = Content::from(Span::new("a ~~ b"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("a ~~ b"));
     }
@@ -1087,8 +1084,8 @@ mod quotes {
         let mut content = Content::from(Span::new(
             "http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]",
         ));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1099,8 +1096,8 @@ mod quotes {
     #[test]
     fn quoted_text_with_role_shorthand() {
         let mut content = Content::from(Span::new("[.white.red-background]#alert#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1111,8 +1108,8 @@ mod quotes {
     #[test]
     fn quoted_text_with_id_shorthand() {
         let mut content = Content::from(Span::new("[#bond]#007#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1123,8 +1120,8 @@ mod quotes {
     #[test]
     fn quoted_text_with_id_and_role_shorthand() {
         let mut content = Content::from(Span::new("[#bond.white.red-background]#007#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1135,8 +1132,8 @@ mod quotes {
     #[test]
     fn quoted_text_with_id_and_role_shorthand_with_roles_before_id() {
         let mut content = Content::from(Span::new("[.white.red-background#bond]#007#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1147,8 +1144,8 @@ mod quotes {
     #[test]
     fn quoted_text_with_id_and_role_shorthand_with_roles_around_id() {
         let mut content = Content::from(Span::new("[.white#bond.red-background]#007#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1159,8 +1156,8 @@ mod quotes {
     #[test]
     fn should_not_assign_role_attribute_if_shorthand_style_has_no_roles() {
         let mut content = Content::from(Span::new("[#idname]*blah*"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1171,8 +1168,8 @@ mod quotes {
     #[test]
     fn should_remove_trailing_spaces_from_role_defined_using_shorthand() {
         let mut content = Content::from(Span::new("[.rolename ]*blah*"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1196,8 +1193,8 @@ mod quotes {
     #[test]
     fn should_ignore_attributes_after_comma() {
         let mut content = Content::from(Span::new("[red, foobar]#alert#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1209,8 +1206,8 @@ mod quotes {
     fn should_remove_leading_and_trailing_spaces_around_role_after_ignoring_attributes_after_comma()
     {
         let mut content = Content::from(Span::new("[ red , foobar]#alert#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1221,8 +1218,8 @@ mod quotes {
     #[test]
     fn should_not_assign_role_if_value_before_comma_is_empty() {
         let mut content = Content::from(Span::new("[,]#anonymous#"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1236,8 +1233,8 @@ mod quotes {
         // TODO: Restore this test when we apply macro substitutions.
         // Passthroughs are processed in that layer.
         let mut content = Content::from(Span::new("[#idname.rolename]+pass+"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1255,8 +1252,8 @@ mod quotes {
         // TODO: Restore this test when we apply macro substitutions.
         // Passthroughs are processed in that layer.
         let mut content = Content::from(Span::new("[.rolename#idname]+pass+"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,

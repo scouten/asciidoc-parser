@@ -1,14 +1,11 @@
 mod special_characters {
-    use crate::{
-        parser::HtmlSubstitutionRenderer, span::content::SubstitutionStep, strings::CowStr,
-        Content, Span,
-    };
+    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
 
     #[test]
     fn empty() {
         let mut content = Content::from(Span::new(""));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }
@@ -16,8 +13,8 @@ mod special_characters {
     #[test]
     fn basic_non_empty_span() {
         let mut content = Content::from(Span::new("blah"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("blah"));
     }
@@ -25,8 +22,8 @@ mod special_characters {
     #[test]
     fn match_lt_and_gt() {
         let mut content = Content::from(Span::new("bl<ah>"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -37,8 +34,8 @@ mod special_characters {
     #[test]
     fn match_amp() {
         let mut content = Content::from(Span::new("bl<a&h>"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -48,16 +45,13 @@ mod special_characters {
 }
 
 mod quotes {
-    use crate::{
-        parser::HtmlSubstitutionRenderer, span::content::SubstitutionStep, strings::CowStr,
-        Content, Span,
-    };
+    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
 
     #[test]
     fn empty() {
         let mut content = Content::from(Span::new(""));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }
@@ -65,8 +59,8 @@ mod quotes {
     #[test]
     fn basic_non_empty_span() {
         let mut content = Content::from(Span::new("blah"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("blah"));
     }
@@ -74,8 +68,8 @@ mod quotes {
     #[test]
     fn ignore_lt_and_gt() {
         let mut content = Content::from(Span::new("bl<ah>"));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -86,8 +80,8 @@ mod quotes {
     #[test]
     fn strong_word() {
         let mut content = Content::from(Span::new("One *word* is strong."));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -102,8 +96,8 @@ mod quotes {
     #[test]
     fn marked_string_with_id() {
         let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Quotes.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Quotes.apply(&mut content, &p);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -113,17 +107,14 @@ mod quotes {
 }
 
 mod callouts {
-    use crate::{
-        parser::HtmlSubstitutionRenderer, span::content::SubstitutionStep, strings::CowStr,
-        Content, Span,
-    };
+    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
 
     #[test]
     #[should_panic]
     fn not_yet_implemented() {
         let mut content = Content::from(Span::new(""));
-        let r = HtmlSubstitutionRenderer {};
-        SubstitutionStep::Callouts.apply(&mut content, &r);
+        let p = Parser::default();
+        SubstitutionStep::Callouts.apply(&mut content, &p);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }

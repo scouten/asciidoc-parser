@@ -6,6 +6,7 @@ use crate::{
     attributes::Attrlist,
     parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter},
     span::Content,
+    Parser,
 };
 
 /// Each substitution type replaces characters, markup, attribute references,
@@ -42,17 +43,13 @@ pub(crate) enum SubstitutionStep {
 }
 
 impl SubstitutionStep {
-    pub(crate) fn apply(
-        &self,
-        content: &mut Content<'_>,
-        renderer: &dyn InlineSubstitutionRenderer,
-    ) {
+    pub(crate) fn apply(&self, content: &mut Content<'_>, parser: &Parser) {
         match self {
             Self::SpecialCharacters => {
-                apply_special_characters(content, renderer);
+                apply_special_characters(content, parser.renderer);
             }
             Self::Quotes => {
-                apply_quotes(content, renderer);
+                apply_quotes(content, parser.renderer);
             }
             _ => {
                 todo!("Implement apply for {self:?}");
