@@ -55,5 +55,8 @@ impl<'src> From<Span<'src>> for Content<'src> {
     }
 }
 
+mod substitution_group;
+pub(crate) use substitution_group::SubstitutionGroup;
+
 mod substitution_step;
 pub(crate) use substitution_step::SubstitutionStep;
