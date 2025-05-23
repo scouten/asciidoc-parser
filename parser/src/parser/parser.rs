@@ -1,17 +1,26 @@
 use std::collections::HashMap;
 
+use super::HtmlSubstitutionRenderer;
 use crate::{
     document::InterpretedValue,
-    parser::{AllowableValue, AttributeValue, ModificationContext},
+    parser::{AllowableValue, AttributeValue, InlineSubstitutionRenderer, ModificationContext},
     Document,
 };
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
 /// how AsciiDoc parsing occurs and then to initiate the parsing process.
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Parser<'p> {
     /// Attribute values at current state of parsing.
     pub(crate) attribute_values: HashMap<String, AttributeValue<'p>>,
+
+    #[allow(unused)]
+    /// Specifies how the basic raw text of a simple block will be converted to
+    /// the format which will ultimately be presented in the final output.
+    ///
+    /// Typically this is an [`HtmlSubstitutionRenderer`] but clients may
+    /// provide alternative implementations.
+    pub(crate) renderer: &'p dyn InlineSubstitutionRenderer,
 }
 
 impl<'p> Parser<'p> {
@@ -155,5 +164,16 @@ impl<'p> Parser<'p> {
             .insert(name.as_ref().to_string(), attribute_value);
 
         self
+    }
+}
+
+const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitutionRenderer {};
+
+impl<'p> Default for Parser<'p> {
+    fn default() -> Self {
+        Self {
+            attribute_values: HashMap::new(),
+            renderer: DEFAULT_RENDERER,
+        }
     }
 }
