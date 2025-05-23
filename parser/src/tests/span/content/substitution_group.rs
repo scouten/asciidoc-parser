@@ -1,5 +1,5 @@
 mod normal {
-    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+    use crate::{span::content::SubstitutionGroup, strings::CowStr, Content, Parser, Span};
 
     #[test]
     fn empty() {
@@ -41,15 +41,6 @@ mod normal {
             content.rendered,
             CowStr::Boxed("bl&lt;a&amp;h&gt;".to_string().into_boxed_str())
         );
-    }
-
-    #[test]
-    fn empty() {
-        let mut content = Content::from(Span::new(""));
-        let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
-        assert!(content.is_empty());
-        assert_eq!(content.rendered, CowStr::Borrowed(""));
     }
 
     #[test]
