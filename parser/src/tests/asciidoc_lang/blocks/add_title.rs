@@ -2,6 +2,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{Block, ContentModel},
+    span::content::SubstitutionGroup,
     tests::{
         fixtures::{
             attributes::{TAttrlist, TElementAttribute},
@@ -182,6 +183,7 @@ Don't put a space between the dot and the first character of the title.
                 ),
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Verbatim,
             },
         )
     );
@@ -318,6 +320,7 @@ stages: [ init, verify, deploy ]
                         },
                     },
                 ),
+                substitution_group: SubstitutionGroup::Verbatim,
             },
         ));
 }

@@ -2,6 +2,7 @@ use std::fmt;
 
 use crate::{
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{attributes::TAttrlist, content::TContent, TSpan},
     HasSpan,
 };
@@ -15,6 +16,7 @@ pub(crate) struct TRawDelimitedBlock {
     pub title: Option<TSpan>,
     pub anchor: Option<TSpan>,
     pub attrlist: Option<TAttrlist>,
+    pub substitution_group: SubstitutionGroup,
 }
 
 impl fmt::Debug for TRawDelimitedBlock {
@@ -27,6 +29,7 @@ impl fmt::Debug for TRawDelimitedBlock {
             .field("title", &self.title)
             .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
+            .field("substitution_group", &self.substitution_group)
             .finish()
     }
 }
@@ -93,4 +96,5 @@ fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBloc
     }
 
     &fixture.source == observed.span()
+        && fixture.substitution_group == observed.substitution_group()
 }

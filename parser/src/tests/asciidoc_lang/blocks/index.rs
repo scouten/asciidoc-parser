@@ -595,7 +595,7 @@ The context of the block is still the same, but it has additional metadata to in
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
-        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
     }
 
     // TO DO: Cover the remainder ...

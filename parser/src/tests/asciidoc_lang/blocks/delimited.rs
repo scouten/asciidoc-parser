@@ -2,6 +2,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{Block, ContentModel, IsBlock},
+    span::content::SubstitutionGroup,
     tests::{
         fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
@@ -80,6 +81,7 @@ This text will be treated as verbatim content.
             title: None,
             anchor: None,
             attrlist: None,
+            substitution_group: SubstitutionGroup::Verbatim,
         },)
     );
 }
@@ -129,6 +131,7 @@ The remaining lines define a block's content.
             title: None,
             anchor: None,
             attrlist: None,
+            substitution_group: SubstitutionGroup::Verbatim,
         },)
     );
 }
@@ -492,6 +495,7 @@ mod nesting_blocks {
 
     use crate::{
         blocks::{Block, ContentModel},
+        span::content::SubstitutionGroup,
         tests::{
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
@@ -602,6 +606,7 @@ The document header is useful, but not required.
                                 title: None,
                                 anchor: None,
                                 attrlist: None,
+                                substitution_group: SubstitutionGroup::Verbatim,
                             },
                         ),
                         TBlock::Simple(
