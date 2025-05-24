@@ -1012,18 +1012,16 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("x^(n\n-\n1)^"));
     }
 
-    #[ignore]
     #[test]
     fn allow_spaces_in_superscript_if_spaces_are_inserted_using_an_attribute_reference() {
         let mut content = Content::from(Span::new("Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^."));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
-        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
-        // substition.
-        assert!(!content.is_empty());
+
+        SubstitutionGroup::Normal.apply(&mut content, &p);
+
         assert_eq!(
             content.rendered,
-            CowStr::Borrowed("Night <sup>A poem by Jane Kondo</sup>.")
+            CowStr::Boxed(r#"Night <sup>A poem by Jane Kondo</sup>."#.to_string().into_boxed_str())
         );
     }
 

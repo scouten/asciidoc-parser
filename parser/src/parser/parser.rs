@@ -178,8 +178,23 @@ const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitut
 impl Default for Parser<'_> {
     fn default() -> Self {
         Self {
-            attribute_values: HashMap::new(),
+            attribute_values: built_in_attrs(),
             renderer: DEFAULT_RENDERER,
         }
     }
+}
+
+fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
+    let mut attrs: HashMap<String, AttributeValue<'p>> = HashMap::new();
+
+    attrs.insert(
+        "sp".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value(" ".into()),
+        },
+    );
+
+    attrs
 }
