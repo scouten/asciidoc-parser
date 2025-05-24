@@ -1,7 +1,7 @@
 use crate::{
     attributes::Attrlist,
     blocks::{preamble::Preamble, ContentModel, IsBlock},
-    span::MatchedItem,
+    span::{content::SubstitutionGroup, MatchedItem},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
     Content, HasSpan, Parser, Span,
@@ -27,6 +27,7 @@ pub struct RawDelimitedBlock<'src> {
     title: Option<Span<'src>>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
+    substitution_group: SubstitutionGroup,
 }
 
 impl<'src> RawDelimitedBlock<'src> {
@@ -64,11 +65,20 @@ impl<'src> RawDelimitedBlock<'src> {
             return None;
         }
 
-        let (content_model, context) = match delimiter.item.data().split_at(4).0 {
-            "////" => (ContentModel::Raw, "comment"),
-            "----" => (ContentModel::Verbatim, "listing"),
-            "...." => (ContentModel::Verbatim, "literal"),
-            "++++" => (ContentModel::Raw, "pass"),
+        let (content_model, context, substitution_group) = match delimiter.item.data().split_at(4).0
+        {
+            "////" => (ContentModel::Raw, "comment", SubstitutionGroup::None),
+            "----" => (
+                ContentModel::Verbatim,
+                "listing",
+                SubstitutionGroup::Verbatim,
+            ),
+            "...." => (
+                ContentModel::Verbatim,
+                "literal",
+                SubstitutionGroup::Verbatim,
+            ),
+            "++++" => (ContentModel::Raw, "pass", SubstitutionGroup::Pass),
             _ => return None,
         };
 
@@ -97,6 +107,7 @@ impl<'src> RawDelimitedBlock<'src> {
                             title: preamble.title,
                             anchor: preamble.anchor,
                             attrlist: preamble.attrlist.clone(),
+                            substitution_group,
                         },
                         after: line.after,
                     }),
@@ -141,6 +152,10 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         self.attrlist.as_ref()
+    }
+
+    fn substitution_group(&'src self) -> SubstitutionGroup {
+        self.substitution_group
     }
 }
 

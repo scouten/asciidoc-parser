@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{ContentModel, IsBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
@@ -37,6 +38,7 @@ fn empty_source() {
     assert!(doc.title().is_none());
     assert!(doc.anchor().is_none());
     assert!(doc.attrlist().is_none());
+    assert_eq!(doc.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         doc,

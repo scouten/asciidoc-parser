@@ -187,6 +187,7 @@ mod example {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
@@ -230,6 +231,7 @@ mod example {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.span(),

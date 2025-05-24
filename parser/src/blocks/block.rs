@@ -6,7 +6,7 @@ use crate::{
         preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock,
         RawDelimitedBlock, SectionBlock, SimpleBlock,
     },
-    span::MatchedItem,
+    span::{content::SubstitutionGroup, MatchedItem},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
     HasSpan, Parser, Span,
@@ -272,6 +272,16 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.attrlist(),
             Self::RawDelimited(b) => b.attrlist(),
             Self::CompoundDelimited(b) => b.attrlist(),
+        }
+    }
+
+    fn substitution_group(&self) -> SubstitutionGroup {
+        match self {
+            Self::Simple(b) => b.substitution_group(),
+            Self::Macro(b) => b.substitution_group(),
+            Self::Section(b) => b.substitution_group(),
+            Self::RawDelimited(b) => b.substitution_group(),
+            Self::CompoundDelimited(b) => b.substitution_group(),
         }
     }
 }

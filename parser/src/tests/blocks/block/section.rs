@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{Block, ContentModel, IsBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
@@ -86,6 +87,7 @@ fn simplest_section_block() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -141,6 +143,7 @@ fn has_child_block() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -248,6 +251,7 @@ fn title() {
     assert_eq!(mi.item.raw_context().deref(), "section");
     assert_eq!(mi.item.resolved_context().deref(), "section");
     assert!(mi.item.declared_style().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,

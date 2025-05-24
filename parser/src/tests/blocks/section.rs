@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{preamble::Preamble, ContentModel, IsBlock, SectionBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
@@ -68,6 +69,7 @@ fn simplest_section_block() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -121,6 +123,7 @@ fn has_child_block() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -196,6 +199,7 @@ fn has_macro_block_with_extra_blank_line() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -348,6 +352,7 @@ fn has_child_block_with_errors() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -512,6 +517,7 @@ fn dont_stop_at_child_section() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -627,6 +633,7 @@ fn stop_at_peer_section() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
@@ -702,6 +709,7 @@ fn stop_at_ancestor_section() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,

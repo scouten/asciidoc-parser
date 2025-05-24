@@ -246,6 +246,7 @@ mod example {
 
     use crate::{
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
@@ -289,6 +290,7 @@ mod example {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -371,6 +373,7 @@ mod example {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -516,6 +519,7 @@ mod example {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -635,6 +639,7 @@ mod open {
 
     use crate::{
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
@@ -678,6 +683,7 @@ mod open {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -758,6 +764,7 @@ mod open {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -892,6 +899,7 @@ mod open {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -951,6 +959,7 @@ mod sidebar {
 
     use crate::{
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
@@ -994,6 +1003,7 @@ mod sidebar {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -1076,6 +1086,7 @@ mod sidebar {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -1221,6 +1232,7 @@ mod sidebar {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -1369,6 +1381,7 @@ mod quote {
 
     use crate::{
         blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
@@ -1412,6 +1425,7 @@ mod quote {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -1494,6 +1508,7 @@ mod quote {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
@@ -1639,6 +1654,7 @@ mod quote {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(

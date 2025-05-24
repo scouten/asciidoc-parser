@@ -17,6 +17,7 @@ mod positional_attribute {
 
     use crate::{
         blocks::{preamble::Preamble, Block, IsBlock, MacroBlock},
+        span::content::SubstitutionGroup,
         tests::{
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
@@ -326,6 +327,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
 
         assert_eq!(block.declared_style().unwrap().data(), "appendix");
         assert_eq!(block.id().unwrap().data(), "custom-id");
+        assert_eq!(block.substitution_group(), SubstitutionGroup::Normal);
 
         verifies!(
             r#"

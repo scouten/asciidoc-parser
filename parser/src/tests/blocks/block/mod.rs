@@ -23,7 +23,7 @@ mod error_cases {
 
     use crate::{
         blocks::{preamble::Preamble, Block, ContentModel, IsBlock, SectionBlock},
-        span::HasSpan,
+        span::{content::SubstitutionGroup, HasSpan},
         tests::fixtures::{
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
@@ -55,6 +55,7 @@ mod error_cases {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item,
@@ -186,6 +187,7 @@ mod error_cases {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item,
@@ -242,6 +244,7 @@ mod error_cases {
         assert!(mi.item.options().is_empty());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.attrlist().unwrap(),

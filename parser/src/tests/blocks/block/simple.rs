@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{Block, ContentModel, IsBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
@@ -99,6 +100,7 @@ fn single_line() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.after,
@@ -551,6 +553,7 @@ fn with_block_anchor() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item.anchor().unwrap(),
@@ -647,6 +650,7 @@ fn err_empty_block_anchor() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item.anchor().unwrap(),
@@ -743,6 +747,7 @@ fn err_invalid_block_anchor() {
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item.anchor().unwrap(),
@@ -860,6 +865,7 @@ fn unterminated_block_anchor() {
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item.attrlist().unwrap(),

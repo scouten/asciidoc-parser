@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{preamble::Preamble, ContentModel, IsBlock, SimpleBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{blocks::TSimpleBlock, content::TContent, TSpan},
     Parser,
 };
@@ -70,6 +71,7 @@ fn single_line() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.after,

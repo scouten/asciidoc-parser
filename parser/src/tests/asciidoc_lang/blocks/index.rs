@@ -60,6 +60,7 @@ mod context {
 
     use crate::{
         blocks::{is_built_in_context, Block, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
         Parser, Span,
     };
@@ -110,6 +111,7 @@ You can think of the context as the block's type.
         assert_eq!(mi.item.raw_context().deref(), "section");
         assert_eq!(mi.item.resolved_context().deref(), "section");
         assert!(mi.item.declared_style().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -520,6 +522,7 @@ In the converter, these blocks must be accessed from their parent block.
 mod block_style {
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::{
             fixtures::TSpan,
             sdd::{non_normative, verifies},
@@ -592,6 +595,7 @@ The context of the block is still the same, but it has additional metadata to in
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
     }
 
     // TO DO: Cover the remainder ...

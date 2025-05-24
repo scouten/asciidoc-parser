@@ -193,6 +193,7 @@ mod comment {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
             content::TContent,
@@ -232,6 +233,7 @@ mod comment {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::None,
             })
         );
 
@@ -245,6 +247,7 @@ mod comment {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
     }
 
     #[test]
@@ -286,6 +289,7 @@ mod comment {
                 },),
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::None,
             })
         );
 
@@ -296,6 +300,7 @@ mod comment {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
 
         assert_eq!(
             mi.item.title().unwrap(),
@@ -342,6 +347,7 @@ mod comment {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::None,
             })
         );
 
@@ -355,6 +361,7 @@ mod comment {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
     }
 
     #[test]
@@ -388,6 +395,7 @@ mod comment {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::None,
             })
         );
 
@@ -401,6 +409,7 @@ mod comment {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
     }
 }
 
@@ -409,7 +418,7 @@ mod listing {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
-        span::HasSpan,
+        span::{content::SubstitutionGroup, HasSpan},
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
             content::TContent,
@@ -449,6 +458,7 @@ mod listing {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Verbatim,
             })
         );
 
@@ -462,6 +472,7 @@ mod listing {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
     }
 
     #[test]
@@ -495,6 +506,7 @@ mod listing {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Verbatim,
             })
         );
 
@@ -509,6 +521,7 @@ mod listing {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
 
         assert_eq!(
             mi.item.span(),
@@ -560,6 +573,7 @@ mod listing {
                 },),
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Verbatim,
             })
         );
 
@@ -571,6 +585,7 @@ mod listing {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
 
         assert_eq!(
             mi.item.title().unwrap(),
@@ -627,6 +642,7 @@ mod listing {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Verbatim,
             })
         );
 
@@ -641,6 +657,7 @@ mod listing {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
 
         assert_eq!(
             mi.item.span(),
@@ -659,7 +676,7 @@ mod pass {
 
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
-        span::HasSpan,
+        span::{content::SubstitutionGroup, HasSpan},
         tests::fixtures::{
             blocks::{TBlock, TRawDelimitedBlock},
             content::TContent,
@@ -699,6 +716,7 @@ mod pass {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Pass,
             })
         );
 
@@ -713,6 +731,7 @@ mod pass {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
 
         assert_eq!(
             mi.item.span(),
@@ -756,6 +775,7 @@ mod pass {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Pass,
             })
         );
 
@@ -770,6 +790,7 @@ mod pass {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
 
         assert_eq!(
             mi.item.span(),
@@ -821,6 +842,7 @@ mod pass {
                 },),
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Pass,
             })
         );
 
@@ -832,6 +854,7 @@ mod pass {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
 
         assert_eq!(
             mi.item.title().unwrap(),
@@ -888,6 +911,7 @@ mod pass {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                substitution_group: SubstitutionGroup::Pass,
             })
         );
 
@@ -902,6 +926,7 @@ mod pass {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
 
         assert_eq!(
             mi.item.span(),
