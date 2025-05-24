@@ -394,7 +394,7 @@ fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRend
 
 static ATTRIBUTE_REFERENCE: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
-    Regex::new("\\?{([A-Za-z0-9_][A-Za-z0-9_-]*)}").unwrap()
+    Regex::new(r#"\\?\{([A-Za-z0-9_][A-Za-z0-9_-]*)\}"#).unwrap()
 });
 
 #[derive(Debug)]
@@ -433,15 +433,13 @@ fn apply_attributes(content: &mut Content<'_>, parser: &Parser) {
 
     let mut result: Cow<'_, str> = content.rendered.to_string().into();
 
-    for sub in &*QUOTE_SUBS {
-        let replacer = AttributeReplacer(parser);
-
-        if let Cow::Owned(new_result) = sub.pattern.replace_all(&result, replacer) {
-            result = new_result.into();
-        }
-        // If it's Cow::Borrowed, there was no match for this pattern, so no
-        // need to pay for a new string allocation.
+    if let Cow::Owned(new_result) =
+        ATTRIBUTE_REFERENCE.replace_all(&result, AttributeReplacer(parser))
+    {
+        result = new_result.into();
     }
+    // If it's Cow::Borrowed, there was no match for this pattern, so no
+    // need to pay for a new string allocation.
 
     content.rendered = result.into();
 }
