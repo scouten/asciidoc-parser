@@ -155,7 +155,7 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
     }
 
     fn substitution_group(&'src self) -> SubstitutionGroup {
-        self.substitution_group.clone()
+        self.substitution_group
     }
 }
 

@@ -168,7 +168,7 @@ impl<'p> Parser<'p> {
 
 const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitutionRenderer {};
 
-impl<'p> Default for Parser<'p> {
+impl Default for Parser<'_> {
     fn default() -> Self {
         Self {
             attribute_values: HashMap::new(),
