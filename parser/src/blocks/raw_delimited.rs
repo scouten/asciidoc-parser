@@ -57,7 +57,7 @@ impl<'src> RawDelimitedBlock<'src> {
 
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
-        _parser: &mut Parser,
+        parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = preamble.block_start.take_normalized_line();
 
@@ -94,10 +94,13 @@ impl<'src> RawDelimitedBlock<'src> {
             if line.item.data() == delimiter.item.data() {
                 let content = content_start.trim_remainder(next).trim_trailing_line_end();
 
+                let mut content: Content<'src> = content.into();
+                substitution_group.apply(&mut content, parser);
+
                 return Some(MatchAndWarnings {
                     item: Some(MatchedItem {
                         item: Self {
-                            content: content.into(),
+                            content,
                             content_model,
                             context: context.into(),
                             source: preamble

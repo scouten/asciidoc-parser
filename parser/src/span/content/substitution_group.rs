@@ -57,8 +57,15 @@ impl SubstitutionGroup {
                 // SubstitutionStep::Macros.apply(content, parser);
                 // SubstitutionStep::PostReplacement.apply(content, parser);
             }
+
+            Self::Verbatim => {
+                SubstitutionStep::SpecialCharacters.apply(content, parser);
+            }
+
+            Self::Pass | Self::None => {}
+
             _ => {
-                todo!("Implement apply for {self:?}");
+                todo!("Implement apply for SubstitutionGroup::{self:?}");
             }
         }
     }
