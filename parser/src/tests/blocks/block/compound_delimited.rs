@@ -91,7 +91,7 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "****x",
+                    rendered: "<strong>*</strong>*x",
                 },
                 source: TSpan {
                     data: "****x",

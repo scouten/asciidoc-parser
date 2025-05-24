@@ -61,7 +61,19 @@ mod dispatcher {
 }
 
 mod quotes {
-    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::Block,
+        span::content::SubstitutionStep,
+        strings::CowStr,
+        tests::fixtures::{
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            TSpan,
+        },
+        Content, Parser, Span,
+    };
 
     #[test]
     fn single_line_double_quoted_string() {
@@ -351,18 +363,35 @@ mod quotes {
         );
     }
 
-    #[ignore]
     #[test]
     fn should_ignore_enclosing_square_brackets_when_processing_formatted_text_with_attribute() {
-        // DEFER until Parser::parse includes substitutions.
-        todo!(
-            "{}",
-            r###"
-    test 'should ignore enclosing square brackets when processing formatted text with attribute list' do
-      doc = document_from_string 'nums = [1, 2, 3, [.blue]#4#]', doctype: :inline
-      assert_equal 'nums = [1, 2, 3, <span class="blue">4</span>]', doc.convert
-    end
-          "###
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("nums = [1, 2, 3, [.blue]#4#]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "nums = [1, 2, 3, [.blue]#4#]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"nums = [1, 2, 3, <span class="blue">4</span>]"#,
+                },
+                source: TSpan {
+                    data: "nums = [1, 2, 3, [.blue]#4#]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
         );
     }
 
