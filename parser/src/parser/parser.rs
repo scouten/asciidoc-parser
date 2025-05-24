@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::LazyLock};
 
 use super::HtmlSubstitutionRenderer;
 use crate::{
@@ -82,6 +82,13 @@ impl<'p> Parser<'p> {
             .get(name.as_ref())
             .map(|av| av.value.clone())
             .unwrap_or(InterpretedValue::Unset)
+    }
+
+    /// Returns `true` if the parser has a [document attribute] by this name.
+    ///
+    /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
+    pub fn has_attribute<N: AsRef<str>>(&self, name: N) -> bool {
+        self.attribute_values.contains_key(name.as_ref())
     }
 
     /// Sets the value of an [intrinsic attribute].
@@ -171,8 +178,23 @@ const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitut
 impl Default for Parser<'_> {
     fn default() -> Self {
         Self {
-            attribute_values: HashMap::new(),
+            attribute_values: BUILT_IN_ATTRS.clone(),
             renderer: DEFAULT_RENDERER,
         }
     }
 }
+
+const BUILT_IN_ATTRS: LazyLock<HashMap<String, AttributeValue<'static>>> = LazyLock::new(|| {
+    let mut attrs: HashMap<String, AttributeValue<'static>> = HashMap::new();
+
+    attrs.insert(
+        "sp".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value(" ".into()),
+        },
+    );
+
+    attrs
+});
