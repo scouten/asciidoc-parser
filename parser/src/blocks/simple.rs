@@ -30,7 +30,7 @@ impl<'src> SimpleBlock<'src> {
 
         Some(MatchedItem {
             item: Self {
-                content: source.item.into(),
+                content,
                 source: preamble
                     .source
                     .trim_remainder(source.after)
@@ -45,13 +45,17 @@ impl<'src> SimpleBlock<'src> {
 
     pub(crate) fn parse_fast(
         source: Span<'src>,
-        _parser: &mut Parser,
+        parser: &mut Parser,
     ) -> Option<MatchedItem<'src, Self>> {
         let source = source.take_non_empty_lines()?;
 
+        // TO DO: Allow overrides for SubstitutionGroup.
+        let mut content: Content<'src> = source.item.into();
+        SubstitutionGroup::Normal.apply(&mut content, parser);
+
         Some(MatchedItem {
             item: Self {
-                content: source.item.into(),
+                content,
                 source: source.item,
                 title: None,
                 anchor: None,
