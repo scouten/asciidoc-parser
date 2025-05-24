@@ -163,7 +163,7 @@ Don't put a space between the dot and the first character of the title.
                         col: 1,
                         offset: 22,
                     },
-                    rendered: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
+                    rendered: "From github.com:asciidoctor/asciidoctor\n* branch        main   -&gt; FETCH_HEAD\nAlready up to date.",
                 },
                 content_model: ContentModel::Verbatim,
                 context: "literal",
