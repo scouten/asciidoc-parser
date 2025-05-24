@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{Block, ContentModel, IsBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSimpleBlock},
@@ -283,6 +284,7 @@ fn simplest_block_macro() {
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert_eq!(mi.item.nested_blocks().next(), None);
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
