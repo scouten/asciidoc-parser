@@ -849,6 +849,7 @@ Let's consider `options` when combined with other attributes.
 
     use crate::{
         blocks::{Block, IsBlock},
+        span::content::SubstitutionGroup,
         tests::{
             fixtures::{
                 attributes::{TAttrlist, TElementAttribute},
@@ -1002,6 +1003,8 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
         );
 
         assert!(roles.next().is_none());
+
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -1174,5 +1177,7 @@ property 2:: does different stuff
         );
 
         assert!(roles.next().is_none());
+
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 }

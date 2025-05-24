@@ -155,6 +155,7 @@ mod comment {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
@@ -203,6 +204,7 @@ mod comment {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -251,6 +253,7 @@ mod comment {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.content(),
@@ -314,6 +317,7 @@ mod comment {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.content(),
@@ -359,6 +363,7 @@ mod listing {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
@@ -407,6 +412,7 @@ mod listing {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -455,6 +461,7 @@ mod listing {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.content(),
@@ -518,6 +525,7 @@ mod listing {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.content(),
@@ -628,6 +636,7 @@ mod pass {
 
     use crate::{
         blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
+        span::content::SubstitutionGroup,
         tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
     };
@@ -676,6 +685,7 @@ mod pass {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
     #[test]
@@ -724,6 +734,7 @@ mod pass {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.content(),
@@ -787,6 +798,7 @@ mod pass {
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item.content(),

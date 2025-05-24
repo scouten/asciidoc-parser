@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     blocks::{preamble::Preamble, ContentModel, IsBlock, MacroBlock},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         blocks::TMacroBlock,
@@ -158,6 +159,7 @@ fn simplest_block_macro() {
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item,
