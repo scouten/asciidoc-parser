@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::LazyLock};
 
 use super::HtmlSubstitutionRenderer;
 use crate::{
@@ -178,14 +178,14 @@ const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitut
 impl Default for Parser<'_> {
     fn default() -> Self {
         Self {
-            attribute_values: built_in_attrs(),
+            attribute_values: BUILT_IN_ATTRS.clone(),
             renderer: DEFAULT_RENDERER,
         }
     }
 }
 
-fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
-    let mut attrs: HashMap<String, AttributeValue<'p>> = HashMap::new();
+const BUILT_IN_ATTRS: LazyLock<HashMap<String, AttributeValue<'static>>> = LazyLock::new(|| {
+    let mut attrs: HashMap<String, AttributeValue<'static>> = HashMap::new();
 
     attrs.insert(
         "sp".to_owned(),
@@ -197,4 +197,4 @@ fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
     );
 
     attrs
-}
+});
