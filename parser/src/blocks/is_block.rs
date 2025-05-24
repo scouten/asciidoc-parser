@@ -3,6 +3,7 @@ use std::{fmt::Debug, slice::Iter};
 use crate::{
     attributes::Attrlist,
     blocks::{is_built_in_context, Block},
+    span::content::SubstitutionGroup,
     strings::CowStr,
     HasSpan, Span,
 };
@@ -243,6 +244,12 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
 
     /// Returns the attribute list for this block, if present.
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>>;
+
+    /// Returns the default substitution group that is applied unless you
+    /// customize the substitutions for a particular element.
+    fn substitution_group(&'src self) -> SubstitutionGroup {
+        SubstitutionGroup::Normal
+    }
 }
 
 /// The content model of a block determines what kind of content the block can

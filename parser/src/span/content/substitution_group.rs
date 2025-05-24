@@ -9,7 +9,7 @@ use crate::{
 /// `SubstitutionGroup` specifies the default or overridden substitution group
 /// to be applied.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) enum SubstitutionGroup {
+pub enum SubstitutionGroup {
     /// The normal substitution group is applied to the majority of the AsciiDoc
     /// block and inline elements except for specific elements described in the
     /// next sections.
