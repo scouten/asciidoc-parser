@@ -84,6 +84,13 @@ impl<'p> Parser<'p> {
             .unwrap_or(InterpretedValue::Unset)
     }
 
+    /// Returns `true` if the parser has a [document attribute] by this name.
+    ///
+    /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
+    pub fn has_attribute<N: AsRef<str>>(&self, name: N) -> bool {
+        self.attribute_values.contains_key(name.as_ref())
+    }
+
     /// Sets the value of an [intrinsic attribute].
     ///
     /// Intrinsic attributes are set automatically by the processor. These

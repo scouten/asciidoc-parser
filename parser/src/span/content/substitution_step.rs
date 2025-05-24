@@ -4,6 +4,7 @@ use regex::{Captures, Regex, RegexBuilder, Replacer};
 
 use crate::{
     attributes::Attrlist,
+    document::InterpretedValue,
     parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter},
     span::Content,
     Parser,
@@ -51,8 +52,11 @@ impl SubstitutionStep {
             Self::Quotes => {
                 apply_quotes(content, parser.renderer);
             }
+            Self::AttributeReferences => {
+                apply_attributes(content, parser);
+            }
             _ => {
-                todo!("Implement apply for {self:?}");
+                todo!("Implement apply for SubstitutionStep::{self:?}");
             }
         }
     }
@@ -377,6 +381,60 @@ fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRend
             scope: sub.scope,
             renderer,
         };
+
+        if let Cow::Owned(new_result) = sub.pattern.replace_all(&result, replacer) {
+            result = new_result.into();
+        }
+        // If it's Cow::Borrowed, there was no match for this pattern, so no
+        // need to pay for a new string allocation.
+    }
+
+    content.rendered = result.into();
+}
+
+static ATTRIBUTE_REFERENCE: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new("\\?{([A-Za-z0-9_][A-Za-z0-9_-]*)}").unwrap()
+});
+
+#[derive(Debug)]
+struct AttributeReplacer<'p>(&'p Parser<'p>);
+
+impl<'p> Replacer for AttributeReplacer<'p> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        let attr_name = &caps[1];
+
+        // TO DO: Handle alternative responses ('skip', etc.) for missing attributes.
+        if !self.0.has_attribute(attr_name) {
+            dest.push_str(&caps[0]);
+            return;
+        }
+
+        if caps[0].starts_with('\\') {
+            dest.push_str(&caps[0]);
+            return;
+        }
+
+        match self.0.attribute_value(attr_name) {
+            InterpretedValue::Value(value) => {
+                dest.push_str(value.as_ref());
+            }
+            x => {
+                unimplemented!("What is the replacement value for InterpretedValue::{x:?}?");
+            }
+        }
+    }
+}
+
+fn apply_attributes(content: &mut Content<'_>, parser: &Parser) {
+    if !content.rendered.contains('{') {
+        return;
+    }
+
+    let mut result: Cow<'_, str> = content.rendered.to_string().into();
+
+    for sub in &*QUOTE_SUBS {
+        let replacer = AttributeReplacer(parser);
 
         if let Cow::Owned(new_result) = sub.pattern.replace_all(&result, replacer) {
             result = new_result.into();

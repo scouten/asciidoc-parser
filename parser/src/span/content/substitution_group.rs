@@ -51,8 +51,8 @@ impl SubstitutionGroup {
             Self::Normal => {
                 SubstitutionStep::SpecialCharacters.apply(content, parser);
                 SubstitutionStep::Quotes.apply(content, parser);
+                SubstitutionStep::AttributeReferences.apply(content, parser);
                 // TO DO: Add these as they are implemented.
-                // SubstitutionStep::Attributes.apply(content, parser);
                 // SubstitutionStep::Replacements.apply(content, parser);
                 // SubstitutionStep::Macros.apply(content, parser);
                 // SubstitutionStep::PostReplacement.apply(content, parser);
