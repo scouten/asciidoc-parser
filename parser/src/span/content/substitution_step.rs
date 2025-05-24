@@ -411,7 +411,7 @@ impl<'p> Replacer for AttributeReplacer<'p> {
         }
 
         if caps[0].starts_with('\\') {
-            dest.push_str(&caps[0]);
+            dest.push_str(&caps[0][1..]);
             return;
         }
 

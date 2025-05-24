@@ -106,6 +106,76 @@ mod quotes {
     }
 }
 
+mod attribute_references {
+    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+
+    #[test]
+    fn empty() {
+        let mut content = Content::from(Span::new(""));
+        let p = Parser::default();
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        assert!(content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed(""));
+    }
+
+    #[test]
+    fn basic_non_empty_span() {
+        let mut content = Content::from(Span::new("blah"));
+        let p = Parser::default();
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("blah"));
+    }
+
+    #[test]
+    fn ignore_non_match() {
+        let mut content = Content::from(Span::new("bl{ah}"));
+        let p = Parser::default();
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl{ah}".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn ignore_escaped_non_match() {
+        let mut content = Content::from(Span::new("bl\\{ah}"));
+        let p = Parser::default();
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl\\{ah}".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn replace_sp_match() {
+        let mut content = Content::from(Span::new("bl{sp}ah"));
+        let p = Parser::default();
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl ah".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn ignore_escaped_sp_match() {
+        let mut content = Content::from(Span::new("bl\\{sp}ah"));
+        let p = Parser::default();
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl{sp}ah".to_string().into_boxed_str())
+        );
+    }
+}
+
 mod callouts {
     use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
 
