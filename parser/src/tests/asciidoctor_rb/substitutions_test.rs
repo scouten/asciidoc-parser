@@ -65,7 +65,8 @@ mod quotes {
 
     use crate::{
         blocks::Block,
-        span::content::SubstitutionStep,
+        parser::ModificationContext,
+        span::content::{SubstitutionGroup, SubstitutionStep},
         strings::CowStr,
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
@@ -1011,18 +1012,16 @@ mod quotes {
         assert_eq!(content.rendered, CowStr::Borrowed("x^(n\n-\n1)^"));
     }
 
-    #[ignore]
     #[test]
     fn allow_spaces_in_superscript_if_spaces_are_inserted_using_an_attribute_reference() {
         let mut content = Content::from(Span::new("Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^."));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
-        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
-        // substition.
-        assert!(!content.is_empty());
+
+        SubstitutionGroup::Normal.apply(&mut content, &p);
+
         assert_eq!(
             content.rendered,
-            CowStr::Borrowed("Night <sup>A poem by Jane Kondo</sup>.")
+            CowStr::Boxed(r#"Night <sup>A poem by Jane Kondo</sup>."#.to_string().into_boxed_str())
         );
     }
 
@@ -1206,16 +1205,20 @@ mod quotes {
         );
     }
 
-    #[ignore]
     #[test]
     fn should_allow_role_to_be_defined_using_attribute_reference() {
-        todo!(
-            "{}",
-            r###"
-              input = '[{rolename}]#phrase#'
-              result = convert_string_to_embedded input, doctype: 'inline', attributes: { 'rolename' => 'red' }
-              assert_equal '<span class="red">phrase</span>', result
-            "###
+        let mut content = Content::from(Span::new("[{rolename}]#phrase#"));
+        let p = Parser::default().with_intrinsic_attribute(
+            "rolename",
+            "red",
+            ModificationContext::Anywhere,
+        );
+
+        SubstitutionGroup::Normal.apply(&mut content, &p);
+
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"<span class="red">phrase</span>"#.to_string().into_boxed_str())
         );
     }
 

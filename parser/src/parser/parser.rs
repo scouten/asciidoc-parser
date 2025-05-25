@@ -84,6 +84,13 @@ impl<'p> Parser<'p> {
             .unwrap_or(InterpretedValue::Unset)
     }
 
+    /// Returns `true` if the parser has a [document attribute] by this name.
+    ///
+    /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
+    pub fn has_attribute<N: AsRef<str>>(&self, name: N) -> bool {
+        self.attribute_values.contains_key(name.as_ref())
+    }
+
     /// Sets the value of an [intrinsic attribute].
     ///
     /// Intrinsic attributes are set automatically by the processor. These
@@ -171,8 +178,23 @@ const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitut
 impl Default for Parser<'_> {
     fn default() -> Self {
         Self {
-            attribute_values: HashMap::new(),
+            attribute_values: built_in_attrs(),
             renderer: DEFAULT_RENDERER,
         }
     }
+}
+
+fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
+    let mut attrs: HashMap<String, AttributeValue<'static>> = HashMap::new();
+
+    attrs.insert(
+        "sp".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value(" ".into()),
+        },
+    );
+
+    attrs
 }
