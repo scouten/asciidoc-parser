@@ -184,7 +184,7 @@ impl Default for Parser<'_> {
     }
 }
 
-fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'static>> {
+fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
     let mut attrs: HashMap<String, AttributeValue<'static>> = HashMap::new();
 
     attrs.insert(
