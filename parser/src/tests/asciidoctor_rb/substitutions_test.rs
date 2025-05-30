@@ -3077,18 +3077,15 @@ foo&#8201;&#8212;&#8201;"#;
         );
     }
 
-    #[ignore]
     #[test]
-    fn todo_migrate_from_ruby() {
-        todo!(
-            "{}",
-            r###"
-      test 'replaces dashes between multibyte word characters' do
-        para = block_from_string %(富--巴)
-        expected = '富&#8212;&#8203;巴'
-        assert_equal expected, para.sub_replacements(para.source)
-      end
-    "###
+    fn replaces_dashes_between_multibyte_word_characters() {
+        let mut content = Content::from(Span::new("富--巴"));
+
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("富&#8212;&#8203;巴".to_string().into_boxed_str())
         );
     }
 
@@ -3109,7 +3106,7 @@ foo&#8201;&#8212;&#8201;"#;
 
     #[ignore]
     #[test]
-    fn todo_migrate_from_ruby2() {
+    fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
