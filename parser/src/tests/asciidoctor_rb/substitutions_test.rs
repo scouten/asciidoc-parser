@@ -2511,8 +2511,17 @@ fn todo_migrate_from_ruby() {
         end
       end
     end
+    "###
+    );
+}
 
-    context 'Passthroughs' do
+mod passthroughs {
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
       test 'collect inline triple plus passthroughs' do
         para = block_from_string '+++<code>inline code</code>+++'
         result = para.extract_passthroughs para.source
@@ -2957,8 +2966,20 @@ fn todo_migrate_from_ruby() {
           end
         end
       end
-    end
+        "###
+        );
+    }
+}
 
+mod replacements {
+    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
     context 'Replacements' do
       test 'unescapes XML entities' do
         para = block_from_string '< &quot; &there4; &#34; &#x22; >'
@@ -2996,12 +3017,36 @@ fn todo_migrate_from_ruby() {
         expected = '富&#8212;&#8203;巴'
         assert_equal expected, para.sub_replacements(para.source)
       end
+    "###
+        );
+    }
 
-      test 'replaces marks' do
-        para = block_from_string '(C) (R) (TM) \(C) \(R) \(TM)'
-        assert_equal '&#169; &#174; &#8482; (C) (R) (TM)', para.sub_replacements(para.source)
-      end
+    #[test]
+    fn replaces_marks() {
+        let mut content = Content::from(Span::new(r#"(C) (R) (TM) \(C) \(R) \(TM)"#));
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "&#169; &#174; &#8482; (C) (R) (TM)"
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
 
+    // test 'replaces marks' do
+    //   para = block_from_string '(C) (R) (TM) \(C) \(R) \(TM)'
+    //   assert_equal '&#169; &#174; &#8482; (C) (R) (TM)',
+    // para.sub_replacements(para.source) end
+
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby2() {
+        todo!(
+            "{}",
+            r###"
       test 'preserves entity references' do
         input = '&amp; &#169; &#10004; &#128512; &#x2022; &#x1f600;'
         result = convert_inline_string input
@@ -3166,5 +3211,6 @@ fn todo_migrate_from_ruby() {
       end
     end
     "###
-    );
+        );
+    }
 }

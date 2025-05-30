@@ -7,7 +7,8 @@ pub use attribute_value::{AllowableValue, ModificationContext};
 
 mod inline_substitution_renderer;
 pub use inline_substitution_renderer::{
-    HtmlSubstitutionRenderer, InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter,
+    CharacterReplacementType, HtmlSubstitutionRenderer, InlineSubstitutionRenderer, QuoteScope,
+    QuoteType, SpecialCharacter,
 };
 
 mod parser;

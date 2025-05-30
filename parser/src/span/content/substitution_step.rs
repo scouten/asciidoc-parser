@@ -5,7 +5,10 @@ use regex::{Captures, Regex, RegexBuilder, Replacer};
 use crate::{
     attributes::Attrlist,
     document::InterpretedValue,
-    parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter},
+    parser::{
+        CharacterReplacementType, InlineSubstitutionRenderer, QuoteScope, QuoteType,
+        SpecialCharacter,
+    },
     span::Content,
     Parser,
 };
@@ -54,6 +57,9 @@ impl SubstitutionStep {
             }
             Self::AttributeReferences => {
                 apply_attributes(content, parser);
+            }
+            Self::CharacterReplacements => {
+                apply_character_replacements(content, parser.renderer);
             }
             _ => {
                 todo!("Implement apply for SubstitutionStep::{self:?}");
@@ -442,4 +448,95 @@ fn apply_attributes(content: &mut Content<'_>, parser: &Parser) {
     // need to pay for a new string allocation.
 
     content.rendered = result.into();
+}
+
+fn apply_character_replacements(
+    content: &mut Content<'_>,
+    renderer: &dyn InlineSubstitutionRenderer,
+) {
+    if !REPLACEABLE_TEXT_SNIFF.is_match(content.rendered.as_ref()) {
+        return;
+    }
+
+    let mut result: Cow<'_, str> = content.rendered.to_string().into();
+
+    for repl in &*REPLACEMENTS {
+        let replacer = CharacterReplacer {
+            type_: repl.type_.clone(),
+            renderer,
+        };
+
+        if let Cow::Owned(new_result) = repl.pattern.replace_all(&result, replacer) {
+            result = new_result.into();
+        }
+        // If it's Cow::Borrowed, there was no match for this pattern, so no
+        // need to pay for a new string allocation.
+    }
+
+    content.rendered = result.into();
+}
+
+struct CharacterReplacement {
+    type_: CharacterReplacementType,
+    pattern: Regex,
+}
+
+static REPLACEABLE_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(r#"[&']|--|\.\.\.|\([CRT]M?\)"#).unwrap()
+});
+
+// Adapted from REPLACEMENTS in Ruby Asciidoctor implementation,
+// found in https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor.rb#L490.
+//
+// * NOTE: These substitutions are processed in the order they appear here and
+//   the order in which they are replaced is important.
+static REPLACEMENTS: LazyLock<Vec<CharacterReplacement>> = LazyLock::new(|| {
+    vec![
+        CharacterReplacement {
+            // Copyright `(C)`
+            type_: CharacterReplacementType::Copyright,
+            pattern: Regex::new(r#"\\?\(C\)"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Registered `(R)`
+            type_: CharacterReplacementType::Registered,
+            pattern: Regex::new(r#"\\?\(R\)"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Trademark `(TM)`
+            type_: CharacterReplacementType::Trademark,
+            pattern: Regex::new(r#"\\?\(TM\)"#).unwrap(),
+        },
+    ]
+});
+
+#[derive(Debug)]
+struct CharacterReplacer<'r> {
+    type_: CharacterReplacementType,
+    renderer: &'r dyn InlineSubstitutionRenderer,
+}
+
+impl Replacer for CharacterReplacer<'_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        if caps[0].contains('\\') {
+            // We have to replace since we aren't sure the backslash is the first char.
+            let unescaped = &caps[0].replace("\\", "");
+            dest.push_str(&unescaped);
+            return;
+        }
+
+        match self.type_ {
+            CharacterReplacementType::Copyright
+            | CharacterReplacementType::Registered
+            | CharacterReplacementType::Trademark => {
+                self.renderer
+                    .render_character_replacement(self.type_.clone(), dest);
+            }
+
+            ref t => {
+                todo!("implement Replacer for CharacterReplacementType::{t:?}");
+            }
+        }
+    }
 }
