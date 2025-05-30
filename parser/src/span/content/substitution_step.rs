@@ -511,15 +511,20 @@ static REPLACEMENTS: LazyLock<Vec<CharacterReplacement>> = LazyLock::new(|| {
             #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"\\?\(TM\)"#).unwrap(),
         },
+        CharacterReplacement {
+            // Em dash surrounded by spaces ` -- `
+            type_: CharacterReplacementType::EmDashSurroundedBySpaces,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"(?: |\n|^|\\)--(?: |\n|$)"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Em dash without spaces `--`
+            type_: CharacterReplacementType::EmDashWithoutSpace,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"(\w)\\?--\b{start-half}"#).unwrap(),
+        },
 
         /*
-    # foo -- bar (where either space character can be a newline)
-    # NOTE this necessarily drops the newline if replacement appears at end of line
-    [/(?: |\n|^|\\)--(?: |\n|$)/, '&#8201;&#8212;&#8201;', :none],
-
-    # foo--bar
-    [/(#{CG_WORD})\\?--(?=#{CG_WORD})/, '&#8212;&#8203;', :leading],
-
     # ellipsis
     [/\\?\.\.\./, '&#8230;&#8203;', :none],
 
@@ -581,12 +586,21 @@ impl Replacer for CharacterReplacer<'_> {
             CharacterReplacementType::Copyright
             | CharacterReplacementType::Registered
             | CharacterReplacementType::Trademark
+            | CharacterReplacementType::EmDashSurroundedBySpaces
             | CharacterReplacementType::SingleLeftArrow
             | CharacterReplacementType::DoubleLeftArrow
             | CharacterReplacementType::SingleRightArrow
             | CharacterReplacementType::DoubleRightArrow => {
                 self.renderer
                     .render_character_replacement(self.type_.clone(), dest);
+            }
+
+            CharacterReplacementType::EmDashWithoutSpace => {
+                dest.push_str(&caps[1]);
+                self.renderer.render_character_replacement(
+                    CharacterReplacementType::EmDashWithoutSpace,
+                    dest,
+                );
             }
 
             CharacterReplacementType::CharacterReference(_) => {

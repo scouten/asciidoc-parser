@@ -251,6 +251,14 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("&#8482;");
             }
 
+            CharacterReplacementType::EmDashSurroundedBySpaces => {
+                dest.push_str("&#8201;&#8212;&#8201;");
+            }
+
+            CharacterReplacementType::EmDashWithoutSpace => {
+                dest.push_str("&#8212;&#8203;");
+            }
+
             CharacterReplacementType::SingleLeftArrow => {
                 dest.push_str("&#8592;");
             }

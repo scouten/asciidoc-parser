@@ -3050,33 +3050,39 @@ mod replacements {
         );
     }
 
+    #[test]
+    fn replaces_dashes() {
+        let mut content = Content::from(Span::new(
+            r#"-- foo foo--bar foo\--bar foo -- bar foo \-- bar
+stuff in between
+-- foo
+stuff in between
+foo --
+stuff in between
+foo --
+"#,
+        ));
+
+        let expected = r#"&#8201;&#8212;&#8201;foo foo&#8212;&#8203;bar foo--bar foo&#8201;&#8212;&#8201;bar foo -- bar
+stuff in between&#8201;&#8212;&#8201;foo
+stuff in between
+foo&#8201;&#8212;&#8201;stuff in between
+foo&#8201;&#8212;&#8201;"#;
+
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'replaces dashes' do
-        input = <<~'EOS'
-        -- foo foo--bar foo\--bar foo -- bar foo \-- bar
-        stuff in between
-        -- foo
-        stuff in between
-        foo --
-        stuff in between
-        foo --
-        EOS
-        expected = <<~'EOS'.chop
-        &#8201;&#8212;&#8201;foo foo&#8212;&#8203;bar foo--bar foo&#8201;&#8212;&#8201;bar foo -- bar
-        stuff in between&#8201;&#8212;&#8201;foo
-        stuff in between
-        foo&#8201;&#8212;&#8201;stuff in between
-        foo&#8201;&#8212;&#8201;
-        EOS
-        para = block_from_string input
-        assert_equal expected, para.sub_replacements(para.source)
-      end
-
       test 'replaces dashes between multibyte word characters' do
         para = block_from_string %(富--巴)
         expected = '富&#8212;&#8203;巴'
@@ -3100,11 +3106,6 @@ mod replacements {
             )
         );
     }
-
-    // test 'replaces marks' do
-    //   para = block_from_string '(C) (R) (TM) \(C) \(R) \(TM)'
-    //   assert_equal '&#169; &#174; &#8482; (C) (R) (TM)',
-    // para.sub_replacements(para.source) end
 
     #[ignore]
     #[test]
