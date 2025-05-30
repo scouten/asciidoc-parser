@@ -3104,18 +3104,25 @@ foo&#8201;&#8212;&#8201;"#;
         );
     }
 
+    #[test]
+    fn preserves_entity_references() {
+        let input = "&amp; &#169; &#10004; &#128512; &#x2022; &#x1f600;";
+
+        let mut content = Content::from(Span::new(input));
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(input.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'preserves entity references' do
-        input = '&amp; &#169; &#10004; &#128512; &#x2022; &#x1f600;'
-        result = convert_inline_string input
-        assert_equal input, result
-      end
-
       test 'only preserves named entities with two or more letters' do
         input = '&amp; &a; &gt;'
         result = convert_inline_string input
