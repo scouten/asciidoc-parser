@@ -528,19 +528,31 @@ static REPLACEMENTS: LazyLock<Vec<CharacterReplacement>> = LazyLock::new(|| {
 
     # apostrophe (inside a word)
     [/(#{CG_ALNUM})\\?'(?=#{CG_ALPHA})/, '&#8217;', :leading],
-
-    # right arrow ->
-    [/\\?-&gt;/, '&#8594;', :none],
-
-    # right double arrow =>
-    [/\\?=&gt;/, '&#8658;', :none],
-
-    # left arrow <-
-    [/\\?&lt;-/, '&#8592;', :none],
-
-    # left double arrow <=
-    [/\\?&lt;=/, '&#8656;', :none],
         */
+        CharacterReplacement {
+            // Right arrow `->`
+            type_: CharacterReplacementType::SingleRightArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?-&gt;"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Right double arrow `=>`
+            type_: CharacterReplacementType::DoubleRightArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?=&gt;"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Left arrow `<-`
+            type_: CharacterReplacementType::SingleLeftArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?&lt;-"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Left double arrow `<=`
+            type_: CharacterReplacementType::DoubleLeftArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?&lt;="#).unwrap(),
+        },
         CharacterReplacement {
             // Restore entities
             type_: CharacterReplacementType::CharacterReference("".to_owned()),
@@ -568,13 +580,16 @@ impl Replacer for CharacterReplacer<'_> {
         match self.type_ {
             CharacterReplacementType::Copyright
             | CharacterReplacementType::Registered
-            | CharacterReplacementType::Trademark => {
+            | CharacterReplacementType::Trademark
+            | CharacterReplacementType::SingleLeftArrow
+            | CharacterReplacementType::DoubleLeftArrow
+            | CharacterReplacementType::SingleRightArrow
+            | CharacterReplacementType::DoubleRightArrow => {
                 self.renderer
                     .render_character_replacement(self.type_.clone(), dest);
             }
 
             CharacterReplacementType::CharacterReference(_) => {
-                dbg!(caps);
                 self.renderer.render_character_replacement(
                     CharacterReplacementType::CharacterReference((&caps[1]).to_string()),
                     dest,

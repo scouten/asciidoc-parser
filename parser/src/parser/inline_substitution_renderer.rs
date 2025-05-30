@@ -251,6 +251,22 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("&#8482;");
             }
 
+            CharacterReplacementType::SingleLeftArrow => {
+                dest.push_str("&#8592;");
+            }
+
+            CharacterReplacementType::DoubleLeftArrow => {
+                dest.push_str("&#8656;");
+            }
+
+            CharacterReplacementType::SingleRightArrow => {
+                dest.push_str("&#8594;");
+            }
+
+            CharacterReplacementType::DoubleRightArrow => {
+                dest.push_str("&#8658;");
+            }
+
             CharacterReplacementType::CharacterReference(name) => {
                 dest.push('&');
                 dest.push_str(&name);

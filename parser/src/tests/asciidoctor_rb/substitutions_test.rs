@@ -3018,17 +3018,44 @@ mod replacements {
         );
     }
 
+    #[test]
+    fn replaces_arrows() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"<- -> <= => \<- \-> \<= \=>"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"<- -> <= => \<- \-> \<= \=>"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "&#8592; &#8594; &#8656; &#8658; &lt;- -&gt; &lt;= =&gt;",
+                },
+                source: TSpan {
+                    data: r#"<- -> <= => \<- \-> \<= \=>"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'replaces arrows' do
-        para = block_from_string '<- -> <= => \<- \-> \<= \=>'
-        assert_equal '&#8592; &#8594; &#8656; &#8658; &lt;- -&gt; &lt;= =&gt;', para.apply_subs(para.source)
-      end
-
       test 'replaces dashes' do
         input = <<~'EOS'
         -- foo foo--bar foo\--bar foo -- bar foo \-- bar
