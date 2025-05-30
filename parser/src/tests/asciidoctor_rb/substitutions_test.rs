@@ -3117,18 +3117,25 @@ foo&#8201;&#8212;&#8201;"#;
         );
     }
 
+    #[test]
+    fn only_preserves_named_entities_with_two_or_more_letters() {
+        let input = "&amp; &a; &gt;";
+
+        let mut content = Content::from(Span::new(input));
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(input.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'only preserves named entities with two or more letters' do
-        input = '&amp; &a; &gt;'
-        result = convert_inline_string input
-        assert_equal '&amp; &amp;a; &gt;', result
-      end
-
       test 'replaces punctuation' do
         para = block_from_string %(John's Hideout is the Whites`' place... foo\\'bar)
         assert_equal "John&#8217;s Hideout is the Whites&#8217; place&#8230;&#8203; foo'bar", para.sub_replacements(para.source)
