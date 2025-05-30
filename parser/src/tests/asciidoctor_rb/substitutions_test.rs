@@ -2972,7 +2972,51 @@ mod passthroughs {
 }
 
 mod replacements {
-    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::Block,
+        span::content::SubstitutionStep,
+        strings::CowStr,
+        tests::fixtures::{
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            TSpan,
+        },
+        Content, Parser, Span,
+    };
+
+    #[test]
+    fn unescapes_xml_entities() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("< &quot; &there4; &#34; &#x22; >"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "< &quot; &there4; &#34; &#x22; >",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "&lt; &quot; &there4; &#34; &#x22; &gt;",
+                },
+                source: TSpan {
+                    data: "< &quot; &there4; &#34; &#x22; >",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
     #[ignore]
     #[test]
@@ -2980,12 +3024,6 @@ mod replacements {
         todo!(
             "{}",
             r###"
-    context 'Replacements' do
-      test 'unescapes XML entities' do
-        para = block_from_string '< &quot; &there4; &#34; &#x22; >'
-        assert_equal '&lt; &quot; &there4; &#34; &#x22; &gt;', para.apply_subs(para.source)
-      end
-
       test 'replaces arrows' do
         para = block_from_string '<- -> <= => \<- \-> \<= \=>'
         assert_equal '&#8592; &#8594; &#8656; &#8658; &lt;- -&gt; &lt;= =&gt;', para.apply_subs(para.source)

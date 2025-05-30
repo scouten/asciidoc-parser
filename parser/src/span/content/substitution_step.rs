@@ -511,6 +511,42 @@ static REPLACEMENTS: LazyLock<Vec<CharacterReplacement>> = LazyLock::new(|| {
             #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"\\?\(TM\)"#).unwrap(),
         },
+
+        /*
+    # foo -- bar (where either space character can be a newline)
+    # NOTE this necessarily drops the newline if replacement appears at end of line
+    [/(?: |\n|^|\\)--(?: |\n|$)/, '&#8201;&#8212;&#8201;', :none],
+
+    # foo--bar
+    [/(#{CG_WORD})\\?--(?=#{CG_WORD})/, '&#8212;&#8203;', :leading],
+
+    # ellipsis
+    [/\\?\.\.\./, '&#8230;&#8203;', :none],
+
+    # right single quote
+    [/\\?`'/, '&#8217;', :none],
+
+    # apostrophe (inside a word)
+    [/(#{CG_ALNUM})\\?'(?=#{CG_ALPHA})/, '&#8217;', :leading],
+
+    # right arrow ->
+    [/\\?-&gt;/, '&#8594;', :none],
+
+    # right double arrow =>
+    [/\\?=&gt;/, '&#8658;', :none],
+
+    # left arrow <-
+    [/\\?&lt;-/, '&#8592;', :none],
+
+    # left double arrow <=
+    [/\\?&lt;=/, '&#8656;', :none],
+        */
+        CharacterReplacement {
+            // Restore entities
+            type_: CharacterReplacementType::CharacterReference("".to_owned()),
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?&amp;((?:[a-zA-Z][a-zA-Z]+\d{0,2}|#\d\d\d{0,4}|#x[\da-fA-F][\da-fA-F][\da-fA-F]{0,3}));"#).unwrap(),
+        },
     ]
 });
 
@@ -535,6 +571,14 @@ impl Replacer for CharacterReplacer<'_> {
             | CharacterReplacementType::Trademark => {
                 self.renderer
                     .render_character_replacement(self.type_.clone(), dest);
+            }
+
+            CharacterReplacementType::CharacterReference(_) => {
+                dbg!(caps);
+                self.renderer.render_character_replacement(
+                    CharacterReplacementType::CharacterReference((&caps[1]).to_string()),
+                    dest,
+                );
             }
 
             ref t => {

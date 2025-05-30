@@ -251,6 +251,12 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("&#8482;");
             }
 
+            CharacterReplacementType::CharacterReference(name) => {
+                dest.push('&');
+                dest.push_str(&name);
+                dest.push(';');
+            }
+
             _ => {
                 todo!("Implement render_character_replacement for CharacterReplacementType::{type_:?}");
             }
