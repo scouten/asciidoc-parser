@@ -523,17 +523,24 @@ static REPLACEMENTS: LazyLock<Vec<CharacterReplacement>> = LazyLock::new(|| {
             #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"(\w)\\?--\b{start-half}"#).unwrap(),
         },
-
-        /*
-    # ellipsis
-    [/\\?\.\.\./, '&#8230;&#8203;', :none],
-
-    # right single quote
-    [/\\?`'/, '&#8217;', :none],
-
-    # apostrophe (inside a word)
-    [/(#{CG_ALNUM})\\?'(?=#{CG_ALPHA})/, '&#8217;', :leading],
-        */
+        CharacterReplacement {
+            // Ellipsis `...`
+            type_: CharacterReplacementType::Ellipsis,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?\.\.\."#).unwrap(),
+        },
+        CharacterReplacement {
+            // Right single quote `\`'`
+            type_: CharacterReplacementType::TypographicApostrophe,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?`'"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Apostrophe (inside a word)
+            type_: CharacterReplacementType::TypographicApostrophe,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"([[:alnum:]])\\?'([[:alpha:]])"#).unwrap(),
+        },
         CharacterReplacement {
             // Right arrow `->`
             type_: CharacterReplacementType::SingleRightArrow,
@@ -576,6 +583,7 @@ struct CharacterReplacer<'r> {
 impl Replacer for CharacterReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         if caps[0].contains('\\') {
+            dbg!(caps);
             // We have to replace since we aren't sure the backslash is the first char.
             let unescaped = &caps[0].replace("\\", "");
             dest.push_str(unescaped);
@@ -587,6 +595,7 @@ impl Replacer for CharacterReplacer<'_> {
             | CharacterReplacementType::Registered
             | CharacterReplacementType::Trademark
             | CharacterReplacementType::EmDashSurroundedBySpaces
+            | CharacterReplacementType::Ellipsis
             | CharacterReplacementType::SingleLeftArrow
             | CharacterReplacementType::DoubleLeftArrow
             | CharacterReplacementType::SingleRightArrow
@@ -601,6 +610,23 @@ impl Replacer for CharacterReplacer<'_> {
                     CharacterReplacementType::EmDashWithoutSpace,
                     dest,
                 );
+            }
+
+            CharacterReplacementType::TypographicApostrophe => {
+                dbg!(caps);
+
+                if let Some(before) = caps.get(1) {
+                    dest.push_str(before.as_str());
+                }
+
+                self.renderer.render_character_replacement(
+                    CharacterReplacementType::TypographicApostrophe,
+                    dest,
+                );
+
+                if let Some(after) = caps.get(2) {
+                    dest.push_str(after.as_str());
+                }
             }
 
             CharacterReplacementType::CharacterReference(_) => {

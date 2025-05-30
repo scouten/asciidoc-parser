@@ -259,6 +259,10 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("&#8212;&#8203;");
             }
 
+            CharacterReplacementType::Ellipsis => {
+                dest.push_str("&#8230;&#8203;");
+            }
+
             CharacterReplacementType::SingleLeftArrow => {
                 dest.push_str("&#8592;");
             }
@@ -275,14 +279,14 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push_str("&#8658;");
             }
 
+            CharacterReplacementType::TypographicApostrophe => {
+                dest.push_str("&#8217;");
+            }
+
             CharacterReplacementType::CharacterReference(name) => {
                 dest.push('&');
                 dest.push_str(&name);
                 dest.push(';');
-            }
-
-            _ => {
-                todo!("Implement render_character_replacement for CharacterReplacementType::{type_:?}");
             }
         }
     }
