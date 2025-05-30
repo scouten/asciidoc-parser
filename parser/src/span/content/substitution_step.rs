@@ -406,7 +406,7 @@ static ATTRIBUTE_REFERENCE: LazyLock<Regex> = LazyLock::new(|| {
 #[derive(Debug)]
 struct AttributeReplacer<'p>(&'p Parser<'p>);
 
-impl<'p> Replacer for AttributeReplacer<'p> {
+impl Replacer for AttributeReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         let attr_name = &caps[1];
 
@@ -496,16 +496,19 @@ static REPLACEMENTS: LazyLock<Vec<CharacterReplacement>> = LazyLock::new(|| {
         CharacterReplacement {
             // Copyright `(C)`
             type_: CharacterReplacementType::Copyright,
+            #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"\\?\(C\)"#).unwrap(),
         },
         CharacterReplacement {
             // Registered `(R)`
             type_: CharacterReplacementType::Registered,
+            #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"\\?\(R\)"#).unwrap(),
         },
         CharacterReplacement {
             // Trademark `(TM)`
             type_: CharacterReplacementType::Trademark,
+            #[allow(clippy::unwrap_used)]
             pattern: Regex::new(r#"\\?\(TM\)"#).unwrap(),
         },
     ]
@@ -522,7 +525,7 @@ impl Replacer for CharacterReplacer<'_> {
         if caps[0].contains('\\') {
             // We have to replace since we aren't sure the backslash is the first char.
             let unescaped = &caps[0].replace("\\", "");
-            dest.push_str(&unescaped);
+            dest.push_str(unescaped);
             return;
         }
 
