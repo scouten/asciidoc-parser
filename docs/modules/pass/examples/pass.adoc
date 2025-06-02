@@ -44,7 +44,7 @@ like +``+, or formatting marks within a word, like all-natural++*++.
 // end::plus[]
 
 // tag::backtick-plus[]
-Output literal monospace text, such as `+{backtick}+` or `+http://localhost:8080+`, by enclosing the text in a pair of pluses surrounded by a pair backticks.
+Output literal monospace text, such as `+{backtick}+` or `+http://localhost:8080+`, by enclosing the text in a pair of pluses surrounded by a pair of backticks.
 // end::backtick-plus[]
 
 // tag::sub-in[]
