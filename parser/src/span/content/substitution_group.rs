@@ -52,8 +52,8 @@ impl SubstitutionGroup {
                 SubstitutionStep::SpecialCharacters.apply(content, parser);
                 SubstitutionStep::Quotes.apply(content, parser);
                 SubstitutionStep::AttributeReferences.apply(content, parser);
+                SubstitutionStep::CharacterReplacements.apply(content, parser);
                 // TO DO: Add these as they are implemented.
-                // SubstitutionStep::Replacements.apply(content, parser);
                 // SubstitutionStep::Macros.apply(content, parser);
                 // SubstitutionStep::PostReplacement.apply(content, parser);
             }

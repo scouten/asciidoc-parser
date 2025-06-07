@@ -2511,8 +2511,17 @@ fn todo_migrate_from_ruby() {
         end
       end
     end
+    "###
+    );
+}
 
-    context 'Passthroughs' do
+mod passthroughs {
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
       test 'collect inline triple plus passthroughs' do
         para = block_from_string '+++<code>inline code</code>+++'
         result = para.extract_passthroughs para.source
@@ -2957,68 +2966,212 @@ fn todo_migrate_from_ruby() {
           end
         end
       end
-    end
+        "###
+        );
+    }
+}
 
-    context 'Replacements' do
-      test 'unescapes XML entities' do
-        para = block_from_string '< &quot; &there4; &#34; &#x22; >'
-        assert_equal '&lt; &quot; &there4; &#34; &#x22; &gt;', para.apply_subs(para.source)
-      end
+mod replacements {
+    use pretty_assertions_sorted::assert_eq;
 
-      test 'replaces arrows' do
-        para = block_from_string '<- -> <= => \<- \-> \<= \=>'
-        assert_equal '&#8592; &#8594; &#8656; &#8658; &lt;- -&gt; &lt;= =&gt;', para.apply_subs(para.source)
-      end
+    use crate::{
+        blocks::Block,
+        span::content::SubstitutionStep,
+        strings::CowStr,
+        tests::fixtures::{
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            TSpan,
+        },
+        Content, Parser, Span,
+    };
 
-      test 'replaces dashes' do
-        input = <<~'EOS'
-        -- foo foo--bar foo\--bar foo -- bar foo \-- bar
-        stuff in between
-        -- foo
-        stuff in between
-        foo --
-        stuff in between
-        foo --
-        EOS
-        expected = <<~'EOS'.chop
-        &#8201;&#8212;&#8201;foo foo&#8212;&#8203;bar foo--bar foo&#8201;&#8212;&#8201;bar foo -- bar
-        stuff in between&#8201;&#8212;&#8201;foo
-        stuff in between
-        foo&#8201;&#8212;&#8201;stuff in between
-        foo&#8201;&#8212;&#8201;
-        EOS
-        para = block_from_string input
-        assert_equal expected, para.sub_replacements(para.source)
-      end
+    #[test]
+    fn unescapes_xml_entities() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("< &quot; &there4; &#34; &#x22; >"), &mut p);
 
-      test 'replaces dashes between multibyte word characters' do
-        para = block_from_string %(富--巴)
-        expected = '富&#8212;&#8203;巴'
-        assert_equal expected, para.sub_replacements(para.source)
-      end
+        let block = maw.item.unwrap().item;
 
-      test 'replaces marks' do
-        para = block_from_string '(C) (R) (TM) \(C) \(R) \(TM)'
-        assert_equal '&#169; &#174; &#8482; (C) (R) (TM)', para.sub_replacements(para.source)
-      end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "< &quot; &there4; &#34; &#x22; >",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "&lt; &quot; &there4; &#34; &#x22; &gt;",
+                },
+                source: TSpan {
+                    data: "< &quot; &there4; &#34; &#x22; >",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
-      test 'preserves entity references' do
-        input = '&amp; &#169; &#10004; &#128512; &#x2022; &#x1f600;'
-        result = convert_inline_string input
-        assert_equal input, result
-      end
+    #[test]
+    fn replaces_arrows() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"<- -> <= => \<- \-> \<= \=>"#), &mut p);
 
-      test 'only preserves named entities with two or more letters' do
-        input = '&amp; &a; &gt;'
-        result = convert_inline_string input
-        assert_equal '&amp; &amp;a; &gt;', result
-      end
+        let block = maw.item.unwrap().item;
 
-      test 'replaces punctuation' do
-        para = block_from_string %(John's Hideout is the Whites`' place... foo\\'bar)
-        assert_equal "John&#8217;s Hideout is the Whites&#8217; place&#8230;&#8203; foo'bar", para.sub_replacements(para.source)
-      end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"<- -> <= => \<- \-> \<= \=>"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "&#8592; &#8594; &#8656; &#8658; &lt;- -&gt; &lt;= =&gt;",
+                },
+                source: TSpan {
+                    data: r#"<- -> <= => \<- \-> \<= \=>"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
+    #[test]
+    fn replaces_dashes() {
+        let mut content = Content::from(Span::new(
+            r#"-- foo foo--bar foo\--bar foo -- bar foo \-- bar
+stuff in between
+-- foo
+stuff in between
+foo --
+stuff in between
+foo --
+"#,
+        ));
+
+        let expected = r#"&#8201;&#8212;&#8201;foo foo&#8212;&#8203;bar foo--bar foo&#8201;&#8212;&#8201;bar foo -- bar
+stuff in between&#8201;&#8212;&#8201;foo
+stuff in between
+foo&#8201;&#8212;&#8201;stuff in between
+foo&#8201;&#8212;&#8201;"#;
+
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn replaces_dashes_between_multibyte_word_characters() {
+        let mut content = Content::from(Span::new("富--巴"));
+
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("富&#8212;&#8203;巴".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn replaces_marks() {
+        let mut content = Content::from(Span::new(r#"(C) (R) (TM) \(C) \(R) \(TM)"#));
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "&#169; &#174; &#8482; (C) (R) (TM)"
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
+    #[test]
+    fn preserves_entity_references() {
+        let input = "&amp; &#169; &#10004; &#128512; &#x2022; &#x1f600;";
+
+        let mut content = Content::from(Span::new(input));
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(input.to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn only_preserves_named_entities_with_two_or_more_letters() {
+        let input = "&amp; &a; &gt;";
+
+        let mut content = Content::from(Span::new(input));
+        let p = Parser::default();
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(input.to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn replaces_punctuation() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new(r#"John's Hideout is the Whites`' place... foo\'bar"#),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"John's Hideout is the Whites`' place... foo\'bar"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered:
+                        "John&#8217;s Hideout is the Whites&#8217; place&#8230;&#8203; foo'bar",
+                },
+                source: TSpan {
+                    data: r#"John's Hideout is the Whites`' place... foo\'bar"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
       test 'should replace right single quote marks' do
         given = [
           %(`'Twas the night),
@@ -3166,5 +3319,6 @@ fn todo_migrate_from_ruby() {
       end
     end
     "###
-    );
+        );
+    }
 }
