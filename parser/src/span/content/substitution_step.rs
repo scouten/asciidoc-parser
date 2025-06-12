@@ -632,10 +632,6 @@ impl Replacer for CharacterReplacer<'_> {
                     dest,
                 );
             }
-
-            ref t => {
-                todo!("implement Replacer for CharacterReplacementType::{t:?}");
-            }
         }
     }
 }
