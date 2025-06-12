@@ -583,7 +583,6 @@ struct CharacterReplacer<'r> {
 impl Replacer for CharacterReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         if caps[0].contains('\\') {
-            dbg!(caps);
             // We have to replace since we aren't sure the backslash is the first char.
             let unescaped = &caps[0].replace("\\", "");
             dest.push_str(unescaped);
@@ -613,8 +612,6 @@ impl Replacer for CharacterReplacer<'_> {
             }
 
             CharacterReplacementType::TypographicApostrophe => {
-                dbg!(caps);
-
                 if let Some(before) = caps.get(1) {
                     dest.push_str(before.as_str());
                 }
