@@ -112,7 +112,7 @@ impl<'src> HasSpan<'src> for SectionBlock<'src> {
     }
 }
 
-fn parse_title_line(source: Span<'_>) -> Option<MatchedItem<(usize, Span)>> {
+fn parse_title_line(source: Span<'_>) -> Option<MatchedItem<'_, (usize, Span<'_>)>> {
     let mi = source.take_non_empty_line()?;
     let mut line = mi.item;
 
