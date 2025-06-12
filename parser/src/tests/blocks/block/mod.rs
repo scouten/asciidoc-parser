@@ -199,7 +199,7 @@ mod error_cases {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "[incomplete attrlist\n=== Section Title (except it isn't)",
+                    rendered: "[incomplete attrlist\n=== Section Title (except it isn&#8217;t)",
                 },
                 source: TSpan {
                     data: "[incomplete attrlist\n=== Section Title (except it isn't)",

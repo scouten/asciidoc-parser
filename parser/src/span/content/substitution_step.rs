@@ -5,7 +5,10 @@ use regex::{Captures, Regex, RegexBuilder, Replacer};
 use crate::{
     attributes::Attrlist,
     document::InterpretedValue,
-    parser::{InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter},
+    parser::{
+        CharacterReplacementType, InlineSubstitutionRenderer, QuoteScope, QuoteType,
+        SpecialCharacter,
+    },
     span::Content,
     Parser,
 };
@@ -54,6 +57,9 @@ impl SubstitutionStep {
             }
             Self::AttributeReferences => {
                 apply_attributes(content, parser);
+            }
+            Self::CharacterReplacements => {
+                apply_character_replacements(content, parser.renderer);
             }
             _ => {
                 todo!("Implement apply for SubstitutionStep::{self:?}");
@@ -400,7 +406,7 @@ static ATTRIBUTE_REFERENCE: LazyLock<Regex> = LazyLock::new(|| {
 #[derive(Debug)]
 struct AttributeReplacer<'p>(&'p Parser<'p>);
 
-impl<'p> Replacer for AttributeReplacer<'p> {
+impl Replacer for AttributeReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         let attr_name = &caps[1];
 
@@ -442,4 +448,190 @@ fn apply_attributes(content: &mut Content<'_>, parser: &Parser) {
     // need to pay for a new string allocation.
 
     content.rendered = result.into();
+}
+
+fn apply_character_replacements(
+    content: &mut Content<'_>,
+    renderer: &dyn InlineSubstitutionRenderer,
+) {
+    if !REPLACEABLE_TEXT_SNIFF.is_match(content.rendered.as_ref()) {
+        return;
+    }
+
+    let mut result: Cow<'_, str> = content.rendered.to_string().into();
+
+    for repl in &*REPLACEMENTS {
+        let replacer = CharacterReplacer {
+            type_: repl.type_.clone(),
+            renderer,
+        };
+
+        if let Cow::Owned(new_result) = repl.pattern.replace_all(&result, replacer) {
+            result = new_result.into();
+        }
+        // If it's Cow::Borrowed, there was no match for this pattern, so no
+        // need to pay for a new string allocation.
+    }
+
+    content.rendered = result.into();
+}
+
+struct CharacterReplacement {
+    type_: CharacterReplacementType,
+    pattern: Regex,
+}
+
+static REPLACEABLE_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(r#"[&']|--|\.\.\.|\([CRT]M?\)"#).unwrap()
+});
+
+// Adapted from REPLACEMENTS in Ruby Asciidoctor implementation,
+// found in https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor.rb#L490.
+//
+// * NOTE: These substitutions are processed in the order they appear here and
+//   the order in which they are replaced is important.
+static REPLACEMENTS: LazyLock<Vec<CharacterReplacement>> = LazyLock::new(|| {
+    vec![
+        CharacterReplacement {
+            // Copyright `(C)`
+            type_: CharacterReplacementType::Copyright,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?\(C\)"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Registered `(R)`
+            type_: CharacterReplacementType::Registered,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?\(R\)"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Trademark `(TM)`
+            type_: CharacterReplacementType::Trademark,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?\(TM\)"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Em dash surrounded by spaces ` -- `
+            type_: CharacterReplacementType::EmDashSurroundedBySpaces,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"(?: |\n|^|\\)--(?: |\n|$)"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Em dash without spaces `--`
+            type_: CharacterReplacementType::EmDashWithoutSpace,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"(\w)\\?--\b{start-half}"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Ellipsis `...`
+            type_: CharacterReplacementType::Ellipsis,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?\.\.\."#).unwrap(),
+        },
+        CharacterReplacement {
+            // Right single quote `\`'`
+            type_: CharacterReplacementType::TypographicApostrophe,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?`'"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Apostrophe (inside a word)
+            type_: CharacterReplacementType::TypographicApostrophe,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"([[:alnum:]])\\?'([[:alpha:]])"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Right arrow `->`
+            type_: CharacterReplacementType::SingleRightArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?-&gt;"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Right double arrow `=>`
+            type_: CharacterReplacementType::DoubleRightArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?=&gt;"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Left arrow `<-`
+            type_: CharacterReplacementType::SingleLeftArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?&lt;-"#).unwrap(),
+        },
+        CharacterReplacement {
+            // Left double arrow `<=`
+            type_: CharacterReplacementType::DoubleLeftArrow,
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?&lt;="#).unwrap(),
+        },
+        CharacterReplacement {
+            // Restore entities
+            type_: CharacterReplacementType::CharacterReference("".to_owned()),
+            #[allow(clippy::unwrap_used)]
+            pattern: Regex::new(r#"\\?&amp;((?:[a-zA-Z][a-zA-Z]+\d{0,2}|#\d\d\d{0,4}|#x[\da-fA-F][\da-fA-F][\da-fA-F]{0,3}));"#).unwrap(),
+        },
+    ]
+});
+
+#[derive(Debug)]
+struct CharacterReplacer<'r> {
+    type_: CharacterReplacementType,
+    renderer: &'r dyn InlineSubstitutionRenderer,
+}
+
+impl Replacer for CharacterReplacer<'_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        if caps[0].contains('\\') {
+            // We have to replace since we aren't sure the backslash is the first char.
+            let unescaped = &caps[0].replace("\\", "");
+            dest.push_str(unescaped);
+            return;
+        }
+
+        match self.type_ {
+            CharacterReplacementType::Copyright
+            | CharacterReplacementType::Registered
+            | CharacterReplacementType::Trademark
+            | CharacterReplacementType::EmDashSurroundedBySpaces
+            | CharacterReplacementType::Ellipsis
+            | CharacterReplacementType::SingleLeftArrow
+            | CharacterReplacementType::DoubleLeftArrow
+            | CharacterReplacementType::SingleRightArrow
+            | CharacterReplacementType::DoubleRightArrow => {
+                self.renderer
+                    .render_character_replacement(self.type_.clone(), dest);
+            }
+
+            CharacterReplacementType::EmDashWithoutSpace => {
+                dest.push_str(&caps[1]);
+                self.renderer.render_character_replacement(
+                    CharacterReplacementType::EmDashWithoutSpace,
+                    dest,
+                );
+            }
+
+            CharacterReplacementType::TypographicApostrophe => {
+                if let Some(before) = caps.get(1) {
+                    dest.push_str(before.as_str());
+                }
+
+                self.renderer.render_character_replacement(
+                    CharacterReplacementType::TypographicApostrophe,
+                    dest,
+                );
+
+                if let Some(after) = caps.get(2) {
+                    dest.push_str(after.as_str());
+                }
+            }
+
+            CharacterReplacementType::CharacterReference(_) => {
+                self.renderer.render_character_replacement(
+                    CharacterReplacementType::CharacterReference(caps[1].to_string()),
+                    dest,
+                );
+            }
+        }
+    }
 }

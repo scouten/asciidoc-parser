@@ -99,7 +99,7 @@ impl<'src> HasSpan<'src> for Header<'src> {
     }
 }
 
-fn parse_title(source: Span<'_>) -> Option<MatchedItem<Span>> {
+fn parse_title(source: Span<'_>) -> Option<MatchedItem<'_, Span<'_>>> {
     let line = source.take_non_empty_line()?;
     let equal = line.item.take_prefix("=")?;
     let ws = equal.after.take_required_whitespace()?;

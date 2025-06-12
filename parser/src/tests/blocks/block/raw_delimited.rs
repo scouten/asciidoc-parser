@@ -37,7 +37,7 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "...",
+                    rendered: "&#8230;&#8203;",
                 },
                 source: TSpan {
                     data: "...",
@@ -159,7 +159,7 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "....\nblah blah blah",
+                    rendered: "&#8230;&#8203;.\nblah blah blah",
                 },
                 source: TSpan {
                     data: "....\nblah blah blah",

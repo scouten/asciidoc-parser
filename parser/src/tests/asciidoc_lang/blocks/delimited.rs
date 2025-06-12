@@ -222,7 +222,7 @@ That's so meta.
                         col: 1,
                         offset: 5,
                     },
-                    rendered: "This is an example of an example block.\nThat's so meta.",
+                    rendered: "This is an example of an example block.\nThat&#8217;s so meta.",
                 },
                 source: TSpan {
                     data: "This is an example of an example block.\nThat's so meta.",
@@ -571,7 +571,7 @@ The document header is useful, but not required.
                                         col: 1,
                                         offset: 5,
                                     },
-                                    rendered: "Here's a sample AsciiDoc document:",
+                                    rendered: "Here&#8217;s a sample AsciiDoc document:",
                                 },
                                 source: TSpan {
                                     data: "Here's a sample AsciiDoc document:",

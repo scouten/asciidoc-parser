@@ -497,7 +497,7 @@ ____
                                         col: 1,
                                         offset: 42,
                                     },
-                                    rendered: "Roads? Where we're going, we don't need roads.",
+                                    rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
                                 },
                                 source: TSpan {
                                     data: "Roads? Where we're going, we don't need roads.",

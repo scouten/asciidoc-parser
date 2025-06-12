@@ -183,7 +183,7 @@ Roads? Where we're going, we don't need roads.
                     col: 1,
                     offset: 14,
                 },
-                rendered: "Roads? Where we're going, we don't need roads.",
+                rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
             },
             source: TSpan {
                 data: "[quote#roads]\nRoads? Where we're going, we don't need roads.",
@@ -280,7 +280,7 @@ Roads? Where we're going, we don't need roads.
                         col: 1,
                         offset: 50,
                     },
-                    rendered: "Roads? Where we're going, we don't need roads.",
+                    rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
                 },
                 source: TSpan {
                     data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",

@@ -28,6 +28,13 @@ pub trait InlineSubstitutionRenderer: Debug {
         body: &str,
         dest: &mut String,
     );
+
+    /// Renders the content of a [character replacement].
+    ///
+    /// The renderer should write the appropriate rendering to `dest`.
+    ///
+    /// [character replacement]: https://docs.asciidoctor.org/asciidoc/latest/subs/replacements/
+    fn render_character_replacement(&self, type_: CharacterReplacementType, dest: &mut String);
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -85,6 +92,48 @@ pub enum QuoteScope {
 
     /// The quoted section may not have been aligned to word boundaries.
     Unconstrained,
+}
+
+/// Specifies which [character replacement] is being rendered.
+///
+/// [character replacement]: https://docs.asciidoctor.org/asciidoc/latest/subs/replacements/
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum CharacterReplacementType {
+    /// Copyright `(C)`.
+    Copyright,
+
+    /// Registered `(R)`.
+    Registered,
+
+    /// Trademark `(TM)`.
+    Trademark,
+
+    /// Em-dash surrounded by spaces ` -- `.
+    EmDashSurroundedBySpaces,
+
+    /// Em-dash without space `--`.
+    EmDashWithoutSpace,
+
+    /// Ellipsis `...`.
+    Ellipsis,
+
+    /// Single right arrow `->`.
+    SingleRightArrow,
+
+    /// Double right arrow `=>`.
+    DoubleRightArrow,
+
+    /// Single left arrow `<-`.
+    SingleLeftArrow,
+
+    /// Double left arrow `<=`.
+    DoubleLeftArrow,
+
+    /// Typographic apostrophe `'` within a word.
+    TypographicApostrophe,
+
+    /// Character reference `&___;`.
+    CharacterReference(String),
 }
 
 /// Implementation of [`InlineSubstitutionRenderer`] that renders substitutions
@@ -184,6 +233,60 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 } else {
                     wrap_body_in_html_tag(attrlist.as_ref(), "span", id, roles, body, dest);
                 }
+            }
+        }
+    }
+
+    fn render_character_replacement(&self, type_: CharacterReplacementType, dest: &mut String) {
+        match type_ {
+            CharacterReplacementType::Copyright => {
+                dest.push_str("&#169;");
+            }
+
+            CharacterReplacementType::Registered => {
+                dest.push_str("&#174;");
+            }
+
+            CharacterReplacementType::Trademark => {
+                dest.push_str("&#8482;");
+            }
+
+            CharacterReplacementType::EmDashSurroundedBySpaces => {
+                dest.push_str("&#8201;&#8212;&#8201;");
+            }
+
+            CharacterReplacementType::EmDashWithoutSpace => {
+                dest.push_str("&#8212;&#8203;");
+            }
+
+            CharacterReplacementType::Ellipsis => {
+                dest.push_str("&#8230;&#8203;");
+            }
+
+            CharacterReplacementType::SingleLeftArrow => {
+                dest.push_str("&#8592;");
+            }
+
+            CharacterReplacementType::DoubleLeftArrow => {
+                dest.push_str("&#8656;");
+            }
+
+            CharacterReplacementType::SingleRightArrow => {
+                dest.push_str("&#8594;");
+            }
+
+            CharacterReplacementType::DoubleRightArrow => {
+                dest.push_str("&#8658;");
+            }
+
+            CharacterReplacementType::TypographicApostrophe => {
+                dest.push_str("&#8217;");
+            }
+
+            CharacterReplacementType::CharacterReference(name) => {
+                dest.push('&');
+                dest.push_str(&name);
+                dest.push(';');
             }
         }
     }
