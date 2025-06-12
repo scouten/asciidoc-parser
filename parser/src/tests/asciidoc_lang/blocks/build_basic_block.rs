@@ -352,7 +352,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                     col: 1,
                     offset: 8,
                 },
-                rendered: "Never do today what you can put off `'til tomorrow.",
+                rendered: "Never do today what you can put off &#8217;til tomorrow.",
             },
             source: TSpan {
                 data: "[quote]\nNever do today what you can put off `'til tomorrow.",

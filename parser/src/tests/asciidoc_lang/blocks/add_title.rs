@@ -377,7 +377,7 @@ If you don't plant it in a container, it will take over your garden.
                         col: 1,
                         offset: 16,
                     },
-                    rendered: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
+                    rendered: "Mint has visions of global conquest.\nIf you don&#8217;t plant it in a container, it will take over your garden.",
                 },
                 source: TSpan {
                     data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
