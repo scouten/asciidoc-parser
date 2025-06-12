@@ -631,7 +631,7 @@ impl Replacer for CharacterReplacer<'_> {
 
             CharacterReplacementType::CharacterReference(_) => {
                 self.renderer.render_character_replacement(
-                    CharacterReplacementType::CharacterReference((&caps[1]).to_string()),
+                    CharacterReplacementType::CharacterReference(caps[1].to_string()),
                     dest,
                 );
             }
