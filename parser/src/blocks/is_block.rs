@@ -243,7 +243,7 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// [`options()`]: Self::options
     fn has_option<N: AsRef<str>>(&'src self, name: N) -> bool {
         self.attrlist()
-            .map_or(false, |attrlist| attrlist.has_option(name))
+            .is_some_and(|attrlist| attrlist.has_option(name))
     }
 
     /// Returns the title for this block, if present.
