@@ -47,7 +47,12 @@ pub(crate) enum SubstitutionStep {
 }
 
 impl SubstitutionStep {
-    pub(crate) fn apply(&self, content: &mut Content<'_>, parser: &Parser) {
+    pub(crate) fn apply(
+        &self,
+        content: &mut Content<'_>,
+        parser: &Parser,
+        attrlist: Option<&Attrlist<'_>>,
+    ) {
         match self {
             Self::SpecialCharacters => {
                 apply_special_characters(content, parser.renderer);
@@ -60,6 +65,9 @@ impl SubstitutionStep {
             }
             Self::CharacterReplacements => {
                 apply_character_replacements(content, parser.renderer);
+            }
+            Self::PostReplacement => {
+                apply_post_replacements(content, parser, attrlist);
             }
             _ => {
                 todo!("Implement apply for SubstitutionStep::{self:?}");
@@ -635,3 +643,67 @@ impl Replacer for CharacterReplacer<'_> {
         }
     }
 }
+
+fn apply_post_replacements(
+    content: &mut Content<'_>,
+    parser: &Parser,
+    attrlist: Option<&Attrlist<'_>>,
+) {
+    // TO DO: Handle hardbreak set by document attribute.
+    // if @document.attributes['hardbreaks-option'] ...
+    if attrlist.is_some_and(|attrlist| attrlist.has_option("hardbreaks")) {
+        let text = content.rendered.as_ref();
+        if !text.contains('\n') {
+            return;
+        }
+
+        let mut lines: Vec<&str> = content.rendered.as_ref().lines().collect();
+        let last = lines.pop().unwrap_or_default();
+
+        let mut lines: Vec<String> = lines
+            .iter()
+            .map(|line| {
+                let line = if line.ends_with(" +") {
+                    &line[0..line.len() - 2]
+                } else {
+                    *line
+                };
+
+                let mut line = line.to_owned();
+                parser.renderer.render_line_break(&mut line);
+                line
+            })
+            .collect();
+
+        lines.push(last.to_owned());
+
+        let new_result = lines.join("\n");
+        content.rendered = new_result.into();
+    } else {
+        let rendered = content.rendered.as_ref();
+        if !(rendered.contains('+') && rendered.contains('\n')) {
+            return;
+        }
+
+        let replacer = PostReplacementReplacer(parser.renderer);
+
+        if let Cow::Owned(new_result) = HARD_LINE_BREAK.replace_all(rendered, replacer) {
+            content.rendered = new_result.into();
+        }
+    }
+}
+
+#[derive(Debug)]
+struct PostReplacementReplacer<'r>(&'r dyn InlineSubstitutionRenderer);
+
+impl Replacer for PostReplacementReplacer<'_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        dest.push_str(&caps[1]);
+        self.0.render_line_break(dest);
+    }
+}
+
+static HARD_LINE_BREAK: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(r#"(?m)^(.*) \+$"#).unwrap()
+});

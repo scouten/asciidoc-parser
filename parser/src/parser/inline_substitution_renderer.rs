@@ -35,6 +35,16 @@ pub trait InlineSubstitutionRenderer: Debug {
     ///
     /// [character replacement]: https://docs.asciidoctor.org/asciidoc/latest/subs/replacements/
     fn render_character_replacement(&self, type_: CharacterReplacementType, dest: &mut String);
+
+    /// Renders a line break.
+    ///
+    /// The renderer should write an appropriate rendering of line break to
+    /// `dest`.
+    ///
+    /// This is used in the implementation of [post-replacement substitutions].
+    ///
+    /// [post-replacement substitutions]: https://docs.asciidoctor.org/asciidoc/latest/subs/post-replacements/
+    fn render_line_break(&self, dest: &mut String);
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -289,6 +299,10 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 dest.push(';');
             }
         }
+    }
+
+    fn render_line_break(&self, dest: &mut String) {
+        dest.push_str("<br>");
     }
 }
 

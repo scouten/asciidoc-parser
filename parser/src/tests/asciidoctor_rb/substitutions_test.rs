@@ -80,7 +80,7 @@ mod quotes {
     fn single_line_double_quoted_string() {
         let mut content = Content::from(Span::new(r#""`a few quoted words`""#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -92,7 +92,7 @@ mod quotes {
     fn escaped_single_line_double_quoted_string() {
         let mut content = Content::from(Span::new(r#"\"`a few quoted words`""#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -104,7 +104,7 @@ mod quotes {
     fn multi_line_double_quoted_string() {
         let mut content = Content::from(Span::new("\"`a few\nquoted words`\""));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -120,7 +120,7 @@ mod quotes {
     fn double_quoted_string_with_inline_single_quote() {
         let mut content = Content::from(Span::new(r#""`Here's Johnny!`""#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -132,7 +132,7 @@ mod quotes {
     fn double_quoted_string_with_inline_backquote() {
         let mut content = Content::from(Span::new(r#""`Here`s Johnny!`""#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -144,7 +144,7 @@ mod quotes {
     fn double_quoted_string_around_almost_monospaced_text() {
         let mut content = Content::from(Span::new(r#""``E=mc^2^` is the solution!`""#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -160,7 +160,7 @@ mod quotes {
     fn double_quoted_string_around_monospaced_text() {
         let mut content = Content::from(Span::new(r#""```E=mc^2^`` is the solution!`""#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -176,7 +176,7 @@ mod quotes {
     fn single_line_single_quoted_string() {
         let mut content = Content::from(Span::new(r#"'`a few quoted words`'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -188,7 +188,7 @@ mod quotes {
     fn escaped_single_line_single_quoted_string() {
         let mut content = Content::from(Span::new(r#"\'`a few quoted words`'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -200,7 +200,7 @@ mod quotes {
     fn multi_line_single_quoted_string() {
         let mut content = Content::from(Span::new("'`a few\nquoted words`'"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -216,7 +216,7 @@ mod quotes {
     fn single_quoted_string_with_inline_single_quote() {
         let mut content = Content::from(Span::new(r#"'`That isn't what I did.`'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -228,7 +228,7 @@ mod quotes {
     fn single_quoted_string_with_inline_backquote() {
         let mut content = Content::from(Span::new(r#"'`Here`s Johnny!`'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -240,7 +240,7 @@ mod quotes {
     fn single_line_constrained_marked_string() {
         let mut content = Content::from(Span::new(r#"#a few words#"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -252,7 +252,7 @@ mod quotes {
     fn escaped_single_line_constrained_marked_string() {
         let mut content = Content::from(Span::new(r#"\#a few words#"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -264,7 +264,7 @@ mod quotes {
     fn multi_line_constrained_marked_string() {
         let mut content = Content::from(Span::new("#a few\nwords#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -278,7 +278,7 @@ mod quotes {
             r##"111 #mark a# 222 "`quote a`" 333 #mark b# 444"##,
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -290,7 +290,7 @@ mod quotes {
     fn single_line_unconstrained_marked_string() {
         let mut content = Content::from(Span::new(r###"##--anything goes ##"###));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -306,7 +306,7 @@ mod quotes {
     fn escaped_single_line_unconstrained_marked_string() {
         let mut content = Content::from(Span::new(r###"\\##--anything goes ##"###));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -318,7 +318,7 @@ mod quotes {
     fn multi_line_unconstrained_marked_string() {
         let mut content = Content::from(Span::new("##--anything\ngoes ##"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -334,7 +334,7 @@ mod quotes {
     fn single_line_constrained_marked_string_with_role() {
         let mut content = Content::from(Span::new(r##"[statement]#a few words#"##));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -352,7 +352,7 @@ mod quotes {
             r##"key: [ *before [.redacted]#redacted# after* ]"##,
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -400,7 +400,7 @@ mod quotes {
     fn single_line_constrained_strong_string() {
         let mut content = Content::from(Span::new(r#"*a few strong words*"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -412,7 +412,7 @@ mod quotes {
     fn escaped_single_line_constrained_strong_string() {
         let mut content = Content::from(Span::new(r#"\*a few strong words*"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -424,7 +424,7 @@ mod quotes {
     fn multi_line_constrained_strong_string() {
         let mut content = Content::from(Span::new("*a few\nstrong words*"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -440,7 +440,7 @@ mod quotes {
     fn constrained_strong_string_containing_an_asterisk() {
         let mut content = Content::from(Span::new("*bl*ck*-eye"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -452,7 +452,7 @@ mod quotes {
     fn constrained_strong_string_containing_an_asterisk_and_multibyte_word_chars() {
         let mut content = Content::from(Span::new("*黑*眼圈*"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -464,7 +464,7 @@ mod quotes {
     fn single_line_constrained_quote_variation_emphasized_string() {
         let mut content = Content::from(Span::new("_a few emphasized words_"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -480,7 +480,7 @@ mod quotes {
     fn escaped_single_line_constrained_quote_variation_emphasized_string() {
         let mut content = Content::from(Span::new("\\_a few emphasized words_"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -492,7 +492,7 @@ mod quotes {
     fn escaped_single_quoted_string() {
         let mut content = Content::from(Span::new(r#"\'a few emphasized words'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -504,7 +504,7 @@ mod quotes {
     fn multi_line_constrained_emphasized_quote_variation_string() {
         let mut content = Content::from(Span::new("_a few\nemphasized words_"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -516,7 +516,7 @@ mod quotes {
     fn single_quoted_string_containing_an_emphasized_phrase() {
         let mut content = Content::from(Span::new(r#"'`I told him, 'Just go for it!'`'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -529,7 +529,7 @@ mod quotes {
     fn escaped_single_quotes_inside_emphasized_words_are_restored() {
         let mut content = Content::from(Span::new(r#"'Here\'s Johnny!'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
@@ -540,7 +540,7 @@ mod quotes {
     fn single_line_constrained_emphasized_underline_variation_string() {
         let mut content = Content::from(Span::new(r#"_a few emphasized words_"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -552,7 +552,7 @@ mod quotes {
     fn escaped_single_line_constrained_emphasized_underline_variation_string() {
         let mut content = Content::from(Span::new(r#"\_a few emphasized words_"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -564,7 +564,7 @@ mod quotes {
     fn multi_line_constrained_emphasized_underline_variation_string() {
         let mut content = Content::from(Span::new("_a few\nemphasized words_"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -667,7 +667,7 @@ mod quotes {
     fn single_line_unconstrained_strong_chars() {
         let mut content = Content::from(Span::new(r#"**Git**Hub"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -679,7 +679,7 @@ mod quotes {
     fn escaped_single_line_unconstrained_strong_chars() {
         let mut content = Content::from(Span::new(r#"\**Git**Hub"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -691,7 +691,7 @@ mod quotes {
     fn multi_line_unconstrained_strong_chars() {
         let mut content = Content::from(Span::new("**G\ni\nt\n**Hub"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -703,7 +703,7 @@ mod quotes {
     fn unconstrained_strong_chars_with_inline_asterisk() {
         let mut content = Content::from(Span::new("**bl*ck**-eye"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -715,7 +715,7 @@ mod quotes {
     fn unconstrained_strong_chars_with_role() {
         let mut content = Content::from(Span::new("Git[blue]**Hub**"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -733,7 +733,7 @@ mod quotes {
         // implementation.
         let mut content = Content::from(Span::new(r#"Git\[blue]**Hub**"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -745,7 +745,7 @@ mod quotes {
     fn single_line_unconstrained_emphasized_characters() {
         let mut content = Content::from(Span::new("__Git__Hub"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("<em>Git</em>Hub"));
     }
@@ -754,7 +754,7 @@ mod quotes {
     fn escaped_single_line_unconstrained_emphasized_characters() {
         let mut content = Content::from(Span::new(r#"\__Git__Hub"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("__Git__Hub"));
     }
@@ -763,7 +763,7 @@ mod quotes {
     fn escaped_single_line_unconstrained_emphasized_characters_around_word() {
         let mut content = Content::from(Span::new(r#"\\__GitHub__"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("__GitHub__"));
     }
@@ -772,7 +772,7 @@ mod quotes {
     fn multi_line_unconstrained_emphasized_chars() {
         let mut content = Content::from(Span::new("__G\ni\nt\n__Hub"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("<em>G\ni\nt\n</em>Hub"));
     }
@@ -781,7 +781,7 @@ mod quotes {
     fn unconstrained_emphasis_chars_with_role() {
         let mut content = Content::from(Span::new("[gray]__Git__Hub"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -793,7 +793,7 @@ mod quotes {
     fn escaped_unconstrained_emphasis_chars_with_role() {
         let mut content = Content::from(Span::new("\\[gray]__Git__Hub"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"[gray]__Git__Hub"#));
     }
@@ -805,7 +805,7 @@ mod quotes {
         // Also it may require full substitution, not just quotes.
         let mut content = Content::from(Span::new("call [x-]+save()+ to persist the changes"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -817,7 +817,7 @@ mod quotes {
     fn single_line_constrained_monospaced_charsd() {
         let mut content = Content::from(Span::new("call `save()` to persist the changes"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -833,7 +833,7 @@ mod quotes {
         let mut content =
             Content::from(Span::new("call [method x-]+save()+ to persist the changes"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -845,7 +845,7 @@ mod quotes {
     fn single_line_constrained_monospaced_chars_with_role() {
         let mut content = Content::from(Span::new("call [method]`save()` to persist the changes"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -857,7 +857,7 @@ mod quotes {
     fn escaped_single_line_constrained_monospaced_chars() {
         let mut content = Content::from(Span::new(r#"call \`save()` to persist the changes"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -871,7 +871,7 @@ mod quotes {
             r#"call [method]\`save()` to persist the changes"#,
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -885,7 +885,7 @@ mod quotes {
             r#"call \[method]`save()` to persist the changes"#,
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -899,7 +899,7 @@ mod quotes {
             r#"call \[method]\`save()` to persist the changes"#,
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -915,7 +915,7 @@ mod quotes {
         // to run this test.)
         let mut content = Content::from(Span::new(r#"[x-]\+leave it alone+"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -930,7 +930,7 @@ mod quotes {
         // Also it may require full substitution, not just quotes.
         let mut content = Content::from(Span::new("Git[x-]++Hub++"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git<code>Hub</code>"#));
     }
@@ -939,7 +939,7 @@ mod quotes {
     fn single_line_unconstrained_monospaced_chars() {
         let mut content = Content::from(Span::new("Git``Hub``"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git<code>Hub</code>"#));
     }
@@ -948,7 +948,7 @@ mod quotes {
     fn escaped_single_line_unconstrained_monospaced_chars() {
         let mut content = Content::from(Span::new(r#"Git\``Hub``"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"Git``Hub``"#));
     }
@@ -960,7 +960,7 @@ mod quotes {
         // Also it may require full substitution, not just quotes.
         let mut content = Content::from(Span::new("Git[x-]++\nH\nu\nb++"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -972,7 +972,7 @@ mod quotes {
     fn multi_line_unconstrained_monospaced_chars() {
         let mut content = Content::from(Span::new("Git``\nH\nu\nb``"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -986,7 +986,7 @@ mod quotes {
             "x^2^ = x * x, e = mc^2^, there's a 1^st^ time for everything",
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -998,7 +998,7 @@ mod quotes {
     fn escaped_single_line_superscript_chars() {
         let mut content = Content::from(Span::new(r#"x\^2^ = x * x"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("x^2^ = x * x"));
     }
@@ -1007,7 +1007,7 @@ mod quotes {
     fn does_not_match_superscript_across_whitespace() {
         let mut content = Content::from(Span::new("x^(n\n-\n1)^"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("x^(n\n-\n1)^"));
     }
@@ -1017,7 +1017,7 @@ mod quotes {
         let mut content = Content::from(Span::new("Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^."));
         let p = Parser::default();
 
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
 
         assert_eq!(
             content.rendered,
@@ -1030,7 +1030,7 @@ mod quotes {
     fn allow_spaces_in_superscript_if_text_is_wrapped_in_a_passthrough() {
         let mut content = Content::from(Span::new("Night ^+A poem by Jane Kondo+^."));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
@@ -1044,7 +1044,7 @@ mod quotes {
     fn does_not_match_adjacent_superscript_chars() {
         let mut content = Content::from(Span::new("a ^^ b"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("a ^^ b"));
     }
@@ -1056,7 +1056,7 @@ mod quotes {
             "http://localhost[Text^] on the 21^st^ and 22^nd^",
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
         assert!(!content.is_empty());
@@ -1072,7 +1072,7 @@ mod quotes {
     fn single_line_subscript_chars() {
         let mut content = Content::from(Span::new("H~2~O"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("H<sub>2</sub>O"));
     }
@@ -1081,7 +1081,7 @@ mod quotes {
     fn escaped_single_line_subscript_chars() {
         let mut content = Content::from(Span::new(r#"H\~2~O"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("H~2~O"));
     }
@@ -1090,7 +1090,7 @@ mod quotes {
     fn does_not_match_subscript_across_whitespace() {
         let mut content = Content::from(Span::new("project~ view\non\nGitHub~"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1102,7 +1102,7 @@ mod quotes {
     fn does_not_match_adjacent_subscript_chars() {
         let mut content = Content::from(Span::new("a ~~ b"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("a ~~ b"));
     }
@@ -1113,7 +1113,7 @@ mod quotes {
             "http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]",
         ));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1125,7 +1125,7 @@ mod quotes {
     fn quoted_text_with_role_shorthand() {
         let mut content = Content::from(Span::new("[.white.red-background]#alert#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1137,7 +1137,7 @@ mod quotes {
     fn quoted_text_with_id_shorthand() {
         let mut content = Content::from(Span::new("[#bond]#007#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1149,7 +1149,7 @@ mod quotes {
     fn quoted_text_with_id_and_role_shorthand() {
         let mut content = Content::from(Span::new("[#bond.white.red-background]#007#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1161,7 +1161,7 @@ mod quotes {
     fn quoted_text_with_id_and_role_shorthand_with_roles_before_id() {
         let mut content = Content::from(Span::new("[.white.red-background#bond]#007#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1173,7 +1173,7 @@ mod quotes {
     fn quoted_text_with_id_and_role_shorthand_with_roles_around_id() {
         let mut content = Content::from(Span::new("[.white#bond.red-background]#007#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1185,7 +1185,7 @@ mod quotes {
     fn should_not_assign_role_attribute_if_shorthand_style_has_no_roles() {
         let mut content = Content::from(Span::new("[#idname]*blah*"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1197,7 +1197,7 @@ mod quotes {
     fn should_remove_trailing_spaces_from_role_defined_using_shorthand() {
         let mut content = Content::from(Span::new("[.rolename ]*blah*"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1214,7 +1214,7 @@ mod quotes {
             ModificationContext::Anywhere,
         );
 
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
 
         assert_eq!(
             content.rendered,
@@ -1226,7 +1226,7 @@ mod quotes {
     fn should_ignore_attributes_after_comma() {
         let mut content = Content::from(Span::new("[red, foobar]#alert#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1239,7 +1239,7 @@ mod quotes {
     {
         let mut content = Content::from(Span::new("[ red , foobar]#alert#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1251,7 +1251,7 @@ mod quotes {
     fn should_not_assign_role_if_value_before_comma_is_empty() {
         let mut content = Content::from(Span::new("[,]#anonymous#"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1266,7 +1266,7 @@ mod quotes {
         // Passthroughs are processed in that layer.
         let mut content = Content::from(Span::new("[#idname.rolename]+pass+"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1285,7 +1285,7 @@ mod quotes {
         // Passthroughs are processed in that layer.
         let mut content = Content::from(Span::new("[.rolename#idname]+pass+"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -3070,7 +3070,7 @@ foo&#8201;&#8212;&#8201;stuff in between
 foo&#8201;&#8212;&#8201;"#;
 
         let p = Parser::default();
-        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
             content.rendered,
             CowStr::Boxed(expected.to_string().into_boxed_str())
@@ -3082,7 +3082,7 @@ foo&#8201;&#8212;&#8201;"#;
         let mut content = Content::from(Span::new("富--巴"));
 
         let p = Parser::default();
-        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
             content.rendered,
             CowStr::Boxed("富&#8212;&#8203;巴".to_string().into_boxed_str())
@@ -3093,7 +3093,7 @@ foo&#8201;&#8212;&#8201;"#;
     fn replaces_marks() {
         let mut content = Content::from(Span::new(r#"(C) (R) (TM) \(C) \(R) \(TM)"#));
         let p = Parser::default();
-        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -3110,7 +3110,7 @@ foo&#8201;&#8212;&#8201;"#;
 
         let mut content = Content::from(Span::new(input));
         let p = Parser::default();
-        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
             content.rendered,
             CowStr::Boxed(input.to_string().into_boxed_str())
@@ -3123,7 +3123,7 @@ foo&#8201;&#8212;&#8201;"#;
 
         let mut content = Content::from(Span::new(input));
         let p = Parser::default();
-        SubstitutionStep::CharacterReplacements.apply(&mut content, &p);
+        SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
             content.rendered,
             CowStr::Boxed(input.to_string().into_boxed_str())
@@ -3203,32 +3203,250 @@ foo&#8201;&#8212;&#8201;"#;
         end
       end
     end
+    "###
+        );
+    }
+}
 
-    context 'Post replacements' do
-      test 'line break inserted after line with line break character' do
-        para = block_from_string "First line +\nSecond line"
-        result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
-        assert_equal 'First line<br>', result.first
-      end
+mod post_replacements {
+    use pretty_assertions_sorted::assert_eq;
 
-      test 'line break inserted after line wrap with hardbreaks enabled' do
-        para = block_from_string "First line\nSecond line", attributes: { 'hardbreaks' => '' }
-        result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
-        assert_equal 'First line<br>', result.first
-      end
+    use crate::{
+        blocks::Block,
+        tests::fixtures::{
+            attributes::{TAttrlist, TElementAttribute},
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            TSpan,
+        },
+        Parser, Span,
+    };
 
-      test 'line break character stripped from end of line with hardbreaks enabled' do
-        para = block_from_string "First line +\nSecond line", attributes: { 'hardbreaks' => '' }
-        result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
-        assert_equal 'First line<br>', result.first
-      end
+    #[test]
+    fn line_break_inserted_after_line_with_line_break_character() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("First line +\nSecond line"), &mut p);
 
-      test 'line break not inserted for single line with hardbreaks enabled' do
-        para = block_from_string 'First line', attributes: { 'hardbreaks' => '' }
-        result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
-        assert_equal 'First line', result.first
-      end
-    end
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "First line +\nSecond line",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "First line<br>\nSecond line",
+                },
+                source: TSpan {
+                    data: "First line +\nSecond line",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn line_break_inserted_after_line_wrap_with_hardbreaks_enabled() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("[%hardbreaks]\nFirst line\nSecond line"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "First line\nSecond line",
+                        line: 2,
+                        col: 1,
+                        offset: 14,
+                    },
+                    rendered: "First line<br>\nSecond line",
+                },
+                source: TSpan {
+                    data: "[%hardbreaks]\nFirst line\nSecond line",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },],
+                        value: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        source: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "%hardbreaks",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+    }
+
+    #[test]
+    fn line_break_character_stripped_from_end_of_line_with_hardbreaks_enabled() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("[%hardbreaks]\nFirst line +\nSecond line"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "First line +\nSecond line",
+                        line: 2,
+                        col: 1,
+                        offset: 14,
+                    },
+                    rendered: "First line<br>\nSecond line",
+                },
+                source: TSpan {
+                    data: "[%hardbreaks]\nFirst line +\nSecond line",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },],
+                        value: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        source: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "%hardbreaks",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+    }
+
+    #[test]
+    fn line_break_not_inserted_for_single_line_with_hardbreaks_enabled() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("[%hardbreaks]\nFirst line"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "First line",
+                        line: 2,
+                        col: 1,
+                        offset: 14,
+                    },
+                    rendered: "First line",
+                },
+                source: TSpan {
+                    data: "[%hardbreaks]\nFirst line",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },],
+                        value: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        source: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "%hardbreaks",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+    }
+}
+
+mod resolve_subs {
+    // use pretty_assertions_sorted::assert_eq;
+
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
 
     context 'Resolve subs' do
       test 'should resolve subs for block' do
