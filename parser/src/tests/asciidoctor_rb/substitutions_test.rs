@@ -3314,18 +3314,75 @@ mod post_replacements {
         );
     }
 
+    #[test]
+    fn line_break_character_stripped_from_end_of_line_with_hardbreaks_enabled() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("[%hardbreaks]\nFirst line +\nSecond line"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "First line +\nSecond line",
+                        line: 2,
+                        col: 1,
+                        offset: 14,
+                    },
+                    rendered: "First line<br>\nSecond line",
+                },
+                source: TSpan {
+                    data: "[%hardbreaks]\nFirst line +\nSecond line",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },],
+                        value: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        source: TSpan {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "%hardbreaks",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'line break character stripped from end of line with hardbreaks enabled' do
-        para = block_from_string "First line +\nSecond line", attributes: { 'hardbreaks' => '' }
-        result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
-        assert_equal 'First line<br>', result.first
-      end
-
       test 'line break not inserted for single line with hardbreaks enabled' do
         para = block_from_string 'First line', attributes: { 'hardbreaks' => '' }
         result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
