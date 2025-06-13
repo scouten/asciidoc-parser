@@ -158,6 +158,9 @@ This is a sidebar with an option assigned to it, named option.
         );
 
         assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("option"));
+        assert!(!mi.item.has_option("option1"));
     }
 
     #[test]
@@ -289,6 +292,10 @@ This is a sidebar with two options assigned to it, named option1 and option2.
         );
 
         assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("option1"));
+        assert!(mi.item.has_option("option2"));
+        assert!(!mi.item.has_option("option3"));
     }
 
     #[test]
@@ -447,6 +454,11 @@ For instance, consider a table with the three built-in option values, `header`, 
         );
 
         assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("header"));
+        assert!(mi.item.has_option("footer"));
+        assert!(mi.item.has_option("autowidth"));
+        assert!(!mi.item.has_option("option"));
     }
 
     #[test]
@@ -564,6 +576,8 @@ This is a sidebar with an option assigned to it, named option.
         );
 
         assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("option"));
     }
 
     #[test]
@@ -689,6 +703,10 @@ This is a sidebar with two options assigned to it, option1 and option2.
         );
 
         assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("option1"));
+        assert!(mi.item.has_option("option2"));
+        assert!(!mi.item.has_option("option3"));
     }
 
     #[test]
@@ -833,6 +851,11 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
         );
 
         assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("header"));
+        assert!(mi.item.has_option("footer"));
+        assert!(mi.item.has_option("autowidth"));
+        assert!(!mi.item.has_option("option1"));
     }
 }
 
@@ -1004,6 +1027,9 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
 
         assert!(roles.next().is_none());
 
+        assert!(mi.item.has_option("step"));
+        assert!(!mi.item.has_option("properties"));
+
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     }
 
@@ -1162,6 +1188,10 @@ property 2:: does different stuff
         );
 
         assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("step"));
+        assert!(!mi.item.has_option("horizontal"));
+        assert!(!mi.item.has_option("properties"));
 
         let roles = mi.item.roles();
         let mut roles = roles.iter();

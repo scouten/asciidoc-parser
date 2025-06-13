@@ -252,8 +252,7 @@ impl<'src> Attrlist<'src> {
     /// ****
     /// ```
     ///
-    /// You can assign multiple options to a block by prest
-    /// fixing each value with
+    /// You can assign multiple options to a block by prefixing each value with
     /// a percent sign (`%`).
     ///
     /// ## Example 2: Sidebar with two options assigned using the shorthand dot
@@ -327,6 +326,18 @@ impl<'src> Attrlist<'src> {
         }
 
         options
+    }
+
+    /// Returns `true` if this attribute list has the named option.
+    ///
+    /// See [`options()`] for a description of option syntax.
+    ///
+    /// [`options()`]: Self::options
+    pub fn has_option<N: AsRef<str>>(&'src self, name: N) -> bool {
+        // PERF: Might help to optimize away the construction of the options Vec.
+        let options = self.options();
+        let name = name.as_ref();
+        options.iter().any(|opt| opt.data() == name)
     }
 }
 

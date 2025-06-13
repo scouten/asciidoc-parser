@@ -1981,7 +1981,10 @@ mod options {
             }
         );
 
-        assert!(options.next().is_none(),);
+        assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("option"));
+        assert!(!mi.item.has_option("option1"));
 
         assert_eq!(
             mi.item.span(),
@@ -2091,7 +2094,12 @@ mod options {
             }
         );
 
-        assert!(options.next().is_none(),);
+        assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("option1"));
+        assert!(mi.item.has_option("option2"));
+        assert!(mi.item.has_option("option3"));
+        assert!(!mi.item.has_option("option4"));
 
         assert_eq!(
             mi.item.span(),
@@ -2239,6 +2247,9 @@ mod options {
 
         assert!(options.next().is_none(),);
 
+        assert!(mi.item.has_option("option1"));
+        assert!(!mi.item.has_option("option2"));
+
         assert_eq!(
             mi.after,
             TSpan {
@@ -2373,7 +2384,11 @@ mod options {
             }
         );
 
-        assert!(options.next().is_none(),);
+        assert!(options.next().is_none());
+
+        assert!(!mi.item.has_option("option"));
+        assert!(mi.item.has_option("option1"));
+        assert!(!mi.item.has_option("option2"));
 
         assert_eq!(
             mi.after,
@@ -2530,7 +2545,12 @@ mod options {
             }
         );
 
-        assert!(options.next().is_none(),);
+        assert!(options.next().is_none());
+
+        assert!(mi.item.has_option("option1"));
+        assert!(mi.item.has_option("option2"));
+        assert!(mi.item.has_option("option3"));
+        assert!(!mi.item.has_option("option4"));
 
         assert_eq!(
             mi.after,
@@ -2700,6 +2720,14 @@ mod options {
 
         assert!(options.next().is_none(),);
 
+        assert!(mi.item.has_option("sh1"));
+        assert!(mi.item.has_option("sh2"));
+        assert!(!mi.item.has_option("sh3"));
+        assert!(mi.item.has_option("na1"));
+        assert!(mi.item.has_option("na2"));
+        assert!(mi.item.has_option("na3"));
+        assert!(!mi.item.has_option("na4"));
+
         assert_eq!(
             mi.after,
             TSpan {
@@ -2768,6 +2796,8 @@ mod options {
 
         let options = mi.item.options();
         assert_eq!(options.iter().len(), 0);
+
+        assert!(!mi.item.has_option("option"));
 
         assert_eq!(
             mi.after,
