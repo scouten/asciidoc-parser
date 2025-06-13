@@ -236,6 +236,16 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
         }
     }
 
+    /// Returns `true` if this block has the named option.
+    ///
+    /// See [`options()`] for a description of option syntax.
+    ///
+    /// [`options()`]: Self::options
+    fn has_option<N: AsRef<str>>(&'src self, name: N) -> bool {
+        self.attrlist()
+            .map_or(false, |attrlist| attrlist.has_option(name))
+    }
+
     /// Returns the title for this block, if present.
     fn title(&'src self) -> Option<Span<'src>>;
 
