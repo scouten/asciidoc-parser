@@ -693,10 +693,6 @@ fn apply_post_replacements(
     }
 }
 
-fn attrlist_has_hardbreaks_option(attrlist: &Option<&Attrlist<'_>>) -> bool {
-    attrlist.is_some_and(|attrlist| attrlist.has_option("hardbreaks"))
-}
-
 #[derive(Debug)]
 struct PostReplacementReplacer<'r>(&'r dyn InlineSubstitutionRenderer);
 
