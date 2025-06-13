@@ -425,6 +425,10 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         assert_eq!(block.roles().first().unwrap().data(), "prominent");
         assert_eq!(block.options().first().unwrap().data(), "incremental");
 
+        assert!(!block.has_option("rules"));
+        assert!(!block.has_option("prominent"));
+        assert!(block.has_option("incremental"));
+
         verifies!(
             r#"
 A block can have multiple roles and options, so these shorthand entries may be repeated.
