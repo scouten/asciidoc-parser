@@ -3203,14 +3203,62 @@ foo&#8201;&#8212;&#8201;"#;
         end
       end
     end
+    "###
+        );
+    }
+}
 
-    context 'Post replacements' do
-      test 'line break inserted after line with line break character' do
-        para = block_from_string "First line +\nSecond line"
-        result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
-        assert_equal 'First line<br>', result.first
-      end
+mod post_replacements {
+    use pretty_assertions_sorted::assert_eq;
 
+    use crate::{
+        blocks::Block,
+        tests::fixtures::{
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            TSpan,
+        },
+        Parser, Span,
+    };
+
+    #[test]
+    fn line_break_inserted_after_line_with_line_break_character() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("First line +\nSecond line"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "First line +\nSecond line",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "First line<br>\nSecond line",
+                },
+                source: TSpan {
+                    data: "First line +\nSecond line",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
       test 'line break inserted after line wrap with hardbreaks enabled' do
         para = block_from_string "First line\nSecond line", attributes: { 'hardbreaks' => '' }
         result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
@@ -3228,7 +3276,20 @@ foo&#8201;&#8212;&#8201;"#;
         result = para.apply_subs para.lines, (para.expand_subs :post_replacements)
         assert_equal 'First line', result.first
       end
-    end
+    "###
+        );
+    }
+}
+
+mod resolve_subs {
+    // use pretty_assertions_sorted::assert_eq;
+
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby() {
+        todo!(
+            "{}",
+            r###"
 
     context 'Resolve subs' do
       test 'should resolve subs for block' do

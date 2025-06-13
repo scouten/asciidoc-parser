@@ -55,7 +55,7 @@ impl SubstitutionGroup {
                 SubstitutionStep::CharacterReplacements.apply(content, parser);
                 // TO DO: Add these as they are implemented.
                 // SubstitutionStep::Macros.apply(content, parser);
-                // SubstitutionStep::PostReplacement.apply(content, parser);
+                SubstitutionStep::PostReplacement.apply(content, parser);
             }
 
             Self::Verbatim => {

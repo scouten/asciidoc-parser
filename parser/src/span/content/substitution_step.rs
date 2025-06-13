@@ -61,6 +61,9 @@ impl SubstitutionStep {
             Self::CharacterReplacements => {
                 apply_character_replacements(content, parser.renderer);
             }
+            Self::PostReplacement => {
+                apply_post_replacements(content, parser);
+            }
             _ => {
                 todo!("Implement apply for SubstitutionStep::{self:?}");
             }
@@ -635,3 +638,44 @@ impl Replacer for CharacterReplacer<'_> {
         }
     }
 }
+
+fn apply_post_replacements(content: &mut Content<'_>, parser: &Parser) {
+    /*
+        TO DO: Handle hardbreak configuration.
+
+        if @attributes['hardbreaks-option'] || @document.attributes['hardbreaks-option']
+            lines = text.split LF, -1
+            return text if lines.size < 2
+            last = lines.pop
+            (lines.map do |line|
+                Inline.new(self, :break, (line.end_with? HARD_LINE_BREAK) ? (line.slice 0, line.length - 2) : line, type: :line).convert
+            end << last).join LF
+        ... end
+    */
+
+    let rendered = content.rendered.as_ref();
+    if !(rendered.contains('+') && rendered.contains('\n')) {
+        return;
+    }
+
+    let replacer = PostReplacementReplacer(parser.renderer);
+
+    if let Cow::Owned(new_result) = HARD_LINE_BREAK.replace_all(&rendered, replacer) {
+        content.rendered = new_result.into();
+    }
+}
+
+#[derive(Debug)]
+struct PostReplacementReplacer<'r>(&'r dyn InlineSubstitutionRenderer);
+
+impl Replacer for PostReplacementReplacer<'_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        dest.push_str(&caps[1]);
+        self.0.render_line_break(dest);
+    }
+}
+
+static HARD_LINE_BREAK: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(r#"(?m)^(.*) \+$"#).unwrap()
+});
