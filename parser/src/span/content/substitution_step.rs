@@ -665,7 +665,7 @@ fn apply_post_replacements(content: &mut Content<'_>, parser: &Parser) {
 
     let replacer = PostReplacementReplacer(parser.renderer);
 
-    if let Cow::Owned(new_result) = HARD_LINE_BREAK.replace_all(&rendered, replacer) {
+    if let Cow::Owned(new_result) = HARD_LINE_BREAK.replace_all(rendered, replacer) {
         content.rendered = new_result.into();
     }
 }
