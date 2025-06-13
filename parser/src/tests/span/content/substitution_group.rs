@@ -5,7 +5,7 @@ mod normal {
     fn empty() {
         let mut content = Content::from(Span::new(""));
         let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }
@@ -14,7 +14,7 @@ mod normal {
     fn basic_non_empty_span() {
         let mut content = Content::from(Span::new("blah"));
         let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("blah"));
     }
@@ -23,7 +23,7 @@ mod normal {
     fn match_lt_and_gt() {
         let mut content = Content::from(Span::new("bl<ah>"));
         let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -35,7 +35,7 @@ mod normal {
     fn match_amp() {
         let mut content = Content::from(Span::new("bl<a&h>"));
         let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -47,7 +47,7 @@ mod normal {
     fn strong_word() {
         let mut content = Content::from(Span::new("One *word* is strong."));
         let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -63,7 +63,7 @@ mod normal {
     fn strong_word_with_special_chars() {
         let mut content = Content::from(Span::new("One *wo<r>d* is strong."));
         let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -79,7 +79,7 @@ mod normal {
     fn marked_string_with_id() {
         let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
         let p = Parser::default();
-        SubstitutionGroup::Normal.apply(&mut content, &p);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -96,7 +96,7 @@ mod header {
     fn not_yet_implemented() {
         let mut content = Content::from(Span::new(""));
         let p = Parser::default();
-        SubstitutionGroup::Header.apply(&mut content, &p);
+        SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }

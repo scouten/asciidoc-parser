@@ -1,4 +1,5 @@
 use crate::{
+    attributes::Attrlist,
     span::content::{Content, SubstitutionStep},
     Parser,
 };
@@ -46,20 +47,25 @@ pub enum SubstitutionGroup {
 }
 
 impl SubstitutionGroup {
-    pub(crate) fn apply(&self, content: &mut Content<'_>, parser: &Parser) {
+    pub(crate) fn apply(
+        &self,
+        content: &mut Content<'_>,
+        parser: &Parser,
+        attrlist: Option<&Attrlist>,
+    ) {
         match self {
             Self::Normal => {
-                SubstitutionStep::SpecialCharacters.apply(content, parser);
-                SubstitutionStep::Quotes.apply(content, parser);
-                SubstitutionStep::AttributeReferences.apply(content, parser);
-                SubstitutionStep::CharacterReplacements.apply(content, parser);
+                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
+                SubstitutionStep::Quotes.apply(content, parser, attrlist);
+                SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
+                SubstitutionStep::CharacterReplacements.apply(content, parser, attrlist);
                 // TO DO: Add these as they are implemented.
                 // SubstitutionStep::Macros.apply(content, parser);
-                SubstitutionStep::PostReplacement.apply(content, parser);
+                SubstitutionStep::PostReplacement.apply(content, parser, attrlist);
             }
 
             Self::Verbatim => {
-                SubstitutionStep::SpecialCharacters.apply(content, parser);
+                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
             }
 
             Self::Pass | Self::None => {}

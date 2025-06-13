@@ -26,7 +26,7 @@ impl<'src> SimpleBlock<'src> {
 
         // TO DO: Allow overrides for SubstitutionGroup.
         let mut content: Content<'src> = source.item.into();
-        SubstitutionGroup::Normal.apply(&mut content, parser);
+        SubstitutionGroup::Normal.apply(&mut content, parser, preamble.attrlist.as_ref());
 
         Some(MatchedItem {
             item: Self {
@@ -49,9 +49,8 @@ impl<'src> SimpleBlock<'src> {
     ) -> Option<MatchedItem<'src, Self>> {
         let source = source.take_non_empty_lines()?;
 
-        // TO DO: Allow overrides for SubstitutionGroup.
         let mut content: Content<'src> = source.item.into();
-        SubstitutionGroup::Normal.apply(&mut content, parser);
+        SubstitutionGroup::Normal.apply(&mut content, parser, None);
 
         Some(MatchedItem {
             item: Self {

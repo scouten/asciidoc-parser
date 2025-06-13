@@ -5,7 +5,7 @@ mod special_characters {
     fn empty() {
         let mut content = Content::from(Span::new(""));
         let p = Parser::default();
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }
@@ -14,7 +14,7 @@ mod special_characters {
     fn basic_non_empty_span() {
         let mut content = Content::from(Span::new("blah"));
         let p = Parser::default();
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("blah"));
     }
@@ -23,7 +23,7 @@ mod special_characters {
     fn match_lt_and_gt() {
         let mut content = Content::from(Span::new("bl<ah>"));
         let p = Parser::default();
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -35,7 +35,7 @@ mod special_characters {
     fn match_amp() {
         let mut content = Content::from(Span::new("bl<a&h>"));
         let p = Parser::default();
-        SubstitutionStep::SpecialCharacters.apply(&mut content, &p);
+        SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -51,7 +51,7 @@ mod quotes {
     fn empty() {
         let mut content = Content::from(Span::new(""));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }
@@ -60,7 +60,7 @@ mod quotes {
     fn basic_non_empty_span() {
         let mut content = Content::from(Span::new("blah"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("blah"));
     }
@@ -69,7 +69,7 @@ mod quotes {
     fn ignore_lt_and_gt() {
         let mut content = Content::from(Span::new("bl<ah>"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -81,7 +81,7 @@ mod quotes {
     fn strong_word() {
         let mut content = Content::from(Span::new("One *word* is strong."));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -97,7 +97,7 @@ mod quotes {
     fn marked_string_with_id() {
         let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p);
+        SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -113,7 +113,7 @@ mod attribute_references {
     fn empty() {
         let mut content = Content::from(Span::new(""));
         let p = Parser::default();
-        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }
@@ -122,7 +122,7 @@ mod attribute_references {
     fn basic_non_empty_span() {
         let mut content = Content::from(Span::new("blah"));
         let p = Parser::default();
-        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed("blah"));
     }
@@ -131,7 +131,7 @@ mod attribute_references {
     fn ignore_non_match() {
         let mut content = Content::from(Span::new("bl{ah}"));
         let p = Parser::default();
-        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -143,7 +143,7 @@ mod attribute_references {
     fn ignore_escaped_non_match() {
         let mut content = Content::from(Span::new("bl\\{ah}"));
         let p = Parser::default();
-        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -155,7 +155,7 @@ mod attribute_references {
     fn replace_sp_match() {
         let mut content = Content::from(Span::new("bl{sp}ah"));
         let p = Parser::default();
-        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -167,7 +167,7 @@ mod attribute_references {
     fn ignore_escaped_sp_match() {
         let mut content = Content::from(Span::new("bl\\{sp}ah"));
         let p = Parser::default();
-        SubstitutionStep::AttributeReferences.apply(&mut content, &p);
+        SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -184,7 +184,7 @@ mod callouts {
     fn not_yet_implemented() {
         let mut content = Content::from(Span::new(""));
         let p = Parser::default();
-        SubstitutionStep::Callouts.apply(&mut content, &p);
+        SubstitutionStep::Callouts.apply(&mut content, &p, None);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
     }

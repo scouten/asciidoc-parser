@@ -95,7 +95,7 @@ impl<'src> RawDelimitedBlock<'src> {
                 let content = content_start.trim_remainder(next).trim_trailing_line_end();
 
                 let mut content: Content<'src> = content.into();
-                substitution_group.apply(&mut content, parser);
+                substitution_group.apply(&mut content, parser, preamble.attrlist.as_ref());
 
                 return Some(MatchAndWarnings {
                     item: Some(MatchedItem {

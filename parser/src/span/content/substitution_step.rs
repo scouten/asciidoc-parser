@@ -47,7 +47,12 @@ pub(crate) enum SubstitutionStep {
 }
 
 impl SubstitutionStep {
-    pub(crate) fn apply(&self, content: &mut Content<'_>, parser: &Parser) {
+    pub(crate) fn apply(
+        &self,
+        content: &mut Content<'_>,
+        parser: &Parser,
+        attrlist: Option<&Attrlist<'_>>,
+    ) {
         match self {
             Self::SpecialCharacters => {
                 apply_special_characters(content, parser.renderer);
