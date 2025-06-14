@@ -1,6 +1,6 @@
 use crate::{
     attributes::Attrlist,
-    span::content::{Content, SubstitutionStep},
+    span::content::{Content, Passthroughs, SubstitutionStep},
     Parser,
 };
 
@@ -53,8 +53,12 @@ impl SubstitutionGroup {
         parser: &Parser,
         attrlist: Option<&Attrlist>,
     ) {
+        let mut passthroughs: Option<Passthroughs<'_>> = None;
+
         match self {
             Self::Normal => {
+                passthroughs = Some(Passthroughs::extract_from(content));
+
                 SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
                 SubstitutionStep::Quotes.apply(content, parser, attrlist);
                 SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
@@ -71,8 +75,13 @@ impl SubstitutionGroup {
             Self::Pass | Self::None => {}
 
             _ => {
+                // Do passthroughs if sub steps includes macros.
                 todo!("Implement apply for SubstitutionGroup::{self:?}");
             }
+        }
+
+        if let Some(passthroughs) = passthroughs {
+            passthroughs.restore_to(content);
         }
     }
 }
