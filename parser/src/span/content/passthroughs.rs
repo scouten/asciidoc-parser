@@ -291,8 +291,6 @@ impl<'r> InlinePassReplacer<'_, 'r> {
                 subs: SubstitutionGroup::Verbatim,
                 attrlist: None,
             });
-            //   passthrus[passthru_key = passthrus.size] = { text: $5, subs:
-            // subs }
         }
 
         dest.push('\u{96}');
