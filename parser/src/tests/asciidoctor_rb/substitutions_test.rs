@@ -2516,17 +2516,40 @@ fn todo_migrate_from_ruby() {
 }
 
 mod passthroughs {
-    use crate::{span::content::Passthroughs, Content, Span};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        span::content::{Passthrough, Passthroughs, SubstitutionGroup},
+        tests::fixtures::{content::TContent, TSpan},
+        Content, Span,
+    };
 
     #[test]
     fn collect_inline_triple_plus_passthroughs() {
         let mut content = Content::from(Span::new("+++<code>inline code</code>+++"));
         let pt = Passthroughs::extract_from(&mut content);
 
-        dbg!(&pt);
-        dbg!(&content);
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "+++<code>inline code</code>+++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
 
-        panic!("Now what?");
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>inline code</code>".to_owned(),
+                subs: SubstitutionGroup::Verbatim,
+                attrlist: None,
+            },],)
+        );
     }
 
     #[ignore]
@@ -2535,16 +2558,6 @@ mod passthroughs {
         todo!(
             "{}",
             r###"
-      test 'collect inline triple plus passthroughs' do
-        para = block_from_string '+++<code>inline code</code>+++'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal '<code>inline code</code>', passthroughs[0][:text]
-        assert_empty passthroughs[0][:subs]
-      end
-
       test 'collect multi-line inline triple plus passthroughs' do
         para = block_from_string "+++<code>inline\ncode</code>+++"
         result = para.extract_passthroughs para.source

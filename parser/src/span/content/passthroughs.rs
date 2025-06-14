@@ -1,22 +1,27 @@
 use std::{borrow::Cow, sync::LazyLock};
 
-use regex::{Captures, Regex, RegexBuilder, Replacer};
+use regex::{Captures, Match, Regex, RegexBuilder, Replacer};
 
-use crate::{Content, Span};
+use crate::{attributes::Attrlist, span::content::SubstitutionGroup, Content, Span};
+
+/// Saves the content of one passthrough (`+++` or similarly bracketed) passage
+/// for later re-expansion.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct Passthrough<'src> {
+    pub(crate) text: String,
+    pub(crate) subs: SubstitutionGroup,
+    // pub(crate) type_: what is this?,
+    pub(crate) attrlist: Option<Attrlist<'src>>,
+}
 
 /// Saves content of passthrough (`+++`-bracketed) passages for later
 /// re-expansion.
-#[derive(Clone, Debug)]
-pub(crate) struct Passthroughs<'src> {
-    /// Original content as recorded before processing.
-    pub(crate) saved_spans: Vec<&'src str>,
-}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct Passthroughs<'src>(pub(crate) Vec<Passthrough<'src>>);
 
 impl<'src> Passthroughs<'src> {
     pub(crate) fn extract_from(content: &mut Content<'src>) -> Self {
-        let mut passthroughs = Self {
-            saved_spans: vec![],
-        };
+        let mut passthroughs = Self(vec![]);
 
         // TRANSLATION GUIDE:
         // * compat_mode => always false
@@ -30,7 +35,7 @@ impl<'src> Passthroughs<'src> {
                 let replacer = InlinePassReplacer(&mut passthroughs);
 
                 if let Cow::Owned(new_result) = INLINE_PASS_MACRO.replace_all(text, replacer) {
-                    result = new_result.into();
+                    content.rendered = new_result.into();
                 }
             }
         }
@@ -118,7 +123,7 @@ impl<'src> Passthroughs<'src> {
     }
 
     pub(super) fn restore_to(&self, content: &mut Content<'src>) {
-        if !self.saved_spans.is_empty() {
+        if !self.0.is_empty() {
             todo!("Restore!");
         }
     }
@@ -178,22 +183,62 @@ struct InlinePassReplacer<'r, 'p>(&'p mut Passthroughs<'r>);
 
 impl Replacer for InlinePassReplacer<'_, '_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        // TRANSLATION GUIDE:
-        // * compat_mode => always false
-        // * passthroughs => self.saved_spans
-        // \4 may have shifted to \4 .. \9
+        if caps.get(4).is_some() {
+            // +++
+            self.handle_quoted_text(caps, 5, dest);
+        } else if caps.get(7).is_some() {
+            // ++
+            self.handle_quoted_text(caps, 8, dest);
+        } else if caps.get(10).is_some() {
+            // %%
+            self.handle_quoted_text(caps, 11, dest);
+        } else {
+            // pass:[]
 
-        dbg!(self);
+            // TRANSLATION GUIDE:
+            // * compat_mode => always false
+            // * passthroughs => self.saved_spans
+
+            todo!(
+                "{}",
+                r###"
+		  else # pass:[]
+			# NOTE we don't look for nested pass:[] macros
+			# honor the escape
+			next $&.slice 1, $&.length if $6 == RS
+			if (subs = $7)
+			  passthrus[passthru_key = passthrus.size] = { text: (normalize_text $8, nil, true), subs: (resolve_pass_subs subs) }
+			else
+			  passthrus[passthru_key = passthrus.size] = { text: (normalize_text $8, nil, true) }
+			end
+		  end
+	
+		  %(#{preceding || ''}#{PASS_START}#{passthru_key}#{PASS_END})
+        "###
+            );
+        }
+    }
+}
+
+impl<'r> InlinePassReplacer<'_, 'r> {
+    fn handle_quoted_text(
+        &mut self,
+        caps: &Captures<'_>,
+        quoted_text_index: usize,
+        dest: &mut String,
+    ) {
+        dbg!(&self);
         dbg!(&caps);
 
-        todo!(
-            "{}",
-            r###"
-		  if (boundary = $4) # $$, ++, or +++
-			# skip ++ in compat mode, handled as normal quoted text
-			next %(#{$2 ? "#{$1}[#{$2}]#{$3}" : "#{$1}#{$3}"}++#{extract_passthroughs $5}++) if compat_mode && boundary == '++'
-	
-			if (attrlist = $2)
+        let escape_count = caps.get(3).map_or(0, |m| m.len());
+
+        let mut old_behavior = false;
+        let mut attrlist: Option<Attrlist<'r>> = None;
+
+        if let Some(attrlist) = caps.get(2) {
+            todo!(
+                "{}",
+                r###"
 			  if (escape_count = $3.length) > 0
 				# NOTE we don't look for nested unconstrained pass macros
 				next %(#{$1}[#{attrlist}]#{RS * (escape_count - 1)}#{boundary}#{$5}#{boundary})
@@ -212,34 +257,46 @@ impl Replacer for InlinePassReplacer<'_, '_> {
 			  else
 				attributes = parse_quoted_text_attributes attrlist
 			  end
+        "###
+            );
+        } else if escape_count > 0 {
+            todo!(
+                "{}",
+                r###"
 			elsif (escape_count = $3.length) > 0
 			  # NOTE we don't look for nested unconstrained pass macros
 			  next %(#{RS * (escape_count - 1)}#{boundary}#{$5}#{boundary})
 			end
-			subs = (boundary == '+++' ? [] : BASIC_SUBS)
-	
-			if attributes
+        "###
+            );
+        }
+
+        if let Some(attrlist) = attrlist {
+            todo!(
+                "{}",
+                r###"
 			  if old_behavior
 				passthrus[passthru_key = passthrus.size] = { text: $5, subs: NORMAL_SUBS, type: :monospaced, attributes: attributes }
 			  else
 				passthrus[passthru_key = passthrus.size] = { text: $5, subs: subs, type: :unquoted, attributes: attributes }
 			  end
-			else
-			  passthrus[passthru_key = passthrus.size] = { text: $5, subs: subs }
-			end
-		  else # pass:[]
-			# NOTE we don't look for nested pass:[] macros
-			# honor the escape
-			next $&.slice 1, $&.length if $6 == RS
-			if (subs = $7)
-			  passthrus[passthru_key = passthrus.size] = { text: (normalize_text $8, nil, true), subs: (resolve_pass_subs subs) }
-			else
-			  passthrus[passthru_key = passthrus.size] = { text: (normalize_text $8, nil, true) }
-			end
-		  end
-	
-		  %(#{preceding || ''}#{PASS_START}#{passthru_key}#{PASS_END})
         "###
-        );
+            );
+        } else {
+            self.0 .0.push(Passthrough {
+                text: caps
+                    .get(quoted_text_index)
+                    .map(|m| m.as_str().to_owned())
+                    .unwrap_or_default(),
+                subs: SubstitutionGroup::Verbatim,
+                attrlist: None,
+            });
+            //   passthrus[passthru_key = passthrus.size] = { text: $5, subs:
+            // subs }
+        }
+
+        dest.push('\u{96}');
+        dest.push_str(&format!("{}", self.0 .0.len() - 1));
+        dest.push('\u{97}');
     }
 }
