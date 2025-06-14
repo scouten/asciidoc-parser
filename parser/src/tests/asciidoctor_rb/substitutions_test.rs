@@ -2516,6 +2516,19 @@ fn todo_migrate_from_ruby() {
 }
 
 mod passthroughs {
+    use crate::{span::content::Passthroughs, Content, Span};
+
+    #[test]
+    fn collect_inline_triple_plus_passthroughs() {
+        let mut content = Content::from(Span::new("+++<code>inline code</code>+++"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        dbg!(&pt);
+        dbg!(&content);
+
+        panic!("Now what?");
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {

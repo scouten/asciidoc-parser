@@ -7,13 +7,13 @@ use crate::{Content, Span};
 /// Saves content of passthrough (`+++`-bracketed) passages for later
 /// re-expansion.
 #[derive(Clone, Debug)]
-pub(super) struct Passthroughs<'src> {
+pub(crate) struct Passthroughs<'src> {
     /// Original content as recorded before processing.
-    saved_spans: Vec<&'src str>,
+    pub(crate) saved_spans: Vec<&'src str>,
 }
 
 impl<'src> Passthroughs<'src> {
-    pub(super) fn extract_from(content: &mut Content<'src>) -> Self {
+    pub(crate) fn extract_from(content: &mut Content<'src>) -> Self {
         let mut passthroughs = Self {
             saved_spans: vec![],
         };
@@ -26,7 +26,6 @@ impl<'src> Passthroughs<'src> {
 
         {
             let text = result.as_ref();
-
             if text.contains("++") || text.contains("$$") || text.contains("ss:") {
                 let replacer = InlinePassReplacer(&mut passthroughs);
 
@@ -138,10 +137,40 @@ impl<'src> Passthroughs<'src> {
 /// AsciiDoc.py.
 static INLINE_PASS_MACRO: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
-    RegexBuilder::new(r#"(?:(?:(\\?)\[([^\[\]]+)\])?(\\{0,2})(\+\+\+?|\$\$)(.*?)\4|(\\?)pass:([a-z]+(?:,[a-z-]+)*)?\[(|.*?[^\\])\]"#)
-                .dot_matches_new_line(true)
-                .build()
-                .unwrap()
+    RegexBuilder::new(
+        r#"(?x)
+		(?:
+			# Optional: attrlist
+			(?:
+				(\\?)              # Group 1: optional backslash before [
+				\[
+					([^\[\]]+)     # Group 2: attrlist contents
+				\]
+			)?
+			
+			(\\{0,2})              # Group 3: optional escape prefix (e.g., \ or \\)
+
+			# Passthrough span delimiters: +++, ++, or $$
+			(?:
+				(\+\+\+) (.*?) (\+\+\+) |   # Groups 4,5,6: triple plus
+				(\+\+)   (.*?) (\+\+)   |   # Groups 7,8,9: double plus
+				(\$\$)   (.*?) (\$\$)       # Groups 10,11,12: double dollar
+			)
+
+		|
+
+			# Alternative: pass-through directive
+			(\\?)                       # Group 13: optional escape before pass
+			pass:
+				([a-z]+(?:,[a-z-]+)*)?  # Group 14: optional language list
+				\[
+					(|.*?[^\\])         # Group 15: optional content, not ending in \
+				\]
+		)"#,
+    )
+    .dot_matches_new_line(true)
+    .build()
+    .unwrap()
 });
 
 #[derive(Debug)]
@@ -152,6 +181,7 @@ impl Replacer for InlinePassReplacer<'_, '_> {
         // TRANSLATION GUIDE:
         // * compat_mode => always false
         // * passthroughs => self.saved_spans
+        // \4 may have shifted to \4 .. \9
 
         dbg!(self);
         dbg!(&caps);
