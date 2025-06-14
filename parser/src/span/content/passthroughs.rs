@@ -144,34 +144,34 @@ static INLINE_PASS_MACRO: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     RegexBuilder::new(
         r#"(?x)
-		(?:
-			# Optional: attrlist
-			(?:
-				(\\?)              # Group 1: optional backslash before [
-				\[
-					([^\[\]]+)     # Group 2: attrlist contents
-				\]
-			)?
-			
-			(\\{0,2})              # Group 3: optional escape prefix (e.g., \ or \\)
+        (?:
+            # Optional: attrlist
+            (?:
+                (\\?)              # Group 1: optional backslash before [
+                \[
+                    ([^\[\]]+)     # Group 2: attrlist contents
+                \]
+            )?
+            
+            (\\{0,2})              # Group 3: optional escape prefix (e.g., \ or \\)
 
-			# Passthrough span delimiters: +++, ++, or $$
-			(?:
-				(\+\+\+) (.*?) (\+\+\+) |   # Groups 4,5,6: triple plus
-				(\+\+)   (.*?) (\+\+)   |   # Groups 7,8,9: double plus
-				(\$\$)   (.*?) (\$\$)       # Groups 10,11,12: double dollar
-			)
+            # Passthrough span delimiters: +++, ++, or $$
+            (?:
+                (\+\+\+) (.*?) (\+\+\+) |   # Groups 4,5,6: triple plus
+                (\+\+)   (.*?) (\+\+)   |   # Groups 7,8,9: double plus
+                (\$\$)   (.*?) (\$\$)       # Groups 10,11,12: double dollar
+            )
 
-		|
+        |
 
-			# Alternative: pass-through directive
-			(\\?)                       # Group 13: optional escape before pass
-			pass:
-				([a-z]+(?:,[a-z-]+)*)?  # Group 14: optional language list
-				\[
-					(|.*?[^\\])         # Group 15: optional content, not ending in \
-				\]
-		)"#,
+            # Alternative: pass-through directive
+            (\\?)                       # Group 13: optional escape before pass
+            pass:
+                ([a-z]+(?:,[a-z-]+)*)?  # Group 14: optional language list
+                \[
+                    (|.*?[^\\])         # Group 15: optional content, not ending in \
+                \]
+        )"#,
     )
     .dot_matches_new_line(true)
     .build()
