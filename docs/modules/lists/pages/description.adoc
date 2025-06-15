@@ -54,7 +54,7 @@ include::example$description.adoc[tag=base]
 == Mixing lists
 
 The content of a description list can be any AsciiDoc element.
-For instance, we could rewrite the grocery list from above so that each aisle is a label rather than a parent outline list item.
+For instance, we could split up a grocery list by aisle, using description list terms for the aisle names.
 
 ----
 include::example$description.adoc[tag=base-mix]
