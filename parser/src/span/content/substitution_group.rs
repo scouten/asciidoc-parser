@@ -53,7 +53,7 @@ impl SubstitutionGroup {
         parser: &Parser,
         attrlist: Option<&Attrlist>,
     ) {
-        let mut passthroughs: Option<Passthroughs<'_>> = None;
+        let mut passthroughs: Option<Passthroughs> = None;
 
         match self {
             Self::Normal => {

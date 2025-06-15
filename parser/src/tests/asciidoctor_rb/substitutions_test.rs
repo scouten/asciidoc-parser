@@ -2519,9 +2519,14 @@ mod passthroughs {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        blocks::Block,
         span::content::{Passthrough, Passthroughs, SubstitutionGroup},
-        tests::fixtures::{content::TContent, TSpan},
-        Content, Span,
+        tests::fixtures::{
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            TSpan,
+        },
+        Content, Parser, Span,
     };
 
     #[test]
@@ -2547,6 +2552,7 @@ mod passthroughs {
             Passthroughs(vec![Passthrough {
                 text: "<code>inline code</code>".to_owned(),
                 subs: SubstitutionGroup::Verbatim,
+                type_: None,
                 attrlist: None,
             },],)
         );
@@ -2575,6 +2581,7 @@ mod passthroughs {
             Passthroughs(vec![Passthrough {
                 text: "<code>inline\ncode</code>".to_owned(),
                 subs: SubstitutionGroup::Verbatim,
+                type_: None,
                 attrlist: None,
             },],)
         );
@@ -2603,6 +2610,7 @@ mod passthroughs {
             Passthroughs(vec![Passthrough {
                 text: "<code>{code}</code>".to_owned(),
                 subs: SubstitutionGroup::Verbatim,
+                type_: None,
                 attrlist: None,
             },],)
         );
@@ -2631,8 +2639,73 @@ mod passthroughs {
             Passthroughs(vec![Passthrough {
                 text: "<code>{code}</code>".to_owned(),
                 subs: SubstitutionGroup::Verbatim,
+                type_: None,
                 attrlist: None,
             },],)
+        );
+    }
+
+    #[test]
+    fn should_not_crash_if_role_on_passthrough_is_enclosed_in_quotes_1() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("['role']\\++This++++++++++++"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "['role']\\++This++++++++++++",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<span class=\"'role'\">+This</span>+This+",
+                },
+                source: TSpan {
+                    data: "['role']\\++This++++++++++++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_not_crash_if_role_on_passthrough_is_enclosed_in_quotes_2() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("['role']\\+++++++++This++++++++++++"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "['role']\\+++++++++This++++++++++++",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<span class=\"'role'\">+</span>++This+",
+                },
+                source: TSpan {
+                    data: "['role']\\+++++++++This++++++++++++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
         );
     }
 
@@ -2642,16 +2715,6 @@ mod passthroughs {
         todo!(
             "{}",
             r###"
-      test 'should not crash if role on passthrough is enclosed in quotes' do
-        %W(
-          ['role']#{BACKSLASH}++This++++++++++++
-          ['role']#{BACKSLASH}+++++++++This++++++++++++
-        ).each do |input|
-          para = block_from_string input
-          assert_includes para.content, %(<span class="'role'">)
-        end
-      end
-
       test 'should allow inline double plus passthrough to be escaped using backslash' do
         para = block_from_string "you need to replace `int a = n#{BACKSLASH}++;` with `int a = ++n;`!"
         result = para.apply_subs para.source
