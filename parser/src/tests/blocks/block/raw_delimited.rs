@@ -67,7 +67,7 @@ mod parse {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "++++x",
+                    rendered: "x",
                 },
                 source: TSpan {
                     data: "++++x",

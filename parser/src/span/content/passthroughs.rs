@@ -2,7 +2,7 @@ use std::{borrow::Cow, sync::LazyLock};
 
 use regex::{Captures, Match, Regex, RegexBuilder, Replacer};
 
-use crate::{attributes::Attrlist, span::content::SubstitutionGroup, Content, Span};
+use crate::{attributes::Attrlist, span::content::SubstitutionGroup, Content, Parser, Span};
 
 /// Saves the content of one passthrough (`+++` or similarly bracketed) passage
 /// for later re-expansion.
@@ -122,9 +122,19 @@ impl<'src> Passthroughs<'src> {
         // passthroughs
     }
 
-    pub(super) fn restore_to(&self, content: &mut Content<'src>) {
-        if !self.0.is_empty() {
-            todo!("Restore!");
+    pub(super) fn restore_to(&self, content: &mut Content<'src>, parser: &Parser<'_>) {
+        if self.0.is_empty() {
+            return;
+        }
+
+        dbg!(&self);
+
+        let replacer = PassthroughRestoreReplacer(self, parser);
+
+        if let Cow::Owned(new_result) =
+            PASS_WITH_INDEX.replace_all(content.rendered().as_ref(), replacer)
+        {
+            content.rendered = new_result.into();
         }
     }
 }
@@ -296,5 +306,59 @@ impl<'r> InlinePassReplacer<'_, 'r> {
         dest.push('\u{96}');
         dest.push_str(&format!("{}", self.0 .0.len() - 1));
         dest.push('\u{97}');
+    }
+}
+
+static PASS_WITH_INDEX: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new("\u{96}(\\d+)\u{97}").unwrap()
+});
+
+#[derive(Debug)]
+struct PassthroughRestoreReplacer<'r, 'p>(&'p Passthroughs<'r>, &'p Parser<'p>);
+
+impl Replacer for PassthroughRestoreReplacer<'_, '_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        dbg!(&self);
+        dbg!(&caps);
+
+        let index = caps[0].parse::<usize>().unwrap_or_default();
+
+        if let Some(pass) = self.0 .0.get(index) {
+            let span = Span::new(&pass.text);
+
+            let mut subbed_text = Content::from(span);
+            pass.subs.apply(&mut subbed_text, self.1, None);
+
+            if false {
+                todo!(
+                    "{}",
+                    r#"
+                if (type = pass[:type])
+                  if (attributes = pass[:attributes])
+                    id = attributes['id']
+                  end
+                  subbed_text = (Inline.new self, :quoted, subbed_text, type: type, id: id, attributes: attributes).convert
+                end
+                "#
+                );
+            }
+
+            if subbed_text.rendered().contains('\u{96}') {
+                todo!("RECURSE: (restore_passthroughs subbed_text)");
+                // recursively apply passthrough replacement and write the
+                // result
+            } else {
+                dest.push_str(subbed_text.rendered());
+            }
+        } else {
+            todo!(
+                "{}",
+                r#"
+              logger.error %(unresolved passthrough detected: #{text})
+              '??pass??'
+            "#
+            );
+        }
     }
 }

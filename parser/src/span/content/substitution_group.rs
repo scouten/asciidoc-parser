@@ -81,7 +81,7 @@ impl SubstitutionGroup {
         }
 
         if let Some(passthroughs) = passthroughs {
-            passthroughs.restore_to(content);
+            passthroughs.restore_to(content, parser);
         }
     }
 }
