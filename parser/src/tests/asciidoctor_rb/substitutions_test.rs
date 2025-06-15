@@ -2608,22 +2608,40 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn collect_inline_double_plus_passthroughs() {
+        let mut content = Content::from(Span::new("++<code>{code}</code>++"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "++<code>{code}</code>++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>{code}</code>".to_owned(),
+                subs: SubstitutionGroup::Verbatim,
+                attrlist: None,
+            },],)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'collect inline double plus passthroughs' do
-        para = block_from_string '++<code>{code}</code>++'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal '<code>{code}</code>', passthroughs[0][:text]
-        assert_equal [:specialcharacters], passthroughs[0][:subs]
-      end
-
       test 'should not crash if role on passthrough is enclosed in quotes' do
         %W(
           ['role']#{BACKSLASH}++This++++++++++++
