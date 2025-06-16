@@ -73,10 +73,14 @@ impl SubstitutionGroup {
             return Some(Self::Verbatim);
         }
 
+        if custom == "specialchars" {
+            return Some(Self::Custom(vec![SubstitutionStep::SpecialCharacters]));
+        }
+
         let steps: Vec<SubstitutionStep> = custom
             .split(",")
             .filter_map(|v| match v.trim() {
-                "c" | "specialchars" => Some(SubstitutionStep::SpecialCharacters),
+                "c" | "specialcharacters" => Some(SubstitutionStep::SpecialCharacters),
                 "q" | "quotes" => Some(SubstitutionStep::Quotes),
                 "a" | "attributes" => Some(SubstitutionStep::AttributeReferences),
                 "r" | "replacements" => Some(SubstitutionStep::CharacterReplacements),

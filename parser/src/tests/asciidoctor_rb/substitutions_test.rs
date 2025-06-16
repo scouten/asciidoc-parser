@@ -2520,7 +2520,7 @@ mod passthroughs {
 
     use crate::{
         blocks::Block,
-        span::content::{Passthrough, Passthroughs, SubstitutionGroup},
+        span::content::{Passthrough, Passthroughs, SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
@@ -2805,22 +2805,46 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn collect_passthroughs_from_inline_pass_macro() {
+        let mut content = Content::from(Span::new(
+            "pass:specialcharacters,quotes[<code>['code'\\]</code>]",
+        ));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:specialcharacters,quotes[<code>['code'\\]</code>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>['code']</code>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'collect passthroughs from inline pass macro' do
-        para = block_from_string %q(pass:specialcharacters,quotes[<code>['code'\\]</code>])
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal %q(<code>['code']</code>), passthroughs[0][:text]
-        assert_equal [:specialcharacters, :quotes], passthroughs[0][:subs]
-      end
-
       test 'collect multi-line passthroughs from inline pass macro' do
         para = block_from_string %(pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>])
         result = para.extract_passthroughs para.source

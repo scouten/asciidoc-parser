@@ -99,6 +99,19 @@ impl Passthroughs {
             content.rendered = new_result.into();
         }
     }
+
+    pub(super) fn push(&mut self, passthrough: Passthrough, dest: &mut String) {
+        dbg!(&passthrough);
+        dbg!(&dest);
+
+        let index = self.0.len();
+        self.0.push(passthrough);
+        dbg!(&index);
+
+        dest.push('\u{96}');
+        dest.push_str(&format!("{index}"));
+        dest.push('\u{97}');
+    }
 }
 
 /// Matches several variants of the passthrough inline macro, which may span
@@ -114,8 +127,8 @@ impl Passthroughs {
 /// AsciiDoc.py.
 static INLINE_PASS_MACRO: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
-    RegexBuilder::new(
-        r#"(?x)
+    Regex::new(
+        r#"(?xs)
         (?:
             # Optional: attrlist
             (?:
@@ -139,14 +152,13 @@ static INLINE_PASS_MACRO: LazyLock<Regex> = LazyLock::new(|| {
             # Alternative: pass-through directive
             (\\?)                       # Group 13: optional escape before pass
             pass:
-                ([a-z]+(?:,[a-z-]+)*)?  # Group 14: optional language list
+                ([a-z]+(?:,[a-z-]+)*)?  # Group 14: optional substitution step list
                 \[
-                    (|.*?[^\\])         # Group 15: optional content, not ending in \
+                     (|.*?[^\\])        # Group 15: optional content
+                                        # (avoiding escape of trailing bracket)
                 \]
         )"#,
     )
-    .dot_matches_new_line(true)
-    .build()
     .unwrap()
 });
 
@@ -155,6 +167,8 @@ struct InlinePassMacroReplacer<'p>(&'p mut Passthroughs);
 
 impl Replacer for InlinePassMacroReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        dbg!(&caps);
+
         if caps.get(4).is_some() {
             // +++
             self.handle_quoted_text(caps, 5, dest);
@@ -165,28 +179,35 @@ impl Replacer for InlinePassMacroReplacer<'_> {
             // %%
             self.handle_quoted_text(caps, 11, dest);
         } else {
-            // pass:[]
+            // NOTE: We don't look for nested `pass:[]` macros.
 
-            // TRANSLATION GUIDE:
-            // * compat_mode => always false
-            // * passthroughs => self.saved_spans
+            if caps.get(13).map_or(false, |m| m.as_str().len() > 0) {
+                // Honor escape of `pass:` macro.
+                dest.push_str("pass:");
+                if let Some(subs) = caps.get(14) {
+                    dest.push_str(subs.as_str());
+                }
+                dest.push('[');
+                dest.push_str(&caps[15]);
+                dest.push(']');
+                return;
+            }
 
-            todo!(
-                "{}",
-                r###"
-		  else # pass:[]
-			# NOTE we don't look for nested pass:[] macros
-			# honor the escape
-			next $&.slice 1, $&.length if $6 == RS
-			if (subs = $7)
-			  passthrus[passthru_key = passthrus.size] = { text: (normalize_text $8, nil, true), subs: (resolve_pass_subs subs) }
-			else
-			  passthrus[passthru_key = passthrus.size] = { text: (normalize_text $8, nil, true) }
-			end
-		  end
-	
-		  %(#{preceding || ''}#{PASS_START}#{passthru_key}#{PASS_END})
-        "###
+            dbg!(&caps);
+
+            let subs = caps
+                .get(14)
+                .and_then(|m| SubstitutionGroup::from_custom_string(m.as_str()))
+                .unwrap_or(SubstitutionGroup::Normal);
+
+            self.0.push(
+                Passthrough {
+                    text: normalize_text(&caps[15], false, true),
+                    subs,
+                    type_: None,
+                    attrlist: None,
+                },
+                dest,
             );
         }
     }
@@ -260,7 +281,7 @@ impl InlinePassMacroReplacer<'_> {
             return;
         }
 
-        if let Some(attrlist) = attrlist {
+        let passthrough = if let Some(attrlist) = attrlist {
             todo!(
                 "{}",
                 r###"
@@ -272,8 +293,7 @@ impl InlinePassMacroReplacer<'_> {
         "###
             );
         } else {
-            eprintln!("gen PT @ 275");
-            self.0 .0.push(Passthrough {
+            Passthrough {
                 text: caps
                     .get(quoted_text_index)
                     .map(|m| m.as_str().to_owned())
@@ -281,12 +301,11 @@ impl InlinePassMacroReplacer<'_> {
                 subs: SubstitutionGroup::Verbatim,
                 type_: None,
                 attrlist: None,
-            });
-        }
+            }
+        };
 
-        dest.push('\u{96}');
-        dest.push_str(&format!("{}", self.0 .0.len() - 1));
-        dest.push('\u{97}');
+        eprintln!("hqt:303");
+        self.0.push(passthrough, dest);
     }
 }
 
@@ -427,20 +446,16 @@ impl Replacer for InlinePassReplacer<'_> {
             None
         };
 
-        eprintln!("gen PT @ 418");
-        dbg!(&quoted_text);
-        self.0 .0.push(Passthrough {
-            text: quoted_text.to_string(),
-            subs,
-            type_,
-            attrlist: attrlist_body,
-        });
-
-        dest.push('\u{96}');
-        dest.push_str(&format!("{}", self.0 .0.len() - 1));
-        dest.push('\u{97}');
-
-        dbg!(&dest);
+        eprintln!("replace_append:445");
+        self.0.push(
+            Passthrough {
+                text: quoted_text.to_string(),
+                subs,
+                type_,
+                attrlist: attrlist_body,
+            },
+            dest,
+        );
     }
 }
 
@@ -522,5 +537,35 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
             "#
             );
         }
+    }
+}
+
+/// Normalize text to prepare it for parsing.
+///
+/// If `normalize_whitespace` is true, strip surrounding whitespace and fold
+/// newlines. If `unescape_closing_square_bracket` is true, unescape any escaped
+/// closing square brackets.
+///
+/// Returns the normalized text string.
+fn normalize_text(
+    text: &str,
+    normalize_whitespace: bool,
+    unescape_closing_square_brackets: bool,
+) -> String {
+    if text.is_empty() {
+        return "".to_string();
+    }
+
+    let text = if normalize_whitespace {
+        let text = text.trim();
+        text.replace('\n', " ")
+    } else {
+        text.to_string()
+    };
+
+    if unescape_closing_square_brackets {
+        text.replace("\\]", "]")
+    } else {
+        text
     }
 }
