@@ -1,3 +1,170 @@
+mod from_custom_string {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::span::content::{SubstitutionGroup, SubstitutionStep};
+
+    #[test]
+    fn empty() {
+        assert_eq!(SubstitutionGroup::from_custom_string(""), None);
+    }
+
+    #[test]
+    fn normal() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("n"),
+            Some(SubstitutionGroup::Normal)
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("normal"),
+            Some(SubstitutionGroup::Normal)
+        );
+
+        assert_eq!(SubstitutionGroup::from_custom_string("nermal"), None);
+    }
+
+    #[test]
+    fn verbatim() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("v"),
+            Some(SubstitutionGroup::Verbatim)
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("verbatim"),
+            Some(SubstitutionGroup::Verbatim)
+        );
+
+        assert_eq!(SubstitutionGroup::from_custom_string("verboten"), None);
+    }
+
+    #[test]
+    fn special_chars() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("c"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("specialchars"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters
+            ]))
+        );
+    }
+
+    #[test]
+    fn quotes() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("q"),
+            Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Quotes]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("quotes"),
+            Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Quotes]))
+        );
+    }
+
+    #[test]
+    fn attributes() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("a"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::AttributeReferences
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("attributes"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::AttributeReferences
+            ]))
+        );
+    }
+
+    #[test]
+    fn replacements() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("r"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::CharacterReplacements
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("replacements"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::CharacterReplacements
+            ]))
+        );
+    }
+
+    #[test]
+    fn macros() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("m"),
+            Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Macros]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("macros"),
+            Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Macros]))
+        );
+    }
+
+    #[test]
+    fn post_replacements() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("p"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::PostReplacement
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("post replacements"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::PostReplacement
+            ]))
+        );
+    }
+
+    #[test]
+    fn multiple() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("q,a"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("q, a"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("quotes,attributes"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("x,bogus,no such step"),
+            None
+        );
+    }
+}
+
 mod normal {
     use crate::{span::content::SubstitutionGroup, strings::CowStr, Content, Parser, Span};
 
