@@ -19,7 +19,7 @@ use crate::{
 /// depending on the block or inline element’s assigned substitution group. The
 /// processor runs the substitutions in the following order:
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) enum SubstitutionStep {
+pub enum SubstitutionStep {
     /// Searches for three characters (`<`, `>`, `&`) and replaces them with
     /// their named character references.
     SpecialCharacters,
