@@ -2744,18 +2744,44 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_allow_inline_double_plus_passthrough_with_attributes_to_be_escaped_using_backslash() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("=[attrs]\\\\++text++"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "=[attrs]\\\\++text++",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "=[attrs]++text++",
+                },
+                source: TSpan {
+                    data: "=[attrs]\\\\++text++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should allow inline double plus passthrough with attributes to be escaped using backslash' do
-        para = block_from_string "=[attrs]#{BACKSLASH}#{BACKSLASH}++text++"
-        result = para.apply_subs para.source
-        assert_equal '=[attrs]++text++', result
-      end
-
       test 'collect multi-line inline double dollar passthroughs' do
         para = block_from_string "$$<code>\n{code}\n</code>$$"
         result = para.extract_passthroughs para.source
