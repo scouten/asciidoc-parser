@@ -326,7 +326,7 @@ static PASS_WITH_INDEX: LazyLock<Regex> = LazyLock::new(|| {
 static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(
-        r#"(?mx)
+        r#"(?xs)
             \b{start-half}                # Must not follow a word
                                           # Separately (enforce in code, must not
                                           # follow ;, :, or \)
