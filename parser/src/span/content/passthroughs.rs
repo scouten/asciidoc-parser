@@ -181,7 +181,7 @@ impl Replacer for InlinePassMacroReplacer<'_> {
         } else {
             // NOTE: We don't look for nested `pass:[]` macros.
 
-            if caps.get(13).map_or(false, |m| m.as_str().len() > 0) {
+            if caps.get(13).is_some_and(|m| !m.as_str().is_empty()) {
                 // Honor escape of `pass:` macro.
                 dest.push_str("pass:");
                 if let Some(subs) = caps.get(14) {
@@ -401,7 +401,7 @@ impl Replacer for InlinePassReplacer<'_> {
             if escape_count > 0 {
                 // Honor the escape of the formatting mark.
                 dest.push('[');
-                dest.push_str(&orig_attrlist_body);
+                dest.push_str(orig_attrlist_body);
                 dest.push(']');
                 dest.push_str(&("\\".repeat(escape_count - 1)));
                 dest.push(format_mark);
@@ -414,7 +414,7 @@ impl Replacer for InlinePassReplacer<'_> {
                 if old_behavior && format_mark == '`' {
                     // Honor the escape of the attributes.
                     dest.push('[');
-                    dest.push_str(&orig_attrlist_body);
+                    dest.push_str(orig_attrlist_body);
                     dest.push(']');
                     dest.push_str(quoted_text);
                     return;
@@ -481,7 +481,7 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
             if let Some(type_) = pass.type_ {
                 dbg!(type_);
                 let attrlist = pass.attrlist.as_ref().map(|attrlist_body| {
-                    let span = Span::new(&attrlist_body);
+                    let span = Span::new(attrlist_body);
                     let maw = Attrlist::parse(span);
                     maw.item.item
                 });
@@ -495,7 +495,7 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
                 };
                 dbg!(&id);
 
-                let new_text = self.1.renderer.render_quoted_substitition(
+                self.1.renderer.render_quoted_substitition(
                     type_,
                     QuoteScope::Unconstrained,
                     attrlist,
