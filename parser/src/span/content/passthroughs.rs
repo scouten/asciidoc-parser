@@ -204,7 +204,12 @@ impl InlinePassMacroReplacer<'_> {
 
         let escape_count = caps.get(3).map_or(0, |m| m.len());
 
-        dbg!(escape_count);
+        let boundary = caps.get(4).or_else(|| caps.get(7)).or_else(|| caps.get(10));
+        let boundary = boundary.map(|m| m.as_str()).unwrap_or_default();
+        dbg!(&boundary);
+
+        let quoted_text = caps.get(5).or_else(|| caps.get(8)).or_else(|| caps.get(11));
+        let quoted_text = quoted_text.map(|m| m.as_str()).unwrap_or_default();
 
         let mut old_behavior = false;
         let mut attrlist: Option<Attrlist<'_>> = None;
@@ -247,15 +252,12 @@ impl InlinePassMacroReplacer<'_> {
                 "###
             );
         } else if escape_count > 0 {
-            todo!(
-                "{}",
-                r###"
-			elsif (escape_count = $3.length) > 0
-			  # NOTE we don't look for nested unconstrained pass macros
-			  next %(#{RS * (escape_count - 1)}#{boundary}#{$5}#{boundary})
-			end
-        "###
-            );
+            // NOTE: We don't look for nested unconstrained pass macros.
+            dest.push_str(&("\\".repeat(escape_count - 1)));
+            dest.push_str(boundary);
+            dest.push_str(quoted_text);
+            dest.push_str(boundary);
+            return;
         }
 
         if let Some(attrlist) = attrlist {
@@ -270,6 +272,7 @@ impl InlinePassMacroReplacer<'_> {
         "###
             );
         } else {
+            eprintln!("gen PT @ 275");
             self.0 .0.push(Passthrough {
                 text: caps
                     .get(quoted_text_index)
@@ -363,7 +366,19 @@ impl Replacer for InlinePassReplacer<'_> {
 
         let format_mark = if caps.get(4).is_some() { '+' } else { '`' };
 
+        if !old_behavior && format_mark == '`' {
+            // The Rust version of the INLINE_PASS regex can't quite as nuanced as the
+            // original Ruby version due to the lack of lookaround support. We compensate by
+            // restoring the original text when we get false positives (notably
+            // backtick-wrapped code snippets, which will get translated later by the quotes
+            // substition step).
+            dest.push_str(&caps[0]);
+            return;
+        }
+
         if let Some(ref orig_attrlist_body) = orig_attrlist_body {
+            dbg!(&orig_attrlist_body);
+
             if escape_count > 0 {
                 // Honor the escape of the formatting mark.
                 dest.push('[');
@@ -412,6 +427,8 @@ impl Replacer for InlinePassReplacer<'_> {
             None
         };
 
+        eprintln!("gen PT @ 418");
+        dbg!(&quoted_text);
         self.0 .0.push(Passthrough {
             text: quoted_text.to_string(),
             subs,

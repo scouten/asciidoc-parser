@@ -2709,18 +2709,47 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_allow_inline_double_plus_passthrough_to_be_escaped_using_backslash() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("you need to replace `int a = n\\++;` with `int a = ++n;`!"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "you need to replace `int a = n\\++;` with `int a = ++n;`!",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "you need to replace <code>int a = n++;</code> with <code>int a = ++n;</code>!",
+                },
+                source: TSpan {
+                    data: "you need to replace `int a = n\\++;` with `int a = ++n;`!",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should allow inline double plus passthrough to be escaped using backslash' do
-        para = block_from_string "you need to replace `int a = n#{BACKSLASH}++;` with `int a = ++n;`!"
-        result = para.apply_subs para.source
-        assert_equal 'you need to replace <code>int a = n++;</code> with <code>int a = ++n;</code>!', result
-      end
-
       test 'should allow inline double plus passthrough with attributes to be escaped using backslash' do
         para = block_from_string "=[attrs]#{BACKSLASH}#{BACKSLASH}++text++"
         result = para.apply_subs para.source
