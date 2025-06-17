@@ -2839,22 +2839,46 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn collect_multiline_passthroughs_from_inline_pass_macro() {
+        let mut content = Content::from(Span::new(
+            "pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>]",
+        ));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>['more\ncode']</code>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'collect multi-line passthroughs from inline pass macro' do
-        para = block_from_string %(pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>])
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal %(<code>['more\ncode']</code>), passthroughs[0][:text]
-        assert_equal [:specialcharacters, :quotes], passthroughs[0][:subs]
-      end
-
       test 'should find and replace placeholder duplicated by substitution' do
         input = '+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough'
         result = convert_inline_string input
