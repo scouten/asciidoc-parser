@@ -2875,16 +2875,48 @@ mod passthroughs {
 
     #[ignore]
     #[test]
+    fn should_find_and_replace_placeholder_duplicated_by_substitution() {
+        // TO DO: Restore test when macros are supported.
+
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"first passthrough followed by <a href="http://example.com/__u_no_format_me__" class="bare">http://example.com/__u_no_format_me__</a> with passthrough"#,
+                },
+                source: TSpan {
+                    data: "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should find and replace placeholder duplicated by substitution' do
-        input = '+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough'
-        result = convert_inline_string input
-        assert_equal 'first passthrough followed by <a href="http://example.com/__u_no_format_me__" class="bare">http://example.com/__u_no_format_me__</a> with passthrough', result
-      end
-
       test 'resolves sub shorthands on inline pass macro' do
         para = block_from_string 'pass:q,a[*<{backend}>*]'
         result = para.extract_passthroughs para.source
