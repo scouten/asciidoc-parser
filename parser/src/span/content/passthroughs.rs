@@ -84,7 +84,7 @@ impl Passthroughs {
         // passthroughs
     }
 
-    pub(super) fn restore_to(&self, content: &mut Content<'_>, parser: &Parser<'_>) {
+    pub(crate) fn restore_to(&self, content: &mut Content<'_>, parser: &Parser<'_>) {
         if self.0.is_empty() {
             return;
         }

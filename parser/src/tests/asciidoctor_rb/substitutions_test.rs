@@ -2520,6 +2520,7 @@ mod passthroughs {
 
     use crate::{
         blocks::Block,
+        parser::ModificationContext,
         span::content::{Passthrough, Passthroughs, SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
@@ -2911,22 +2912,67 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn resolves_sub_shorthands_on_inline_pass_macro() {
+        let mut content = Content::from(Span::new("pass:q,a[*<{backend}>*]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:q,a[*<{backend}>*]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "*<{backend}>*".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::Quotes,
+                    SubstitutionStep::AttributeReferences,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+
+        let parser = Parser::default().with_intrinsic_attribute(
+            "backend",
+            "html5",
+            ModificationContext::ApiOnly,
+        );
+
+        pt.0[0].subs.apply(&mut content, &parser, None);
+
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:q,a[*<{backend}>*]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "<strong><html5></strong>",
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'resolves sub shorthands on inline pass macro' do
-        para = block_from_string 'pass:q,a[*<{backend}>*]'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal [:quotes, :attributes], passthroughs[0][:subs]
-        result = para.restore_passthroughs result
-        assert_equal '<strong><html5></strong>', result
-      end
-
       test 'inline pass macro supports incremental subs' do
         para = block_from_string 'pass:n,-a[<{backend}>]'
         result = para.extract_passthroughs para.source

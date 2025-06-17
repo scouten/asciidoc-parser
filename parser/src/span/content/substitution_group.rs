@@ -124,6 +124,12 @@ impl SubstitutionGroup {
 
             Self::Pass | Self::None => {}
 
+            Self::Custom(ref steps) => {
+                for step in steps {
+                    step.apply(content, parser, attrlist);
+                }
+            }
+
             _ => {
                 // Do passthroughs if sub steps includes macros.
                 todo!("Implement apply for SubstitutionGroup::{self:?}");
