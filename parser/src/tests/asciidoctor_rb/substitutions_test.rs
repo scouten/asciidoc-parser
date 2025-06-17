@@ -3152,23 +3152,52 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn restore_inline_passthroughs_with_subs() {
+        // NOTE: Placeholder is surrounded by text to prevent reader from stripping
+        // trailing boundary char (unique to test scenario).
+        let mut content = Content::from(Span::new(
+            "some \u{96}0\u{97} to study in the \u{96}1\u{97} programming language",
+        ));
+
+        let pt = Passthroughs(vec![
+            Passthrough {
+                text: "<code>{code}</code>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![SubstitutionStep::SpecialCharacters]),
+                type_: None,
+                attrlist: None,
+            },
+            Passthrough {
+                text: "{language}".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![SubstitutionStep::SpecialCharacters]),
+                type_: None,
+                attrlist: None,
+            },
+        ]);
+
+        let parser = Parser::default();
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "some \u{96}0\u{97} to study in the \u{96}1\u{97} programming language",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "some &lt;code&gt;{code}&lt;/code&gt; to study in the {language} programming language",
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      # NOTE placeholder is surrounded by text to prevent reader from stripping trailing boundary char (unique to test scenario)
-      test 'restore inline passthroughs with subs' do
-        para = block_from_string "some #{Asciidoctor::Substitutors::PASS_START}" + '0' + "#{Asciidoctor::Substitutors::PASS_END} to study in the #{Asciidoctor::Substitutors::PASS_START}" + '1' + "#{Asciidoctor::Substitutors::PASS_END} programming language"
-        para.extract_passthroughs ''
-        passthroughs = para.instance_variable_get :@passthroughs
-        passthroughs[0] = { text: '<code>{code}</code>', subs: [:specialcharacters] }
-        passthroughs[1] = { text: '{language}', subs: [:specialcharacters] }
-        result = para.restore_passthroughs para.source
-        assert_equal 'some &lt;code&gt;{code}&lt;/code&gt; to study in the {language} programming language', result
-      end
-
       test 'should restore nested passthroughs' do
         result = convert_inline_string %q(+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.)
         assert_equal %q(Sometimes you feel <code>mono</code>. Sometimes you don't.), result
