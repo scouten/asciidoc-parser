@@ -3027,20 +3027,75 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_not_recognize_pass_macro_with_invalid_substitution_list_1() {
+        let mut content = Content::from(Span::new("pass:,[foobar]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:,[foobar]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "pass:,[foobar]",
+            }
+        );
+
+        assert!(pt.0.is_empty());
+    }
+
+    #[test]
+    fn should_not_recognize_pass_macro_with_invalid_substitution_list_2() {
+        let mut content = Content::from(Span::new("pass:42[foobar]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:42[foobar]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "pass:42[foobar]",
+            }
+        );
+
+        assert!(pt.0.is_empty());
+    }
+
+    #[test]
+    fn should_not_recognize_pass_macro_with_invalid_substitution_list_3() {
+        let mut content = Content::from(Span::new("pass:a,[foobar]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:a,[foobar]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "pass:a,[foobar]",
+            }
+        );
+
+        assert!(pt.0.is_empty());
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should not recognize pass macro with invalid substitution list' do
-        [',', '42', 'a,'].each do |subs|
-          para = block_from_string %(pass:#{subs}[foobar])
-          result = para.extract_passthroughs para.source
-          assert_equal %(pass:#{subs}[foobar]), result
-        end
-      end
-
       test 'should allow content of inline pass macro to be empty' do
         para = block_from_string 'pass:[]'
         result = para.extract_passthroughs para.source
