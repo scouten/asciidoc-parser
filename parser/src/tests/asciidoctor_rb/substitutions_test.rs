@@ -3090,20 +3090,44 @@ mod passthroughs {
         assert!(pt.0.is_empty());
     }
 
+    #[test]
+    fn should_allow_content_of_inline_pass_macro_to_be_empty() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("pass:[]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "pass:[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "",
+                },
+                source: TSpan {
+                    data: "pass:[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should allow content of inline pass macro to be empty' do
-        para = block_from_string 'pass:[]'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal '', para.restore_passthroughs(result)
-      end
-
       # NOTE placeholder is surrounded by text to prevent reader from stripping trailing boundary char (unique to test scenario)
       test 'restore inline passthroughs without subs' do
         para = block_from_string "some #{Asciidoctor::Substitutors::PASS_START}" + '0' + "#{Asciidoctor::Substitutors::PASS_END} to study"
