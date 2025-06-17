@@ -2969,19 +2969,70 @@ mod passthroughs {
 
     #[ignore]
     #[test]
+    fn inline_pass_macro_supports_incremental_subs() {
+        // TO DO: Restore this test once macro substitutions are implemented.
+        let mut content = Content::from(Span::new("pass:n,-a[<{backend}>]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:n,-a[<{backend}>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<{backend}>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                    SubstitutionStep::CharacterReplacements,
+                    SubstitutionStep::Macros,
+                    SubstitutionStep::PostReplacement,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+
+        let parser = Parser::default().with_intrinsic_attribute(
+            "backend",
+            "html5",
+            ModificationContext::ApiOnly,
+        );
+
+        pt.0[0].subs.apply(&mut content, &parser, None);
+
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:q,a[*<{backend}>*]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "&lt;{backend}&gt;",
+            }
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'inline pass macro supports incremental subs' do
-        para = block_from_string 'pass:n,-a[<{backend}>]'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        result = para.restore_passthroughs result
-        assert_equal '&lt;{backend}&gt;', result
-      end
-
       test 'should not recognize pass macro with invalid substitution list' do
         [',', '42', 'a,'].each do |subs|
           para = block_from_string %(pass:#{subs}[foobar])

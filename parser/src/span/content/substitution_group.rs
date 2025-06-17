@@ -64,7 +64,9 @@ impl SubstitutionGroup {
     /// substitutions].
     ///
     /// [Custom substitutions]: https://docs.asciidoctor.org/asciidoc/latest/pass/pass-macro/#custom-substitutions
-    pub(crate) fn from_custom_string(custom: &str) -> Option<Self> {
+    pub(crate) fn from_custom_string(mut custom: &str) -> Option<Self> {
+        custom = custom.trim();
+
         if custom == "n" || custom == "normal" {
             return Some(Self::Normal);
         }
@@ -73,28 +75,56 @@ impl SubstitutionGroup {
             return Some(Self::Verbatim);
         }
 
-        if custom == "specialchars" {
-            return Some(Self::Custom(vec![SubstitutionStep::SpecialCharacters]));
+        let mut steps: Vec<SubstitutionStep> = vec![];
+
+        for mut step in custom.split(",") {
+            step = step.trim();
+
+            if step == "n" || step == "normal" {
+                steps = vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                    SubstitutionStep::AttributeReferences,
+                    SubstitutionStep::CharacterReplacements,
+                    SubstitutionStep::Macros,
+                    SubstitutionStep::PostReplacement,
+                ];
+                continue;
+            }
+
+            if step == "v" || step == "verbatim" {
+                steps = vec![SubstitutionStep::SpecialCharacters];
+                continue;
+            }
+
+            let subtract = if step.starts_with('-') {
+                step = &step[1..];
+                true
+            } else {
+                false
+            };
+
+            let step = match step {
+                "c" | "specialcharacters" | "specialchars" => SubstitutionStep::SpecialCharacters,
+                "q" | "quotes" => SubstitutionStep::Quotes,
+                "a" | "attributes" => SubstitutionStep::AttributeReferences,
+                "r" | "replacements" => SubstitutionStep::CharacterReplacements,
+                "m" | "macros" => SubstitutionStep::Macros,
+                "p" | "post replacements" => SubstitutionStep::PostReplacement,
+                _ => {
+                    // TO DO: Issue a warning?
+                    return None;
+                }
+            };
+
+            if subtract {
+                steps.retain(|s| s != &step);
+            } else {
+                steps.push(step);
+            }
         }
 
-        let steps: Vec<SubstitutionStep> = custom
-            .split(",")
-            .filter_map(|v| match v.trim() {
-                "c" | "specialcharacters" => Some(SubstitutionStep::SpecialCharacters),
-                "q" | "quotes" => Some(SubstitutionStep::Quotes),
-                "a" | "attributes" => Some(SubstitutionStep::AttributeReferences),
-                "r" | "replacements" => Some(SubstitutionStep::CharacterReplacements),
-                "m" | "macros" => Some(SubstitutionStep::Macros),
-                "p" | "post replacements" => Some(SubstitutionStep::PostReplacement),
-                _ => None,
-            })
-            .collect();
-
-        if steps.is_empty() {
-            None
-        } else {
-            Some(Self::Custom(steps))
-        }
+        Some(Self::Custom(steps))
     }
 
     pub(crate) fn apply(
