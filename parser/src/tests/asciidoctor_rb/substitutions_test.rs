@@ -3122,22 +3122,42 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn restore_inline_passthroughs_without_subs() {
+        // NOTE: Placeholder is surrounded by text to prevent reader from stripping
+        // trailing boundary char (unique to test scenario).
+        let mut content = Content::from(Span::new("some \u{96}0\u{97} to study"));
+
+        let pt = Passthroughs(vec![Passthrough {
+            text: "<code>inline code</code>".to_owned(),
+            subs: SubstitutionGroup::None,
+            type_: None,
+            attrlist: None,
+        }]);
+
+        let parser = Parser::default();
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "some \u{96}0\u{97} to study",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "some <code>inline code</code> to study",
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      # NOTE placeholder is surrounded by text to prevent reader from stripping trailing boundary char (unique to test scenario)
-      test 'restore inline passthroughs without subs' do
-        para = block_from_string "some #{Asciidoctor::Substitutors::PASS_START}" + '0' + "#{Asciidoctor::Substitutors::PASS_END} to study"
-        para.extract_passthroughs ''
-        passthroughs = para.instance_variable_get :@passthroughs
-        passthroughs[0] = { text: '<code>inline code</code>', subs: [] }
-        result = para.restore_passthroughs para.source
-        assert_equal 'some <code>inline code</code> to study', result
-      end
-
       # NOTE placeholder is surrounded by text to prevent reader from stripping trailing boundary char (unique to test scenario)
       test 'restore inline passthroughs with subs' do
         para = block_from_string "some #{Asciidoctor::Substitutors::PASS_START}" + '0' + "#{Asciidoctor::Substitutors::PASS_END} to study in the #{Asciidoctor::Substitutors::PASS_START}" + '1' + "#{Asciidoctor::Substitutors::PASS_END} programming language"
