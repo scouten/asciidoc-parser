@@ -3229,15 +3229,45 @@ mod passthroughs {
 
     #[ignore]
     #[test]
+    fn should_not_fail_to_restore_remaining_passthroughs_after_processing_inline_passthrough_with_macro_substitution(
+    ) {
+        // TO DO: Enable this test when macro substitution is implemented.
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("pass:m[.] pass:[.]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "pass:m[.] pass:[.]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: ". .",
+                },
+                source: TSpan {
+                    data: "pass:m[.] pass:[.]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should not fail to restore remaining passthroughs after processing inline passthrough with macro substitution' do
-        input = 'pass:m[.] pass:[.]'
-        assert_equal '. .', (convert_inline_string input)
-      end
-
       test 'should honor role on double plus passthrough' do
         result = convert_inline_string 'Print the version using [var]++{asciidoctor-version}++.'
         assert_equal 'Print the version using <span class="var">{asciidoctor-version}</span>.', result
