@@ -522,9 +522,13 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
             }
 
             if subbed_text.rendered().contains('\u{96}') {
-                todo!("RECURSE: (restore_passthroughs subbed_text)");
-                // recursively apply passthrough replacement and write the
-                // result
+                // Recursively apply passthrough replacement and write the result.
+                let replacer = PassthroughRestoreReplacer(self.0, self.1);
+
+                let new_result =
+                    PASS_WITH_INDEX.replace_all(subbed_text.rendered().as_ref(), replacer);
+
+                dest.push_str(new_result.as_ref());
             } else {
                 dest.push_str(subbed_text.rendered());
             }

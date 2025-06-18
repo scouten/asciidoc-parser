@@ -3192,17 +3192,47 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_restore_nested_passthroughs() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "Sometimes you feel <code>mono</code>. Sometimes you don't.",
+                },
+                source: TSpan {
+                    data: "+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should restore nested passthroughs' do
-        result = convert_inline_string %q(+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.)
-        assert_equal %q(Sometimes you feel <code>mono</code>. Sometimes you don't.), result
-      end
-
       test 'should not fail to restore remaining passthroughs after processing inline passthrough with macro substitution' do
         input = 'pass:m[.] pass:[.]'
         assert_equal '. .', (convert_inline_string input)
