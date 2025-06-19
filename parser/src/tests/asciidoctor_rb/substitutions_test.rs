@@ -2552,7 +2552,7 @@ mod passthroughs {
             pt,
             Passthroughs(vec![Passthrough {
                 text: "<code>inline code</code>".to_owned(),
-                subs: SubstitutionGroup::Verbatim,
+                subs: SubstitutionGroup::None,
                 type_: None,
                 attrlist: None,
             },],)
@@ -2581,7 +2581,7 @@ mod passthroughs {
             pt,
             Passthroughs(vec![Passthrough {
                 text: "<code>inline\ncode</code>".to_owned(),
-                subs: SubstitutionGroup::Verbatim,
+                subs: SubstitutionGroup::None,
                 type_: None,
                 attrlist: None,
             },],)
@@ -2663,7 +2663,7 @@ mod passthroughs {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "<span class=\"'role'\">+This</span>+This+",
+                    rendered: "<span class=\"'role'\">+This</span>+",
                 },
                 source: TSpan {
                     data: "['role']\\++This++++++++++++",
@@ -2695,7 +2695,7 @@ mod passthroughs {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "<span class=\"'role'\">+</span>++This+",
+                    rendered: "<span class=\"'role'\">+</span>+This+",
                 },
                 source: TSpan {
                     data: "['role']\\+++++++++This++++++++++++",
@@ -3262,17 +3262,47 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_honor_role_on_double_plus_passthrough() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("Print the version using [var]++{asciidoctor-version}++."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Print the version using [var]++{asciidoctor-version}++.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"Print the version using <span class="var">{asciidoctor-version}</span>."#,
+                },
+                source: TSpan {
+                    data: "Print the version using [var]++{asciidoctor-version}++.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'should honor role on double plus passthrough' do
-        result = convert_inline_string 'Print the version using [var]++{asciidoctor-version}++.'
-        assert_equal 'Print the version using <span class="var">{asciidoctor-version}</span>.', result
-      end
-
       test 'complex inline passthrough macro' do
         text_to_escape = %q([(] <'basic form'> <'logical operator'> <'basic form'> [)])
         para = block_from_string %($$#{text_to_escape}$$)

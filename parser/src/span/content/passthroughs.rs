@@ -232,11 +232,12 @@ impl InlinePassMacroReplacer<'_> {
         let quoted_text = caps.get(5).or_else(|| caps.get(8)).or_else(|| caps.get(11));
         let quoted_text = quoted_text.map(|m| m.as_str()).unwrap_or_default();
 
+        let mut preceding: Option<String> = None;
         let mut old_behavior = false;
-        let mut attrlist: Option<Attrlist<'_>> = None;
-        // NO LONGER SURE WE NEED TO PARSE ...
 
-        if let Some(attrlist) = caps.get(2) {
+        let attrlist: Option<String> = if let Some(attrlist) = caps.get(2) {
+            let attrlist = attrlist.as_str();
+
             if escape_count > 0 {
                 dest.push_str(caps[1].as_ref());
                 dest.push('[');
@@ -246,32 +247,25 @@ impl InlinePassMacroReplacer<'_> {
                 dest.push_str(caps[quoted_text_index - 1].as_ref());
                 dest.push_str(caps[quoted_text_index].as_ref());
                 dest.push_str(caps[quoted_text_index - 1].as_ref());
-
-                dbg!(&dest);
-
                 return;
             }
 
-            todo!(
-                "{}",
-                r###"
-                  elsif $1 == RS
-                    preceding = %([#{attrlist}])
-                  elsif boundary == '++'
-                    if attrlist == 'x-'
-                      old_behavior = true
-                      attributes = {}
-                    elsif attrlist.end_with? ' x-'
-                      old_behavior = true
-                      attributes = parse_quoted_text_attributes attrlist.slice 0, attrlist.length - 3
-                    else
-                      attributes = parse_quoted_text_attributes attrlist
-                    end
-                  else
-                    attributes = parse_quoted_text_attributes attrlist
-                  end
-                "###
-            );
+            if &caps[1] == "\\" {
+                preceding = Some(format!("[{attrlist}]", attrlist = &caps[2]));
+                None
+            } else if boundary == "++" {
+                if attrlist == "x-" {
+                    old_behavior = true;
+                    Some("".to_owned())
+                } else if attrlist.ends_with(" x-") {
+                    old_behavior = true;
+                    Some(attrlist[0..attrlist.len() - 3].to_owned())
+                } else {
+                    Some(attrlist.to_owned())
+                }
+            } else {
+                Some(attrlist.to_owned())
+            }
         } else if escape_count > 0 {
             // NOTE: We don't look for nested unconstrained pass macros.
             dest.push_str(&("\\".repeat(escape_count - 1)));
@@ -279,32 +273,53 @@ impl InlinePassMacroReplacer<'_> {
             dest.push_str(quoted_text);
             dest.push_str(boundary);
             return;
-        }
+        } else {
+            None
+        };
 
         let passthrough = if let Some(attrlist) = attrlist {
-            todo!(
-                "{}",
-                r###"
-			  if old_behavior
-				passthrus[passthru_key = passthrus.size] = { text: $5, subs: NORMAL_SUBS, type: :monospaced, attributes: attributes }
-			  else
-				passthrus[passthru_key = passthrus.size] = { text: $5, subs: subs, type: :unquoted, attributes: attributes }
-			  end
-        "###
-            );
+            if old_behavior {
+                Passthrough {
+                    text: caps
+                        .get(quoted_text_index)
+                        .map(|m| m.as_str().to_owned())
+                        .unwrap_or_default(),
+                    subs: SubstitutionGroup::Normal,
+                    type_: Some(QuoteType::Monospaced),
+                    attrlist: Some(attrlist),
+                }
+            } else {
+                Passthrough {
+                    text: caps
+                        .get(quoted_text_index)
+                        .map(|m| m.as_str().to_owned())
+                        .unwrap_or_default(),
+                    subs: if boundary == "+++" {
+                        SubstitutionGroup::None
+                    } else {
+                        SubstitutionGroup::Verbatim
+                    },
+                    type_: Some(QuoteType::Unquoted),
+                    attrlist: Some(attrlist),
+                }
+            }
         } else {
             Passthrough {
                 text: caps
                     .get(quoted_text_index)
                     .map(|m| m.as_str().to_owned())
                     .unwrap_or_default(),
-                subs: SubstitutionGroup::Verbatim,
+                subs: if boundary == "+++" {
+                    SubstitutionGroup::None
+                } else {
+                    SubstitutionGroup::Verbatim
+                },
                 type_: None,
                 attrlist: None,
             }
         };
 
-        eprintln!("hqt:303");
+        dbg!(&passthrough);
         self.0.push(passthrough, dest);
     }
 }
@@ -466,6 +481,7 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         dbg!(&self);
         dbg!(&caps);
+        dbg!(&dest);
 
         let index = caps[1].parse::<usize>().unwrap_or_default();
 
@@ -495,30 +511,45 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
                 };
                 dbg!(&id);
 
+                let mut new_text = String::default();
                 self.1.renderer.render_quoted_substitition(
                     type_,
                     QuoteScope::Unconstrained,
                     attrlist,
                     id,
                     &pass.text,
-                    dest,
+                    &mut new_text,
                 );
+
+                subbed_text.rendered = new_text.into();
 
                 dbg!(&dest);
             }
 
-            if false {
-                todo!(
-                    "{}",
-                    r#"
-                if (type = pass[:type])
-                  if (attributes = pass[:attributes])
-                    id = attributes['id']
-                  end
-                  subbed_text = (Inline.new self, :quoted, subbed_text, type: type, id: id, attributes: attributes).convert
-                end
-                "#
+            dbg!(&pass);
+
+            if let Some(type_) = pass.type_ {
+                let attrlist = pass.attrlist.as_ref().map(|attrlist_body| {
+                    let span = Span::new(&attrlist_body);
+                    let maw = Attrlist::parse(span);
+                    maw.item.item
+                });
+
+                let id = attrlist
+                    .as_ref()
+                    .and_then(|attrlist| attrlist.id().map(|id| id.to_string()));
+
+                let mut new_text = String::default();
+                self.1.renderer.render_quoted_substitition(
+                    type_,
+                    QuoteScope::Unconstrained,
+                    attrlist,
+                    id,
+                    &pass.text,
+                    &mut new_text,
                 );
+
+                subbed_text.rendered = new_text.into();
             }
 
             if subbed_text.rendered().contains('\u{96}') {
