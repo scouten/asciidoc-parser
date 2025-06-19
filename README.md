@@ -12,6 +12,7 @@ You're welcome to follow along and contribute with the understanding that I may 
 
 * Parsing UTF-16 content is not supported. (UTF-16 documents must be re-encoded to UTF-8 prior to parsing with this crate.) I have no plans to support UTF-16 content.
 * There is no support for [`compat-mode`](https://docs.asciidoctor.org/asciidoctor/latest/migrate/asciidoc-py/#compatibility-mode).
+* There is no support for math macros `asciimath`, `latexmath`, or `stem`. See [issue #261](https://github.com/scouten/asciidoc-parser/issues/261); this may be considered for a post-1.0 release.
 
 ## Licenses
 

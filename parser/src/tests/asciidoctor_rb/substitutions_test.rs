@@ -3359,120 +3359,6 @@ mod passthroughs {
         todo!(
             "{}",
             r###"
-      context 'Math macros' do
-        test 'should passthrough text in asciimath macro and surround with AsciiMath delimiters' do
-          using_memory_logger do |logger|
-            input = 'asciimath:[x/x={(1,if x!=0),(text{undefined},if x=0):}]'
-            para = block_from_string input, attributes: { 'attribute-missing' => 'warn' }
-            assert_equal '\$x/x={(1,if x!=0),(text{undefined},if x=0):}\$', para.content
-            assert_empty logger
-          end
-        end
-
-        test 'should not recognize asciimath macro with no content' do
-          input = 'asciimath:[]'
-          para = block_from_string input
-          assert_equal 'asciimath:[]', para.content
-        end
-
-        test 'should perform specialcharacters subs on asciimath macro content in html backend by default' do
-          input = 'asciimath:[a < b]'
-          para = block_from_string input
-          assert_equal '\$a &lt; b\$', para.content
-        end
-
-        test 'should convert contents of asciimath macro to MathML in DocBook output if asciimath gem is available' do
-          asciimath_available = !(Asciidoctor::Helpers.require_library 'asciimath', true, :ignore).nil?
-          input = 'asciimath:[a < b]'
-          expected = '<inlineequation><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>a</mml:mi><mml:mo>&lt;</mml:mo><mml:mi>b</mml:mi></mml:math></inlineequation>'
-          using_memory_logger do |logger|
-            para = block_from_string input, backend: :docbook
-            actual = para.content
-            if asciimath_available
-              assert_equal expected, actual
-              assert_equal :loaded, para.document.converter.instance_variable_get(:@asciimath_status)
-            else
-              assert_message logger, :WARN, 'optional gem \'asciimath\' is not available. Functionality disabled.'
-              assert_equal :unavailable, para.document.converter.instance_variable_get(:@asciimath_status)
-            end
-          end
-        end
-
-        test 'should not perform specialcharacters subs on asciimath macro content in Docbook output if asciimath gem not available' do
-          asciimath_available = !(Asciidoctor::Helpers.require_library 'asciimath', true, :ignore).nil?
-          input = 'asciimath:[a < b]'
-          para = block_from_string input, backend: :docbook
-          para.document.converter.instance_variable_set :@asciimath_status, :unavailable
-          if asciimath_available
-            old_asciimath = AsciiMath
-            Object.send :remove_const, :AsciiMath
-          end
-          assert_equal '<inlineequation><mathphrase><![CDATA[a < b]]></mathphrase></inlineequation>', para.content
-          Object.const_set :AsciiMath, old_asciimath if asciimath_available
-        end
-
-        test 'should honor explicit subslist on asciimath macro' do
-          input = 'asciimath:attributes[{expr}]'
-          para = block_from_string input, attributes: { 'expr' => 'x != 0' }
-          assert_equal '\$x != 0\$', para.content
-        end
-
-        test 'should passthrough text in latexmath macro and surround with LaTeX math delimiters' do
-          input = 'latexmath:[C = \alpha + \beta Y^{\gamma} + \epsilon]'
-          para = block_from_string input
-          assert_equal '\(C = \alpha + \beta Y^{\gamma} + \epsilon\)', para.content
-        end
-
-        test 'should strip legacy LaTeX math delimiters around latexmath content if present' do
-          input = 'latexmath:[$C = \alpha + \beta Y^{\gamma} + \epsilon$]'
-          para = block_from_string input
-          assert_equal '\(C = \alpha + \beta Y^{\gamma} + \epsilon\)', para.content
-        end
-
-        test 'should not recognize latexmath macro with no content' do
-          input = 'latexmath:[]'
-          para = block_from_string input
-          assert_equal 'latexmath:[]', para.content
-        end
-
-        test 'should unescape escaped square bracket in equation' do
-          input = 'latexmath:[\sqrt[3\]{x}]'
-          para = block_from_string input
-          assert_equal '\(\sqrt[3]{x}\)', para.content
-        end
-
-        test 'should perform specialcharacters subs on latexmath macro in html backend by default' do
-          input = 'latexmath:[a < b]'
-          para = block_from_string input
-          assert_equal '\(a &lt; b\)', para.content
-        end
-
-        test 'should not perform specialcharacters subs on latexmath macro content in docbook backend by default' do
-          input = 'latexmath:[a < b]'
-          para = block_from_string input, backend: :docbook
-          assert_equal '<inlineequation><alt><![CDATA[a < b]]></alt><mathphrase><![CDATA[a < b]]></mathphrase></inlineequation>', para.content
-        end
-
-        test 'should honor explicit subslist on latexmath macro' do
-          input = 'latexmath:attributes[{expr}]'
-          para = block_from_string input, attributes: { 'expr' => '\sqrt{4} = 2' }
-          assert_equal '\(\sqrt{4} = 2\)', para.content
-        end
-
-        test 'should passthrough math macro inside another passthrough' do
-          input = 'the text `asciimath:[x = y]` should be passed through as +literal+ text'
-          para = block_from_string input, attributes: { 'compat-mode' => '' }
-          assert_equal 'the text <code>asciimath:[x = y]</code> should be passed through as <code>literal</code> text', para.content
-
-          input = 'the text [x-]`asciimath:[x = y]` should be passed through as `literal` text'
-          para = block_from_string input
-          assert_equal 'the text <code>asciimath:[x = y]</code> should be passed through as <code>literal</code> text', para.content
-
-          input = 'the text `+asciimath:[x = y]+` should be passed through as `literal` text'
-          para = block_from_string input
-          assert_equal 'the text <code>asciimath:[x = y]</code> should be passed through as <code>literal</code> text', para.content
-        end
-
         test 'should support constrained passthrough in middle of monospace span' do
           input = 'a `foo +bar+ baz` kind of thing'
           para = block_from_string input
@@ -3532,79 +3418,21 @@ mod passthroughs {
           para = block_from_string input, attributes: { 'author' => 'Dan' }
           assert_equal 'use <code>+Dan+</code> to show an attribute reference', para.content
         end
-
-        test 'should not recognize stem macro with no content' do
-          input = 'stem:[]'
-          para = block_from_string input
-          assert_equal input, para.content
-        end
-
-        test 'should passthrough text in stem macro and surround with AsciiMath delimiters if stem attribute is asciimath, empty, or not set' do
-          [
-            {},
-            { 'stem' => '' },
-            { 'stem' => 'asciimath' },
-            { 'stem' => 'bogus' },
-          ].each do |attributes|
-            using_memory_logger do |logger|
-              input = 'stem:[x/x={(1,if x!=0),(text{undefined},if x=0):}]'
-              para = block_from_string input, attributes: (attributes.merge 'attribute-missing' => 'warn')
-              assert_equal '\$x/x={(1,if x!=0),(text{undefined},if x=0):}\$', para.content
-              assert_empty logger
-            end
-          end
-        end
-
-        test 'should passthrough text in stem macro and surround with LaTeX math delimiters if stem attribute is latexmath, latex, or tex' do
-          [
-            { 'stem' => 'latexmath' },
-            { 'stem' => 'latex' },
-            { 'stem' => 'tex' },
-          ].each do |attributes|
-            input = 'stem:[C = \alpha + \beta Y^{\gamma} + \epsilon]'
-            para = block_from_string input, attributes: attributes
-            assert_equal '\(C = \alpha + \beta Y^{\gamma} + \epsilon\)', para.content
-          end
-        end
-
-        test 'should apply substitutions specified on stem macro' do
-          ['stem:c,a[sqrt(x) <=> {solve-for-x}]', 'stem:n,-r[sqrt(x) <=> {solve-for-x}]'].each do |input|
-            para = block_from_string input, attributes: { 'stem' => 'asciimath', 'solve-for-x' => '13' }
-            assert_equal '\$sqrt(x) &lt;=&gt; 13\$', para.content
-          end
-        end
-
-        test 'should replace passthroughs inside stem expression' do
-          [
-            ['stem:[+1+]', '\$1\$'],
-            ['stem:[+\infty-(+\infty)]', '\$\infty-(\infty)\$'],
-            ['stem:[+++\infty-(+\infty)++]', '\$+\infty-(+\infty)\$'],
-          ].each do |input, expected|
-            para = block_from_string input, attributes: { 'stem' => '' }
-            assert_equal expected, para.content
-          end
-        end
-
-        test 'should allow passthrough inside stem expression to be escaped' do
-          [
-            ['stem:[\+] and stem:[+]', '\$+\$ and \$+\$'],
-            ['stem:[\+1+]', '\$+1+\$'],
-          ].each do |input, expected|
-            para = block_from_string input, attributes: { 'stem' => '' }
-            assert_equal expected, para.content
-          end
-        end
-
-        test 'should not recognize stem macro with invalid substitution list' do
-          [',', '42', 'a,'].each do |subs|
-            input = %(stem:#{subs}[x^2])
-            para = block_from_string input, attributes: { 'stem' => 'asciimath' }
-            assert_equal %(stem:#{subs}[x^2]), para.content
-          end
-        end
-      end
-        "###
+      "###
         );
+    }
+
+    mod math_macros {
+        #[ignore]
+        #[test]
+        fn not_implemented() {
+            todo!("Review Ruby Asciidoctor implementation for `context 'Math macros'`");
+            // See https://github.com/scouten/asciidoc-parser/issues/261.
+
+            // IMPORTANT: Note that some tests contained within context 'Math
+            // macros' were ported because they did not actually test the
+            // as-yet-unsupported math macros.
+        }
     }
 }
 
