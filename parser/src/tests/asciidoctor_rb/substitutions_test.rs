@@ -3321,17 +3321,44 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn inline_pass_macro_with_a_composite_sub() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("pass:verbatim[<{backend}>]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "pass:verbatim[<{backend}>]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"&lt;{backend}&gt;"#,
+                },
+                source: TSpan {
+                    data: "pass:verbatim[<{backend}>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'inline pass macro with a composite sub' do
-        para = block_from_string %(pass:verbatim[<{backend}>])
-        assert_equal '&lt;{backend}&gt;', para.content
-      end
-
       context 'Math macros' do
         test 'should passthrough text in asciimath macro and surround with AsciiMath delimiters' do
           using_memory_logger do |logger|
