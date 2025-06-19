@@ -3299,26 +3299,34 @@ mod passthroughs {
 
     #[ignore]
     #[test]
+    fn complex_inline_passthrough_macro() {
+        // Enable test when macro substitution is implemented.
+        todo!(
+            "{}",
+            r#"
+            text_to_escape = %q([(] <'basic form'> <'logical operator'> <'basic form'> [)])
+            para = block_from_string %($$#{text_to_escape}$$)
+            para.extract_passthroughs para.source
+            passthroughs = para.instance_variable_get :@passthroughs
+            assert_equal 1, passthroughs.size
+            assert_equal text_to_escape, passthroughs[0][:text]
+
+            text_to_escape_escaped = %q([(\] <'basic form'> <'logical operator'> <'basic form'> [)\])
+            para = block_from_string %(pass:specialcharacters[#{text_to_escape_escaped}])
+            para.extract_passthroughs para.source
+            passthroughs = para.instance_variable_get :@passthroughs
+            assert_equal 1, passthroughs.size
+            assert_equal text_to_escape, passthroughs[0][:text]
+            "#
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'complex inline passthrough macro' do
-        text_to_escape = %q([(] <'basic form'> <'logical operator'> <'basic form'> [)])
-        para = block_from_string %($$#{text_to_escape}$$)
-        para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal text_to_escape, passthroughs[0][:text]
-
-        text_to_escape_escaped = %q([(\] <'basic form'> <'logical operator'> <'basic form'> [)\])
-        para = block_from_string %(pass:specialcharacters[#{text_to_escape_escaped}])
-        para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal text_to_escape, passthroughs[0][:text]
-      end
-
       test 'inline pass macro with a composite sub' do
         para = block_from_string %(pass:verbatim[<{backend}>])
         assert_equal '&lt;{backend}&gt;', para.content
