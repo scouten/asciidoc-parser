@@ -2516,332 +2516,881 @@ fn todo_migrate_from_ruby() {
 }
 
 mod passthroughs {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        blocks::Block,
+        parser::ModificationContext,
+        span::content::{Passthrough, Passthroughs, SubstitutionGroup, SubstitutionStep},
+        tests::fixtures::{
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            TSpan,
+        },
+        Content, Parser, Span,
+    };
+
+    #[test]
+    fn collect_inline_triple_plus_passthroughs() {
+        let mut content = Content::from(Span::new("+++<code>inline code</code>+++"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "+++<code>inline code</code>+++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>inline code</code>".to_owned(),
+                subs: SubstitutionGroup::None,
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn collect_multiline_inline_triple_plus_passthroughs() {
+        let mut content = Content::from(Span::new("+++<code>inline\ncode</code>+++"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "+++<code>inline\ncode</code>+++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>inline\ncode</code>".to_owned(),
+                subs: SubstitutionGroup::None,
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn collect_inline_double_dollar_passthroughs() {
+        let mut content = Content::from(Span::new("$$<code>{code}</code>$$"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "$$<code>{code}</code>$$",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>{code}</code>".to_owned(),
+                subs: SubstitutionGroup::Verbatim,
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn collect_inline_double_plus_passthroughs() {
+        let mut content = Content::from(Span::new("++<code>{code}</code>++"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "++<code>{code}</code>++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>{code}</code>".to_owned(),
+                subs: SubstitutionGroup::Verbatim,
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn should_not_crash_if_role_on_passthrough_is_enclosed_in_quotes_1() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("['role']\\++This++++++++++++"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "['role']\\++This++++++++++++",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<span class=\"'role'\">+This</span>+",
+                },
+                source: TSpan {
+                    data: "['role']\\++This++++++++++++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_not_crash_if_role_on_passthrough_is_enclosed_in_quotes_2() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("['role']\\+++++++++This++++++++++++"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "['role']\\+++++++++This++++++++++++",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<span class=\"'role'\">++</span>+This++",
+                },
+                source: TSpan {
+                    data: "['role']\\+++++++++This++++++++++++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_allow_inline_double_plus_passthrough_to_be_escaped_using_backslash() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("you need to replace `int a = n\\++;` with `int a = ++n;`!"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "you need to replace `int a = n\\++;` with `int a = ++n;`!",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "you need to replace <code>int a = n++;</code> with <code>int a = ++n;</code>!",
+                },
+                source: TSpan {
+                    data: "you need to replace `int a = n\\++;` with `int a = ++n;`!",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_allow_inline_double_plus_passthrough_with_attributes_to_be_escaped_using_backslash() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("=[attrs]\\\\++text++"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "=[attrs]\\\\++text++",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "=[attrs]++text++",
+                },
+                source: TSpan {
+                    data: "=[attrs]\\\\++text++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn collect_multiline_inline_double_dollar_passthroughs() {
+        let mut content = Content::from(Span::new("$$<code>\n{code}\n</code>$$"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "$$<code>\n{code}\n</code>$$",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>\n{code}\n</code>".to_owned(),
+                subs: SubstitutionGroup::Verbatim,
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn collect_passthroughs_from_inline_pass_macro() {
+        let mut content = Content::from(Span::new(
+            "pass:specialcharacters,quotes[<code>['code'\\]</code>]",
+        ));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:specialcharacters,quotes[<code>['code'\\]</code>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>['code']</code>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn collect_multiline_passthroughs_from_inline_pass_macro() {
+        let mut content = Content::from(Span::new(
+            "pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>]",
+        ));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>['more\ncode']</code>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn should_find_and_replace_placeholder_duplicated_by_substitution() {
+        // TO DO: Restore test when macros are supported.
+
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"first passthrough followed by <a href="http://example.com/__u_no_format_me__" class="bare">http://example.com/__u_no_format_me__</a> with passthrough"#,
+                },
+                source: TSpan {
+                    data: "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn resolves_sub_shorthands_on_inline_pass_macro() {
+        let mut content = Content::from(Span::new("pass:q,a[*<{backend}>*]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:q,a[*<{backend}>*]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "*<{backend}>*".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::Quotes,
+                    SubstitutionStep::AttributeReferences,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+
+        let parser = Parser::default().with_intrinsic_attribute(
+            "backend",
+            "html5",
+            ModificationContext::ApiOnly,
+        );
+
+        pt.0[0].subs.apply(&mut content, &parser, None);
+
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:q,a[*<{backend}>*]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "<strong><html5></strong>",
+            }
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn inline_pass_macro_supports_incremental_subs() {
+        // TO DO: Restore this test once macro substitutions are implemented.
+        let mut content = Content::from(Span::new("pass:n,-a[<{backend}>]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:n,-a[<{backend}>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<{backend}>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                    SubstitutionStep::CharacterReplacements,
+                    SubstitutionStep::Macros,
+                    SubstitutionStep::PostReplacement,
+                ]),
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+
+        let parser = Parser::default().with_intrinsic_attribute(
+            "backend",
+            "html5",
+            ModificationContext::ApiOnly,
+        );
+
+        pt.0[0].subs.apply(&mut content, &parser, None);
+
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:q,a[*<{backend}>*]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "&lt;{backend}&gt;",
+            }
+        );
+    }
+
+    #[test]
+    fn should_not_recognize_pass_macro_with_invalid_substitution_list_1() {
+        let mut content = Content::from(Span::new("pass:,[foobar]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:,[foobar]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "pass:,[foobar]",
+            }
+        );
+
+        assert!(pt.0.is_empty());
+    }
+
+    #[test]
+    fn should_not_recognize_pass_macro_with_invalid_substitution_list_2() {
+        let mut content = Content::from(Span::new("pass:42[foobar]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:42[foobar]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "pass:42[foobar]",
+            }
+        );
+
+        assert!(pt.0.is_empty());
+    }
+
+    #[test]
+    fn should_not_recognize_pass_macro_with_invalid_substitution_list_3() {
+        let mut content = Content::from(Span::new("pass:a,[foobar]"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "pass:a,[foobar]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "pass:a,[foobar]",
+            }
+        );
+
+        assert!(pt.0.is_empty());
+    }
+
+    #[test]
+    fn should_allow_content_of_inline_pass_macro_to_be_empty() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("pass:[]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "pass:[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "",
+                },
+                source: TSpan {
+                    data: "pass:[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn restore_inline_passthroughs_without_subs() {
+        // NOTE: Placeholder is surrounded by text to prevent reader from stripping
+        // trailing boundary char (unique to test scenario).
+        let mut content = Content::from(Span::new("some \u{96}0\u{97} to study"));
+
+        let pt = Passthroughs(vec![Passthrough {
+            text: "<code>inline code</code>".to_owned(),
+            subs: SubstitutionGroup::None,
+            type_: None,
+            attrlist: None,
+        }]);
+
+        let parser = Parser::default();
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "some \u{96}0\u{97} to study",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "some <code>inline code</code> to study",
+            }
+        );
+    }
+
+    #[test]
+    fn restore_inline_passthroughs_with_subs() {
+        // NOTE: Placeholder is surrounded by text to prevent reader from stripping
+        // trailing boundary char (unique to test scenario).
+        let mut content = Content::from(Span::new(
+            "some \u{96}0\u{97} to study in the \u{96}1\u{97} programming language",
+        ));
+
+        let pt = Passthroughs(vec![
+            Passthrough {
+                text: "<code>{code}</code>".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![SubstitutionStep::SpecialCharacters]),
+                type_: None,
+                attrlist: None,
+            },
+            Passthrough {
+                text: "{language}".to_owned(),
+                subs: SubstitutionGroup::Custom(vec![SubstitutionStep::SpecialCharacters]),
+                type_: None,
+                attrlist: None,
+            },
+        ]);
+
+        let parser = Parser::default();
+        pt.restore_to(&mut content, &parser);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "some \u{96}0\u{97} to study in the \u{96}1\u{97} programming language",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "some &lt;code&gt;{code}&lt;/code&gt; to study in the {language} programming language",
+            }
+        );
+    }
+
+    #[test]
+    fn should_restore_nested_passthroughs() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "Sometimes you feel <code>mono</code>. Sometimes you don't.",
+                },
+                source: TSpan {
+                    data: "+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn should_not_fail_to_restore_remaining_passthroughs_after_processing_inline_passthrough_with_macro_substitution(
+    ) {
+        // TO DO: Enable this test when macro substitution is implemented.
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("pass:m[.] pass:[.]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "pass:m[.] pass:[.]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: ". .",
+                },
+                source: TSpan {
+                    data: "pass:m[.] pass:[.]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_honor_role_on_double_plus_passthrough() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("Print the version using [var]++{asciidoctor-version}++."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Print the version using [var]++{asciidoctor-version}++.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"Print the version using <span class="var">{asciidoctor-version}</span>."#,
+                },
+                source: TSpan {
+                    data: "Print the version using [var]++{asciidoctor-version}++.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn complex_inline_passthrough_macro() {
+        // Enable test when macro substitution is implemented.
+        todo!(
+            "{}",
+            r#"
+            text_to_escape = %q([(] <'basic form'> <'logical operator'> <'basic form'> [)])
+            para = block_from_string %($$#{text_to_escape}$$)
+            para.extract_passthroughs para.source
+            passthroughs = para.instance_variable_get :@passthroughs
+            assert_equal 1, passthroughs.size
+            assert_equal text_to_escape, passthroughs[0][:text]
+
+            text_to_escape_escaped = %q([(\] <'basic form'> <'logical operator'> <'basic form'> [)\])
+            para = block_from_string %(pass:specialcharacters[#{text_to_escape_escaped}])
+            para.extract_passthroughs para.source
+            passthroughs = para.instance_variable_get :@passthroughs
+            assert_equal 1, passthroughs.size
+            assert_equal text_to_escape, passthroughs[0][:text]
+            "#
+        );
+    }
+
+    #[test]
+    fn inline_pass_macro_with_a_composite_sub() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("pass:verbatim[<{backend}>]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "pass:verbatim[<{backend}>]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"&lt;{backend}&gt;"#,
+                },
+                source: TSpan {
+                    data: "pass:verbatim[<{backend}>]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_support_constrained_passthrough_in_middle_of_monospace_span() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("a `foo +bar+ baz` kind of thing"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "a `foo +bar+ baz` kind of thing",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "a <code>foo bar baz</code> kind of thing",
+                },
+                source: TSpan {
+                    data: "a `foo +bar+ baz` kind of thing",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-      test 'collect inline triple plus passthroughs' do
-        para = block_from_string '+++<code>inline code</code>+++'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal '<code>inline code</code>', passthroughs[0][:text]
-        assert_empty passthroughs[0][:subs]
-      end
-
-      test 'collect multi-line inline triple plus passthroughs' do
-        para = block_from_string "+++<code>inline\ncode</code>+++"
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal "<code>inline\ncode</code>", passthroughs[0][:text]
-        assert_empty passthroughs[0][:subs]
-      end
-
-      test 'collect inline double dollar passthroughs' do
-        para = block_from_string '$$<code>{code}</code>$$'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal '<code>{code}</code>', passthroughs[0][:text]
-        assert_equal [:specialcharacters], passthroughs[0][:subs]
-      end
-
-      test 'collect inline double plus passthroughs' do
-        para = block_from_string '++<code>{code}</code>++'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal '<code>{code}</code>', passthroughs[0][:text]
-        assert_equal [:specialcharacters], passthroughs[0][:subs]
-      end
-
-      test 'should not crash if role on passthrough is enclosed in quotes' do
-        %W(
-          ['role']#{BACKSLASH}++This++++++++++++
-          ['role']#{BACKSLASH}+++++++++This++++++++++++
-        ).each do |input|
-          para = block_from_string input
-          assert_includes para.content, %(<span class="'role'">)
-        end
-      end
-
-      test 'should allow inline double plus passthrough to be escaped using backslash' do
-        para = block_from_string "you need to replace `int a = n#{BACKSLASH}++;` with `int a = ++n;`!"
-        result = para.apply_subs para.source
-        assert_equal 'you need to replace <code>int a = n++;</code> with <code>int a = ++n;</code>!', result
-      end
-
-      test 'should allow inline double plus passthrough with attributes to be escaped using backslash' do
-        para = block_from_string "=[attrs]#{BACKSLASH}#{BACKSLASH}++text++"
-        result = para.apply_subs para.source
-        assert_equal '=[attrs]++text++', result
-      end
-
-      test 'collect multi-line inline double dollar passthroughs' do
-        para = block_from_string "$$<code>\n{code}\n</code>$$"
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal "<code>\n{code}\n</code>", passthroughs[0][:text]
-        assert_equal [:specialcharacters], passthroughs[0][:subs]
-      end
-
-      test 'collect multi-line inline double plus passthroughs' do
-        para = block_from_string "++<code>\n{code}\n</code>++"
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal "<code>\n{code}\n</code>", passthroughs[0][:text]
-        assert_equal [:specialcharacters], passthroughs[0][:subs]
-      end
-
-      test 'collect passthroughs from inline pass macro' do
-        para = block_from_string %q(pass:specialcharacters,quotes[<code>['code'\\]</code>])
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal %q(<code>['code']</code>), passthroughs[0][:text]
-        assert_equal [:specialcharacters, :quotes], passthroughs[0][:subs]
-      end
-
-      test 'collect multi-line passthroughs from inline pass macro' do
-        para = block_from_string %(pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>])
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal Asciidoctor::Substitutors::PASS_START + '0' + Asciidoctor::Substitutors::PASS_END, result
-        assert_equal 1, passthroughs.size
-        assert_equal %(<code>['more\ncode']</code>), passthroughs[0][:text]
-        assert_equal [:specialcharacters, :quotes], passthroughs[0][:subs]
-      end
-
-      test 'should find and replace placeholder duplicated by substitution' do
-        input = '+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough'
-        result = convert_inline_string input
-        assert_equal 'first passthrough followed by <a href="http://example.com/__u_no_format_me__" class="bare">http://example.com/__u_no_format_me__</a> with passthrough', result
-      end
-
-      test 'resolves sub shorthands on inline pass macro' do
-        para = block_from_string 'pass:q,a[*<{backend}>*]'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal [:quotes, :attributes], passthroughs[0][:subs]
-        result = para.restore_passthroughs result
-        assert_equal '<strong><html5></strong>', result
-      end
-
-      test 'inline pass macro supports incremental subs' do
-        para = block_from_string 'pass:n,-a[<{backend}>]'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        result = para.restore_passthroughs result
-        assert_equal '&lt;{backend}&gt;', result
-      end
-
-      test 'should not recognize pass macro with invalid substitution list' do
-        [',', '42', 'a,'].each do |subs|
-          para = block_from_string %(pass:#{subs}[foobar])
-          result = para.extract_passthroughs para.source
-          assert_equal %(pass:#{subs}[foobar]), result
-        end
-      end
-
-      test 'should allow content of inline pass macro to be empty' do
-        para = block_from_string 'pass:[]'
-        result = para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal '', para.restore_passthroughs(result)
-      end
-
-      # NOTE placeholder is surrounded by text to prevent reader from stripping trailing boundary char (unique to test scenario)
-      test 'restore inline passthroughs without subs' do
-        para = block_from_string "some #{Asciidoctor::Substitutors::PASS_START}" + '0' + "#{Asciidoctor::Substitutors::PASS_END} to study"
-        para.extract_passthroughs ''
-        passthroughs = para.instance_variable_get :@passthroughs
-        passthroughs[0] = { text: '<code>inline code</code>', subs: [] }
-        result = para.restore_passthroughs para.source
-        assert_equal 'some <code>inline code</code> to study', result
-      end
-
-      # NOTE placeholder is surrounded by text to prevent reader from stripping trailing boundary char (unique to test scenario)
-      test 'restore inline passthroughs with subs' do
-        para = block_from_string "some #{Asciidoctor::Substitutors::PASS_START}" + '0' + "#{Asciidoctor::Substitutors::PASS_END} to study in the #{Asciidoctor::Substitutors::PASS_START}" + '1' + "#{Asciidoctor::Substitutors::PASS_END} programming language"
-        para.extract_passthroughs ''
-        passthroughs = para.instance_variable_get :@passthroughs
-        passthroughs[0] = { text: '<code>{code}</code>', subs: [:specialcharacters] }
-        passthroughs[1] = { text: '{language}', subs: [:specialcharacters] }
-        result = para.restore_passthroughs para.source
-        assert_equal 'some &lt;code&gt;{code}&lt;/code&gt; to study in the {language} programming language', result
-      end
-
-      test 'should restore nested passthroughs' do
-        result = convert_inline_string %q(+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.)
-        assert_equal %q(Sometimes you feel <code>mono</code>. Sometimes you don't.), result
-      end
-
-      test 'should not fail to restore remaining passthroughs after processing inline passthrough with macro substitution' do
-        input = 'pass:m[.] pass:[.]'
-        assert_equal '. .', (convert_inline_string input)
-      end
-
-      test 'should honor role on double plus passthrough' do
-        result = convert_inline_string 'Print the version using [var]++{asciidoctor-version}++.'
-        assert_equal 'Print the version using <span class="var">{asciidoctor-version}</span>.', result
-      end
-
-      test 'complex inline passthrough macro' do
-        text_to_escape = %q([(] <'basic form'> <'logical operator'> <'basic form'> [)])
-        para = block_from_string %($$#{text_to_escape}$$)
-        para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal text_to_escape, passthroughs[0][:text]
-
-        text_to_escape_escaped = %q([(\] <'basic form'> <'logical operator'> <'basic form'> [)\])
-        para = block_from_string %(pass:specialcharacters[#{text_to_escape_escaped}])
-        para.extract_passthroughs para.source
-        passthroughs = para.instance_variable_get :@passthroughs
-        assert_equal 1, passthroughs.size
-        assert_equal text_to_escape, passthroughs[0][:text]
-      end
-
-      test 'inline pass macro with a composite sub' do
-        para = block_from_string %(pass:verbatim[<{backend}>])
-        assert_equal '&lt;{backend}&gt;', para.content
-      end
-
-      context 'Math macros' do
-        test 'should passthrough text in asciimath macro and surround with AsciiMath delimiters' do
-          using_memory_logger do |logger|
-            input = 'asciimath:[x/x={(1,if x!=0),(text{undefined},if x=0):}]'
-            para = block_from_string input, attributes: { 'attribute-missing' => 'warn' }
-            assert_equal '\$x/x={(1,if x!=0),(text{undefined},if x=0):}\$', para.content
-            assert_empty logger
-          end
-        end
-
-        test 'should not recognize asciimath macro with no content' do
-          input = 'asciimath:[]'
-          para = block_from_string input
-          assert_equal 'asciimath:[]', para.content
-        end
-
-        test 'should perform specialcharacters subs on asciimath macro content in html backend by default' do
-          input = 'asciimath:[a < b]'
-          para = block_from_string input
-          assert_equal '\$a &lt; b\$', para.content
-        end
-
-        test 'should convert contents of asciimath macro to MathML in DocBook output if asciimath gem is available' do
-          asciimath_available = !(Asciidoctor::Helpers.require_library 'asciimath', true, :ignore).nil?
-          input = 'asciimath:[a < b]'
-          expected = '<inlineequation><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>a</mml:mi><mml:mo>&lt;</mml:mo><mml:mi>b</mml:mi></mml:math></inlineequation>'
-          using_memory_logger do |logger|
-            para = block_from_string input, backend: :docbook
-            actual = para.content
-            if asciimath_available
-              assert_equal expected, actual
-              assert_equal :loaded, para.document.converter.instance_variable_get(:@asciimath_status)
-            else
-              assert_message logger, :WARN, 'optional gem \'asciimath\' is not available. Functionality disabled.'
-              assert_equal :unavailable, para.document.converter.instance_variable_get(:@asciimath_status)
-            end
-          end
-        end
-
-        test 'should not perform specialcharacters subs on asciimath macro content in Docbook output if asciimath gem not available' do
-          asciimath_available = !(Asciidoctor::Helpers.require_library 'asciimath', true, :ignore).nil?
-          input = 'asciimath:[a < b]'
-          para = block_from_string input, backend: :docbook
-          para.document.converter.instance_variable_set :@asciimath_status, :unavailable
-          if asciimath_available
-            old_asciimath = AsciiMath
-            Object.send :remove_const, :AsciiMath
-          end
-          assert_equal '<inlineequation><mathphrase><![CDATA[a < b]]></mathphrase></inlineequation>', para.content
-          Object.const_set :AsciiMath, old_asciimath if asciimath_available
-        end
-
-        test 'should honor explicit subslist on asciimath macro' do
-          input = 'asciimath:attributes[{expr}]'
-          para = block_from_string input, attributes: { 'expr' => 'x != 0' }
-          assert_equal '\$x != 0\$', para.content
-        end
-
-        test 'should passthrough text in latexmath macro and surround with LaTeX math delimiters' do
-          input = 'latexmath:[C = \alpha + \beta Y^{\gamma} + \epsilon]'
-          para = block_from_string input
-          assert_equal '\(C = \alpha + \beta Y^{\gamma} + \epsilon\)', para.content
-        end
-
-        test 'should strip legacy LaTeX math delimiters around latexmath content if present' do
-          input = 'latexmath:[$C = \alpha + \beta Y^{\gamma} + \epsilon$]'
-          para = block_from_string input
-          assert_equal '\(C = \alpha + \beta Y^{\gamma} + \epsilon\)', para.content
-        end
-
-        test 'should not recognize latexmath macro with no content' do
-          input = 'latexmath:[]'
-          para = block_from_string input
-          assert_equal 'latexmath:[]', para.content
-        end
-
-        test 'should unescape escaped square bracket in equation' do
-          input = 'latexmath:[\sqrt[3\]{x}]'
-          para = block_from_string input
-          assert_equal '\(\sqrt[3]{x}\)', para.content
-        end
-
-        test 'should perform specialcharacters subs on latexmath macro in html backend by default' do
-          input = 'latexmath:[a < b]'
-          para = block_from_string input
-          assert_equal '\(a &lt; b\)', para.content
-        end
-
-        test 'should not perform specialcharacters subs on latexmath macro content in docbook backend by default' do
-          input = 'latexmath:[a < b]'
-          para = block_from_string input, backend: :docbook
-          assert_equal '<inlineequation><alt><![CDATA[a < b]]></alt><mathphrase><![CDATA[a < b]]></mathphrase></inlineequation>', para.content
-        end
-
-        test 'should honor explicit subslist on latexmath macro' do
-          input = 'latexmath:attributes[{expr}]'
-          para = block_from_string input, attributes: { 'expr' => '\sqrt{4} = 2' }
-          assert_equal '\(\sqrt{4} = 2\)', para.content
-        end
-
-        test 'should passthrough math macro inside another passthrough' do
-          input = 'the text `asciimath:[x = y]` should be passed through as +literal+ text'
-          para = block_from_string input, attributes: { 'compat-mode' => '' }
-          assert_equal 'the text <code>asciimath:[x = y]</code> should be passed through as <code>literal</code> text', para.content
-
-          input = 'the text [x-]`asciimath:[x = y]` should be passed through as `literal` text'
-          para = block_from_string input
-          assert_equal 'the text <code>asciimath:[x = y]</code> should be passed through as <code>literal</code> text', para.content
-
-          input = 'the text `+asciimath:[x = y]+` should be passed through as `literal` text'
-          para = block_from_string input
-          assert_equal 'the text <code>asciimath:[x = y]</code> should be passed through as <code>literal</code> text', para.content
-        end
-
-        test 'should support constrained passthrough in middle of monospace span' do
-          input = 'a `foo +bar+ baz` kind of thing'
-          para = block_from_string input
-          assert_equal 'a <code>foo bar baz</code> kind of thing', para.content
-        end
-
         test 'should support constrained passthrough in monospace span preceded by escaped boxed attrlist with transitional role' do
           input = %(#{BACKSLASH}[x-]`foo +bar+ baz`)
           para = block_from_string input
@@ -2895,79 +3444,21 @@ mod passthroughs {
           para = block_from_string input, attributes: { 'author' => 'Dan' }
           assert_equal 'use <code>+Dan+</code> to show an attribute reference', para.content
         end
-
-        test 'should not recognize stem macro with no content' do
-          input = 'stem:[]'
-          para = block_from_string input
-          assert_equal input, para.content
-        end
-
-        test 'should passthrough text in stem macro and surround with AsciiMath delimiters if stem attribute is asciimath, empty, or not set' do
-          [
-            {},
-            { 'stem' => '' },
-            { 'stem' => 'asciimath' },
-            { 'stem' => 'bogus' },
-          ].each do |attributes|
-            using_memory_logger do |logger|
-              input = 'stem:[x/x={(1,if x!=0),(text{undefined},if x=0):}]'
-              para = block_from_string input, attributes: (attributes.merge 'attribute-missing' => 'warn')
-              assert_equal '\$x/x={(1,if x!=0),(text{undefined},if x=0):}\$', para.content
-              assert_empty logger
-            end
-          end
-        end
-
-        test 'should passthrough text in stem macro and surround with LaTeX math delimiters if stem attribute is latexmath, latex, or tex' do
-          [
-            { 'stem' => 'latexmath' },
-            { 'stem' => 'latex' },
-            { 'stem' => 'tex' },
-          ].each do |attributes|
-            input = 'stem:[C = \alpha + \beta Y^{\gamma} + \epsilon]'
-            para = block_from_string input, attributes: attributes
-            assert_equal '\(C = \alpha + \beta Y^{\gamma} + \epsilon\)', para.content
-          end
-        end
-
-        test 'should apply substitutions specified on stem macro' do
-          ['stem:c,a[sqrt(x) <=> {solve-for-x}]', 'stem:n,-r[sqrt(x) <=> {solve-for-x}]'].each do |input|
-            para = block_from_string input, attributes: { 'stem' => 'asciimath', 'solve-for-x' => '13' }
-            assert_equal '\$sqrt(x) &lt;=&gt; 13\$', para.content
-          end
-        end
-
-        test 'should replace passthroughs inside stem expression' do
-          [
-            ['stem:[+1+]', '\$1\$'],
-            ['stem:[+\infty-(+\infty)]', '\$\infty-(\infty)\$'],
-            ['stem:[+++\infty-(+\infty)++]', '\$+\infty-(+\infty)\$'],
-          ].each do |input, expected|
-            para = block_from_string input, attributes: { 'stem' => '' }
-            assert_equal expected, para.content
-          end
-        end
-
-        test 'should allow passthrough inside stem expression to be escaped' do
-          [
-            ['stem:[\+] and stem:[+]', '\$+\$ and \$+\$'],
-            ['stem:[\+1+]', '\$+1+\$'],
-          ].each do |input, expected|
-            para = block_from_string input, attributes: { 'stem' => '' }
-            assert_equal expected, para.content
-          end
-        end
-
-        test 'should not recognize stem macro with invalid substitution list' do
-          [',', '42', 'a,'].each do |subs|
-            input = %(stem:#{subs}[x^2])
-            para = block_from_string input, attributes: { 'stem' => 'asciimath' }
-            assert_equal %(stem:#{subs}[x^2]), para.content
-          end
-        end
-      end
-        "###
+      "###
         );
+    }
+
+    mod math_macros {
+        #[ignore]
+        #[test]
+        fn not_implemented() {
+            todo!("Review Ruby Asciidoctor implementation for `context 'Math macros'`");
+            // See https://github.com/scouten/asciidoc-parser/issues/261.
+
+            // IMPORTANT: Note that some tests contained within context 'Math
+            // macros' were ported because they did not actually test the
+            // as-yet-unsupported math macros.
+        }
     }
 }
 
