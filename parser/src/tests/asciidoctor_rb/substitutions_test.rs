@@ -2695,7 +2695,7 @@ mod passthroughs {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "<span class=\"'role'\">+</span>+This+",
+                    rendered: "<span class=\"'role'\">++</span>+This++",
                 },
                 source: TSpan {
                     data: "['role']\\+++++++++This++++++++++++",
@@ -3353,18 +3353,44 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_support_constrained_passthrough_in_middle_of_monospace_span() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("a `foo +bar+ baz` kind of thing"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "a `foo +bar+ baz` kind of thing",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "a <code>foo bar baz</code> kind of thing",
+                },
+                source: TSpan {
+                    data: "a `foo +bar+ baz` kind of thing",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should support constrained passthrough in middle of monospace span' do
-          input = 'a `foo +bar+ baz` kind of thing'
-          para = block_from_string input
-          assert_equal 'a <code>foo bar baz</code> kind of thing', para.content
-        end
-
         test 'should support constrained passthrough in monospace span preceded by escaped boxed attrlist with transitional role' do
           input = %(#{BACKSLASH}[x-]`foo +bar+ baz`)
           para = block_from_string input

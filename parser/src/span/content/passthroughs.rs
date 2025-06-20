@@ -46,7 +46,8 @@ impl Passthroughs {
 
         {
             let text = content.rendered.as_ref();
-            if text.contains('+') || text.contains('-') {
+            if text.contains('+') || text.contains("-]") {
+                dbg!(&text);
                 let replacer = InlinePassReplacer(&mut passthroughs);
 
                 if let Cow::Owned(new_result) = INLINE_PASS.replace_all(text, replacer) {
@@ -346,18 +347,22 @@ static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
                                           # Separately (enforce in code, must not
                                           # follow ;, :, or \)
 
-            (\[ ( [^\[\]]+) \])?          # Optional group 1: attrlist
-                                          # Optional group 2: body of attrlist
-                                          # Check separately in code for `x-` syntax
-            
-            (\\{0,2})                     # Group 3: Optional escaping
+            (?:                           # Option 1: attrlist + quoted text
+                \[([^\[\]]+)\]            # Group 1: [attrlist] -- required for backtick passthroughs
+                (\\{0,2})                 # Group 2: optional escapes
+                (?:
+                    \+(\S(?:.*?\S)?)\+    # Group 3: +...+ content (surrounded by non-space)
+                  | \`(\S(?:.*?\S)?)\`    # Group 4: `...` content -- only allowed with attrlist
+                )
 
-            (?:
-                \+(\S|\S.*?\S)\+ |        # Optional group 4: `+`-bracketed content
-                \`(\S|\S.*?\S)\`          # Optional group 5: backtick-bracketed content
+            |                             # --OR--
+                                          # Option 2: +...+ content without attrlist
+
+                (\\{0,2})                 # Group 5: optional escapes (no attrlist branch)
+                \+(\S(?:.*?\S)?)\+        # Group 6: +...+ content (no attrlist required)
             )
 
-            \b{end-half}                  # Not followed by a word character
+            \b{end-half}                  # Must not be followed by a word character
         "#,
     )
     .unwrap()
@@ -371,15 +376,13 @@ impl Replacer for InlinePassReplacer<'_> {
         dbg!(&dest);
         dbg!(&caps);
 
-        // preceding = $1 // NOT CAPTURED IN RUST PORT
-        // content = $8 // NOT SURE WHAT THIS IS
+        let escapes = caps.get(2).or_else(|| caps.get(5));
+        let escape_count = escapes.map_or(0, |m| m.len());
 
-        let orig_attrlist_body = caps.get(2).map(|m| m.as_str());
+        let orig_attrlist_body = caps.get(1).map(|m| m.as_str());
         dbg!(&orig_attrlist_body);
 
-        let escape_count = caps[3].len();
-
-        let (attrlist_body, old_behavior) = caps.get(2).map_or((None, false), |m| {
+        let (attrlist_body, old_behavior) = caps.get(1).map_or((None, false), |m| {
             let body = m.as_str();
             if body == "x-" {
                 (Some("".to_string()), true)
@@ -394,13 +397,15 @@ impl Replacer for InlinePassReplacer<'_> {
         dbg!(&old_behavior);
         // ALSO: old_behavior_forced
 
-        let quoted_text = caps.get(4).or_else(|| caps.get(5));
+        let quoted_text = caps.get(3).or_else(|| caps.get(4)).or_else(|| caps.get(6));
         let quoted_text = quoted_text.map_or("", |m| m.as_str());
         dbg!(quoted_text);
 
-        let format_mark = if caps.get(4).is_some() { '+' } else { '`' };
+        let format_mark = if caps.get(4).is_some() { '`' } else { '+' };
 
         if !old_behavior && format_mark == '`' {
+            // TO DO: Review whether this is still needed.
+
             // The Rust version of the INLINE_PASS regex can't quite as nuanced as the
             // original Ruby version due to the lack of lookaround support. We compensate by
             // restoring the original text when we get false positives (notably
