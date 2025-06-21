@@ -520,7 +520,7 @@ impl Replacer for InlinePassReplacer<'_> {
             return;
         };
 
-        let subs = if attrlist_body.is_some() && old_behavior && format_mark == '`' {
+        let subs = if attrlist_body.is_some() && old_behavior && format_mark != '`' {
             SubstitutionGroup::Normal
         } else {
             SubstitutionGroup::Verbatim

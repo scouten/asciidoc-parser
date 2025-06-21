@@ -3484,18 +3484,44 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_not_process_passthrough_inside_transitional_literal_monospace_span() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("a [x-]`foo +bar+ baz` kind of thing"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "a [x-]`foo +bar+ baz` kind of thing",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "a <code>foo +bar+ baz</code> kind of thing",
+                },
+                source: TSpan {
+                    data: "a [x-]`foo +bar+ baz` kind of thing",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should not process passthrough inside transitional literal monospace span' do
-          input = 'a [x-]`foo +bar+ baz` kind of thing'
-          para = block_from_string input
-          assert_equal 'a <code>foo +bar+ baz</code> kind of thing', para.content
-        end
-
         test 'should support constrained passthrough in monospace phrase with attrlist' do
           input = '[.role]`foo +bar+ baz`'
           para = block_from_string input
