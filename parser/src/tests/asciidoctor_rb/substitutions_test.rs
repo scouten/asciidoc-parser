@@ -2748,7 +2748,7 @@ mod passthroughs {
     #[test]
     fn should_allow_inline_double_plus_passthrough_with_attributes_to_be_escaped_using_backslash() {
         let mut p = Parser::default();
-        let maw = Block::parse(Span::new("=[attrs]\\\\++text++"), &mut p);
+        let maw = Block::parse(Span::new(r#"=[attrs]\\++text++"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
@@ -2757,7 +2757,7 @@ mod passthroughs {
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
-                        data: "=[attrs]\\\\++text++",
+                        data: r#"=[attrs]\\++text++"#,
                         line: 1,
                         col: 1,
                         offset: 0,
@@ -2765,7 +2765,7 @@ mod passthroughs {
                     rendered: "=[attrs]++text++",
                 },
                 source: TSpan {
-                    data: "=[attrs]\\\\++text++",
+                    data: r#"=[attrs]\\++text++"#,
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -3385,18 +3385,45 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_support_constrained_passthrough_in_monospace_span_preceded_by_escaped_boxed_attrlist_with_transitional_role(
+    ) {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"\[x-]`foo +bar+ baz`"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"\[x-]`foo +bar+ baz`"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "[x-]<code>foo bar baz</code>",
+                },
+                source: TSpan {
+                    data: r#"\[x-]`foo +bar+ baz`"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should support constrained passthrough in monospace span preceded by escaped boxed attrlist with transitional role' do
-          input = %(#{BACKSLASH}[x-]`foo +bar+ baz`)
-          para = block_from_string input
-          assert_equal '[x-]<code>foo bar baz</code>', para.content
-        end
-
         test 'should treat monospace phrase with escaped boxed attrlist with transitional role as monospace' do
           input = %(#{BACKSLASH}[x-]`*foo* +bar+ baz`)
           para = block_from_string input

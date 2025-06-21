@@ -57,6 +57,7 @@ impl Passthroughs {
         }
 
         if true {
+            eprintln!("--- DONE WITH PASSTHROUGHS ---\n\n\n");
             return passthroughs;
         }
 
@@ -90,6 +91,8 @@ impl Passthroughs {
             return;
         }
 
+        eprintln!("\n\n\nRESTORE!!!\n\n");
+
         dbg!(&self);
 
         let replacer = PassthroughRestoreReplacer(self, parser);
@@ -102,8 +105,9 @@ impl Passthroughs {
     }
 
     pub(super) fn push(&mut self, passthrough: Passthrough, dest: &mut String) {
-        dbg!(&passthrough);
+        eprintln!("\n\n\nPUSH!!!\n\n");
         dbg!(&dest);
+        dbg!(&passthrough);
 
         let index = self.0.len();
         self.0.push(passthrough);
@@ -201,6 +205,7 @@ impl Replacer for InlinePassMacroReplacer<'_> {
                 .and_then(|m| SubstitutionGroup::from_custom_string(m.as_str()))
                 .unwrap_or(SubstitutionGroup::Normal);
 
+            eprintln!("push passhtrough @ 204");
             self.0.push(
                 Passthrough {
                     text: normalize_text(&caps[15], false, true),
@@ -240,6 +245,7 @@ impl InlinePassMacroReplacer<'_> {
             let attrlist = attrlist.as_str();
 
             if escape_count > 0 {
+                dbg!(escape_count);
                 dest.push_str(caps[1].as_ref());
                 dest.push('[');
                 dest.push_str(caps[2].as_ref());
@@ -248,6 +254,7 @@ impl InlinePassMacroReplacer<'_> {
                 dest.push_str(caps[quoted_text_index - 1].as_ref());
                 dest.push_str(caps[quoted_text_index].as_ref());
                 dest.push_str(caps[quoted_text_index - 1].as_ref());
+                dbg!(&dest);
                 return;
             }
 
@@ -344,22 +351,21 @@ static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(
         r#"(?xs)
             \b{start-half}                # Must not follow a word
-                                          # Separately (enforce in code, must not
-                                          # follow ;, :, or \)
 
             (?:                           # Option 1: attrlist + quoted text
-                \[([^\[\]]+)\]            # Group 1: [attrlist] -- required for backtick passthroughs
-                (\\{0,2})                 # Group 2: optional escapes
+                ([\\:;])?                 # Group 1: prohibited prefixes
+                \[([^\[\]]+)\]            # Group 2: [attrlist] -- required for backtick passthroughs
+                (\\{0,2})                 # Group 3: optional escapes
                 (?:
-                    \+(\S(?:.*?\S)?)\+    # Group 3: +...+ content (surrounded by non-space)
-                  | \`(\S(?:.*?\S)?)\`    # Group 4: `...` content -- only allowed with attrlist
+                    \+(\S(?:.*?\S)?)\+    # Group 4: +...+ content (surrounded by non-space)
+                  | \`(\S(?:.*?\S)?)\`    # Group 5: `...` content -- only allowed with attrlist
                 )
 
             |                             # --OR--
                                           # Option 2: +...+ content without attrlist
 
-                (\\{0,2})                 # Group 5: optional escapes (no attrlist branch)
-                \+(\S(?:.*?\S)?)\+        # Group 6: +...+ content (no attrlist required)
+                (\\{0,2})                 # Group 6: optional escapes (no attrlist branch)
+                \+(\S(?:.*?\S)?)\+        # Group 7: +...+ content (no attrlist required)
             )
 
             \b{end-half}                  # Must not be followed by a word character
@@ -376,13 +382,75 @@ impl Replacer for InlinePassReplacer<'_> {
         dbg!(&dest);
         dbg!(&caps);
 
-        let escapes = caps.get(2).or_else(|| caps.get(5));
+        let escapes = caps.get(3).or_else(|| caps.get(6));
         let escape_count = escapes.map_or(0, |m| m.len());
+        dbg!(escape_count);
 
-        let orig_attrlist_body = caps.get(1).map(|m| m.as_str());
+        let format_mark = if caps.get(5).is_some() { '`' } else { '+' };
+        dbg!(format_mark);
+
+        if let Some(prohibited_prefix) = caps.get(1) {
+            // Honor the prohibited prefix.
+            if prohibited_prefix.as_str() != "\\" {
+                dest.push_str(&prohibited_prefix.as_str());
+            }
+            dest.push('[');
+            if let Some(attrlist) = caps.get(2) {
+                dest.push_str(attrlist.as_str());
+            }
+            dest.push(']');
+
+            dbg!(&dest);
+
+            let after_attrlist = format!(
+                "{format_mark}{}{format_mark}",
+                caps.get(4)
+                    .or_else(|| caps.get(5))
+                    .map(|m| m.as_str())
+                    .unwrap_or_default()
+            );
+            dbg!(&after_attrlist);
+
+            if escape_count > 0 {
+                dest.push_str(&("\\".repeat(escape_count - 1)));
+                dest.push_str(&after_attrlist);
+            } else if format_mark == '`' {
+                eprintln!("replace_append:415");
+                self.0.push(
+                    Passthrough {
+                        text: caps
+                            .get(5)
+                            .map(|m| m.as_str().to_string())
+                            .unwrap_or_default(),
+                        subs: SubstitutionGroup::Normal,
+                        type_: Some(QuoteType::Monospaced),
+                        attrlist: None,
+                    },
+                    dest,
+                );
+
+                dbg!(&dest);
+                return;
+            } else {
+                // EDGE CASE: Since we don't have lookarounds in Rust's regex, we have to retry
+                // the inline pass replacement here. Possible it might miss a few very obscure
+                // cases, but this should cover most cases where the attrlist is off-limits, but
+                // the quoted text is still subject to inline pass replacement.
+                let replacer = InlinePassReplacer(&mut self.0);
+
+                let new_result = INLINE_PASS.replace_all(&after_attrlist, replacer);
+                dest.push_str(&new_result);
+            }
+
+            dbg!(&dest);
+
+            return;
+        }
+
+        let orig_attrlist_body = caps.get(2).map(|m| m.as_str());
         dbg!(&orig_attrlist_body);
 
-        let (attrlist_body, old_behavior) = caps.get(1).map_or((None, false), |m| {
+        let (attrlist_body, old_behavior) = caps.get(2).map_or((None, false), |m| {
             let body = m.as_str();
             if body == "x-" {
                 (Some("".to_string()), true)
@@ -397,13 +465,12 @@ impl Replacer for InlinePassReplacer<'_> {
         dbg!(&old_behavior);
         // ALSO: old_behavior_forced
 
-        let quoted_text = caps.get(3).or_else(|| caps.get(4)).or_else(|| caps.get(6));
+        let quoted_text = caps.get(4).or_else(|| caps.get(5)).or_else(|| caps.get(7));
         let quoted_text = quoted_text.map_or("", |m| m.as_str());
         dbg!(quoted_text);
 
-        let format_mark = if caps.get(4).is_some() { '`' } else { '+' };
-
         if !old_behavior && format_mark == '`' {
+            eprintln!("replace_append:434");
             // TO DO: Review whether this is still needed.
 
             // The Rust version of the INLINE_PASS regex can't quite as nuanced as the
@@ -444,9 +511,12 @@ impl Replacer for InlinePassReplacer<'_> {
                 todo!("{}", "preceding = %([#{attrlist}])")
             }
         } else if escape_count > 0 {
+            dbg!(escape_count);
             // Honor the escape of the formatting mark.
             dest.push_str(&("\\".repeat(escape_count - 1)));
+            dest.push(format_mark);
             dest.push_str(quoted_text);
+            dest.push(format_mark);
             return;
         };
 
@@ -492,83 +562,7 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
 
         dbg!(index);
 
-        if let Some(pass) = self.0 .0.get(index) {
-            let span = Span::new(&pass.text);
-            dbg!(&span);
-
-            let mut subbed_text = Content::from(span);
-            pass.subs.apply(&mut subbed_text, self.1, None);
-
-            if let Some(type_) = pass.type_ {
-                dbg!(type_);
-                let attrlist = pass.attrlist.as_ref().map(|attrlist_body| {
-                    let span = Span::new(attrlist_body);
-                    let maw = Attrlist::parse(span);
-                    maw.item.item
-                });
-
-                dbg!(&attrlist);
-
-                let id = if let Some(attrlist) = attrlist.as_ref() {
-                    attrlist.id().map(|a| a.data().to_string())
-                } else {
-                    None
-                };
-                dbg!(&id);
-
-                let mut new_text = String::default();
-                self.1.renderer.render_quoted_substitition(
-                    type_,
-                    QuoteScope::Unconstrained,
-                    attrlist,
-                    id,
-                    &pass.text,
-                    &mut new_text,
-                );
-
-                subbed_text.rendered = new_text.into();
-
-                dbg!(&dest);
-            }
-
-            dbg!(&pass);
-
-            if let Some(type_) = pass.type_ {
-                let attrlist = pass.attrlist.as_ref().map(|attrlist_body| {
-                    let span = Span::new(&attrlist_body);
-                    let maw = Attrlist::parse(span);
-                    maw.item.item
-                });
-
-                let id = attrlist
-                    .as_ref()
-                    .and_then(|attrlist| attrlist.id().map(|id| id.to_string()));
-
-                let mut new_text = String::default();
-                self.1.renderer.render_quoted_substitition(
-                    type_,
-                    QuoteScope::Unconstrained,
-                    attrlist,
-                    id,
-                    &pass.text,
-                    &mut new_text,
-                );
-
-                subbed_text.rendered = new_text.into();
-            }
-
-            if subbed_text.rendered().contains('\u{96}') {
-                // Recursively apply passthrough replacement and write the result.
-                let replacer = PassthroughRestoreReplacer(self.0, self.1);
-
-                let new_result =
-                    PASS_WITH_INDEX.replace_all(subbed_text.rendered().as_ref(), replacer);
-
-                dest.push_str(new_result.as_ref());
-            } else {
-                dest.push_str(subbed_text.rendered());
-            }
-        } else {
+        let Some(pass) = self.0 .0.get(index) else {
             todo!(
                 "{}",
                 r#"
@@ -576,6 +570,59 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
               '??pass??'
             "#
             );
+        };
+
+        let span = Span::new(&pass.text);
+        dbg!(&span);
+
+        let mut subbed_text = Content::from(span);
+        pass.subs.apply(&mut subbed_text, self.1, None);
+        dbg!(&subbed_text);
+
+        if let Some(type_) = pass.type_ {
+            dbg!(type_);
+            let attrlist = pass.attrlist.as_ref().map(|attrlist_body| {
+                let span = Span::new(attrlist_body);
+                let maw = Attrlist::parse(span);
+                maw.item.item
+            });
+
+            dbg!(&attrlist);
+
+            let id = attrlist
+                .as_ref()
+                .and_then(|attrlist| attrlist.id().map(|id| id.to_string()));
+            dbg!(&id);
+
+            let mut new_text = String::default();
+            self.1.renderer.render_quoted_substitition(
+                type_,
+                QuoteScope::Unconstrained,
+                attrlist,
+                id,
+                &subbed_text.rendered(),
+                &mut new_text,
+            );
+
+            subbed_text.rendered = new_text.into();
+
+            dbg!(&dest);
+        }
+
+        dbg!(&pass);
+        dbg!(&subbed_text);
+
+        if subbed_text.rendered().contains('\u{96}') {
+            dbg!(&subbed_text.rendered());
+            // Recursively apply passthrough replacement and write the result.
+            let replacer = PassthroughRestoreReplacer(self.0, self.1);
+
+            let new_result = PASS_WITH_INDEX.replace_all(subbed_text.rendered().as_ref(), replacer);
+
+            dbg!(&new_result);
+            dest.push_str(new_result.as_ref());
+        } else {
+            dest.push_str(subbed_text.rendered());
         }
     }
 }
