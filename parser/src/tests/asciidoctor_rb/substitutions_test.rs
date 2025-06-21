@@ -3418,18 +3418,45 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_treat_monospace_phrase_with_escaped_boxed_attrlist_with_transitional_role_as_monospace(
+    ) {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"\[x-]`*foo* +bar+ baz`"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"\[x-]`*foo* +bar+ baz`"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "[x-]<code><strong>foo</strong> bar baz</code>",
+                },
+                source: TSpan {
+                    data: r#"\[x-]`*foo* +bar+ baz`"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should treat monospace phrase with escaped boxed attrlist with transitional role as monospace' do
-          input = %(#{BACKSLASH}[x-]`*foo* +bar+ baz`)
-          para = block_from_string input
-          assert_equal '[x-]<code><strong>foo</strong> bar baz</code>', para.content
-        end
-
         test 'should ignore escaped attrlist with transitional role on monospace phrase if not proceeded by [' do
           input = %(#{BACKSLASH}x-]`*foo* +bar+ baz`)
           para = block_from_string input
@@ -3479,12 +3506,8 @@ mod passthroughs {
         #[ignore]
         #[test]
         fn not_implemented() {
-            todo!("Review Ruby Asciidoctor implementation for `context 'Math macros'`");
+            todo!("Review Ruby Asciidoctor test suite for `context 'Math macros'`");
             // See https://github.com/scouten/asciidoc-parser/issues/261.
-
-            // IMPORTANT: Note that some tests contained within context 'Math
-            // macros' were ported because they did not actually test the
-            // as-yet-unsupported math macros.
         }
     }
 }
