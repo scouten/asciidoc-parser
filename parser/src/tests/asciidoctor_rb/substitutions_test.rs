@@ -3451,18 +3451,45 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_ignore_escaped_attrlist_with_transitional_role_on_monospace_phrase_if_not_proceeded_by_bracket(
+    ) {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"\x-]`*foo* +bar+ baz`"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"\x-]`*foo* +bar+ baz`"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"\x-]<code><strong>foo</strong> bar baz</code>"#,
+                },
+                source: TSpan {
+                    data: r#"\x-]`*foo* +bar+ baz`"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should ignore escaped attrlist with transitional role on monospace phrase if not proceeded by [' do
-          input = %(#{BACKSLASH}x-]`*foo* +bar+ baz`)
-          para = block_from_string input
-          assert_equal %(#{BACKSLASH}x-]<code><strong>foo</strong> bar baz</code>), para.content
-        end
-
         test 'should not process passthrough inside transitional literal monospace span' do
           input = 'a [x-]`foo +bar+ baz` kind of thing'
           para = block_from_string input
