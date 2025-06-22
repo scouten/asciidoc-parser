@@ -485,13 +485,10 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
         dbg!(index);
 
         let Some(pass) = self.0 .0.get(index) else {
-            todo!(
-                "{}",
-                r#"
-              logger.error %(unresolved passthrough detected: #{text})
-              '??pass??'
-            "#
-            );
+            dest.push_str(&format!(
+                "(INTERNAL ERROR: Unresolved passthrough index {index})"
+            ));
+            return;
         };
 
         let span = Span::new(&pass.text);
