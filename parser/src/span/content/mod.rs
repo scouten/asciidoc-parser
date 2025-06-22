@@ -55,6 +55,9 @@ impl<'src> From<Span<'src>> for Content<'src> {
     }
 }
 
+mod passthroughs;
+pub(crate) use passthroughs::{Passthrough, Passthroughs};
+
 mod substitution_group;
 pub(crate) use substitution_group::SubstitutionGroup;
 

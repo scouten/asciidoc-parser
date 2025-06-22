@@ -163,6 +163,66 @@ mod from_custom_string {
             None
         );
     }
+
+    #[test]
+    fn subtraction() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("n,-r"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences,
+                SubstitutionStep::Macros,
+                SubstitutionStep::PostReplacement,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("n,-r,-r,-m"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences,
+                SubstitutionStep::PostReplacement,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("v,-r"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("v,-c"),
+            Some(SubstitutionGroup::Custom(vec![]))
+        );
+    }
+
+    #[test]
+    fn addition() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("n,r"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences,
+                SubstitutionStep::CharacterReplacements,
+                SubstitutionStep::Macros,
+                SubstitutionStep::PostReplacement,
+                SubstitutionStep::CharacterReplacements,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("v,m"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Macros,
+            ]))
+        );
+    }
 }
 
 mod normal {

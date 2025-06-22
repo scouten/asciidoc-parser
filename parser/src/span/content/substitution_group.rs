@@ -2,7 +2,7 @@ use std::ops::Sub;
 
 use crate::{
     attributes::Attrlist,
-    span::content::{Content, SubstitutionStep},
+    span::content::{Content, Passthroughs, SubstitutionStep},
     Parser,
 };
 
@@ -64,7 +64,9 @@ impl SubstitutionGroup {
     /// substitutions].
     ///
     /// [Custom substitutions]: https://docs.asciidoctor.org/asciidoc/latest/pass/pass-macro/#custom-substitutions
-    pub(crate) fn from_custom_string(custom: &str) -> Option<Self> {
+    pub(crate) fn from_custom_string(mut custom: &str) -> Option<Self> {
+        custom = custom.trim();
+
         if custom == "n" || custom == "normal" {
             return Some(Self::Normal);
         }
@@ -73,24 +75,55 @@ impl SubstitutionGroup {
             return Some(Self::Verbatim);
         }
 
-        let steps: Vec<SubstitutionStep> = custom
-            .split(",")
-            .filter_map(|v| match v.trim() {
-                "c" | "specialchars" => Some(SubstitutionStep::SpecialCharacters),
-                "q" | "quotes" => Some(SubstitutionStep::Quotes),
-                "a" | "attributes" => Some(SubstitutionStep::AttributeReferences),
-                "r" | "replacements" => Some(SubstitutionStep::CharacterReplacements),
-                "m" | "macros" => Some(SubstitutionStep::Macros),
-                "p" | "post replacements" => Some(SubstitutionStep::PostReplacement),
-                _ => None,
-            })
-            .collect();
+        let mut steps: Vec<SubstitutionStep> = vec![];
 
-        if steps.is_empty() {
-            None
-        } else {
-            Some(Self::Custom(steps))
+        for mut step in custom.split(",") {
+            step = step.trim();
+
+            if step == "n" || step == "normal" {
+                steps = vec![
+                    SubstitutionStep::SpecialCharacters,
+                    SubstitutionStep::Quotes,
+                    SubstitutionStep::AttributeReferences,
+                    SubstitutionStep::CharacterReplacements,
+                    SubstitutionStep::Macros,
+                    SubstitutionStep::PostReplacement,
+                ];
+                continue;
+            }
+
+            if step == "v" || step == "verbatim" {
+                steps = vec![SubstitutionStep::SpecialCharacters];
+                continue;
+            }
+
+            let subtract = if step.starts_with('-') {
+                step = &step[1..];
+                true
+            } else {
+                false
+            };
+
+            let step = match step {
+                "c" | "specialcharacters" | "specialchars" => SubstitutionStep::SpecialCharacters,
+                "q" | "quotes" => SubstitutionStep::Quotes,
+                "a" | "attributes" => SubstitutionStep::AttributeReferences,
+                "r" | "replacements" => SubstitutionStep::CharacterReplacements,
+                "m" | "macros" => SubstitutionStep::Macros,
+                "p" | "post replacements" => SubstitutionStep::PostReplacement,
+                _ => {
+                    return None;
+                }
+            };
+
+            if subtract {
+                steps.retain(|s| s != &step);
+            } else {
+                steps.push(step);
+            }
         }
+
+        Some(Self::Custom(steps))
     }
 
     pub(crate) fn apply(
@@ -99,8 +132,12 @@ impl SubstitutionGroup {
         parser: &Parser,
         attrlist: Option<&Attrlist>,
     ) {
+        let mut passthroughs: Option<Passthroughs> = None;
+
         match self {
             Self::Normal => {
+                passthroughs = Some(Passthroughs::extract_from(content));
+
                 SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
                 SubstitutionStep::Quotes.apply(content, parser, attrlist);
                 SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
@@ -116,9 +153,20 @@ impl SubstitutionGroup {
 
             Self::Pass | Self::None => {}
 
+            Self::Custom(ref steps) => {
+                for step in steps {
+                    step.apply(content, parser, attrlist);
+                }
+            }
+
             _ => {
+                // Do passthroughs if sub steps includes macros.
                 todo!("Implement apply for SubstitutionGroup::{self:?}");
             }
+        }
+
+        if let Some(passthroughs) = passthroughs {
+            passthroughs.restore_to(content, parser);
         }
     }
 }
