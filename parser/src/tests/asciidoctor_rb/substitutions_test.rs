@@ -1280,14 +1280,11 @@ mod quotes {
         );
     }
 
-    #[ignore]
     #[test]
     fn inline_passthrough_with_id_and_role_set_using_shorthand_1() {
-        // TODO: Restore this test when we apply macro substitutions.
-        // Passthroughs are processed in that layer.
         let mut content = Content::from(Span::new("[#idname.rolename]+pass+"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p, None);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -1299,14 +1296,11 @@ mod quotes {
         );
     }
 
-    #[ignore]
     #[test]
     fn inline_passthrough_with_id_and_role_set_using_shorthand_2() {
-        // TODO: Restore this test when we apply macro substitutions.
-        // Passthroughs are processed in that layer.
         let mut content = Content::from(Span::new("[.rolename#idname]+pass+"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p, None);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
