@@ -2542,7 +2542,7 @@ mod passthroughs {
 
     use crate::{
         blocks::Block,
-        parser::ModificationContext,
+        parser::{ModificationContext, QuoteType},
         span::content::{Passthrough, Passthroughs, SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
             blocks::{TBlock, TSimpleBlock},
@@ -2577,6 +2577,36 @@ mod passthroughs {
                 subs: SubstitutionGroup::None,
                 type_: None,
                 attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn collect_inline_triple_plus_passthroughs_with_attrlist() {
+        // NOTE: Not in the Ruby test suite.
+        let mut content = Content::from(Span::new("[role]+++<code>inline code</code>+++"));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "[role]+++<code>inline code</code>+++",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "<code>inline code</code>".to_owned(),
+                subs: SubstitutionGroup::None,
+                type_: Some(QuoteType::Unquoted,),
+                attrlist: Some("role".to_owned(),),
             },],)
         );
     }
