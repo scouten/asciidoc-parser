@@ -350,25 +350,28 @@ static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(
         r#"(?xs)
-            \b{start-half}                # Must not follow a word
+            \b{start-half}              # Must not follow a word
 
-            (?:                           # Option 1: attrlist + quoted text
-                ([\\:;])?                 # Group 1: prohibited prefixes
-                \[([^\[\]]+)\]            # Group 2: [attrlist] -- required for backtick passthroughs
-                (\\{0,2})                 # Group 3: optional escapes
-                (?:
-                    \+(\S(?:.*?\S)?)\+    # Group 4: +...+ content (surrounded by non-space)
-                  | \`(\S(?:.*?\S)?)\`    # Group 5: `...` content -- only allowed with attrlist
-                )
+            (?:
+                                        # Option 1: [... x-] followed by `xxx`
+                \[(x-|[^\[\]]+ x-)\]        # Group 1: [attrlist] with x- suffix
+                (\\{0,2})                   # Group 2: optional escapes
+                \`(\S(?:.*?\S)?)\`          # Group 3: `...` content
+            
+            |                           # --OR--
+                                        # Option 2: [...] followed by +xxx+
+                \[([^\[\]]+)\]              # Group 4: [attrlist]
+                (\\{0,2})                   # Group 5: optional escapes
+                \+(\S(?:.*?\S)?)\+          # Group 6: +...+ content (surrounded by non-space)
 
-            |                             # --OR--
-                                          # Option 2: +...+ content without attrlist
+            |                           # --OR--
+                                        # Option 3: +xxx+ without attrlist
+                (\\)?                       # Group 7: optional escape
+                \+(\S(?:.*?\S)?)\+          # Group 8: +...+ content (surrounded by non-space)
 
-                (\\{0,2})                 # Group 6: optional escapes (no attrlist branch)
-                \+(\S(?:.*?\S)?)\+        # Group 7: +...+ content (no attrlist required)
             )
 
-            \b{end-half}                  # Must not be followed by a word character
+            \b{end-half}            # Must not be followed by a word character
         "#,
     )
     .unwrap()
@@ -382,105 +385,60 @@ impl Replacer for InlinePassReplacer<'_> {
         dbg!(&dest);
         dbg!(&caps);
 
-        let escapes = caps.get(3).or_else(|| caps.get(6));
-        let escape_count = escapes.map_or(0, |m| m.len());
-        dbg!(escape_count);
-
-        let format_mark = if caps.get(5).is_some() { '`' } else { '+' };
-        dbg!(format_mark);
-
-        if let Some(prohibited_prefix) = caps.get(1) {
+        if dest.ends_with('\\') || dest.ends_with(':') || dest.ends_with(';') {
             // Honor the prohibited prefix.
-            if prohibited_prefix.as_str() != "\\" {
-                dest.push_str(&prohibited_prefix.as_str());
-            }
-            dest.push('[');
-            if let Some(attrlist) = caps.get(2) {
-                dest.push_str(attrlist.as_str());
-            }
-            dest.push(']');
+            let dest_ended_with_backslash = dest.ends_with('\\');
+            // if dest_ended_with_backslash {
+            //     dest.truncate(dest.len() - 1);
+            // }
 
-            dbg!(&dest);
+            // EDGE CASE: Since we don't have lookarounds in Rust's regex, we have to retry
+            // the inline pass replacement here. Possible it might miss a few very obscure
+            // cases, but this should cover most cases where the attrlist is off-limits, but
+            // the quoted text is still subject to inline pass replacement.
+            let replacer = InlinePassReplacer(&mut self.0);
 
-            let after_attrlist = format!(
-                "{format_mark}{}{format_mark}",
-                caps.get(4)
-                    .or_else(|| caps.get(5))
-                    .map(|m| m.as_str())
-                    .unwrap_or_default()
-            );
-            dbg!(&after_attrlist);
+            let (first, rem) = &caps[0].split_at(1);
+            dest.push_str(first);
 
-            if escape_count > 0 {
-                dest.push_str(&("\\".repeat(escape_count - 1)));
-                dest.push_str(&after_attrlist);
-            } else if format_mark == '`' {
-                eprintln!("replace_append:415");
-                self.0.push(
-                    Passthrough {
-                        text: caps
-                            .get(5)
-                            .map(|m| m.as_str().to_string())
-                            .unwrap_or_default(),
-                        subs: SubstitutionGroup::Normal,
-                        type_: Some(QuoteType::Monospaced),
-                        attrlist: None,
-                    },
-                    dest,
-                );
+            eprintln!("\n\nreplace_append:404 -- re-run inline pass replacement after escape");
+            let new_result = INLINE_PASS.replace_all(rem, replacer);
+            dest.push_str(&new_result);
 
-                dbg!(&dest);
-                return;
-            } else {
-                // EDGE CASE: Since we don't have lookarounds in Rust's regex, we have to retry
-                // the inline pass replacement here. Possible it might miss a few very obscure
-                // cases, but this should cover most cases where the attrlist is off-limits, but
-                // the quoted text is still subject to inline pass replacement.
-                let replacer = InlinePassReplacer(&mut self.0);
-
-                let new_result = INLINE_PASS.replace_all(&after_attrlist, replacer);
-                dest.push_str(&new_result);
-            }
+            eprintln!("replace_append:408 -- re-run inline pass replacement after escape DONE\n\n");
 
             dbg!(&dest);
 
             return;
         }
 
-        let orig_attrlist_body = caps.get(2).map(|m| m.as_str());
+        let escapes = caps.get(2).or_else(|| caps.get(5)).or_else(|| caps.get(7));
+
+        let escape_count = escapes.map_or(0, |m| m.len());
+        dbg!(escape_count);
+
+        let format_mark = if caps.get(3).is_some() { '`' } else { '+' };
+        dbg!(format_mark);
+
+        let orig_attrlist_body = caps.get(1).or_else(|| caps.get(4)).map(|m| m.as_str());
         dbg!(&orig_attrlist_body);
 
-        let (attrlist_body, old_behavior) = caps.get(2).map_or((None, false), |m| {
-            let body = m.as_str();
-            if body == "x-" {
+        let (attrlist_body, old_behavior) = orig_attrlist_body.map_or((None, false), |m| {
+            if m == "x-" {
                 (Some("".to_string()), true)
-            } else if body.ends_with(" x-") {
-                (Some(body[0..body.len() - 3].to_string()), true)
+            } else if m.ends_with(" x-") {
+                (Some(m[0..m.len() - 3].to_string()), true)
             } else {
-                (Some(body.to_string()), false)
+                (Some(m.to_string()), false)
             }
         });
 
         dbg!(&attrlist_body);
         dbg!(&old_behavior);
-        // ALSO: old_behavior_forced
 
-        let quoted_text = caps.get(4).or_else(|| caps.get(5)).or_else(|| caps.get(7));
+        let quoted_text = caps.get(3).or_else(|| caps.get(6)).or_else(|| caps.get(8));
         let quoted_text = quoted_text.map_or("", |m| m.as_str());
         dbg!(quoted_text);
-
-        if !old_behavior && format_mark == '`' {
-            eprintln!("replace_append:434");
-            // TO DO: Review whether this is still needed.
-
-            // The Rust version of the INLINE_PASS regex can't quite as nuanced as the
-            // original Ruby version due to the lack of lookaround support. We compensate by
-            // restoring the original text when we get false positives (notably
-            // backtick-wrapped code snippets, which will get translated later by the quotes
-            // substition step).
-            dest.push_str(&caps[0]);
-            return;
-        }
 
         if let Some(ref orig_attrlist_body) = orig_attrlist_body {
             dbg!(&orig_attrlist_body);
@@ -495,20 +453,6 @@ impl Replacer for InlinePassReplacer<'_> {
                 dest.push_str(quoted_text);
                 dest.push(format_mark);
                 return;
-            }
-
-            if dest.ends_with('\\') {
-                if old_behavior && format_mark == '`' {
-                    // Honor the escape of the attributes.
-                    dest.push('[');
-                    dest.push_str(orig_attrlist_body);
-                    dest.push(']');
-                    dest.push_str(quoted_text);
-                    return;
-                }
-
-                // I don't understand this:
-                todo!("{}", "preceding = %([#{attrlist}])")
             }
         } else if escape_count > 0 {
             dbg!(escape_count);

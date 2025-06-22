@@ -3516,18 +3516,44 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_support_constrained_passthrough_in_monospace_phrase_with_attrlist() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("[.role]`foo +bar+ baz`"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "[.role]`foo +bar+ baz`",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<code class="role">foo bar baz</code>"#,
+                },
+                source: TSpan {
+                    data: "[.role]`foo +bar+ baz`",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should support constrained passthrough in monospace phrase with attrlist' do
-          input = '[.role]`foo +bar+ baz`'
-          para = block_from_string input
-          assert_equal '<code class="role">foo bar baz</code>', para.content
-        end
-
         test 'should support attrlist on a literal monospace phrase' do
           input = '[.baz]`+foo--bar+`'
           para = block_from_string input
