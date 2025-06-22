@@ -217,7 +217,6 @@ impl InlinePassMacroReplacer<'_> {
         let quoted_text = caps.get(5).or_else(|| caps.get(8)).or_else(|| caps.get(11));
         let quoted_text = quoted_text.map(|m| m.as_str()).unwrap_or_default();
 
-        let mut preceding: Option<String> = None;
         let mut old_behavior = false;
 
         let attrlist: Option<String> = if let Some(attrlist) = caps.get(2) {
@@ -238,7 +237,7 @@ impl InlinePassMacroReplacer<'_> {
             }
 
             if &caps[1] == "\\" {
-                preceding = Some(format!("[{attrlist}]", attrlist = &caps[2]));
+                dest.push_str(&format!("[{attrlist}]", attrlist = &caps[2]));
                 None
             } else if boundary == "++" {
                 if attrlist == "x-" {
