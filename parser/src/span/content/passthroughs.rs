@@ -396,7 +396,7 @@ impl Replacer for InlinePassReplacer<'_> {
             // the inline pass replacement here. Possible it might miss a few very obscure
             // cases, but this should cover most cases where the attrlist is off-limits, but
             // the quoted text is still subject to inline pass replacement.
-            let replacer = InlinePassReplacer(&mut self.0);
+            let replacer = InlinePassReplacer(self.0);
 
             let (first, rem) = &caps[0].split_at(1);
             dest.push_str(first);
@@ -544,7 +544,7 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
                 QuoteScope::Unconstrained,
                 attrlist,
                 id,
-                &subbed_text.rendered(),
+                subbed_text.rendered(),
                 &mut new_text,
             );
 
