@@ -332,7 +332,7 @@ static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
 
             (?:
                                         # Option 1: [... x-] followed by `xxx`
-                \[(x-|[^\[\]]+ x-)\]        # Group 1: [attrlist] with x- suffix
+                \[(x-|[^\[\]]+\ x-)\]       # Group 1: [attrlist] with x- suffix
                 (\\{0,2})                   # Group 2: optional escapes
                 \`(\S(?:.*?\S)?)\`          # Group 3: `...` content
             

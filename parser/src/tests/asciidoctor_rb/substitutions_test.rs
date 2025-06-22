@@ -572,6 +572,38 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn should_ignore_role_that_ends_with_transitional_role_on_constrained_monospace_span() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("[foox-]`leave it alone`"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "[foox-]`leave it alone`",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<code class="foox-">leave it alone</code>"#,
+                },
+                source: TSpan {
+                    data: "[foox-]`leave it alone`",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_constrained_monospaced() {
@@ -579,66 +611,6 @@ mod quotes {
         todo!(
             "{}",
             r###"
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'single-line constrained monospaced string' do
-      para = block_from_string %(`a few <{monospaced}> words`), attributes: { 'monospaced' => 'monospaced', 'compat-mode' => '' }
-      assert_equal '<code>a few &lt;{monospaced}&gt; words</code>', para.apply_subs(para.source)
-
-      para = block_from_string %(`a few <{monospaced}> words`), attributes: { 'monospaced' => 'monospaced' }
-      assert_equal '<code>a few &lt;monospaced&gt; words</code>', para.apply_subs(para.source)
-    end
-
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'single-line constrained monospaced string with role' do
-      para = block_from_string %([input]`a few <{monospaced}> words`), attributes: { 'monospaced' => 'monospaced', 'compat-mode' => '' }
-      assert_equal '<code class="input">a few &lt;{monospaced}&gt; words</code>', para.apply_subs(para.source)
-
-      para = block_from_string %([input]`a few <{monospaced}> words`), attributes: { 'monospaced' => 'monospaced' }
-      assert_equal '<code class="input">a few &lt;monospaced&gt; words</code>', para.apply_subs(para.source)
-    end
-
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'escaped single-line constrained monospaced string' do
-      para = block_from_string %(#{BACKSLASH}`a few <monospaced> words`), attributes: { 'compat-mode' => '' }
-      assert_equal '`a few &lt;monospaced&gt; words`', para.apply_subs(para.source)
-
-      para = block_from_string %(#{BACKSLASH}`a few <monospaced> words`)
-      assert_equal '`a few &lt;monospaced&gt; words`', para.apply_subs(para.source)
-    end
-
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'escaped single-line constrained monospaced string with role' do
-      para = block_from_string %([input]#{BACKSLASH}`a few <monospaced> words`), attributes: { 'compat-mode' => '' }
-      assert_equal '[input]`a few &lt;monospaced&gt; words`', para.apply_subs(para.source)
-
-      para = block_from_string %([input]#{BACKSLASH}`a few <monospaced> words`)
-      assert_equal '[input]`a few &lt;monospaced&gt; words`', para.apply_subs(para.source)
-    end
-
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'escaped role on single-line constrained monospaced string' do
-      para = block_from_string %(#{BACKSLASH}[input]`a few <monospaced> words`), attributes: { 'compat-mode' => '' }
-      assert_equal '[input]<code>a few &lt;monospaced&gt; words</code>', para.apply_subs(para.source)
-
-      para = block_from_string %(#{BACKSLASH}[input]`a few <monospaced> words`)
-      assert_equal '[input]<code>a few &lt;monospaced&gt; words</code>', para.apply_subs(para.source)
-    end
-
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'escaped role on escaped single-line constrained monospaced string' do
-      para = block_from_string %(#{BACKSLASH}[input]#{BACKSLASH}`a few <monospaced> words`), attributes: { 'compat-mode' => '' }
-      assert_equal %(#{BACKSLASH}[input]`a few &lt;monospaced&gt; words`), para.apply_subs(para.source)
-
-      para = block_from_string %(#{BACKSLASH}[input]#{BACKSLASH}`a few <monospaced> words`)
-      assert_equal %(#{BACKSLASH}[input]`a few &lt;monospaced&gt; words`), para.apply_subs(para.source)
-    end
-
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'should ignore role that ends with transitional role on constrained monospace span' do
-      para = block_from_string %([foox-]`leave it alone`)
-      assert_equal '<code class="foox-">leave it alone</code>', para.apply_subs(para.source)
-    end
-
     # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
     test 'escaped single-line constrained monospace string with forced compat role' do
       para = block_from_string %([x-]#{BACKSLASH}`leave it alone`)
