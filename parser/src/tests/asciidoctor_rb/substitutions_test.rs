@@ -3645,18 +3645,43 @@ mod passthroughs {
         );
     }
 
-    #[ignore]
     #[test]
-    fn todo_migrate_from_ruby() {
-        todo!(
-            "{}",
-            r###"
-        test 'should honor an escaped single plus passthrough inside a monospaced phrase' do
-          input = 'use `\+{author}+` to show an attribute reference'
-          para = block_from_string input, attributes: { 'author' => 'Dan' }
-          assert_equal 'use <code>+Dan+</code> to show an attribute reference', para.content
-        end
-      "###
+    fn should_honor_an_escaped_single_plus_passthrough_inside_a_monospaced_phrase() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "author",
+            "Dan",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(
+            Span::new(r#"use `\+{author}+` to show an attribute reference"#),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"use `\+{author}+` to show an attribute reference"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"use <code>+Dan+</code> to show an attribute reference"#,
+                },
+                source: TSpan {
+                    data: r#"use `\+{author}+` to show an attribute reference"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
         );
     }
 
