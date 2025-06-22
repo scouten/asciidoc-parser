@@ -838,7 +838,7 @@ mod quotes {
     }
 
     #[test]
-    fn single_line_constrained_monospaced_chars_unknown_syntax() {
+    fn single_line_constrained_monospaced_chars_1() {
         let mut content = Content::from(Span::new("call [x-]+save()+ to persist the changes"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
@@ -850,7 +850,7 @@ mod quotes {
     }
 
     #[test]
-    fn single_line_constrained_monospaced_chars() {
+    fn single_line_constrained_monospaced_chars_2() {
         let mut content = Content::from(Span::new("call `save()` to persist the changes"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
@@ -949,6 +949,19 @@ mod quotes {
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"[x-]+leave it alone+"#)
+        );
+    }
+
+    #[test]
+    fn single_line_unconstrained_monospaced_chars_with_old_behavior_and_role() {
+        // NOTE: Not in the Ruby test suite.
+        let mut content = Content::from(Span::new("Git[test x-]++Hub++"));
+        let p = Parser::default();
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Borrowed(r#"Git<code class="test">Hub</code>"#)
         );
     }
 
