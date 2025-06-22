@@ -56,34 +56,13 @@ impl Passthroughs {
             }
         }
 
-        if true {
-            eprintln!("--- DONE WITH PASSTHROUGHS ---\n\n\n");
-            return passthroughs;
-        }
+        eprintln!("--- DONE WITH PASSTHROUGHS ---\n\n\n");
 
-        todo!(
-            "{}",
-            r###"
-                # NOTE we need to do the stem in a subsequent step to allow it to be escaped by the former
-                text = text.gsub InlineStemMacroRx do
-                  # honor the escape
-                  next $&.slice 1, $&.length if $&.start_with? RS
+        // TO DO (#261): When implementing STEM macros, look for the block that starts
+        // with `text.gsub InlineStemMacroRx do` in Ruby Asciidoctor's substitutors.rb
+        // file.
 
-                  if (type = $1.to_sym) == :stem
-                    type = STEM_TYPE_ALIASES[@document.attributes['stem']].to_sym
-                  end
-                  subs = $2
-                  content = normalize_text $3, nil, true
-                  # NOTE drop enclosing $ signs around latexmath for backwards compatibility with AsciiDoc.py
-                  content = content.slice 1, content.length - 2 if type == :latexmath && (content.start_with? '$') && (content.end_with? '$')
-                  subs = subs ? (resolve_pass_subs subs) : ((@document.basebackend? 'html') ? BASIC_SUBS : nil)
-                  passthrus[passthru_key = passthrus.size] = { text: content, subs: subs, type: type }
-                  %(#{PASS_START}#{passthru_key}#{PASS_END})
-                end if (text.include? ':') && ((text.include? 'stem:') || (text.include? 'math:'))
-            "###
-        );
-
-        // passthroughs
+        passthroughs
     }
 
     pub(crate) fn restore_to(&self, content: &mut Content<'_>, parser: &Parser<'_>) {
