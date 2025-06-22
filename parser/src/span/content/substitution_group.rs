@@ -112,7 +112,6 @@ impl SubstitutionGroup {
                 "m" | "macros" => SubstitutionStep::Macros,
                 "p" | "post replacements" => SubstitutionStep::PostReplacement,
                 _ => {
-                    // TO DO: Issue a warning?
                     return None;
                 }
             };
@@ -137,7 +136,6 @@ impl SubstitutionGroup {
 
         match self {
             Self::Normal => {
-                dbg!(&content);
                 passthroughs = Some(Passthroughs::extract_from(content));
 
                 SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
@@ -156,8 +154,6 @@ impl SubstitutionGroup {
             Self::Pass | Self::None => {}
 
             Self::Custom(ref steps) => {
-                dbg!(&steps); // TO DO: Extract passthroughs if macros included.
-
                 for step in steps {
                     step.apply(content, parser, attrlist);
                 }
@@ -170,13 +166,7 @@ impl SubstitutionGroup {
         }
 
         if let Some(passthroughs) = passthroughs {
-            eprintln!("\n\n\nSUB GROUP RESTORING PASSTHROUGHS");
-            dbg!(&self);
-            dbg!(&content);
-            dbg!(&passthroughs);
             passthroughs.restore_to(content, parser);
-            dbg!(&content);
-            eprintln!("\n\n\nSUB GROUP RESTORED PASSWORDS ^^^^\n\n");
         }
     }
 }

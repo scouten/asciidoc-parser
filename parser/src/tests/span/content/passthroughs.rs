@@ -1,5 +1,3 @@
-#![allow(unused)] // TEMPORARY: DO NOT MERGE with this line.
-
 mod passthroughs {
     use pretty_assertions_sorted::assert_eq;
 
