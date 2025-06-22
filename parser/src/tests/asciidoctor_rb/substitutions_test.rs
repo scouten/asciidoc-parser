@@ -3312,27 +3312,65 @@ mod passthroughs {
         );
     }
 
-    #[ignore]
     #[test]
-    fn complex_inline_passthrough_macro() {
-        // Enable test when macro substitution is implemented.
-        todo!(
-            "{}",
-            r#"
-            text_to_escape = %q([(] <'basic form'> <'logical operator'> <'basic form'> [)])
-            para = block_from_string %($$#{text_to_escape}$$)
-            para.extract_passthroughs para.source
-            passthroughs = para.instance_variable_get :@passthroughs
-            assert_equal 1, passthroughs.size
-            assert_equal text_to_escape, passthroughs[0][:text]
+    fn complex_inline_passthrough_macro_1() {
+        let mut content = Content::from(Span::new(
+            "$$[(] <'basic form'> <'logical operator'> <'basic form'> [)]$$",
+        ));
+        let pt = Passthroughs::extract_from(&mut content);
 
-            text_to_escape_escaped = %q([(\] <'basic form'> <'logical operator'> <'basic form'> [)\])
-            para = block_from_string %(pass:specialcharacters[#{text_to_escape_escaped}])
-            para.extract_passthroughs para.source
-            passthroughs = para.instance_variable_get :@passthroughs
-            assert_equal 1, passthroughs.size
-            assert_equal text_to_escape, passthroughs[0][:text]
-            "#
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: "$$[(] <'basic form'> <'logical operator'> <'basic form'> [)]$$",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: "[(] <'basic form'> <'logical operator'> <'basic form'> [)]".to_owned(),
+                subs: SubstitutionGroup::Verbatim,
+                type_: None,
+                attrlist: None,
+            },],)
+        );
+    }
+
+    #[test]
+    fn complex_inline_passthrough_macro_2() {
+        let mut content = Content::from(Span::new(
+            r#"pass:specialcharacters[[(\] <'basic form'> <'logical operator'> <'basic form'> [)\]]"#,
+        ));
+        let pt = Passthroughs::extract_from(&mut content);
+
+        assert_eq!(
+            content,
+            TContent {
+                original: TSpan {
+                    data: r#"pass:specialcharacters[[(\] <'basic form'> <'logical operator'> <'basic form'> [)\]]"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "\u{96}0\u{97}",
+            }
+        );
+
+        assert_eq!(
+            pt,
+            Passthroughs(vec![Passthrough {
+                text: r#"[(] <'basic form'> <'logical operator'> <'basic form'> [)]"#.to_owned(),
+                subs: SubstitutionGroup::Custom(vec![SubstitutionStep::SpecialCharacters,],),
+                type_: None,
+                attrlist: None,
+            },],)
         );
     }
 
