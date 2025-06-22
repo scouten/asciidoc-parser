@@ -56,6 +56,7 @@ impl Passthroughs {
             }
         }
 
+        dbg!(&content.rendered);
         eprintln!("--- DONE WITH PASSTHROUGHS ---\n\n\n");
 
         // TO DO (#261): When implementing STEM macros, look for the block that starts
@@ -333,19 +334,18 @@ static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
             (?:
                                         # Option 1: [... x-] followed by `xxx`
                 \[(x-|[^\[\]]+\ x-)\]       # Group 1: [attrlist] with x- suffix
-                (\\{0,2})                   # Group 2: optional escapes
-                \`(\S(?:.*?\S)?)\`          # Group 3: `...` content
+                \`(\S(?:.*?\S)?)\`          # Group 2: `...` content
             
             |                           # --OR--
                                         # Option 2: [...] followed by +xxx+
-                \[([^\[\]]+)\]              # Group 4: [attrlist]
-                (\\{0,2})                   # Group 5: optional escapes
-                \+(\S(?:.*?\S)?)\+          # Group 6: +...+ content (surrounded by non-space)
+                \[([^\[\]]+)\]              # Group 3: [attrlist]
+                (\\{0,2})                   # Group 4: optional escapes
+                \+(\S(?:.*?\S)?)\+          # Group 5: +...+ content (surrounded by non-space)
 
             |                           # --OR--
                                         # Option 3: +xxx+ without attrlist
-                (\\)?                       # Group 7: optional escape
-                \+(\S(?:.*?\S)?)\+          # Group 8: +...+ content (surrounded by non-space)
+                (\\)?                       # Group 6: optional escape
+                \+(\S(?:.*?\S)?)\+          # Group 7: +...+ content (surrounded by non-space)
 
             )
 
@@ -390,15 +390,15 @@ impl Replacer for InlinePassReplacer<'_> {
             return;
         }
 
-        let escapes = caps.get(2).or_else(|| caps.get(5)).or_else(|| caps.get(7));
+        let escapes = caps.get(4).or_else(|| caps.get(6));
 
         let escape_count = escapes.map_or(0, |m| m.len());
         dbg!(escape_count);
 
-        let format_mark = if caps.get(3).is_some() { '`' } else { '+' };
+        let format_mark = if caps.get(2).is_some() { '`' } else { '+' };
         dbg!(format_mark);
 
-        let orig_attrlist_body = caps.get(1).or_else(|| caps.get(4)).map(|m| m.as_str());
+        let orig_attrlist_body = caps.get(1).or_else(|| caps.get(3)).map(|m| m.as_str());
         dbg!(&orig_attrlist_body);
 
         let (attrlist_body, old_behavior) = orig_attrlist_body.map_or((None, false), |m| {
@@ -414,7 +414,7 @@ impl Replacer for InlinePassReplacer<'_> {
         dbg!(&attrlist_body);
         dbg!(&old_behavior);
 
-        let quoted_text = caps.get(3).or_else(|| caps.get(6)).or_else(|| caps.get(8));
+        let quoted_text = caps.get(2).or_else(|| caps.get(5)).or_else(|| caps.get(7));
         let quoted_text = quoted_text.map_or("", |m| m.as_str());
         dbg!(quoted_text);
 

@@ -604,6 +604,38 @@ mod quotes {
         );
     }
 
+    #[test]
+    fn escaped_single_line_constrained_monospace_string_with_forced_compat_role() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"[x-]\`leave it alone`"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"[x-]\`leave it alone`"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "[x-]`leave it alone`",
+                },
+                source: TSpan {
+                    data: r#"[x-]\`leave it alone`"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_constrained_monospaced() {
@@ -611,12 +643,6 @@ mod quotes {
         todo!(
             "{}",
             r###"
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'escaped single-line constrained monospace string with forced compat role' do
-      para = block_from_string %([x-]#{BACKSLASH}`leave it alone`)
-      assert_equal '[x-]`leave it alone`', para.apply_subs(para.source)
-    end
-
     # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
     test 'escaped forced compat role on single-line constrained monospace string' do
       para = block_from_string %(#{BACKSLASH}[x-]`just *mono*`)
