@@ -850,7 +850,7 @@ mod quotes {
     }
 
     #[test]
-    fn single_line_constrained_monospaced_charsd() {
+    fn single_line_constrained_monospaced_chars() {
         let mut content = Content::from(Span::new("call `save()` to persist the changes"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
@@ -862,14 +862,11 @@ mod quotes {
     }
 
     #[test]
-    #[ignore]
-    fn single_line_constrained_monospaced_chars_with_role_unknown_syntax() {
-        // TO DO: I don't recognize this syntax.
-        // Also it may require full substitution, not just quotes.
+    fn single_line_constrained_monospaced_chars_with_role_1() {
         let mut content =
             Content::from(Span::new("call [method x-]+save()+ to persist the changes"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p, None);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -878,7 +875,7 @@ mod quotes {
     }
 
     #[test]
-    fn single_line_constrained_monospaced_chars_with_role() {
+    fn single_line_constrained_monospaced_chars_with_role_2() {
         let mut content = Content::from(Span::new("call [method]`save()` to persist the changes"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
