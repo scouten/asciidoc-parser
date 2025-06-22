@@ -980,13 +980,10 @@ mod quotes {
     }
 
     #[test]
-    #[ignore]
-    fn multi_line_unconstrained_monospaced_chars_unknown_syntax() {
-        // TO DO: I don't recognize this syntax.
-        // Also it may require full substitution, not just quotes.
+    fn multi_line_unconstrained_monospaced_chars_1() {
         let mut content = Content::from(Span::new("Git[x-]++\nH\nu\nb++"));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p, None);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
@@ -995,7 +992,7 @@ mod quotes {
     }
 
     #[test]
-    fn multi_line_unconstrained_monospaced_chars() {
+    fn multi_line_unconstrained_monospaced_chars_2() {
         let mut content = Content::from(Span::new("Git``\nH\nu\nb``"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
