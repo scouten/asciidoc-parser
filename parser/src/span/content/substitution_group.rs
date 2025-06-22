@@ -142,8 +142,7 @@ impl SubstitutionGroup {
                 SubstitutionStep::Quotes.apply(content, parser, attrlist);
                 SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
                 SubstitutionStep::CharacterReplacements.apply(content, parser, attrlist);
-                // TO DO: Add these as they are implemented.
-                // SubstitutionStep::Macros.apply(content, parser);
+                SubstitutionStep::Macros.apply(content, parser, attrlist);
                 SubstitutionStep::PostReplacement.apply(content, parser, attrlist);
             }
 
@@ -154,6 +153,10 @@ impl SubstitutionGroup {
             Self::Pass | Self::None => {}
 
             Self::Custom(ref steps) => {
+                if steps.contains(&SubstitutionStep::Macros) {
+                    passthroughs = Some(Passthroughs::extract_from(content));
+                }
+
                 for step in steps {
                     step.apply(content, parser, attrlist);
                 }
