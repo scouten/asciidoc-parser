@@ -941,14 +941,10 @@ mod quotes {
     }
 
     #[test]
-    #[ignore]
     fn escaped_single_line_constrained_passthrough_string() {
-        // TO DO (based on Ruby test): Must use `apply_subs` because constrained
-        // monospaced is handled as a passthrough. (IOW we need full substitution groups
-        // to run this test.)
         let mut content = Content::from(Span::new(r#"[x-]\+leave it alone+"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p, None);
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
