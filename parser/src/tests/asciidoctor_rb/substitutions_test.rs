@@ -3548,18 +3548,44 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_support_attrlist_on_a_literal_monospace_phrase() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("[.baz]`+foo--bar+`"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "[.baz]`+foo--bar+`",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<code class="baz">foo--bar</code>"#,
+                },
+                source: TSpan {
+                    data: "[.baz]`+foo--bar+`",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should support attrlist on a literal monospace phrase' do
-          input = '[.baz]`+foo--bar+`'
-          para = block_from_string input
-          assert_equal '<code class="baz">foo--bar</code>', para.content
-        end
-
         test 'should not process an escaped passthrough macro inside a monospaced phrase' do
           input = 'use the `\pass:c[]` macro'
           para = block_from_string input
