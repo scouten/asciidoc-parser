@@ -1048,14 +1048,11 @@ mod quotes {
         );
     }
 
-    #[ignore]
     #[test]
     fn allow_spaces_in_superscript_if_text_is_wrapped_in_a_passthrough() {
         let mut content = Content::from(Span::new("Night ^+A poem by Jane Kondo+^."));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p, None);
-        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
-        // substition.
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
