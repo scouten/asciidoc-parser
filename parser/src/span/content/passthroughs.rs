@@ -186,9 +186,15 @@ impl Replacer for InlinePassMacroReplacer<'_> {
                 .unwrap_or(SubstitutionGroup::Normal);
 
             eprintln!("push passhtrough @ 204");
+
+            let mut text = caps[15].to_string();
+            if !text.is_empty() {
+                text = text.replace("\\]", "]");
+            }
+
             self.0.push(
                 Passthrough {
-                    text: normalize_text(&caps[15], false, true),
+                    text,
                     subs,
                     type_: None,
                     attrlist: None,
@@ -543,35 +549,5 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
         } else {
             dest.push_str(subbed_text.rendered());
         }
-    }
-}
-
-/// Normalize text to prepare it for parsing.
-///
-/// If `normalize_whitespace` is true, strip surrounding whitespace and fold
-/// newlines. If `unescape_closing_square_bracket` is true, unescape any escaped
-/// closing square brackets.
-///
-/// Returns the normalized text string.
-fn normalize_text(
-    text: &str,
-    normalize_whitespace: bool,
-    unescape_closing_square_brackets: bool,
-) -> String {
-    if text.is_empty() {
-        return "".to_string();
-    }
-
-    let text = if normalize_whitespace {
-        let text = text.trim();
-        text.replace('\n', " ")
-    } else {
-        text.to_string()
-    };
-
-    if unescape_closing_square_brackets {
-        text.replace("\\]", "]")
-    } else {
-        text
     }
 }
