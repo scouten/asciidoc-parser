@@ -3285,6 +3285,42 @@ mod passthroughs {
     }
 
     #[test]
+    fn should_honor_role_on_double_dollar_passthrough() {
+        // NOTE: Not in the Ruby test suite.
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("Print the version using [var]$${asciidoctor-version}$$."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Print the version using [var]$${asciidoctor-version}$$.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"Print the version using <span class="var">{asciidoctor-version}</span>."#,
+                },
+                source: TSpan {
+                    data: "Print the version using [var]$${asciidoctor-version}$$.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
     fn should_honor_role_on_double_plus_passthrough() {
         let mut p = Parser::default();
         let maw = Block::parse(
