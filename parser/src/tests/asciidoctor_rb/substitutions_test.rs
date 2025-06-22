@@ -524,14 +524,11 @@ mod quotes {
         );
     }
 
-    #[ignore]
     #[test]
     fn escaped_single_quotes_inside_emphasized_words_are_restored() {
         let mut content = Content::from(Span::new(r#"'Here\'s Johnny!'"#));
         let p = Parser::default();
-        SubstitutionStep::Quotes.apply(&mut content, &p, None);
-        // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
-        // substition.
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(r#"'Here's Johnny!'"#));
     }
