@@ -1072,6 +1072,7 @@ mod quotes {
     #[ignore]
     #[test]
     fn does_not_confuse_superscript_and_links_with_blank_window_shorthand() {
+        // TO DO: Enable when macro substitution is implemented.
         let mut content = Content::from(Span::new(
             "http://localhost[Text^] on the 21^st^ and 22^nd^",
         ));
