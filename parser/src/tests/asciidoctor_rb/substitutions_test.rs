@@ -764,12 +764,6 @@ mod quotes {
 
     #[test]
     fn escaped_unconstrained_strong_chars_with_role() {
-        // NOTE copied from the Ruby Asciidoctor test suite:
-        // # TODO this is not the same result as AsciiDoc, though I don't understand why
-        // AsciiDoc gets what it gets.
-
-        // FWIW we get the same (possibly incorrect) result in Rust as the Ruby
-        // implementation.
         let mut content = Content::from(Span::new(r#"Git\[blue]**Hub**"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
