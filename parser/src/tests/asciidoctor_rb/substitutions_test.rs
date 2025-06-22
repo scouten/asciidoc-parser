@@ -668,22 +668,40 @@ mod quotes {
         );
     }
 
-    #[ignore]
     #[test]
-    fn todo_constrained_monospaced() {
-        // Not ready to port these yet because we don't have passthrough support.
-        todo!(
-            "{}",
-            r###"
-    # NOTE must use apply_subs because constrained monospaced is handled as a passthrough
-    test 'multi-line constrained monospaced string' do
-      para = block_from_string %(`a few\n<{monospaced}> words`), attributes: { 'monospaced' => 'monospaced', 'compat-mode' => '' }
-      assert_equal "<code>a few\n&lt;{monospaced}&gt; words</code>", para.apply_subs(para.source)
+    fn multi_line_constrained_monospaced_string() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "monospaced",
+            "monospaced",
+            ModificationContext::Anywhere,
+        );
 
-      para = block_from_string %(`a few\n<{monospaced}> words`), attributes: { 'monospaced' => 'monospaced' }
-      assert_equal "<code>a few\n&lt;monospaced&gt; words</code>", para.apply_subs(para.source)
-    end
-    "###
+        let maw = Block::parse(Span::new("`a few\n<{monospaced}> words`"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "`a few\n<{monospaced}> words`",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<code>a few\n&lt;monospaced&gt; words</code>",
+                },
+                source: TSpan {
+                    data: "`a few\n<{monospaced}> words`",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
         );
     }
 
