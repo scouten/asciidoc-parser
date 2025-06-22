@@ -3612,18 +3612,45 @@ mod passthroughs {
         );
     }
 
+    #[test]
+    fn should_not_process_an_escaped_passthrough_macro_inside_a_monospaced_phrase_with_attributes()
+    {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"use the [syntax]`\pass:c[]` macro"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"use the [syntax]`\pass:c[]` macro"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"use the <code class="syntax">pass:c[]</code> macro"#,
+                },
+                source: TSpan {
+                    data: r#"use the [syntax]`\pass:c[]` macro"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should not process an escaped passthrough macro inside a monospaced phrase with attributes' do
-          input = 'use the [syntax]`\pass:c[]` macro'
-          para = block_from_string input
-          assert_equal 'use the <code class="syntax">pass:c[]</code> macro', para.content
-        end
-
         test 'should honor an escaped single plus passthrough inside a monospaced phrase' do
           input = 'use `\+{author}+` to show an attribute reference'
           para = block_from_string input, attributes: { 'author' => 'Dan' }
