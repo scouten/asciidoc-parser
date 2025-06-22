@@ -381,7 +381,7 @@ impl Replacer for InlinePassReplacer<'_> {
         let quoted_text = caps.get(2).or_else(|| caps.get(5)).or_else(|| caps.get(7));
         let quoted_text = quoted_text.map_or("", |m| m.as_str());
 
-        if let Some(ref orig_attrlist_body) = orig_attrlist_body {
+        if let Some(orig_attrlist_body) = orig_attrlist_body {
             if escape_count > 0 {
                 // Honor the escape of the formatting mark.
                 dest.push('[');
