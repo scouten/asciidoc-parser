@@ -1521,17 +1521,44 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_single_line_image_macro_with_text_should_be_interpreted_as_an_image_with_alt_text() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("image:tiger.png[Tiger]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "image:tiger.png[Tiger]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><img src="tiger.png" alt="Tiger"></span>"#,
+                },
+                source: TSpan {
+                    data: "image:tiger.png[Tiger]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'a single-line image macro with text should be interpreted as an image with alt text' do
-            para = block_from_string 'image:tiger.png[Tiger]'
-            assert_equal '<span class="image"><img src="tiger.png" alt="Tiger"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'should encode special characters in alt text of inline image' do
             input = 'A tiger\'s "roar" is < a bear\'s "growl"'
             expected = 'A tiger&#8217;s &quot;roar&quot; is &lt; a bear&#8217;s &quot;growl&quot;'
