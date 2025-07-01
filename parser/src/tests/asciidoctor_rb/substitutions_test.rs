@@ -1489,17 +1489,44 @@ mod macros {
         );
     }
 
+    #[test]
+    fn should_replace_underscore_and_hyphen_with_space_in_generated_alt_text_for_an_inline_image() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("image:tiger-with-family_1.png[]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "image:tiger-with-family_1.png[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><img src="tiger-with-family_1.png" alt="tiger with family 1"></span>"#,
+                },
+                source: TSpan {
+                    data: "image:tiger-with-family_1.png[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'should replace underscore and hyphen with space in generated alt text for an inline image' do
-            para = block_from_string 'image:tiger-with-family_1.png[]'
-            assert_equal '<span class="image"><img src="tiger-with-family_1.png" alt="tiger with family 1"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'a single-line image macro with text should be interpreted as an image with alt text' do
             para = block_from_string 'image:tiger.png[Tiger]'
             assert_equal '<span class="image"><img src="tiger.png" alt="Tiger"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
