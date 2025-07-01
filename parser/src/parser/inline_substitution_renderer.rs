@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::attributes::Attrlist;
+use crate::{attributes::Attrlist, Parser};
 
 /// An implementation of `InlineSubstitutionRenderer` is used when converting
 /// the basic raw text of a simple block to the format which will ultimately be
@@ -45,6 +45,12 @@ pub trait InlineSubstitutionRenderer: Debug {
     ///
     /// [post-replacement substitutions]: https://docs.asciidoctor.org/asciidoc/latest/subs/post-replacements/
     fn render_line_break(&self, dest: &mut String);
+
+    /// Renders an image.
+    ///
+    /// The renderer should write an appropriate rendering of the specified
+    /// image to `dest`.
+    fn render_image(&self, params: &ImageRenderParams, dest: &mut String);
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -144,6 +150,29 @@ pub enum CharacterReplacementType {
 
     /// Character reference `&___;`.
     CharacterReference(String),
+}
+
+/// Provides parsed parameters for an image to be rendered.
+#[derive(Clone, Debug)]
+pub struct ImageRenderParams<'a> {
+    /// Target (the reference to the image).
+    pub target: &'a str,
+
+    /// Alt text (either explicitly set or defaulted).
+    pub alt: String,
+
+    /// Width. The data type is not checked; this may be any string.
+    pub width: Option<&'a str>,
+
+    /// Height. The data type is not checked; this may be any string.
+    pub height: Option<&'a str>,
+
+    /// Attribute list.
+    pub attrlist: &'a Attrlist<'a>,
+
+    /// Parser. The rendered may find document settings (such as an image
+    /// directory) in the parser's document attributes.
+    pub parser: &'a Parser<'a>,
 }
 
 /// Implementation of [`InlineSubstitutionRenderer`] that renders substitutions
@@ -304,6 +333,61 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
     fn render_line_break(&self, dest: &mut String) {
         dest.push_str("<br>");
     }
+
+    fn render_image(&self, params: &ImageRenderParams, dest: &mut String) {
+        let attrs = format!(
+            "{width}{height}{title}",
+            width = params
+                .width
+                .map(|width| format!(r#" width="{width}""#))
+                .unwrap_or_default(),
+            height = params
+                .height
+                .map(|height| format!(r#" height="{height}""#))
+                .unwrap_or_default(),
+            title = params
+                .attrlist
+                .named_attribute("title")
+                .map(|title| format!(r#" title="{}""#, *title.raw_value()))
+                .unwrap_or_default()
+        );
+
+        let format = params
+            .attrlist
+            .named_attribute("format")
+            .map(|format| *format.raw_value());
+
+        // TO DO: Enforce non-safe mode. Add this contraint to following `if` clause:
+        // `&& node.document.safe < SafeMode::SECURE`
+
+        let img = if format == Some("svg") || params.target.contains(".svg") {
+            todo!(
+                "Port this: {}",
+                r##"
+                    if node.option? 'inline'
+                        img = (read_svg_contents node, target) || %(<span class="alt">#{node.alt}</span>)
+                    elsif node.option? 'interactive'
+                        fallback = (node.attr? 'fallback') ? %(<img src="#{node.image_uri node.attr 'fallback'}" alt="#{encode_attribute_value node.alt}"#{attrs}#{@void_element_slash}>) : %(<span class="alt">#{node.alt}</span>)
+                        img = %(<object type="image/svg+xml" data="#{src = node.image_uri target}"#{attrs}>#{fallback}</object>)
+                    else
+                        img = %(<img src="#{src = node.image_uri target}" alt="#{encode_attribute_value node.alt}"#{attrs}#{@void_element_slash}>)
+                    end
+            "##
+            );
+        } else {
+            format!(
+                r#"<img src="{src}" alt="{alt}"{attrs}{void_element_slash}>"#,
+                src = params.target,
+                alt = params.alt,
+                attrs = attrs,
+                void_element_slash = "",
+                // img = %(<img src="#{src = node.image_uri target}" alt="#{encode_attribute_value
+                // node.alt}"#{attrs}#{@void_element_slash}>)
+            )
+        };
+
+        render_icon_or_image(params, &img, "image", dest);
+    }
 }
 
 fn wrap_body_in_html_tag(
@@ -335,4 +419,36 @@ fn wrap_body_in_html_tag(
     dest.push_str("</");
     dest.push_str(tag);
     dest.push('>');
+}
+
+fn render_icon_or_image(
+    _params: &ImageRenderParams,
+    img: &str,
+    type_: &'static str,
+    dest: &mut String,
+) {
+    let class_attr_val = type_;
+
+    if false {
+        // Handle the edge cases within.
+        todo!(
+            "Port this: {}",
+            r##"
+            if (node.attr? 'link') && ((href_attr_val = node.attr 'link') != 'self' || (href_attr_val = src))
+                img = %(<a class="image" href="#{href_attr_val}"#{(append_link_constraint_attrs node).join}>#{img}</a>)
+            end
+            if (role = node.role)
+                class_attr_val = (node.attr? 'float') ? %(#{class_attr_val} #{node.attr 'float'} #{role}) : %(#{class_attr_val} #{role})
+            elsif node.attr? 'float'
+                class_attr_val = %(#{class_attr_val} #{node.attr 'float'})
+            end
+        "##
+        );
+    }
+
+    dest.push_str(r#"<span class=""#);
+    dest.push_str(class_attr_val);
+    dest.push_str(r#"">"#);
+    dest.push_str(img);
+    dest.push_str("</span>");
 }

@@ -230,7 +230,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                                     col: 1,
                                     offset: 0,
                                 },
-                                rendered: "Click the button with the image:star.png[Star] to favorite the project.",
+                                rendered: r#"Click the button with the <span class="image"><img src="star.png" alt="Star"></span> to favorite the project."#,
                             },
                             source: TSpan {
                                 data: "Click the button with the image:star.png[Star] to favorite the project.",
