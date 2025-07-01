@@ -1,4 +1,4 @@
-use std::{borrow::Cow, sync::LazyLock};
+use std::{borrow::Cow, path::Path, sync::LazyLock};
 
 use regex::{Captures, Regex, Replacer};
 
@@ -113,11 +113,10 @@ impl Replacer for InlineImageMacroReplacer<'_> {
         }
 
         let target = &caps[1];
-
         let span = Span::new(&caps[2]);
         let attrlist = Attrlist::parse(span).item.item;
 
-        let default_alt = target.replace('_', " ").replace('-', " ");
+        let default_alt = basename(&target.replace('_', " ").replace('-', " "));
         // IMPORTANT: Implementations of `render_icon` and `render_image` need to
         // remember to use `default_alt` when attrlist doesn't contain a value for
         // `alt`.
@@ -159,4 +158,12 @@ impl Replacer for InlineImageMacroReplacer<'_> {
             );
         }
     }
+}
+
+fn basename(path: &str) -> String {
+    Path::new(path)
+        .file_stem()
+        .and_then(|s| s.to_str())
+        .unwrap_or_default()
+        .to_string()
 }
