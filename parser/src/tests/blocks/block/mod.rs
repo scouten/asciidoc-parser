@@ -257,12 +257,7 @@ mod error_cases {
                         offset: 1,
                     },),
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 7,
-                        offset: 6,
-                    },
+                    value: "Sunset",
                     source: TSpan {
                         data: "alt=\"Sunset\"",
                         line: 1,
@@ -326,12 +321,7 @@ mod error_cases {
                             offset: 1,
                         },),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "Sunset",
-                            line: 1,
-                            col: 7,
-                            offset: 6,
-                        },
+                        value: "Sunset",
                         source: TSpan {
                             data: "alt=\"Sunset\"",
                             line: 1,

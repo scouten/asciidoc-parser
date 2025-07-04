@@ -4134,18 +4134,8 @@ mod post_replacements {
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },],
-                        value: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        shorthand_items: vec!["%hardbreaks"],
+                        value: "%hardbreaks",
                         source: TSpan {
                             data: "%hardbreaks",
                             line: 1,
@@ -4197,18 +4187,8 @@ mod post_replacements {
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },],
-                        value: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        shorthand_items: vec!["%hardbreaks"],
+                        value: "%hardbreaks",
                         source: TSpan {
                             data: "%hardbreaks",
                             line: 1,
@@ -4257,18 +4237,8 @@ mod post_replacements {
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },],
-                        value: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        shorthand_items: vec!["%hardbreaks"],
+                        value: "%hardbreaks",
                         source: TSpan {
                             data: "%hardbreaks",
                             line: 1,

@@ -472,12 +472,7 @@ fn err_bad_header_and_bad_macro() {
                                                 },
                                             ),
                                             shorthand_items: vec![],
-                                            value: TSpan {
-                                                data: "Sunset",
-                                                line: 6,
-                                                col: 14,
-                                                offset: 57,
-                                            },
+                                            value: "Sunset",
                                             source: TSpan {
                                                 data: "alt=Sunset",
                                                 line: 6,
@@ -495,12 +490,7 @@ fn err_bad_header_and_bad_macro() {
                                                 },
                                             ),
                                             shorthand_items: vec![],
-                                            value: TSpan {
-                                                data: "300",
-                                                line: 6,
-                                                col: 27,
-                                                offset: 70,
-                                            },
+                                            value: "300",
                                             source: TSpan {
                                                 data: "width=300",
                                                 line: 6,
@@ -518,12 +508,7 @@ fn err_bad_header_and_bad_macro() {
                                                 },
                                             ),
                                             shorthand_items: vec![],
-                                            value: TSpan {
-                                                data: "400",
-                                                line: 6,
-                                                col: 39,
-                                                offset: 82,
-                                            },
+                                            value: "400",
                                             source: TSpan {
                                                 data: "height=400",
                                                 line: 6,

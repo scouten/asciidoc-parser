@@ -235,18 +235,8 @@ fn attrlist() {
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "sidebar",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },],
-                    value: TSpan {
-                        data: "sidebar",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    shorthand_items: vec!["sidebar"],
+                    value: "sidebar",
                     source: TSpan {
                         data: "sidebar",
                         line: 1,
@@ -281,18 +271,8 @@ fn attrlist() {
         TAttrlist {
             attributes: vec![TElementAttribute {
                 name: None,
-                shorthand_items: vec![TSpan {
-                    data: "sidebar",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },],
-                value: TSpan {
-                    data: "sidebar",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },
+                shorthand_items: vec!["sidebar"],
+                value: "sidebar",
                 source: TSpan {
                     data: "sidebar",
                     line: 1,
@@ -356,18 +336,8 @@ fn title_and_attrlist() {
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "sidebar",
-                        line: 2,
-                        col: 2,
-                        offset: 8,
-                    },],
-                    value: TSpan {
-                        data: "sidebar",
-                        line: 2,
-                        col: 2,
-                        offset: 8,
-                    },
+                    shorthand_items: vec!["sidebar"],
+                    value: "sidebar",
                     source: TSpan {
                         data: "sidebar",
                         line: 2,
@@ -402,18 +372,8 @@ fn title_and_attrlist() {
         TAttrlist {
             attributes: vec![TElementAttribute {
                 name: None,
-                shorthand_items: vec![TSpan {
-                    data: "sidebar",
-                    line: 2,
-                    col: 2,
-                    offset: 8,
-                },],
-                value: TSpan {
-                    data: "sidebar",
-                    line: 2,
-                    col: 2,
-                    offset: 8,
-                },
+                shorthand_items: vec!["sidebar"],
+                value: "sidebar",
                 source: TSpan {
                     data: "sidebar",
                     line: 2,
@@ -806,18 +766,8 @@ fn unterminated_block_anchor() {
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "[notice",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },],
-                    value: TSpan {
-                        data: "[notice",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    shorthand_items: vec!["[notice",],
+                    value: "[notice",
                     source: TSpan {
                         data: "[notice",
                         line: 1,
@@ -849,15 +799,7 @@ fn unterminated_block_anchor() {
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
 
-    assert_eq!(
-        mi.item.declared_style().unwrap(),
-        TSpan {
-            data: "[notice",
-            line: 1,
-            col: 2,
-            offset: 1,
-        }
-    );
+    assert_eq!(mi.item.declared_style().unwrap(), "[notice",);
 
     assert_eq!(mi.item.nested_blocks().next(), None);
     assert!(mi.item.id().is_none());
@@ -872,18 +814,8 @@ fn unterminated_block_anchor() {
         TAttrlist {
             attributes: vec![TElementAttribute {
                 name: None,
-                shorthand_items: vec![TSpan {
-                    data: "[notice",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },],
-                value: TSpan {
-                    data: "[notice",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },
+                shorthand_items: vec!["[notice"],
+                value: "[notice",
                 source: TSpan {
                     data: "[notice",
                     line: 1,

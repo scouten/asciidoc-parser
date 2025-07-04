@@ -118,8 +118,8 @@ impl<'src> ElementAttribute<'src> {
     }
 
     /// Return a [`Span`] describing the attribute name.
-    pub fn name(&'src self) -> &'src Option<Span<'src>> {
-        &self.name
+    pub fn name(&'src self) -> Option<Span<'src>> {
+        self.name
     }
 
     /// Return the shorthand items, if applicable.
@@ -135,7 +135,7 @@ impl<'src> ElementAttribute<'src> {
     pub fn block_style(&'src self) -> Option<&'src str> {
         self.shorthand_items
             .first()
-            .filter(|v| v.chars().any(is_shorthand_delimiter))
+            .filter(|v| !v.chars().any(is_shorthand_delimiter))
             .map(|v| v.as_ref())
     }
 

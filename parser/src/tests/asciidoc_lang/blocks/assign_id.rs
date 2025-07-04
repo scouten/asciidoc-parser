@@ -89,18 +89,8 @@ Content of delimited example block
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "#the-id-of-this-block",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },],
-                    value: TSpan {
-                        data: "#the-id-of-this-block",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    shorthand_items: vec!["#the-id-of-this-block",],
+                    value: "#the-id-of-this-block",
                     source: TSpan {
                         data: "#the-id-of-this-block",
                         line: 1,
@@ -118,15 +108,7 @@ Content of delimited example block
         },)
     );
 
-    assert_eq!(
-        block.id().unwrap(),
-        TSpan {
-            data: "the-id-of-this-block",
-            line: 1,
-            col: 3,
-            offset: 2,
-        }
-    );
+    assert_eq!(block.id().unwrap(), "the-id-of-this-block");
 }
 
 non_normative!(
@@ -196,26 +178,8 @@ Roads? Where we're going, we don't need roads.
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec![
-                        TSpan {
-                            data: "quote",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
-                        TSpan {
-                            data: "#roads",
-                            line: 1,
-                            col: 7,
-                            offset: 6,
-                        },
-                    ],
-                    value: TSpan {
-                        data: "quote#roads",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    shorthand_items: vec!["quote", "#roads"],
+                    value: "quote#roads",
                     source: TSpan {
                         data: "quote#roads",
                         line: 1,
@@ -233,15 +197,7 @@ Roads? Where we're going, we don't need roads.
         },)
     );
 
-    assert_eq!(
-        block.id().unwrap(),
-        TSpan {
-            data: "roads",
-            line: 1,
-            col: 8,
-            offset: 7,
-        }
-    );
+    assert_eq!(block.id().unwrap(), "roads");
 }
 
 #[test]
@@ -295,26 +251,8 @@ Roads? Where we're going, we don't need roads.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    TSpan {
-                                        data: "quote",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                    TSpan {
-                                        data: "#roads",
-                                        line: 1,
-                                        col: 7,
-                                        offset: 6,
-                                    },
-                                ],
-                                value: TSpan {
-                                    data: "quote#roads",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
+                                shorthand_items: vec!["quote", "#roads"],
+                                value: "quote#roads",
                                 source: TSpan {
                                     data: "quote#roads",
                                     line: 1,
@@ -325,12 +263,7 @@ Roads? Where we're going, we don't need roads.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "Dr. Emmett Brown",
-                                    line: 1,
-                                    col: 14,
-                                    offset: 13,
-                                },
+                                value: "Dr. Emmett Brown",
                                 source: TSpan {
                                     data: "Dr. Emmett Brown",
                                     line: 1,
@@ -341,12 +274,7 @@ Roads? Where we're going, we don't need roads.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "Back to the Future",
-                                    line: 1,
-                                    col: 31,
-                                    offset: 30,
-                                },
+                                value: "Back to the Future",
                                 source: TSpan {
                                     data: "Back to the Future",
                                     line: 1,
@@ -366,15 +294,7 @@ Roads? Where we're going, we don't need roads.
             },
         ));
 
-    assert_eq!(
-        block.id().unwrap(),
-        TSpan {
-            data: "roads",
-            line: 1,
-            col: 8,
-            offset: 7,
-        }
-    );
+    assert_eq!(block.id().unwrap(), "roads");
 }
 
 non_normative!(

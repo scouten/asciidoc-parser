@@ -111,20 +111,9 @@ This is a sidebar with an option assigned to it, named option.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    TSpan {
-                                        data: "%option",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
+                                shorthand_items: vec!["%option"
                                 ],
-                                value: TSpan {
-                                    data: "%option",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
+                                value: "%option",
                                 source: TSpan {
                                     data: "%option",
                                     line: 1,
@@ -147,15 +136,7 @@ This is a sidebar with an option assigned to it, named option.
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option",
-                line: 1,
-                col: 3,
-                offset: 2,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option");
 
         assert!(options.next().is_none());
 
@@ -229,26 +210,9 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    TSpan {
-                                        data: "%option1",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                    TSpan {
-                                        data: "%option2",
-                                        line: 1,
-                                        col: 10,
-                                        offset: 9,
-                                    },
-                                ],
-                                value: TSpan {
-                                    data: "%option1%option2",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
+                                shorthand_items: vec!["%option1",
+                                    "%option2",],
+                                value: "%option1%option2",
                                 source: TSpan {
                                     data: "%option1%option2",
                                     line: 1,
@@ -271,25 +235,9 @@ This is a sidebar with two options assigned to it, named option1 and option2.
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option1",
-                line: 1,
-                col: 3,
-                offset: 2,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option1");
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option2",
-                line: 1,
-                col: 11,
-                offset: 10,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option2");
 
         assert!(options.next().is_none());
 
@@ -355,32 +303,8 @@ For instance, consider a table with the three built-in option values, `header`, 
                     attributes: vec![
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec![
-                                TSpan {
-                                    data: "%header",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                                TSpan {
-                                    data: "%footer",
-                                    line: 1,
-                                    col: 9,
-                                    offset: 8,
-                                },
-                                TSpan {
-                                    data: "%autowidth",
-                                    line: 1,
-                                    col: 16,
-                                    offset: 15,
-                                },
-                            ],
-                            value: TSpan {
-                                data: "%header%footer%autowidth",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
+                            shorthand_items: vec!["%header", "%footer", "%autowidth",],
+                            value: "%header%footer%autowidth",
                             source: TSpan {
                                 data: "%header%footer%autowidth",
                                 line: 1,
@@ -396,12 +320,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                                 offset: 26,
                             },),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "2*~",
-                                line: 1,
-                                col: 32,
-                                offset: 31,
-                            },
+                            value: "2*~",
                             source: TSpan {
                                 data: "cols=2*~",
                                 line: 1,
@@ -423,35 +342,11 @@ For instance, consider a table with the three built-in option values, `header`, 
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "header",
-                line: 1,
-                col: 3,
-                offset: 2,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"header");
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "footer",
-                line: 1,
-                col: 10,
-                offset: 9,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"footer");
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "autowidth",
-                line: 1,
-                col: 17,
-                offset: 16,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"autowidth");
 
         assert!(options.next().is_none());
 
@@ -537,12 +432,7 @@ This is a sidebar with an option assigned to it, named option.
                                     },
                                 ),
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "option",
-                                    line: 1,
-                                    col: 7,
-                                    offset: 6,
-                                },
+                                value: "option",
                                 source: TSpan {
                                     data: "opts=option",
                                     line: 1,
@@ -565,15 +455,7 @@ This is a sidebar with an option assigned to it, named option.
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option",
-                line: 1,
-                col: 7,
-                offset: 6,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option");
 
         assert!(options.next().is_none());
 
@@ -654,12 +536,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                                     },
                                 ),
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "option1,option2",
-                                    line: 1,
-                                    col: 8,
-                                    offset: 7,
-                                },
+                                value: "option1,option2",
                                 source: TSpan {
                                     data: "opts=\"option1,option2\"",
                                     line: 1,
@@ -682,25 +559,9 @@ This is a sidebar with two options assigned to it, option1 and option2.
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option1",
-                line: 1,
-                col: 8,
-                offset: 7,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option1");
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option2",
-                line: 1,
-                col: 16,
-                offset: 15,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option2");
 
         assert!(options.next().is_none());
 
@@ -772,12 +633,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                                 offset: 1,
                             },),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "2*~",
-                                line: 1,
-                                col: 7,
-                                offset: 6,
-                            },
+                            value: "2*~",
                             source: TSpan {
                                 data: "cols=2*~",
                                 line: 1,
@@ -793,12 +649,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                                 offset: 10,
                             },),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "header,footer,autowidth",
-                                line: 1,
-                                col: 17,
-                                offset: 16,
-                            },
+                            value: "header,footer,autowidth",
                             source: TSpan {
                                 data: "opts=\"header,footer,autowidth\"",
                                 line: 1,
@@ -820,35 +671,11 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "header",
-                line: 1,
-                col: 17,
-                offset: 16,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"header");
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "footer",
-                line: 1,
-                col: 24,
-                offset: 23,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"footer");
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "autowidth",
-                line: 1,
-                col: 31,
-                offset: 30,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"autowidth");
 
         assert!(options.next().is_none());
 
@@ -943,31 +770,11 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                                 TElementAttribute {
                                     name: None,
                                     shorthand_items: vec![
-                                        TSpan {
-                                            data: "horizontal",
-                                            line: 1,
-                                            col: 2,
-                                            offset: 1,
-                                        },
-                                        TSpan {
-                                            data: ".properties",
-                                            line: 1,
-                                            col: 12,
-                                            offset: 11,
-                                        },
-                                        TSpan {
-                                            data: "%step",
-                                            line: 1,
-                                            col: 23,
-                                            offset: 22,
-                                        },
+                                        "horizontal",
+                                        ".properties",
+                                        "%step",
                                     ],
-                                    value: TSpan {
-                                        data: "horizontal.properties%step",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
+                                    value: "horizontal.properties%step",
                                     source: TSpan {
                                         data: "horizontal.properties%step",
                                         line: 1,
@@ -987,43 +794,19 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                 },
             ));
 
-        assert_eq!(
-            mi.item.declared_style().unwrap(),
-            TSpan {
-                data: "horizontal",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(mi.item.declared_style().unwrap(), "horizontal");
 
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "step",
-                line: 1,
-                col: 24,
-                offset: 23,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"step");
 
         assert!(options.next().is_none());
 
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "properties",
-                line: 1,
-                col: 13,
-                offset: 12,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"properties");
 
         assert!(roles.next().is_none());
 
@@ -1086,19 +869,8 @@ property 2:: does different stuff
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![
-                                    TSpan {
-                                        data: "horizontal",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                ],
-                                value: TSpan {
-                                    data: "horizontal",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
+                                    "horizontal"],
+                                value: "horizontal",
                                 source: TSpan {
                                     data: "horizontal",
                                     line: 1,
@@ -1116,12 +888,7 @@ property 2:: does different stuff
                                     },
                                 ),
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "properties",
-                                    line: 1,
-                                    col: 18,
-                                    offset: 17,
-                                },
+                                value: "properties",
                                 source: TSpan {
                                     data: "role=properties",
                                     line: 1,
@@ -1139,12 +906,7 @@ property 2:: does different stuff
                                     },
                                 ),
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "step",
-                                    line: 1,
-                                    col: 34,
-                                    offset: 33,
-                                },
+                                value: "step",
                                 source: TSpan {
                                     data: "opts=step",
                                     line: 1,
@@ -1164,28 +926,12 @@ property 2:: does different stuff
             },
         ));
 
-        assert_eq!(
-            mi.item.declared_style().unwrap(),
-            TSpan {
-                data: "horizontal",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(mi.item.declared_style().unwrap(), "horizontal");
 
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "step",
-                line: 1,
-                col: 34,
-                offset: 33,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"step");
 
         assert!(options.next().is_none());
 
@@ -1196,15 +942,7 @@ property 2:: does different stuff
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "properties",
-                line: 1,
-                col: 18,
-                offset: 17,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"properties");
 
         assert!(roles.next().is_none());
 

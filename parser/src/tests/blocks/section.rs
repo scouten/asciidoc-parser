@@ -234,12 +234,7 @@ fn has_macro_block_with_extra_blank_line() {
                                 offset: 27,
                             }),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "Sunset",
-                                line: 3,
-                                col: 14,
-                                offset: 31,
-                            },
+                            value: "Sunset",
                             source: TSpan {
                                 data: "alt=Sunset",
                                 line: 3,
@@ -255,12 +250,7 @@ fn has_macro_block_with_extra_blank_line() {
                                 offset: 38,
                             }),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "300",
-                                line: 3,
-                                col: 27,
-                                offset: 44,
-                            },
+                            value: "300",
                             source: TSpan {
                                 data: "width=300",
                                 line: 3,
@@ -276,12 +266,7 @@ fn has_macro_block_with_extra_blank_line() {
                                 offset: 48,
                             }),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "400",
-                                line: 3,
-                                col: 38,
-                                offset: 55,
-                            },
+                            value: "400",
                             source: TSpan {
                                 data: "height=400",
                                 line: 3,
@@ -387,12 +372,7 @@ fn has_child_block_with_errors() {
                                 offset: 27,
                             }),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "Sunset",
-                                line: 3,
-                                col: 14,
-                                offset: 31,
-                            },
+                            value: "Sunset",
                             source: TSpan {
                                 data: "alt=Sunset",
                                 line: 3,
@@ -408,12 +388,7 @@ fn has_child_block_with_errors() {
                                 offset: 38,
                             }),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "300",
-                                line: 3,
-                                col: 27,
-                                offset: 44,
-                            },
+                            value: "300",
                             source: TSpan {
                                 data: "width=300",
                                 line: 3,
@@ -429,12 +404,7 @@ fn has_child_block_with_errors() {
                                 offset: 49,
                             }),
                             shorthand_items: vec![],
-                            value: TSpan {
-                                data: "400",
-                                line: 3,
-                                col: 39,
-                                offset: 56,
-                            },
+                            value: "400",
                             source: TSpan {
                                 data: "height=400",
                                 line: 3,

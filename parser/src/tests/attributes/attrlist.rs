@@ -83,18 +83,8 @@ fn only_positional_attributes() {
             attributes: vec!(
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }],
-                    value: TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec!["Sunset"],
+                    value: "Sunset",
                     source: TSpan {
                         data: "Sunset",
                         line: 1,
@@ -105,12 +95,7 @@ fn only_positional_attributes() {
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "300",
-                        line: 1,
-                        col: 8,
-                        offset: 7,
-                    },
+                    value: "300",
                     source: TSpan {
                         data: "300",
                         line: 1,
@@ -121,12 +106,7 @@ fn only_positional_attributes() {
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "400",
-                        line: 1,
-                        col: 12,
-                        offset: 11,
-                    },
+                    value: "400",
                     source: TSpan {
                         data: "400",
                         line: 1,
@@ -155,18 +135,8 @@ fn only_positional_attributes() {
         mi.item.nth_attribute(1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }],
-            value: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            shorthand_items: vec!["Sunset"],
+            value: "Sunset",
             source: TSpan {
                 data: "Sunset",
                 line: 1,
@@ -180,18 +150,8 @@ fn only_positional_attributes() {
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }],
-            value: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            shorthand_items: vec!["Sunset"],
+            value: "Sunset",
             source: TSpan {
                 data: "Sunset",
                 line: 1,
@@ -206,12 +166,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: TSpan {
-                data: "300",
-                line: 1,
-                col: 8,
-                offset: 7,
-            },
+            value: "300",
             source: TSpan {
                 data: "300",
                 line: 1,
@@ -226,12 +181,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: TSpan {
-                data: "300",
-                line: 1,
-                col: 8,
-                offset: 7,
-            },
+            value: "300",
             source: TSpan {
                 data: "300",
                 line: 1,
@@ -246,12 +196,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: TSpan {
-                data: "400",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "400",
             source: TSpan {
                 data: "400",
                 line: 1,
@@ -266,12 +211,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: TSpan {
-                data: "400",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "400",
             source: TSpan {
                 data: "400",
                 line: 1,
@@ -326,12 +266,7 @@ fn only_named_attributes() {
                         offset: 0,
                     },),
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 5,
-                        offset: 4,
-                    },
+                    value: "Sunset",
                     source: TSpan {
                         data: "alt=Sunset",
                         line: 1,
@@ -347,12 +282,7 @@ fn only_named_attributes() {
                         offset: 11,
                     },),
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "300",
-                        line: 1,
-                        col: 18,
-                        offset: 17,
-                    },
+                    value: "300",
                     source: TSpan {
                         data: "width=300",
                         line: 1,
@@ -368,12 +298,7 @@ fn only_named_attributes() {
                         offset: 21,
                     },),
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "400",
-                        line: 1,
-                        col: 29,
-                        offset: 28,
-                    },
+                    value: "400",
                     source: TSpan {
                         data: "height=400",
                         line: 1,
@@ -404,12 +329,7 @@ fn only_named_attributes() {
                 offset: 0,
             },),
             shorthand_items: vec![],
-            value: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 5,
-                offset: 4,
-            },
+            value: "Sunset",
             source: TSpan {
                 data: "alt=Sunset",
                 line: 1,
@@ -429,12 +349,7 @@ fn only_named_attributes() {
                 offset: 0,
             },),
             shorthand_items: vec![],
-            value: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 5,
-                offset: 4,
-            },
+            value: "Sunset",
             source: TSpan {
                 data: "alt=Sunset",
                 line: 1,
@@ -454,12 +369,7 @@ fn only_named_attributes() {
                 offset: 11,
             },),
             shorthand_items: vec![],
-            value: TSpan {
-                data: "300",
-                line: 1,
-                col: 18,
-                offset: 17,
-            },
+            value: "300",
             source: TSpan {
                 data: "width=300",
                 line: 1,
@@ -479,12 +389,7 @@ fn only_named_attributes() {
                 offset: 11,
             },),
             shorthand_items: vec![],
-            value: TSpan {
-                data: "300",
-                line: 1,
-                col: 18,
-                offset: 17,
-            },
+            value: "300",
             source: TSpan {
                 data: "width=300",
                 line: 1,
@@ -504,12 +409,7 @@ fn only_named_attributes() {
                 offset: 21,
             },),
             shorthand_items: vec![],
-            value: TSpan {
-                data: "400",
-                line: 1,
-                col: 29,
-                offset: 28,
-            },
+            value: "400",
             source: TSpan {
                 data: "height=400",
                 line: 1,
@@ -529,12 +429,7 @@ fn only_named_attributes() {
                 offset: 21,
             },),
             shorthand_items: vec![],
-            value: TSpan {
-                data: "400",
-                line: 1,
-                col: 29,
-                offset: 28,
-            },
+            value: "400",
             source: TSpan {
                 data: "height=400",
                 line: 1,
@@ -593,12 +488,7 @@ fn err_unparsed_remainder_after_value() {
                     offset: 0,
                 },),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "Sunset",
-                    line: 1,
-                    col: 6,
-                    offset: 5,
-                },
+                value: "Sunset",
                 source: TSpan {
                     data: "alt=\"Sunset\"",
                     line: 1,
@@ -651,26 +541,8 @@ fn propagates_error_from_element_attribute() {
         TAttrlist {
             attributes: vec!(TElementAttribute {
                 name: None,
-                shorthand_items: vec![
-                    TSpan {
-                        data: "foo",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                    TSpan {
-                        data: "#id",
-                        line: 1,
-                        col: 5,
-                        offset: 4,
-                    },
-                ],
-                value: TSpan {
-                    data: "foo%#id",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                shorthand_items: vec!["foo", "#id",],
+                value: "foo%#id",
                 source: TSpan {
                     data: "foo%#id",
                     line: 1,
@@ -733,18 +605,8 @@ mod id {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "#goals",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }],
-                    value: TSpan {
-                        data: "#goals",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec!["#goals"],
+                    value: "#goals",
                     source: TSpan {
                         data: "#goals",
                         line: 1,
@@ -764,15 +626,7 @@ mod id {
         assert!(mi.item.named_attribute("foo").is_none());
         assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
 
-        assert_eq!(
-            mi.item.id().unwrap(),
-            TSpan {
-                data: "goals",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(mi.item.id().unwrap(), "goals");
 
         assert!(mi.item.roles().is_empty());
 
@@ -814,12 +668,7 @@ mod id {
                             offset: 0,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "bar",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "bar",
                         source: TSpan {
                             data: "foo=bar",
                             line: 1,
@@ -835,12 +684,7 @@ mod id {
                             offset: 8,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "goals",
-                            line: 1,
-                            col: 12,
-                            offset: 11,
-                        },
+                        value: "goals",
                         source: TSpan {
                             data: "id=goals",
                             line: 1,
@@ -868,12 +712,7 @@ mod id {
                     offset: 0,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "bar",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
-                },
+                value: "bar",
                 source: TSpan {
                     data: "foo=bar",
                     line: 1,
@@ -893,12 +732,7 @@ mod id {
                     offset: 8,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "goals",
-                    line: 1,
-                    col: 12,
-                    offset: 11,
-                },
+                value: "goals",
                 source: TSpan {
                     data: "id=goals",
                     line: 1,
@@ -908,15 +742,7 @@ mod id {
             }
         );
 
-        assert_eq!(
-            mi.item.id().unwrap(),
-            TSpan {
-                data: "goals",
-                line: 1,
-                col: 12,
-                offset: 11,
-            }
-        );
+        assert_eq!(mi.item.id().unwrap(), "goals");
 
         assert!(mi.item.roles().is_empty());
 
@@ -951,18 +777,8 @@ mod id {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }],
-                        value: TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        shorthand_items: vec!["foo"],
+                        value: "foo",
                         source: TSpan {
                             data: "foo",
                             line: 1,
@@ -973,12 +789,7 @@ mod id {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "blah#goals",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "blah#goals",
                         source: TSpan {
                             data: "blah#goals",
                             line: 1,
@@ -1034,18 +845,8 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: ".rolename",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }],
-                    value: TSpan {
-                        data: ".rolename",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec![".rolename"],
+                    value: ".rolename",
                     source: TSpan {
                         data: ".rolename",
                         line: 1,
@@ -1068,15 +869,7 @@ mod roles {
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "rolename",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"rolename");
 
         assert!(roles.next().is_none(),);
 
@@ -1111,18 +904,8 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: ".rolename",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }],
-                    value: TSpan {
-                        data: ".rolename ",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec![".rolename"],
+                    value: ".rolename ",
                     source: TSpan {
                         data: ".rolename ",
                         line: 1,
@@ -1145,15 +928,7 @@ mod roles {
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "rolename",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"rolename");
 
         assert!(roles.next().is_none(),);
 
@@ -1188,32 +963,8 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![
-                        TSpan {
-                            data: ".role1",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
-                        TSpan {
-                            data: ".role2",
-                            line: 1,
-                            col: 7,
-                            offset: 6,
-                        },
-                        TSpan {
-                            data: ".role3",
-                            line: 1,
-                            col: 13,
-                            offset: 12,
-                        }
-                    ],
-                    value: TSpan {
-                        data: ".role1.role2.role3",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec![".role1", ".role2", ".role3",],
+                    value: ".role1.role2.role3",
                     source: TSpan {
                         data: ".role1.role2.role3",
                         line: 1,
@@ -1236,35 +987,11 @@ mod roles {
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role1",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role1");
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role2",
-                line: 1,
-                col: 8,
-                offset: 7,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role2");
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role3",
-                line: 1,
-                col: 14,
-                offset: 13,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role3");
 
         assert!(roles.next().is_none(),);
 
@@ -1299,32 +1026,8 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![
-                        TSpan {
-                            data: ".role1",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
-                        TSpan {
-                            data: ".role2",
-                            line: 1,
-                            col: 8,
-                            offset: 7,
-                        },
-                        TSpan {
-                            data: ".role3",
-                            line: 1,
-                            col: 15,
-                            offset: 14,
-                        }
-                    ],
-                    value: TSpan {
-                        data: ".role1 .role2 .role3 ",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec![".role1", ".role2", ".role3"],
+                    value: ".role1 .role2 .role3 ",
                     source: TSpan {
                         data: ".role1 .role2 .role3 ",
                         line: 1,
@@ -1347,35 +1050,11 @@ mod roles {
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role1",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role1");
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role2",
-                line: 1,
-                col: 9,
-                offset: 8,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role2");
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role3",
-                line: 1,
-                col: 16,
-                offset: 15,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role3");
 
         assert!(roles.next().is_none(),);
 
@@ -1417,12 +1096,7 @@ mod roles {
                             offset: 0,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "bar",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "bar",
                         source: TSpan {
                             data: "foo=bar",
                             line: 1,
@@ -1438,12 +1112,7 @@ mod roles {
                             offset: 8,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "role1",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        },
+                        value: "role1",
                         source: TSpan {
                             data: "role=role1",
                             line: 1,
@@ -1471,12 +1140,7 @@ mod roles {
                     offset: 0,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "bar",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
-                },
+                value: "bar",
                 source: TSpan {
                     data: "foo=bar",
                     line: 1,
@@ -1496,12 +1160,7 @@ mod roles {
                     offset: 8,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "role1",
-                    line: 1,
-                    col: 14,
-                    offset: 13,
-                },
+                value: "role1",
                 source: TSpan {
                     data: "role=role1",
                     line: 1,
@@ -1514,15 +1173,7 @@ mod roles {
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role1",
-                line: 1,
-                col: 14,
-                offset: 13,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role1");
 
         assert!(roles.next().is_none(),);
 
@@ -1555,12 +1206,7 @@ mod roles {
                             offset: 0,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "bar",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "bar",
                         source: TSpan {
                             data: "foo=bar",
                             line: 1,
@@ -1576,12 +1222,7 @@ mod roles {
                             offset: 8,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "role1 role2   role3 ",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        },
+                        value: "role1 role2   role3 ",
                         source: TSpan {
                             data: "role=role1 role2   role3 ",
                             line: 1,
@@ -1609,12 +1250,7 @@ mod roles {
                     offset: 0,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "bar",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
-                },
+                value: "bar",
                 source: TSpan {
                     data: "foo=bar",
                     line: 1,
@@ -1634,12 +1270,7 @@ mod roles {
                     offset: 8,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "role1 role2   role3 ",
-                    line: 1,
-                    col: 14,
-                    offset: 13,
-                },
+                value: "role1 role2   role3 ",
                 source: TSpan {
                     data: "role=role1 role2   role3 ",
                     line: 1,
@@ -1652,35 +1283,11 @@ mod roles {
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role1",
-                line: 1,
-                col: 14,
-                offset: 13,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role1",);
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role2",
-                line: 1,
-                col: 20,
-                offset: 19,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role2");
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role3",
-                line: 1,
-                col: 28,
-                offset: 27,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role3",);
 
         assert!(roles.next().is_none(),);
 
@@ -1707,32 +1314,8 @@ mod roles {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![
-                            TSpan {
-                                data: "#foo",
-                                line: 1,
-                                col: 1,
-                                offset: 0,
-                            },
-                            TSpan {
-                                data: ".sh1",
-                                line: 1,
-                                col: 5,
-                                offset: 4,
-                            },
-                            TSpan {
-                                data: ".sh2",
-                                line: 1,
-                                col: 9,
-                                offset: 8,
-                            }
-                        ],
-                        value: TSpan {
-                            data: "#foo.sh1.sh2",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        shorthand_items: vec!["#foo", ".sh1", ".sh2"],
+                        value: "#foo.sh1.sh2",
                         source: TSpan {
                             data: "#foo.sh1.sh2",
                             line: 1,
@@ -1748,12 +1331,7 @@ mod roles {
                             offset: 13,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "na1 na2   na3 ",
-                            line: 1,
-                            col: 19,
-                            offset: 18,
-                        },
+                        value: "na1 na2   na3 ",
                         source: TSpan {
                             data: "role=na1 na2   na3 ",
                             line: 1,
@@ -1783,12 +1361,7 @@ mod roles {
                     offset: 13,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "na1 na2   na3 ",
-                    line: 1,
-                    col: 19,
-                    offset: 18,
-                },
+                value: "na1 na2   na3 ",
                 source: TSpan {
                     data: "role=na1 na2   na3 ",
                     line: 1,
@@ -1801,55 +1374,15 @@ mod roles {
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "sh1",
-                line: 1,
-                col: 6,
-                offset: 5,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"sh1",);
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "sh2",
-                line: 1,
-                col: 10,
-                offset: 9,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"sh2",);
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "na1",
-                line: 1,
-                col: 19,
-                offset: 18,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"na1",);
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "na2",
-                line: 1,
-                col: 23,
-                offset: 22,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"na2",);
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "na3",
-                line: 1,
-                col: 29,
-                offset: 28,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"na3",);
 
         assert!(roles.next().is_none(),);
 
@@ -1875,18 +1408,8 @@ mod roles {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }],
-                        value: TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        shorthand_items: vec!["foo"],
+                        value: "foo",
                         source: TSpan {
                             data: "foo",
                             line: 1,
@@ -1897,12 +1420,7 @@ mod roles {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "blah.rolename",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "blah.rolename",
                         source: TSpan {
                             data: "blah.rolename",
                             line: 1,
@@ -1957,18 +1475,8 @@ mod options {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "%option",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    }],
-                    value: TSpan {
-                        data: "%option",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec!["%option"],
+                    value: "%option",
                     source: TSpan {
                         data: "%option",
                         line: 1,
@@ -1991,15 +1499,7 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option",);
 
         assert!(options.next().is_none());
 
@@ -2037,32 +1537,8 @@ mod options {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![
-                        TSpan {
-                            data: "%option1",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
-                        TSpan {
-                            data: "%option2",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        },
-                        TSpan {
-                            data: "%option3",
-                            line: 1,
-                            col: 17,
-                            offset: 16,
-                        }
-                    ],
-                    value: TSpan {
-                        data: "%option1%option2%option3",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    shorthand_items: vec!["%option1", "%option2", "%option3",],
+                    value: "%option1%option2%option3",
                     source: TSpan {
                         data: "%option1%option2%option3",
                         line: 1,
@@ -2085,35 +1561,11 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option1",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option1",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option2",
-                line: 1,
-                col: 10,
-                offset: 9,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option2",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option3",
-                line: 1,
-                col: 18,
-                offset: 17,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option3",);
 
         assert!(options.next().is_none());
 
@@ -2160,12 +1612,7 @@ mod options {
                             offset: 0,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "bar",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "bar",
                         source: TSpan {
                             data: "foo=bar",
                             line: 1,
@@ -2181,12 +1628,7 @@ mod options {
                             offset: 8,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "option1",
-                            line: 1,
-                            col: 17,
-                            offset: 16,
-                        },
+                        value: "option1",
                         source: TSpan {
                             data: "options=option1",
                             line: 1,
@@ -2214,12 +1656,7 @@ mod options {
                     offset: 0,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "bar",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
-                },
+                value: "bar",
                 source: TSpan {
                     data: "foo=bar",
                     line: 1,
@@ -2239,12 +1676,7 @@ mod options {
                     offset: 8,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "option1",
-                    line: 1,
-                    col: 17,
-                    offset: 16,
-                },
+                value: "option1",
                 source: TSpan {
                     data: "options=option1",
                     line: 1,
@@ -2257,15 +1689,7 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option1",
-                line: 1,
-                col: 17,
-                offset: 16,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option1",);
 
         assert!(options.next().is_none(),);
 
@@ -2300,12 +1724,7 @@ mod options {
                             offset: 0,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "bar",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "bar",
                         source: TSpan {
                             data: "foo=bar",
                             line: 1,
@@ -2321,12 +1740,7 @@ mod options {
                             offset: 8,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "option1",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        },
+                        value: "option1",
                         source: TSpan {
                             data: "opts=option1",
                             line: 1,
@@ -2354,12 +1768,7 @@ mod options {
                     offset: 0,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "bar",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
-                },
+                value: "bar",
                 source: TSpan {
                     data: "foo=bar",
                     line: 1,
@@ -2379,12 +1788,7 @@ mod options {
                     offset: 8,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "option1",
-                    line: 1,
-                    col: 14,
-                    offset: 13,
-                },
+                value: "option1",
                 source: TSpan {
                     data: "opts=option1",
                     line: 1,
@@ -2397,15 +1801,7 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option1",
-                line: 1,
-                col: 14,
-                offset: 13,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option1",);
 
         assert!(options.next().is_none());
 
@@ -2442,12 +1838,7 @@ mod options {
                             offset: 0,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "bar",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "bar",
                         source: TSpan {
                             data: "foo=bar",
                             line: 1,
@@ -2463,12 +1854,7 @@ mod options {
                             offset: 8,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "option1,option2,option3",
-                            line: 1,
-                            col: 18,
-                            offset: 17,
-                        },
+                        value: "option1,option2,option3",
                         source: TSpan {
                             data: "options=\"option1,option2,option3\"",
                             line: 1,
@@ -2496,12 +1882,7 @@ mod options {
                     offset: 0,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "bar",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
-                },
+                value: "bar",
                 source: TSpan {
                     data: "foo=bar",
                     line: 1,
@@ -2521,12 +1902,7 @@ mod options {
                     offset: 8,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "option1,option2,option3",
-                    line: 1,
-                    col: 18,
-                    offset: 17,
-                },
+                value: "option1,option2,option3",
                 source: TSpan {
                     data: "options=\"option1,option2,option3\"",
                     line: 1,
@@ -2539,35 +1915,11 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option1",
-                line: 1,
-                col: 18,
-                offset: 17,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option1",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option2",
-                line: 1,
-                col: 26,
-                offset: 25,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option2",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "option3",
-                line: 1,
-                col: 34,
-                offset: 33,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"option3",);
 
         assert!(options.next().is_none());
 
@@ -2599,32 +1951,8 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![
-                            TSpan {
-                                data: "#foo",
-                                line: 1,
-                                col: 1,
-                                offset: 0,
-                            },
-                            TSpan {
-                                data: "%sh1",
-                                line: 1,
-                                col: 5,
-                                offset: 4,
-                            },
-                            TSpan {
-                                data: "%sh2",
-                                line: 1,
-                                col: 9,
-                                offset: 8,
-                            }
-                        ],
-                        value: TSpan {
-                            data: "#foo%sh1%sh2",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        shorthand_items: vec!["#foo", "%sh1", "%sh2",],
+                        value: "#foo%sh1%sh2",
                         source: TSpan {
                             data: "#foo%sh1%sh2",
                             line: 1,
@@ -2640,12 +1968,7 @@ mod options {
                             offset: 13,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "na1,na2,na3",
-                            line: 1,
-                            col: 23,
-                            offset: 22,
-                        },
+                        value: "na1,na2,na3",
                         source: TSpan {
                             data: "options=\"na1,na2,na3\"",
                             line: 1,
@@ -2675,12 +1998,7 @@ mod options {
                     offset: 13,
                 }),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "na1,na2,na3",
-                    line: 1,
-                    col: 23,
-                    offset: 22,
-                },
+                value: "na1,na2,na3",
                 source: TSpan {
                     data: "options=\"na1,na2,na3\"",
                     line: 1,
@@ -2693,55 +2011,15 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "sh1",
-                line: 1,
-                col: 6,
-                offset: 5,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"sh1",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "sh2",
-                line: 1,
-                col: 10,
-                offset: 9,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"sh2",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "na1",
-                line: 1,
-                col: 23,
-                offset: 22,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"na1",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "na2",
-                line: 1,
-                col: 27,
-                offset: 26,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"na2",);
 
-        assert_eq!(
-            options.next().unwrap(),
-            TSpan {
-                data: "na3",
-                line: 1,
-                col: 31,
-                offset: 30,
-            }
-        );
+        assert_eq!(options.next().unwrap(), &"na3",);
 
         assert!(options.next().is_none(),);
 
@@ -2775,18 +2053,8 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }],
-                        value: TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        shorthand_items: vec!["foo"],
+                        value: "foo",
                         source: TSpan {
                             data: "foo",
                             line: 1,
@@ -2797,12 +2065,7 @@ mod options {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "blah%option",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "blah%option",
                         source: TSpan {
                             data: "blah%option",
                             line: 1,
@@ -2856,12 +2119,7 @@ fn err_double_comma() {
                         offset: 0,
                     },),
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 5,
-                        offset: 4,
-                    },
+                    value: "Sunset",
                     source: TSpan {
                         data: "alt=Sunset",
                         line: 1,
@@ -2877,12 +2135,7 @@ fn err_double_comma() {
                         offset: 11,
                     },),
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "300",
-                        line: 1,
-                        col: 18,
-                        offset: 17,
-                    },
+                    value: "300",
                     source: TSpan {
                         data: "width=300",
                         line: 1,
@@ -2898,12 +2151,7 @@ fn err_double_comma() {
                         offset: 22,
                     },),
                     shorthand_items: vec![],
-                    value: TSpan {
-                        data: "400",
-                        line: 1,
-                        col: 30,
-                        offset: 29,
-                    },
+                    value: "400",
                     source: TSpan {
                         data: "height=400",
                         line: 1,

@@ -757,20 +757,8 @@ Live within the simulated reality without want or fear.
                                         attributes: vec![
                                             TElementAttribute {
                                                 name: None,
-                                                shorthand_items: vec![
-                                                    TSpan {
-                                                        data: "%collapsible",
-                                                        line: 5,
-                                                        col: 2,
-                                                        offset: 40,
-                                                    },
-                                                ],
-                                                value: TSpan {
-                                                    data: "%collapsible",
-                                                    line: 5,
-                                                    col: 2,
-                                                    offset: 40,
-                                                },
+                                                shorthand_items: vec!["%collapsible"],
+                                                value: "%collapsible",
                                                 source: TSpan {
                                                     data: "%collapsible",
                                                     line: 5,
@@ -836,20 +824,8 @@ Live within the simulated reality without want or fear.
                                         attributes: vec![
                                             TElementAttribute {
                                                 name: None,
-                                                shorthand_items: vec![
-                                                    TSpan {
-                                                        data: "%collapsible",
-                                                        line: 11,
-                                                        col: 2,
-                                                        offset: 109,
-                                                    },
-                                                ],
-                                                value: TSpan {
-                                                    data: "%collapsible",
-                                                    line: 11,
-                                                    col: 2,
-                                                    offset: 109,
-                                                },
+                                                shorthand_items: vec!["%collapsible"],
+                                                value: "%collapsible",
                                                 source: TSpan {
                                                     data: "%collapsible",
                                                     line: 11,

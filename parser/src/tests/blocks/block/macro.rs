@@ -394,18 +394,8 @@ fn has_target_and_macro_attrlist() {
             macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "blah",
-                        line: 1,
-                        col: 10,
-                        offset: 9,
-                    }],
-                    value: TSpan {
-                        data: "blah",
-                        line: 1,
-                        col: 10,
-                        offset: 9,
-                    },
+                    shorthand_items: vec!["blah"],
+                    value: "blah",
                     source: TSpan {
                         data: "blah",
                         line: 1,
@@ -489,12 +479,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                             offset: 9,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "Sunset",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        },
+                        value: "Sunset",
                         source: TSpan {
                             data: "alt=Sunset",
                             line: 1,
@@ -510,12 +495,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                             offset: 20,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "300",
-                            line: 1,
-                            col: 27,
-                            offset: 26,
-                        },
+                        value: "300",
                         source: TSpan {
                             data: "width=300",
                             line: 1,
@@ -531,12 +511,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                             offset: 31,
                         }),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "400",
-                            line: 1,
-                            col: 39,
-                            offset: 38,
-                        },
+                        value: "400",
                         source: TSpan {
                             data: "height=400",
                             line: 1,

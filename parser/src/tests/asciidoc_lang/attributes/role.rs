@@ -128,20 +128,9 @@ This is a sidebar with a role assigned to it, rolename.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    TSpan {
-                                        data: ".rolename",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
+                                shorthand_items: vec![".rolename"
                                 ],
-                                value: TSpan {
-                                    data: ".rolename",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
+                                value: ".rolename",
                                 source: TSpan {
                                     data: ".rolename",
                                     line: 1,
@@ -230,26 +219,9 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    TSpan {
-                                        data: ".role1",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                    TSpan {
-                                        data: ".role2",
-                                        line: 1,
-                                        col: 8,
-                                        offset: 7,
-                                    },
+                                shorthand_items: vec![".role1",".role2",
                                 ],
-                                value: TSpan {
-                                    data: ".role1.role2",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
+                                value: ".role1.role2",
                                 source: TSpan {
                                     data: ".role1.role2",
                                     line: 1,
@@ -347,12 +319,7 @@ This is a sidebar with one role assigned to it, rolename.
                                     },
                                 ),
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "rolename",
-                                    line: 1,
-                                    col: 7,
-                                    offset: 6,
-                                },
+                                value: "rolename",
                                 source: TSpan {
                                     data: "role=rolename",
                                     line: 1,
@@ -375,15 +342,7 @@ This is a sidebar with one role assigned to it, rolename.
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "rolename",
-                line: 1,
-                col: 7,
-                offset: 6,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"rolename");
 
         assert!(roles.next().is_none());
     }
@@ -464,12 +423,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                                     },
                                 ),
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "role1 role2",
-                                    line: 1,
-                                    col: 8,
-                                    offset: 7,
-                                },
+                                value: "role1 role2",
                                 source: TSpan {
                                     data: "role=\"role1 role2\"",
                                     line: 1,
@@ -492,25 +446,9 @@ This is a sidebar with two roles assigned to it, role1 and role2.
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role1",
-                line: 1,
-                col: 8,
-                offset: 7,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role1");
 
-        assert_eq!(
-            roles.next().unwrap(),
-            TSpan {
-                data: "role2",
-                line: 1,
-                col: 14,
-                offset: 13,
-            }
-        );
+        assert_eq!(roles.next().unwrap(), &"role2");
 
         assert!(roles.next().is_none());
     }
