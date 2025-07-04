@@ -27,7 +27,7 @@ impl<'src> Attrlist<'src> {
     /// inline, macro, and block elements.
     pub(crate) fn parse(
         source: Span<'src>,
-        _parser: &Parser,
+        parser: &Parser,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
@@ -40,9 +40,9 @@ impl<'src> Attrlist<'src> {
 
         loop {
             let mut maybe_attr_and_warnings = if parse_shorthand_items {
-                ElementAttribute::parse_with_shorthand(after)
+                ElementAttribute::parse_with_shorthand(after, parser)
             } else {
-                ElementAttribute::parse(after)
+                ElementAttribute::parse(after, parser)
             };
 
             if !maybe_attr_and_warnings.warnings.is_empty() {

@@ -1,7 +1,7 @@
 use crate::{
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// This struct represents a single element attribute.
@@ -22,18 +22,21 @@ pub struct ElementAttribute<'src> {
 impl<'src> ElementAttribute<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
+        parser: &Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, false)
+        Self::parse_internal(source, parser, false)
     }
 
     pub(crate) fn parse_with_shorthand(
         source: Span<'src>,
+        parser: &Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, true)
+        Self::parse_internal(source, parser, true)
     }
 
     fn parse_internal(
         source: Span<'src>,
+        _parser: &Parser,
         parse_shorthand: bool,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let mut warnings: Vec<Warning<'src>> = vec![];
@@ -74,6 +77,8 @@ impl<'src> ElementAttribute<'src> {
             },
             _ => after.take_while(|c| c != ','),
         };
+
+        // TO DO: Apply substitutions here.
 
         if value.item.is_empty() {
             return MatchAndWarnings {
