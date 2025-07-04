@@ -111,8 +111,7 @@ This is a sidebar with an option assigned to it, named option.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec!["%option"
-                                ],
+                                shorthand_items: vec!["%option"],
                                 value: "%option",
                                 source: TSpan {
                                     data: "%option",
@@ -210,8 +209,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec!["%option1",
-                                    "%option2",],
+                                shorthand_items: vec!["%option1", "%option2"],
                                 value: "%option1%option2",
                                 source: TSpan {
                                     data: "%option1%option2",
@@ -769,11 +767,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                             attributes: vec![
                                 TElementAttribute {
                                     name: None,
-                                    shorthand_items: vec![
-                                        "horizontal",
-                                        ".properties",
-                                        "%step",
-                                    ],
+                                    shorthand_items: vec!["horizontal", ".properties", "%step"],
                                     value: "horizontal.properties%step",
                                     source: TSpan {
                                         data: "horizontal.properties%step",
@@ -868,8 +862,7 @@ property 2:: does different stuff
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    "horizontal"],
+                                shorthand_items: vec!["horizontal"],
                                 value: "horizontal",
                                 source: TSpan {
                                     data: "horizontal",

@@ -541,7 +541,7 @@ fn propagates_error_from_element_attribute() {
         TAttrlist {
             attributes: vec!(TElementAttribute {
                 name: None,
-                shorthand_items: vec!["foo", "#id",],
+                shorthand_items: vec!["foo", "#id"],
                 value: "foo%#id",
                 source: TSpan {
                     data: "foo%#id",
@@ -963,7 +963,7 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![".role1", ".role2", ".role3",],
+                    shorthand_items: vec![".role1", ".role2", ".role3"],
                     value: ".role1.role2.role3",
                     source: TSpan {
                         data: ".role1.role2.role3",
@@ -1561,12 +1561,9 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(options.next().unwrap(), &"option1",);
-
-        assert_eq!(options.next().unwrap(), &"option2",);
-
-        assert_eq!(options.next().unwrap(), &"option3",);
-
+        assert_eq!(options.next().unwrap(), &"option1");
+        assert_eq!(options.next().unwrap(), &"option2");
+        assert_eq!(options.next().unwrap(), &"option3");
         assert!(options.next().is_none());
 
         assert!(mi.item.has_option("option1"));
@@ -1689,9 +1686,8 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(options.next().unwrap(), &"option1",);
-
-        assert!(options.next().is_none(),);
+        assert_eq!(options.next().unwrap(), &"option1");
+        assert!(options.next().is_none());
 
         assert!(mi.item.has_option("option1"));
         assert!(!mi.item.has_option("option2"));
@@ -1801,8 +1797,7 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(options.next().unwrap(), &"option1",);
-
+        assert_eq!(options.next().unwrap(), &"option1");
         assert!(options.next().is_none());
 
         assert!(!mi.item.has_option("option"));
@@ -1951,7 +1946,7 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#foo", "%sh1", "%sh2",],
+                        shorthand_items: vec!["#foo", "%sh1", "%sh2"],
                         value: "#foo%sh1%sh2",
                         source: TSpan {
                             data: "#foo%sh1%sh2",
@@ -2011,16 +2006,11 @@ mod options {
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(options.next().unwrap(), &"sh1",);
-
-        assert_eq!(options.next().unwrap(), &"sh2",);
-
-        assert_eq!(options.next().unwrap(), &"na1",);
-
-        assert_eq!(options.next().unwrap(), &"na2",);
-
-        assert_eq!(options.next().unwrap(), &"na3",);
-
+        assert_eq!(options.next().unwrap(), &"sh1");
+        assert_eq!(options.next().unwrap(), &"sh2");
+        assert_eq!(options.next().unwrap(), &"na1");
+        assert_eq!(options.next().unwrap(), &"na2");
+        assert_eq!(options.next().unwrap(), &"na3");
         assert!(options.next().is_none(),);
 
         assert!(mi.item.has_option("sh1"));

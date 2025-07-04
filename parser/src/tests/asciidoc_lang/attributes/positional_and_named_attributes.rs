@@ -263,7 +263,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["appendix", "#custom-id",],
+                        shorthand_items: vec!["appendix", "#custom-id"],
                         value: "appendix#custom-id",
                         source: TSpan {
                             data: "appendix#custom-id",
@@ -335,7 +335,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#rules", ".prominent", "%incremental",],
+                        shorthand_items: vec!["#rules", ".prominent", "%incremental"],
                         value: "#rules.prominent%incremental",
                         source: TSpan {
                             data: "#rules.prominent%incremental",

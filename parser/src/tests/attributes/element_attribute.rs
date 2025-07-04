@@ -1115,13 +1115,9 @@ mod parse_with_shorthand {
         );
 
         assert!(mi.item.name().is_none());
-
         assert_eq!(mi.item.shorthand_items(), vec!["#xyz"]);
-
         assert!(mi.item.block_style().is_none());
-
         assert_eq!(mi.item.id().unwrap(), "xyz");
-
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
 
@@ -1169,14 +1165,10 @@ mod parse_with_shorthand {
         );
 
         assert!(mi.item.name().is_none());
-
         assert_eq!(mi.item.shorthand_items(), vec![".role1"]);
-
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());
-
         assert_eq!(mi.item.roles(), vec!("role1"));
-
         assert!(mi.item.options().is_empty());
 
         assert_eq!(
@@ -1231,9 +1223,7 @@ mod parse_with_shorthand {
 
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());
-
         assert_eq!(mi.item.roles(), vec!("role1", "role2", "role3",));
-
         assert!(mi.item.options().is_empty());
 
         assert_eq!(
@@ -1280,13 +1270,10 @@ mod parse_with_shorthand {
         );
 
         assert!(mi.item.name().is_none());
-
         assert_eq!(mi.item.shorthand_items(), vec!["%option1"]);
-
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
-
         assert_eq!(mi.item.options(), vec!("option1"));
 
         assert_eq!(
@@ -1321,7 +1308,7 @@ mod parse_with_shorthand {
             mi.item,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["%option1", "%option2", "%option3",],
+                shorthand_items: vec!["%option1", "%option2", "%option3"],
                 value: "%option1%option2%option3",
                 source: TSpan {
                     data: "%option1%option2%option3",
@@ -1336,13 +1323,12 @@ mod parse_with_shorthand {
 
         assert_eq!(
             mi.item.shorthand_items(),
-            vec!["%option1", "%option2", "%option3",]
+            vec!["%option1", "%option2", "%option3"]
         );
 
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
-
         assert_eq!(mi.item.options(), vec!("option1", "option2", "option3"));
 
         assert_eq!(
@@ -1377,7 +1363,7 @@ mod parse_with_shorthand {
             mi.item,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["appendix", "#custom-id",],
+                shorthand_items: vec!["appendix", "#custom-id"],
                 value: "appendix#custom-id",
                 source: TSpan {
                     data: "appendix#custom-id",
@@ -1389,13 +1375,9 @@ mod parse_with_shorthand {
         );
 
         assert!(mi.item.name().is_none());
-
-        assert_eq!(mi.item.shorthand_items(), vec!["appendix", "#custom-id",]);
-
+        assert_eq!(mi.item.shorthand_items(), vec!["appendix", "#custom-id"]);
         assert_eq!(mi.item.block_style().unwrap(), "appendix",);
-
         assert_eq!(mi.item.id().unwrap(), "custom-id",);
-
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
 
@@ -1432,7 +1414,7 @@ mod parse_with_shorthand {
             mi.item,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["#rules", ".prominent", "%incremental",],
+                shorthand_items: vec!["#rules", ".prominent", "%incremental"],
                 value: "#rules.prominent%incremental",
                 source: TSpan {
                     data: "#rules.prominent%incremental",
@@ -1447,15 +1429,12 @@ mod parse_with_shorthand {
 
         assert_eq!(
             mi.item.shorthand_items(),
-            vec!["#rules", ".prominent", "%incremental",]
+            vec!["#rules", ".prominent", "%incremental"]
         );
 
         assert!(mi.item.block_style().is_none());
-
-        assert_eq!(mi.item.id().unwrap(), "rules",);
-
-        assert_eq!(mi.item.roles(), vec!("prominent",));
-
+        assert_eq!(mi.item.id().unwrap(), "rules");
+        assert_eq!(mi.item.roles(), vec!("prominent"));
         assert_eq!(mi.item.options(), vec!("incremental"));
 
         assert_eq!(
