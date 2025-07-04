@@ -340,7 +340,7 @@ impl<'src> Attrlist<'src> {
         // PERF: Might help to optimize away the construction of the options Vec.
         let options = self.options();
         let name = name.as_ref();
-        options.iter().any(|opt| *opt == name)
+        options.contains(&name)
     }
 }
 
