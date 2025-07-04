@@ -4,7 +4,7 @@ use crate::{
     attributes::ElementAttribute,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// The source text that’s used to define attributes for an element is referred
@@ -25,7 +25,10 @@ impl<'src> Attrlist<'src> {
     /// include the opening or closing square brackets for the attrlist.
     /// This is because the rules for closing brackets differ when parsing
     /// inline, macro, and block elements.
-    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+        _parser: &Parser,
+    ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;

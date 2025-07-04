@@ -8,20 +8,22 @@ use crate::{
         TSpan,
     },
     warnings::WarningType,
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let b1 = Attrlist::parse(Span::new("abc")).unwrap_if_no_warnings();
+    let p = Parser::default();
+    let b1 = Attrlist::parse(Span::new("abc"), &p).unwrap_if_no_warnings();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
 
 #[test]
 fn empty_source() {
-    let mi = Attrlist::parse(Span::new("")).unwrap_if_no_warnings();
+    let p = Parser::default();
+    let mi = Attrlist::parse(Span::new(""), &p).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -72,7 +74,8 @@ fn empty_source() {
 
 #[test]
 fn only_positional_attributes() {
-    let mi = Attrlist::parse(Span::new("Sunset,300,400")).unwrap_if_no_warnings();
+    let p = Parser::default();
+    let mi = Attrlist::parse(Span::new("Sunset,300,400"), &p).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -307,7 +310,9 @@ fn only_positional_attributes() {
 
 #[test]
 fn only_named_attributes() {
-    let mi = Attrlist::parse(Span::new("alt=Sunset,width=300,height=400")).unwrap_if_no_warnings();
+    let p = Parser::default();
+    let mi =
+        Attrlist::parse(Span::new("alt=Sunset,width=300,height=400"), &p).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -572,7 +577,8 @@ fn only_named_attributes() {
 
 #[test]
 fn err_unparsed_remainder_after_value() {
-    let maw = Attrlist::parse(Span::new("alt=\"Sunset\"width=300"));
+    let p = Parser::default();
+    let maw = Attrlist::parse(Span::new("alt=\"Sunset\"width=300"), &p);
 
     let mi = maw.item.clone();
 
@@ -635,7 +641,8 @@ fn err_unparsed_remainder_after_value() {
 
 #[test]
 fn propagates_error_from_element_attribute() {
-    let maw = Attrlist::parse(Span::new("foo%#id"));
+    let p = Parser::default();
+    let maw = Attrlist::parse(Span::new("foo%#id"), &p);
 
     let mi = maw.item.clone();
 
@@ -713,12 +720,13 @@ mod id {
             attributes::{TAttrlist, TElementAttribute},
             TSpan,
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     #[test]
     fn via_shorthand_syntax() {
-        let mi = Attrlist::parse(Span::new("#goals")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("#goals"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -791,7 +799,8 @@ mod id {
 
     #[test]
     fn via_named_attribute() {
-        let mi = Attrlist::parse(Span::new("foo=bar,id=goals")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo=bar,id=goals"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -925,14 +934,16 @@ mod id {
     #[test]
     #[should_panic]
     fn via_block_anchor_syntax() {
-        let _pr = Attrlist::parse(Span::new("[goals]")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let _pr = Attrlist::parse(Span::new("[goals]"), &p).unwrap_if_no_warnings();
 
         // TO DO (#122): Parse block anchor syntax
     }
 
     #[test]
     fn shorthand_only_first_attribute() {
-        let mi = Attrlist::parse(Span::new("foo,blah#goals")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo,blah#goals"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1010,12 +1021,13 @@ mod roles {
             attributes::{TAttrlist, TElementAttribute},
             TSpan,
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     #[test]
     fn via_shorthand_syntax() {
-        let mi = Attrlist::parse(Span::new(".rolename")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new(".rolename"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1091,7 +1103,8 @@ mod roles {
 
     #[test]
     fn via_shorthand_syntax_trim_trailing_whitespace() {
-        let mi = Attrlist::parse(Span::new(".rolename ")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new(".rolename "), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1167,7 +1180,8 @@ mod roles {
 
     #[test]
     fn multiple_roles_via_shorthand_syntax() {
-        let mi = Attrlist::parse(Span::new(".role1.role2.role3")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new(".role1.role2.role3"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1277,7 +1291,8 @@ mod roles {
 
     #[test]
     fn multiple_roles_via_shorthand_syntax_trim_whitespace() {
-        let mi = Attrlist::parse(Span::new(".role1 .role2 .role3 ")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new(".role1 .role2 .role3 "), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1387,7 +1402,8 @@ mod roles {
 
     #[test]
     fn via_named_attribute() {
-        let mi = Attrlist::parse(Span::new("foo=bar,role=role1")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo=bar,role=role1"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1523,8 +1539,9 @@ mod roles {
 
     #[test]
     fn multiple_roles_via_named_attribute() {
-        let mi =
-            Attrlist::parse(Span::new("foo=bar,role=role1 role2   role3 ")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo=bar,role=role1 role2   role3 "), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1680,8 +1697,9 @@ mod roles {
 
     #[test]
     fn shorthand_role_and_named_attribute_role() {
-        let mi =
-            Attrlist::parse(Span::new("#foo.sh1.sh2,role=na1 na2   na3 ")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("#foo.sh1.sh2,role=na1 na2   na3 "), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1848,7 +1866,8 @@ mod roles {
 
     #[test]
     fn shorthand_only_first_attribute() {
-        let mi = Attrlist::parse(Span::new("foo,blah.rolename")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo,blah.rolename"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1925,12 +1944,13 @@ mod options {
             attributes::{TAttrlist, TElementAttribute},
             TSpan,
         },
-        HasSpan, Span,
+        HasSpan, Parser, Span,
     };
 
     #[test]
     fn via_shorthand_syntax() {
-        let mi = Attrlist::parse(Span::new("%option")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("%option"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -2009,7 +2029,8 @@ mod options {
 
     #[test]
     fn multiple_options_via_shorthand_syntax() {
-        let mi = Attrlist::parse(Span::new("%option1%option2%option3")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("%option1%option2%option3"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -2124,7 +2145,8 @@ mod options {
 
     #[test]
     fn via_options_attribute() {
-        let mi = Attrlist::parse(Span::new("foo=bar,options=option1")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo=bar,options=option1"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -2263,7 +2285,8 @@ mod options {
 
     #[test]
     fn via_opts_attribute() {
-        let mi = Attrlist::parse(Span::new("foo=bar,opts=option1")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo=bar,opts=option1"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -2403,7 +2426,8 @@ mod options {
 
     #[test]
     fn multiple_options_via_named_attribute() {
-        let mi = Attrlist::parse(Span::new("foo=bar,options=\"option1,option2,option3\""))
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo=bar,options=\"option1,option2,option3\""), &p)
             .unwrap_if_no_warnings();
 
         assert_eq!(
@@ -2565,7 +2589,8 @@ mod options {
 
     #[test]
     fn shorthand_option_and_named_attribute_option() {
-        let mi = Attrlist::parse(Span::new("#foo%sh1%sh2,options=\"na1,na2,na3\""))
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("#foo%sh1%sh2,options=\"na1,na2,na3\""), &p)
             .unwrap_if_no_warnings();
 
         assert_eq!(
@@ -2741,7 +2766,8 @@ mod options {
 
     #[test]
     fn shorthand_only_first_attribute() {
-        let mi = Attrlist::parse(Span::new("foo,blah%option")).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new("foo,blah%option"), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -2813,7 +2839,8 @@ mod options {
 
 #[test]
 fn err_double_comma() {
-    let maw = Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400"));
+    let p = Parser::default();
+    let maw = Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400"), &p);
 
     let mi = maw.item.clone();
 
