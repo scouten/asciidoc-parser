@@ -55,6 +55,8 @@ impl<'src> From<Span<'src>> for Content<'src> {
     }
 }
 
+mod macros;
+
 mod passthroughs;
 pub(crate) use passthroughs::{Passthrough, Passthroughs};
 

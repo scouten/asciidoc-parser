@@ -66,6 +66,9 @@ impl SubstitutionStep {
             Self::CharacterReplacements => {
                 apply_character_replacements(content, parser.renderer);
             }
+            Self::Macros => {
+                super::macros::apply_macros(content, parser);
+            }
             Self::PostReplacement => {
                 apply_post_replacements(content, parser, attrlist);
             }
