@@ -19,7 +19,7 @@ regex = "1.11.1"
 thiserror = "2.0.1"
 
 [dev-dependencies]
-codspeed-criterion-compat = "2.3.3"
+codspeed-criterion-compat = "3.0.2"
 criterion = "0.6.0"
 pretty_assertions_sorted = "1.2.3"
 
