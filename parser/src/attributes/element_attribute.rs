@@ -1,7 +1,8 @@
 use crate::{
-    span::MatchedItem,
+    span::{content::SubstitutionGroup, MatchedItem},
+    strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    Content, HasSpan, Parser, Span,
 };
 
 /// This struct represents a single element attribute.
@@ -14,26 +15,29 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ElementAttribute<'src> {
     name: Option<Span<'src>>,
-    shorthand_items: Vec<Span<'src>>,
-    value: Span<'src>,
+    shorthand_items: Vec<&'src str>,
+    value: CowStr<'src>,
     source: Span<'src>,
 }
 
 impl<'src> ElementAttribute<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
+        parser: &Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, false)
+        Self::parse_internal(source, parser, false)
     }
 
     pub(crate) fn parse_with_shorthand(
         source: Span<'src>,
+        parser: &Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, true)
+        Self::parse_internal(source, parser, true)
     }
 
     fn parse_internal(
         source: Span<'src>,
+        parser: &Parser,
         parse_shorthand: bool,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let mut warnings: Vec<Warning<'src>> = vec![];
@@ -82,7 +86,16 @@ impl<'src> ElementAttribute<'src> {
             };
         }
 
-        let source = source.trim_remainder(value.after);
+        let after = value.after;
+        let source = source.trim_remainder(after);
+
+        let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
+            let mut content = Content::from(value.item);
+            SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
+            CowStr::from(content.rendered().to_string())
+        } else {
+            CowStr::from(value.item.data())
+        };
 
         let shorthand_items = if name.is_none() && parse_shorthand {
             parse_shorthand_items(source, &mut warnings)
@@ -95,18 +108,18 @@ impl<'src> ElementAttribute<'src> {
                 item: Self {
                     name,
                     shorthand_items,
-                    value: value.item,
+                    value,
                     source,
                 },
-                after: value.after,
+                after,
             }),
             warnings,
         }
     }
 
     /// Return a [`Span`] describing the attribute name.
-    pub fn name(&'src self) -> &'src Option<Span<'src>> {
-        &self.name
+    pub fn name(&'src self) -> Option<Span<'src>> {
+        self.name
     }
 
     /// Return the shorthand items, if applicable.
@@ -114,16 +127,16 @@ impl<'src> ElementAttribute<'src> {
     /// Shorthand items are only parsed for certain element attributes. If this
     /// attribute is not of the appropriate kind, this will return an empty
     /// list.
-    pub fn shorthand_items(&'src self) -> &'src Vec<Span<'src>> {
-        &self.shorthand_items
+    pub fn shorthand_items(&'src self) -> Vec<&'src str> {
+        self.shorthand_items.iter().map(|i| i.as_ref()).collect()
     }
 
     /// Return the block style name from shorthand syntax.
-    pub fn block_style(&'src self) -> Option<Span<'src>> {
+    pub fn block_style(&'src self) -> Option<&'src str> {
         self.shorthand_items
             .first()
-            .filter(|span| span.position(is_shorthand_delimiter).is_none())
-            .copied()
+            .filter(|v| !v.chars().any(is_shorthand_delimiter))
+            .map(|v| v.as_ref())
     }
 
     /// Return the ID attribute from shorthand syntax.
@@ -159,11 +172,11 @@ impl<'src> ElementAttribute<'src> {
     /// * Goal 1
     /// * Goal 2
     /// ```
-    pub fn id(&'src self) -> Option<Span<'src>> {
+    pub fn id(&'src self) -> Option<&'src str> {
         self.shorthand_items
             .iter()
-            .find(|span| span.starts_with('#'))
-            .map(|span| span.discard(1))
+            .find(|v| v.starts_with('#'))
+            .map(|v| &v[1..])
     }
 
     /// Return any role attributes that were found in shorthand syntax.
@@ -187,11 +200,11 @@ impl<'src> ElementAttribute<'src> {
     /// `sidebarblock.role1`).
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
-    pub fn roles(&'src self) -> Vec<Span<'src>> {
+    pub fn roles(&'src self) -> Vec<&'src str> {
         self.shorthand_items
             .iter()
             .filter(|span| span.starts_with('.'))
-            .map(|span| span.discard(1))
+            .map(|span| &span[1..])
             .collect()
     }
 
@@ -259,23 +272,21 @@ impl<'src> ElementAttribute<'src> {
     /// ```
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
-    pub fn options(&'src self) -> Vec<Span<'src>> {
+    pub fn options(&'src self) -> Vec<&'src str> {
         self.shorthand_items
             .iter()
-            .filter(|span| span.starts_with('%'))
-            .map(|span| span.discard(1))
+            .filter(|v| v.starts_with('%'))
+            .map(|v| &v[1..])
             .collect()
     }
 
-    /// Return the attribute's raw value.
-    pub fn raw_value(&'src self) -> Span<'src> {
-        self.value
+    /// Return the attribute's value.
+    ///
+    /// Note that this value will have had special characters and attribute
+    /// value replacements applied to it.
+    pub fn value(&'src self) -> &'src str {
+        self.value.as_ref()
     }
-
-    //-/ Return the attribute's interpolated value.
-    // pub fn value(&'src self) -> InterpretedValue<'src> {
-    //     self.value.as_interpreted_value()
-    // }
 }
 
 impl<'src> HasSpan<'src> for ElementAttribute<'src> {
@@ -287,7 +298,7 @@ impl<'src> HasSpan<'src> for ElementAttribute<'src> {
 fn parse_shorthand_items<'src>(
     mut span: Span<'src>,
     warnings: &mut Vec<Warning<'src>>,
-) -> Vec<Span<'src>> {
+) -> Vec<&'src str> {
     let mut shorthand_items: Vec<Span<'src>> = vec![];
 
     // Look for block style selector.
@@ -333,7 +344,7 @@ fn parse_shorthand_items<'src>(
         }
     }
 
-    shorthand_items
+    shorthand_items.iter().map(|span| span.data()).collect()
 }
 
 fn is_shorthand_delimiter(c: char) -> bool {

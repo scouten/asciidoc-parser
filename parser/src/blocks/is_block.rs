@@ -46,7 +46,6 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// [`raw_context()`]: Self::raw_context
     fn resolved_context(&'src self) -> CowStr<'src> {
         if let Some(declared_style) = self.declared_style() {
-            let declared_style = declared_style.data();
             if is_built_in_context(declared_style) {
                 return declared_style.into();
             }
@@ -87,7 +86,7 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     ///
     /// That value is then interpreted and resolved. That interpretation is not
     /// performed by this function.
-    fn declared_style(&'src self) -> Option<Span<'src>> {
+    fn declared_style(&'src self) -> Option<&'src str> {
         self.attrlist()
             .and_then(|attrlist| attrlist.nth_attribute(1))
             .and_then(|attr| attr.block_style())
@@ -133,7 +132,7 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// * Goal 1
     /// * Goal 2
     /// ```
-    fn id(&'src self) -> Option<Span<'src>> {
+    fn id(&'src self) -> Option<&'src str> {
         self.attrlist().and_then(|attrlist| attrlist.id())
     }
 
@@ -158,7 +157,7 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// `sidebarblock.role1`).
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
-    fn roles(&'src self) -> Vec<Span<'src>> {
+    fn roles(&'src self) -> Vec<&'src str> {
         match self.attrlist() {
             Some(attrlist) => attrlist.roles(),
             None => vec![],
@@ -229,7 +228,7 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// ```
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
-    fn options(&'src self) -> Vec<Span<'src>> {
+    fn options(&'src self) -> Vec<&'src str> {
         match self.attrlist() {
             Some(attrlist) => attrlist.options(),
             None => vec![],

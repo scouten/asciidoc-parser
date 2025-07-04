@@ -96,18 +96,8 @@ The second macro is the same as the first, but written out in longhand form.
             a1.named_or_positional_attribute("alt", 1).unwrap(),
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![TSpan {
-                    data: "Sunset",
-                    line: 1,
-                    col: 19,
-                    offset: 18,
-                }],
-                value: TSpan {
-                    data: "Sunset",
-                    line: 1,
-                    col: 19,
-                    offset: 18,
-                },
+                shorthand_items: vec!["Sunset"],
+                value: "Sunset",
                 source: TSpan {
                     data: "Sunset",
                     line: 1,
@@ -127,12 +117,7 @@ The second macro is the same as the first, but written out in longhand form.
                     offset: 18,
                 },),
                 shorthand_items: vec![],
-                value: TSpan {
-                    data: "Sunset",
-                    line: 1,
-                    col: 23,
-                    offset: 22,
-                },
+                value: "Sunset",
                 source: TSpan {
                     data: "alt=Sunset",
                     line: 1,
@@ -212,18 +197,8 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "#custom-id",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },],
-                        value: TSpan {
-                            data: "#custom-id",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        shorthand_items: vec!["#custom-id"],
+                        value: "#custom-id",
                         source: TSpan {
                             data: "#custom-id",
                             line: 1,
@@ -241,7 +216,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
             },)
         );
 
-        assert_eq!(block.id().unwrap().data(), "custom-id");
+        assert_eq!(block.id().unwrap(), "custom-id");
 
         verifies!(
             r#"
@@ -288,26 +263,8 @@ Here's an example that shows how to set an ID on an appendix section using this 
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec![
-                            TSpan {
-                                data: "appendix",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
-                            TSpan {
-                                data: "#custom-id",
-                                line: 1,
-                                col: 10,
-                                offset: 9,
-                            },
-                        ],
-                        value: TSpan {
-                            data: "appendix#custom-id",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        shorthand_items: vec!["appendix", "#custom-id"],
+                        value: "appendix#custom-id",
                         source: TSpan {
                             data: "appendix#custom-id",
                             line: 1,
@@ -325,8 +282,8 @@ Here's an example that shows how to set an ID on an appendix section using this 
             },)
         );
 
-        assert_eq!(block.declared_style().unwrap().data(), "appendix");
-        assert_eq!(block.id().unwrap().data(), "custom-id");
+        assert_eq!(block.declared_style().unwrap(), "appendix");
+        assert_eq!(block.id().unwrap(), "custom-id");
         assert_eq!(block.substitution_group(), SubstitutionGroup::Normal);
 
         verifies!(
@@ -378,32 +335,8 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec![
-                            TSpan {
-                                data: "#rules",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
-                            TSpan {
-                                data: ".prominent",
-                                line: 1,
-                                col: 8,
-                                offset: 7,
-                            },
-                            TSpan {
-                                data: "%incremental",
-                                line: 1,
-                                col: 18,
-                                offset: 17,
-                            },
-                        ],
-                        value: TSpan {
-                            data: "#rules.prominent%incremental",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        shorthand_items: vec!["#rules", ".prominent", "%incremental"],
+                        value: "#rules.prominent%incremental",
                         source: TSpan {
                             data: "#rules.prominent%incremental",
                             line: 1,
@@ -421,9 +354,9 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
             },)
         );
 
-        assert_eq!(block.id().unwrap().data(), "rules");
-        assert_eq!(block.roles().first().unwrap().data(), "prominent");
-        assert_eq!(block.options().first().unwrap().data(), "incremental");
+        assert_eq!(block.id().unwrap(), "rules");
+        assert_eq!(block.roles().first().unwrap(), &"prominent");
+        assert_eq!(block.options().first().unwrap(), &"incremental");
 
         assert!(!block.has_option("rules"));
         assert!(!block.has_option("prominent"));
@@ -480,31 +413,9 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![
-                                    TSpan {
-                                        data: "%header",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                    TSpan {
-                                        data: "%footer",
-                                        line: 1,
-                                        col: 9,
-                                        offset: 8,
-                                    },
-                                    TSpan {
-                                        data: "%autowidth",
-                                        line: 1,
-                                        col: 16,
-                                        offset: 15,
-                                    },
+                                    "%header","%footer", "%autowidth",
                                 ],
-                                value: TSpan {
-                                    data: "%header%footer%autowidth",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
+                                value: "%header%footer%autowidth",
                                 source: TSpan {
                                     data: "%header%footer%autowidth",
                                     line: 1,

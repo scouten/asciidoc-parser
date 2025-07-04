@@ -315,6 +315,85 @@ mod normal {
     }
 }
 
+mod attribute_entry_value {
+    use crate::{
+        parser::ModificationContext, span::content::SubstitutionGroup, strings::CowStr, Content,
+        Parser, Span,
+    };
+
+    #[test]
+    fn empty() {
+        let mut content = Content::from(Span::new(""));
+        let p = Parser::default();
+        SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
+        assert!(content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed(""));
+    }
+
+    #[test]
+    fn basic_non_empty_span() {
+        let mut content = Content::from(Span::new("blah"));
+        let p = Parser::default();
+        SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("blah"));
+    }
+
+    #[test]
+    fn match_lt_and_gt() {
+        let mut content = Content::from(Span::new("bl<ah>"));
+        let p = Parser::default();
+        SubstitutionGroup::Normal.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;ah&gt;".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn match_amp() {
+        let mut content = Content::from(Span::new("bl<a&h>"));
+        let p = Parser::default();
+        SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;a&amp;h&gt;".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn ignores_strong_word() {
+        let mut content = Content::from(Span::new("One *word* is strong."));
+        let p = Parser::default();
+        SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("One *word* is strong.".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn special_chars_and_attributes() {
+        let mut content = Content::from(Span::new("bl<ah> {color}"));
+
+        let p = Parser::default().with_intrinsic_attribute(
+            "color",
+            "red",
+            ModificationContext::Anywhere,
+        );
+
+        SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;ah&gt; red".to_string().into_boxed_str())
+        );
+    }
+}
+
 mod header {
     use crate::{span::content::SubstitutionGroup, strings::CowStr, Content, Parser, Span};
 

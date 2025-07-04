@@ -204,17 +204,14 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         body: &str,
         dest: &mut String,
     ) {
-        let mut roles: Vec<&str> = attrlist
-            .as_ref()
-            .map(|a| a.roles().iter().map(|r| r.data()).collect())
-            .unwrap_or_default();
+        let mut roles: Vec<&str> = attrlist.as_ref().map(|a| a.roles()).unwrap_or_default();
 
         if let Some(block_style) = attrlist
             .as_ref()
             .and_then(|a| a.nth_attribute(1))
             .and_then(|attr1| attr1.block_style())
         {
-            roles.insert(0, block_style.data());
+            roles.insert(0, block_style);
         }
 
         if id.is_none() {
@@ -222,7 +219,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 .as_ref()
                 .and_then(|a| a.nth_attribute(1))
                 .and_then(|attr1| attr1.id())
-                .map(|span| span.data().to_owned())
+                .map(|id| id.to_owned())
         }
 
         match type_ {

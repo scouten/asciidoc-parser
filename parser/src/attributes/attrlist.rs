@@ -4,7 +4,7 @@ use crate::{
     attributes::ElementAttribute,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Span,
+    HasSpan, Parser, Span,
 };
 
 /// The source text that’s used to define attributes for an element is referred
@@ -25,7 +25,10 @@ impl<'src> Attrlist<'src> {
     /// include the opening or closing square brackets for the attrlist.
     /// This is because the rules for closing brackets differ when parsing
     /// inline, macro, and block elements.
-    pub(crate) fn parse(source: Span<'src>) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+        parser: &Parser,
+    ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
@@ -37,9 +40,9 @@ impl<'src> Attrlist<'src> {
 
         loop {
             let mut maybe_attr_and_warnings = if parse_shorthand_items {
-                ElementAttribute::parse_with_shorthand(after)
+                ElementAttribute::parse_with_shorthand(after, parser)
             } else {
-                ElementAttribute::parse(after)
+                ElementAttribute::parse(after, parser)
             };
 
             if !maybe_attr_and_warnings.warnings.is_empty() {
@@ -172,10 +175,10 @@ impl<'src> Attrlist<'src> {
     /// * Goal 1
     /// * Goal 2
     /// ```
-    pub fn id(&'src self) -> Option<Span<'src>> {
+    pub fn id(&'src self) -> Option<&'src str> {
         self.nth_attribute(1)
             .and_then(|attr1| attr1.id())
-            .or_else(|| self.named_attribute("id").map(|attr| attr.raw_value()))
+            .or_else(|| self.named_attribute("id").map(|attr| attr.value()))
     }
 
     /// Returns any role attributes that were found.
@@ -199,21 +202,21 @@ impl<'src> Attrlist<'src> {
     /// `sidebarblock.role1`).
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
-    pub fn roles(&'src self) -> Vec<Span<'src>> {
+    pub fn roles(&'src self) -> Vec<&'src str> {
         let mut roles = self
             .nth_attribute(1)
             .map(|attr1| attr1.roles())
             .unwrap_or_default();
 
         if let Some(role_attr) = self.named_attribute("role") {
-            let mut role_span = role_attr.raw_value();
-            let mut formal_roles: Vec<Span<'_>> = vec![];
+            let mut role_span = Span::new(role_attr.value());
+            let mut formal_roles: Vec<&'src str> = vec![];
             role_span = role_span.take_while(|c| c == ' ').after;
 
             while !role_span.is_empty() {
                 let mi = role_span.take_while(|c| c != ' ');
                 if !mi.item.is_empty() {
-                    formal_roles.push(mi.item);
+                    formal_roles.push(mi.item.data());
                 }
                 role_span = mi.after.take_while(|c| c == ' ').after;
             }
@@ -287,21 +290,21 @@ impl<'src> Attrlist<'src> {
     /// ```
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
-    pub fn options(&'src self) -> Vec<Span<'src>> {
+    pub fn options(&'src self) -> Vec<&'src str> {
         let mut options = self
             .nth_attribute(1)
             .map(|attr1| attr1.options())
             .unwrap_or_default();
 
         if let Some(option_attr) = self.named_attribute("opts") {
-            let mut option_span = option_attr.raw_value();
-            let mut formal_options: Vec<Span<'_>> = vec![];
+            let mut option_span = Span::new(option_attr.value());
+            let mut formal_options: Vec<&'src str> = vec![];
             option_span = option_span.take_while(|c| c == ',').after;
 
             while !option_span.is_empty() {
                 let mi = option_span.take_while(|c| c != ',');
                 if !mi.item.is_empty() {
-                    formal_options.push(mi.item);
+                    formal_options.push(mi.item.data());
                 }
                 option_span = mi.after.take_while(|c| c == ',').after;
             }
@@ -310,14 +313,14 @@ impl<'src> Attrlist<'src> {
         }
 
         if let Some(option_attr) = self.named_attribute("options") {
-            let mut option_span = option_attr.raw_value();
-            let mut formal_options: Vec<Span<'_>> = vec![];
+            let mut option_span = Span::new(option_attr.value());
+            let mut formal_options: Vec<&'_ str> = vec![];
             option_span = option_span.take_while(|c| c == ',').after;
 
             while !option_span.is_empty() {
                 let mi = option_span.take_while(|c| c != ',');
                 if !mi.item.is_empty() {
-                    formal_options.push(mi.item);
+                    formal_options.push(mi.item.data());
                 }
                 option_span = mi.after.take_while(|c| c == ',').after;
             }
@@ -337,7 +340,7 @@ impl<'src> Attrlist<'src> {
         // PERF: Might help to optimize away the construction of the options Vec.
         let options = self.options();
         let name = name.as_ref();
-        options.iter().any(|opt| opt.data() == name)
+        options.contains(&name)
     }
 }
 

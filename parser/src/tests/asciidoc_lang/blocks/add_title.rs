@@ -274,20 +274,8 @@ stages: [ init, verify, deploy ]
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    TSpan {
-                                        data: "source",
-                                        line: 2,
-                                        col: 2,
-                                        offset: 27,
-                                    },
-                                ],
-                                value: TSpan {
-                                    data: "source",
-                                    line: 2,
-                                    col: 2,
-                                    offset: 27,
-                                },
+                                shorthand_items: vec!["source"],
+                                value: "source",
                                 source: TSpan {
                                     data: "source",
                                     line: 2,
@@ -298,12 +286,7 @@ stages: [ init, verify, deploy ]
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![],
-                                value: TSpan {
-                                    data: "yaml",
-                                    line: 2,
-                                    col: 9,
-                                    offset: 34,
-                                },
+                                value: "yaml",
                                 source: TSpan {
                                     data: "yaml",
                                     line: 2,
@@ -399,20 +382,8 @@ If you don't plant it in a container, it will take over your garden.
                         attributes: vec![
                             TElementAttribute {
                                 name: None,
-                                shorthand_items: vec![
-                                    TSpan {
-                                        data: "sidebar",
-                                        line: 2,
-                                        col: 2,
-                                        offset: 7,
-                                    },
-                                ],
-                                value: TSpan {
-                                    data: "sidebar",
-                                    line: 2,
-                                    col: 2,
-                                    offset: 7,
-                                },
+                                shorthand_items: vec!["sidebar"],
+                                value: "sidebar",
                                 source: TSpan {
                                     data: "sidebar",
                                     line: 2,

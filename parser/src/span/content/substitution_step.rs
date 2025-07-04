@@ -58,7 +58,7 @@ impl SubstitutionStep {
                 apply_special_characters(content, parser.renderer);
             }
             Self::Quotes => {
-                apply_quotes(content, parser.renderer);
+                apply_quotes(content, parser);
             }
             Self::AttributeReferences => {
                 apply_attributes(content, parser);
@@ -288,7 +288,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
 struct QuoteReplacer<'r> {
     type_: QuoteType,
     scope: QuoteScope,
-    renderer: &'r dyn InlineSubstitutionRenderer,
+    parser: &'r Parser<'r>,
 }
 
 impl Replacer for QuoteReplacer<'_> {
@@ -315,7 +315,7 @@ impl Replacer for QuoteReplacer<'_> {
             QuoteScope::Constrained => {
                 if let Some(attrs) = unescaped_attrs {
                     dest.push_str(&attrs);
-                    self.renderer.render_quoted_substitition(
+                    self.parser.renderer.render_quoted_substitition(
                         self.type_, self.scope, None, None, &caps[3], dest,
                     );
                 } else {
@@ -329,9 +329,12 @@ impl Replacer for QuoteReplacer<'_> {
 
                             (
                                 Some(
-                                    Attrlist::parse(crate::Span::new(attrlist.as_str()))
-                                        .item
-                                        .item,
+                                    Attrlist::parse(
+                                        crate::Span::new(attrlist.as_str()),
+                                        self.parser,
+                                    )
+                                    .item
+                                    .item,
                                 ),
                                 type_,
                             )
@@ -347,7 +350,7 @@ impl Replacer for QuoteReplacer<'_> {
                         .as_ref()
                         .and_then(|a| a.id().map(|s| s.to_string()));
 
-                    self.renderer.render_quoted_substitition(
+                    self.parser.renderer.render_quoted_substitition(
                         type_, self.scope, attrlist, id, &caps[3], dest,
                     );
                 }
@@ -364,7 +367,7 @@ impl Replacer for QuoteReplacer<'_> {
 
                         (
                             Some(
-                                Attrlist::parse(crate::Span::new(attrlist.as_str()))
+                                Attrlist::parse(crate::Span::new(attrlist.as_str()), self.parser)
                                     .item
                                     .item,
                             ),
@@ -378,14 +381,15 @@ impl Replacer for QuoteReplacer<'_> {
                     .as_ref()
                     .and_then(|a| a.id().map(|s| s.to_string()));
 
-                self.renderer
+                self.parser
+                    .renderer
                     .render_quoted_substitition(type_, self.scope, attrlist, id, &caps[2], dest);
             }
         }
     }
 }
 
-fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRenderer) {
+fn apply_quotes(content: &mut Content<'_>, parser: &Parser) {
     if !QUOTED_TEXT_SNIFF.is_match(content.rendered.as_ref()) {
         return;
     }
@@ -396,7 +400,7 @@ fn apply_quotes(content: &mut Content<'_>, renderer: &dyn InlineSubstitutionRend
         let replacer = QuoteReplacer {
             type_: sub.type_,
             scope: sub.scope,
-            renderer,
+            parser,
         };
 
         if let Cow::Owned(new_result) = sub.pattern.replace_all(&result, replacer) {

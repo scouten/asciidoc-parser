@@ -5,8 +5,8 @@ use crate::{attributes::ElementAttribute, tests::fixtures::TSpan, HasSpan};
 #[derive(Eq, PartialEq)]
 pub(crate) struct TElementAttribute {
     pub name: Option<TSpan>,
-    pub shorthand_items: Vec<TSpan>,
-    pub value: TSpan,
+    pub shorthand_items: Vec<&'static str>,
+    pub value: &'static str,
     pub source: TSpan,
 }
 
@@ -44,18 +44,18 @@ fn fixture_eq_observed(fixture: &TElementAttribute, observed: &ElementAttribute)
         return false;
     }
 
-    if fixture.value != observed.raw_value() {
+    if fixture.value != observed.value() {
         return false;
     }
 
-    if &fixture.shorthand_items != observed.shorthand_items() {
+    if fixture.shorthand_items != observed.shorthand_items() {
         return false;
     }
 
     match fixture.name {
         Some(ref fixture_name) => {
             if let Some(observed_name) = observed.name() {
-                fixture_name == observed_name
+                *fixture_name == observed_name
             } else {
                 false
             }

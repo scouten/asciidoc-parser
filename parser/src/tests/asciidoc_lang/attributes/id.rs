@@ -300,18 +300,8 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "#goals",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },],
-                        value: TSpan {
-                            data: "#goals",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        shorthand_items: vec!["#goals"],
+                        value: "#goals",
                         source: TSpan {
                             data: "#goals",
                             line: 1,
@@ -383,12 +373,7 @@ In the longhand syntax, you use a standard named attribute.
                             offset: 1,
                         },),
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "goals",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "goals",
                         source: TSpan {
                             data: "id=goals",
                             line: 1,
@@ -525,32 +510,11 @@ ____
                             attributes: vec![
                                 TElementAttribute {
                                     name: None,
-                                    shorthand_items: vec![
-                                        TSpan {
-                                            data: "quote",
-                                            line: 1,
-                                            col: 2,
-                                            offset: 1,
-                                        },
-                                        TSpan {
-                                            data: ".movie",
-                                            line: 1,
-                                            col: 7,
-                                            offset: 6,
-                                        },
-                                        TSpan {
-                                            data: "#roads",
-                                            line: 1,
-                                            col: 13,
-                                            offset: 12,
-                                        },
+                                    shorthand_items: vec!["quote",
+                                        ".movie",
+                                        "#roads",
                                     ],
-                                    value: TSpan {
-                                        data: "quote.movie#roads",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
+                                    value: "quote.movie#roads",
                                     source: TSpan {
                                         data: "quote.movie#roads",
                                         line: 1,
@@ -561,12 +525,7 @@ ____
                                 TElementAttribute {
                                     name: None,
                                     shorthand_items: vec![],
-                                    value: TSpan {
-                                        data: "Dr. Emmett Brown",
-                                        line: 1,
-                                        col: 20,
-                                        offset: 19,
-                                    },
+                                    value: "Dr. Emmett Brown",
                                     source: TSpan {
                                         data: "Dr. Emmett Brown",
                                         line: 1,

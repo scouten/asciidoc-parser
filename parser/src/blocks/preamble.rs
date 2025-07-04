@@ -37,7 +37,7 @@ impl<'src> Preamble<'src> {
     }
 
     /// Parse the title and attribute list for a block, if any.
-    pub(crate) fn parse(source: Span<'src>, _parser: &mut Parser) -> MatchAndWarnings<'src, Self> {
+    pub(crate) fn parse(source: Span<'src>, parser: &mut Parser) -> MatchAndWarnings<'src, Self> {
         let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
@@ -85,7 +85,7 @@ impl<'src> Preamble<'src> {
                     after: block_start,
                 },
             warnings: mut attrlist_warnings,
-        }) = parse_maybe_attrlist_line(block_start)
+        }) = parse_maybe_attrlist_line(block_start, parser)
         {
             if !attrlist_warnings.is_empty() {
                 warnings.append(&mut attrlist_warnings);
@@ -164,9 +164,10 @@ fn parse_maybe_block_anchor(
     })
 }
 
-fn parse_maybe_attrlist_line(
-    source: Span<'_>,
-) -> Option<MatchAndWarnings<'_, MatchedItem<'_, Attrlist<'_>>>> {
+fn parse_maybe_attrlist_line<'src>(
+    source: Span<'src>,
+    parser: &Parser,
+) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Attrlist<'src>>>> {
     let first_char = source.chars().next()?;
     if first_char != '[' {
         return None;
@@ -190,7 +191,7 @@ fn parse_maybe_attrlist_line(
             after: _,
         },
         warnings,
-    } = Attrlist::parse(attrlist_src);
+    } = Attrlist::parse(attrlist_src, parser);
 
     Some(MatchAndWarnings {
         item: MatchedItem {

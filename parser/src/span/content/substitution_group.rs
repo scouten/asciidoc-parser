@@ -47,6 +47,11 @@ pub enum SubstitutionGroup {
     /// substitutions are applied to comments.
     None,
 
+    /// The attribute entry value substitution group is applied to attribute
+    /// values. Only special characters and attribute references are applied to
+    /// these values.
+    AttributeEntryValue,
+
     /// You can customize the substitutions applied to the content of an inline
     /// pass macro by specifying one or more substitution values. Multiple
     /// values must be separated by commas and may not contain any spaces. The
@@ -151,6 +156,11 @@ impl SubstitutionGroup {
             }
 
             Self::Pass | Self::None => {}
+
+            Self::AttributeEntryValue => {
+                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
+                SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
+            }
 
             Self::Custom(ref steps) => {
                 if steps.contains(&SubstitutionStep::Macros) {
