@@ -88,7 +88,8 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
         const ATTRLIST_EXAMPLE: &str =
             r#"first-positional,second-positional,named="value of named""#;
 
-        let mi = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE)).unwrap_if_no_warnings();
+        let p = Parser::default();
+        let mi = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,

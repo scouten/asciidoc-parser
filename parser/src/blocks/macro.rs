@@ -28,7 +28,7 @@ pub struct MacroBlock<'src> {
 impl<'src> MacroBlock<'src> {
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
-        _parser: &mut Parser,
+        parser: &mut Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let line = preamble.block_start.take_normalized_line();
 
@@ -75,7 +75,7 @@ impl<'src> MacroBlock<'src> {
         let attrlist = open_brace.after.slice(0..open_brace.after.len() - 1);
         // Note that we already checked that this line ends with a close brace.
 
-        let macro_attrlist = Attrlist::parse(attrlist);
+        let macro_attrlist = Attrlist::parse(attrlist, parser);
 
         let source: Span = preamble.source.trim_remainder(line.after);
         let source = source.slice(0..source.trim().len());
