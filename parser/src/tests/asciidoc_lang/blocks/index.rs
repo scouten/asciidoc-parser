@@ -523,10 +523,7 @@ mod block_style {
     use crate::{
         blocks::{Block, ContentModel, IsBlock},
         span::content::SubstitutionGroup,
-        tests::{
-            fixtures::TSpan,
-            sdd::{non_normative, verifies},
-        },
+        tests::sdd::{non_normative, verifies},
         Parser, Span,
     };
 
@@ -584,15 +581,7 @@ The context of the block is still the same, but it has additional metadata to in
         assert_eq!(mi.item.raw_context().as_ref(), "listing");
         assert_eq!(mi.item.resolved_context().as_ref(), "listing");
 
-        assert_eq!(
-            mi.item.declared_style().unwrap(),
-            TSpan {
-                data: "source",
-                line: 1,
-                col: 2,
-                offset: 1,
-            }
-        );
+        assert_eq!(mi.item.declared_style().unwrap(), "source");
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);

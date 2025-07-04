@@ -284,18 +284,8 @@ fn has_target_and_attrlist() {
             macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![TSpan {
-                        data: "blah",
-                        line: 1,
-                        col: 10,
-                        offset: 9,
-                    }],
-                    value: TSpan {
-                        data: "blah",
-                        line: 1,
-                        col: 10,
-                        offset: 9,
-                    },
+                    shorthand_items: vec!["blah"],
+                    value: "blah",
                     source: TSpan {
                         data: "blah",
                         line: 1,
@@ -359,18 +349,8 @@ fn err_duplicate_comma() {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![TSpan {
-                            data: "blah",
-                            line: 1,
-                            col: 10,
-                            offset: 9,
-                        }],
-                        value: TSpan {
-                            data: "blah",
-                            line: 1,
-                            col: 10,
-                            offset: 9,
-                        },
+                        shorthand_items: vec!["blah"],
+                        value: "blah",
                         source: TSpan {
                             data: "blah",
                             line: 1,
@@ -381,12 +361,7 @@ fn err_duplicate_comma() {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: TSpan {
-                            data: "blap",
-                            line: 1,
-                            col: 16,
-                            offset: 15,
-                        },
+                        value: "blap",
                         source: TSpan {
                             data: "blap",
                             line: 1,
