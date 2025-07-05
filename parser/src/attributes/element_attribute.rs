@@ -15,8 +15,8 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ElementAttribute<'src> {
     name: Option<&'src str>,
-    shorthand_items: Vec<&'src str>,
     value: CowStr<'src>,
+    shorthand_item_indices: Vec<usize>,
 }
 
 impl<'src> ElementAttribute<'src> {
@@ -86,7 +86,6 @@ impl<'src> ElementAttribute<'src> {
         }
 
         let after = value.after;
-        let source = source.trim_remainder(after);
 
         let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
             let mut content = Content::from(value.item);
@@ -96,8 +95,8 @@ impl<'src> ElementAttribute<'src> {
             CowStr::from(value.item.data())
         };
 
-        let shorthand_items = if name.is_none() && parse_shorthand {
-            parse_shorthand_items(source, &mut warnings)
+        let shorthand_item_indices = if name.is_none() && parse_shorthand {
+            parse_shorthand_items(&value)
         } else {
             vec![]
         };
@@ -106,7 +105,7 @@ impl<'src> ElementAttribute<'src> {
             item: Some(MatchedItem {
                 item: Self {
                     name: name.map(|span| span.data()),
-                    shorthand_items,
+                    shorthand_item_indices,
                     value,
                 },
                 after,
@@ -126,15 +125,39 @@ impl<'src> ElementAttribute<'src> {
     /// attribute is not of the appropriate kind, this will return an empty
     /// list.
     pub fn shorthand_items(&'src self) -> Vec<&'src str> {
-        self.shorthand_items.iter().map(|i| i.as_ref()).collect()
+        let mut result = vec![];
+        let value = self.value.as_ref();
+
+        let mut iter = self.shorthand_item_indices.iter().peekable();
+
+        loop {
+            let Some(curr) = iter.next() else { break };
+            let mut next_item = if let Some(next) = iter.peek() {
+                &value[*curr..**next]
+            } else {
+                &value[*curr..]
+            };
+
+            if next_item == "#" || next_item == "." || next_item == "%" {
+                continue;
+            }
+
+            next_item = next_item.trim_end();
+
+            if !next_item.is_empty() {
+                result.push(next_item);
+            }
+        }
+
+        result
     }
 
     /// Return the block style name from shorthand syntax.
     pub fn block_style(&'src self) -> Option<&'src str> {
-        self.shorthand_items
+        self.shorthand_items()
             .first()
             .filter(|v| !v.chars().any(is_shorthand_delimiter))
-            .map(|v| v.as_ref())
+            .cloned()
     }
 
     /// Return the ID attribute from shorthand syntax.
@@ -171,7 +194,7 @@ impl<'src> ElementAttribute<'src> {
     /// * Goal 2
     /// ```
     pub fn id(&'src self) -> Option<&'src str> {
-        self.shorthand_items
+        self.shorthand_items()
             .iter()
             .find(|v| v.starts_with('#'))
             .map(|v| &v[1..])
@@ -199,7 +222,7 @@ impl<'src> ElementAttribute<'src> {
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
     pub fn roles(&'src self) -> Vec<&'src str> {
-        self.shorthand_items
+        self.shorthand_items()
             .iter()
             .filter(|span| span.starts_with('.'))
             .map(|span| &span[1..])
@@ -271,7 +294,7 @@ impl<'src> ElementAttribute<'src> {
     ///
     /// [named attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/positional-and-named-attributes/#named
     pub fn options(&'src self) -> Vec<&'src str> {
-        self.shorthand_items
+        self.shorthand_items()
             .iter()
             .filter(|v| v.starts_with('%'))
             .map(|v| &v[1..])
@@ -287,20 +310,13 @@ impl<'src> ElementAttribute<'src> {
     }
 }
 
-fn parse_shorthand_items<'src>(
-    mut span: Span<'src>,
-    warnings: &mut Vec<Warning<'src>>,
-) -> Vec<&'src str> {
-    let mut shorthand_items: Vec<Span<'src>> = vec![];
+fn parse_shorthand_items(source: &str) -> Vec<usize> {
+    let mut shorthand_item_indices: Vec<usize> = vec![];
+    let mut span = Span::new(source);
 
     // Look for block style selector.
     if let Some(block_style_pr) = span.split_at_match_non_empty(is_shorthand_delimiter) {
-        shorthand_items.push(
-            block_style_pr
-                .item
-                .discard_whitespace()
-                .trim_trailing_whitespace(),
-        );
+        shorthand_item_indices.push(block_style_pr.item.discard_whitespace().byte_offset());
 
         span = block_style_pr.after;
     }
@@ -310,33 +326,36 @@ fn parse_shorthand_items<'src>(
         let after_delimiter = span.discard(1);
         match after_delimiter.position(is_shorthand_delimiter) {
             None => {
+                eprintln!("None?");
                 if after_delimiter.is_empty() {
-                    warnings.push(Warning {
-                        source: span,
-                        warning: WarningType::EmptyShorthandItem,
-                    });
+                    // warnings.push(Warning {
+                    //     source: span,
+                    //     warning: WarningType::EmptyShorthandItem,
+                    // });
+                    shorthand_item_indices.push(span.byte_offset());
                     span = after_delimiter;
                 } else {
-                    shorthand_items.push(span.trim_trailing_whitespace());
+                    shorthand_item_indices.push(span.byte_offset());
                     span = span.discard_all();
                 }
             }
             Some(0) => {
-                warnings.push(Warning {
-                    source: span.trim_remainder(after_delimiter),
-                    warning: WarningType::EmptyShorthandItem,
-                });
+                shorthand_item_indices.push(span.byte_offset());
+                // warnings.push(Warning {
+                //     source: span.trim_remainder(after_delimiter),
+                //     warning: WarningType::EmptyShorthandItem,
+                // });
                 span = after_delimiter;
             }
             Some(index) => {
                 let mi: MatchedItem<Span> = span.into_parse_result(index + 1);
-                shorthand_items.push(mi.item.trim_trailing_whitespace());
+                shorthand_item_indices.push(span.byte_offset());
                 span = mi.after;
             }
         }
     }
 
-    shorthand_items.iter().map(|span| span.data()).collect()
+    shorthand_item_indices
 }
 
 fn is_shorthand_delimiter(c: char) -> bool {

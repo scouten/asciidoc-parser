@@ -2715,7 +2715,7 @@ mod passthroughs {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "<span class=\"'role'\">+This</span>+",
+                    rendered: "<span class=\"role\">+This</span>+",
                 },
                 source: TSpan {
                     data: "['role']\\++This++++++++++++",
@@ -2747,7 +2747,7 @@ mod passthroughs {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "<span class=\"'role'\">++</span>+This++",
+                    rendered: "<span class=\"role\">++</span>+This++",
                 },
                 source: TSpan {
                     data: "['role']\\+++++++++This++++++++++++",
