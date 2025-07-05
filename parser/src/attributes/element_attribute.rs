@@ -14,7 +14,7 @@ use crate::{
 /// include directive.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ElementAttribute<'src> {
-    name: Option<&'src str>,
+    name: Option<CowStr<'src>>,
     value: CowStr<'src>,
     shorthand_item_indices: Vec<usize>,
 }
@@ -41,7 +41,7 @@ impl<'src> ElementAttribute<'src> {
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let mut warnings: Vec<Warning<'src>> = vec![];
 
-        let (name, after): (Option<Span>, Span) = match source.take_attr_name() {
+        let (name, after): (Option<CowStr<'src>>, Span) = match source.take_attr_name() {
             Some(name) => {
                 let space = name.after.take_whitespace();
                 match space.after.take_prefix("=") {
@@ -51,7 +51,7 @@ impl<'src> ElementAttribute<'src> {
                             // TO DO: Is this a warning? Possible spec ambiguity.
                             (None, source)
                         } else {
-                            (Some(name.item), space.after)
+                            (Some(name.item.data().into()), space.after)
                         }
                     }
                     None => (None, source),
@@ -104,9 +104,9 @@ impl<'src> ElementAttribute<'src> {
         MatchAndWarnings {
             item: Some(MatchedItem {
                 item: Self {
-                    name: name.map(|span| span.data()),
-                    shorthand_item_indices,
+                    name,
                     value,
+                    shorthand_item_indices,
                 },
                 after,
             }),
@@ -116,7 +116,11 @@ impl<'src> ElementAttribute<'src> {
 
     /// Return a [`Span`] describing the attribute name.
     pub fn name(&'src self) -> Option<&'src str> {
-        self.name
+        if let Some(ref name) = self.name {
+            Some(name.as_ref())
+        } else {
+            None
+        }
     }
 
     /// Return the shorthand items, if applicable.
