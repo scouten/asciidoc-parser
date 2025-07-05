@@ -308,14 +308,7 @@ This is a sidebar with one role assigned to it, rolename.
                     TAttrlist {
                         attributes: vec![
                             TElementAttribute {
-                                name: Some(
-                                    TSpan {
-                                        data: "role",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                ),
+                                name: Some("role"),
                                 shorthand_items: vec![],
                                 value: "rolename",
                                 source: TSpan {
@@ -412,14 +405,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                     TAttrlist {
                         attributes: vec![
                             TElementAttribute {
-                                name: Some(
-                                    TSpan {
-                                        data: "role",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                ),
+                                name: Some("role"),
                                 shorthand_items: vec![],
                                 value: "role1 role2",
                                 source: TSpan {

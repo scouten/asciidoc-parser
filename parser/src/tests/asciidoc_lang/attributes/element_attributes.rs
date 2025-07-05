@@ -118,12 +118,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "named",
-                            line: 1,
-                            col: 36,
-                            offset: 35,
-                        },),
+                        name: Some("named"),
                         shorthand_items: vec![],
                         value: "value of named",
                         source: TSpan {
@@ -181,12 +176,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
         assert_eq!(
             mi.item.named_attribute("named").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "named",
-                    line: 1,
-                    col: 36,
-                    offset: 35,
-                },),
+                name: Some("named"),
                 shorthand_items: vec![],
                 value: "value of named",
                 source: TSpan {
@@ -292,12 +282,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "named",
-                                line: 1,
-                                col: 26,
-                                offset: 25,
-                            },),
+                            name: Some("named"),
                             shorthand_items: vec![],
                             value: "value of named",
                             source: TSpan {
@@ -398,12 +383,7 @@ name::target[first-positional,second-positional,named="value of named"]
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "named",
-                                line: 1,
-                                col: 49,
-                                offset: 48,
-                            },),
+                            name: Some("named"),
                             shorthand_items: vec![],
                             value: "value of named",
                             source: TSpan {

@@ -14,7 +14,7 @@ use crate::{
 /// include directive.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ElementAttribute<'src> {
-    name: Option<Span<'src>>,
+    name: Option<&'src str>,
     shorthand_items: Vec<&'src str>,
     value: CowStr<'src>,
     source: Span<'src>,
@@ -106,7 +106,7 @@ impl<'src> ElementAttribute<'src> {
         MatchAndWarnings {
             item: Some(MatchedItem {
                 item: Self {
-                    name,
+                    name: name.map(|span| span.data()),
                     shorthand_items,
                     value,
                     source,
@@ -118,7 +118,7 @@ impl<'src> ElementAttribute<'src> {
     }
 
     /// Return a [`Span`] describing the attribute name.
-    pub fn name(&'src self) -> Option<Span<'src>> {
+    pub fn name(&'src self) -> Option<&'src str> {
         self.name
     }
 

@@ -472,12 +472,7 @@ fn warn_macro_attrlist_has_extra_comma() {
             macro_attrlist: TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "alt",
-                            line: 1,
-                            col: 10,
-                            offset: 9,
-                        }),
+                        name: Some("alt"),
                         shorthand_items: vec![],
                         value: "Sunset",
                         source: TSpan {
@@ -488,12 +483,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "width",
-                            line: 1,
-                            col: 21,
-                            offset: 20,
-                        }),
+                        name: Some("width"),
                         shorthand_items: vec![],
                         value: "300",
                         source: TSpan {
@@ -504,12 +494,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "height",
-                            line: 1,
-                            col: 32,
-                            offset: 31,
-                        }),
+                        name: Some("height"),
                         shorthand_items: vec![],
                         value: "400",
                         source: TSpan {

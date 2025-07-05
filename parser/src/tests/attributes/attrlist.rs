@@ -260,12 +260,7 @@ fn only_named_attributes() {
         TAttrlist {
             attributes: vec!(
                 TElementAttribute {
-                    name: Some(TSpan {
-                        data: "alt",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },),
+                    name: Some("alt"),
                     shorthand_items: vec![],
                     value: "Sunset",
                     source: TSpan {
@@ -276,12 +271,7 @@ fn only_named_attributes() {
                     },
                 },
                 TElementAttribute {
-                    name: Some(TSpan {
-                        data: "width",
-                        line: 1,
-                        col: 12,
-                        offset: 11,
-                    },),
+                    name: Some("width"),
                     shorthand_items: vec![],
                     value: "300",
                     source: TSpan {
@@ -292,12 +282,7 @@ fn only_named_attributes() {
                     },
                 },
                 TElementAttribute {
-                    name: Some(TSpan {
-                        data: "height",
-                        line: 1,
-                        col: 22,
-                        offset: 21,
-                    },),
+                    name: Some("height"),
                     shorthand_items: vec![],
                     value: "400",
                     source: TSpan {
@@ -323,12 +308,7 @@ fn only_named_attributes() {
     assert_eq!(
         mi.item.named_attribute("alt").unwrap(),
         TElementAttribute {
-            name: Some(TSpan {
-                data: "alt",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },),
+            name: Some("alt"),
             shorthand_items: vec![],
             value: "Sunset",
             source: TSpan {
@@ -343,12 +323,7 @@ fn only_named_attributes() {
     assert_eq!(
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
-            name: Some(TSpan {
-                data: "alt",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },),
+            name: Some("alt"),
             shorthand_items: vec![],
             value: "Sunset",
             source: TSpan {
@@ -363,12 +338,7 @@ fn only_named_attributes() {
     assert_eq!(
         mi.item.named_attribute("width").unwrap(),
         TElementAttribute {
-            name: Some(TSpan {
-                data: "width",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },),
+            name: Some("width"),
             shorthand_items: vec![],
             value: "300",
             source: TSpan {
@@ -383,12 +353,7 @@ fn only_named_attributes() {
     assert_eq!(
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
-            name: Some(TSpan {
-                data: "width",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },),
+            name: Some("width"),
             shorthand_items: vec![],
             value: "300",
             source: TSpan {
@@ -403,12 +368,7 @@ fn only_named_attributes() {
     assert_eq!(
         mi.item.named_attribute("height").unwrap(),
         TElementAttribute {
-            name: Some(TSpan {
-                data: "height",
-                line: 1,
-                col: 22,
-                offset: 21,
-            },),
+            name: Some("height"),
             shorthand_items: vec![],
             value: "400",
             source: TSpan {
@@ -423,12 +383,7 @@ fn only_named_attributes() {
     assert_eq!(
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
-            name: Some(TSpan {
-                data: "height",
-                line: 1,
-                col: 22,
-                offset: 21,
-            },),
+            name: Some("height"),
             shorthand_items: vec![],
             value: "400",
             source: TSpan {
@@ -482,12 +437,7 @@ fn err_unparsed_remainder_after_value() {
         mi.item,
         TAttrlist {
             attributes: vec!(TElementAttribute {
-                name: Some(TSpan {
-                    data: "alt",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },),
+                name: Some("alt"),
                 shorthand_items: vec![],
                 value: "Sunset",
                 source: TSpan {
@@ -662,12 +612,7 @@ mod id {
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
+                        name: Some("foo"),
                         shorthand_items: vec![],
                         value: "bar",
                         source: TSpan {
@@ -678,12 +623,7 @@ mod id {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "id",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        }),
+                        name: Some("id"),
                         shorthand_items: vec![],
                         value: "goals",
                         source: TSpan {
@@ -706,12 +646,7 @@ mod id {
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "foo",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("foo"),
                 shorthand_items: vec![],
                 value: "bar",
                 source: TSpan {
@@ -726,12 +661,7 @@ mod id {
         assert_eq!(
             mi.item.named_attribute("id").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "id",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                }),
+                name: Some("id"),
                 shorthand_items: vec![],
                 value: "goals",
                 source: TSpan {
@@ -1090,12 +1020,7 @@ mod roles {
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
+                        name: Some("foo"),
                         shorthand_items: vec![],
                         value: "bar",
                         source: TSpan {
@@ -1106,12 +1031,7 @@ mod roles {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "role",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        }),
+                        name: Some("role"),
                         shorthand_items: vec![],
                         value: "role1",
                         source: TSpan {
@@ -1134,12 +1054,7 @@ mod roles {
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "foo",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("foo"),
                 shorthand_items: vec![],
                 value: "bar",
                 source: TSpan {
@@ -1154,12 +1069,7 @@ mod roles {
         assert_eq!(
             mi.item.named_attribute("role").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "role",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                }),
+                name: Some("role"),
                 shorthand_items: vec![],
                 value: "role1",
                 source: TSpan {
@@ -1200,12 +1110,7 @@ mod roles {
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
+                        name: Some("foo"),
                         shorthand_items: vec![],
                         value: "bar",
                         source: TSpan {
@@ -1216,12 +1121,7 @@ mod roles {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "role",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        }),
+                        name: Some("role"),
                         shorthand_items: vec![],
                         value: "role1 role2   role3 ",
                         source: TSpan {
@@ -1244,12 +1144,7 @@ mod roles {
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "foo",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("foo"),
                 shorthand_items: vec![],
                 value: "bar",
                 source: TSpan {
@@ -1264,12 +1159,7 @@ mod roles {
         assert_eq!(
             mi.item.named_attribute("role").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "role",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                }),
+                name: Some("role"),
                 shorthand_items: vec![],
                 value: "role1 role2   role3 ",
                 source: TSpan {
@@ -1325,12 +1215,7 @@ mod roles {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "role",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        }),
+                        name: Some("role"),
                         shorthand_items: vec![],
                         value: "na1 na2   na3 ",
                         source: TSpan {
@@ -1355,12 +1240,7 @@ mod roles {
         assert_eq!(
             mi.item.named_attribute("role").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "role",
-                    line: 1,
-                    col: 14,
-                    offset: 13,
-                }),
+                name: Some("role"),
                 shorthand_items: vec![],
                 value: "na1 na2   na3 ",
                 source: TSpan {
@@ -1603,12 +1483,7 @@ mod options {
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
+                        name: Some("foo"),
                         shorthand_items: vec![],
                         value: "bar",
                         source: TSpan {
@@ -1619,12 +1494,7 @@ mod options {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "options",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        }),
+                        name: Some("options"),
                         shorthand_items: vec![],
                         value: "option1",
                         source: TSpan {
@@ -1647,12 +1517,7 @@ mod options {
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "foo",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("foo"),
                 shorthand_items: vec![],
                 value: "bar",
                 source: TSpan {
@@ -1667,12 +1532,7 @@ mod options {
         assert_eq!(
             mi.item.named_attribute("options").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "options",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                }),
+                name: Some("options"),
                 shorthand_items: vec![],
                 value: "option1",
                 source: TSpan {
@@ -1714,12 +1574,7 @@ mod options {
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
+                        name: Some("foo"),
                         shorthand_items: vec![],
                         value: "bar",
                         source: TSpan {
@@ -1730,12 +1585,7 @@ mod options {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "opts",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        }),
+                        name: Some("opts"),
                         shorthand_items: vec![],
                         value: "option1",
                         source: TSpan {
@@ -1758,12 +1608,7 @@ mod options {
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "foo",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("foo"),
                 shorthand_items: vec![],
                 value: "bar",
                 source: TSpan {
@@ -1778,12 +1623,7 @@ mod options {
         assert_eq!(
             mi.item.named_attribute("opts").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "opts",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                }),
+                name: Some("opts"),
                 shorthand_items: vec![],
                 value: "option1",
                 source: TSpan {
@@ -1827,12 +1667,7 @@ mod options {
             TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        }),
+                        name: Some("foo"),
                         shorthand_items: vec![],
                         value: "bar",
                         source: TSpan {
@@ -1843,12 +1678,7 @@ mod options {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "options",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        }),
+                        name: Some("options"),
                         shorthand_items: vec![],
                         value: "option1,option2,option3",
                         source: TSpan {
@@ -1871,12 +1701,7 @@ mod options {
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "foo",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("foo"),
                 shorthand_items: vec![],
                 value: "bar",
                 source: TSpan {
@@ -1891,12 +1716,7 @@ mod options {
         assert_eq!(
             mi.item.named_attribute("options").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "options",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                }),
+                name: Some("options"),
                 shorthand_items: vec![],
                 value: "option1,option2,option3",
                 source: TSpan {
@@ -1957,12 +1777,7 @@ mod options {
                         },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "options",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        }),
+                        name: Some("options"),
                         shorthand_items: vec![],
                         value: "na1,na2,na3",
                         source: TSpan {
@@ -1987,12 +1802,7 @@ mod options {
         assert_eq!(
             mi.item.named_attribute("options").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "options",
-                    line: 1,
-                    col: 14,
-                    offset: 13,
-                }),
+                name: Some("options"),
                 shorthand_items: vec![],
                 value: "na1,na2,na3",
                 source: TSpan {
@@ -2103,12 +1913,7 @@ fn err_double_comma() {
         TAttrlist {
             attributes: vec!(
                 TElementAttribute {
-                    name: Some(TSpan {
-                        data: "alt",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },),
+                    name: Some("alt"),
                     shorthand_items: vec![],
                     value: "Sunset",
                     source: TSpan {
@@ -2119,12 +1924,7 @@ fn err_double_comma() {
                     },
                 },
                 TElementAttribute {
-                    name: Some(TSpan {
-                        data: "width",
-                        line: 1,
-                        col: 12,
-                        offset: 11,
-                    },),
+                    name: Some("width"),
                     shorthand_items: vec![],
                     value: "300",
                     source: TSpan {
@@ -2135,12 +1935,7 @@ fn err_double_comma() {
                     },
                 },
                 TElementAttribute {
-                    name: Some(TSpan {
-                        data: "height",
-                        line: 1,
-                        col: 23,
-                        offset: 22,
-                    },),
+                    name: Some("height"),
                     shorthand_items: vec![],
                     value: "400",
                     source: TSpan {

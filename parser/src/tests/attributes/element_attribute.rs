@@ -537,12 +537,7 @@ mod named {
         assert_eq!(
             mi.item,
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("abc"),
                 shorthand_items: vec![],
                 value: "def",
                 source: TSpan {
@@ -554,16 +549,7 @@ mod named {
             }
         );
 
-        assert_eq!(
-            mi.item.name().unwrap(),
-            TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
-
+        assert_eq!(mi.item.name().unwrap(), "abc");
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
@@ -600,12 +586,7 @@ mod named {
         assert_eq!(
             mi.item,
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("abc"),
                 shorthand_items: vec![],
                 value: "def",
                 source: TSpan {
@@ -617,15 +598,7 @@ mod named {
             }
         );
 
-        assert_eq!(
-            mi.item.name().unwrap(),
-            TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
+        assert_eq!(mi.item.name().unwrap(), "abc");
 
         assert_eq!(
             mi.item.span(),
@@ -658,12 +631,7 @@ mod named {
         assert_eq!(
             mi.item,
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "94-x",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("94-x"),
                 shorthand_items: vec![],
                 value: "def",
                 source: TSpan {
@@ -675,15 +643,7 @@ mod named {
             }
         );
 
-        assert_eq!(
-            mi.item.name().unwrap(),
-            TSpan {
-                data: "94-x",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
+        assert_eq!(mi.item.name().unwrap(), "94-x");
 
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());
@@ -721,12 +681,7 @@ mod named {
         assert_eq!(
             mi.item,
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("abc"),
                 shorthand_items: vec![],
                 value: "def",
                 source: TSpan {
@@ -738,16 +693,7 @@ mod named {
             }
         );
 
-        assert_eq!(
-            mi.item.name().unwrap(),
-            TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
-
+        assert_eq!(mi.item.name().unwrap(), "abc");
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
@@ -946,12 +892,7 @@ mod parse_with_shorthand {
         assert_eq!(
             mi.item,
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "name",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }),
+                name: Some("name"),
                 shorthand_items: vec![],
                 value: "block_style#id",
                 source: TSpan {
@@ -963,16 +904,7 @@ mod parse_with_shorthand {
             }
         );
 
-        assert_eq!(
-            mi.item.name().unwrap(),
-            TSpan {
-                data: "name",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
-
+        assert_eq!(mi.item.name().unwrap(), "name");
         assert!(mi.item.shorthand_items().is_empty());
         assert!(mi.item.block_style().is_none());
         assert!(mi.item.id().is_none());

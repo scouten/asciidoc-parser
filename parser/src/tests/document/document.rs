@@ -463,14 +463,7 @@ fn err_bad_header_and_bad_macro() {
                                 macro_attrlist: TAttrlist {
                                     attributes: vec![
                                         TElementAttribute {
-                                            name: Some(
-                                                TSpan {
-                                                    data: "alt",
-                                                    line: 6,
-                                                    col: 10,
-                                                    offset: 53,
-                                                },
-                                            ),
+                                            name: Some("alt"),
                                             shorthand_items: vec![],
                                             value: "Sunset",
                                             source: TSpan {
@@ -481,14 +474,7 @@ fn err_bad_header_and_bad_macro() {
                                             },
                                         },
                                         TElementAttribute {
-                                            name: Some(
-                                                TSpan {
-                                                    data: "width",
-                                                    line: 6,
-                                                    col: 21,
-                                                    offset: 64,
-                                                },
-                                            ),
+                                            name: Some("width"),
                                             shorthand_items: vec![],
                                             value: "300",
                                             source: TSpan {
@@ -499,14 +485,7 @@ fn err_bad_header_and_bad_macro() {
                                             },
                                         },
                                         TElementAttribute {
-                                            name: Some(
-                                                TSpan {
-                                                    data: "height",
-                                                    line: 6,
-                                                    col: 32,
-                                                    offset: 75,
-                                                },
-                                            ),
+                                            name: Some("height"),
                                             shorthand_items: vec![],
                                             value: "400",
                                             source: TSpan {

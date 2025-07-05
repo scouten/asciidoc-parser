@@ -250,12 +250,7 @@ mod error_cases {
             mi.item.attrlist().unwrap(),
             TAttrlist {
                 attributes: vec![TElementAttribute {
-                    name: Some(TSpan {
-                        data: "alt",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },),
+                    name: Some("alt"),
                     shorthand_items: vec![],
                     value: "Sunset",
                     source: TSpan {
@@ -314,12 +309,7 @@ mod error_cases {
                 anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
-                        name: Some(TSpan {
-                            data: "alt",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },),
+                        name: Some("alt"),
                         shorthand_items: vec![],
                         value: "Sunset",
                         source: TSpan {

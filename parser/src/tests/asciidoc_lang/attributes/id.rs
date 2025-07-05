@@ -366,12 +366,7 @@ In the longhand syntax, you use a standard named attribute.
                 anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
-                        name: Some(TSpan {
-                            data: "id",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },),
+                        name: Some("id"),
                         shorthand_items: vec![],
                         value: "goals",
                         source: TSpan {

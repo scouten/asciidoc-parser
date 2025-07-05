@@ -311,12 +311,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "cols",
-                                line: 1,
-                                col: 27,
-                                offset: 26,
-                            },),
+                            name: Some("cols"),
                             shorthand_items: vec![],
                             value: "2*~",
                             source: TSpan {
@@ -421,14 +416,7 @@ This is a sidebar with an option assigned to it, named option.
                     TAttrlist {
                         attributes: vec![
                             TElementAttribute {
-                                name: Some(
-                                    TSpan {
-                                        data: "opts",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                ),
+                                name: Some("opts"),
                                 shorthand_items: vec![],
                                 value: "option",
                                 source: TSpan {
@@ -525,14 +513,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                     TAttrlist {
                         attributes: vec![
                             TElementAttribute {
-                                name: Some(
-                                    TSpan {
-                                        data: "opts",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                ),
+                                name: Some("opts"),
                                 shorthand_items: vec![],
                                 value: "option1,option2",
                                 source: TSpan {
@@ -624,12 +605,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                 attrlist: Some(TAttrlist {
                     attributes: vec![
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "cols",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },),
+                            name: Some("cols"),
                             shorthand_items: vec![],
                             value: "2*~",
                             source: TSpan {
@@ -640,12 +616,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "opts",
-                                line: 1,
-                                col: 11,
-                                offset: 10,
-                            },),
+                            name: Some("opts"),
                             shorthand_items: vec![],
                             value: "header,footer,autowidth",
                             source: TSpan {
@@ -872,14 +843,7 @@ property 2:: does different stuff
                                 },
                             },
                             TElementAttribute {
-                                name: Some(
-                                    TSpan {
-                                        data: "role",
-                                        line: 1,
-                                        col: 13,
-                                        offset: 12,
-                                    },
-                                ),
+                                name: Some("role"),
                                 shorthand_items: vec![],
                                 value: "properties",
                                 source: TSpan {
@@ -890,14 +854,7 @@ property 2:: does different stuff
                                 },
                             },
                             TElementAttribute {
-                                name: Some(
-                                    TSpan {
-                                        data: "opts",
-                                        line: 1,
-                                        col: 29,
-                                        offset: 28,
-                                    },
-                                ),
+                                name: Some("opts"),
                                 shorthand_items: vec![],
                                 value: "step",
                                 source: TSpan {

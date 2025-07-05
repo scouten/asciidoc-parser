@@ -227,12 +227,7 @@ fn has_macro_block_with_extra_blank_line() {
                 macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "alt",
-                                line: 3,
-                                col: 10,
-                                offset: 27,
-                            }),
+                            name: Some("alt"),
                             shorthand_items: vec![],
                             value: "Sunset",
                             source: TSpan {
@@ -243,12 +238,7 @@ fn has_macro_block_with_extra_blank_line() {
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "width",
-                                line: 3,
-                                col: 21,
-                                offset: 38,
-                            }),
+                            name: Some("width"),
                             shorthand_items: vec![],
                             value: "300",
                             source: TSpan {
@@ -259,12 +249,7 @@ fn has_macro_block_with_extra_blank_line() {
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "height",
-                                line: 3,
-                                col: 31,
-                                offset: 48,
-                            }),
+                            name: Some("height"),
                             shorthand_items: vec![],
                             value: "400",
                             source: TSpan {
@@ -365,12 +350,7 @@ fn has_child_block_with_errors() {
                 macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "alt",
-                                line: 3,
-                                col: 10,
-                                offset: 27,
-                            }),
+                            name: Some("alt"),
                             shorthand_items: vec![],
                             value: "Sunset",
                             source: TSpan {
@@ -381,12 +361,7 @@ fn has_child_block_with_errors() {
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "width",
-                                line: 3,
-                                col: 21,
-                                offset: 38,
-                            }),
+                            name: Some("width"),
                             shorthand_items: vec![],
                             value: "300",
                             source: TSpan {
@@ -397,12 +372,7 @@ fn has_child_block_with_errors() {
                             },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "height",
-                                line: 3,
-                                col: 32,
-                                offset: 49,
-                            }),
+                            name: Some("height"),
                             shorthand_items: vec![],
                             value: "400",
                             source: TSpan {

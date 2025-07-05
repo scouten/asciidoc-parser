@@ -110,12 +110,7 @@ The second macro is the same as the first, but written out in longhand form.
         assert_eq!(
             a2.named_or_positional_attribute("alt", 1).unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "alt",
-                    line: 1,
-                    col: 19,
-                    offset: 18,
-                },),
+                name: Some("alt"),
                 shorthand_items: vec![],
                 value: "Sunset",
                 source: TSpan {

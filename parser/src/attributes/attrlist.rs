@@ -1,4 +1,4 @@
-use std::{ops::Deref, slice::Iter};
+use std::slice::Iter;
 
 use crate::{
     attributes::ElementAttribute,
@@ -107,7 +107,7 @@ impl<'src> Attrlist<'src> {
     pub fn named_attribute(&'src self, name: &str) -> Option<&'src ElementAttribute<'src>> {
         self.attributes.iter().find(|attr| {
             if let Some(attr_name) = attr.name() {
-                attr_name.deref() == &name
+                attr_name == name
             } else {
                 false
             }
