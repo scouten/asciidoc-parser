@@ -145,13 +145,7 @@ image::sunset.jpg[Sunset]
                         attributes: vec!(TElementAttribute {
                             name: None,
                             shorthand_items: vec!["Sunset"],
-                            value: "Sunset",
-                            source: TSpan {
-                                data: "Sunset",
-                                line: 1,
-                                col: 19,
-                                offset: 18,
-                            },
+                            value: "Sunset"
                         }),
                         source: TSpan {
                             data: "Sunset",

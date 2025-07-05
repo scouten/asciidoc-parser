@@ -90,13 +90,7 @@ Content of delimited example block
                 attributes: vec![TElementAttribute {
                     name: None,
                     shorthand_items: vec!["#the-id-of-this-block",],
-                    value: "#the-id-of-this-block",
-                    source: TSpan {
-                        data: "#the-id-of-this-block",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "#the-id-of-this-block"
                 },],
                 source: TSpan {
                     data: "#the-id-of-this-block",
@@ -179,13 +173,7 @@ Roads? Where we're going, we don't need roads.
                 attributes: vec![TElementAttribute {
                     name: None,
                     shorthand_items: vec!["quote", "#roads"],
-                    value: "quote#roads",
-                    source: TSpan {
-                        data: "quote#roads",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "quote#roads"
                 },],
                 source: TSpan {
                     data: "quote#roads",
@@ -252,36 +240,18 @@ Roads? Where we're going, we don't need roads.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec!["quote", "#roads"],
-                                value: "quote#roads",
-                                source: TSpan {
-                                    data: "quote#roads",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "quote#roads"
+        },
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![],
-                                value: "Dr. Emmett Brown",
-                                source: TSpan {
-                                    data: "Dr. Emmett Brown",
-                                    line: 1,
-                                    col: 14,
-                                    offset: 13,
-                                },
-                            },
+                                value: "Dr. Emmett Brown"
+        },
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![],
-                                value: "Back to the Future",
-                                source: TSpan {
-                                    data: "Back to the Future",
-                                    line: 1,
-                                    col: 31,
-                                    offset: 30,
-                                },
-                            },
+                                value: "Back to the Future"
+        },
                         ],
                         source: TSpan {
                             data: "quote#roads,Dr. Emmett Brown,Back to the Future",

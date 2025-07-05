@@ -236,13 +236,7 @@ fn attrlist() {
                 attributes: vec![TElementAttribute {
                     name: None,
                     shorthand_items: vec!["sidebar"],
-                    value: "sidebar",
-                    source: TSpan {
-                        data: "sidebar",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "sidebar"
                 },],
                 source: TSpan {
                     data: "sidebar",
@@ -272,13 +266,7 @@ fn attrlist() {
             attributes: vec![TElementAttribute {
                 name: None,
                 shorthand_items: vec!["sidebar"],
-                value: "sidebar",
-                source: TSpan {
-                    data: "sidebar",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },
+                value: "sidebar"
             },],
             source: TSpan {
                 data: "sidebar",
@@ -337,13 +325,7 @@ fn title_and_attrlist() {
                 attributes: vec![TElementAttribute {
                     name: None,
                     shorthand_items: vec!["sidebar"],
-                    value: "sidebar",
-                    source: TSpan {
-                        data: "sidebar",
-                        line: 2,
-                        col: 2,
-                        offset: 8,
-                    },
+                    value: "sidebar"
                 },],
                 source: TSpan {
                     data: "sidebar",
@@ -373,13 +355,7 @@ fn title_and_attrlist() {
             attributes: vec![TElementAttribute {
                 name: None,
                 shorthand_items: vec!["sidebar"],
-                value: "sidebar",
-                source: TSpan {
-                    data: "sidebar",
-                    line: 2,
-                    col: 2,
-                    offset: 8,
-                },
+                value: "sidebar"
             },],
             source: TSpan {
                 data: "sidebar",
@@ -767,13 +743,7 @@ fn unterminated_block_anchor() {
                 attributes: vec![TElementAttribute {
                     name: None,
                     shorthand_items: vec!["[notice",],
-                    value: "[notice",
-                    source: TSpan {
-                        data: "[notice",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "[notice"
                 },],
                 source: TSpan {
                     data: "[notice",
@@ -814,13 +784,7 @@ fn unterminated_block_anchor() {
             attributes: vec![TElementAttribute {
                 name: None,
                 shorthand_items: vec!["[notice"],
-                value: "[notice",
-                source: TSpan {
-                    data: "[notice",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },
+                value: "[notice"
             },],
             source: TSpan {
                 data: "[notice",

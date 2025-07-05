@@ -301,13 +301,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["#goals"],
-                        value: "#goals",
-                        source: TSpan {
-                            data: "#goals",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "#goals"
                     },],
                     source: TSpan {
                         data: "#goals",
@@ -366,20 +360,9 @@ In the longhand syntax, you use a standard named attribute.
                 anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
-                        name: Some(TSpan {
-                            data: "id",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },),
+                        name: Some("id"),
                         shorthand_items: vec![],
-                        value: "goals",
-                        source: TSpan {
-                            data: "id=goals",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "goals"
                     },],
                     source: TSpan {
                         data: "id=goals",
@@ -514,25 +497,13 @@ ____
                                         ".movie",
                                         "#roads",
                                     ],
-                                    value: "quote.movie#roads",
-                                    source: TSpan {
-                                        data: "quote.movie#roads",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                },
+                                    value: "quote.movie#roads"
+        },
                                 TElementAttribute {
                                     name: None,
                                     shorthand_items: vec![],
-                                    value: "Dr. Emmett Brown",
-                                    source: TSpan {
-                                        data: "Dr. Emmett Brown",
-                                        line: 1,
-                                        col: 20,
-                                        offset: 19,
-                                    },
-                                },
+                                    value: "Dr. Emmett Brown"
+        },
                             ],
                             source: TSpan {
                                 data: "quote.movie#roads,Dr. Emmett Brown",

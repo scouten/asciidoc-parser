@@ -275,25 +275,13 @@ stages: [ init, verify, deploy ]
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec!["source"],
-                                value: "source",
-                                source: TSpan {
-                                    data: "source",
-                                    line: 2,
-                                    col: 2,
-                                    offset: 27,
-                                },
-                            },
+                                value: "source"
+        },
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![],
-                                value: "yaml",
-                                source: TSpan {
-                                    data: "yaml",
-                                    line: 2,
-                                    col: 9,
-                                    offset: 34,
-                                },
-                            },
+                                value: "yaml"
+        },
                         ],
                         source: TSpan {
                             data: "source,yaml",
@@ -383,14 +371,8 @@ If you don't plant it in a container, it will take over your garden.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec!["sidebar"],
-                                value: "sidebar",
-                                source: TSpan {
-                                    data: "sidebar",
-                                    line: 2,
-                                    col: 2,
-                                    offset: 7,
-                                },
-                            },
+                                value: "sidebar"
+        },
                         ],
                         source: TSpan {
                             data: "sidebar",

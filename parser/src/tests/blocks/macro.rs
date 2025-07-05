@@ -285,13 +285,7 @@ fn has_target_and_attrlist() {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec!["blah"],
-                    value: "blah",
-                    source: TSpan {
-                        data: "blah",
-                        line: 1,
-                        col: 10,
-                        offset: 9,
-                    },
+                    value: "blah"
                 }),
                 source: TSpan {
                     data: "blah",
@@ -350,24 +344,12 @@ fn err_duplicate_comma() {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec!["blah"],
-                        value: "blah",
-                        source: TSpan {
-                            data: "blah",
-                            line: 1,
-                            col: 10,
-                            offset: 9,
-                        },
+                        value: "blah"
                     },
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: "blap",
-                        source: TSpan {
-                            data: "blap",
-                            line: 1,
-                            col: 16,
-                            offset: 15,
-                        },
+                        value: "blap"
                     }
                 ),
                 source: TSpan {

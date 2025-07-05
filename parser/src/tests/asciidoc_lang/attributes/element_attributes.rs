@@ -99,39 +99,16 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                         name: None,
                         shorthand_items: vec!["first-positional"],
                         value: "first-positional",
-                        source: TSpan {
-                            data: "first-positional",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
                     },
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
                         value: "second-positional",
-                        source: TSpan {
-                            data: "second-positional",
-                            line: 1,
-                            col: 18,
-                            offset: 17,
-                        },
                     },
                     TElementAttribute {
-                        name: Some(TSpan {
-                            data: "named",
-                            line: 1,
-                            col: 36,
-                            offset: 35,
-                        },),
+                        name: Some("named"),
                         shorthand_items: vec![],
                         value: "value of named",
-                        source: TSpan {
-                            data: r#"named="value of named""#,
-                            line: 1,
-                            col: 36,
-                            offset: 35,
-                        },
                     }
                 ),
                 source: TSpan {
@@ -152,12 +129,6 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                 name: None,
                 shorthand_items: vec!["first-positional"],
                 value: "first-positional",
-                source: TSpan {
-                    data: "first-positional",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
             }
         );
 
@@ -167,12 +138,6 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                 name: None,
                 shorthand_items: vec![],
                 value: "second-positional",
-                source: TSpan {
-                    data: "second-positional",
-                    line: 1,
-                    col: 18,
-                    offset: 17,
-                },
             }
         );
 
@@ -181,20 +146,9 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
         assert_eq!(
             mi.item.named_attribute("named").unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "named",
-                    line: 1,
-                    col: 36,
-                    offset: 35,
-                },),
+                name: Some("named"),
                 shorthand_items: vec![],
                 value: "value of named",
-                source: TSpan {
-                    data: r#"named="value of named""#,
-                    line: 1,
-                    col: 36,
-                    offset: 35,
-                },
             }
         );
 
@@ -273,39 +227,16 @@ If the text cannot be parsed, an error message will be emitted to the log.
                             name: None,
                             shorthand_items: vec!["style"],
                             value: "style",
-                            source: TSpan {
-                                data: "style",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
                         },
                         TElementAttribute {
                             name: None,
                             shorthand_items: vec![],
                             value: "second-positional",
-                            source: TSpan {
-                                data: "second-positional",
-                                line: 1,
-                                col: 8,
-                                offset: 7,
-                            },
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "named",
-                                line: 1,
-                                col: 26,
-                                offset: 25,
-                            },),
+                            name: Some("named"),
                             shorthand_items: vec![],
-                            value: "value of named",
-                            source: TSpan {
-                                data: "named=\"value of named\"",
-                                line: 1,
-                                col: 26,
-                                offset: 25,
-                            },
+                            value: "value of named"
                         },
                     ],
                     source: TSpan {
@@ -378,40 +309,17 @@ name::target[first-positional,second-positional,named="value of named"]
                         TElementAttribute {
                             name: None,
                             shorthand_items: vec!["first-positional"],
-                            value: "first-positional",
-                            source: TSpan {
-                                data: "first-positional",
-                                line: 1,
-                                col: 14,
-                                offset: 13,
-                            },
+                            value: "first-positional"
                         },
                         TElementAttribute {
                             name: None,
                             shorthand_items: vec![],
-                            value: "second-positional",
-                            source: TSpan {
-                                data: "second-positional",
-                                line: 1,
-                                col: 31,
-                                offset: 30,
-                            },
+                            value: "second-positional"
                         },
                         TElementAttribute {
-                            name: Some(TSpan {
-                                data: "named",
-                                line: 1,
-                                col: 49,
-                                offset: 48,
-                            },),
+                            name: Some("named"),
                             shorthand_items: vec![],
-                            value: "value of named",
-                            source: TSpan {
-                                data: "named=\"value of named\"",
-                                line: 1,
-                                col: 49,
-                                offset: 48,
-                            },
+                            value: "value of named"
                         },
                     ],
                     source: TSpan {

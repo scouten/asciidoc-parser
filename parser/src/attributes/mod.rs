@@ -6,5 +6,5 @@
 mod attrlist;
 pub use attrlist::Attrlist;
 
-mod element_attribute;
+pub(crate) mod element_attribute;
 pub use element_attribute::ElementAttribute;

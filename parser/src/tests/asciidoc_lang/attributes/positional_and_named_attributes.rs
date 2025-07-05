@@ -97,33 +97,16 @@ The second macro is the same as the first, but written out in longhand form.
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["Sunset"],
-                value: "Sunset",
-                source: TSpan {
-                    data: "Sunset",
-                    line: 1,
-                    col: 19,
-                    offset: 18,
-                },
+                value: "Sunset"
             },
         );
 
         assert_eq!(
             a2.named_or_positional_attribute("alt", 1).unwrap(),
             TElementAttribute {
-                name: Some(TSpan {
-                    data: "alt",
-                    line: 1,
-                    col: 19,
-                    offset: 18,
-                },),
+                name: Some("alt"),
                 shorthand_items: vec![],
-                value: "Sunset",
-                source: TSpan {
-                    data: "alt=Sunset",
-                    line: 1,
-                    col: 19,
-                    offset: 18,
-                },
+                value: "Sunset"
             }
         );
     }
@@ -198,13 +181,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["#custom-id"],
-                        value: "#custom-id",
-                        source: TSpan {
-                            data: "#custom-id",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "#custom-id"
                     },],
                     source: TSpan {
                         data: "#custom-id",
@@ -264,13 +241,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["appendix", "#custom-id"],
-                        value: "appendix#custom-id",
-                        source: TSpan {
-                            data: "appendix#custom-id",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "appendix#custom-id"
                     },],
                     source: TSpan {
                         data: "appendix#custom-id",
@@ -336,13 +307,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["#rules", ".prominent", "%incremental"],
-                        value: "#rules.prominent%incremental",
-                        source: TSpan {
-                            data: "#rules.prominent%incremental",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "#rules.prominent%incremental"
                     },],
                     source: TSpan {
                         data: "#rules.prominent%incremental",
@@ -415,14 +380,8 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                                 shorthand_items: vec![
                                     "%header","%footer", "%autowidth",
                                 ],
-                                value: "%header%footer%autowidth",
-                                source: TSpan {
-                                    data: "%header%footer%autowidth",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "%header%footer%autowidth"
+        },
                         ],
                         source: TSpan {
                             data: "%header%footer%autowidth",
