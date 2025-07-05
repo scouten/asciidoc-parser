@@ -2,6 +2,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     attributes::Attrlist,
+    parser::ModificationContext,
     tests::fixtures::{
         attributes::{TAttrlist, TElementAttribute},
         warnings::TWarning,
@@ -2180,5 +2181,185 @@ fn err_double_comma() {
             },
             warning: WarningType::EmptyAttributeValue,
         }]
+    );
+}
+
+#[test]
+fn applies_attribute_substitution_before_parsing() {
+    let p = Parser::default().with_intrinsic_attribute(
+        "sunset_dimensions",
+        "300,400",
+        ModificationContext::Anywhere,
+    );
+    let mi = Attrlist::parse(Span::new("Sunset,{sunset_dimensions}"), &p).unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item,
+        TAttrlist {
+            attributes: vec!(
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: vec!["Sunset"],
+                    value: "Sunset",
+                    source: TSpan {
+                        data: "Sunset",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![],
+                    value: "300",
+                    source: TSpan {
+                        data: "300",
+                        line: 1,
+                        col: 8,
+                        offset: 7,
+                    },
+                },
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![],
+                    value: "400",
+                    source: TSpan {
+                        data: "400",
+                        line: 1,
+                        col: 12,
+                        offset: 11,
+                    },
+                }
+            ),
+            source: TSpan {
+                data: "Sunset,300,400",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(mi.item.named_attribute("foo").is_none());
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+
+    assert_eq!(
+        mi.item.nth_attribute(1).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec!["Sunset"],
+            value: "Sunset",
+            source: TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("alt", 1).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec!["Sunset"],
+            value: "Sunset",
+            source: TSpan {
+                data: "Sunset",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.item.nth_attribute(2).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec![],
+            value: "300",
+            source: TSpan {
+                data: "300",
+                line: 1,
+                col: 8,
+                offset: 7,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("width", 2).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec![],
+            value: "300",
+            source: TSpan {
+                data: "300",
+                line: 1,
+                col: 8,
+                offset: 7,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.item.nth_attribute(3).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec![],
+            value: "400",
+            source: TSpan {
+                data: "400",
+                line: 1,
+                col: 12,
+                offset: 11,
+            },
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("height", 3).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec![],
+            value: "400",
+            source: TSpan {
+                data: "400",
+                line: 1,
+                col: 12,
+                offset: 11,
+            },
+        }
+    );
+
+    assert!(mi.item.nth_attribute(4).is_none());
+
+    assert!(mi.item.named_or_positional_attribute("height", 4).is_none());
+
+    assert!(mi.item.nth_attribute(42).is_none());
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: "Sunset,300,400",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 15,
+            offset: 14
+        }
     );
 }
