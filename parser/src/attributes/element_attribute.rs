@@ -2,7 +2,7 @@ use crate::{
     span::{content::SubstitutionGroup, MatchedItem},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    Content, HasSpan, Parser, Span,
+    Content, Parser, Span,
 };
 
 /// This struct represents a single element attribute.
@@ -17,7 +17,6 @@ pub struct ElementAttribute<'src> {
     name: Option<&'src str>,
     shorthand_items: Vec<&'src str>,
     value: CowStr<'src>,
-    source: Span<'src>,
 }
 
 impl<'src> ElementAttribute<'src> {
@@ -109,7 +108,6 @@ impl<'src> ElementAttribute<'src> {
                     name: name.map(|span| span.data()),
                     shorthand_items,
                     value,
-                    source,
                 },
                 after,
             }),
@@ -286,12 +284,6 @@ impl<'src> ElementAttribute<'src> {
     /// value replacements applied to it.
     pub fn value(&'src self) -> &'src str {
         self.value.as_ref()
-    }
-}
-
-impl<'src> HasSpan<'src> for ElementAttribute<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
     }
 }
 

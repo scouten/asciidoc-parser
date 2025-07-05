@@ -112,14 +112,8 @@ This is a sidebar with an option assigned to it, named option.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec!["%option"],
-                                value: "%option",
-                                source: TSpan {
-                                    data: "%option",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "%option"
+        },
                         ],
                         source: TSpan {
                             data: "%option",
@@ -210,14 +204,8 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec!["%option1", "%option2"],
-                                value: "%option1%option2",
-                                source: TSpan {
-                                    data: "%option1%option2",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "%option1%option2"
+        },
                         ],
                         source: TSpan {
                             data: "%option1%option2",
@@ -302,24 +290,12 @@ For instance, consider a table with the three built-in option values, `header`, 
                         TElementAttribute {
                             name: None,
                             shorthand_items: vec!["%header", "%footer", "%autowidth",],
-                            value: "%header%footer%autowidth",
-                            source: TSpan {
-                                data: "%header%footer%autowidth",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
+                            value: "%header%footer%autowidth"
                         },
                         TElementAttribute {
                             name: Some("cols"),
                             shorthand_items: vec![],
-                            value: "2*~",
-                            source: TSpan {
-                                data: "cols=2*~",
-                                line: 1,
-                                col: 27,
-                                offset: 26,
-                            },
+                            value: "2*~"
                         },
                     ],
                     source: TSpan {
@@ -418,14 +394,8 @@ This is a sidebar with an option assigned to it, named option.
                             TElementAttribute {
                                 name: Some("opts"),
                                 shorthand_items: vec![],
-                                value: "option",
-                                source: TSpan {
-                                    data: "opts=option",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "option"
+        },
                         ],
                         source: TSpan {
                             data: "opts=option",
@@ -515,14 +485,8 @@ This is a sidebar with two options assigned to it, option1 and option2.
                             TElementAttribute {
                                 name: Some("opts"),
                                 shorthand_items: vec![],
-                                value: "option1,option2",
-                                source: TSpan {
-                                    data: "opts=\"option1,option2\"",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "option1,option2"
+        },
                         ],
                         source: TSpan {
                             data: "opts=\"option1,option2\"",
@@ -607,24 +571,12 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                         TElementAttribute {
                             name: Some("cols"),
                             shorthand_items: vec![],
-                            value: "2*~",
-                            source: TSpan {
-                                data: "cols=2*~",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
+                            value: "2*~"
                         },
                         TElementAttribute {
                             name: Some("opts"),
                             shorthand_items: vec![],
-                            value: "header,footer,autowidth",
-                            source: TSpan {
-                                data: "opts=\"header,footer,autowidth\"",
-                                line: 1,
-                                col: 11,
-                                offset: 10,
-                            },
+                            value: "header,footer,autowidth"
                         },
                     ],
                     source: TSpan {
@@ -739,14 +691,8 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                                 TElementAttribute {
                                     name: None,
                                     shorthand_items: vec!["horizontal", ".properties", "%step"],
-                                    value: "horizontal.properties%step",
-                                    source: TSpan {
-                                        data: "horizontal.properties%step",
-                                        line: 1,
-                                        col: 2,
-                                        offset: 1,
-                                    },
-                                },
+                                    value: "horizontal.properties%step"
+        },
                             ],
                             source: TSpan {
                                 data: "horizontal.properties%step",
@@ -834,36 +780,18 @@ property 2:: does different stuff
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec!["horizontal"],
-                                value: "horizontal",
-                                source: TSpan {
-                                    data: "horizontal",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "horizontal"
+        },
                             TElementAttribute {
                                 name: Some("role"),
                                 shorthand_items: vec![],
-                                value: "properties",
-                                source: TSpan {
-                                    data: "role=properties",
-                                    line: 1,
-                                    col: 13,
-                                    offset: 12,
-                                },
-                            },
+                                value: "properties"
+        },
                             TElementAttribute {
                                 name: Some("opts"),
                                 shorthand_items: vec![],
-                                value: "step",
-                                source: TSpan {
-                                    data: "opts=step",
-                                    line: 1,
-                                    col: 29,
-                                    offset: 28,
-                                },
-                            },
+                                value: "step"
+        },
                         ],
                         source: TSpan {
                             data: "horizontal,role=properties,opts=step",

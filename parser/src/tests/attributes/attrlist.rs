@@ -85,35 +85,17 @@ fn only_positional_attributes() {
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec!["Sunset"],
-                    value: "Sunset",
-                    source: TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: "Sunset"
                 },
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec![],
-                    value: "300",
-                    source: TSpan {
-                        data: "300",
-                        line: 1,
-                        col: 8,
-                        offset: 7,
-                    },
+                    value: "300"
                 },
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec![],
-                    value: "400",
-                    source: TSpan {
-                        data: "400",
-                        line: 1,
-                        col: 12,
-                        offset: 11,
-                    },
+                    value: "400"
                 }
             ),
             source: TSpan {
@@ -137,13 +119,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec!["Sunset"],
-            value: "Sunset",
-            source: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            value: "Sunset"
         }
     );
 
@@ -152,13 +128,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec!["Sunset"],
-            value: "Sunset",
-            source: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            value: "Sunset"
         }
     );
 
@@ -167,13 +137,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "300",
-            source: TSpan {
-                data: "300",
-                line: 1,
-                col: 8,
-                offset: 7,
-            },
+            value: "300"
         }
     );
 
@@ -182,13 +146,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "300",
-            source: TSpan {
-                data: "300",
-                line: 1,
-                col: 8,
-                offset: 7,
-            },
+            value: "300"
         }
     );
 
@@ -197,13 +155,7 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "400",
-            source: TSpan {
-                data: "400",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "400"
         }
     );
 
@@ -212,20 +164,12 @@ fn only_positional_attributes() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "400",
-            source: TSpan {
-                data: "400",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "400"
         }
     );
 
     assert!(mi.item.nth_attribute(4).is_none());
-
     assert!(mi.item.named_or_positional_attribute("height", 4).is_none());
-
     assert!(mi.item.nth_attribute(42).is_none());
 
     assert_eq!(
@@ -262,35 +206,17 @@ fn only_named_attributes() {
                 TElementAttribute {
                     name: Some("alt"),
                     shorthand_items: vec![],
-                    value: "Sunset",
-                    source: TSpan {
-                        data: "alt=Sunset",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: "Sunset"
                 },
                 TElementAttribute {
                     name: Some("width"),
                     shorthand_items: vec![],
-                    value: "300",
-                    source: TSpan {
-                        data: "width=300",
-                        line: 1,
-                        col: 12,
-                        offset: 11,
-                    },
+                    value: "300"
                 },
                 TElementAttribute {
                     name: Some("height"),
                     shorthand_items: vec![],
-                    value: "400",
-                    source: TSpan {
-                        data: "height=400",
-                        line: 1,
-                        col: 22,
-                        offset: 21,
-                    },
+                    value: "400"
                 }
             ),
             source: TSpan {
@@ -310,13 +236,7 @@ fn only_named_attributes() {
         TElementAttribute {
             name: Some("alt"),
             shorthand_items: vec![],
-            value: "Sunset",
-            source: TSpan {
-                data: "alt=Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            value: "Sunset"
         }
     );
 
@@ -325,13 +245,7 @@ fn only_named_attributes() {
         TElementAttribute {
             name: Some("alt"),
             shorthand_items: vec![],
-            value: "Sunset",
-            source: TSpan {
-                data: "alt=Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            value: "Sunset"
         }
     );
 
@@ -340,13 +254,7 @@ fn only_named_attributes() {
         TElementAttribute {
             name: Some("width"),
             shorthand_items: vec![],
-            value: "300",
-            source: TSpan {
-                data: "width=300",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "300"
         }
     );
 
@@ -355,13 +263,7 @@ fn only_named_attributes() {
         TElementAttribute {
             name: Some("width"),
             shorthand_items: vec![],
-            value: "300",
-            source: TSpan {
-                data: "width=300",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "300"
         }
     );
 
@@ -370,13 +272,7 @@ fn only_named_attributes() {
         TElementAttribute {
             name: Some("height"),
             shorthand_items: vec![],
-            value: "400",
-            source: TSpan {
-                data: "height=400",
-                line: 1,
-                col: 22,
-                offset: 21,
-            },
+            value: "400"
         }
     );
 
@@ -385,13 +281,7 @@ fn only_named_attributes() {
         TElementAttribute {
             name: Some("height"),
             shorthand_items: vec![],
-            value: "400",
-            source: TSpan {
-                data: "height=400",
-                line: 1,
-                col: 22,
-                offset: 21,
-            },
+            value: "400"
         }
     );
 
@@ -439,13 +329,7 @@ fn err_unparsed_remainder_after_value() {
             attributes: vec!(TElementAttribute {
                 name: Some("alt"),
                 shorthand_items: vec![],
-                value: "Sunset",
-                source: TSpan {
-                    data: "alt=\"Sunset\"",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "Sunset"
             },),
             source: TSpan {
                 data: "alt=\"Sunset\"width=300",
@@ -493,13 +377,7 @@ fn propagates_error_from_element_attribute() {
             attributes: vec!(TElementAttribute {
                 name: None,
                 shorthand_items: vec!["foo", "#id"],
-                value: "foo%#id",
-                source: TSpan {
-                    data: "foo%#id",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "foo%#id"
             },),
             source: TSpan {
                 data: "foo%#id",
@@ -557,13 +435,7 @@ mod id {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec!["#goals"],
-                    value: "#goals",
-                    source: TSpan {
-                        data: "#goals",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: "#goals"
                 },),
                 source: TSpan {
                     data: "#goals",
@@ -614,24 +486,12 @@ mod id {
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: vec![],
-                        value: "bar",
-                        source: TSpan {
-                            data: "foo=bar",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "bar"
                     },
                     TElementAttribute {
                         name: Some("id"),
                         shorthand_items: vec![],
-                        value: "goals",
-                        source: TSpan {
-                            data: "id=goals",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        },
+                        value: "goals"
                     },
                 ),
                 source: TSpan {
@@ -648,13 +508,7 @@ mod id {
             TElementAttribute {
                 name: Some("foo"),
                 shorthand_items: vec![],
-                value: "bar",
-                source: TSpan {
-                    data: "foo=bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "bar"
             }
         );
 
@@ -663,13 +517,7 @@ mod id {
             TElementAttribute {
                 name: Some("id"),
                 shorthand_items: vec![],
-                value: "goals",
-                source: TSpan {
-                    data: "id=goals",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                },
+                value: "goals"
             }
         );
 
@@ -709,24 +557,12 @@ mod id {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec!["foo"],
-                        value: "foo",
-                        source: TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "foo"
                     },
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: "blah#goals",
-                        source: TSpan {
-                            data: "blah#goals",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "blah#goals"
                     },
                 ),
                 source: TSpan {
@@ -777,13 +613,7 @@ mod roles {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec![".rolename"],
-                    value: ".rolename",
-                    source: TSpan {
-                        data: ".rolename",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: ".rolename"
                 },),
                 source: TSpan {
                     data: ".rolename",
@@ -836,13 +666,7 @@ mod roles {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec![".rolename"],
-                    value: ".rolename ",
-                    source: TSpan {
-                        data: ".rolename ",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: ".rolename "
                 },),
                 source: TSpan {
                     data: ".rolename ",
@@ -895,13 +719,7 @@ mod roles {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec![".role1", ".role2", ".role3"],
-                    value: ".role1.role2.role3",
-                    source: TSpan {
-                        data: ".role1.role2.role3",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: ".role1.role2.role3"
                 },),
                 source: TSpan {
                     data: ".role1.role2.role3",
@@ -958,13 +776,7 @@ mod roles {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec![".role1", ".role2", ".role3"],
-                    value: ".role1 .role2 .role3 ",
-                    source: TSpan {
-                        data: ".role1 .role2 .role3 ",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: ".role1 .role2 .role3 "
                 },),
                 source: TSpan {
                     data: ".role1 .role2 .role3 ",
@@ -1022,24 +834,12 @@ mod roles {
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: vec![],
-                        value: "bar",
-                        source: TSpan {
-                            data: "foo=bar",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "bar"
                     },
                     TElementAttribute {
                         name: Some("role"),
                         shorthand_items: vec![],
-                        value: "role1",
-                        source: TSpan {
-                            data: "role=role1",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        },
+                        value: "role1"
                     },
                 ),
                 source: TSpan {
@@ -1056,13 +856,7 @@ mod roles {
             TElementAttribute {
                 name: Some("foo"),
                 shorthand_items: vec![],
-                value: "bar",
-                source: TSpan {
-                    data: "foo=bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "bar"
             }
         );
 
@@ -1071,22 +865,14 @@ mod roles {
             TElementAttribute {
                 name: Some("role"),
                 shorthand_items: vec![],
-                value: "role1",
-                source: TSpan {
-                    data: "role=role1",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                },
+                value: "role1"
             }
         );
 
         let roles = mi.item.roles();
         let mut roles = roles.iter();
-
         assert_eq!(roles.next().unwrap(), &"role1");
-
-        assert!(roles.next().is_none(),);
+        assert!(roles.next().is_none());
 
         assert_eq!(
             mi.after,
@@ -1112,24 +898,12 @@ mod roles {
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: vec![],
-                        value: "bar",
-                        source: TSpan {
-                            data: "foo=bar",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "bar"
                     },
                     TElementAttribute {
                         name: Some("role"),
                         shorthand_items: vec![],
-                        value: "role1 role2   role3 ",
-                        source: TSpan {
-                            data: "role=role1 role2   role3 ",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        },
+                        value: "role1 role2   role3 "
                     },
                 ),
                 source: TSpan {
@@ -1146,13 +920,7 @@ mod roles {
             TElementAttribute {
                 name: Some("foo"),
                 shorthand_items: vec![],
-                value: "bar",
-                source: TSpan {
-                    data: "foo=bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "bar"
             }
         );
 
@@ -1161,26 +929,17 @@ mod roles {
             TElementAttribute {
                 name: Some("role"),
                 shorthand_items: vec![],
-                value: "role1 role2   role3 ",
-                source: TSpan {
-                    data: "role=role1 role2   role3 ",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                },
+                value: "role1 role2   role3 "
             }
         );
 
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(roles.next().unwrap(), &"role1",);
-
+        assert_eq!(roles.next().unwrap(), &"role1");
         assert_eq!(roles.next().unwrap(), &"role2");
-
-        assert_eq!(roles.next().unwrap(), &"role3",);
-
-        assert!(roles.next().is_none(),);
+        assert_eq!(roles.next().unwrap(), &"role3");
+        assert!(roles.next().is_none());
 
         assert_eq!(
             mi.after,
@@ -1206,24 +965,12 @@ mod roles {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec!["#foo", ".sh1", ".sh2"],
-                        value: "#foo.sh1.sh2",
-                        source: TSpan {
-                            data: "#foo.sh1.sh2",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "#foo.sh1.sh2"
                     },
                     TElementAttribute {
                         name: Some("role"),
                         shorthand_items: vec![],
-                        value: "na1 na2   na3 ",
-                        source: TSpan {
-                            data: "role=na1 na2   na3 ",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        },
+                        value: "na1 na2   na3 "
                     },
                 ),
                 source: TSpan {
@@ -1235,37 +982,26 @@ mod roles {
             }
         );
 
-        assert!(mi.item.named_attribute("foo").is_none(),);
+        assert!(mi.item.named_attribute("foo").is_none());
 
         assert_eq!(
             mi.item.named_attribute("role").unwrap(),
             TElementAttribute {
                 name: Some("role"),
                 shorthand_items: vec![],
-                value: "na1 na2   na3 ",
-                source: TSpan {
-                    data: "role=na1 na2   na3 ",
-                    line: 1,
-                    col: 14,
-                    offset: 13,
-                },
+                value: "na1 na2   na3 "
             }
         );
 
         let roles = mi.item.roles();
         let mut roles = roles.iter();
 
-        assert_eq!(roles.next().unwrap(), &"sh1",);
-
-        assert_eq!(roles.next().unwrap(), &"sh2",);
-
-        assert_eq!(roles.next().unwrap(), &"na1",);
-
-        assert_eq!(roles.next().unwrap(), &"na2",);
-
-        assert_eq!(roles.next().unwrap(), &"na3",);
-
-        assert!(roles.next().is_none(),);
+        assert_eq!(roles.next().unwrap(), &"sh1");
+        assert_eq!(roles.next().unwrap(), &"sh2");
+        assert_eq!(roles.next().unwrap(), &"na1");
+        assert_eq!(roles.next().unwrap(), &"na2");
+        assert_eq!(roles.next().unwrap(), &"na3");
+        assert!(roles.next().is_none());
 
         assert_eq!(
             mi.after,
@@ -1290,24 +1026,12 @@ mod roles {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec!["foo"],
-                        value: "foo",
-                        source: TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "foo"
                     },
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: "blah.rolename",
-                        source: TSpan {
-                            data: "blah.rolename",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "blah.rolename"
                     },
                 ),
                 source: TSpan {
@@ -1357,13 +1081,7 @@ mod options {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec!["%option"],
-                    value: "%option",
-                    source: TSpan {
-                        data: "%option",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: "%option"
                 },),
                 source: TSpan {
                     data: "%option",
@@ -1419,13 +1137,7 @@ mod options {
                 attributes: vec!(TElementAttribute {
                     name: None,
                     shorthand_items: vec!["%option1", "%option2", "%option3",],
-                    value: "%option1%option2%option3",
-                    source: TSpan {
-                        data: "%option1%option2%option3",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: "%option1%option2%option3"
                 },),
                 source: TSpan {
                     data: "%option1%option2%option3",
@@ -1485,24 +1197,12 @@ mod options {
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: vec![],
-                        value: "bar",
-                        source: TSpan {
-                            data: "foo=bar",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "bar"
                     },
                     TElementAttribute {
                         name: Some("options"),
                         shorthand_items: vec![],
-                        value: "option1",
-                        source: TSpan {
-                            data: "options=option1",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        },
+                        value: "option1"
                     },
                 ),
                 source: TSpan {
@@ -1519,13 +1219,7 @@ mod options {
             TElementAttribute {
                 name: Some("foo"),
                 shorthand_items: vec![],
-                value: "bar",
-                source: TSpan {
-                    data: "foo=bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "bar"
             }
         );
 
@@ -1534,13 +1228,7 @@ mod options {
             TElementAttribute {
                 name: Some("options"),
                 shorthand_items: vec![],
-                value: "option1",
-                source: TSpan {
-                    data: "options=option1",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                },
+                value: "option1"
             }
         );
 
@@ -1576,24 +1264,12 @@ mod options {
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: vec![],
-                        value: "bar",
-                        source: TSpan {
-                            data: "foo=bar",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "bar"
                     },
                     TElementAttribute {
                         name: Some("opts"),
                         shorthand_items: vec![],
-                        value: "option1",
-                        source: TSpan {
-                            data: "opts=option1",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        },
+                        value: "option1"
                     },
                 ),
                 source: TSpan {
@@ -1610,13 +1286,7 @@ mod options {
             TElementAttribute {
                 name: Some("foo"),
                 shorthand_items: vec![],
-                value: "bar",
-                source: TSpan {
-                    data: "foo=bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "bar"
             }
         );
 
@@ -1625,13 +1295,7 @@ mod options {
             TElementAttribute {
                 name: Some("opts"),
                 shorthand_items: vec![],
-                value: "option1",
-                source: TSpan {
-                    data: "opts=option1",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                },
+                value: "option1"
             }
         );
 
@@ -1669,24 +1333,12 @@ mod options {
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: vec![],
-                        value: "bar",
-                        source: TSpan {
-                            data: "foo=bar",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "bar"
                     },
                     TElementAttribute {
                         name: Some("options"),
                         shorthand_items: vec![],
-                        value: "option1,option2,option3",
-                        source: TSpan {
-                            data: "options=\"option1,option2,option3\"",
-                            line: 1,
-                            col: 9,
-                            offset: 8,
-                        },
+                        value: "option1,option2,option3"
                     },
                 ),
                 source: TSpan {
@@ -1703,13 +1355,7 @@ mod options {
             TElementAttribute {
                 name: Some("foo"),
                 shorthand_items: vec![],
-                value: "bar",
-                source: TSpan {
-                    data: "foo=bar",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "bar"
             }
         );
 
@@ -1718,25 +1364,16 @@ mod options {
             TElementAttribute {
                 name: Some("options"),
                 shorthand_items: vec![],
-                value: "option1,option2,option3",
-                source: TSpan {
-                    data: "options=\"option1,option2,option3\"",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                },
+                value: "option1,option2,option3"
             }
         );
 
         let options = mi.item.options();
         let mut options = options.iter();
 
-        assert_eq!(options.next().unwrap(), &"option1",);
-
-        assert_eq!(options.next().unwrap(), &"option2",);
-
-        assert_eq!(options.next().unwrap(), &"option3",);
-
+        assert_eq!(options.next().unwrap(), &"option1");
+        assert_eq!(options.next().unwrap(), &"option2");
+        assert_eq!(options.next().unwrap(), &"option3");
         assert!(options.next().is_none());
 
         assert!(mi.item.has_option("option1"));
@@ -1768,24 +1405,12 @@ mod options {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec!["#foo", "%sh1", "%sh2"],
-                        value: "#foo%sh1%sh2",
-                        source: TSpan {
-                            data: "#foo%sh1%sh2",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "#foo%sh1%sh2"
                     },
                     TElementAttribute {
                         name: Some("options"),
                         shorthand_items: vec![],
-                        value: "na1,na2,na3",
-                        source: TSpan {
-                            data: "options=\"na1,na2,na3\"",
-                            line: 1,
-                            col: 14,
-                            offset: 13,
-                        },
+                        value: "na1,na2,na3"
                     },
                 ),
                 source: TSpan {
@@ -1804,13 +1429,7 @@ mod options {
             TElementAttribute {
                 name: Some("options"),
                 shorthand_items: vec![],
-                value: "na1,na2,na3",
-                source: TSpan {
-                    data: "options=\"na1,na2,na3\"",
-                    line: 1,
-                    col: 14,
-                    offset: 13,
-                },
+                value: "na1,na2,na3"
             }
         );
 
@@ -1855,24 +1474,12 @@ mod options {
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec!["foo"],
-                        value: "foo",
-                        source: TSpan {
-                            data: "foo",
-                            line: 1,
-                            col: 1,
-                            offset: 0,
-                        },
+                        value: "foo"
                     },
                     TElementAttribute {
                         name: None,
                         shorthand_items: vec![],
-                        value: "blah%option",
-                        source: TSpan {
-                            data: "blah%option",
-                            line: 1,
-                            col: 5,
-                            offset: 4,
-                        },
+                        value: "blah%option"
                     },
                 ),
                 source: TSpan {
@@ -1915,35 +1522,17 @@ fn err_double_comma() {
                 TElementAttribute {
                     name: Some("alt"),
                     shorthand_items: vec![],
-                    value: "Sunset",
-                    source: TSpan {
-                        data: "alt=Sunset",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: "Sunset"
                 },
                 TElementAttribute {
                     name: Some("width"),
                     shorthand_items: vec![],
-                    value: "300",
-                    source: TSpan {
-                        data: "width=300",
-                        line: 1,
-                        col: 12,
-                        offset: 11,
-                    },
+                    value: "300"
                 },
                 TElementAttribute {
                     name: Some("height"),
                     shorthand_items: vec![],
-                    value: "400",
-                    source: TSpan {
-                        data: "height=400",
-                        line: 1,
-                        col: 23,
-                        offset: 22,
-                    },
+                    value: "400"
                 },
             ),
             source: TSpan {
@@ -1995,35 +1584,17 @@ fn applies_attribute_substitution_before_parsing() {
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec!["Sunset"],
-                    value: "Sunset",
-                    source: TSpan {
-                        data: "Sunset",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    value: "Sunset"
                 },
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec![],
-                    value: "300",
-                    source: TSpan {
-                        data: "300",
-                        line: 1,
-                        col: 8,
-                        offset: 7,
-                    },
+                    value: "300"
                 },
                 TElementAttribute {
                     name: None,
                     shorthand_items: vec![],
-                    value: "400",
-                    source: TSpan {
-                        data: "400",
-                        line: 1,
-                        col: 12,
-                        offset: 11,
-                    },
+                    value: "400"
                 }
             ),
             source: TSpan {
@@ -2047,13 +1618,7 @@ fn applies_attribute_substitution_before_parsing() {
         TElementAttribute {
             name: None,
             shorthand_items: vec!["Sunset"],
-            value: "Sunset",
-            source: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            value: "Sunset"
         }
     );
 
@@ -2062,13 +1627,7 @@ fn applies_attribute_substitution_before_parsing() {
         TElementAttribute {
             name: None,
             shorthand_items: vec!["Sunset"],
-            value: "Sunset",
-            source: TSpan {
-                data: "Sunset",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
+            value: "Sunset"
         }
     );
 
@@ -2077,13 +1636,7 @@ fn applies_attribute_substitution_before_parsing() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "300",
-            source: TSpan {
-                data: "300",
-                line: 1,
-                col: 8,
-                offset: 7,
-            },
+            value: "300"
         }
     );
 
@@ -2092,13 +1645,7 @@ fn applies_attribute_substitution_before_parsing() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "300",
-            source: TSpan {
-                data: "300",
-                line: 1,
-                col: 8,
-                offset: 7,
-            },
+            value: "300"
         }
     );
 
@@ -2107,13 +1654,7 @@ fn applies_attribute_substitution_before_parsing() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "400",
-            source: TSpan {
-                data: "400",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "400"
         }
     );
 
@@ -2122,20 +1663,12 @@ fn applies_attribute_substitution_before_parsing() {
         TElementAttribute {
             name: None,
             shorthand_items: vec![],
-            value: "400",
-            source: TSpan {
-                data: "400",
-                line: 1,
-                col: 12,
-                offset: 11,
-            },
+            value: "400"
         }
     );
 
     assert!(mi.item.nth_attribute(4).is_none());
-
     assert!(mi.item.named_or_positional_attribute("height", 4).is_none());
-
     assert!(mi.item.nth_attribute(42).is_none());
 
     assert_eq!(

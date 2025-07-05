@@ -129,14 +129,8 @@ This is a sidebar with a role assigned to it, rolename.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![".rolename"],
-                                value: ".rolename",
-                                source: TSpan {
-                                    data: ".rolename",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: ".rolename"
+        },
                         ],
                         source: TSpan {
                             data: ".rolename",
@@ -219,14 +213,8 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                             TElementAttribute {
                                 name: None,
                                 shorthand_items: vec![".role1",".role2"],
-                                value: ".role1.role2",
-                                source: TSpan {
-                                    data: ".role1.role2",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: ".role1.role2"
+        },
                         ],
                         source: TSpan {
                             data: ".role1.role2",
@@ -310,14 +298,8 @@ This is a sidebar with one role assigned to it, rolename.
                             TElementAttribute {
                                 name: Some("role"),
                                 shorthand_items: vec![],
-                                value: "rolename",
-                                source: TSpan {
-                                    data: "role=rolename",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "rolename"
+        },
                         ],
                         source: TSpan {
                             data: "role=rolename",
@@ -407,14 +389,8 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                             TElementAttribute {
                                 name: Some("role"),
                                 shorthand_items: vec![],
-                                value: "role1 role2",
-                                source: TSpan {
-                                    data: "role=\"role1 role2\"",
-                                    line: 1,
-                                    col: 2,
-                                    offset: 1,
-                                },
-                            },
+                                value: "role1 role2"
+        },
                         ],
                         source: TSpan {
                             data: "role=\"role1 role2\"",

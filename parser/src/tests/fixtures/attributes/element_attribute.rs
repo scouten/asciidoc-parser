@@ -1,13 +1,12 @@
 use std::{cmp::PartialEq, fmt};
 
-use crate::{attributes::ElementAttribute, tests::fixtures::TSpan, HasSpan};
+use crate::attributes::ElementAttribute;
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TElementAttribute {
     pub name: Option<&'static str>,
     pub shorthand_items: Vec<&'static str>,
     pub value: &'static str,
-    pub source: TSpan,
 }
 
 impl fmt::Debug for TElementAttribute {
@@ -16,7 +15,6 @@ impl fmt::Debug for TElementAttribute {
             .field("name", &self.name)
             .field("shorthand_items", &self.shorthand_items)
             .field("value", &self.value)
-            .field("source", &self.source)
             .finish()
     }
 }
@@ -40,10 +38,6 @@ impl PartialEq<TElementAttribute> for &ElementAttribute<'_> {
 }
 
 fn fixture_eq_observed(fixture: &TElementAttribute, observed: &ElementAttribute) -> bool {
-    if &fixture.source != observed.span() {
-        return false;
-    }
-
     if fixture.value != observed.value() {
         return false;
     }

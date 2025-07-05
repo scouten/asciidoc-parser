@@ -405,36 +405,17 @@ fn warn_child_attrlist_has_extra_comma() {
                         TElementAttribute {
                             name: Some("alt"),
                             shorthand_items: vec![],
-                            value: "Sunset",
-                            source: TSpan {
-                                data: "alt=Sunset",
-                                line: 3,
-                                col: 10,
-                                offset: 27,
-                            },
+                            value: "Sunset"
                         },
                         TElementAttribute {
                             name: Some("width"),
                             shorthand_items: vec![],
-                            value: "300",
-                            source: TSpan {
-                                data: "width=300",
-                                line: 3,
-                                col: 21,
-                                offset: 38,
-                            },
+                            value: "300"
                         },
                         TElementAttribute {
                             name: Some("height"),
                             shorthand_items: vec![],
-                            value: "400",
-
-                            source: TSpan {
-                                data: "height=400",
-                                line: 3,
-                                col: 32,
-                                offset: 49,
-                            },
+                            value: "400"
                         }
                     ),
                     source: TSpan {

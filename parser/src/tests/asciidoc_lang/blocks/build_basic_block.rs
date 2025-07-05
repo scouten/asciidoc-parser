@@ -285,13 +285,7 @@ include::example$block.adoc[tag=opt-listing]
                 attributes: vec![TElementAttribute {
                     name: None,
                     shorthand_items: vec!["listing"],
-                    value: "listing",
-                    source: TSpan {
-                        data: "listing",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "listing"
                 },],
                 source: TSpan {
                     data: "listing",
@@ -356,13 +350,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                 attributes: vec![TElementAttribute {
                     name: None,
                     shorthand_items: vec!["quote"],
-                    value: "quote",
-                    source: TSpan {
-                        data: "quote",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "quote"
                 },],
                 source: TSpan {
                     data: "quote",

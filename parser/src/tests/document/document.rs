@@ -465,36 +465,18 @@ fn err_bad_header_and_bad_macro() {
                                         TElementAttribute {
                                             name: Some("alt"),
                                             shorthand_items: vec![],
-                                            value: "Sunset",
-                                            source: TSpan {
-                                                data: "alt=Sunset",
-                                                line: 6,
-                                                col: 10,
-                                                offset: 53,
-                                            },
-                                        },
+                                            value: "Sunset"
+        },
                                         TElementAttribute {
                                             name: Some("width"),
                                             shorthand_items: vec![],
-                                            value: "300",
-                                            source: TSpan {
-                                                data: "width=300",
-                                                line: 6,
-                                                col: 21,
-                                                offset: 64,
-                                            },
-                                        },
+                                            value: "300"
+        },
                                         TElementAttribute {
                                             name: Some("height"),
                                             shorthand_items: vec![],
-                                            value: "400",
-                                            source: TSpan {
-                                                data: "height=400",
-                                                line: 6,
-                                                col: 32,
-                                                offset: 75,
-                                            },
-                                        },
+                                            value: "400"
+        },
                                     ],
                                     source: TSpan {
                                         data: "alt=Sunset,width=300,,height=400",

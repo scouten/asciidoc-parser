@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     attributes::ElementAttribute,
     tests::fixtures::{attributes::TElementAttribute, TSpan},
-    HasSpan, Parser, Span,
+    Parser, Span,
 };
 
 #[test]
@@ -36,12 +36,6 @@ fn only_spaces() {
             name: None,
             shorthand_items: vec![],
             value: "   ",
-            source: TSpan {
-                data: "   ",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
         }
     );
 
@@ -61,16 +55,6 @@ fn only_spaces() {
     );
 
     assert!(mi.item.name().is_none());
-
-    assert_eq!(
-        mi.item.span(),
-        TSpan {
-            data: "   ",
-            line: 1,
-            col: 1,
-            offset: 0,
-        }
-    );
 }
 
 #[test]
@@ -86,12 +70,6 @@ fn unquoted_and_unnamed_value() {
             name: None,
             shorthand_items: vec![],
             value: "abc",
-            source: TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
         }
     );
 
@@ -100,16 +78,6 @@ fn unquoted_and_unnamed_value() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
-
-    assert_eq!(
-        mi.item.span(),
-        TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0,
-        }
-    );
 
     assert_eq!(
         mi.after,
@@ -135,12 +103,6 @@ fn unquoted_stops_at_comma() {
             name: None,
             shorthand_items: vec![],
             value: "abc",
-            source: TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
         }
     );
 
@@ -149,16 +111,6 @@ fn unquoted_stops_at_comma() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
-
-    assert_eq!(
-        mi.item.span(),
-        TSpan {
-            data: "abc",
-            line: 1,
-            col: 1,
-            offset: 0,
-        }
-    );
 
     assert_eq!(
         mi.after,
@@ -178,7 +130,7 @@ mod quoted_string {
         attributes::ElementAttribute,
         tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
         warnings::WarningType,
-        HasSpan, Parser, Span,
+        Parser, Span,
     };
 
     #[test]
@@ -214,13 +166,7 @@ mod quoted_string {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "abc",
-                source: TSpan {
-                    data: "\"abc\"",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "abc"
             }
         );
 
@@ -229,16 +175,6 @@ mod quoted_string {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "\"abc\"",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -263,13 +199,7 @@ mod quoted_string {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "a\\\"bc",
-                source: TSpan {
-                    data: "\"a\\\"bc\"",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "a\\\"bc"
             }
         );
 
@@ -278,16 +208,6 @@ mod quoted_string {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "\"a\\\"bc\"",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -312,13 +232,7 @@ mod quoted_string {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "a'bc",
-                source: TSpan {
-                    data: "\"a'bc\"",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "a'bc"
             }
         );
 
@@ -327,16 +241,6 @@ mod quoted_string {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "\"a'bc\"",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -382,13 +286,7 @@ mod quoted_string {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "abc",
-                source: TSpan {
-                    data: "'abc'",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "abc"
             }
         );
 
@@ -397,16 +295,6 @@ mod quoted_string {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "'abc'",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -431,13 +319,7 @@ mod quoted_string {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "a\\'bc",
-                source: TSpan {
-                    data: "'a\\'bc'",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "a\\'bc"
             }
         );
 
@@ -446,16 +328,6 @@ mod quoted_string {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "'a\\'bc'",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -480,13 +352,7 @@ mod quoted_string {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "a\"bc",
-                source: TSpan {
-                    data: "'a\"bc'",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "a\"bc"
             }
         );
 
@@ -495,16 +361,6 @@ mod quoted_string {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "'a\"bc'",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -524,7 +380,7 @@ mod named {
     use crate::{
         attributes::ElementAttribute,
         tests::fixtures::{attributes::TElementAttribute, TSpan},
-        HasSpan, Parser, Span,
+        Parser, Span,
     };
 
     #[test]
@@ -539,13 +395,7 @@ mod named {
             TElementAttribute {
                 name: Some("abc"),
                 shorthand_items: vec![],
-                value: "def",
-                source: TSpan {
-                    data: "abc=def",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "def"
             }
         );
 
@@ -554,16 +404,6 @@ mod named {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "abc=def",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -588,27 +428,11 @@ mod named {
             TElementAttribute {
                 name: Some("abc"),
                 shorthand_items: vec![],
-                value: "def",
-                source: TSpan {
-                    data: "abc =  def",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "def"
             }
         );
 
         assert_eq!(mi.item.name().unwrap(), "abc");
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "abc =  def",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -633,13 +457,7 @@ mod named {
             TElementAttribute {
                 name: Some("94-x"),
                 shorthand_items: vec![],
-                value: "def",
-                source: TSpan {
-                    data: "94-x =def",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "def"
             }
         );
 
@@ -649,16 +467,6 @@ mod named {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "94-x =def",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -683,13 +491,7 @@ mod named {
             TElementAttribute {
                 name: Some("abc"),
                 shorthand_items: vec![],
-                value: "def",
-                source: TSpan {
-                    data: "abc='def'",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "def"
             }
         );
 
@@ -698,16 +500,6 @@ mod named {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "abc='def'",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -732,13 +524,7 @@ mod named {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "abc=",
-                source: TSpan {
-                    data: "abc=",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "abc="
             }
         );
 
@@ -747,16 +533,6 @@ mod named {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "abc=",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -781,13 +557,7 @@ mod named {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![],
-                value: "abc=",
-                source: TSpan {
-                    data: "abc=",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "abc="
             }
         );
 
@@ -796,16 +566,6 @@ mod named {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "abc=",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -826,7 +586,7 @@ mod parse_with_shorthand {
         attributes::ElementAttribute,
         tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
         warnings::WarningType,
-        HasSpan, Parser, Span,
+        Parser, Span,
     };
 
     #[test]
@@ -841,35 +601,16 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["abc"],
-                value: "abc",
-                source: TSpan {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "abc"
             }
         );
 
         assert!(mi.item.name().is_none());
-
         assert_eq!(mi.item.shorthand_items(), vec!["abc"]);
-
         assert_eq!(mi.item.block_style().unwrap(), "abc");
-
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "abc",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -894,13 +635,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: Some("name"),
                 shorthand_items: vec![],
-                value: "block_style#id",
-                source: TSpan {
-                    data: "name=block_style#id",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "block_style#id"
             }
         );
 
@@ -910,16 +645,6 @@ mod parse_with_shorthand {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "name=block_style#id",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -944,13 +669,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["abc"],
-                value: "abc#",
-                source: TSpan {
-                    data: "abc#",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "abc#"
             }
         );
 
@@ -990,13 +709,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["abc", "#id"],
-                value: "abc##id",
-                source: TSpan {
-                    data: "abc##id",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "abc##id"
             }
         );
 
@@ -1036,13 +749,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["#xyz"],
-                value: "#xyz",
-                source: TSpan {
-                    data: "#xyz",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "#xyz"
             }
         );
 
@@ -1052,16 +759,6 @@ mod parse_with_shorthand {
         assert_eq!(mi.item.id().unwrap(), "xyz");
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "#xyz",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -1086,13 +783,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![".role1",],
-                value: ".role1",
-                source: TSpan {
-                    data: ".role1",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: ".role1"
             }
         );
 
@@ -1102,16 +793,6 @@ mod parse_with_shorthand {
         assert!(mi.item.id().is_none());
         assert_eq!(mi.item.roles(), vec!("role1"));
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: ".role1",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -1136,13 +817,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec![".role1", ".role2", ".role3"],
-                value: ".role1.role2.role3",
-                source: TSpan {
-                    data: ".role1.role2.role3",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: ".role1.role2.role3"
             }
         );
 
@@ -1157,16 +832,6 @@ mod parse_with_shorthand {
         assert!(mi.item.id().is_none());
         assert_eq!(mi.item.roles(), vec!("role1", "role2", "role3",));
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: ".role1.role2.role3",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -1191,13 +856,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["%option1"],
-                value: "%option1",
-                source: TSpan {
-                    data: "%option1",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "%option1"
             }
         );
 
@@ -1207,16 +866,6 @@ mod parse_with_shorthand {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert_eq!(mi.item.options(), vec!("option1"));
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "%option1",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -1241,13 +890,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["%option1", "%option2", "%option3"],
-                value: "%option1%option2%option3",
-                source: TSpan {
-                    data: "%option1%option2%option3",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "%option1%option2%option3"
             }
         );
 
@@ -1262,16 +905,6 @@ mod parse_with_shorthand {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert_eq!(mi.item.options(), vec!("option1", "option2", "option3"));
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "%option1%option2%option3",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -1296,13 +929,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["appendix", "#custom-id"],
-                value: "appendix#custom-id",
-                source: TSpan {
-                    data: "appendix#custom-id",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "appendix#custom-id"
             }
         );
 
@@ -1312,16 +939,6 @@ mod parse_with_shorthand {
         assert_eq!(mi.item.id().unwrap(), "custom-id",);
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "appendix#custom-id",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,
@@ -1347,13 +964,7 @@ mod parse_with_shorthand {
             TElementAttribute {
                 name: None,
                 shorthand_items: vec!["#rules", ".prominent", "%incremental"],
-                value: "#rules.prominent%incremental",
-                source: TSpan {
-                    data: "#rules.prominent%incremental",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                value: "#rules.prominent%incremental"
             }
         );
 
@@ -1368,16 +979,6 @@ mod parse_with_shorthand {
         assert_eq!(mi.item.id().unwrap(), "rules");
         assert_eq!(mi.item.roles(), vec!("prominent"));
         assert_eq!(mi.item.options(), vec!("incremental"));
-
-        assert_eq!(
-            mi.item.span(),
-            TSpan {
-                data: "#rules.prominent%incremental",
-                line: 1,
-                col: 1,
-                offset: 0,
-            }
-        );
 
         assert_eq!(
             mi.after,

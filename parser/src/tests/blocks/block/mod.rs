@@ -252,13 +252,7 @@ mod error_cases {
                 attributes: vec![TElementAttribute {
                     name: Some("alt"),
                     shorthand_items: vec![],
-                    value: "Sunset",
-                    source: TSpan {
-                        data: "alt=\"Sunset\"",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "Sunset"
                 },],
                 source: TSpan {
                     data: "alt=\"Sunset\"width=300",
@@ -311,13 +305,7 @@ mod error_cases {
                     attributes: vec![TElementAttribute {
                         name: Some("alt"),
                         shorthand_items: vec![],
-                        value: "Sunset",
-                        source: TSpan {
-                            data: "alt=\"Sunset\"",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "Sunset"
                     },],
                     source: TSpan {
                         data: "alt=\"Sunset\"width=300",

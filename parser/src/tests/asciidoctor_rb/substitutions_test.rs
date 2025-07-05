@@ -4135,13 +4135,7 @@ mod post_replacements {
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["%hardbreaks"],
-                        value: "%hardbreaks",
-                        source: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "%hardbreaks"
                     },],
                     source: TSpan {
                         data: "%hardbreaks",
@@ -4188,13 +4182,7 @@ mod post_replacements {
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["%hardbreaks"],
-                        value: "%hardbreaks",
-                        source: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "%hardbreaks"
                     },],
                     source: TSpan {
                         data: "%hardbreaks",
@@ -4238,13 +4226,7 @@ mod post_replacements {
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["%hardbreaks"],
-                        value: "%hardbreaks",
-                        source: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "%hardbreaks"
                     },],
                     source: TSpan {
                         data: "%hardbreaks",
