@@ -1,7 +1,7 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    attributes::ElementAttribute,
+    attributes::{element_attribute::ParseShorthand, ElementAttribute},
     tests::fixtures::{attributes::TElementAttribute, TSpan},
     Parser, Span,
 };
@@ -10,7 +10,9 @@ use crate::{
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let p = Parser::default();
-    let b1 = ElementAttribute::parse(Span::new("abc"), &p).item.unwrap();
+    let b1 = ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(false))
+        .item
+        .unwrap();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
@@ -18,15 +20,17 @@ fn impl_clone() {
 #[test]
 fn empty_source() {
     let p = Parser::default();
-    assert!(ElementAttribute::parse(Span::new(""), &p)
-        .unwrap_if_no_warnings()
-        .is_none());
+    assert!(
+        ElementAttribute::parse(Span::new(""), &p, ParseShorthand(false))
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]
 fn only_spaces() {
     let p = Parser::default();
-    let mi = ElementAttribute::parse(Span::new("   "), &p)
+    let mi = ElementAttribute::parse(Span::new("   "), &p, ParseShorthand(false))
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -60,7 +64,7 @@ fn only_spaces() {
 #[test]
 fn unquoted_and_unnamed_value() {
     let p = Parser::default();
-    let mi = ElementAttribute::parse(Span::new("abc"), &p)
+    let mi = ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(false))
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -93,7 +97,7 @@ fn unquoted_and_unnamed_value() {
 #[test]
 fn unquoted_stops_at_comma() {
     let p = Parser::default();
-    let mi = ElementAttribute::parse(Span::new("abc,def"), &p)
+    let mi = ElementAttribute::parse(Span::new("abc,def"), &p, ParseShorthand(false))
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -127,7 +131,7 @@ mod quoted_string {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        attributes::ElementAttribute,
+        attributes::{element_attribute::ParseShorthand, ElementAttribute},
         tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
         warnings::WarningType,
         Parser, Span,
@@ -136,7 +140,7 @@ mod quoted_string {
     #[test]
     fn err_unterminated_double_quote() {
         let p = Parser::default();
-        let maw = ElementAttribute::parse(Span::new("\"xxx"), &p);
+        let maw = ElementAttribute::parse(Span::new("\"xxx"), &p, ParseShorthand(false));
 
         assert!(maw.item.is_none());
 
@@ -157,7 +161,7 @@ mod quoted_string {
     #[test]
     fn double_quoted_string() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("\"abc\"def"), &p)
+        let mi = ElementAttribute::parse(Span::new("\"abc\"def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -190,7 +194,7 @@ mod quoted_string {
     #[test]
     fn double_quoted_with_escape() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("\"a\\\"bc\"def"), &p)
+        let mi = ElementAttribute::parse(Span::new("\"a\\\"bc\"def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -223,7 +227,7 @@ mod quoted_string {
     #[test]
     fn double_quoted_with_single_quote() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("\"a'bc\"def"), &p)
+        let mi = ElementAttribute::parse(Span::new("\"a'bc\"def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -256,7 +260,7 @@ mod quoted_string {
     #[test]
     fn err_unterminated_single_quote() {
         let p = Parser::default();
-        let maw = ElementAttribute::parse(Span::new("\'xxx"), &p);
+        let maw = ElementAttribute::parse(Span::new("\'xxx"), &p, ParseShorthand(false));
 
         assert!(maw.item.is_none());
 
@@ -277,7 +281,7 @@ mod quoted_string {
     #[test]
     fn single_quoted_string() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("'abc'def"), &p)
+        let mi = ElementAttribute::parse(Span::new("'abc'def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -310,7 +314,7 @@ mod quoted_string {
     #[test]
     fn single_quoted_with_escape() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("'a\\'bc'def"), &p)
+        let mi = ElementAttribute::parse(Span::new("'a\\'bc'def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -343,7 +347,7 @@ mod quoted_string {
     #[test]
     fn single_quoted_with_double_quote() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("'a\"bc'def"), &p)
+        let mi = ElementAttribute::parse(Span::new("'a\"bc'def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -378,7 +382,7 @@ mod named {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        attributes::ElementAttribute,
+        attributes::{element_attribute::ParseShorthand, ElementAttribute},
         tests::fixtures::{attributes::TElementAttribute, TSpan},
         Parser, Span,
     };
@@ -386,7 +390,7 @@ mod named {
     #[test]
     fn simple_named_value() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc=def"), &p)
+        let mi = ElementAttribute::parse(Span::new("abc=def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -419,7 +423,7 @@ mod named {
     #[test]
     fn ignores_spaces_around_equals() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc =  def"), &p)
+        let mi = ElementAttribute::parse(Span::new("abc =  def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -448,7 +452,7 @@ mod named {
     #[test]
     fn numeric_name() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("94-x =def"), &p)
+        let mi = ElementAttribute::parse(Span::new("94-x =def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -482,7 +486,7 @@ mod named {
     #[test]
     fn quoted_value() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc='def'g"), &p)
+        let mi = ElementAttribute::parse(Span::new("abc='def'g"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -515,7 +519,7 @@ mod named {
     #[test]
     fn fallback_if_no_value() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc="), &p)
+        let mi = ElementAttribute::parse(Span::new("abc="), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -548,7 +552,7 @@ mod named {
     #[test]
     fn fallback_if_immediate_comma() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc=,def"), &p)
+        let mi = ElementAttribute::parse(Span::new("abc=,def"), &p, ParseShorthand(false))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -583,7 +587,7 @@ mod parse_with_shorthand {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        attributes::ElementAttribute,
+        attributes::{element_attribute::ParseShorthand, ElementAttribute},
         tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
         warnings::WarningType,
         Parser, Span,
@@ -592,7 +596,7 @@ mod parse_with_shorthand {
     #[test]
     fn block_style_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("abc"), &p)
+        let mi = ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(true))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -626,9 +630,10 @@ mod parse_with_shorthand {
     #[test]
     fn ignore_if_named_attribute() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("name=block_style#id"), &p)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi =
+            ElementAttribute::parse(Span::new("name=block_style#id"), &p, ParseShorthand(true))
+                .unwrap_if_no_warnings()
+                .unwrap();
 
         assert_eq!(
             mi.item,
@@ -663,7 +668,7 @@ mod parse_with_shorthand {
         // Disabling this test for now (05 Jul 2025): May not be possible to show this
         // error after refactoring Attrlist to apply attribute value substitutions.
         let p = Parser::default();
-        let maw = ElementAttribute::parse_with_shorthand(Span::new("abc#"), &p);
+        let maw = ElementAttribute::parse(Span::new("abc#"), &p, ParseShorthand(true));
 
         let mi = maw.item.unwrap();
 
@@ -706,7 +711,7 @@ mod parse_with_shorthand {
         // Disabling this test for now (05 Jul 2025): May not be possible to show this
         // error after refactoring Attrlist to apply attribute value substitutions.
         let p = Parser::default();
-        let maw = ElementAttribute::parse_with_shorthand(Span::new("abc##id"), &p);
+        let maw = ElementAttribute::parse(Span::new("abc##id"), &p, ParseShorthand(true));
 
         let mi = maw.item.unwrap();
 
@@ -746,7 +751,7 @@ mod parse_with_shorthand {
     #[test]
     fn id_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("#xyz"), &p)
+        let mi = ElementAttribute::parse(Span::new("#xyz"), &p, ParseShorthand(true))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -780,7 +785,7 @@ mod parse_with_shorthand {
     #[test]
     fn one_role_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1"), &p)
+        let mi = ElementAttribute::parse(Span::new(".role1"), &p, ParseShorthand(true))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -814,7 +819,7 @@ mod parse_with_shorthand {
     #[test]
     fn multiple_roles() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new(".role1.role2.role3"), &p)
+        let mi = ElementAttribute::parse(Span::new(".role1.role2.role3"), &p, ParseShorthand(true))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -853,7 +858,7 @@ mod parse_with_shorthand {
     #[test]
     fn one_option_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("%option1"), &p)
+        let mi = ElementAttribute::parse(Span::new("%option1"), &p, ParseShorthand(true))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -887,9 +892,13 @@ mod parse_with_shorthand {
     #[test]
     fn multiple_options() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("%option1%option2%option3"), &p)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = ElementAttribute::parse(
+            Span::new("%option1%option2%option3"),
+            &p,
+            ParseShorthand(true),
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
@@ -926,7 +935,7 @@ mod parse_with_shorthand {
     #[test]
     fn block_style_and_id() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse_with_shorthand(Span::new("appendix#custom-id"), &p)
+        let mi = ElementAttribute::parse(Span::new("appendix#custom-id"), &p, ParseShorthand(true))
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -960,10 +969,13 @@ mod parse_with_shorthand {
     #[test]
     fn id_role_and_option() {
         let p = Parser::default();
-        let mi =
-            ElementAttribute::parse_with_shorthand(Span::new("#rules.prominent%incremental"), &p)
-                .unwrap_if_no_warnings()
-                .unwrap();
+        let mi = ElementAttribute::parse(
+            Span::new("#rules.prominent%incremental"),
+            &p,
+            ParseShorthand(true),
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,

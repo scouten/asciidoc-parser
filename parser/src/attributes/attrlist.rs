@@ -1,7 +1,7 @@
 use std::slice::Iter;
 
 use crate::{
-    attributes::ElementAttribute,
+    attributes::{element_attribute::ParseShorthand, ElementAttribute},
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
     HasSpan, Parser, Span,
@@ -39,11 +39,8 @@ impl<'src> Attrlist<'src> {
         }
 
         loop {
-            let mut maybe_attr_and_warnings = if parse_shorthand_items {
-                ElementAttribute::parse_with_shorthand(after, parser)
-            } else {
-                ElementAttribute::parse(after, parser)
-            };
+            let mut maybe_attr_and_warnings =
+                ElementAttribute::parse(after, parser, ParseShorthand(parse_shorthand_items));
 
             if !maybe_attr_and_warnings.warnings.is_empty() {
                 warnings.append(&mut maybe_attr_and_warnings.warnings);

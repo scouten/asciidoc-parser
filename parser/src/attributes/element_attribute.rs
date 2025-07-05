@@ -23,21 +23,7 @@ impl<'src> ElementAttribute<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
         parser: &Parser,
-    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, parser, false)
-    }
-
-    pub(crate) fn parse_with_shorthand(
-        source: Span<'src>,
-        parser: &Parser,
-    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, parser, true)
-    }
-
-    fn parse_internal(
-        source: Span<'src>,
-        parser: &Parser,
-        parse_shorthand: bool,
+        parse_shorthand: ParseShorthand,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let mut warnings: Vec<Warning<'src>> = vec![];
 
@@ -95,7 +81,7 @@ impl<'src> ElementAttribute<'src> {
             CowStr::from(value.item.data())
         };
 
-        let shorthand_item_indices = if name.is_none() && parse_shorthand {
+        let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
             parse_shorthand_items(&value)
         } else {
             vec![]
@@ -365,3 +351,6 @@ fn parse_shorthand_items(source: &str) -> Vec<usize> {
 fn is_shorthand_delimiter(c: char) -> bool {
     c == '#' || c == '%' || c == '.'
 }
+
+#[derive(Clone, Debug)]
+pub(crate) struct ParseShorthand(pub bool);
