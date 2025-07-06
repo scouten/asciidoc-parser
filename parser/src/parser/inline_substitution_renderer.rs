@@ -358,7 +358,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         // TO DO: Enforce non-safe mode. Add this contraint to following `if` clause:
         // `&& node.document.safe < SafeMode::SECURE`
 
-        let img = if format == Some("svg") || params.target.contains(".svg") {
+        let mut img = if format == Some("svg") || params.target.contains(".svg") {
             if params.attrlist.has_option("inline") {
                 todo!(
                     "Port this: {}",
@@ -395,6 +395,18 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 // node.alt}"#{attrs}#{@void_element_slash}>)
             )
         };
+
+        if let Some(link) = params.attrlist.named_attribute("link") {
+            // TO DO: Enforce this constraint in addition to above:
+            // if ... && ((href_attr_val = node.attr 'link') != 'self' || (href_attr_val =
+            // src))
+            img = format!(
+                r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
+                link = link.value(),
+                link_constraint_attrs = "" /* link_constraint_attrs =
+                                            * (append_link_constraint_attrs node).join} */
+            );
+        }
 
         render_icon_or_image(params, &img, "image", dest);
     }

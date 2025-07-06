@@ -39,7 +39,8 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
     }
 
     if found_colon && text.contains("://") {
-        todo!("URL macro");
+        // Don't panic here -- other tests are generating URLs now.
+        // todo!("URL macro");
         // Port Ruby Asciidoctor's implementation from lines 538..634.
     }
 

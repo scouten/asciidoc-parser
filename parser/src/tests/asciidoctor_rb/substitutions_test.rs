@@ -1748,18 +1748,48 @@ mod macros {
         // * test 'should pass through role on image macro to DocBook output'
     }
 
+    #[test]
+    fn a_single_line_image_macro_with_text_and_link_should_be_interpreted_as_a_linked_image_with_alt_text(
+    ) {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new(r#"image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]"#),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><a class="image" href="http://en.wikipedia.org/wiki/Tiger"><img src="tiger.png" alt="Tiger"></a></span>"#,
+                },
+                source: TSpan {
+                    data: r#"image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'a single-line image macro with text and link should be interpreted as a linked image with alt text' do
-            para = block_from_string 'image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]'
-            assert_equal '<span class="image"><a class="image" href="http://en.wikipedia.org/wiki/Tiger"><img src="tiger.png" alt="Tiger"></a></span>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'a single-line image macro with text and link to self should be interpreted as a self-referencing image with alt text' do
             para = block_from_string 'image:tiger.png[Tiger, link=self]', attributes: { 'imagesdir' => 'img' }
             assert_equal '<span class="image"><a class="image" href="img/tiger.png"><img src="img/tiger.png" alt="Tiger"></a></span>',
