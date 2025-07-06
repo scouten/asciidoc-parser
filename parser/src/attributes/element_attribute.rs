@@ -73,7 +73,7 @@ impl<'src> ElementAttribute<'src> {
                 SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
                 CowStr::from(content.rendered().to_string())
             } else {
-                cowstr_from_source_and_span(&source_text, &value.item)
+                cowstr_from_source_and_span(source_text, &value.item)
             };
 
             let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
@@ -82,7 +82,7 @@ impl<'src> ElementAttribute<'src> {
                 vec![]
             };
 
-            let name = name.map(|name| cowstr_from_source_and_span(&&source_text, &name));
+            let name = name.map(|name| cowstr_from_source_and_span(source_text, &name));
 
             (name, value, shorthand_item_indices, after.byte_offset())
         };
@@ -359,7 +359,7 @@ fn is_shorthand_delimiter(c: char) -> bool {
 pub(crate) struct ParseShorthand(pub bool);
 
 fn cowstr_from_source_and_span<'src>(source: &CowStr<'src>, span: &Span<'_>) -> CowStr<'src> {
-    if let CowStr::Borrowed(ref source) = source {
+    if let CowStr::Borrowed(source) = source {
         let borrowed: Span<'src> = Span::new(source)
             .discard(span.byte_offset())
             .slice_to(..span.len());
