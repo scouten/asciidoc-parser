@@ -1622,7 +1622,9 @@ mod macros {
 
     #[ignore]
     #[test]
-    fn todo_migrate_from_ruby_2() {
+    fn todo_issue_272_inline_interactive() {
+        // TO DO: Implement `inline` and `interactive` options for SVG images.
+        // https://github.com/scouten/asciidoc-parser/issues/272
         todo!(
             "{}",
             r###"
@@ -1661,7 +1663,16 @@ mod macros {
             para = block_from_string 'image:tiger.svg[Tiger,opts=interactive]', attributes: { 'imagesdir' => 'images' }
             assert_equal '<span class="image"><img src="images/tiger.svg" alt="Tiger"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
         end
+        "###
+        );
+    }
 
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby_2() {
+        todo!(
+            "{}",
+            r###"
         test 'a single-line image macro with text containing escaped square bracket should be interpreted as an image with alt text' do
             para = block_from_string %(image:tiger.png[[Another#{BACKSLASH}] Tiger])
             assert_equal '<span class="image"><img src="tiger.png" alt="[Another] Tiger"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
