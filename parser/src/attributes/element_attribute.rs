@@ -1,9 +1,4 @@
-use crate::{
-    span::{content::SubstitutionGroup, MatchedItem},
-    strings::CowStr,
-    warnings::WarningType,
-    Content, Parser, Span,
-};
+use crate::{span::MatchedItem, strings::CowStr, warnings::WarningType, Parser, Span};
 
 /// This struct represents a single element attribute.
 ///
@@ -23,7 +18,7 @@ impl<'src> ElementAttribute<'src> {
     pub(crate) fn parse(
         source_text: &CowStr<'src>,
         start_index: usize,
-        parser: &Parser,
+        _parser: &Parser,
         parse_shorthand: ParseShorthand,
     ) -> (Option<(Self, usize)>, Vec<WarningType>) {
         let mut warnings: Vec<WarningType> = vec![];
@@ -68,6 +63,14 @@ impl<'src> ElementAttribute<'src> {
 
             let after = value.after;
 
+            let value = cowstr_from_source_and_span(source_text, &value.item);
+
+            // TO DO: Redo this to support substitutions but only in correct circumstances.
+            // It doesnt apply in all cases.
+            if false {
+                todo!(
+                    "Reconsider this: {}",
+                    r#"
             let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
                 let mut content = Content::from(value.item);
                 SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
@@ -75,6 +78,9 @@ impl<'src> ElementAttribute<'src> {
             } else {
                 cowstr_from_source_and_span(source_text, &value.item)
             };
+                    "#
+                );
+            }
 
             let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
                 parse_shorthand_items(&value)
