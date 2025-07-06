@@ -364,11 +364,8 @@ fn err_unparsed_remainder_after_value() {
     );
 }
 
-#[ignore]
 #[test]
 fn propagates_error_from_element_attribute() {
-    // Disabling this test for now (05 Jul 2025): May not be possible to show this
-    // error after refactoring Attrlist to apply attribute value substitutions.
     let p = Parser::default();
     let maw = Attrlist::parse(Span::new("foo%#id"), &p);
 
@@ -405,10 +402,10 @@ fn propagates_error_from_element_attribute() {
         maw.warnings,
         vec![TWarning {
             source: TSpan {
-                data: "%",
+                data: "foo%#id",
                 line: 1,
-                col: 4,
-                offset: 3,
+                col: 1,
+                offset: 0,
             },
             warning: WarningType::EmptyShorthandItem,
         }]

@@ -561,11 +561,8 @@ mod parse_with_shorthand {
         assert_eq!(offset, 19);
     }
 
-    #[ignore]
     #[test]
     fn error_empty_id() {
-        // Disabling this test for now (05 Jul 2025): May not be possible to show this
-        // error after refactoring Attrlist to apply attribute value substitutions.
         let p = Parser::default();
         let (maybe_mi, warning_types) =
             ElementAttribute::parse(&CowStr::from("abc#"), 0, &p, ParseShorthand(true));
@@ -582,15 +579,11 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(offset, 4);
-
         assert_eq!(warning_types, vec![WarningType::EmptyShorthandItem]);
     }
 
-    #[ignore]
     #[test]
     fn error_duplicate_delimiter() {
-        // Disabling this test for now (05 Jul 2025): May not be possible to show this
-        // error after refactoring Attrlist to apply attribute value substitutions.
         let p = Parser::default();
         let (maybe_mi, warning_types) =
             ElementAttribute::parse(&CowStr::from("abc##id"), 0, &p, ParseShorthand(true));
@@ -607,7 +600,6 @@ mod parse_with_shorthand {
         );
 
         assert_eq!(offset, 7);
-
         assert_eq!(warning_types, vec![WarningType::EmptyShorthandItem]);
     }
 

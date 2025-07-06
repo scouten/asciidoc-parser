@@ -62,17 +62,16 @@ impl<'src> Attrlist<'src> {
                 ParseShorthand(parse_shorthand_items),
             );
 
-            if !warnings.is_empty() {
-                // Because we do attribute value substitution early on in parsing, we can't
-                // pinpoint the exact location of warnings in an attribute list. For that
-                // reason, individual attribute parsing only returns the warning type and we
-                // then map it back to the entire attrlist source.
-                for warning_type in warning_types {
-                    warnings.push(Warning {
-                        source,
-                        warning: warning_type,
-                    });
-                }
+            // Because we do attribute value substitution early on in parsing, we can't
+            // pinpoint the exact location of warnings in an attribute list. For that
+            // reason, individual attribute parsing only returns the warning type and we
+            // then map it back to the entire attrlist source.
+            for warning_type in warning_types {
+                dbg!(&warning_type);
+                warnings.push(Warning {
+                    source,
+                    warning: warning_type,
+                });
             }
 
             let Some((attr, new_index)) = maybe_attr else {

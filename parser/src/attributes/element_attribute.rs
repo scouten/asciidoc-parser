@@ -76,7 +76,7 @@ impl<'src> ElementAttribute<'src> {
             // };
 
             let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
-                parse_shorthand_items(&value)
+                parse_shorthand_items(&value, &mut warnings)
             } else {
                 vec![]
             };
@@ -126,6 +126,10 @@ impl<'src> ElementAttribute<'src> {
             } else {
                 &value[*curr..]
             };
+
+            if next_item == "#" || next_item == "." || next_item == "%" {
+                continue;
+            }
 
             next_item = next_item.trim_end();
 
@@ -295,7 +299,7 @@ impl<'src> ElementAttribute<'src> {
     }
 }
 
-fn parse_shorthand_items(source: &str) -> Vec<usize> {
+fn parse_shorthand_items(source: &str, warnings: &mut Vec<WarningType>) -> Vec<usize> {
     let mut shorthand_item_indices: Vec<usize> = vec![];
     let mut span = Span::new(source);
 
@@ -312,12 +316,8 @@ fn parse_shorthand_items(source: &str) -> Vec<usize> {
 
         match after_delimiter.position(is_shorthand_delimiter) {
             None => {
-                eprintln!("None?");
                 if after_delimiter.is_empty() {
-                    // warnings.push(Warning {
-                    //     source: span,
-                    //     warning: WarningType::EmptyShorthandItem,
-                    // });
+                    warnings.push(WarningType::EmptyShorthandItem);
                     shorthand_item_indices.push(span.byte_offset());
                     span = after_delimiter;
                 } else {
@@ -328,10 +328,7 @@ fn parse_shorthand_items(source: &str) -> Vec<usize> {
 
             Some(0) => {
                 shorthand_item_indices.push(span.byte_offset());
-                // warnings.push(Warning {
-                //     source: span.trim_remainder(after_delimiter),
-                //     warning: WarningType::EmptyShorthandItem,
-                // });
+                warnings.push(WarningType::EmptyShorthandItem);
                 span = after_delimiter;
             }
 
