@@ -114,7 +114,7 @@ impl Replacer for InlineImageMacroReplacer<'_> {
 
         let target = &caps[1];
         let span = Span::new(&caps[2]);
-        let attrlist = Attrlist::parse(span).item.item;
+        let attrlist = Attrlist::parse(span, self.0).item.item;
 
         let default_alt = basename(&target.replace('_', " ").replace('-', " "));
         // IMPORTANT: Implementations of `render_icon` and `render_image` need to
@@ -133,13 +133,13 @@ impl Replacer for InlineImageMacroReplacer<'_> {
                 target,
                 alt: attrlist
                     .named_or_positional_attribute("alt", 1)
-                    .map_or(default_alt, |a| a.raw_value().to_string()),
+                    .map_or(default_alt, |a| a.value().to_string()),
                 width: attrlist
                     .named_or_positional_attribute("width", 2)
-                    .map(|a| a.raw_value().data()),
+                    .map(|a| a.value()),
                 height: attrlist
                     .named_or_positional_attribute("height", 3)
-                    .map(|a| a.raw_value().data()),
+                    .map(|a| a.value()),
                 attrlist: &attrlist,
                 parser: self.0,
             };

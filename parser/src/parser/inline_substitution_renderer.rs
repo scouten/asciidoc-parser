@@ -345,14 +345,15 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             title = params
                 .attrlist
                 .named_attribute("title")
-                .map(|title| format!(r#" title="{}""#, *title.raw_value()))
+                .map(|title| format!(r#" title="{}""#, title.value()))
+                .map(encode_attribute_value)
                 .unwrap_or_default()
         );
 
         let format = params
             .attrlist
             .named_attribute("format")
-            .map(|format| *format.raw_value());
+            .map(|format| format.value());
 
         // TO DO: Enforce non-safe mode. Add this contraint to following `if` clause:
         // `&& node.document.safe < SafeMode::SECURE`
@@ -375,7 +376,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             format!(
                 r#"<img src="{src}" alt="{alt}"{attrs}{void_element_slash}>"#,
                 src = params.target,
-                alt = params.alt,
+                alt = encode_attribute_value(params.alt.to_string()),
                 attrs = attrs,
                 void_element_slash = "",
                 // img = %(<img src="#{src = node.image_uri target}" alt="#{encode_attribute_value
@@ -448,4 +449,8 @@ fn render_icon_or_image(
     dest.push_str(r#"">"#);
     dest.push_str(img);
     dest.push_str("</span>");
+}
+
+fn encode_attribute_value(value: String) -> String {
+    value.replace('"', "&quot;")
 }
