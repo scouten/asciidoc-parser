@@ -86,11 +86,6 @@ impl<'src> Attrlist<'src> {
             attributes.push(attr);
 
             let mut after = Span::new(source_cow.as_ref()).discard(new_index);
-
-            if new_index > after.byte_offset() {
-                after = after.discard(new_index - after.byte_offset());
-            }
-
             after = after.take_whitespace().after;
 
             match after.take_prefix(",") {
