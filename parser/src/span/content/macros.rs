@@ -7,7 +7,7 @@ use crate::{attributes::Attrlist, parser::ImageRenderParams, Span};
 use crate::{Content, Parser};
 
 pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
-    let text = content.rendered().to_string();
+    let mut text = content.rendered().to_string();
     let found_square_bracket = text.contains('[');
     let found_colon = text.contains(':');
     let found_macroish = found_square_bracket && found_colon;
@@ -27,6 +27,7 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         if let Cow::Owned(new_result) = INLINE_IMAGE_MACRO.replace_all(content.rendered(), replacer)
         {
             content.rendered = new_result.into();
+            text = content.rendered.to_string();
         }
     }
 
@@ -133,7 +134,9 @@ impl Replacer for InlineImageMacroReplacer<'_> {
                 target,
                 alt: attrlist
                     .named_or_positional_attribute("alt", 1)
-                    .map_or(default_alt, |a| a.value().to_string()),
+                    .map_or(default_alt, |a| {
+                        normalize_text_lf_escaped_bracket(a.value())
+                    }),
                 width: attrlist
                     .named_or_positional_attribute("width", 2)
                     .map(|a| a.value()),
@@ -166,4 +169,8 @@ fn basename(path: &str) -> String {
         .and_then(|s| s.to_str())
         .unwrap_or_default()
         .to_string()
+}
+
+fn normalize_text_lf_escaped_bracket(text: &str) -> String {
+    text.replace("\n", " ").replace("\\]", "]")
 }

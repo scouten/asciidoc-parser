@@ -1667,17 +1667,45 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_single_line_image_macro_with_text_containing_escaped_square_bracket_should_be_interpreted_as_an_image_with_alt_text(
+    ) {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"image:tiger.png[[Another\] Tiger]"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"image:tiger.png[[Another\] Tiger]"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><img src="tiger.png" alt="[Another] Tiger"></span>"#,
+                },
+                source: TSpan {
+                    data: r#"image:tiger.png[[Another\] Tiger]"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'a single-line image macro with text containing escaped square bracket should be interpreted as an image with alt text' do
-            para = block_from_string %(image:tiger.png[[Another#{BACKSLASH}] Tiger])
-            assert_equal '<span class="image"><img src="tiger.png" alt="[Another] Tiger"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'a single-line image macro with text and dimensions should be interpreted as an image with alt text and dimensions' do
             para = block_from_string 'image:tiger.png[Tiger, 200, 100]'
             assert_equal '<span class="image"><img src="tiger.png" alt="Tiger" width="200" height="100"></span>',
