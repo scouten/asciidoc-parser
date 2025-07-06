@@ -250,20 +250,9 @@ mod error_cases {
             mi.item.attrlist().unwrap(),
             TAttrlist {
                 attributes: vec![TElementAttribute {
-                    name: Some(TSpan {
-                        data: "alt",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },),
+                    name: Some("alt"),
                     shorthand_items: vec![],
-                    value: "Sunset",
-                    source: TSpan {
-                        data: "alt=\"Sunset\"",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
+                    value: "Sunset"
                 },],
                 source: TSpan {
                     data: "alt=\"Sunset\"width=300",
@@ -314,20 +303,9 @@ mod error_cases {
                 anchor: None,
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
-                        name: Some(TSpan {
-                            data: "alt",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },),
+                        name: Some("alt"),
                         shorthand_items: vec![],
-                        value: "Sunset",
-                        source: TSpan {
-                            data: "alt=\"Sunset\"",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "Sunset"
                     },],
                     source: TSpan {
                         data: "alt=\"Sunset\"width=300",
@@ -353,10 +331,10 @@ mod error_cases {
             warnings,
             vec![TWarning {
                 source: TSpan {
-                    data: "width=300",
+                    data: "alt=\"Sunset\"width=300",
                     line: 1,
-                    col: 14,
-                    offset: 13,
+                    col: 2,
+                    offset: 1,
                 },
                 warning: WarningType::MissingCommaAfterQuotedAttributeValue,
             },]

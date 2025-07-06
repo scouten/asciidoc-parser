@@ -2715,7 +2715,7 @@ mod passthroughs {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "<span class=\"'role'\">+This</span>+",
+                    rendered: "<span class=\"role\">+This</span>+",
                 },
                 source: TSpan {
                     data: "['role']\\++This++++++++++++",
@@ -2747,7 +2747,7 @@ mod passthroughs {
                         col: 1,
                         offset: 0,
                     },
-                    rendered: "<span class=\"'role'\">++</span>+This++",
+                    rendered: "<span class=\"role\">++</span>+This++",
                 },
                 source: TSpan {
                     data: "['role']\\+++++++++This++++++++++++",
@@ -4135,13 +4135,7 @@ mod post_replacements {
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["%hardbreaks"],
-                        value: "%hardbreaks",
-                        source: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "%hardbreaks"
                     },],
                     source: TSpan {
                         data: "%hardbreaks",
@@ -4188,13 +4182,7 @@ mod post_replacements {
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["%hardbreaks"],
-                        value: "%hardbreaks",
-                        source: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "%hardbreaks"
                     },],
                     source: TSpan {
                         data: "%hardbreaks",
@@ -4238,13 +4226,7 @@ mod post_replacements {
                     attributes: vec![TElementAttribute {
                         name: None,
                         shorthand_items: vec!["%hardbreaks"],
-                        value: "%hardbreaks",
-                        source: TSpan {
-                            data: "%hardbreaks",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                        value: "%hardbreaks"
                     },],
                     source: TSpan {
                         data: "%hardbreaks",

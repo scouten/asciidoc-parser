@@ -758,14 +758,8 @@ Live within the simulated reality without want or fear.
                                             TElementAttribute {
                                                 name: None,
                                                 shorthand_items: vec!["%collapsible"],
-                                                value: "%collapsible",
-                                                source: TSpan {
-                                                    data: "%collapsible",
-                                                    line: 5,
-                                                    col: 2,
-                                                    offset: 40,
-                                                },
-                                            },
+                                                value: "%collapsible"
+        },
                                         ],
                                         source: TSpan {
                                             data: "%collapsible",
@@ -825,14 +819,8 @@ Live within the simulated reality without want or fear.
                                             TElementAttribute {
                                                 name: None,
                                                 shorthand_items: vec!["%collapsible"],
-                                                value: "%collapsible",
-                                                source: TSpan {
-                                                    data: "%collapsible",
-                                                    line: 11,
-                                                    col: 2,
-                                                    offset: 109,
-                                                },
-                                            },
+                                                value: "%collapsible"
+        },
                                         ],
                                         source: TSpan {
                                             data: "%collapsible",
