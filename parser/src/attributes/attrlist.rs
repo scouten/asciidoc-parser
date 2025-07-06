@@ -38,12 +38,7 @@ impl<'src> Attrlist<'src> {
         let source_cow = if source.contains('{') && source.contains('}') {
             let mut content = Content::from(source);
             SubstitutionStep::AttributeReferences.apply(&mut content, parser, None);
-
-            if let CowStr::Boxed(value) = content.rendered {
-                CowStr::Boxed(value)
-            } else {
-                CowStr::from(source.data())
-            }
+            CowStr::from(content.rendered.to_string())
         } else {
             CowStr::from(source.data())
         };
