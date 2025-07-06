@@ -331,10 +331,10 @@ mod error_cases {
             warnings,
             vec![TWarning {
                 source: TSpan {
-                    data: "width=300",
+                    data: "alt=\"Sunset\"width=300",
                     line: 1,
-                    col: 14,
-                    offset: 13,
+                    col: 2,
+                    offset: 1,
                 },
                 warning: WarningType::MissingCommaAfterQuotedAttributeValue,
             },]

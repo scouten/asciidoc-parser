@@ -471,10 +471,10 @@ fn warn_child_attrlist_has_extra_comma() {
         maw.warnings,
         vec![TWarning {
             source: TSpan {
-                data: ",",
+                data: "alt=Sunset,width=300,,height=400",
                 line: 3,
-                col: 30,
-                offset: 47,
+                col: 10,
+                offset: 27,
             },
             warning: WarningType::EmptyAttributeValue,
         }]

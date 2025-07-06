@@ -385,10 +385,10 @@ fn err_duplicate_comma() {
         maw.warnings,
         vec![TWarning {
             source: TSpan {
-                data: ",",
+                data: "blah,,blap",
                 line: 1,
-                col: 14,
-                offset: 13,
+                col: 10,
+                offset: 9,
             },
             warning: WarningType::EmptyAttributeValue,
         }]

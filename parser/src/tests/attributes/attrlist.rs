@@ -354,10 +354,10 @@ fn err_unparsed_remainder_after_value() {
         maw.warnings,
         vec![TWarning {
             source: TSpan {
-                data: "width=300",
+                data: "alt=\"Sunset\"width=300",
                 line: 1,
-                col: 13,
-                offset: 12,
+                col: 1,
+                offset: 0,
             },
             warning: WarningType::MissingCommaAfterQuotedAttributeValue,
         }]
@@ -1561,10 +1561,10 @@ fn err_double_comma() {
         maw.warnings,
         vec![TWarning {
             source: TSpan {
-                data: ",",
+                data: "alt=Sunset,width=300,,height=400",
                 line: 1,
-                col: 21,
-                offset: 20,
+                col: 1,
+                offset: 0,
             },
             warning: WarningType::EmptyAttributeValue,
         }]

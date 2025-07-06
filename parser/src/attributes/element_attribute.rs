@@ -21,76 +21,86 @@ pub struct ElementAttribute<'src> {
 
 impl<'src> ElementAttribute<'src> {
     pub(crate) fn parse(
-        source: Span<'src>,
+        source_text: &CowStr<'src>,
+        start_index: usize,
         parser: &Parser,
         parse_shorthand: ParseShorthand,
-    ) -> (Option<MatchedItem<'src, Self>>, Vec<WarningType>) {
+    ) -> (Option<(Self, usize)>, Vec<WarningType>) {
         let mut warnings: Vec<WarningType> = vec![];
 
-        let (name, after): (Option<CowStr<'src>>, Span) = match source.take_attr_name() {
-            Some(name) => {
-                let space = name.after.take_whitespace();
-                match space.after.take_prefix("=") {
-                    Some(equals) => {
-                        let space = equals.after.take_whitespace();
-                        if space.after.is_empty() || space.after.starts_with(',') {
-                            // TO DO: Is this a warning? Possible spec ambiguity.
-                            (None, source)
-                        } else {
-                            (Some(name.item.data().into()), space.after)
+        let (name, value, shorthand_item_indices, offset) = {
+            let mut source = Span::new(source_text.as_ref());
+            source = source.discard(start_index);
+
+            let (name, after): (Option<Span<'_>>, Span) = match source.take_attr_name() {
+                Some(name) => {
+                    let space = name.after.take_whitespace();
+                    match space.after.take_prefix("=") {
+                        Some(equals) => {
+                            let space = equals.after.take_whitespace();
+                            if space.after.is_empty() || space.after.starts_with(',') {
+                                // TO DO: Is this a warning? Possible spec ambiguity.
+                                (None, source)
+                            } else {
+                                (Some(name.item), space.after)
+                            }
                         }
+                        None => (None, source),
                     }
-                    None => (None, source),
                 }
+                None => (None, source),
+            };
+
+            let value = match after.data().chars().next() {
+                Some('\'') | Some('"') => match after.take_quoted_string() {
+                    Some(v) => v,
+                    None => {
+                        warnings.push(WarningType::AttributeValueMissingTerminatingQuote);
+                        return (None, warnings);
+                    }
+                },
+                _ => after.take_while(|c| c != ','),
+            };
+
+            if value.item.is_empty() {
+                return (None, warnings);
             }
-            None => (None, source),
-        };
 
-        let value = match after.data().chars().next() {
-            Some('\'') | Some('"') => match after.take_quoted_string() {
-                Some(v) => v,
-                None => {
-                    warnings.push(WarningType::AttributeValueMissingTerminatingQuote);
-                    return (None, warnings);
-                }
-            },
-            _ => after.take_while(|c| c != ','),
-        };
+            let after = value.after;
 
-        if value.item.is_empty() {
-            return (None, warnings);
-        }
+            let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
+                let mut content = Content::from(value.item);
+                SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
+                CowStr::from(content.rendered().to_string())
+            } else {
+                cowstr_from_source_and_span(&source_text, &value.item)
+            };
 
-        let after = value.after;
+            let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
+                parse_shorthand_items(&value)
+            } else {
+                vec![]
+            };
 
-        let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
-            let mut content = Content::from(value.item);
-            SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
-            CowStr::from(content.rendered().to_string())
-        } else {
-            CowStr::from(value.item.data())
-        };
+            let name = name.map(|name| cowstr_from_source_and_span(&&source_text, &name));
 
-        let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
-            parse_shorthand_items(&value)
-        } else {
-            vec![]
+            (name, value, shorthand_item_indices, after.byte_offset())
         };
 
         (
-            Some(MatchedItem {
-                item: Self {
+            Some((
+                Self {
                     name,
                     value,
                     shorthand_item_indices,
                 },
-                after,
-            }),
+                offset,
+            )),
             warnings,
         )
     }
 
-    /// Return a [`Span`] describing the attribute name.
+    /// Return the attribute name, if one was found`.
     pub fn name(&'src self) -> Option<&'src str> {
         if let Some(ref name) = self.name {
             Some(name.as_ref())
@@ -304,6 +314,7 @@ fn parse_shorthand_items(source: &str) -> Vec<usize> {
     while !span.is_empty() {
         // Assumption: First character is a delimiter.
         let after_delimiter = span.discard(1);
+
         match after_delimiter.position(is_shorthand_delimiter) {
             None => {
                 eprintln!("None?");
@@ -319,6 +330,7 @@ fn parse_shorthand_items(source: &str) -> Vec<usize> {
                     span = span.discard_all();
                 }
             }
+
             Some(0) => {
                 shorthand_item_indices.push(span.byte_offset());
                 // warnings.push(Warning {
@@ -327,6 +339,7 @@ fn parse_shorthand_items(source: &str) -> Vec<usize> {
                 // });
                 span = after_delimiter;
             }
+            
             Some(index) => {
                 let mi: MatchedItem<Span> = span.into_parse_result(index + 1);
                 shorthand_item_indices.push(span.byte_offset());
@@ -344,3 +357,15 @@ fn is_shorthand_delimiter(c: char) -> bool {
 
 #[derive(Clone, Debug)]
 pub(crate) struct ParseShorthand(pub bool);
+
+fn cowstr_from_source_and_span<'src>(source: &CowStr<'src>, span: &Span<'_>) -> CowStr<'src> {
+    if let CowStr::Borrowed(ref source) = source {
+        let borrowed: Span<'src> = Span::new(source)
+            .discard(span.byte_offset())
+            .slice_to(..span.len());
+
+        CowStr::Borrowed(borrowed.data())
+    } else {
+        CowStr::from(span.data().to_string())
+    }
+}

@@ -525,10 +525,10 @@ fn err_bad_header_and_bad_macro() {
             },
             TWarning {
                 source: TSpan {
-                    data: ",",
+                    data: "alt=Sunset,width=300,,height=400",
                     line: 6,
-                    col: 30,
-                    offset: 73,
+                    col: 10,
+                    offset: 53,
                 },
                 warning: WarningType::EmptyAttributeValue,
                 },

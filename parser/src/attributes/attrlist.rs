@@ -29,7 +29,6 @@ impl<'src> Attrlist<'src> {
         source: Span<'src>,
         parser: &Parser,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
-        let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
         let mut warnings: Vec<Warning<'src>> = vec![];
@@ -38,13 +37,16 @@ impl<'src> Attrlist<'src> {
             todo!("Parse block anchor syntax (issue #122)");
         }
 
-        loop {
-            // TO DO: Refactor such that the Span is not scoped to 'src lifetime.
-            // Signal somehow to ElementAttribute::parse whether it should use
-            // copy or clone semantics for the retained name and value.
+        let source_cow = source.data().into();
+        let mut index = 0;
 
-            let (maybe_attr, warning_types) =
-                ElementAttribute::parse(after, parser, ParseShorthand(parse_shorthand_items));
+        let after_index = loop {
+            let (maybe_attr, warning_types) = ElementAttribute::parse(
+                &source_cow,
+                index,
+                parser,
+                ParseShorthand(parse_shorthand_items),
+            );
 
             if !warnings.is_empty() {
                 // Because we do attribute value substitution early on in parsing, we can't
@@ -59,48 +61,57 @@ impl<'src> Attrlist<'src> {
                 }
             }
 
-            let Some(attr) = maybe_attr else {
-                break;
+            let Some((attr, new_index)) = maybe_attr else {
+                break index;
             };
 
-            if attr.item.name().is_none() {
+            if attr.name().is_none() {
                 parse_shorthand_items = false;
             }
 
-            attributes.push(attr.item);
+            attributes.push(attr);
 
-            after = attr.after.take_whitespace().after;
+            let mut after = Span::new(source_cow.as_ref()).discard(new_index);
+
+            if new_index > after.byte_offset() {
+                after = after.discard(new_index - after.byte_offset());
+            }
+
+            after = after.take_whitespace().after;
+
             match after.take_prefix(",") {
                 Some(comma) => {
                     after = comma.after.take_whitespace().after;
+
                     if after.starts_with(',') {
                         warnings.push(Warning {
-                            source: comma.item,
+                            source,
                             warning: WarningType::EmptyAttributeValue,
                         });
                         after = after.discard(1);
+                        index = after.byte_offset();
                         continue;
                     }
+
+                    index = after.byte_offset();
                 }
                 None => {
-                    break;
+                    break after.byte_offset();
                 }
             }
-        }
+        };
 
-        if !after.is_empty() {
+        if after_index < source_cow.len() {
             warnings.push(Warning {
-                source: after,
+                source,
                 warning: WarningType::MissingCommaAfterQuotedAttributeValue,
             });
-
-            after = after.discard_all();
         }
 
         MatchAndWarnings {
             item: MatchedItem {
                 item: Self { attributes, source },
-                after,
+                after: source.discard_all(),
             },
             warnings,
         }

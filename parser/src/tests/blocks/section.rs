@@ -390,10 +390,10 @@ fn has_child_block_with_errors() {
         maw.warnings,
         vec![TWarning {
             source: TSpan {
-                data: ",",
+                data: "alt=Sunset,width=300,,height=400",
                 line: 3,
-                col: 30,
-                offset: 47,
+                col: 10,
+                offset: 27,
             },
             warning: WarningType::EmptyAttributeValue,
         }]

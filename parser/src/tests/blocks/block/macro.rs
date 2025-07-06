@@ -523,10 +523,10 @@ fn warn_macro_attrlist_has_extra_comma() {
         maw.warnings,
         vec![TWarning {
             source: TSpan {
-                data: ",",
+                data: "alt=Sunset,width=300,,height=400",
                 line: 1,
-                col: 30,
-                offset: 29,
+                col: 10,
+                offset: 9,
             },
             warning: WarningType::EmptyAttributeValue,
         }]
