@@ -66,21 +66,14 @@ impl<'src> ElementAttribute<'src> {
             let value = cowstr_from_source_and_span(source_text, &value.item);
 
             // TO DO: Redo this to support substitutions but only in correct circumstances.
-            // It doesnt apply in all cases.
-            if false {
-                todo!(
-                    "Reconsider this: {}",
-                    r#"
-            let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
-                let mut content = Content::from(value.item);
-                SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
-                CowStr::from(content.rendered().to_string())
-            } else {
-                cowstr_from_source_and_span(source_text, &value.item)
-            };
-                    "#
-                );
-            }
+            // It doesn't apply in all cases.
+            // let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
+            //     let mut content = Content::from(value.item);
+            //     SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
+            //     CowStr::from(content.rendered().to_string())
+            // } else {
+            //     cowstr_from_source_and_span(source_text, &value.item)
+            // };
 
             let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
                 parse_shorthand_items(&value)
