@@ -1700,18 +1700,45 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_single_line_image_macro_with_text_and_dimensions_should_be_interpreted_as_an_image_with_alt_text_and_dimensions(
+    ) {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"image:tiger.png[Tiger, 200, 100]"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"image:tiger.png[Tiger, 200, 100]"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><img src="tiger.png" alt="Tiger" width="200" height="100"></span>"#,
+                },
+                source: TSpan {
+                    data: r#"image:tiger.png[Tiger, 200, 100]"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'a single-line image macro with text and dimensions should be interpreted as an image with alt text and dimensions' do
-            para = block_from_string 'image:tiger.png[Tiger, 200, 100]'
-            assert_equal '<span class="image"><img src="tiger.png" alt="Tiger" width="200" height="100"></span>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'a single-line image macro with text and dimensions should be interpreted as an image with alt text and dimensions in docbook' do
             para = block_from_string 'image:tiger.png[Tiger, 200, 100]', backend: 'docbook'
             assert_equal '<inlinemediaobject><imageobject><imagedata fileref="tiger.png" contentwidth="200" contentdepth="100"/></imageobject><textobject><phrase>Tiger</phrase></textobject></inlinemediaobject>',
