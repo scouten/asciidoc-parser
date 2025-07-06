@@ -359,19 +359,31 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         // `&& node.document.safe < SafeMode::SECURE`
 
         let img = if format == Some("svg") || params.target.contains(".svg") {
-            todo!(
-                "Port this: {}",
-                r##"
-                    if node.option? 'inline'
-                        img = (read_svg_contents node, target) || %(<span class="alt">#{node.alt}</span>)
-                    elsif node.option? 'interactive'
+            if params.attrlist.has_option("inline") {
+                todo!(
+                    "Port this: {}",
+                    r#"img = (read_svg_contents node, target) || %(<span class="alt">#{node.alt}</span>)"#
+                );
+            } else if params.attrlist.has_option("interactive") {
+                todo!(
+                    "Port this: {}",
+                    r##"
                         fallback = (node.attr? 'fallback') ? %(<img src="#{node.image_uri node.attr 'fallback'}" alt="#{encode_attribute_value node.alt}"#{attrs}#{@void_element_slash}>) : %(<span class="alt">#{node.alt}</span>)
                         img = %(<object type="image/svg+xml" data="#{src = node.image_uri target}"#{attrs}>#{fallback}</object>)
-                    else
-                        img = %(<img src="#{src = node.image_uri target}" alt="#{encode_attribute_value node.alt}"#{attrs}#{@void_element_slash}>)
-                    end
-            "##
-            );
+                    "##
+                );
+            } else {
+                format!(
+                    r#"<img src="{src}" alt="{alt}"{attrs}{void_element_slash}>"#,
+                    src = params.target,
+                    alt = encode_attribute_value(params.alt.to_string()),
+                    attrs = attrs,
+                    void_element_slash = "",
+                    // img = %(<img src="#{src = node.image_uri target}"
+                    // alt="#{encode_attribute_value node.alt}"#{attrs}#{@
+                    // void_element_slash}>)
+                )
+            }
         } else {
             format!(
                 r#"<img src="{src}" alt="{alt}"{attrs}{void_element_slash}>"#,

@@ -1588,17 +1588,44 @@ mod macros {
         );
     }
 
+    #[test]
+    fn an_image_macro_with_svg_image_and_text_should_be_interpreted_as_an_image_with_alt_text() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("image:tiger.svg[Tiger]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "image:tiger.svg[Tiger]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><img src="tiger.svg" alt="Tiger"></span>"#,
+                },
+                source: TSpan {
+                    data: "image:tiger.svg[Tiger]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'an image macro with SVG image and text should be interpreted as an image with alt text' do
-            para = block_from_string 'image:tiger.svg[Tiger]'
-            assert_equal '<span class="image"><img src="tiger.svg" alt="Tiger"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'an image macro with an interactive SVG image and alt text should be converted to an object element' do
             para = block_from_string 'image:tiger.svg[Tiger,opts=interactive]', safe: Asciidoctor::SafeMode::SERVER, attributes: { 'imagesdir' => 'images' }
             assert_equal '<span class="image"><object type="image/svg+xml" data="images/tiger.svg"><span class="alt">Tiger</span></object></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
