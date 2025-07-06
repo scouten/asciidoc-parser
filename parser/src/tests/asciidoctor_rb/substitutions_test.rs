@@ -1735,34 +1735,25 @@ mod macros {
 
     #[ignore]
     #[test]
+    fn docbook_support_for_image() {
+        // The following tests from Ruby have not been ported because Docbook is
+        // not in scope for this crate.
+        //
+        // * test 'a single-line image macro with text and dimensions should be
+        //   interpreted as an image with alt text and dimensions in docbook'
+        // * test 'a single-line image macro with scaledwidth attribute should
+        //   be supported in docbook'
+        // * test 'a single-line image macro with scaled attribute should be
+        //   supported in docbook'
+        // * test 'should pass through role on image macro to DocBook output'
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'a single-line image macro with text and dimensions should be interpreted as an image with alt text and dimensions in docbook' do
-            para = block_from_string 'image:tiger.png[Tiger, 200, 100]', backend: 'docbook'
-            assert_equal '<inlinemediaobject><imageobject><imagedata fileref="tiger.png" contentwidth="200" contentdepth="100"/></imageobject><textobject><phrase>Tiger</phrase></textobject></inlinemediaobject>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
-        test 'a single-line image macro with scaledwidth attribute should be supported in docbook' do
-            para = block_from_string 'image:tiger.png[Tiger,scaledwidth=25%]', backend: 'docbook'
-            assert_equal '<inlinemediaobject><imageobject><imagedata fileref="tiger.png" width="25%"/></imageobject><textobject><phrase>Tiger</phrase></textobject></inlinemediaobject>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
-        test 'a single-line image macro with scaled attribute should be supported in docbook' do
-            para = block_from_string 'image:tiger.png[Tiger,scale=200]', backend: 'docbook'
-            assert_equal '<inlinemediaobject><imageobject><imagedata fileref="tiger.png" scale="200"/></imageobject><textobject><phrase>Tiger</phrase></textobject></inlinemediaobject>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
-        test 'should pass through role on image macro to DocBook output' do
-            para = block_from_string 'image:tiger.png[Tiger,200,role=animal]', backend: 'docbook'
-            result = para.sub_macros para.source
-            assert_includes result, '<inlinemediaobject role="animal">'
-        end
-
         test 'a single-line image macro with text and link should be interpreted as a linked image with alt text' do
             para = block_from_string 'image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]'
             assert_equal '<span class="image"><a class="image" href="http://en.wikipedia.org/wiki/Tiger"><img src="tiger.png" alt="Tiger"></a></span>',
