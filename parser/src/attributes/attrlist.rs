@@ -1,10 +1,11 @@
-use std::{ops::Deref, slice::Iter};
+use std::slice::Iter;
 
 use crate::{
-    attributes::ElementAttribute,
-    span::MatchedItem,
+    attributes::{element_attribute::ParseShorthand, ElementAttribute},
+    span::{content::SubstitutionStep, MatchedItem},
+    strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
+    Content, HasSpan, Parser, Span,
 };
 
 /// The source text that’s used to define attributes for an element is referred
@@ -29,69 +30,91 @@ impl<'src> Attrlist<'src> {
         source: Span<'src>,
         parser: &Parser,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
-        let mut after = source;
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
         let mut warnings: Vec<Warning<'src>> = vec![];
 
-        if source.starts_with('[') && source.ends_with(']') {
+        // Apply attribute value substitutions before parsing attrlist content.
+        let source_cow = if source.contains('{') && source.contains('}') {
+            let mut content = Content::from(source);
+            SubstitutionStep::AttributeReferences.apply(&mut content, parser, None);
+            CowStr::from(content.rendered.to_string())
+        } else {
+            CowStr::from(source.data())
+        };
+
+        if source_cow.starts_with('[') && source_cow.ends_with(']') {
             todo!("Parse block anchor syntax (issue #122)");
         }
 
-        loop {
-            let mut maybe_attr_and_warnings = if parse_shorthand_items {
-                ElementAttribute::parse_with_shorthand(after, parser)
-            } else {
-                ElementAttribute::parse(after, parser)
-            };
+        let mut index = 0;
 
-            if !maybe_attr_and_warnings.warnings.is_empty() {
-                warnings.append(&mut maybe_attr_and_warnings.warnings);
+        let after_index = loop {
+            let (maybe_attr, warning_types) = ElementAttribute::parse(
+                &source_cow,
+                index,
+                parser,
+                ParseShorthand(parse_shorthand_items),
+            );
+
+            // Because we do attribute value substitution early on in parsing, we can't
+            // pinpoint the exact location of warnings in an attribute list. For that
+            // reason, individual attribute parsing only returns the warning type and we
+            // then map it back to the entire attrlist source.
+            for warning_type in warning_types {
+                dbg!(&warning_type);
+                warnings.push(Warning {
+                    source,
+                    warning: warning_type,
+                });
             }
 
-            let maybe_attr = maybe_attr_and_warnings.item;
-            let Some(attr) = maybe_attr else {
-                break;
+            let Some((attr, new_index)) = maybe_attr else {
+                break index;
             };
 
-            if attr.item.name().is_none() {
+            if attr.name().is_none() {
                 parse_shorthand_items = false;
             }
 
-            attributes.push(attr.item);
+            attributes.push(attr);
 
-            after = attr.after.take_whitespace().after;
+            let mut after = Span::new(source_cow.as_ref()).discard(new_index);
+            after = after.take_whitespace().after;
+
             match after.take_prefix(",") {
                 Some(comma) => {
                     after = comma.after.take_whitespace().after;
+
                     if after.starts_with(',') {
                         warnings.push(Warning {
-                            source: comma.item,
+                            source,
                             warning: WarningType::EmptyAttributeValue,
                         });
                         after = after.discard(1);
+                        index = after.byte_offset();
                         continue;
                     }
+
+                    index = after.byte_offset();
                 }
                 None => {
-                    break;
+                    break after.byte_offset();
                 }
             }
-        }
+        };
 
-        if !after.is_empty() {
+        if after_index < source_cow.len() {
             warnings.push(Warning {
-                source: after,
+                source,
                 warning: WarningType::MissingCommaAfterQuotedAttributeValue,
             });
-
-            after = after.discard_all();
         }
 
         MatchAndWarnings {
             item: MatchedItem {
                 item: Self { attributes, source },
-                after,
+                after: source.discard_all(),
             },
             warnings,
         }
@@ -107,7 +130,7 @@ impl<'src> Attrlist<'src> {
     pub fn named_attribute(&'src self, name: &str) -> Option<&'src ElementAttribute<'src>> {
         self.attributes.iter().find(|attr| {
             if let Some(attr_name) = attr.name() {
-                attr_name.deref() == &name
+                attr_name == name
             } else {
                 false
             }
