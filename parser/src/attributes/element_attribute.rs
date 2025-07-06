@@ -339,7 +339,7 @@ fn parse_shorthand_items(source: &str) -> Vec<usize> {
                 // });
                 span = after_delimiter;
             }
-            
+
             Some(index) => {
                 let mi: MatchedItem<Span> = span.into_parse_result(index + 1);
                 shorthand_item_indices.push(span.byte_offset());

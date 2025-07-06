@@ -2,9 +2,10 @@ use std::slice::Iter;
 
 use crate::{
     attributes::{element_attribute::ParseShorthand, ElementAttribute},
-    span::MatchedItem,
+    span::{content::SubstitutionStep, MatchedItem},
+    strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
+    Content, HasSpan, Parser, Span,
 };
 
 /// The source text that’s used to define attributes for an element is referred
@@ -33,11 +34,24 @@ impl<'src> Attrlist<'src> {
         let mut parse_shorthand_items = true;
         let mut warnings: Vec<Warning<'src>> = vec![];
 
-        if source.starts_with('[') && source.ends_with(']') {
+        // Apply attribute value substitutions before parsing attrlist content.
+        let source_cow = if source.contains('{') && source.contains('}') {
+            let mut content = Content::from(source);
+            SubstitutionStep::AttributeReferences.apply(&mut content, parser, None);
+
+            if let CowStr::Boxed(value) = content.rendered {
+                CowStr::Boxed(value)
+            } else {
+                CowStr::from(source.data())
+            }
+        } else {
+            CowStr::from(source.data())
+        };
+
+        if source_cow.starts_with('[') && source_cow.ends_with(']') {
             todo!("Parse block anchor syntax (issue #122)");
         }
 
-        let source_cow = source.data().into();
         let mut index = 0;
 
         let after_index = loop {

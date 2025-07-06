@@ -1578,6 +1578,7 @@ fn applies_attribute_substitution_before_parsing() {
         "300,400",
         ModificationContext::Anywhere,
     );
+
     let mi = Attrlist::parse(Span::new("Sunset,{sunset_dimensions}"), &p).unwrap_if_no_warnings();
 
     assert_eq!(
@@ -1601,7 +1602,7 @@ fn applies_attribute_substitution_before_parsing() {
                 }
             ),
             source: TSpan {
-                data: "Sunset,300,400",
+                data: "Sunset,{sunset_dimensions}",
                 line: 1,
                 col: 1,
                 offset: 0
@@ -1677,7 +1678,7 @@ fn applies_attribute_substitution_before_parsing() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "Sunset,300,400",
+            data: "Sunset,{sunset_dimensions}",
             line: 1,
             col: 1,
             offset: 0,
@@ -1689,8 +1690,8 @@ fn applies_attribute_substitution_before_parsing() {
         TSpan {
             data: "",
             line: 1,
-            col: 15,
-            offset: 14
+            col: 27,
+            offset: 26,
         }
     );
 }
