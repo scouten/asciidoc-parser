@@ -128,10 +128,6 @@ impl<'src> ElementAttribute<'src> {
                 &value[*curr..]
             };
 
-            if next_item == "#" || next_item == "." || next_item == "%" {
-                continue;
-            }
-
             next_item = next_item.trim_end();
 
             if !next_item.is_empty() {
