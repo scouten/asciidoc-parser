@@ -1692,3 +1692,106 @@ fn applies_attribute_substitution_before_parsing() {
         }
     );
 }
+
+#[test]
+fn ignores_unknown_attribute_when_applying_attribution_substitution() {
+    let p = Parser::default().with_intrinsic_attribute(
+        "sunset_dimensions",
+        "300,400",
+        ModificationContext::Anywhere,
+    );
+
+    let mi =
+        Attrlist::parse(Span::new("Sunset,{not_sunset_dimensions}"), &p).unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item,
+        TAttrlist {
+            attributes: vec!(
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: vec!["Sunset"],
+                    value: "Sunset"
+                },
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: vec![],
+                    value: "{not_sunset_dimensions}"
+                },
+            ),
+            source: TSpan {
+                data: "Sunset,{not_sunset_dimensions}",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(mi.item.named_attribute("foo").is_none());
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+
+    assert_eq!(
+        mi.item.nth_attribute(1).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec!["Sunset"],
+            value: "Sunset"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("alt", 1).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec!["Sunset"],
+            value: "Sunset"
+        }
+    );
+
+    assert_eq!(
+        mi.item.nth_attribute(2).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec![],
+            value: "{not_sunset_dimensions}"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("width", 2).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: vec![],
+            value: "{not_sunset_dimensions}"
+        }
+    );
+
+    assert!(mi.item.nth_attribute(3).is_none());
+    assert!(mi.item.named_or_positional_attribute("height", 3).is_none());
+    assert!(mi.item.nth_attribute(42).is_none());
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: "Sunset,{not_sunset_dimensions}",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 31,
+            offset: 30,
+        }
+    );
+}
