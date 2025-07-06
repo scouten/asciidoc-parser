@@ -39,14 +39,26 @@ impl<'src> Attrlist<'src> {
         }
 
         loop {
-            let mut maybe_attr_and_warnings =
+            // TO DO: Refactor such that the Span is not scoped to 'src lifetime.
+            // Signal somehow to ElementAttribute::parse whether it should use
+            // copy or clone semantics for the retained name and value.
+
+            let (maybe_attr, warning_types) =
                 ElementAttribute::parse(after, parser, ParseShorthand(parse_shorthand_items));
 
-            if !maybe_attr_and_warnings.warnings.is_empty() {
-                warnings.append(&mut maybe_attr_and_warnings.warnings);
+            if !warnings.is_empty() {
+                // Because we do attribute value substitution early on in parsing, we can't
+                // pinpoint the exact location of warnings in an attribute list. For that
+                // reason, individual attribute parsing only returns the warning type and we
+                // then map it back to the entire attrlist source.
+                for warning_type in warning_types {
+                    warnings.push(Warning {
+                        source,
+                        warning: warning_type,
+                    });
+                }
             }
 
-            let maybe_attr = maybe_attr_and_warnings.item;
             let Some(attr) = maybe_attr else {
                 break;
             };

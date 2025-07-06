@@ -11,7 +11,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let p = Parser::default();
     let b1 = ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(false))
-        .item
+        .0
         .unwrap();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
@@ -20,19 +20,22 @@ fn impl_clone() {
 #[test]
 fn empty_source() {
     let p = Parser::default();
-    assert!(
-        ElementAttribute::parse(Span::new(""), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .is_none()
-    );
+    let (maybe_attr, warning_types) =
+        ElementAttribute::parse(Span::new(""), &p, ParseShorthand(false));
+
+    assert!(maybe_attr.is_none());
+    assert!(warning_types.is_empty());
 }
 
 #[test]
 fn only_spaces() {
     let p = Parser::default();
-    let mi = ElementAttribute::parse(Span::new("   "), &p, ParseShorthand(false))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let (maybe_attr, warning_types) =
+        ElementAttribute::parse(Span::new("   "), &p, ParseShorthand(false));
+
+    assert!(warning_types.is_empty());
+
+    let mi = maybe_attr.unwrap();
 
     assert_eq!(
         mi.item,
@@ -64,9 +67,11 @@ fn only_spaces() {
 #[test]
 fn unquoted_and_unnamed_value() {
     let p = Parser::default();
-    let mi = ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(false))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let (maybe_mi, warning_types) =
+        ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(false));
+
+    let mi = maybe_mi.unwrap();
+    assert!(warning_types.is_empty());
 
     assert_eq!(
         mi.item,
@@ -97,9 +102,11 @@ fn unquoted_and_unnamed_value() {
 #[test]
 fn unquoted_stops_at_comma() {
     let p = Parser::default();
-    let mi = ElementAttribute::parse(Span::new("abc,def"), &p, ParseShorthand(false))
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let (maybe_mi, warning_types) =
+        ElementAttribute::parse(Span::new("abc,def"), &p, ParseShorthand(false));
+
+    let mi = maybe_mi.unwrap();
+    assert!(warning_types.is_empty());
 
     assert_eq!(
         mi.item,
@@ -132,7 +139,7 @@ mod quoted_string {
 
     use crate::{
         attributes::{element_attribute::ParseShorthand, ElementAttribute},
-        tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
+        tests::fixtures::{attributes::TElementAttribute, TSpan},
         warnings::WarningType,
         Parser, Span,
     };
@@ -140,30 +147,25 @@ mod quoted_string {
     #[test]
     fn err_unterminated_double_quote() {
         let p = Parser::default();
-        let maw = ElementAttribute::parse(Span::new("\"xxx"), &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("\"xxx"), &p, ParseShorthand(false));
 
-        assert!(maw.item.is_none());
+        assert!(maybe_mi.is_none());
 
         assert_eq!(
-            maw.warnings,
-            vec![TWarning {
-                source: TSpan {
-                    data: "\"xxx",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-                warning: WarningType::AttributeValueMissingTerminatingQuote,
-            }]
+            warning_types,
+            vec![WarningType::AttributeValueMissingTerminatingQuote]
         );
     }
 
     #[test]
     fn double_quoted_string() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("\"abc\"def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("\"abc\"def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -194,9 +196,11 @@ mod quoted_string {
     #[test]
     fn double_quoted_with_escape() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("\"a\\\"bc\"def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("\"a\\\"bc\"def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -227,9 +231,11 @@ mod quoted_string {
     #[test]
     fn double_quoted_with_single_quote() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("\"a'bc\"def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("\"a'bc\"def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -260,30 +266,25 @@ mod quoted_string {
     #[test]
     fn err_unterminated_single_quote() {
         let p = Parser::default();
-        let maw = ElementAttribute::parse(Span::new("\'xxx"), &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("\'xxx"), &p, ParseShorthand(false));
 
-        assert!(maw.item.is_none());
+        assert!(maybe_mi.is_none());
 
         assert_eq!(
-            maw.warnings,
-            vec![TWarning {
-                source: TSpan {
-                    data: "\'xxx",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-                warning: WarningType::AttributeValueMissingTerminatingQuote,
-            }]
+            warning_types,
+            vec![WarningType::AttributeValueMissingTerminatingQuote]
         );
     }
 
     #[test]
     fn single_quoted_string() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("'abc'def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("'abc'def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -314,9 +315,11 @@ mod quoted_string {
     #[test]
     fn single_quoted_with_escape() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("'a\\'bc'def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("'a\\'bc'def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -347,9 +350,11 @@ mod quoted_string {
     #[test]
     fn single_quoted_with_double_quote() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("'a\"bc'def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("'a\"bc'def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -390,9 +395,11 @@ mod named {
     #[test]
     fn simple_named_value() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc=def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc=def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -423,9 +430,11 @@ mod named {
     #[test]
     fn ignores_spaces_around_equals() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc =  def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc =  def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -452,9 +461,11 @@ mod named {
     #[test]
     fn numeric_name() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("94-x =def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("94-x =def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -486,9 +497,11 @@ mod named {
     #[test]
     fn quoted_value() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc='def'g"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc='def'g"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -519,9 +532,11 @@ mod named {
     #[test]
     fn fallback_if_no_value() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc="), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc="), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -552,9 +567,11 @@ mod named {
     #[test]
     fn fallback_if_immediate_comma() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc=,def"), &p, ParseShorthand(false))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc=,def"), &p, ParseShorthand(false));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -588,7 +605,7 @@ mod parse_with_shorthand {
 
     use crate::{
         attributes::{element_attribute::ParseShorthand, ElementAttribute},
-        tests::fixtures::{attributes::TElementAttribute, warnings::TWarning, TSpan},
+        tests::fixtures::{attributes::TElementAttribute, TSpan},
         warnings::WarningType,
         Parser, Span,
     };
@@ -596,9 +613,11 @@ mod parse_with_shorthand {
     #[test]
     fn block_style_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(true))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc"), &p, ParseShorthand(true));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -630,10 +649,11 @@ mod parse_with_shorthand {
     #[test]
     fn ignore_if_named_attribute() {
         let p = Parser::default();
-        let mi =
-            ElementAttribute::parse(Span::new("name=block_style#id"), &p, ParseShorthand(true))
-                .unwrap_if_no_warnings()
-                .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("name=block_style#id"), &p, ParseShorthand(true));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -668,9 +688,10 @@ mod parse_with_shorthand {
         // Disabling this test for now (05 Jul 2025): May not be possible to show this
         // error after refactoring Attrlist to apply attribute value substitutions.
         let p = Parser::default();
-        let maw = ElementAttribute::parse(Span::new("abc#"), &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc#"), &p, ParseShorthand(true));
 
-        let mi = maw.item.unwrap();
+        let mi = maybe_mi.unwrap();
 
         assert_eq!(
             mi.item,
@@ -691,18 +712,7 @@ mod parse_with_shorthand {
             }
         );
 
-        assert_eq!(
-            maw.warnings,
-            vec![TWarning {
-                source: TSpan {
-                    data: "#",
-                    line: 1,
-                    col: 4,
-                    offset: 3,
-                },
-                warning: WarningType::EmptyShorthandItem,
-            }]
-        );
+        assert_eq!(warning_types, vec![WarningType::EmptyShorthandItem]);
     }
 
     #[ignore]
@@ -711,9 +721,10 @@ mod parse_with_shorthand {
         // Disabling this test for now (05 Jul 2025): May not be possible to show this
         // error after refactoring Attrlist to apply attribute value substitutions.
         let p = Parser::default();
-        let maw = ElementAttribute::parse(Span::new("abc##id"), &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("abc##id"), &p, ParseShorthand(true));
 
-        let mi = maw.item.unwrap();
+        let mi = maybe_mi.unwrap();
 
         assert_eq!(
             mi.item,
@@ -734,26 +745,17 @@ mod parse_with_shorthand {
             }
         );
 
-        assert_eq!(
-            maw.warnings,
-            vec![TWarning {
-                source: TSpan {
-                    data: "#",
-                    line: 1,
-                    col: 4,
-                    offset: 3,
-                },
-                warning: WarningType::EmptyShorthandItem,
-            }]
-        );
+        assert_eq!(warning_types, vec![WarningType::EmptyShorthandItem]);
     }
 
     #[test]
     fn id_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("#xyz"), &p, ParseShorthand(true))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("#xyz"), &p, ParseShorthand(true));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -785,9 +787,11 @@ mod parse_with_shorthand {
     #[test]
     fn one_role_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new(".role1"), &p, ParseShorthand(true))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new(".role1"), &p, ParseShorthand(true));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -819,9 +823,11 @@ mod parse_with_shorthand {
     #[test]
     fn multiple_roles() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new(".role1.role2.role3"), &p, ParseShorthand(true))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new(".role1.role2.role3"), &p, ParseShorthand(true));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -858,9 +864,11 @@ mod parse_with_shorthand {
     #[test]
     fn one_option_only() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("%option1"), &p, ParseShorthand(true))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("%option1"), &p, ParseShorthand(true));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -892,13 +900,14 @@ mod parse_with_shorthand {
     #[test]
     fn multiple_options() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = ElementAttribute::parse(
             Span::new("%option1%option2%option3"),
             &p,
             ParseShorthand(true),
-        )
-        .unwrap_if_no_warnings()
-        .unwrap();
+        );
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -935,9 +944,11 @@ mod parse_with_shorthand {
     #[test]
     fn block_style_and_id() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(Span::new("appendix#custom-id"), &p, ParseShorthand(true))
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let (maybe_mi, warning_types) =
+            ElementAttribute::parse(Span::new("appendix#custom-id"), &p, ParseShorthand(true));
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,
@@ -969,13 +980,14 @@ mod parse_with_shorthand {
     #[test]
     fn id_role_and_option() {
         let p = Parser::default();
-        let mi = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = ElementAttribute::parse(
             Span::new("#rules.prominent%incremental"),
             &p,
             ParseShorthand(true),
-        )
-        .unwrap_if_no_warnings()
-        .unwrap();
+        );
+
+        let mi = maybe_mi.unwrap();
+        assert!(warning_types.is_empty());
 
         assert_eq!(
             mi.item,

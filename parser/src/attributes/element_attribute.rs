@@ -1,7 +1,7 @@
 use crate::{
     span::{content::SubstitutionGroup, MatchedItem},
     strings::CowStr,
-    warnings::{MatchAndWarnings, Warning, WarningType},
+    warnings::WarningType,
     Content, Parser, Span,
 };
 
@@ -24,8 +24,8 @@ impl<'src> ElementAttribute<'src> {
         source: Span<'src>,
         parser: &Parser,
         parse_shorthand: ParseShorthand,
-    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        let mut warnings: Vec<Warning<'src>> = vec![];
+    ) -> (Option<MatchedItem<'src, Self>>, Vec<WarningType>) {
+        let mut warnings: Vec<WarningType> = vec![];
 
         let (name, after): (Option<CowStr<'src>>, Span) = match source.take_attr_name() {
             Some(name) => {
@@ -50,25 +50,15 @@ impl<'src> ElementAttribute<'src> {
             Some('\'') | Some('"') => match after.take_quoted_string() {
                 Some(v) => v,
                 None => {
-                    warnings.push(Warning {
-                        source: after,
-                        warning: WarningType::AttributeValueMissingTerminatingQuote,
-                    });
-
-                    return MatchAndWarnings {
-                        item: None,
-                        warnings,
-                    };
+                    warnings.push(WarningType::AttributeValueMissingTerminatingQuote);
+                    return (None, warnings);
                 }
             },
             _ => after.take_while(|c| c != ','),
         };
 
         if value.item.is_empty() {
-            return MatchAndWarnings {
-                item: None,
-                warnings,
-            };
+            return (None, warnings);
         }
 
         let after = value.after;
@@ -87,8 +77,8 @@ impl<'src> ElementAttribute<'src> {
             vec![]
         };
 
-        MatchAndWarnings {
-            item: Some(MatchedItem {
+        (
+            Some(MatchedItem {
                 item: Self {
                     name,
                     value,
@@ -97,7 +87,7 @@ impl<'src> ElementAttribute<'src> {
                 after,
             }),
             warnings,
-        }
+        )
     }
 
     /// Return a [`Span`] describing the attribute name.
