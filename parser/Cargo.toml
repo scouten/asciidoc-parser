@@ -10,7 +10,7 @@ readme = "../README.md"
 edition = "2021"
 keywords = ["asciidoc", "parser"]
 categories = ["parser-implementations"]
-rust-version = "1.81.0"
+rust-version = "1.88.0"
 
 [dependencies]
 bytecount = "0.6.7"
