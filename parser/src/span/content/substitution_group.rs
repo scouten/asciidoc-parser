@@ -163,7 +163,7 @@ impl SubstitutionGroup {
                 SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
             }
 
-            Self::Custom(ref steps) => {
+            Self::Custom(steps) => {
                 for step in steps {
                     step.apply(content, parser, attrlist);
                 }
