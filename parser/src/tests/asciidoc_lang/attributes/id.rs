@@ -30,18 +30,18 @@ mod valid_id_characters {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::Block,
         tests::{
             fixtures::{
+                TSpan,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 warnings::TWarning,
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
         warnings::WarningType,
-        Parser, Span,
     };
 
     non_normative!(
@@ -230,17 +230,17 @@ mod block_assignment {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::Block,
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser, Span,
     };
 
     non_normative!(
@@ -453,68 +453,60 @@ ____
             .unwrap_if_no_warnings()
             .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-                TCompoundDelimitedBlock {
-                    blocks: vec![
-                        TBlock::Simple(
-                            TSimpleBlock {
-                                content: TContent {
-                                    original: TSpan {
-                                        data: "Roads? Where we're going, we don't need roads.",
-                                        line: 3,
-                                        col: 1,
-                                        offset: 42,
-                                    },
-                                    rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
-                                },
-                                source: TSpan {
-                                    data: "Roads? Where we're going, we don't need roads.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 42,
-                                },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
-                            },
-                        ),
-                    ],
-                    context: "quote",
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "Roads? Where we're going, we don't need roads.",
+                            line: 3,
+                            col: 1,
+                            offset: 42,
+                        },
+                        rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
+                    },
                     source: TSpan {
-                        data: "[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____",
-                        line: 1,
+                        data: "Roads? Where we're going, we don't need roads.",
+                        line: 3,
                         col: 1,
-                        offset: 0,
+                        offset: 42,
                     },
                     title: None,
                     anchor: None,
-                    attrlist: Some(
-                        TAttrlist {
-                            attributes: vec![
-                                TElementAttribute {
-                                    name: None,
-                                    shorthand_items: vec!["quote",
-                                        ".movie",
-                                        "#roads",
-                                    ],
-                                    value: "quote.movie#roads"
-        },
-                                TElementAttribute {
-                                    name: None,
-                                    shorthand_items: vec![],
-                                    value: "Dr. Emmett Brown"
-        },
-                            ],
-                            source: TSpan {
-                                data: "quote.movie#roads,Dr. Emmett Brown",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
-                        },
-                    ),
+                    attrlist: None,
+                },),],
+                context: "quote",
+                source: TSpan {
+                    data: "[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
                 },
-            ));
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![
+                        TElementAttribute {
+                            name: None,
+                            shorthand_items: vec!["quote", ".movie", "#roads",],
+                            value: "quote.movie#roads"
+                        },
+                        TElementAttribute {
+                            name: None,
+                            shorthand_items: vec![],
+                            value: "Dr. Emmett Brown"
+                        },
+                    ],
+                    source: TSpan {
+                        data: "quote.movie#roads,Dr. Emmett Brown",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
     }
 
     non_normative!(

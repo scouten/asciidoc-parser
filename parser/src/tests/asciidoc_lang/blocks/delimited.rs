@@ -1,19 +1,19 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    Parser, Span,
     blocks::{Block, ContentModel, IsBlock},
     span::content::SubstitutionGroup,
     tests::{
         fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
-            TSpan,
         },
         sdd::{non_normative, to_do_verifies, track_file, verifies},
     },
     warnings::WarningType,
-    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/delimited.adoc");
@@ -494,18 +494,18 @@ mod nesting_blocks {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::{Block, ContentModel},
         span::content::SubstitutionGroup,
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
                 content::TContent,
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser, Span,
     };
 
     non_normative!(
@@ -559,91 +559,83 @@ The document header is useful, but not required.
 
         assert_eq!(
             block,
-            TBlock::CompoundDelimited(
-                TCompoundDelimitedBlock {
-                    blocks: vec![
-                        TBlock::Simple(
-                            TSimpleBlock {
-                                content: TContent {
-                                    original: TSpan {
-                                        data: "Here's a sample AsciiDoc document:",
-                                        line: 2,
-                                        col: 1,
-                                        offset: 5,
-                                    },
-                                    rendered: "Here&#8217;s a sample AsciiDoc document:",
-                                },
-                                source: TSpan {
-                                    data: "Here's a sample AsciiDoc document:",
-                                    line: 2,
-                                    col: 1,
-                                    offset: 5,
-                                },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![
+                    TBlock::Simple(TSimpleBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "Here's a sample AsciiDoc document:",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
                             },
-                        ),
-                        TBlock::RawDelimited(
-                            TRawDelimitedBlock {
-                                content: TContent {
-                                    original: TSpan {
-                                        data: "= Document Title\nAuthor Name\n\nContent goes here.",
-                                        line: 5,
-                                        col: 1,
-                                        offset: 46,
-                                    },
-                                    rendered: "= Document Title\nAuthor Name\n\nContent goes here.",
-                                },
-                                content_model: ContentModel::Verbatim,
-                                context: "listing",
-                                source: TSpan {
-                                    data: "----\n= Document Title\nAuthor Name\n\nContent goes here.\n----",
-                                    line: 4,
-                                    col: 1,
-                                    offset: 41,
-                                },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
-                                substitution_group: SubstitutionGroup::Verbatim,
+                            rendered: "Here&#8217;s a sample AsciiDoc document:",
+                        },
+                        source: TSpan {
+                            data: "Here's a sample AsciiDoc document:",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),
+                    TBlock::RawDelimited(TRawDelimitedBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "= Document Title\nAuthor Name\n\nContent goes here.",
+                                line: 5,
+                                col: 1,
+                                offset: 46,
                             },
-                        ),
-                        TBlock::Simple(
-                            TSimpleBlock{
-                                content: TContent {
-                                    original: TSpan {
-                                        data: "The document header is useful, but not required.",
-                                        line: 11,
-                                        col: 1,
-                                        offset: 101,
-                                    },
-                                    rendered: "The document header is useful, but not required.",
-                                },
-                                source: TSpan {
-                                    data: "The document header is useful, but not required.",
-                                    line: 11,
-                                    col: 1,
-                                    offset: 101,
-                                },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
+                            rendered: "= Document Title\nAuthor Name\n\nContent goes here.",
+                        },
+                        content_model: ContentModel::Verbatim,
+                        context: "listing",
+                        source: TSpan {
+                            data: "----\n= Document Title\nAuthor Name\n\nContent goes here.\n----",
+                            line: 4,
+                            col: 1,
+                            offset: 41,
+                        },
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                        substitution_group: SubstitutionGroup::Verbatim,
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "The document header is useful, but not required.",
+                                line: 11,
+                                col: 1,
+                                offset: 101,
                             },
-                        ),
-                    ],
-                    context: "example",
-                    source: TSpan {
-                        data: "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                    title: None,
-                    anchor: None,
-                    attrlist: None,
+                            rendered: "The document header is useful, but not required.",
+                        },
+                        source: TSpan {
+                            data: "The document header is useful, but not required.",
+                            line: 11,
+                            col: 1,
+                            offset: 101,
+                        },
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),
+                ],
+                context: "example",
+                source: TSpan {
+                    data: "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
                 },
-            )
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
         );
     }
 
@@ -684,167 +676,141 @@ Live within the simulated reality without want or fear.
         .unwrap()
         .item;
 
-        assert_eq!(block,
-            TBlock::CompoundDelimited(
-                TCompoundDelimitedBlock {
-                    blocks: vec![
-                        TBlock::Simple(
-                            TSimpleBlock {
-                                content: TContent {
-                                    original: TSpan {
-                                        data: "Here are your options:",
-                                        line: 2,
-                                        col: 1,
-                                        offset: 5,
-                                    },
-                                    rendered: "Here are your options:",
-                                },
-                                source: TSpan {
-                                    data: "Here are your options:",
-                                    line: 2,
-                                    col: 1,
-                                    offset: 5,
-                                },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
+        assert_eq!(
+            block,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![
+                    TBlock::Simple(TSimpleBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "Here are your options:",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
                             },
-                        ),
-                        TBlock::CompoundDelimited(
-                            TCompoundDelimitedBlock {
-                                blocks: vec![
-                                    TBlock::Simple(
-                                        TSimpleBlock {
-                                            content: TContent {
-                                                original: TSpan {
-                                                    data: "Escape into the real world.",
-                                                    line: 7,
-                                                    col: 1,
-                                                    offset: 61,
-                                                },
-                                                rendered: "Escape into the real world.",
-                                            },
-                                            source: TSpan {
-                                                data: "Escape into the real world.",
-                                                line: 7,
-                                                col: 1,
-                                                offset: 61,
-                                            },
-                                            title: None,
-                                            anchor: None,
-                                            attrlist: None,
-                                        },
-                                    ),
-                                ],
-                                context: "example",
-                                source: TSpan {
-                                    data: ".Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======",
-                                    line: 4,
+                            rendered: "Here are your options:",
+                        },
+                        source: TSpan {
+                            data: "Here are your options:",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),
+                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: vec![TBlock::Simple(TSimpleBlock {
+                            content: TContent {
+                                original: TSpan {
+                                    data: "Escape into the real world.",
+                                    line: 7,
                                     col: 1,
-                                    offset: 29,
+                                    offset: 61,
                                 },
-                                title: Some(
-                                    TSpan {
-                                        data: "Red Pill",
-                                        line: 4,
-                                        col: 2,
-                                        offset: 30,
-                                    },
-                                ),
-                                anchor: None,
-                                attrlist: Some(
-                                    TAttrlist {
-                                        attributes: vec![
-                                            TElementAttribute {
-                                                name: None,
-                                                shorthand_items: vec!["%collapsible"],
-                                                value: "%collapsible"
-        },
-                                        ],
-                                        source: TSpan {
-                                            data: "%collapsible",
-                                            line: 5,
-                                            col: 2,
-                                            offset: 40,
-                                        },
-                                    },
-                                ),
+                                rendered: "Escape into the real world.",
                             },
-                        ),
-                        TBlock::CompoundDelimited(
-                            TCompoundDelimitedBlock {
-                                blocks: vec![
-                                    TBlock::Simple(
-                                        TSimpleBlock {
-                                            content: TContent {
-                                                original: TSpan {
-                                                    data: "Live within the simulated reality without want or fear.",
-                                                    line: 13,
-                                                    col: 1,
-                                                    offset: 130,
-                                                },
-                                                rendered: "Live within the simulated reality without want or fear.",
-                                            },
-                                            source: TSpan {
-                                                data: "Live within the simulated reality without want or fear.",
-                                                line: 13,
-                                                col: 1,
-                                                offset: 130,
-                                            },
-                                            title: None,
-                                            anchor: None,
-                                            attrlist: None,
-                                        },
-                                    ),
-                                ],
-                                context: "example",
-                                source: TSpan {
-                                    data: ".Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======",
-                                    line: 10,
+                            source: TSpan {
+                                data: "Escape into the real world.",
+                                line: 7,
+                                col: 1,
+                                offset: 61,
+                            },
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),],
+                        context: "example",
+                        source: TSpan {
+                            data: ".Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======",
+                            line: 4,
+                            col: 1,
+                            offset: 29,
+                        },
+                        title: Some(TSpan {
+                            data: "Red Pill",
+                            line: 4,
+                            col: 2,
+                            offset: 30,
+                        },),
+                        anchor: None,
+                        attrlist: Some(TAttrlist {
+                            attributes: vec![TElementAttribute {
+                                name: None,
+                                shorthand_items: vec!["%collapsible"],
+                                value: "%collapsible"
+                            },],
+                            source: TSpan {
+                                data: "%collapsible",
+                                line: 5,
+                                col: 2,
+                                offset: 40,
+                            },
+                        },),
+                    },),
+                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: vec![TBlock::Simple(TSimpleBlock {
+                            content: TContent {
+                                original: TSpan {
+                                    data: "Live within the simulated reality without want or fear.",
+                                    line: 13,
                                     col: 1,
-                                    offset: 97,
+                                    offset: 130,
                                 },
-                                title: Some(
-                                    TSpan {
-                                        data: "Blue Pill",
-                                        line: 10,
-                                        col: 2,
-                                        offset: 98,
-                                    },
-                                ),
-                                anchor: None,
-                                attrlist: Some(
-                                    TAttrlist {
-                                        attributes: vec![
-                                            TElementAttribute {
-                                                name: None,
-                                                shorthand_items: vec!["%collapsible"],
-                                                value: "%collapsible"
-        },
-                                        ],
-                                        source: TSpan {
-                                            data: "%collapsible",
-                                            line: 11,
-                                            col: 2,
-                                            offset: 109,
-                                        },
-                                    },
-                                ),
+                                rendered: "Live within the simulated reality without want or fear.",
                             },
-                        ),
-                    ],
-                    context: "example",
-                    source: TSpan {
-                        data: "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                    title: None,
-                    anchor: None,
-                    attrlist: None,
+                            source: TSpan {
+                                data: "Live within the simulated reality without want or fear.",
+                                line: 13,
+                                col: 1,
+                                offset: 130,
+                            },
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),],
+                        context: "example",
+                        source: TSpan {
+                            data: ".Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======",
+                            line: 10,
+                            col: 1,
+                            offset: 97,
+                        },
+                        title: Some(TSpan {
+                            data: "Blue Pill",
+                            line: 10,
+                            col: 2,
+                            offset: 98,
+                        },),
+                        anchor: None,
+                        attrlist: Some(TAttrlist {
+                            attributes: vec![TElementAttribute {
+                                name: None,
+                                shorthand_items: vec!["%collapsible"],
+                                value: "%collapsible"
+                            },],
+                            source: TSpan {
+                                data: "%collapsible",
+                                line: 11,
+                                col: 2,
+                                offset: 109,
+                            },
+                        },),
+                    },),
+                ],
+                context: "example",
+                source: TSpan {
+                    data: "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
                 },
-            ));
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
     }
 
     non_normative!(

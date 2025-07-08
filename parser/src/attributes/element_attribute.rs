@@ -1,4 +1,4 @@
-use crate::{span::MatchedItem, strings::CowStr, warnings::WarningType, Parser, Span};
+use crate::{Parser, Span, span::MatchedItem, strings::CowStr, warnings::WarningType};
 
 /// This struct represents a single element attribute.
 ///

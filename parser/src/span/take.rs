@@ -23,11 +23,7 @@ impl<'src> Span<'src> {
     /// Returns `None` if the first character is not a space or tab.
     pub(crate) fn take_required_whitespace(self) -> Option<MatchedItem<'src, Self>> {
         let mi = self.take_while(|c| c == ' ' || c == '\t');
-        if mi.item.is_empty() {
-            None
-        } else {
-            Some(mi)
-        }
+        if mi.item.is_empty() { None } else { Some(mi) }
     }
 
     /// Split this span at the first character that doesn't match `predicate`.

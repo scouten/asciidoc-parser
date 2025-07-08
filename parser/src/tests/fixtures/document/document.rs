@@ -1,10 +1,10 @@
 use std::{cmp::PartialEq, fmt};
 
 use crate::{
+    HasSpan,
     blocks::IsBlock,
     document::Document,
-    tests::fixtures::{blocks::TBlock, document::THeader, warnings::TWarning, TSpan},
-    HasSpan,
+    tests::fixtures::{TSpan, blocks::TBlock, document::THeader, warnings::TWarning},
 };
 
 #[derive(Eq, PartialEq)]

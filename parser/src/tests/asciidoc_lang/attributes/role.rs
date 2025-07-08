@@ -36,17 +36,17 @@ mod assign_roles_to_blocks {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::{Block, IsBlock},
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser, Span,
     };
 
     non_normative!(
@@ -88,32 +88,29 @@ This is a sidebar with a role assigned to it, rolename.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with a role assigned to it, rolename.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 17,
-                                },
-                                rendered: "This is a sidebar with a role assigned to it, rolename.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with a role assigned to it, rolename.",
-                                line: 3,
-                                col: 1,
-                                offset: 17,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with a role assigned to it, rolename.",
+                            line: 3,
+                            col: 1,
+                            offset: 17,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with a role assigned to it, rolename.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with a role assigned to it, rolename.",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[.rolename]\n****\nThis is a sidebar with a role assigned to it, rolename.\n****",
@@ -123,25 +120,21 @@ This is a sidebar with a role assigned to it, rolename.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec![".rolename"],
-                                value: ".rolename"
-        },
-                        ],
-                        source: TSpan {
-                            data: ".rolename",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![".rolename"],
+                        value: ".rolename"
+                    },],
+                    source: TSpan {
+                        data: ".rolename",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
     }
 
     #[test]
@@ -172,32 +165,29 @@ The role values are turned into a space-separated list of values, `role1 role2`.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 20,
-                                },
-                                rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                line: 3,
-                                col: 1,
-                                offset: 20,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                            line: 3,
+                            col: 1,
+                            offset: 20,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                        line: 3,
+                        col: 1,
+                        offset: 20,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[.role1.role2]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
@@ -207,25 +197,21 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec![".role1",".role2"],
-                                value: ".role1.role2"
-        },
-                        ],
-                        source: TSpan {
-                            data: ".role1.role2",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![".role1", ".role2"],
+                        value: ".role1.role2"
+                    },],
+                    source: TSpan {
+                        data: ".role1.role2",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
     }
 
     #[test]
@@ -257,32 +243,29 @@ This is a sidebar with one role assigned to it, rolename.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with one role assigned to it, rolename.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 21,
-                                },
-                                rendered: "This is a sidebar with one role assigned to it, rolename.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with one role assigned to it, rolename.",
-                                line: 3,
-                                col: 1,
-                                offset: 21,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with one role assigned to it, rolename.",
+                            line: 3,
+                            col: 1,
+                            offset: 21,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with one role assigned to it, rolename.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with one role assigned to it, rolename.",
+                        line: 3,
+                        col: 1,
+                        offset: 21,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[role=rolename]\n****\nThis is a sidebar with one role assigned to it, rolename.\n****",
@@ -292,25 +275,21 @@ This is a sidebar with one role assigned to it, rolename.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: Some("role"),
-                                shorthand_items: vec![],
-                                value: "rolename"
-        },
-                        ],
-                        source: TSpan {
-                            data: "role=rolename",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: Some("role"),
+                        shorthand_items: vec![],
+                        value: "rolename"
+                    },],
+                    source: TSpan {
+                        data: "role=rolename",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         let roles = mi.item.roles();
         let mut roles = roles.iter();
@@ -347,33 +326,29 @@ This is a sidebar with two roles assigned to it, role1 and role2.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item,
-        TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 26,
-                                },
-                                rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with two roles assigned to it, role1 and role2.",
-                                line: 3,
-                                col: 1,
-                                offset: 26,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                            line: 3,
+                            col: 1,
+                            offset: 26,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with two roles assigned to it, role1 and role2.",
+                        line: 3,
+                        col: 1,
+                        offset: 26,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[role=\"role1 role2\"]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
@@ -383,25 +358,21 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: Some("role"),
-                                shorthand_items: vec![],
-                                value: "role1 role2"
-        },
-                        ],
-                        source: TSpan {
-                            data: "role=\"role1 role2\"",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: Some("role"),
+                        shorthand_items: vec![],
+                        value: "role1 role2"
+                    },],
+                    source: TSpan {
+                        data: "role=\"role1 role2\"",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         let roles = mi.item.roles();
         let mut roles = roles.iter();

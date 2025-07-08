@@ -1,5 +1,5 @@
 mod special_characters {
-    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+    use crate::{Content, Parser, Span, span::content::SubstitutionStep, strings::CowStr};
 
     #[test]
     fn empty() {
@@ -45,7 +45,7 @@ mod special_characters {
 }
 
 mod quotes {
-    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+    use crate::{Content, Parser, Span, span::content::SubstitutionStep, strings::CowStr};
 
     #[test]
     fn empty() {
@@ -107,7 +107,7 @@ mod quotes {
 }
 
 mod attribute_references {
-    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+    use crate::{Content, Parser, Span, span::content::SubstitutionStep, strings::CowStr};
 
     #[test]
     fn empty() {
@@ -177,7 +177,7 @@ mod attribute_references {
 }
 
 mod callouts {
-    use crate::{span::content::SubstitutionStep, strings::CowStr, Content, Parser, Span};
+    use crate::{Content, Parser, Span, span::content::SubstitutionStep, strings::CowStr};
 
     #[test]
     #[should_panic]

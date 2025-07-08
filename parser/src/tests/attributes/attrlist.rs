@@ -1,15 +1,15 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    HasSpan, Parser, Span,
     attributes::Attrlist,
     parser::ModificationContext,
     tests::fixtures::{
+        TSpan,
         attributes::{TAttrlist, TElementAttribute},
         warnings::TWarning,
-        TSpan,
     },
     warnings::WarningType,
-    HasSpan, Parser, Span,
 };
 
 #[test]
@@ -416,12 +416,12 @@ mod id {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         attributes::Attrlist,
         tests::fixtures::{
-            attributes::{TAttrlist, TElementAttribute},
             TSpan,
+            attributes::{TAttrlist, TElementAttribute},
         },
-        HasSpan, Parser, Span,
     };
 
     #[test]
@@ -594,12 +594,12 @@ mod roles {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         attributes::Attrlist,
         tests::fixtures::{
-            attributes::{TAttrlist, TElementAttribute},
             TSpan,
+            attributes::{TAttrlist, TElementAttribute},
         },
-        HasSpan, Parser, Span,
     };
 
     #[test]
@@ -1062,12 +1062,12 @@ mod options {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         attributes::Attrlist,
         tests::fixtures::{
-            attributes::{TAttrlist, TElementAttribute},
             TSpan,
+            attributes::{TAttrlist, TElementAttribute},
         },
-        HasSpan, Parser, Span,
     };
 
     #[test]

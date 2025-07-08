@@ -3,16 +3,16 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    blocks::{preamble::Preamble, ContentModel, IsBlock, MacroBlock},
+    Parser,
+    blocks::{ContentModel, IsBlock, MacroBlock, preamble::Preamble},
     span::content::SubstitutionGroup,
     tests::fixtures::{
+        TSpan,
         attributes::{TAttrlist, TElementAttribute},
         blocks::TMacroBlock,
         warnings::TWarning,
-        TSpan,
     },
     warnings::WarningType,
-    Parser,
 };
 
 #[test]
@@ -33,18 +33,22 @@ fn impl_clone() {
 fn err_empty_source() {
     let mut parser = Parser::default();
 
-    assert!(MacroBlock::parse(&Preamble::new(""), &mut parser)
-        .unwrap_if_no_warnings()
-        .is_none());
+    assert!(
+        MacroBlock::parse(&Preamble::new(""), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]
 fn err_only_spaces() {
     let mut parser = Parser::default();
 
-    assert!(MacroBlock::parse(&Preamble::new("    "), &mut parser)
-        .unwrap_if_no_warnings()
-        .is_none());
+    assert!(
+        MacroBlock::parse(&Preamble::new("    "), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]
@@ -114,9 +118,11 @@ fn err_missing_macro_attrlist() {
 fn err_no_attr_list() {
     let mut parser = Parser::default();
 
-    assert!(MacroBlock::parse(&Preamble::new("foo::bar"), &mut parser)
-        .unwrap_if_no_warnings()
-        .is_none());
+    assert!(
+        MacroBlock::parse(&Preamble::new("foo::bar"), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]

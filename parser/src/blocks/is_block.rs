@@ -1,11 +1,11 @@
 use std::{fmt::Debug, slice::Iter};
 
 use crate::{
+    HasSpan, Span,
     attributes::Attrlist,
-    blocks::{is_built_in_context, Block},
+    blocks::{Block, is_built_in_context},
     span::content::SubstitutionGroup,
     strings::CowStr,
-    HasSpan, Span,
 };
 
 /// **Block elements** form the main structure of an AsciiDoc document, starting
@@ -45,10 +45,10 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     ///
     /// [`raw_context()`]: Self::raw_context
     fn resolved_context(&'src self) -> CowStr<'src> {
-        if let Some(declared_style) = self.declared_style() {
-            if is_built_in_context(declared_style) {
-                return declared_style.into();
-            }
+        if let Some(declared_style) = self.declared_style()
+            && is_built_in_context(declared_style)
+        {
+            return declared_style.into();
         }
 
         self.raw_context()

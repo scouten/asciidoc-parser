@@ -1,9 +1,9 @@
 use crate::{
-    attributes::Attrlist,
-    blocks::{preamble::Preamble, ContentModel, IsBlock},
-    span::{content::SubstitutionGroup, MatchedItem},
-    strings::CowStr,
     Content, HasSpan, Parser, Span,
+    attributes::Attrlist,
+    blocks::{ContentModel, IsBlock, preamble::Preamble},
+    span::{MatchedItem, content::SubstitutionGroup},
+    strings::CowStr,
 };
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to

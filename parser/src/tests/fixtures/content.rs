@@ -1,6 +1,6 @@
 use std::cmp::PartialEq;
 
-use crate::{tests::fixtures::TSpan, Content};
+use crate::{Content, tests::fixtures::TSpan};
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) struct TContent {

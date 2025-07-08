@@ -113,11 +113,7 @@ impl<'src> Span<'src> {
             .trim_item_end_matches('\r')
             .trim_item_trailing_spaces();
 
-        if mi.item.is_empty() {
-            None
-        } else {
-            Some(mi)
-        }
+        if mi.item.is_empty() { None } else { Some(mi) }
     }
 
     fn one_line_with_continuation(self) -> Option<MatchedItem<'src, Self>> {

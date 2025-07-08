@@ -18,8 +18,8 @@ mod replace_str {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        tests::fixtures::{content::TContent, TSpan},
         Content, Span,
+        tests::fixtures::{TSpan, content::TContent},
     };
 
     #[test]

@@ -1,15 +1,15 @@
 use std::slice::Iter;
 
 use crate::{
+    HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock,
-        RawDelimitedBlock, SectionBlock, SimpleBlock,
+        CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock,
+        SimpleBlock, preamble::Preamble,
     },
-    span::{content::SubstitutionGroup, MatchedItem},
+    span::{MatchedItem, content::SubstitutionGroup},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
 };
 
 /// **Block elements** form the main structure of an AsciiDoc document, starting
@@ -63,26 +63,26 @@ impl<'src> Block<'src> {
 
         // If it does contain any of those markers, we fall through to the more costly
         // tests below which can more accurately classify the upcoming block.
-        if let Some(first_char) = source.chars().next() {
-            if !matches!(
+        if let Some(first_char) = source.chars().next()
+            && !matches!(
                 first_char,
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '['
-            ) {
-                let first_line = source.take_line();
-                if !first_line.item.contains("::") {
-                    if let Some(MatchedItem {
-                        item: simple_block,
-                        after,
-                    }) = SimpleBlock::parse_fast(source, parser)
-                    {
-                        return MatchAndWarnings {
-                            item: Some(MatchedItem {
-                                item: Self::Simple(simple_block),
-                                after,
-                            }),
-                            warnings: vec![],
-                        };
-                    }
+            )
+        {
+            let first_line = source.take_line();
+            if !first_line.item.contains("::") {
+                if let Some(MatchedItem {
+                    item: simple_block,
+                    after,
+                }) = SimpleBlock::parse_fast(source, parser)
+                {
+                    return MatchAndWarnings {
+                        item: Some(MatchedItem {
+                            item: Self::Simple(simple_block),
+                            after,
+                        }),
+                        warnings: vec![],
+                    };
                 }
             }
         }

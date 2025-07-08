@@ -1,8 +1,8 @@
 use crate::{
+    Parser, Span,
     blocks::Block,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning},
-    Parser, Span,
 };
 
 /// Parse blocks until end of input or a pre-determined stop condition is

@@ -226,7 +226,7 @@ mod from_custom_string {
 }
 
 mod normal {
-    use crate::{span::content::SubstitutionGroup, strings::CowStr, Content, Parser, Span};
+    use crate::{Content, Parser, Span, span::content::SubstitutionGroup, strings::CowStr};
 
     #[test]
     fn empty() {
@@ -317,8 +317,8 @@ mod normal {
 
 mod attribute_entry_value {
     use crate::{
-        parser::ModificationContext, span::content::SubstitutionGroup, strings::CowStr, Content,
-        Parser, Span,
+        Content, Parser, Span, parser::ModificationContext, span::content::SubstitutionGroup,
+        strings::CowStr,
     };
 
     #[test]
@@ -395,7 +395,7 @@ mod attribute_entry_value {
 }
 
 mod header {
-    use crate::{span::content::SubstitutionGroup, strings::CowStr, Content, Parser, Span};
+    use crate::{Content, Parser, Span, span::content::SubstitutionGroup, strings::CowStr};
 
     #[test]
     #[should_panic]

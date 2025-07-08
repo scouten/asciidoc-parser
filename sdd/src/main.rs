@@ -28,12 +28,10 @@ fn main() {
                 return None;
             }
 
-            if let Some(file_name) = e.file_name().to_str() {
-                if file_name.ends_with(".rs") {
-                    Some(e)
-                } else {
-                    None
-                }
+            if let Some(file_name) = e.file_name().to_str()
+                && file_name.ends_with(".rs")
+            {
+                Some(e)
             } else {
                 None
             }
@@ -65,12 +63,10 @@ fn main() {
                 return None;
             }
 
-            if let Some(file_name) = e.file_name().to_str() {
-                if file_name.ends_with(".adoc") {
-                    Some(e)
-                } else {
-                    None
-                }
+            if let Some(file_name) = e.file_name().to_str()
+                && file_name.ends_with(".adoc")
+            {
+                Some(e)
             } else {
                 None
             }

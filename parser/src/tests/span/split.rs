@@ -1,5 +1,5 @@
 mod into_parse_result {
-    use crate::{tests::fixtures::TSpan, Span};
+    use crate::{Span, tests::fixtures::TSpan};
 
     #[test]
     fn base_case() {
