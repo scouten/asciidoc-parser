@@ -2,15 +2,15 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::Block,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
-            TSpan,
         },
         warnings::WarningType,
-        Parser, Span,
     };
 
     #[test]
@@ -186,14 +186,14 @@ mod example {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
         span::content::SubstitutionGroup,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        HasSpan, Parser, Span,
     };
 
     #[test]
@@ -707,13 +707,13 @@ mod open {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        HasSpan, Parser, Span,
     };
 
     #[test]
@@ -1041,13 +1041,13 @@ mod sidebar {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        HasSpan, Parser, Span,
     };
 
     #[test]
@@ -1403,13 +1403,13 @@ mod quote {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        HasSpan, Parser, Span,
     };
 
     #[test]

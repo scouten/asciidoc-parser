@@ -1,5 +1,5 @@
 use asciidoc_parser::Parser;
-use codspeed_criterion_compat::{black_box, criterion_group, criterion_main, Criterion};
+use codspeed_criterion_compat::{Criterion, black_box, criterion_group, criterion_main};
 
 const BENCH_NAME: &str = "2 blocks + title";
 const PARSE_TEXT: &str = "= Example Title\n\nabc\n\ndef";

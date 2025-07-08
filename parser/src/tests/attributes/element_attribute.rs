@@ -1,10 +1,10 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    attributes::{element_attribute::ParseShorthand, ElementAttribute},
+    Parser,
+    attributes::{ElementAttribute, element_attribute::ParseShorthand},
     strings::CowStr,
     tests::fixtures::attributes::TElementAttribute,
-    Parser,
 };
 
 #[test]
@@ -119,11 +119,11 @@ mod quoted_string {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        attributes::{element_attribute::ParseShorthand, ElementAttribute},
+        Parser,
+        attributes::{ElementAttribute, element_attribute::ParseShorthand},
         strings::CowStr,
         tests::fixtures::attributes::TElementAttribute,
         warnings::WarningType,
-        Parser,
     };
 
     #[test]
@@ -325,10 +325,10 @@ mod named {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        attributes::{element_attribute::ParseShorthand, ElementAttribute},
+        Parser,
+        attributes::{ElementAttribute, element_attribute::ParseShorthand},
         strings::CowStr,
         tests::fixtures::attributes::TElementAttribute,
-        Parser,
     };
 
     #[test]
@@ -494,11 +494,11 @@ mod parse_with_shorthand {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        attributes::{element_attribute::ParseShorthand, ElementAttribute},
+        Parser,
+        attributes::{ElementAttribute, element_attribute::ParseShorthand},
         strings::CowStr,
         tests::fixtures::attributes::TElementAttribute,
         warnings::WarningType,
-        Parser,
     };
 
     #[test]

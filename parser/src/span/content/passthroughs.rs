@@ -3,10 +3,10 @@ use std::{borrow::Cow, sync::LazyLock};
 use regex::{Captures, Match, Regex, RegexBuilder, Replacer};
 
 use crate::{
+    Content, Parser, Span,
     attributes::Attrlist,
     parser::{QuoteScope, QuoteType},
     span::content::SubstitutionGroup,
-    Content, Parser, Span,
 };
 
 /// Saves the content of one passthrough (`+++` or similarly bracketed) passage
@@ -437,7 +437,7 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         let index = caps[1].parse::<usize>().unwrap_or_default();
 
-        let Some(pass) = self.0 .0.get(index) else {
+        let Some(pass) = self.0.0.get(index) else {
             dest.push_str(&format!(
                 "(INTERNAL ERROR: Unresolved passthrough index {index})"
             ));

@@ -1,5 +1,5 @@
 use asciidoc_parser::Parser;
-use codspeed_criterion_compat::{black_box, criterion_group, criterion_main, Criterion};
+use codspeed_criterion_compat::{Criterion, black_box, criterion_group, criterion_main};
 
 const BENCH_NAME: &str = "inline macro";
 const PARSE_TEXT: &str = "= Example Title\n\nblah foo:bar[blah] bonus";

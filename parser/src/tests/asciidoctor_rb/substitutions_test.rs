@@ -64,16 +64,16 @@ mod quotes {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Content, Parser, Span,
         blocks::Block,
         parser::ModificationContext,
         span::content::{SubstitutionGroup, SubstitutionStep},
         strings::CowStr,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Content, Parser, Span,
     };
 
     #[test]
@@ -1020,7 +1020,9 @@ mod quotes {
         assert!(!content.is_empty());
         assert_eq!(
             content.rendered,
-            CowStr::Borrowed("x<sup>2</sup> = x * x, e = mc<sup>2</sup>, there\'s a 1<sup>st</sup> time for everything")
+            CowStr::Borrowed(
+                "x<sup>2</sup> = x * x, e = mc<sup>2</sup>, there\'s a 1<sup>st</sup> time for everything"
+            )
         );
     }
 
@@ -2541,15 +2543,15 @@ mod passthroughs {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Content, Parser, Span,
         blocks::Block,
         parser::{ModificationContext, QuoteType},
         span::content::{Passthrough, Passthroughs, SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Content, Parser, Span,
     };
 
     #[test]
@@ -2933,7 +2935,9 @@ mod passthroughs {
 
         let mut p = Parser::default();
         let maw = Block::parse(
-            Span::new("+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough"),
+            Span::new(
+                "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
+            ),
             &mut p,
         );
 
@@ -3281,8 +3285,8 @@ mod passthroughs {
 
     #[ignore]
     #[test]
-    fn should_not_fail_to_restore_remaining_passthroughs_after_processing_inline_passthrough_with_macro_substitution(
-    ) {
+    fn should_not_fail_to_restore_remaining_passthroughs_after_processing_inline_passthrough_with_macro_substitution()
+     {
         // TO DO: Enable this test when macro substitution is implemented.
         let mut p = Parser::default();
         let maw = Block::parse(Span::new("pass:m[.] pass:[.]"), &mut p);
@@ -3512,8 +3516,8 @@ mod passthroughs {
     }
 
     #[test]
-    fn should_support_constrained_passthrough_in_monospace_span_preceded_by_escaped_boxed_attrlist_with_transitional_role(
-    ) {
+    fn should_support_constrained_passthrough_in_monospace_span_preceded_by_escaped_boxed_attrlist_with_transitional_role()
+     {
         let mut p = Parser::default();
         let maw = Block::parse(Span::new(r#"\[x-]`foo +bar+ baz`"#), &mut p);
 
@@ -3545,8 +3549,8 @@ mod passthroughs {
     }
 
     #[test]
-    fn should_treat_monospace_phrase_with_escaped_boxed_attrlist_with_transitional_role_as_monospace(
-    ) {
+    fn should_treat_monospace_phrase_with_escaped_boxed_attrlist_with_transitional_role_as_monospace()
+     {
         let mut p = Parser::default();
         let maw = Block::parse(Span::new(r#"\[x-]`*foo* +bar+ baz`"#), &mut p);
 
@@ -3578,8 +3582,8 @@ mod passthroughs {
     }
 
     #[test]
-    fn should_ignore_escaped_attrlist_with_transitional_role_on_monospace_phrase_if_not_proceeded_by_bracket(
-    ) {
+    fn should_ignore_escaped_attrlist_with_transitional_role_on_monospace_phrase_if_not_proceeded_by_bracket()
+     {
         let mut p = Parser::default();
         let maw = Block::parse(Span::new(r#"\x-]`*foo* +bar+ baz`"#), &mut p);
 
@@ -3825,15 +3829,15 @@ mod replacements {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Content, Parser, Span,
         blocks::Block,
         span::content::SubstitutionStep,
         strings::CowStr,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Content, Parser, Span,
     };
 
     #[test]
@@ -4000,8 +4004,7 @@ foo&#8201;&#8212;&#8201;"#;
                         col: 1,
                         offset: 0,
                     },
-                    rendered:
-                        "John&#8217;s Hideout is the Whites&#8217; place&#8230;&#8203; foo'bar",
+                    rendered: "John&#8217;s Hideout is the Whites&#8217; place&#8230;&#8203; foo'bar",
                 },
                 source: TSpan {
                     data: r#"John's Hideout is the Whites`' place... foo\'bar"#,
@@ -4062,14 +4065,14 @@ mod post_replacements {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::Block,
         tests::fixtures::{
+            TSpan,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Parser, Span,
     };
 
     #[test]

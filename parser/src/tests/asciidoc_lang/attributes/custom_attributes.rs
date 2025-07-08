@@ -1,13 +1,13 @@
 use crate::{
+    Span,
     document::Attribute,
     tests::{
         fixtures::{
-            document::{TAttribute, TInterpretedValue, TRawAttributeValue},
             TSpan,
+            document::{TAttribute, TInterpretedValue, TRawAttributeValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Span,
 };
 
 track_file!("docs/modules/attributes/pages/custom-attributes.adoc");
@@ -26,15 +26,15 @@ When you find yourself typing the same text repeatedly, or text that often needs
 
 mod user_defined_names {
     use crate::{
+        Span,
         document::{Attribute, InterpretedValue},
         tests::{
             fixtures::{
-                document::{TAttribute, TRawAttributeValue},
                 TSpan,
+                document::{TAttribute, TRawAttributeValue},
             },
             sdd::verifies,
         },
-        Span,
     };
 
     verifies!(
@@ -253,30 +253,36 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 
     let mi = Attribute::parse(Span::new(":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.")).unwrap();
 
-    assert_eq!(mi.item, TAttribute {
-        name: TSpan {
-            data: "disclaimer",
-            line: 1,
-            col: 2,
-            offset: 1,
-        },
-        value: TRawAttributeValue::Value(
-            TSpan {
+    assert_eq!(
+        mi.item,
+        TAttribute {
+            name: TSpan {
+                data: "disclaimer",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+            value: TRawAttributeValue::Value(TSpan {
                 data: "Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.",
                 line: 1,
                 col: 14,
                 offset: 13,
+            },),
+            source: TSpan {
+                data: ":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.",
+                line: 1,
+                col: 1,
+                offset: 0,
             },
-        ),
-        source: TSpan {
-            data: ":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.",
-            line: 1,
-            col: 1,
-            offset: 0,
-        },
-    });
+        }
+    );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."));
+    assert_eq!(
+        mi.item.value(),
+        TInterpretedValue::Value(
+            "Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."
+        )
+    );
 
     let mi = Attribute::parse(Span::new(
         ":url-repo: https://github.com/asciidoctor/asciidoctor",

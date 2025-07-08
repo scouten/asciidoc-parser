@@ -1,9 +1,9 @@
 use std::ops::Sub;
 
 use crate::{
+    Parser,
     attributes::Attrlist,
     span::content::{Content, Passthroughs, SubstitutionStep},
-    Parser,
 };
 
 /// Each block and inline element has a default substitution group that is
@@ -163,7 +163,7 @@ impl SubstitutionGroup {
                 SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
             }
 
-            Self::Custom(ref steps) => {
+            Self::Custom(steps) => {
                 for step in steps {
                     step.apply(content, parser, attrlist);
                 }

@@ -77,17 +77,17 @@ mod macros {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser,
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMacroBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser,
     };
 
     non_normative!(
@@ -190,9 +190,8 @@ Click the button with the image:star.png[Star] to favorite the project.
         );
 
         assert_eq!(
-            Parser::default().parse(
-                "Click the button with the image:star.png[Star] to favorite the project.\n"
-            ),
+            Parser::default()
+                .parse("Click the button with the image:star.png[Star] to favorite the project.\n"),
             TDocument {
                 header: THeader {
                     title: None,
@@ -204,33 +203,28 @@ Click the button with the image:star.png[Star] to favorite the project.
                         offset: 0
                     }
                 },
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "Click the button with the image:star.png[Star] to favorite the project.",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                                rendered: "Click the button with the image:star.png[Star] to favorite the project.",
-                            },
-                            source: TSpan {
-                                data: "Click the button with the image:star.png[Star] to favorite the project.",
-                                line: 1,
-                                col: 1,
-                                offset: 0,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "Click the button with the image:star.png[Star] to favorite the project.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
                         },
-                    ),
-                ],
+                        rendered: "Click the button with the image:star.png[Star] to favorite the project.",
+                    },
+                    source: TSpan {
+                        data: "Click the button with the image:star.png[Star] to favorite the project.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 source: TSpan {
-                    data:
-                        "Click the button with the image:star.png[Star] to favorite the project.",
+                    data: "Click the button with the image:star.png[Star] to favorite the project.",
                     line: 1,
                     col: 1,
                     offset: 0

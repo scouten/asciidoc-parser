@@ -1,5 +1,5 @@
 mod is_valid_delimiter {
-    use crate::{blocks::CompoundDelimitedBlock, Span};
+    use crate::{Span, blocks::CompoundDelimitedBlock};
 
     #[test]
     fn comment() {
@@ -165,10 +165,10 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock},
-        tests::fixtures::{warnings::TWarning, TSpan},
-        warnings::WarningType,
         Parser,
+        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        tests::fixtures::{TSpan, warnings::TWarning},
+        warnings::WarningType,
     };
 
     #[test]
@@ -219,8 +219,8 @@ mod parse {
 
 mod comment {
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock},
         Parser,
+        blocks::{CompoundDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -233,11 +233,13 @@ mod comment {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new("////\nline1  \nline2\n////"),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new("////\nline1  \nline2\n////"),
+                &mut parser
+            )
+            .is_none()
+        );
     }
 }
 
@@ -245,14 +247,14 @@ mod example {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        Parser,
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
         span::content::SubstitutionGroup,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Parser,
     };
 
     #[test]
@@ -588,8 +590,8 @@ mod example {
 
 mod listing {
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock},
         Parser,
+        blocks::{CompoundDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -602,18 +604,20 @@ mod listing {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new("----\nline1  \nline2\n----"),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new("----\nline1  \nline2\n----"),
+                &mut parser
+            )
+            .is_none()
+        );
     }
 }
 
 mod literal {
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock},
         Parser,
+        blocks::{CompoundDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -626,11 +630,13 @@ mod literal {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new("....\nline1  \nline2\n...."),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new("....\nline1  \nline2\n...."),
+                &mut parser
+            )
+            .is_none()
+        );
     }
 }
 
@@ -638,14 +644,14 @@ mod open {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        Parser,
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
         span::content::SubstitutionGroup,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Parser,
     };
 
     #[test]
@@ -958,14 +964,14 @@ mod sidebar {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        Parser,
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
         span::content::SubstitutionGroup,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Parser,
     };
 
     #[test]
@@ -1301,8 +1307,8 @@ mod sidebar {
 
 mod table {
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock},
         Parser,
+        blocks::{CompoundDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -1323,39 +1329,47 @@ mod table {
     #[test]
     fn multiple_lines() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new("|===\nline1  \nline2\n|==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new("|===\nline1  \nline2\n|==="),
+                &mut parser
+            )
+            .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new(",===\nline1  \nline2\n,==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new(",===\nline1  \nline2\n,==="),
+                &mut parser
+            )
+            .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new(":===\nline1  \nline2\n:==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new(":===\nline1  \nline2\n:==="),
+                &mut parser
+            )
+            .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new("!===\nline1  \nline2\n!==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new("!===\nline1  \nline2\n!==="),
+                &mut parser
+            )
+            .is_none()
+        );
     }
 }
 
 mod pass {
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock},
         Parser,
+        blocks::{CompoundDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -1368,11 +1382,13 @@ mod pass {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        assert!(CompoundDelimitedBlock::parse(
-            &Preamble::new("++++\nline1  \nline2\n++++"),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(
+                &Preamble::new("++++\nline1  \nline2\n++++"),
+                &mut parser
+            )
+            .is_none()
+        );
     }
 }
 
@@ -1380,14 +1396,14 @@ mod quote {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock},
+        Parser,
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
         span::content::SubstitutionGroup,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
-        Parser,
     };
 
     #[test]

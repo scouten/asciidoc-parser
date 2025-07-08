@@ -16,18 +16,18 @@ mod positional_attribute {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, Block, IsBlock, MacroBlock},
+        Parser, Span,
+        blocks::{Block, IsBlock, MacroBlock, preamble::Preamble},
         span::content::SubstitutionGroup,
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSectionBlock, TSimpleBlock},
                 content::TContent,
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser, Span,
     };
 
     non_normative!(
@@ -353,8 +353,9 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
         .unwrap()
         .item;
 
-        assert_eq!(block, TBlock::Simple(
-            TSimpleBlock {
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
@@ -372,27 +373,21 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec![
-                                    "%header","%footer", "%autowidth",
-                                ],
-                                value: "%header%footer%autowidth"
-        },
-                        ],
-                        source: TSpan {
-                            data: "%header%footer%autowidth",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec!["%header", "%footer", "%autowidth",],
+                        value: "%header%footer%autowidth"
+                    },],
+                    source: TSpan {
+                        data: "%header%footer%autowidth",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         /* NO COVERAGE YET
 

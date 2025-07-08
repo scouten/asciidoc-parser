@@ -29,17 +29,17 @@ You can assign one or more options to a block using the shorthand or formal synt
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::{Block, IsBlock},
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser, Span,
     };
 
     #[test]
@@ -71,32 +71,29 @@ This is a sidebar with an option assigned to it, named option.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with an option assigned to it, named option.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 15,
-                                },
-                                rendered: "This is a sidebar with an option assigned to it, named option.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with an option assigned to it, named option.",
-                                line: 3,
-                                col: 1,
-                                offset: 15,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with an option assigned to it, named option.",
+                            line: 3,
+                            col: 1,
+                            offset: 15,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with an option assigned to it, named option.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with an option assigned to it, named option.",
+                        line: 3,
+                        col: 1,
+                        offset: 15,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[%option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
@@ -106,25 +103,21 @@ This is a sidebar with an option assigned to it, named option.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec!["%option"],
-                                value: "%option"
-        },
-                        ],
-                        source: TSpan {
-                            data: "%option",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec!["%option"],
+                        value: "%option"
+                    },],
+                    source: TSpan {
+                        data: "%option",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         let options = mi.item.options();
         let mut options = options.iter();
@@ -163,32 +156,29 @@ This is a sidebar with two options assigned to it, named option1 and option2.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with two options assigned to it, named option1 and option2.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 24,
-                                },
-                                rendered: "This is a sidebar with two options assigned to it, named option1 and option2.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with two options assigned to it, named option1 and option2.",
-                                line: 3,
-                                col: 1,
-                                offset: 24,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with two options assigned to it, named option1 and option2.",
+                            line: 3,
+                            col: 1,
+                            offset: 24,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with two options assigned to it, named option1 and option2.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with two options assigned to it, named option1 and option2.",
+                        line: 3,
+                        col: 1,
+                        offset: 24,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[%option1%option2]\n****\nThis is a sidebar with two options assigned to it, named option1 and option2.\n****",
@@ -198,25 +188,21 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec!["%option1", "%option2"],
-                                value: "%option1%option2"
-        },
-                        ],
-                        source: TSpan {
-                            data: "%option1%option2",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec!["%option1", "%option2"],
+                        value: "%option1%option2"
+                    },],
+                    source: TSpan {
+                        data: "%option1%option2",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         let options = mi.item.options();
         let mut options = options.iter();
@@ -353,32 +339,29 @@ This is a sidebar with an option assigned to it, named option.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with an option assigned to it, named option.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 19,
-                                },
-                                rendered: "This is a sidebar with an option assigned to it, named option.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with an option assigned to it, named option.",
-                                line: 3,
-                                col: 1,
-                                offset: 19,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with an option assigned to it, named option.",
+                            line: 3,
+                            col: 1,
+                            offset: 19,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with an option assigned to it, named option.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with an option assigned to it, named option.",
+                        line: 3,
+                        col: 1,
+                        offset: 19,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[opts=option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
@@ -388,25 +371,21 @@ This is a sidebar with an option assigned to it, named option.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: Some("opts"),
-                                shorthand_items: vec![],
-                                value: "option"
-        },
-                        ],
-                        source: TSpan {
-                            data: "opts=option",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: Some("opts"),
+                        shorthand_items: vec![],
+                        value: "option"
+                    },],
+                    source: TSpan {
+                        data: "opts=option",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         let options = mi.item.options();
         let mut options = options.iter();
@@ -444,32 +423,29 @@ This is a sidebar with two options assigned to it, option1 and option2.
         .unwrap_if_no_warnings()
         .unwrap();
 
-        assert_eq!(mi.item, TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is a sidebar with two options assigned to it, option1 and option2.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 30,
-                                },
-                                rendered: "This is a sidebar with two options assigned to it, option1 and option2.",
-                            },
-                            source: TSpan {
-                                data: "This is a sidebar with two options assigned to it, option1 and option2.",
-                                line: 3,
-                                col: 1,
-                                offset: 30,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
+        assert_eq!(
+            mi.item,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: vec![TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "This is a sidebar with two options assigned to it, option1 and option2.",
+                            line: 3,
+                            col: 1,
+                            offset: 30,
                         },
-                    ),
-                ],
+                        rendered: "This is a sidebar with two options assigned to it, option1 and option2.",
+                    },
+                    source: TSpan {
+                        data: "This is a sidebar with two options assigned to it, option1 and option2.",
+                        line: 3,
+                        col: 1,
+                        offset: 30,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "[opts=\"option1,option2\"]\n****\nThis is a sidebar with two options assigned to it, option1 and option2.\n****",
@@ -479,25 +455,21 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: Some("opts"),
-                                shorthand_items: vec![],
-                                value: "option1,option2"
-        },
-                        ],
-                        source: TSpan {
-                            data: "opts=\"option1,option2\"",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: Some("opts"),
+                        shorthand_items: vec![],
+                        value: "option1,option2"
+                    },],
+                    source: TSpan {
+                        data: "opts=\"option1,option2\"",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         let options = mi.item.options();
         let mut options = options.iter();
@@ -619,18 +591,18 @@ Let's consider `options` when combined with other attributes.
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::{Block, IsBlock},
         span::content::SubstitutionGroup,
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser, Span,
     };
 
     #[test]
@@ -665,45 +637,41 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
 
         // IMPORTANT: This test will have to be revised when we support attribute lists.
 
-        assert_eq!(mi.item,
-            TBlock::Simple(
-                TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
-                            data: "property 1:: does stuff\nproperty 2:: does different stuff",
-                            line: 2,
-                            col: 1,
-                            offset: 29,
-                        },
-                        rendered: "property 1:: does stuff\nproperty 2:: does different stuff",
-                    },
-                    source: TSpan {
-                        data: "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
-                        line: 1,
+        assert_eq!(
+            mi.item,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "property 1:: does stuff\nproperty 2:: does different stuff",
+                        line: 2,
                         col: 1,
-                        offset: 0,
+                        offset: 29,
                     },
-                    title: None,
-                    anchor: None,
-                    attrlist: Some(
-                        TAttrlist {
-                            attributes: vec![
-                                TElementAttribute {
-                                    name: None,
-                                    shorthand_items: vec!["horizontal", ".properties", "%step"],
-                                    value: "horizontal.properties%step"
-        },
-                            ],
-                            source: TSpan {
-                                data: "horizontal.properties%step",
-                                line: 1,
-                                col: 2,
-                                offset: 1,
-                            },
-                        },
-                    ),
+                    rendered: "property 1:: does stuff\nproperty 2:: does different stuff",
                 },
-            ));
+                source: TSpan {
+                    data: "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![TElementAttribute {
+                        name: None,
+                        shorthand_items: vec!["horizontal", ".properties", "%step"],
+                        value: "horizontal.properties%step"
+                    },],
+                    source: TSpan {
+                        data: "horizontal.properties%step",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+            },)
+        );
 
         assert_eq!(mi.item.declared_style().unwrap(), "horizontal");
 
@@ -754,9 +722,9 @@ property 2:: does different stuff
 
         // IMPORTANT: This test will have to be revised when we support attribute lists.
 
-        assert_eq!(mi.item,
-            TBlock::Simple(
-            TSimpleBlock {
+        assert_eq!(
+            mi.item,
+            TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",
@@ -774,35 +742,33 @@ property 2:: does different stuff
                 },
                 title: None,
                 anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec!["horizontal"],
-                                value: "horizontal"
-        },
-                            TElementAttribute {
-                                name: Some("role"),
-                                shorthand_items: vec![],
-                                value: "properties"
-        },
-                            TElementAttribute {
-                                name: Some("opts"),
-                                shorthand_items: vec![],
-                                value: "step"
-        },
-                        ],
-                        source: TSpan {
-                            data: "horizontal,role=properties,opts=step",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
+                attrlist: Some(TAttrlist {
+                    attributes: vec![
+                        TElementAttribute {
+                            name: None,
+                            shorthand_items: vec!["horizontal"],
+                            value: "horizontal"
                         },
+                        TElementAttribute {
+                            name: Some("role"),
+                            shorthand_items: vec![],
+                            value: "properties"
+                        },
+                        TElementAttribute {
+                            name: Some("opts"),
+                            shorthand_items: vec![],
+                            value: "step"
+                        },
+                    ],
+                    source: TSpan {
+                        data: "horizontal,role=properties,opts=step",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
                     },
-                ),
-            },
-        ));
+                },),
+            },)
+        );
 
         assert_eq!(mi.item.declared_style().unwrap(), "horizontal");
 

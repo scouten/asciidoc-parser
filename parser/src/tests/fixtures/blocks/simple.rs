@@ -3,7 +3,7 @@ use std::fmt;
 use crate::{
     blocks::{IsBlock, SimpleBlock},
     span::HasSpan,
-    tests::fixtures::{attributes::TAttrlist, content::TContent, TSpan},
+    tests::fixtures::{TSpan, attributes::TAttrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
@@ -44,36 +44,33 @@ fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
         return false;
     }
 
-    if let Some(ref fixture_title) = fixture.title {
-        if let Some(ref observed_title) = observed.title() {
-            if fixture_title != observed_title {
-                return false;
-            }
-        }
+    if let Some(ref fixture_title) = fixture.title
+        && let Some(ref observed_title) = observed.title()
+        && fixture_title != observed_title
+    {
+        return false;
     }
 
     if fixture.anchor.is_some() != observed.anchor().is_some() {
         return false;
     }
 
-    if let Some(ref fixture_anchor) = fixture.anchor {
-        if let Some(ref observed_anchor) = observed.anchor() {
-            if fixture_anchor != observed_anchor {
-                return false;
-            }
-        }
+    if let Some(ref fixture_anchor) = fixture.anchor
+        && let Some(ref observed_anchor) = observed.anchor()
+        && fixture_anchor != observed_anchor
+    {
+        return false;
     }
 
     if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref fixture_attrlist) = fixture.attrlist {
-        if let Some(ref observed_attrlist) = observed.attrlist() {
-            if &fixture_attrlist != observed_attrlist {
-                return false;
-            }
-        }
+    if let Some(ref fixture_attrlist) = fixture.attrlist
+        && let Some(ref observed_attrlist) = observed.attrlist()
+        && &fixture_attrlist != observed_attrlist
+    {
+        return false;
     }
 
     &fixture.source == observed.span() && &fixture.content == observed.content()

@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 use super::HtmlSubstitutionRenderer;
 use crate::{
+    Document,
     document::InterpretedValue,
     parser::{AllowableValue, AttributeValue, InlineSubstitutionRenderer, ModificationContext},
-    Document,
 };
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
