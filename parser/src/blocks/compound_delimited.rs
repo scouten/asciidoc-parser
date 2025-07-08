@@ -1,12 +1,12 @@
 use std::slice::Iter;
 
 use crate::{
+    HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{parse_utils::parse_blocks_until, preamble::Preamble, Block, ContentModel, IsBlock},
+    blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until, preamble::Preamble},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
 };
 
 /// A delimited block that can contain other blocks.

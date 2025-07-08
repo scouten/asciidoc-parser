@@ -1,11 +1,11 @@
 use std::{fmt::Debug, slice::Iter};
 
 use crate::{
+    HasSpan, Span,
     attributes::Attrlist,
-    blocks::{is_built_in_context, Block},
+    blocks::{Block, is_built_in_context},
     span::content::SubstitutionGroup,
     strings::CowStr,
-    HasSpan, Span,
 };
 
 /// **Block elements** form the main structure of an AsciiDoc document, starting

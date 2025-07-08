@@ -1,15 +1,15 @@
 use std::slice::Iter;
 
 use crate::{
+    HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        preamble::Preamble, CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock,
-        RawDelimitedBlock, SectionBlock, SimpleBlock,
+        CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock,
+        SimpleBlock, preamble::Preamble,
     },
-    span::{content::SubstitutionGroup, MatchedItem},
+    span::{MatchedItem, content::SubstitutionGroup},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
 };
 
 /// **Block elements** form the main structure of an AsciiDoc document, starting

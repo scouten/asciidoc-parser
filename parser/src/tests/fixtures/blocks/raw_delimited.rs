@@ -1,10 +1,10 @@
 use std::fmt;
 
 use crate::{
+    HasSpan,
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
     span::content::SubstitutionGroup,
-    tests::fixtures::{attributes::TAttrlist, content::TContent, TSpan},
-    HasSpan,
+    tests::fixtures::{TSpan, attributes::TAttrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]

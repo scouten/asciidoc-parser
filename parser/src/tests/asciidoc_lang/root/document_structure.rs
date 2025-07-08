@@ -20,16 +20,16 @@ mod documents {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser,
         tests::{
             fixtures::{
+                TSpan,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TAttribute, TDocument, THeader, TRawAttributeValue},
-                TSpan,
             },
             sdd::{non_normative, verifies},
         },
-        Parser,
     };
 
     non_normative!(
@@ -181,7 +181,8 @@ This document contains two paragraphs.
                         title: None,
                         anchor: None,
                         attrlist: None,
-                    })],
+                    })
+                ],
                 warnings: vec![],
             }
         );
@@ -312,15 +313,15 @@ mod lines {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Span,
         document::Attribute,
         tests::{
             fixtures::{
-                document::{TAttribute, TInterpretedValue, TRawAttributeValue},
                 TSpan,
+                document::{TAttribute, TInterpretedValue, TRawAttributeValue},
             },
             sdd::verifies,
         },
-        Span,
     };
 
     #[test]

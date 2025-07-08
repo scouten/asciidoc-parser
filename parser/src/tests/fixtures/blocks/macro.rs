@@ -1,9 +1,9 @@
 use std::fmt;
 
 use crate::{
-    blocks::{IsBlock, MacroBlock},
-    tests::fixtures::{attributes::TAttrlist, TSpan},
     HasSpan,
+    blocks::{IsBlock, MacroBlock},
+    tests::fixtures::{TSpan, attributes::TAttrlist},
 };
 
 #[derive(Eq, PartialEq)]

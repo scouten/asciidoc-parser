@@ -1,7 +1,7 @@
 mod warning {
     use crate::{
-        warnings::{Warning, WarningType},
         Span,
+        warnings::{Warning, WarningType},
     };
 
     #[test]
@@ -19,8 +19,8 @@ mod warning {
 
 mod match_and_warnings {
     use crate::{
-        warnings::{MatchAndWarnings, Warning, WarningType},
         Span,
+        warnings::{MatchAndWarnings, Warning, WarningType},
     };
 
     #[test]

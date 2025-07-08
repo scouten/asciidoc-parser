@@ -1,4 +1,4 @@
-use crate::{span::MatchedItem, strings::CowStr, HasSpan, Span};
+use crate::{HasSpan, Span, span::MatchedItem, strings::CowStr};
 
 /// Document attributes are effectively document-scoped variables for the
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in

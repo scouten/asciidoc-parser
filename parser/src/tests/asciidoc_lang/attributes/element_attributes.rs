@@ -44,18 +44,18 @@ mod attrlist {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        HasSpan, Parser, Span,
         attributes::Attrlist,
         blocks::Block,
         tests::{
             fixtures::{
+                TSpan,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMacroBlock, TSimpleBlock},
                 content::TContent,
-                TSpan,
             },
             sdd::{non_normative, to_do_verifies, verifies},
         },
-        HasSpan, Parser, Span,
     };
 
     non_normative!(
@@ -330,8 +330,7 @@ name::target[first-positional,second-positional,named="value of named"]
                     },
                 },
                 source: TSpan {
-                    data:
-                        "name::target[first-positional,second-positional,named=\"value of named\"]",
+                    data: "name::target[first-positional,second-positional,named=\"value of named\"]",
                     line: 1,
                     col: 1,
                     offset: 0,

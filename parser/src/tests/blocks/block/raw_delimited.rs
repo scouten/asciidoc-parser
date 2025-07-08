@@ -2,24 +2,26 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::Block,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
-            TSpan,
         },
         warnings::WarningType,
-        Parser, Span,
     };
 
     #[test]
     fn err_invalid_delimiter() {
         let mut parser = Parser::default();
 
-        assert!(Block::parse(Span::new(""), &mut parser)
-            .unwrap_if_no_warnings()
-            .is_none());
+        assert!(
+            Block::parse(Span::new(""), &mut parser)
+                .unwrap_if_no_warnings()
+                .is_none()
+        );
 
         let mut parser = Parser::default();
 
@@ -192,14 +194,14 @@ mod comment {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
         span::content::SubstitutionGroup,
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TRawDelimitedBlock},
             content::TContent,
-            TSpan,
         },
-        Parser, Span,
     };
 
     #[test]
@@ -417,14 +419,14 @@ mod listing {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
-        span::{content::SubstitutionGroup, HasSpan},
+        span::{HasSpan, content::SubstitutionGroup},
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TRawDelimitedBlock},
             content::TContent,
-            TSpan,
         },
-        Parser, Span,
     };
 
     #[test]
@@ -675,14 +677,14 @@ mod pass {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
+        Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
-        span::{content::SubstitutionGroup, HasSpan},
+        span::{HasSpan, content::SubstitutionGroup},
         tests::fixtures::{
+            TSpan,
             blocks::{TBlock, TRawDelimitedBlock},
             content::TContent,
-            TSpan,
         },
-        Parser, Span,
     };
 
     #[test]

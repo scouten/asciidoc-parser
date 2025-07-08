@@ -17,15 +17,15 @@ The built-in attribute names are listed in the xref:document-attributes-ref.adoc
 
 mod valid_user_defined_names {
     use crate::{
+        Span,
         document::{Attribute, InterpretedValue},
         tests::{
             fixtures::{
-                document::{TAttribute, TRawAttributeValue},
                 TSpan,
+                document::{TAttribute, TRawAttributeValue},
             },
             sdd::verifies,
         },
-        Span,
     };
 
     verifies!(

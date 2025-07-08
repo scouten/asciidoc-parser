@@ -1,11 +1,11 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    Span,
     tests::{
         fixtures::TSpan,
         sdd::{non_normative, track_file, verifies},
     },
-    Span,
 };
 
 track_file!("docs/modules/ROOT/pages/normalization.adoc");

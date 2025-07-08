@@ -1,10 +1,10 @@
 use crate::{
+    Content, HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{preamble::Preamble, ContentModel, IsBlock},
-    span::{content::SubstitutionGroup, MatchedItem},
+    blocks::{ContentModel, IsBlock, preamble::Preamble},
+    span::{MatchedItem, content::SubstitutionGroup},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    Content, HasSpan, Parser, Span,
 };
 
 /// A delimited block that contains verbatim, raw, or comment text. The content

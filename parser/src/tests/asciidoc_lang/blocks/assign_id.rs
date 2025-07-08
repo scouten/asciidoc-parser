@@ -1,17 +1,17 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    Parser, Span,
     blocks::{Block, IsBlock},
     tests::{
         fixtures::{
+            TSpan,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/assign-id.adoc");
@@ -214,55 +214,53 @@ Roads? Where we're going, we don't need roads.
     .unwrap()
     .item;
 
-    assert_eq!(block,
-        TBlock:: Simple(
-            TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
-                        data: "Roads? Where we're going, we don't need roads.",
-                        line: 2,
-                        col: 1,
-                        offset: 50,
-                    },
-                    rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
-                },
-                source: TSpan {
-                    data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
-                    line: 1,
+    assert_eq!(
+        block,
+        TBlock::Simple(TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "Roads? Where we're going, we don't need roads.",
+                    line: 2,
                     col: 1,
-                    offset: 0,
+                    offset: 50,
                 },
-                title: None,
-                anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec!["quote", "#roads"],
-                                value: "quote#roads"
-        },
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec![],
-                                value: "Dr. Emmett Brown"
-        },
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec![],
-                                value: "Back to the Future"
-        },
-                        ],
-                        source: TSpan {
-                            data: "quote#roads,Dr. Emmett Brown,Back to the Future",
-                            line: 1,
-                            col: 2,
-                            offset: 1,
-                        },
-                    },
-                ),
+                rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
             },
-        ));
+            source: TSpan {
+                data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: None,
+            attrlist: Some(TAttrlist {
+                attributes: vec![
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec!["quote", "#roads"],
+                        value: "quote#roads"
+                    },
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![],
+                        value: "Dr. Emmett Brown"
+                    },
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![],
+                        value: "Back to the Future"
+                    },
+                ],
+                source: TSpan {
+                    data: "quote#roads,Dr. Emmett Brown,Back to the Future",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },),
+        },)
+    );
 
     assert_eq!(block.id().unwrap(), "roads");
 }

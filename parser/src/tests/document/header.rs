@@ -1,12 +1,12 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    Parser, Span,
     document::Header,
     tests::fixtures::{
-        document::{TAttribute, THeader, TRawAttributeValue},
         TSpan,
+        document::{TAttribute, THeader, TRawAttributeValue},
     },
-    Parser, Span,
 };
 
 #[test]

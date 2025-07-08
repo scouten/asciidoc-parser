@@ -59,10 +59,10 @@ mod context {
     use std::ops::Deref;
 
     use crate::{
-        blocks::{is_built_in_context, Block, ContentModel, IsBlock},
+        Parser, Span,
+        blocks::{Block, ContentModel, IsBlock, is_built_in_context},
         span::content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
-        Parser, Span,
     };
 
     non_normative!(
@@ -521,10 +521,10 @@ In the converter, these blocks must be accessed from their parent block.
 
 mod block_style {
     use crate::{
+        Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
         span::content::SubstitutionGroup,
         tests::sdd::{non_normative, verifies},
-        Parser, Span,
     };
 
     non_normative!(

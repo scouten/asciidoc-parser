@@ -1,8 +1,8 @@
 use crate::{
+    Parser, Span,
     attributes::Attrlist,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    Parser, Span,
 };
 
 /// A preamble represents the common elements that can precede any block type

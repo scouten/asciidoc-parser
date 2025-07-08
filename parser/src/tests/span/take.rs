@@ -1,5 +1,5 @@
 mod take_prefix {
-    use crate::{tests::fixtures::TSpan, Span};
+    use crate::{Span, tests::fixtures::TSpan};
 
     #[test]
     fn empty_source() {
@@ -73,7 +73,7 @@ mod take_prefix {
 }
 
 mod take_whitespace {
-    use crate::{tests::fixtures::TSpan, Span};
+    use crate::{Span, tests::fixtures::TSpan};
 
     #[test]
     fn empty_source() {
@@ -181,7 +181,7 @@ mod take_whitespace {
 }
 
 mod take_required_whitespace {
-    use crate::{tests::fixtures::TSpan, Span};
+    use crate::{Span, tests::fixtures::TSpan};
 
     #[test]
     fn empty_source() {
@@ -249,7 +249,7 @@ mod take_required_whitespace {
 }
 
 mod take_while {
-    use crate::{tests::fixtures::TSpan, Span};
+    use crate::{Span, tests::fixtures::TSpan};
 
     #[test]
     fn empty_source() {
@@ -357,7 +357,7 @@ mod take_while {
 }
 
 mod take_non_empty_lines {
-    use crate::{tests::fixtures::TSpan, Span};
+    use crate::{Span, tests::fixtures::TSpan};
 
     #[test]
     fn empty_source() {

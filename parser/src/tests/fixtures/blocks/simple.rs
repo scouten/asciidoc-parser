@@ -3,7 +3,7 @@ use std::fmt;
 use crate::{
     blocks::{IsBlock, SimpleBlock},
     span::HasSpan,
-    tests::fixtures::{attributes::TAttrlist, content::TContent, TSpan},
+    tests::fixtures::{TSpan, attributes::TAttrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
