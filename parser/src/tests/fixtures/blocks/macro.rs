@@ -51,12 +51,11 @@ fn fixture_eq_observed(fixture: &TMacroBlock, observed: &MacroBlock) -> bool {
         return false;
     }
 
-    if let Some(ref fixture_target) = fixture.target {
-        if let Some(ref observed_target) = observed.target() {
-            if &fixture_target != observed_target {
-                return false;
-            }
-        }
+    if let Some(ref fixture_target) = fixture.target
+        && let Some(ref observed_target) = observed.target()
+        && &fixture_target != observed_target
+    {
+        return false;
     }
 
     if fixture.macro_attrlist != *observed.macro_attrlist() {
@@ -67,36 +66,33 @@ fn fixture_eq_observed(fixture: &TMacroBlock, observed: &MacroBlock) -> bool {
         return false;
     }
 
-    if let Some(ref fixture_title) = fixture.title {
-        if let Some(ref observed_title) = observed.title() {
-            if fixture_title != observed_title {
-                return false;
-            }
-        }
+    if let Some(ref fixture_title) = fixture.title
+        && let Some(ref observed_title) = observed.title()
+        && fixture_title != observed_title
+    {
+        return false;
     }
 
     if fixture.anchor.is_some() != observed.anchor().is_some() {
         return false;
     }
 
-    if let Some(ref tcdb_anchor) = fixture.anchor {
-        if let Some(ref cdb_anchor) = observed.anchor() {
-            if tcdb_anchor != cdb_anchor {
-                return false;
-            }
-        }
+    if let Some(ref tcdb_anchor) = fixture.anchor
+        && let Some(ref cdb_anchor) = observed.anchor()
+        && tcdb_anchor != cdb_anchor
+    {
+        return false;
     }
 
     if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }
 
-    if let Some(ref fixture_attrlist) = fixture.attrlist {
-        if let Some(ref observed_attrlist) = observed.attrlist() {
-            if &fixture_attrlist != observed_attrlist {
-                return false;
-            }
-        }
+    if let Some(ref fixture_attrlist) = fixture.attrlist
+        && let Some(ref observed_attrlist) = observed.attrlist()
+        && &fixture_attrlist != observed_attrlist
+    {
+        return false;
     }
 
     &fixture.source == observed.span()

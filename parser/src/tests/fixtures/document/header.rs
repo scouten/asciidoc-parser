@@ -50,12 +50,11 @@ fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
         return false;
     }
 
-    if let Some(ref fixture_title) = fixture.title {
-        if let Some(ref observed_title) = observed.title() {
-            if fixture_title != observed_title {
-                return false;
-            }
-        }
+    if let Some(ref fixture_title) = fixture.title
+        && let Some(ref observed_title) = observed.title()
+        && fixture_title != observed_title
+    {
+        return false;
     }
 
     if fixture.attributes.len() != observed.attributes().len() {

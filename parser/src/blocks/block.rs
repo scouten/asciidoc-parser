@@ -63,26 +63,26 @@ impl<'src> Block<'src> {
 
         // If it does contain any of those markers, we fall through to the more costly
         // tests below which can more accurately classify the upcoming block.
-        if let Some(first_char) = source.chars().next() {
-            if !matches!(
+        if let Some(first_char) = source.chars().next()
+            && !matches!(
                 first_char,
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '['
-            ) {
-                let first_line = source.take_line();
-                if !first_line.item.contains("::") {
-                    if let Some(MatchedItem {
-                        item: simple_block,
-                        after,
-                    }) = SimpleBlock::parse_fast(source, parser)
-                    {
-                        return MatchAndWarnings {
-                            item: Some(MatchedItem {
-                                item: Self::Simple(simple_block),
-                                after,
-                            }),
-                            warnings: vec![],
-                        };
-                    }
+            )
+        {
+            let first_line = source.take_line();
+            if !first_line.item.contains("::") {
+                if let Some(MatchedItem {
+                    item: simple_block,
+                    after,
+                }) = SimpleBlock::parse_fast(source, parser)
+                {
+                    return MatchAndWarnings {
+                        item: Some(MatchedItem {
+                            item: Self::Simple(simple_block),
+                            after,
+                        }),
+                        warnings: vec![],
+                    };
                 }
             }
         }
