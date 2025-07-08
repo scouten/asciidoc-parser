@@ -65,10 +65,9 @@ fn fixture_eq_observed(
 
     if let Some(ref tcdb_title) = fixture.title
         && let Some(ref cdb_title) = observed.title()
+        && tcdb_title != cdb_title
     {
-        if tcdb_title != cdb_title {
-            return false;
-        }
+        return false;
     }
 
     if fixture.anchor.is_some() != observed.anchor().is_some() {
