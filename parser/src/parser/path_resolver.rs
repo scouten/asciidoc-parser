@@ -86,34 +86,35 @@ impl PathResolver {
         dbg!(&target_segments);
         dbg!(&target_root);
 
-        let resolved_segments: Vec<String> = vec![];
+        let mut resolved_segments: Vec<String> = vec![];
 
-        todo!(
-            "Port this: {}",
-            r#"
-			target_segments.each do |segment|
-			  if segment == DOT_DOT
-				if resolved_segments.empty?
-				  resolved_segments << segment unless target_root && target_root != DOT_SLASH
-				elsif resolved_segments[-1] == DOT_DOT
-				  resolved_segments << segment
-				else
-				  resolved_segments.pop
-				end
-			  else
-				resolved_segments << segment
-				# checking for empty would eliminate repeating forward slashes
-				#resolved_segments << segment unless segment.empty?
-			  end
-			end
-		
-			if (resolved_path = join_path resolved_segments, target_root).include? ' '
-			  resolved_path = resolved_path.gsub ' ', '%20'
-			end
-		
-			uri_prefix ? %(#{uri_prefix}#{resolved_path}) : resolved_path
-        "#
-        );
+        for segment in target_segments {
+            if segment == ".." {
+                todo!(
+                    "Port this: {}",
+                    r#"
+                      if resolved_segments.empty?
+                        resolved_segments << segment unless target_root && target_root != DOT_SLASH
+                      elsif resolved_segments[-1] == DOT_DOT
+                        resolved_segments << segment
+                      else
+                        resolved_segments.pop
+                      end
+                    "#
+                );
+            } else {
+                resolved_segments.push(segment);
+            }
+        }
+
+        let resolved_path = self
+            .join_path(&resolved_segments, target_root.as_ref().map(|s| s.as_str()))
+            .replace(" ", "%20");
+
+        format!(
+            "{uri_prefix}{resolved_path}",
+            uri_prefix = uri_prefix.unwrap_or_default()
+        )
     }
 
     /// Partition the path into path segments and remove self references (`.`)
@@ -182,6 +183,18 @@ impl PathResolver {
         // TO DO: Add cache write?
 
         (path_segments, root)
+    }
+
+    /// Join the segments using the Posix file separator (since this crate knows
+    /// how to work with paths specified this way, regardless of OS). Use the
+    /// `root`, if specified, to construct an absolute path. Otherwise join the
+    /// segments as a relative path.
+    fn join_path(&self, segments: &[String], root: Option<&str>) -> String {
+        format!(
+            "{root}{segments}",
+            root = root.unwrap_or_default(),
+            segments = segments.join("/"),
+        )
     }
 
     /// Return `true` if the path is an absolute (root) web path (i.e. starts
