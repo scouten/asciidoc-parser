@@ -13,3 +13,6 @@ pub use inline_substitution_renderer::{
 
 mod parser;
 pub use parser::Parser;
+
+mod path_resolver;
+pub use path_resolver::PathResolver;
