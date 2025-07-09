@@ -92,7 +92,7 @@ impl PathResolver {
             if segment == ".." {
                 if resolved_segments.is_empty() {
                     if let Some(target_root) = target_root.as_ref()
-                        && target_root != ".'"
+                        && target_root != "./"
                     {
                         // Do nothing.
                     } else {
