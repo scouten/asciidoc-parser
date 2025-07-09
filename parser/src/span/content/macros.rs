@@ -54,7 +54,9 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         // Port Ruby Asciidoctor's implementation from lines 706..717.
     }
 
-    if found_square_bracket && false {
+    if
+    /* found_square_bracket && */
+    false {
         // 'false' should be replaced with @context == :list_item && @parent.style ==
         // 'bibliography'.
         todo!("Port bibliography reference macro");
@@ -118,7 +120,7 @@ impl Replacer for InlineImageMacroReplacer<'_> {
         let span = Span::new(&caps[2]);
         let attrlist = Attrlist::parse(span, self.0).item.item;
 
-        let default_alt = basename(&target.replace('_', " ").replace('-', " "));
+        let default_alt = basename(&target.replace(['_', '-'], " "));
         // IMPORTANT: Implementations of `render_icon` and `render_image` need to
         // remember to use `default_alt` when attrlist doesn't contain a value for
         // `alt`.
