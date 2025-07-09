@@ -70,7 +70,7 @@ impl PathResolver {
         if start.is_some() || self.is_web_root(&target) {
             (target, uri_prefix) = extract_uri_prefix(&format!(
                 "{start}{maybe_add_slash}{target}",
-                start = start.as_ref().map(|s| s.as_str()).unwrap_or_default(),
+                start = start.as_deref().unwrap_or_default(),
                 maybe_add_slash = start
                     .as_ref()
                     .map(|s| if s.ends_with("/") { "" } else { "/" })
@@ -111,7 +111,7 @@ impl PathResolver {
         }
 
         let resolved_path = self
-            .join_path(&resolved_segments, target_root.as_ref().map(|s| s.as_str()))
+            .join_path(&resolved_segments, target_root.as_deref())
             .replace(" ", "%20");
 
         format!(
