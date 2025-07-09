@@ -1,7 +1,3 @@
-use std::sync::LazyLock;
-
-use regex::Regex;
-
 /// A `PathResolver` handles all operations for resolving, cleaning, and joining
 /// paths. This struct includes operations for handling both web paths (request
 /// URIs) and system paths.
@@ -57,13 +53,9 @@ impl PathResolver {
     ///
     /// Returns a path that joins the target path with the start path with any
     /// parent references resolved and self references removed.
-    #[allow(unused)] // TEMPORARY while building
     pub fn web_path(&self, target: &str, start: Option<&str>) -> String {
         let mut target = self.posixify(target);
         let start = start.map(|start| self.posixify(start));
-
-        dbg!(&target);
-        dbg!(&start);
 
         let mut uri_prefix: Option<String> = None;
 
@@ -78,13 +70,7 @@ impl PathResolver {
             ));
         }
 
-        dbg!(&target);
-        dbg!(&uri_prefix);
-
         let (target_segments, target_root) = self.partition_path(&target, WebPath(true));
-
-        dbg!(&target_segments);
-        dbg!(&target_root);
 
         let mut resolved_segments: Vec<String> = vec![];
 
@@ -216,39 +202,45 @@ impl PathResolver {
 /// present, and the extracted URI prefix if found.
 fn extract_uri_prefix(s: &str) -> (String, Option<String>) {
     if s.contains(':') {
-        if let Some(prefix) = URI_SNIFF.find(s) {
-            return (
-                s[prefix.len()..].to_string(),
-                Some(prefix.as_str().to_owned()),
-            );
-        }
+        todo!(
+            "Enable and test this: {}",
+            r##"
+            if let Some(prefix) = URI_SNIFF.find(s) {
+                return (
+                    s[prefix.len()..].to_string(),
+                    Some(prefix.as_str().to_owned()),
+                );
+            }
+
+            // Also: Place this at module scope:
+            static URI_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
+                #[allow(clippy::unwrap_used)]
+                Regex::new(
+                    r#"(?x)
+                    ^                   # Anchor: start of string
+
+                    \p{Alphabetic}      # First character: a Unicode letter
+
+                    [\p{Alphabetic}     # Followed by one or more of:
+                    \p{Number}         #   - Unicode letters or numbers
+                    .                  #   - Period
+                    \+                 #   - Plus sign
+                    \-                 #   - Hyphen
+                    ]+                  # One or more of the above
+
+                    :                   # Followed by a literal colon
+
+                    /{0,2}              # Followed by zero, one, or two literal slashes
+                "#,
+                )
+                .unwrap()
+            });
+        "##
+        );
     }
 
     (s.to_string(), None)
 }
-
-static URI_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
-    #[allow(clippy::unwrap_used)]
-    Regex::new(
-        r#"(?x)
-        ^                   # Anchor: start of string
-
-        \p{Alphabetic}      # First character: a Unicode letter
-
-        [\p{Alphabetic}     # Followed by one or more of:
-         \p{Number}         #   - Unicode letters or numbers
-         .                  #   - Period
-         \+                 #   - Plus sign
-         \-                 #   - Hyphen
-        ]+                  # One or more of the above
-
-        :                   # Followed by a literal colon
-
-        /{0,2}              # Followed by zero, one, or two literal slashes
-    "#,
-    )
-    .unwrap()
-});
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct WebPath(pub(crate) bool);
