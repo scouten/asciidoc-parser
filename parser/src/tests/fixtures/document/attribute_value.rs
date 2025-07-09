@@ -29,8 +29,8 @@ impl PartialEq<TInterpretedValue> for &InterpretedValue<'_> {
 
 fn fixture_eq_observed(fixture: &TInterpretedValue, observed: &InterpretedValue) -> bool {
     match fixture {
-        TInterpretedValue::Value(ref fixture_value) => {
-            if let InterpretedValue::Value(ref observed_value) = observed {
+        TInterpretedValue::Value(fixture_value) => {
+            if let InterpretedValue::Value(observed_value) = observed {
                 fixture_value == &observed_value.as_ref()
             } else {
                 false

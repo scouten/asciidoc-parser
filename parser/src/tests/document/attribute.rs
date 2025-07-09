@@ -1,12 +1,12 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    Span,
     document::Attribute,
     tests::fixtures::{
-        document::{TAttribute, TInterpretedValue, TRawAttributeValue},
         TSpan,
+        document::{TAttribute, TInterpretedValue, TRawAttributeValue},
     },
-    Span,
 };
 
 #[test]

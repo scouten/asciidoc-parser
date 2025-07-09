@@ -1,10 +1,10 @@
 use crate::{
+    HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{preamble::Preamble, ContentModel, IsBlock},
+    blocks::{ContentModel, IsBlock, preamble::Preamble},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
 };
 
 /// A macro block can be used in a block context to create a new block element.

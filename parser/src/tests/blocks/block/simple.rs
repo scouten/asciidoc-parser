@@ -3,17 +3,17 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    HasSpan, Parser, Span,
     blocks::{Block, ContentModel, IsBlock},
     span::content::SubstitutionGroup,
     tests::fixtures::{
+        TSpan,
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
-        TSpan,
     },
     warnings::WarningType,
-    HasSpan, Parser, Span,
 };
 
 #[test]
@@ -33,18 +33,22 @@ fn impl_clone() {
 fn err_empty_source() {
     let mut parser = Parser::default();
 
-    assert!(Block::parse(Span::new(""), &mut parser)
-        .unwrap_if_no_warnings()
-        .is_none());
+    assert!(
+        Block::parse(Span::new(""), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]
 fn err_only_spaces() {
     let mut parser = Parser::default();
 
-    assert!(Block::parse(Span::new("    "), &mut parser)
-        .unwrap_if_no_warnings()
-        .is_none());
+    assert!(
+        Block::parse(Span::new("    "), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
 }
 
 #[test]

@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::{attributes::Attrlist, Parser};
+use crate::{Parser, attributes::Attrlist};
 
 /// An implementation of `InlineSubstitutionRenderer` is used when converting
 /// the basic raw text of a simple block to the format which will ultimately be

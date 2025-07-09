@@ -22,17 +22,17 @@ mod error_cases {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, Block, ContentModel, IsBlock, SectionBlock},
-        span::{content::SubstitutionGroup, HasSpan},
+        Parser, Span,
+        blocks::{Block, ContentModel, IsBlock, SectionBlock, preamble::Preamble},
+        span::{HasSpan, content::SubstitutionGroup},
         tests::fixtures::{
+            TSpan,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
-            TSpan,
         },
         warnings::{MatchAndWarnings, WarningType},
-        Parser, Span,
     };
 
     #[test]

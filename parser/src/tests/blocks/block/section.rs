@@ -3,17 +3,17 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    HasSpan, Parser, Span,
     blocks::{Block, ContentModel, IsBlock},
     span::content::SubstitutionGroup,
     tests::fixtures::{
+        TSpan,
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
-        TSpan,
     },
     warnings::WarningType,
-    HasSpan, Parser, Span,
 };
 
 #[test]

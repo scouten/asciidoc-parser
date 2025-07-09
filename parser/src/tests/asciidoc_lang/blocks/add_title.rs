@@ -1,18 +1,18 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    Parser, Span,
     blocks::{Block, ContentModel},
     span::content::SubstitutionGroup,
     tests::{
         fixtures::{
+            TSpan,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
-            TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/add-title.adoc");
@@ -60,51 +60,43 @@ This is the content of the sidebar block.
 
     assert_eq!(
         block,
-        TBlock::CompoundDelimited(
-            TCompoundDelimitedBlock {
-                blocks: vec![
-                    TBlock::Simple(
-                        TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
-                                    data: "This is the content of the sidebar block.",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 43,
-                                },
-                                rendered: "This is the content of the sidebar block.",
-                            },
-                            source: TSpan {
-                                data: "This is the content of the sidebar block.",
-                                line: 3,
-                                col: 1,
-                                offset: 43,
-                            },
-                            title: None,
-                            anchor: None,
-                            attrlist: None,
-                        },
-                    ),
-                ],
-                context: "sidebar",
-                source: TSpan {
-                    data: ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-                title: Some(
-                    TSpan {
-                        data: "This is the title of a sidebar block",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
+        TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            blocks: vec![TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "This is the content of the sidebar block.",
+                        line: 3,
+                        col: 1,
+                        offset: 43,
                     },
-                ),
+                    rendered: "This is the content of the sidebar block.",
+                },
+                source: TSpan {
+                    data: "This is the content of the sidebar block.",
+                    line: 3,
+                    col: 1,
+                    offset: 43,
+                },
+                title: None,
                 anchor: None,
                 attrlist: None,
+            },),],
+            context: "sidebar",
+            source: TSpan {
+                data: ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****",
+                line: 1,
+                col: 1,
+                offset: 0,
             },
-        )
+            title: Some(TSpan {
+                data: "This is the title of a sidebar block",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+            anchor: None,
+            attrlist: None,
+        },)
     );
 }
 
@@ -154,38 +146,34 @@ Don't put a space between the dot and the first character of the title.
 
     assert_eq!(
         block,
-        TBlock::RawDelimited(
-            TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
-                        data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
-                        line: 3,
-                        col: 1,
-                        offset: 22,
-                    },
-                    rendered: "From github.com:asciidoctor/asciidoctor\n* branch        main   -&gt; FETCH_HEAD\nAlready up to date.",
-                },
-                content_model: ContentModel::Verbatim,
-                context: "literal",
-                source: TSpan {
-                    data: ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....",
-                    line: 1,
+        TBlock::RawDelimited(TRawDelimitedBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
+                    line: 3,
                     col: 1,
-                    offset: 0,
+                    offset: 22,
                 },
-                title: Some(
-                    TSpan {
-                        data: "Terminal Output",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
-                ),
-                anchor: None,
-                attrlist: None,
-                substitution_group: SubstitutionGroup::Verbatim,
+                rendered: "From github.com:asciidoctor/asciidoctor\n* branch        main   -&gt; FETCH_HEAD\nAlready up to date.",
             },
-        )
+            content_model: ContentModel::Verbatim,
+            context: "literal",
+            source: TSpan {
+                data: ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "Terminal Output",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+            anchor: None,
+            attrlist: None,
+            substitution_group: SubstitutionGroup::Verbatim,
+        },)
     );
 }
 
@@ -241,59 +229,54 @@ stages: [ init, verify, deploy ]
 
     assert_eq!(
         block,
-        TBlock::RawDelimited(
-            TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
-                        data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
-                        line: 4,
-                        col: 1,
-                        offset: 45,
-                    },
-                    rendered: "image: node:16-buster\nstages: [ init, verify, deploy ]",
-                },
-                content_model: ContentModel::Verbatim,
-                context: "listing",
-                source: TSpan {
-                    data: ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
-                    line: 1,
+        TBlock::RawDelimited(TRawDelimitedBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
+                    line: 4,
                     col: 1,
-                    offset: 0,
+                    offset: 45,
                 },
-                title: Some(
-                    TSpan {
-                        data: "Specify GitLab CI stages",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
-                ),
-                anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec!["source"],
-                                value: "source"
-        },
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec![],
-                                value: "yaml"
-        },
-                        ],
-                        source: TSpan {
-                            data: "source,yaml",
-                            line: 2,
-                            col: 2,
-                            offset: 27,
-                        },
-                    },
-                ),
-                substitution_group: SubstitutionGroup::Verbatim,
+                rendered: "image: node:16-buster\nstages: [ init, verify, deploy ]",
             },
-        ));
+            content_model: ContentModel::Verbatim,
+            context: "listing",
+            source: TSpan {
+                data: ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "Specify GitLab CI stages",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+            anchor: None,
+            attrlist: Some(TAttrlist {
+                attributes: vec![
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec!["source"],
+                        value: "source"
+                    },
+                    TElementAttribute {
+                        name: None,
+                        shorthand_items: vec![],
+                        value: "yaml"
+                    },
+                ],
+                source: TSpan {
+                    data: "source,yaml",
+                    line: 2,
+                    col: 2,
+                    offset: 27,
+                },
+            },),
+            substitution_group: SubstitutionGroup::Verbatim,
+        },)
+    );
 }
 
 non_normative!(
@@ -338,52 +321,46 @@ If you don't plant it in a container, it will take over your garden.
     .unwrap()
     .item;
 
-    assert_eq!(block,
-        TBlock::Simple(
-            TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
-                        data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
-                        line: 3,
-                        col: 1,
-                        offset: 16,
-                    },
-                    rendered: "Mint has visions of global conquest.\nIf you don&#8217;t plant it in a container, it will take over your garden.",
-                },
-                source: TSpan {
-                    data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
-                    line: 1,
+    assert_eq!(
+        block,
+        TBlock::Simple(TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
+                    line: 3,
                     col: 1,
-                    offset: 0,
+                    offset: 16,
                 },
-                title: Some(
-                    TSpan {
-                        data: "Mint",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
-                ),
-                anchor: None,
-                attrlist: Some(
-                    TAttrlist {
-                        attributes: vec![
-                            TElementAttribute {
-                                name: None,
-                                shorthand_items: vec!["sidebar"],
-                                value: "sidebar"
-        },
-                        ],
-                        source: TSpan {
-                            data: "sidebar",
-                            line: 2,
-                            col: 2,
-                            offset: 7,
-                        },
-                    },
-                ),
+                rendered: "Mint has visions of global conquest.\nIf you don&#8217;t plant it in a container, it will take over your garden.",
             },
-        ));
+            source: TSpan {
+                data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: Some(TSpan {
+                data: "Mint",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },),
+            anchor: None,
+            attrlist: Some(TAttrlist {
+                attributes: vec![TElementAttribute {
+                    name: None,
+                    shorthand_items: vec!["sidebar"],
+                    value: "sidebar"
+                },],
+                source: TSpan {
+                    data: "sidebar",
+                    line: 2,
+                    col: 2,
+                    offset: 7,
+                },
+            },),
+        },)
+    );
 
     // The result of <<ex-title-style>> is displayed below.
 

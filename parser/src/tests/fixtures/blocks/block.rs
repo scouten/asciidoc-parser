@@ -28,28 +28,28 @@ impl PartialEq<TBlock> for Block<'_> {
 
 fn fixture_eq_observed(fixture: &TBlock, observed: &Block) -> bool {
     match fixture {
-        TBlock::Simple(ref simple_fixture) => match observed {
-            Block::Simple(ref simple_observed) => simple_fixture == simple_observed,
+        TBlock::Simple(simple_fixture) => match observed {
+            Block::Simple(simple_observed) => simple_fixture == simple_observed,
             _ => false,
         },
 
-        TBlock::Macro(ref macro_fixture) => match observed {
-            Block::Macro(ref macro_observed) => macro_fixture == macro_observed,
+        TBlock::Macro(macro_fixture) => match observed {
+            Block::Macro(macro_observed) => macro_fixture == macro_observed,
             _ => false,
         },
 
-        TBlock::Section(ref section_fixture) => match observed {
-            Block::Section(ref section_observed) => section_fixture == section_observed,
+        TBlock::Section(section_fixture) => match observed {
+            Block::Section(section_observed) => section_fixture == section_observed,
             _ => false,
         },
 
-        TBlock::RawDelimited(ref rdb_fixture) => match observed {
-            Block::RawDelimited(ref rdb_observed) => rdb_fixture == rdb_observed,
+        TBlock::RawDelimited(rdb_fixture) => match observed {
+            Block::RawDelimited(rdb_observed) => rdb_fixture == rdb_observed,
             _ => false,
         },
 
-        TBlock::CompoundDelimited(ref cdb_fixture) => match observed {
-            Block::CompoundDelimited(ref cdb_observed) => cdb_fixture == cdb_observed,
+        TBlock::CompoundDelimited(cdb_fixture) => match observed {
+            Block::CompoundDelimited(cdb_observed) => cdb_fixture == cdb_observed,
             _ => false,
         },
     }

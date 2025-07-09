@@ -1,18 +1,18 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
+    Parser, Span,
     blocks::{Block, ContentModel, IsBlock},
     tests::{
         fixtures::{
+            TSpan,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TMacroBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
-            TSpan,
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Parser, Span,
 };
 
 track_file!("docs/modules/blocks/pages/build-basic-block.adoc");
@@ -84,20 +84,21 @@ This is more content in the sidebar block.
     "Text in your document.\n\n****\nThis is content in a sidebar block.\n\nimage::name.png[]\n\nThis is more content in the sidebar block.\n****",
 );
 
-    assert_eq!(doc, TDocument {
-        header: THeader {
-            title: None,
-            attributes: vec![],
-            source: TSpan {
-                data: "",
-                line: 1,
-                col: 1,
-                offset: 0,
+    assert_eq!(
+        doc,
+        TDocument {
+            header: THeader {
+                title: None,
+                attributes: vec![],
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
             },
-        },
-        blocks: vec![
-            TBlock::Simple(
-                TSimpleBlock {
+            blocks: vec![
+                TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "Text in your document.",
@@ -116,91 +117,81 @@ This is more content in the sidebar block.
                     title: None,
                     anchor: None,
                     attrlist: None,
-                },
-            ),
-            TBlock::CompoundDelimited(
-                TCompoundDelimitedBlock {
+                },),
+                TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                     blocks: vec![
-                        TBlock::Simple(
-                            TSimpleBlock {
-                                content: TContent {
-                                    original: TSpan {
-                                        data: "This is content in a sidebar block.",
-                                        line: 4,
-                                        col: 1,
-                                        offset: 29,
-                                    },
-                                    rendered: "This is content in a sidebar block.",
-                                },
-                                source: TSpan {
+                        TBlock::Simple(TSimpleBlock {
+                            content: TContent {
+                                original: TSpan {
                                     data: "This is content in a sidebar block.",
                                     line: 4,
                                     col: 1,
                                     offset: 29,
                                 },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
+                                rendered: "This is content in a sidebar block.",
                             },
-                        ),
-                        TBlock::Macro(
-                            TMacroBlock {
-                                name: TSpan {
-                                    data: "image",
-                                    line: 6,
-                                    col: 1,
-                                    offset: 66,
-                                },
-                                target: Some(
-                                    TSpan {
-                                        data: "name.png",
-                                        line: 6,
-                                        col: 8,
-                                        offset: 73,
-                                    },
-                                ),
-                                macro_attrlist: TAttrlist {
-                                    attributes: vec![],
-                                    source: TSpan {
-                                        data: "",
-                                        line: 6,
-                                        col: 17,
-                                        offset: 82,
-                                    },
-                                },
-                                source: TSpan {
-                                    data: "image::name.png[]",
-                                    line: 6,
-                                    col: 1,
-                                    offset: 66,
-                                },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
+                            source: TSpan {
+                                data: "This is content in a sidebar block.",
+                                line: 4,
+                                col: 1,
+                                offset: 29,
                             },
-                        ),
-                        TBlock::Simple(
-                            TSimpleBlock {
-                                content: TContent {
-                                    original: TSpan {
-                                        data: "This is more content in the sidebar block.",
-                                        line: 8,
-                                        col: 1,
-                                        offset: 85,
-                                    },
-                                    rendered: "This is more content in the sidebar block.",
-                                },
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        TBlock::Macro(TMacroBlock {
+                            name: TSpan {
+                                data: "image",
+                                line: 6,
+                                col: 1,
+                                offset: 66,
+                            },
+                            target: Some(TSpan {
+                                data: "name.png",
+                                line: 6,
+                                col: 8,
+                                offset: 73,
+                            },),
+                            macro_attrlist: TAttrlist {
+                                attributes: vec![],
                                 source: TSpan {
+                                    data: "",
+                                    line: 6,
+                                    col: 17,
+                                    offset: 82,
+                                },
+                            },
+                            source: TSpan {
+                                data: "image::name.png[]",
+                                line: 6,
+                                col: 1,
+                                offset: 66,
+                            },
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        TBlock::Simple(TSimpleBlock {
+                            content: TContent {
+                                original: TSpan {
                                     data: "This is more content in the sidebar block.",
                                     line: 8,
                                     col: 1,
                                     offset: 85,
                                 },
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
+                                rendered: "This is more content in the sidebar block.",
                             },
-                        ),
+                            source: TSpan {
+                                data: "This is more content in the sidebar block.",
+                                line: 8,
+                                col: 1,
+                                offset: 85,
+                            },
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
                     ],
                     context: "sidebar",
                     source: TSpan {
@@ -212,17 +203,17 @@ This is more content in the sidebar block.
                     title: None,
                     anchor: None,
                     attrlist: None,
-                },
-            ),
-        ],
-        source: TSpan {
-            data: "Text in your document.\n\n****\nThis is content in a sidebar block.\n\nimage::name.png[]\n\nThis is more content in the sidebar block.\n****",
-            line: 1,
-            col: 1,
-            offset: 0,
-        },
-        warnings: vec![],
-    });
+                },),
+            ],
+            source: TSpan {
+                data: "Text in your document.\n\n****\nThis is content in a sidebar block.\n\nimage::name.png[]\n\nThis is more content in the sidebar block.\n****",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: vec![],
+        }
+    );
 
     non_normative!(
         r#"

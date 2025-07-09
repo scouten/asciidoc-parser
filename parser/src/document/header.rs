@@ -1,10 +1,10 @@
 use std::slice::Iter;
 
 use crate::{
+    HasSpan, Parser, Span,
     document::Attribute,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    HasSpan, Parser, Span,
 };
 
 /// An AsciiDoc document may begin with a document header. The document header

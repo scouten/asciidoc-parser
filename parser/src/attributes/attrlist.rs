@@ -1,11 +1,11 @@
 use std::slice::Iter;
 
 use crate::{
-    attributes::{element_attribute::ParseShorthand, ElementAttribute},
-    span::{content::SubstitutionStep, MatchedItem},
+    Content, HasSpan, Parser, Span,
+    attributes::{ElementAttribute, element_attribute::ParseShorthand},
+    span::{MatchedItem, content::SubstitutionStep},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
-    Content, HasSpan, Parser, Span,
 };
 
 /// The source text that’s used to define attributes for an element is referred

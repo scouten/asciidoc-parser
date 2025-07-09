@@ -1,13 +1,13 @@
 use crate::{
+    Span,
     document::{Attribute, InterpretedValue},
     tests::{
         fixtures::{
-            document::{TAttribute, TRawAttributeValue},
             TSpan,
+            document::{TAttribute, TRawAttributeValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Span,
 };
 
 track_file!("docs/modules/attributes/pages/attribute-entries.adoc");

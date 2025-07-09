@@ -1,5 +1,5 @@
 mod is_valid_delimiter {
-    use crate::{blocks::RawDelimitedBlock, Span};
+    use crate::{Span, blocks::RawDelimitedBlock};
 
     #[test]
     fn comment() {
@@ -99,10 +99,10 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, RawDelimitedBlock},
-        tests::fixtures::{warnings::TWarning, TSpan},
-        warnings::WarningType,
         Parser,
+        blocks::{RawDelimitedBlock, preamble::Preamble},
+        tests::fixtures::{TSpan, warnings::TWarning},
+        warnings::WarningType,
     };
 
     #[test]
@@ -154,10 +154,10 @@ mod comment {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        span::content::SubstitutionGroup,
-        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
+        blocks::{ContentModel, IsBlock, RawDelimitedBlock, preamble::Preamble},
+        span::content::SubstitutionGroup,
+        tests::fixtures::{TSpan, blocks::TRawDelimitedBlock, content::TContent},
     };
 
     #[test]
@@ -339,8 +339,8 @@ mod comment {
 
 mod example {
     use crate::{
-        blocks::{preamble::Preamble, RawDelimitedBlock},
         Parser,
+        blocks::{RawDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -353,11 +353,10 @@ mod example {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        assert!(RawDelimitedBlock::parse(
-            &Preamble::new("====\nline1  \nline2\n===="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            RawDelimitedBlock::parse(&Preamble::new("====\nline1  \nline2\n===="), &mut parser)
+                .is_none()
+        );
     }
 }
 
@@ -365,10 +364,10 @@ mod listing {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        span::content::SubstitutionGroup,
-        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
+        blocks::{ContentModel, IsBlock, RawDelimitedBlock, preamble::Preamble},
+        span::content::SubstitutionGroup,
+        tests::fixtures::{TSpan, blocks::TRawDelimitedBlock, content::TContent},
     };
 
     #[test]
@@ -563,8 +562,8 @@ mod listing {
 
 mod sidebar {
     use crate::{
-        blocks::{preamble::Preamble, RawDelimitedBlock},
         Parser,
+        blocks::{RawDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -576,18 +575,17 @@ mod sidebar {
     #[test]
     fn multiple_lines() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(
-            &Preamble::new("****\nline1  \nline2\n****"),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            RawDelimitedBlock::parse(&Preamble::new("****\nline1  \nline2\n****"), &mut parser)
+                .is_none()
+        );
     }
 }
 
 mod table {
     use crate::{
-        blocks::{preamble::Preamble, RawDelimitedBlock},
         Parser,
+        blocks::{RawDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -608,32 +606,28 @@ mod table {
     #[test]
     fn multiple_lines() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(
-            &Preamble::new("|===\nline1  \nline2\n|==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            RawDelimitedBlock::parse(&Preamble::new("|===\nline1  \nline2\n|==="), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(
-            &Preamble::new(",===\nline1  \nline2\n,==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            RawDelimitedBlock::parse(&Preamble::new(",===\nline1  \nline2\n,==="), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(
-            &Preamble::new(":===\nline1  \nline2\n:==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            RawDelimitedBlock::parse(&Preamble::new(":===\nline1  \nline2\n:==="), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(
-            &Preamble::new("!===\nline1  \nline2\n!==="),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            RawDelimitedBlock::parse(&Preamble::new("!===\nline1  \nline2\n!==="), &mut parser)
+                .is_none()
+        );
     }
 }
 
@@ -641,10 +635,10 @@ mod pass {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::{preamble::Preamble, ContentModel, IsBlock, RawDelimitedBlock},
-        span::content::SubstitutionGroup,
-        tests::fixtures::{blocks::TRawDelimitedBlock, content::TContent, TSpan},
         Parser,
+        blocks::{ContentModel, IsBlock, RawDelimitedBlock, preamble::Preamble},
+        span::content::SubstitutionGroup,
+        tests::fixtures::{TSpan, blocks::TRawDelimitedBlock, content::TContent},
     };
 
     #[test]
@@ -826,8 +820,8 @@ mod pass {
 
 mod quote {
     use crate::{
-        blocks::{preamble::Preamble, RawDelimitedBlock},
         Parser,
+        blocks::{RawDelimitedBlock, preamble::Preamble},
     };
 
     #[test]
@@ -839,10 +833,9 @@ mod quote {
     #[test]
     fn multiple_lines() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(
-            &Preamble::new("____\nline1  \nline2\n____"),
-            &mut parser
-        )
-        .is_none());
+        assert!(
+            RawDelimitedBlock::parse(&Preamble::new("____\nline1  \nline2\n____"), &mut parser)
+                .is_none()
+        );
     }
 }

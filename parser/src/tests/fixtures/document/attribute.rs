@@ -1,9 +1,9 @@
 use std::{cmp::PartialEq, fmt};
 
 use crate::{
-    document::Attribute,
-    tests::fixtures::{document::TRawAttributeValue, TSpan},
     HasSpan,
+    document::Attribute,
+    tests::fixtures::{TSpan, document::TRawAttributeValue},
 };
 
 #[derive(Eq, PartialEq)]

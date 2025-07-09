@@ -2,9 +2,9 @@ use std::{borrow::Cow, path::Path, sync::LazyLock};
 
 use regex::{Captures, Regex, Replacer};
 
-use crate::{attributes::Attrlist, parser::ImageRenderParams, Span};
 #[allow(unused)] // TEMPORARY while building
 use crate::{Content, Parser};
+use crate::{Span, attributes::Attrlist, parser::ImageRenderParams};
 
 pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
     let mut text = content.rendered().to_string();

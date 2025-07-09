@@ -3,12 +3,12 @@
 use std::slice::Iter;
 
 use crate::{
+    HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{parse_utils::parse_blocks_until, Block, ContentModel, IsBlock},
+    blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until},
     document::Header,
     strings::CowStr,
     warnings::Warning,
-    HasSpan, Parser, Span,
 };
 
 /// A document represents the top-level block element in AsciiDoc. It consists

@@ -1,6 +1,6 @@
 #![allow(unused)] // TEMPORARY while building
 
-use crate::{strings::CowStr, Span};
+use crate::{Span, strings::CowStr};
 
 /// Describes the annotated content of a [`Span`] after any relevant
 /// [substitutions] have been performed.

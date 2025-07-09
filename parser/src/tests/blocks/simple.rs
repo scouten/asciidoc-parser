@@ -3,10 +3,10 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    blocks::{preamble::Preamble, ContentModel, IsBlock, SimpleBlock},
-    span::content::SubstitutionGroup,
-    tests::fixtures::{blocks::TSimpleBlock, content::TContent, TSpan},
     Parser,
+    blocks::{ContentModel, IsBlock, SimpleBlock, preamble::Preamble},
+    span::content::SubstitutionGroup,
+    tests::fixtures::{TSpan, blocks::TSimpleBlock, content::TContent},
 };
 
 #[test]

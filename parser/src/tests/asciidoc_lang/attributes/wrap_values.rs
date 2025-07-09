@@ -1,14 +1,14 @@
 use crate::{
+    Span,
     document::{Attribute, InterpretedValue},
     strings::CowStr,
     tests::{
         fixtures::{
-            document::{TAttribute, TRawAttributeValue},
             TSpan,
+            document::{TAttribute, TRawAttributeValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
-    Span,
 };
 
 track_file!("docs/modules/attributes/pages/wrap-values.adoc");
@@ -55,28 +55,29 @@ If the line continuation is missing, the processor will assume it has found the 
 
     let mi = Attribute::parse(Span::new(":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.")).unwrap();
 
-    assert_eq!(mi.item, TAttribute {
-        name: TSpan {
-            data: "description",
-            line: 1,
-            col: 2,
-            offset: 1,
-        },
-        value: TRawAttributeValue::Value(
-            TSpan {
+    assert_eq!(
+        mi.item,
+        TAttribute {
+            name: TSpan {
+                data: "description",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+            value: TRawAttributeValue::Value(TSpan {
                 data: "If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.",
                 line: 1,
                 col: 15,
                 offset: 14,
+            },),
+            source: TSpan {
+                data: ":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.",
+                line: 1,
+                col: 1,
+                offset: 0,
             },
-        ),
-        source: TSpan {
-            data: ":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.",
-            line: 1,
-            col: 1,
-            offset: 0,
-        },
-    });
+        }
+    );
 
     assert_eq!(mi.item.value(), InterpretedValue::Value(
         CowStr::Boxed("If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source.".to_string().into_boxed_str())
@@ -115,28 +116,29 @@ This syntax ensures that the newlines are preserved in the output as hard line b
 
     let mi = Attribute::parse(Span::new(":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!")).unwrap();
 
-    assert_eq!(mi.item, TAttribute {
-        name: TSpan {
-            data: "haiku",
-            line: 1,
-            col: 2,
-            offset: 1,
-        },
-        value: TRawAttributeValue::Value(
-            TSpan {
+    assert_eq!(
+        mi.item,
+        TAttribute {
+            name: TSpan {
+                data: "haiku",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+            value: TRawAttributeValue::Value(TSpan {
                 data: "Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!",
                 line: 1,
                 col: 9,
                 offset: 8,
+            },),
+            source: TSpan {
+                data: ":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!",
+                line: 1,
+                col: 1,
+                offset: 0,
             },
-        ),
-        source: TSpan {
-            data: ":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!",
-            line: 1,
-            col: 1,
-            offset: 0,
-        },
-    });
+        }
+    );
 
     assert_eq!(
         mi.item.value(),

@@ -3,6 +3,7 @@ use std::{borrow::Cow, sync::LazyLock};
 use regex::{Captures, Regex, RegexBuilder, Replacer};
 
 use crate::{
+    Parser,
     attributes::Attrlist,
     document::InterpretedValue,
     parser::{
@@ -10,7 +11,6 @@ use crate::{
         SpecialCharacter,
     },
     span::Content,
-    Parser,
 };
 
 /// Each substitution type replaces characters, markup, attribute references,

@@ -1,4 +1,4 @@
-use crate::{document::InterpretedValue, parser::ModificationContext, strings::CowStr, Parser};
+use crate::{Parser, document::InterpretedValue, parser::ModificationContext, strings::CowStr};
 
 #[test]
 fn default_is_unset() {
