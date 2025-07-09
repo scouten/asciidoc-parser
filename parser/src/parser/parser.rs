@@ -4,7 +4,10 @@ use super::HtmlSubstitutionRenderer;
 use crate::{
     Document,
     document::InterpretedValue,
-    parser::{AllowableValue, AttributeValue, InlineSubstitutionRenderer, ModificationContext},
+    parser::{
+        AllowableValue, AttributeValue, InlineSubstitutionRenderer, ModificationContext,
+        PathResolver,
+    },
 };
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
@@ -20,6 +23,10 @@ pub struct Parser<'p> {
     /// Typically this is an [`HtmlSubstitutionRenderer`] but clients may
     /// provide alternative implementations.
     pub(crate) renderer: &'p dyn InlineSubstitutionRenderer,
+
+    /// Specifies how to generate clean and secure paths relative to the parsing
+    /// context.
+    pub path_resolver: PathResolver,
 }
 
 impl<'p> Parser<'p> {
@@ -180,6 +187,7 @@ impl Default for Parser<'_> {
         Self {
             attribute_values: built_in_attrs(),
             renderer: DEFAULT_RENDERER,
+            path_resolver: PathResolver::default(),
         }
     }
 }
