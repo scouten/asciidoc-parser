@@ -47,17 +47,14 @@ mod web_path {
             "./assets/images"
         );
 
-        // #     resolver.web_path('./images/../assets/images')
-        // #     => './assets/images'
-        // #
-        // #     resolver.web_path('/../images')
-        // #     => '/images'
-        // #
-        // #     resolver.web_path('images', 'assets')
-        // #     => 'assets/images'
-        // #
-        // #     resolver.web_path('tiger.png', '../assets/images')
-        // #     => '../assets/images/tiger.png'
+        assert_eq!(pr.web_path("/../images", None), "/images");
+
+        assert_eq!(pr.web_path("/../images", Some("assets")), "assets/images");
+
+        assert_eq!(
+            pr.web_path("tiger.png", Some("../assets/images")),
+            "../assets/images/tiger.png"
+        );
     }
 }
 
