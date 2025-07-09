@@ -39,13 +39,14 @@ mod web_path {
         let pr = PathResolver::default();
 
         assert_eq!(pr.web_path("images", None), "images");
+        assert_eq!(pr.web_path("./images", None), "./images");
+        assert_eq!(pr.web_path("/images", None), "/images");
 
-        // #     resolver.web_path('./images')
-        // #     => './images'
-        // #
-        // #     resolver.web_path('/images')
-        // #     => '/images'
-        // #
+        assert_eq!(
+            pr.web_path("./images/../assets/images", None),
+            "./assets/images"
+        );
+
         // #     resolver.web_path('./images/../assets/images')
         // #     => './assets/images'
         // #

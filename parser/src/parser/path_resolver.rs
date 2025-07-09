@@ -90,18 +90,21 @@ impl PathResolver {
 
         for segment in target_segments {
             if segment == ".." {
-                todo!(
-                    "Port this: {}",
-                    r#"
-                      if resolved_segments.empty?
-                        resolved_segments << segment unless target_root && target_root != DOT_SLASH
-                      elsif resolved_segments[-1] == DOT_DOT
-                        resolved_segments << segment
-                      else
-                        resolved_segments.pop
-                      end
-                    "#
-                );
+                if resolved_segments.is_empty() {
+                    if let Some(target_root) = target_root.as_ref()
+                        && target_root != ".'"
+                    {
+                        // Do nothing.
+                    } else {
+                        resolved_segments.push(segment);
+                    }
+                } else if let Some(last_segment) = resolved_segments.last()
+                    && last_segment == ".."
+                {
+                    resolved_segments.push(segment);
+                } else {
+                    resolved_segments.pop();
+                }
             } else {
                 resolved_segments.push(segment);
             }
