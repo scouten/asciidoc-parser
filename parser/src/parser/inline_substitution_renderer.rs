@@ -492,12 +492,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 .as_maybe_str()
                 .map(|s| s.to_string());
 
-            normalize_web_path(
-                target_image_path,
-                parser,
-                asset_dir.as_deref(),
-                false,
-            )
+            normalize_web_path(target_image_path, parser, asset_dir.as_deref(), false)
         }
     }
 }
