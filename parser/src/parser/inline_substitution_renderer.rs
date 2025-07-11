@@ -451,8 +451,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         if let Some(link) = link {
             img = format!(
                 r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
-                link_constraint_attrs = "" /* link_constraint_attrs =
-                                            * (append_link_constraint_attrs node).join} */
+                link_constraint_attrs = link_constraint_attrs(&params.attrlist)
             );
         }
 
@@ -607,3 +606,32 @@ static URI_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
     )
     .unwrap()
 });
+
+fn link_constraint_attrs(attrlist: &Attrlist<'_>) -> String {
+    let rel = if attrlist.has_option("nofollow") {
+        Some("nofollow")
+    } else {
+        None
+    };
+
+    if let Some(window) = attrlist.named_attribute("window") {
+        let rel_noopener = if window.value() == "_blank" || attrlist.has_option("noopener") {
+            if let Some(rel) = rel {
+                format!(r#" rel="{rel}" noopener"#)
+            } else {
+                r#" rel="noopener""#.to_owned()
+            }
+        } else {
+            "".to_string()
+        };
+
+        format!(
+            r#" target="{window}"{rel_noopener}"#,
+            window = window.value()
+        )
+    } else if let Some(rel) = rel {
+        format!(r#" rel="{rel}""#)
+    } else {
+        "".to_string()
+    }
+}
