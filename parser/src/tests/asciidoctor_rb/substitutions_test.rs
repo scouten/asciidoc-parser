@@ -1328,6 +1328,7 @@ mod macros {
     use crate::{
         Parser, Span,
         blocks::Block,
+        parser::ModificationContext,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TSimpleBlock},
@@ -1786,18 +1787,50 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_single_line_image_macro_with_text_and_link_to_self_should_be_interpreted_as_a_self_referencing_image_with_alt_text()
+     {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "imagesdir",
+            "img",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(Span::new(r#"image:tiger.png[Tiger, link=self]"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"image:tiger.png[Tiger, link=self]"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><a class="image" href="img/tiger.png"><img src="img/tiger.png" alt="Tiger"></a></span>"#,
+                },
+                source: TSpan {
+                    data: r#"image:tiger.png[Tiger, link=self]"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'a single-line image macro with text and link to self should be interpreted as a self-referencing image with alt text' do
-            para = block_from_string 'image:tiger.png[Tiger, link=self]', attributes: { 'imagesdir' => 'img' }
-            assert_equal '<span class="image"><a class="image" href="img/tiger.png"><img src="img/tiger.png" alt="Tiger"></a></span>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'should link to data URI if value of link attribute is self and inline image is embedded' do
             para = block_from_string 'image:circle.svg[Tiger,100,link=self]', safe: Asciidoctor::SafeMode::SERVER, attributes: { 'data-uri' => '', 'imagesdir' => 'fixtures', 'docdir' => testdir }
             output = para.sub_macros(para.source).gsub(/>\s+</, '><')
