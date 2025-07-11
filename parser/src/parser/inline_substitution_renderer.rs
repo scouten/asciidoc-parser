@@ -488,14 +488,14 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             dbg!(&asset_dir_key);
 
             let asset_dir = parser
-                .attribute_value(&asset_dir_key)
+                .attribute_value(asset_dir_key)
                 .as_maybe_str()
                 .map(|s| s.to_string());
 
             normalize_web_path(
                 target_image_path,
                 parser,
-                asset_dir.as_ref().map(|s| s.as_str()),
+                asset_dir.as_deref(),
                 false,
             )
         }
