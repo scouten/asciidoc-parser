@@ -451,7 +451,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         if let Some(link) = link {
             img = format!(
                 r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
-                link_constraint_attrs = link_constraint_attrs(&params.attrlist)
+                link_constraint_attrs = link_constraint_attrs(params.attrlist)
             );
         }
 
