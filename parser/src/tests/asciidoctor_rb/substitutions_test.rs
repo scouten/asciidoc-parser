@@ -1827,9 +1827,9 @@ mod macros {
 
     #[ignore]
     #[test]
-    fn todo_migrate_from_ruby_2() {
+    fn should_link_to_data_uri_if_value_of_link_attribute_is_self_and_inline_image_is_embedded() {
         todo!(
-            "{}",
+            "Port when server safe modes are implemented: {}",
             r###"
         test 'should link to data URI if value of link attribute is self and inline image is embedded' do
             para = block_from_string 'image:circle.svg[Tiger,100,link=self]', safe: Asciidoctor::SafeMode::SERVER, attributes: { 'data-uri' => '', 'imagesdir' => 'fixtures', 'docdir' => testdir }
@@ -1837,7 +1837,16 @@ mod macros {
             assert_xpath '//a[starts-with(@href,"data:image/svg+xml;base64,")]', output, 1
             assert_xpath '//img[starts-with(@src,"data:image/svg+xml;base64,")]', output, 1
         end
+            "###
+        );
+    }
 
+    #[ignore]
+    #[test]
+    fn todo_migrate_from_ruby_2() {
+        todo!(
+            "{}",
+            r###"
         test 'rel=noopener should be added to an image with a link that targets the _blank window' do
             para = block_from_string 'image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=_blank]'
             assert_equal '<span class="image"><a class="image" href="http://en.wikipedia.org/wiki/Tiger" target="_blank" rel="noopener"><img src="tiger.png" alt="Tiger"></a></span>',
