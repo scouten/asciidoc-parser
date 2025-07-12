@@ -1956,18 +1956,49 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_multi_line_image_macro_with_text_and_dimensions_should_be_interpreted_as_an_image_with_alt_text_and_dimensions()
+     {
+        let mut p = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("image:tiger.png[Another\nAwesome\nTiger, 200,\n100]"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "image:tiger.png[Another\nAwesome\nTiger, 200,\n100]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><img src="tiger.png" alt="Another Awesome Tiger" width="200" height="100"></span>"#,
+                },
+                source: TSpan {
+                    data: "image:tiger.png[Another\nAwesome\nTiger, 200,\n100]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'a multi-line image macro with text and dimensions should be interpreted as an image with alt text and dimensions' do
-            para = block_from_string %(image:tiger.png[Another\nAwesome\nTiger, 200,\n100])
-            assert_equal '<span class="image"><img src="tiger.png" alt="Another Awesome Tiger" width="200" height="100"></span>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'an inline image macro with a url target should be interpreted as an image' do
             para = block_from_string %(Beware of the image:http://example.com/images/tiger.png[tiger].)
             assert_equal 'Beware of the <span class="image"><img src="http://example.com/images/tiger.png" alt="tiger"></span>.',

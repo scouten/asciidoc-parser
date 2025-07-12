@@ -29,10 +29,10 @@ impl<'src> ElementAttribute<'src> {
 
             let (name, after): (Option<Span<'_>>, Span) = match source.take_attr_name() {
                 Some(name) => {
-                    let space = name.after.take_whitespace();
+                    let space = name.after.take_whitespace_with_newline();
                     match space.after.take_prefix("=") {
                         Some(equals) => {
-                            let space = equals.after.take_whitespace();
+                            let space = equals.after.take_whitespace_with_newline();
                             if space.after.is_empty() || space.after.starts_with(',') {
                                 // TO DO: Is this a warning? Possible spec ambiguity.
                                 (None, source)
@@ -45,6 +45,8 @@ impl<'src> ElementAttribute<'src> {
                 }
                 None => (None, source),
             };
+
+            let after = after.take_whitespace_with_newline().after;
 
             let value = match after.data().chars().next() {
                 Some('\'') | Some('"') => match after.take_quoted_string() {
