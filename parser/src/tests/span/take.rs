@@ -154,6 +154,32 @@ mod take_whitespace {
     }
 
     #[test]
+    fn doesnt_include_newline() {
+        let s = Span::new(" \t\n:cd");
+        let mi = s.take_whitespace();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: " \t",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "\n:cd",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+    }
+
+    #[test]
     fn all_whitespace() {
         let s = Span::new("  \t ");
         let mi = s.take_whitespace();
@@ -175,6 +201,140 @@ mod take_whitespace {
                 line: 1,
                 col: 5,
                 offset: 4,
+            }
+        );
+    }
+}
+
+mod take_whitespace_with_newline {
+    use crate::{Span, tests::fixtures::TSpan};
+
+    #[test]
+    fn empty_source() {
+        let span = Span::new("");
+        let mi = span.take_whitespace_with_newline();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn immediate_false() {
+        let s = Span::new(":abc");
+        let mi = s.take_whitespace_with_newline();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: ":abc",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn match_after_first() {
+        let s = Span::new(" \t:cd");
+        let mi = s.take_whitespace_with_newline();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: " \t",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: ":cd",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+    }
+
+    #[test]
+    fn includes_newline() {
+        let s = Span::new(" \t\n:cd");
+        let mi = s.take_whitespace_with_newline();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: " \t\n",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: ":cd",
+                line: 2,
+                col: 1,
+                offset: 3,
+            }
+        );
+    }
+
+    #[test]
+    fn all_whitespace() {
+        let s = Span::new("  \t\n ");
+        let mi = s.take_whitespace_with_newline();
+
+        assert_eq!(
+            mi.item,
+            TSpan {
+                data: "  \t\n ",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            TSpan {
+                data: "",
+                line: 2,
+                col: 2,
+                offset: 5,
             }
         );
     }
