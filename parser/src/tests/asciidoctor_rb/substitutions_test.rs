@@ -2108,18 +2108,53 @@ mod macros {
         );
     }
 
+    #[test]
+    fn should_not_prepend_value_of_imagesdir_attribute_to_inline_image_target_if_target_is_absolute_path()
+     {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "imagesdir",
+            "./images",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(
+            Span::new(r#"Beware of the image:/tiger.png[tiger]."#),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"Beware of the image:/tiger.png[tiger]."#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"Beware of the <span class="image"><img src="/tiger.png" alt="tiger"></span>."#,
+                },
+                source: TSpan {
+                    data: r#"Beware of the image:/tiger.png[tiger]."#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'should not prepend value of imagesdir attribute to inline image target if target is absolute path' do
-            para = block_from_string %(Beware of the image:/tiger.png[tiger].), attributes: { 'imagesdir' => './images' }
-            assert_equal 'Beware of the <span class="image"><img src="/tiger.png" alt="tiger"></span>.',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'should not prepend value of imagesdir attribute to inline image target if target is url' do
             para = block_from_string %(Beware of the image:http://example.com/images/tiger.png[tiger].), attributes: { 'imagesdir' => './images' }
             assert_equal 'Beware of the <span class="image"><img src="http://example.com/images/tiger.png" alt="tiger"></span>.',

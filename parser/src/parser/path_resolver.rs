@@ -59,7 +59,7 @@ impl PathResolver {
 
         let mut uri_prefix: Option<String> = None;
 
-        if start.is_some() || self.is_web_root(&target) {
+        if start.is_some() && !self.is_web_root(&target) {
             (target, uri_prefix) = extract_uri_prefix(&format!(
                 "{start}{maybe_add_slash}{target}",
                 start = start.as_deref().unwrap_or_default(),
