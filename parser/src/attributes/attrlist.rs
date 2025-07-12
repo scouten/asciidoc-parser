@@ -152,7 +152,7 @@ impl<'src> Attrlist<'src> {
         }
     }
 
-    /// Returns the first attribute with the given name or index.
+    /// Returns the first attribute with the given name or (1-based) index.
     ///
     /// Some block and macro types provide implicit mappings between attribute
     /// names and positions to permit a shorthand syntax.

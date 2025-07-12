@@ -39,26 +39,7 @@ fn only_spaces() {
         ElementAttribute::parse(&CowStr::from("   "), 0, &p, ParseShorthand(false));
 
     assert!(warning_types.is_empty());
-
-    let (element_attr, offset) = maybe_attr.unwrap();
-
-    assert_eq!(
-        element_attr,
-        TElementAttribute {
-            name: None,
-            shorthand_items: vec![],
-            value: "   ",
-        }
-    );
-
-    assert!(element_attr.block_style().is_none());
-    assert!(element_attr.id().is_none());
-    assert!(element_attr.roles().is_empty());
-    assert!(element_attr.options().is_empty());
-
-    assert_eq!(offset, 3);
-
-    assert!(element_attr.name().is_none());
+    assert!(maybe_attr.is_none());
 }
 
 #[test]

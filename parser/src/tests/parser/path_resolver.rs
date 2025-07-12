@@ -49,7 +49,7 @@ mod web_path {
 
         assert_eq!(pr.web_path("/../images", None), "/images");
 
-        assert_eq!(pr.web_path("/../images", Some("assets")), "assets/images");
+        assert_eq!(pr.web_path("/../images", Some("assets")), "/images");
         assert_eq!(pr.web_path("../images", Some("./")), "./../images");
         assert_eq!(pr.web_path("../../images", Some("./")), "./../../images");
 
