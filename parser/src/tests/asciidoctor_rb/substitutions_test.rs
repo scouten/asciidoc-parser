@@ -1918,18 +1918,50 @@ mod macros {
         );
     }
 
+    #[test]
+    fn rel_nofollow_should_be_added_to_an_image_with_a_link_when_the_nofollow_option_is_set() {
+        let mut p = Parser::default();
+
+        let maw = Block::parse(
+            Span::new(
+                r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]"#,
+            ),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image"><a class="image" href="http://en.wikipedia.org/wiki/Tiger" rel="nofollow"><img src="tiger.png" alt="Tiger"></a></span>"#,
+                },
+                source: TSpan {
+                    data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'rel=nofollow should be added to an image with a link when the nofollow option is set' do
-            para = block_from_string 'image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]'
-            assert_equal '<span class="image"><a class="image" href="http://en.wikipedia.org/wiki/Tiger" rel="nofollow"><img src="tiger.png" alt="Tiger"></a></span>',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'a multi-line image macro with text and dimensions should be interpreted as an image with alt text and dimensions' do
             para = block_from_string %(image:tiger.png[Another\nAwesome\nTiger, 200,\n100])
             assert_equal '<span class="image"><img src="tiger.png" alt="Another Awesome Tiger" width="200" height="100"></span>',
