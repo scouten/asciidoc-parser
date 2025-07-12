@@ -491,7 +491,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 .as_maybe_str()
                 .map(|s| s.to_string());
 
-            normalize_web_path(target_image_path, parser, asset_dir.as_deref(), false)
+            normalize_web_path(target_image_path, parser, asset_dir.as_deref(), true)
         }
     }
 }
@@ -571,7 +571,7 @@ fn normalize_web_path(
     preserve_uri_target: bool,
 ) -> String {
     if preserve_uri_target && is_uri_ish(target) {
-        todo!("Helpers.encode_spaces_in_uri target");
+        encode_spaces_in_uri(target)
     } else {
         parser.path_resolver.web_path(target, start)
     }
@@ -579,6 +579,10 @@ fn normalize_web_path(
 
 fn is_uri_ish(path: &str) -> bool {
     path.contains(':') && URI_SNIFF.is_match(path)
+}
+
+fn encode_spaces_in_uri(s: &str) -> String {
+    s.replace(' ', "%20")
 }
 
 /// Detects strings that resemble URIs.
