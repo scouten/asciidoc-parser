@@ -2029,18 +2029,50 @@ mod macros {
         );
     }
 
+    #[test]
+    fn an_inline_image_macro_with_a_float_attribute_should_be_interpreted_as_a_floating_image() {
+        let mut p = Parser::default();
+
+        let maw = Block::parse(
+            Span::new(
+                r#"image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!"#,
+            ),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<span class="image right"><img src="http://example.com/images/tiger.png" alt="tiger"></span> Beware of the tigers!"#,
+                },
+                source: TSpan {
+                    data: r#"image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'an inline image macro with a float attribute should be interpreted as a floating image' do
-            para = block_from_string %(image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!)
-            assert_equal '<span class="image right"><img src="http://example.com/images/tiger.png" alt="tiger"></span> Beware of the tigers!',
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'should prepend value of imagesdir attribute to inline image target if target is relative path' do
             para = block_from_string %(Beware of the image:tiger.png[tiger].), attributes: { 'imagesdir' => './images' }
             assert_equal 'Beware of the <span class="image"><img src="./images/tiger.png" alt="tiger"></span>.',

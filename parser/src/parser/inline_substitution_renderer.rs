@@ -528,13 +528,11 @@ fn wrap_body_in_html_tag(
 }
 
 fn render_icon_or_image(
-    _params: &ImageRenderParams,
+    params: &ImageRenderParams,
     img: &str,
     type_: &'static str,
     dest: &mut String,
 ) {
-    let class_attr_val = type_;
-
     if false {
         // Handle the edge cases within.
         todo!(
@@ -543,17 +541,20 @@ fn render_icon_or_image(
             if (node.attr? 'link') && ((href_attr_val = node.attr 'link') != 'self' || (href_attr_val = src))
                 img = %(<a class="image" href="#{href_attr_val}"#{(append_link_constraint_attrs node).join}>#{img}</a>)
             end
-            if (role = node.role)
-                class_attr_val = (node.attr? 'float') ? %(#{class_attr_val} #{node.attr 'float'} #{role}) : %(#{class_attr_val} #{role})
-            elsif node.attr? 'float'
-                class_attr_val = %(#{class_attr_val} #{node.attr 'float'})
-            end
-        "##
+            "##
         );
     }
 
+    let mut roles: Vec<&str> = params.attrlist.roles();
+
+    if let Some(float) = params.attrlist.named_attribute("float") {
+        roles.insert(0, float.value());
+    }
+
+    roles.insert(0, type_);
+
     dest.push_str(r#"<span class=""#);
-    dest.push_str(class_attr_val);
+    dest.push_str(&roles.join(" "));
     dest.push_str(r#"">"#);
     dest.push_str(img);
     dest.push_str("</span>");
