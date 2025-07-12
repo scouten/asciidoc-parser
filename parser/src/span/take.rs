@@ -18,6 +18,12 @@ impl<'src> Span<'src> {
         self.take_while(|c| c == ' ' || c == '\t')
     }
 
+    /// Split this span, consuming any white space including new-line.
+    #[allow(unused)] // TEMPORARY
+    pub(crate) fn take_whitespace_with_newline(self) -> MatchedItem<'src, Self> {
+        self.take_while(|c| c == ' ' || c == '\t' || c == '\n')
+    }
+
     /// Split this span, consuming at least one white space character.
     ///
     /// Returns `None` if the first character is not a space or tab.
