@@ -2189,18 +2189,48 @@ mod macros {
         );
     }
 
+    #[test]
+    fn should_match_an_inline_image_macro_if_target_contains_a_space_character() {
+        let mut p = Parser::default();
+
+        let maw = Block::parse(
+            Span::new(r#"Beware of the image:big cats.png[] around here."#),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"Beware of the image:big cats.png[] around here."#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"Beware of the <span class="image"><img src="big%20cats.png" alt="big cats"></span> around here."#,
+                },
+                source: TSpan {
+                    data: r#"Beware of the image:big cats.png[] around here."#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'should match an inline image macro if target contains a space character' do
-            para = block_from_string %(Beware of the image:big cats.png[] around here.)
-            assert_equal %(Beware of the <span class="image"><img src="big%20cats.png" alt="big cats"></span> around here.),
-            para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'should not match an inline image macro if target contains a newline character' do
             para = block_from_string %(Fear not. There are no image:big\ncats.png[] around here.)
             result = para.sub_macros para.source
