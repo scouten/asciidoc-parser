@@ -4,16 +4,21 @@
 
 This is an effort to write a semantic parser for the [AsciiDoc language](https://docs.asciidoctor.org/asciidoc/latest/) in the [Rust](https://rust-lang.org) language.
 
-The project is in its infancy as of March 2025 and in **no way ready to use.**
+The project is in its infancy as of July 2025 and in **no way ready to use.**
 
 You're welcome to follow along and contribute with the understanding that I may or may not drive this project a mature (1.0) release.
 
-## Known limitations
+## No planned support for some AsciiDoc features
 
-* Parsing UTF-16 content is not supported. (UTF-16 documents must be re-encoded to UTF-8 prior to parsing with this crate.) I have no plans to support UTF-16 content.
-* There is no support for [`compat-mode`](https://docs.asciidoctor.org/asciidoctor/latest/migrate/asciidoc-py/#compatibility-mode).
-* There is no support for math macros `asciimath`, `latexmath`, or `stem`. See [issue #261](https://github.com/scouten/asciidoc-parser/issues/261); this may be considered for a post-1.0 release.
-* The parser has built-in support for HTML5 rendering similar to what is provided in Asciidoctor. I have no plans to support any other back ends directly in this crate.
+The following features are supported in the [Ruby implementation of Asciidoctor](https://github.com/asciidoctor/asciidoctor), on which this project is based, but are not supported -- and will likely never be supported -- in this crate:
+
+* Parsing UTF-16 content is not supported. (UTF-16 documents must be re-encoded to UTF-8 prior to parsing with this crate.)
+* The document attribute [`compat-mode`](https://docs.asciidoctor.org/asciidoctor/latest/migrate/asciidoc-py/#compatibility-mode) is not supported.
+* The parser has built-in support for HTML5 rendering similar to what is provided in Asciidoctor. Other back ends could be supported by other crates by implementing the `InlineSub stitutionRenderer` trait. They will not be directly supported in this crate.
+
+## Incomplete implementations
+
+This crate is still under active development. I don't list work items that I've not yet started; work items that are _partially_ implemented are documented with the [**to do** tag](https://github.com/scouten/asciidoc-parser/issues?q=is%3Aissue%20state%3Aopen%20label%3Ato-do) in GitHub. Follow that for the most current status for planned development.
 
 ## Licenses
 
