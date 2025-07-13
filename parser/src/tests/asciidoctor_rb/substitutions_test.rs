@@ -2557,17 +2557,33 @@ mod macros {
         );
     }
 
+    #[test]
+    fn an_icon_macro_with_a_role_and_title_should_be_interpreted_as_a_font_based_icon_with_a_class_and_title_when_icons_eq_font()
+     {
+        let mut content = Content::from(Span::new(r#"icon:heart[role="red", title="Heart me"]"#));
+
+        let expected =
+            r#"<span class="icon red"><i class="fa fa-heart" title="Heart me"></i></span>"#;
+
+        let p = Parser::default().with_intrinsic_attribute(
+            "icons",
+            "font",
+            ModificationContext::ApiOnly,
+        );
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'an icon macro with a role and title should be interpreted as a font-based icon with a class and title when icons=font' do
-            para = block_from_string 'icon:heart[role="red", title="Heart me"]', attributes: { 'icons' => 'font' }
-            assert_equal '<span class="icon red"><i class="fa fa-heart" title="Heart me"></i></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'a single-line footnote macro should be registered and output as a footnote' do
             para = block_from_string 'Sentence text footnote:[An example footnote.].'
             assert_equal %(Sentence text <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>.), para.sub_macros(para.source)
