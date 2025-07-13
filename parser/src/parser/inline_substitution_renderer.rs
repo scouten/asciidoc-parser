@@ -455,7 +455,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         // TO DO: Enforce non-safe mode. Add this contraint to following `if` clause:
         // `&& node.document.safe < SafeMode::SECURE`
 
-        let (mut img, src) = if format == Some("svg") || params.target.contains(".svg") {
+        let (img, src) = if format == Some("svg") || params.target.contains(".svg") {
             if params.attrlist.has_option("inline") {
                 todo!(
                     "Port this: {}",
@@ -499,22 +499,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             )
         };
 
-        let link = params.attrlist.named_attribute("link").map(|link| {
-            if link.value() == "self" {
-                src
-            } else {
-                link.value().to_string()
-            }
-        });
-
-        if let Some(link) = link {
-            img = format!(
-                r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
-                link_constraint_attrs = link_constraint_attrs(params.attrlist)
-            );
-        }
-
-        render_icon_or_image(params.attrlist, &img, "image", dest);
+        render_icon_or_image(params.attrlist, &img, &src, "image", dest);
     }
 
     fn image_uri(
@@ -555,6 +540,8 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
     }
 
     fn render_icon(&self, params: &IconRenderParams, dest: &mut String) {
+        let src = self.icon_uri(params.target, params.attrlist, params.parser);
+
         let img = if false {
             todo!(
                 "Port this: {}",
@@ -572,15 +559,13 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 "##
             );
         } else if params.parser.has_attribute("icons") {
-            let mut attrs: Vec<String> = vec![];
-            attrs.push(format!(
-                r#"src="{uri}""#,
-                uri = self.icon_uri(params.target, params.attrlist, params.parser)
-            ));
-            attrs.push(format!(
-                r#"alt="{alt}""#,
-                alt = encode_attribute_value(params.alt.to_string())
-            ));
+            let mut attrs: Vec<String> = vec![
+                format!(r#"src="{src}""#),
+                format!(
+                    r#"alt="{alt}""#,
+                    alt = encode_attribute_value(params.alt.to_string())
+                ),
+            ];
 
             if let Some(width) = params.attrlist.named_attribute("width") {
                 attrs.push(format!(r#" width="{width}""#, width = width.value()));
@@ -603,7 +588,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             format!("[{alt}&#93;", alt = params.alt)
         };
 
-        render_icon_or_image(params.attrlist, &img, "icon", dest);
+        render_icon_or_image(params.attrlist, &img, &src, "icon", dest);
     }
 }
 
@@ -638,16 +623,24 @@ fn wrap_body_in_html_tag(
     dest.push('>');
 }
 
-fn render_icon_or_image(attrlist: &Attrlist, img: &str, type_: &'static str, dest: &mut String) {
-    if false {
-        // Handle the edge cases within.
-        todo!(
-            "Port this: {}",
-            r##"
-            if (node.attr? 'link') && ((href_attr_val = node.attr 'link') != 'self' || (href_attr_val = src))
-                img = %(<a class="image" href="#{href_attr_val}"#{(append_link_constraint_attrs node).join}>#{img}</a>)
-            end
-            "##
+fn render_icon_or_image(
+    attrlist: &Attrlist,
+    img: &str,
+    src: &str,
+    type_: &'static str,
+    dest: &mut String,
+) {
+    let mut img = img.to_string();
+
+    if let Some(link) = attrlist.named_attribute("link") {
+        let mut link = link.value();
+        if link == "self" {
+            link = src;
+        }
+
+        img = format!(
+            r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
+            link_constraint_attrs = link_constraint_attrs(attrlist)
         );
     }
 
@@ -662,7 +655,7 @@ fn render_icon_or_image(attrlist: &Attrlist, img: &str, type_: &'static str, des
     dest.push_str(r#"<span class=""#);
     dest.push_str(&roles.join(" "));
     dest.push_str(r#"">"#);
-    dest.push_str(img);
+    dest.push_str(&img);
     dest.push_str("</span>");
 }
 
