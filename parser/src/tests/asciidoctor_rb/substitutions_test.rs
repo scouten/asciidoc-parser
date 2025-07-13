@@ -2261,21 +2261,84 @@ mod macros {
         );
     }
 
+    #[test]
+    fn should_not_match_an_inline_image_macro_if_target_begins_with_space_character() {
+        let mut p = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("Fear not. There are no image: big cats.png[] around here."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Fear not. There are no image: big cats.png[] around here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "Fear not. There are no image: big cats.png[] around here.",
+                },
+                source: TSpan {
+                    data: "Fear not. There are no image: big cats.png[] around here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_not_match_an_inline_image_macro_if_target_ends_with_space_character() {
+        let mut p = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("Fear not. There are no image:big cats.png [] around here."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Fear not. There are no image:big cats.png [] around here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "Fear not. There are no image:big cats.png [] around here.",
+                },
+                source: TSpan {
+                    data: "Fear not. There are no image:big cats.png [] around here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'should not match an inline image macro if target begins or ends with space character' do
-            ['image: big cats.png[]', 'image:big cats.png []'].each do |input|
-            para = block_from_string %(Fear not. There are no #{input} around here.)
-            result = para.sub_macros para.source
-            refute_includes result, '<img '
-            assert_includes result, input
-            end
-        end
-
         test 'should not detect a block image macro found inline' do
             para = block_from_string %(Not an inline image macro image::tiger.png[].)
             result = para.sub_macros para.source
