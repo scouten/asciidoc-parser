@@ -559,7 +559,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 if let Some(flip) = params.attrlist.named_attribute("flip") {
                     i_class_attrs.push(format!("fa-flip-{flip}", flip = flip.value()));
                 } else if let Some(rotate) = params.attrlist.named_attribute("rotate") {
-                    i_class_attrs.push(rotate.value().to_owned());
+                    i_class_attrs.push(format!("fa-rotate-{rotate}", rotate = rotate.value()));
                 }
 
                 format!(
