@@ -452,7 +452,8 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             .named_attribute("format")
             .map(|format| format.value());
 
-        // TO DO: Enforce non-safe mode. Add this contraint to following `if` clause:
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/277):
+        // Enforce non-safe mode. Add this contraint to following `if` clause:
         // `&& node.document.safe < SafeMode::SECURE`
 
         let (img, src) = if format == Some("svg") || params.target.contains(".svg") {
@@ -512,7 +513,8 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
 
         if false {
             todo!(
-                "Port this: {}",
+                // TO DO (https://github.com/scouten/asciidoc-parser/issues/277):
+                "Port this when implementing safe modes: {}",
                 r#"
 				if (doc = @document).safe < SafeMode::SECURE && (doc.attr? 'data-uri')
 				  if ((Helpers.uriish? target_image) && (target_image = Helpers.encode_spaces_in_uri target_image)) ||
