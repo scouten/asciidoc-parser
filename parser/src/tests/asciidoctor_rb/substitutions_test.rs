@@ -2371,23 +2371,32 @@ mod macros {
 
     #[ignore]
     #[test]
+    fn should_substitute_attributes_in_target_of_inline_image_in_section_title() {
+        todo!(
+            "Port this test when implementing safe modes: {}",
+            r###"
+            # NOTE this test verifies attributes get substituted eagerly in target of image in title
+            test 'should substitute attributes in target of inline image in section title' do
+                input = '== image:{iconsdir}/dot.gif[dot] Title'
+
+                using_memory_logger do |logger|
+                sect = block_from_string input, attributes: { 'data-uri' => '', 'iconsdir' => 'fixtures', 'docdir' => testdir }, safe: :server, catalog_assets: true
+                assert_equal 1, sect.document.catalog[:images].size
+                assert_equal 'fixtures/dot.gif', sect.document.catalog[:images][0].to_s
+                assert_nil sect.document.catalog[:images][0].imagesdir
+                assert_empty logger
+                end
+            end
+        "###
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        # NOTE this test verifies attributes get substituted eagerly in target of image in title
-        test 'should substitute attributes in target of inline image in section title' do
-            input = '== image:{iconsdir}/dot.gif[dot] Title'
-
-            using_memory_logger do |logger|
-            sect = block_from_string input, attributes: { 'data-uri' => '', 'iconsdir' => 'fixtures', 'docdir' => testdir }, safe: :server, catalog_assets: true
-            assert_equal 1, sect.document.catalog[:images].size
-            assert_equal 'fixtures/dot.gif', sect.document.catalog[:images][0].to_s
-            assert_nil sect.document.catalog[:images][0].imagesdir
-            assert_empty logger
-            end
-        end
-
         test 'an icon macro should be interpreted as an icon if icons are enabled' do
             para = block_from_string 'icon:github[]', attributes: { 'icons' => '' }
             assert_equal '<span class="icon"><img src="./images/icons/github.png" alt="github"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
