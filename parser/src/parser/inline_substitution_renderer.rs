@@ -553,7 +553,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 ];
 
                 if let Some(size) = params.attrlist.named_or_positional_attribute("size", 1) {
-                    i_class_attrs.push(size.value().to_owned());
+                    i_class_attrs.push(format!("fa-{size}", size = size.value().to_owned()));
                 }
 
                 if let Some(flip) = params.attrlist.named_attribute("flip") {
