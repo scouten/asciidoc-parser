@@ -2333,19 +2333,48 @@ mod macros {
         );
     }
 
+    #[test]
+    fn should_not_detect_a_block_image_macro_found_inline() {
+        let mut p = Parser::default();
+
+        let maw = Block::parse(
+            Span::new("Not an inline image macro image::tiger.png[]."),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Not an inline image macro image::tiger.png[].",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "Not an inline image macro image::tiger.png[].",
+                },
+                source: TSpan {
+                    data: "Not an inline image macro image::tiger.png[].",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'should not detect a block image macro found inline' do
-            para = block_from_string %(Not an inline image macro image::tiger.png[].)
-            result = para.sub_macros para.source
-            refute_includes result, '<img '
-            assert_includes result, 'image::tiger.png[]'
-        end
-
         # NOTE this test verifies attributes get substituted eagerly in target of image in title
         test 'should substitute attributes in target of inline image in section title' do
             input = '== image:{iconsdir}/dot.gif[dot] Title'
