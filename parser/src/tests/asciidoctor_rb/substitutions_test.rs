@@ -2475,17 +2475,32 @@ mod macros {
             CowStr::Boxed(expected.to_string().into_boxed_str())
         );
     }
+
+    #[test]
+    fn an_icon_macro_should_be_interpreted_as_a_font_based_icon_when_icons_eq_font() {
+        let mut content = Content::from(Span::new(r#"icon:github[]"#));
+
+        let expected = r#"<span class="icon"><i class="fa fa-github"></i></span>"#;
+
+        let p = Parser::default().with_intrinsic_attribute(
+            "icons",
+            "font",
+            ModificationContext::ApiOnly,
+        );
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'an icon macro should be interpreted as a font-based icon when icons=font' do
-            para = block_from_string 'icon:github[]', attributes: { 'icons' => 'font' }
-            assert_equal '<span class="icon"><i class="fa fa-github"></i></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'an icon macro with a size should be interpreted as a font-based icon with a size when icons=font' do
             para = block_from_string 'icon:github[4x]', attributes: { 'icons' => 'font' }
             assert_equal '<span class="icon"><i class="fa fa-github fa-4x"></i></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')

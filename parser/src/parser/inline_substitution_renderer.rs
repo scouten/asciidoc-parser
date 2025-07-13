@@ -542,48 +542,62 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
     fn render_icon(&self, params: &IconRenderParams, dest: &mut String) {
         let src = self.icon_uri(params.target, params.attrlist, params.parser);
 
-        let img = if false {
-            todo!(
-                "Port this: {}",
-                r##"
-                if (icons = node.document.attr 'icons') == 'font'
-                i_class_attr_val = %(fa fa-#{target})
-                i_class_attr_val = %(#{i_class_attr_val} fa-#{node.attr 'size'}) if node.attr? 'size'
-                    if node.attr? 'flip'
-                        i_class_attr_val = %(#{i_class_attr_val} fa-flip-#{node.attr 'flip'})
-                    elsif node.attr? 'rotate'
-                        i_class_attr_val = %(#{i_class_attr_val} fa-rotate-#{node.attr 'rotate'})
-                    end
-                    attrs = (node.attr? 'title') ? %( title="#{node.attr 'title'}") : ''
-                    img = %(<i class="#{i_class_attr_val}"#{attrs}></i>)
-                "##
-            );
-        } else if params.parser.has_attribute("icons") {
-            let mut attrs: Vec<String> = vec![
-                format!(r#"src="{src}""#),
+        let img = if params.parser.has_attribute("icons") {
+            let icons = params.parser.attribute_value("icons");
+            if let Some(icons) = icons.as_maybe_str()
+                && icons == "font"
+            {
+                let mut i_class_attrs: Vec<String> = vec![
+                    "fa".to_owned(),
+                    format!("fa-{target}", target = params.target),
+                ];
+
+                if let Some(size) = params.attrlist.named_or_positional_attribute("size", 1) {
+                    i_class_attrs.push(size.value().to_owned());
+                }
+
+                if let Some(flip) = params.attrlist.named_attribute("flip") {
+                    i_class_attrs.push(flip.value().to_owned());
+                } else if let Some(rotate) = params.attrlist.named_attribute("rotate") {
+                    i_class_attrs.push(rotate.value().to_owned());
+                }
+
                 format!(
-                    r#"alt="{alt}""#,
-                    alt = encode_attribute_value(params.alt.to_string())
-                ),
-            ];
+                    r##"<i class="{i_class_attr_val}"{title_attr}></i>"##,
+                    i_class_attr_val = i_class_attrs.join(" "),
+                    title_attr = if let Some(title) = params.attrlist.named_attribute("title") {
+                        format!(r#" title="{title}""#, title = title.value())
+                    } else {
+                        "".to_owned()
+                    }
+                )
+            } else {
+                let mut attrs: Vec<String> = vec![
+                    format!(r#"src="{src}""#),
+                    format!(
+                        r#"alt="{alt}""#,
+                        alt = encode_attribute_value(params.alt.to_string())
+                    ),
+                ];
 
-            if let Some(width) = params.attrlist.named_attribute("width") {
-                attrs.push(format!(r#" width="{width}""#, width = width.value()));
+                if let Some(width) = params.attrlist.named_attribute("width") {
+                    attrs.push(format!(r#" width="{width}""#, width = width.value()));
+                }
+
+                if let Some(height) = params.attrlist.named_attribute("height") {
+                    attrs.push(format!(r#" height="{height}""#, height = height.value()));
+                }
+
+                if let Some(title) = params.attrlist.named_attribute("title") {
+                    attrs.push(format!(r#" title="{title}""#, title = title.value()));
+                }
+
+                format!(
+                    "<img {attrs}{void_element_slash}>",
+                    attrs = attrs.join(" "),
+                    void_element_slash = "",
+                )
             }
-
-            if let Some(height) = params.attrlist.named_attribute("height") {
-                attrs.push(format!(r#" height="{height}""#, height = height.value()));
-            }
-
-            if let Some(title) = params.attrlist.named_attribute("title") {
-                attrs.push(format!(r#" title="{title}""#, title = title.value()));
-            }
-
-            format!(
-                "<img {attrs}{void_element_slash}>",
-                attrs = attrs.join(" "),
-                void_element_slash = "",
-            )
         } else {
             format!("[{alt}&#93;", alt = params.alt)
         };
