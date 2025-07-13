@@ -2515,17 +2515,33 @@ mod macros {
         );
     }
 
+    #[test]
+    fn an_icon_macro_with_flip_should_be_interpreted_as_a_flipped_font_based_icon_when_icons_eq_font()
+     {
+        let mut content = Content::from(Span::new(r#"icon:shield[fw,flip=horizontal]"#));
+
+        let expected =
+            r#"<span class="icon"><i class="fa fa-shield fa-fw fa-flip-horizontal"></i></span>"#;
+
+        let p = Parser::default().with_intrinsic_attribute(
+            "icons",
+            "font",
+            ModificationContext::ApiOnly,
+        );
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'an icon macro with flip should be interpreted as a flipped font-based icon when icons=font' do
-            para = block_from_string 'icon:shield[fw,flip=horizontal]', attributes: { 'icons' => 'font' }
-            assert_equal '<span class="icon"><i class="fa fa-shield fa-fw fa-flip-horizontal"></i></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'an icon macro with rotate should be interpreted as a rotated font-based icon when icons=font' do
             para = block_from_string 'icon:shield[fw,rotate=90]', attributes: { 'icons' => 'font' }
             assert_equal '<span class="icon"><i class="fa fa-shield fa-fw fa-rotate-90"></i></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
