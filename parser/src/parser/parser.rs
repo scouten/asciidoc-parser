@@ -204,5 +204,15 @@ fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
         },
     );
 
+    // TO DO: Replace ./images with value of imagesdir if that is non-default.
+    attrs.insert(
+        "iconsdir".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value("./images/icons".into()),
+        },
+    );
+
     attrs
 }

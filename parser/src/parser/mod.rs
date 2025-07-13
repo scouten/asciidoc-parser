@@ -7,7 +7,7 @@ pub use attribute_value::{AllowableValue, ModificationContext};
 
 mod inline_substitution_renderer;
 pub use inline_substitution_renderer::{
-    CharacterReplacementType, HtmlSubstitutionRenderer, ImageRenderParams,
+    CharacterReplacementType, HtmlSubstitutionRenderer, IconRenderParams, ImageRenderParams,
     InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter,
 };
 

@@ -86,6 +86,48 @@ pub trait InlineSubstitutionRenderer: Debug {
         parser: &Parser,
         asset_dir_key: Option<&str>,
     ) -> String;
+
+    /// Renders an icon.
+    ///
+    /// The renderer should write an appropriate rendering of the specified
+    /// icon to `dest`.
+    fn render_icon(&self, params: &IconRenderParams, dest: &mut String);
+
+    /// Construct a reference or data URI to an icon image for the specified
+    /// icon name.
+    ///
+    /// If the `icon` attribute is set on this block, the name is ignored and
+    /// the value of this attribute is used as the target image path. Otherwise,
+    /// construct a target image path by concatenating the value of the
+    /// `iconsdir` attribute, the icon name, and the value of the `icontype`
+    /// attribute (defaulting to `png`).
+    ///
+    /// The target image path is then passed through the `image_uri()` method.
+    /// If the `data-uri` attribute is set on the document, the image will be
+    /// safely converted to a data URI.
+    ///
+    /// The return value of this method can be safely used in an image tag.
+    fn icon_uri(&self, name: &str, attrlist: &Attrlist, parser: &Parser) -> String {
+        let icontype = parser
+            .attribute_value("icontype")
+            .as_maybe_str()
+            .unwrap_or("png")
+            .to_owned();
+
+        let icon = if let Some(icon) = attrlist.named_attribute("icon") {
+            if false
+            /* Helpers.extname? icon */
+            {
+                icon.value().to_string()
+            } else {
+                format!("{icon}.{icontype}", icon = icon.value())
+            }
+        } else {
+            format!("{name}.{icontype}")
+        };
+
+        self.image_uri(&icon, parser, Some("iconsdir"))
+    }
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -201,6 +243,26 @@ pub struct ImageRenderParams<'a> {
 
     /// Height. The data type is not checked; this may be any string.
     pub height: Option<&'a str>,
+
+    /// Attribute list.
+    pub attrlist: &'a Attrlist<'a>,
+
+    /// Parser. The rendered may find document settings (such as an image
+    /// directory) in the parser's document attributes.
+    pub parser: &'a Parser<'a>,
+}
+
+/// Provides parsed parameters for an icon to be rendered.
+#[derive(Clone, Debug)]
+pub struct IconRenderParams<'a> {
+    /// Target (the reference to the image).
+    pub target: &'a str,
+
+    /// Alt text (either explicitly set or defaulted).
+    pub alt: String,
+
+    /// Size. The data type is not checked; this may be any string.
+    pub size: Option<&'a str>,
 
     /// Attribute list.
     pub attrlist: &'a Attrlist<'a>,
@@ -416,9 +478,6 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                         alt = encode_attribute_value(params.alt.to_string()),
                         attrs = attrs,
                         void_element_slash = "",
-                        // img = %(<img src="#{src = node.image_uri target}"
-                        // alt="#{encode_attribute_value node.alt}"#{attrs}#{@
-                        // void_element_slash}>)
                     ),
                     src,
                 )
@@ -455,7 +514,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             );
         }
 
-        render_icon_or_image(params, &img, "image", dest);
+        render_icon_or_image(params.attrlist, &img, "image", dest);
     }
 
     fn image_uri(
@@ -494,6 +553,58 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             normalize_web_path(target_image_path, parser, asset_dir.as_deref(), true)
         }
     }
+
+    fn render_icon(&self, params: &IconRenderParams, dest: &mut String) {
+        let img = if false {
+            todo!(
+                "Port this: {}",
+                r##"
+                if (icons = node.document.attr 'icons') == 'font'
+                i_class_attr_val = %(fa fa-#{target})
+                i_class_attr_val = %(#{i_class_attr_val} fa-#{node.attr 'size'}) if node.attr? 'size'
+                    if node.attr? 'flip'
+                        i_class_attr_val = %(#{i_class_attr_val} fa-flip-#{node.attr 'flip'})
+                    elsif node.attr? 'rotate'
+                        i_class_attr_val = %(#{i_class_attr_val} fa-rotate-#{node.attr 'rotate'})
+                    end
+                    attrs = (node.attr? 'title') ? %( title="#{node.attr 'title'}") : ''
+                    img = %(<i class="#{i_class_attr_val}"#{attrs}></i>)
+                "##
+            );
+        } else if params.parser.has_attribute("icons") {
+            let mut attrs: Vec<String> = vec![];
+            attrs.push(format!(
+                r#"src="{uri}""#,
+                uri = self.icon_uri(params.target, params.attrlist, params.parser)
+            ));
+            attrs.push(format!(
+                r#"alt="{alt}""#,
+                alt = encode_attribute_value(params.alt.to_string())
+            ));
+
+            if let Some(width) = params.attrlist.named_attribute("width") {
+                attrs.push(format!(r#" width="{width}""#, width = width.value()));
+            }
+
+            if let Some(height) = params.attrlist.named_attribute("height") {
+                attrs.push(format!(r#" height="{height}""#, height = height.value()));
+            }
+
+            if let Some(title) = params.attrlist.named_attribute("title") {
+                attrs.push(format!(r#" title="{title}""#, title = title.value()));
+            }
+
+            format!(
+                "<img {attrs}{void_element_slash}>",
+                attrs = attrs.join(" "),
+                void_element_slash = "",
+            )
+        } else {
+            format!("[{alt}&#93;", alt = params.alt)
+        };
+
+        render_icon_or_image(params.attrlist, &img, "icon", dest);
+    }
 }
 
 fn wrap_body_in_html_tag(
@@ -527,12 +638,7 @@ fn wrap_body_in_html_tag(
     dest.push('>');
 }
 
-fn render_icon_or_image(
-    params: &ImageRenderParams,
-    img: &str,
-    type_: &'static str,
-    dest: &mut String,
-) {
+fn render_icon_or_image(attrlist: &Attrlist, img: &str, type_: &'static str, dest: &mut String) {
     if false {
         // Handle the edge cases within.
         todo!(
@@ -545,9 +651,9 @@ fn render_icon_or_image(
         );
     }
 
-    let mut roles: Vec<&str> = params.attrlist.roles();
+    let mut roles: Vec<&str> = attrlist.roles();
 
-    if let Some(float) = params.attrlist.named_attribute("float") {
+    if let Some(float) = attrlist.named_attribute("float") {
         roles.insert(0, float.value());
     }
 

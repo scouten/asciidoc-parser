@@ -1326,9 +1326,11 @@ mod macros {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
+        Content, Parser, Span,
         blocks::Block,
         parser::ModificationContext,
+        span::content::SubstitutionStep,
+        strings::CowStr,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TSimpleBlock},
@@ -2391,17 +2393,32 @@ mod macros {
         );
     }
 
+    #[test]
+    fn an_icon_macro_should_be_interpreted_as_an_icon_if_icons_are_enabled() {
+        let mut content = Content::from(Span::new("icon:github[]"));
+
+        let expected =
+            r#"<span class="icon"><img src="./images/icons/github.png" alt="github"></span>"#;
+
+        let p = Parser::default().with_intrinsic_attribute_bool(
+            "icons",
+            true,
+            ModificationContext::ApiOnly,
+        );
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'an icon macro should be interpreted as an icon if icons are enabled' do
-            para = block_from_string 'icon:github[]', attributes: { 'icons' => '' }
-            assert_equal '<span class="icon"><img src="./images/icons/github.png" alt="github"></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'an icon macro should be interpreted as alt text if icons are disabled' do
             para = block_from_string 'icon:github[]'
             assert_equal '<span class="icon">[github&#93;</span>', para.sub_macros(para.source).gsub(/>\s+</, '><')

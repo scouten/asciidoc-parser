@@ -4,7 +4,11 @@ use regex::{Captures, Regex, Replacer};
 
 #[allow(unused)] // TEMPORARY while building
 use crate::{Content, Parser};
-use crate::{Span, attributes::Attrlist, parser::ImageRenderParams};
+use crate::{
+    Span,
+    attributes::Attrlist,
+    parser::{IconRenderParams, ImageRenderParams},
+};
 
 pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
     let mut text = content.rendered().to_string();
@@ -152,16 +156,19 @@ impl Replacer for InlineImageMacroReplacer<'_> {
 
             self.0.renderer.render_image(&params, dest);
         } else {
-            todo!(
-                "Port this: {}",
-                r#"
-        type, posattrs = 'image', %w(alt width height)
-        target = $1
-        attrs = parse_attributes $2, posattrs, unescape_input: true
-        attrs['alt'] ||= (attrs['default-alt'] = (Helpers.basename target, true).tr '_-', ' ')
-        Inline.new(self, :image, nil, type: type, target: target, attributes: attrs).convert
-        "#
-            );
+            let params = IconRenderParams {
+                target,
+                alt: attrlist.named_attribute("alt").map_or(default_alt, |a| {
+                    normalize_text_lf_escaped_bracket(a.value())
+                }),
+                size: attrlist
+                    .named_or_positional_attribute("size", 1)
+                    .map(|a| a.value()),
+                attrlist: &attrlist,
+                parser: self.0,
+            };
+
+            self.0.renderer.render_icon(&params, dest);
         }
     }
 }
