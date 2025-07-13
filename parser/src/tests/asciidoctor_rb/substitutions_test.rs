@@ -2445,15 +2445,28 @@ mod macros {
 
     #[ignore]
     #[test]
+    fn should_not_mangle_icon_inside_link_if_icons_are_disabled() {
+        // TO DO: Enable this test once http: links are supported.
+        let mut content = Content::from(Span::new("https://github.com[icon:github[] GitHub]"));
+
+        let expected =
+            r#"<a href="https://github.com"><span class="icon">[github&#93;</span> GitHub</a>"#;
+
+        let p = Parser::default();
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
+    #[ignore]
+    #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'should not mangle icon inside link if icons are disabled' do
-            para = block_from_string 'https://github.com[icon:github[] GitHub]'
-            assert_equal '<a href="https://github.com"><span class="icon">[github&#93;</span> GitHub</a>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'an icon macro should output alt text if icons are disabled and alt is given' do
             para = block_from_string 'icon:github[alt="GitHub"]'
             assert_equal '<span class="icon">[GitHub&#93;</span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
