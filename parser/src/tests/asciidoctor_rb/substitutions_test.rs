@@ -2413,17 +2413,27 @@ mod macros {
         );
     }
 
+    #[test]
+    fn an_icon_macro_should_be_interpreted_as_alt_text_if_icons_are_disabled() {
+        let mut content = Content::from(Span::new("icon:github[]"));
+
+        let expected = r#"<span class="icon">[github&#93;</span>"#;
+
+        let p = Parser::default();
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {
         todo!(
             "{}",
             r###"
-        test 'an icon macro should be interpreted as alt text if icons are disabled' do
-            para = block_from_string 'icon:github[]'
-            assert_equal '<span class="icon">[github&#93;</span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
-        end
-
         test 'should not mangle icon with link if icons are disabled' do
             para = block_from_string 'icon:github[link=https://github.com]'
             assert_equal '<span class="icon"><a class="image" href="https://github.com">[github&#93;</a></span>', para.sub_macros(para.source).gsub(/>\s+</, '><')
