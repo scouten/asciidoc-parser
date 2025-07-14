@@ -1,7 +1,11 @@
 mod from_custom_string {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::span::content::{SubstitutionGroup, SubstitutionStep};
+    use crate::{
+        Content, Parser, Span,
+        span::content::{SubstitutionGroup, SubstitutionStep},
+        strings::CowStr,
+    };
 
     #[test]
     fn empty() {
@@ -221,6 +225,27 @@ mod from_custom_string {
                 SubstitutionStep::SpecialCharacters,
                 SubstitutionStep::Macros,
             ]))
+        );
+    }
+
+    #[test]
+    fn custon_group_with_macros_preserves_passthroughs() {
+        let custom_group = SubstitutionGroup::from_custom_string("q,m").unwrap();
+
+        let mut content = Content::from(Span::new(
+            "Text with +++pass<through>+++ icon:github[] content.",
+        ));
+        let p = Parser::default();
+        custom_group.apply(&mut content, &p, None);
+
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "Text with pass<through> <span class=\"icon\">[github&#93;</span> content."
+                    .to_string()
+                    .into_boxed_str()
+            )
         );
     }
 }
