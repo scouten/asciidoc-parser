@@ -2578,6 +2578,64 @@ mod macros {
         );
     }
 
+    #[test]
+    fn an_icon_macro_with_width_should_be_interpreted_as_an_icon_with_width_if_icons_are_enabled() {
+        let mut content = Content::from(Span::new(r#"icon:github[width=32]"#));
+
+        let expected = r#"<span class="icon"><img src="./images/icons/github.png" alt="github" width="32"></span>"#;
+
+        let p = Parser::default().with_intrinsic_attribute_bool(
+            "icons",
+            true,
+            ModificationContext::ApiOnly,
+        );
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn an_icon_macro_with_height_should_be_interpreted_as_an_icon_with_height_if_icons_are_enabled()
+    {
+        let mut content = Content::from(Span::new(r#"icon:github[height=24]"#));
+
+        let expected = r#"<span class="icon"><img src="./images/icons/github.png" alt="github" height="24"></span>"#;
+
+        let p = Parser::default().with_intrinsic_attribute_bool(
+            "icons",
+            true,
+            ModificationContext::ApiOnly,
+        );
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn an_icon_macro_with_title_should_be_interpreted_as_an_icon_with_title_if_icons_are_enabled() {
+        let mut content = Content::from(Span::new(r#"icon:github[title="GitHub Icon"]"#));
+
+        let expected = r#"<span class="icon"><img src="./images/icons/github.png" alt="github" title="GitHub Icon"></span>"#;
+
+        let p = Parser::default().with_intrinsic_attribute_bool(
+            "icons",
+            true,
+            ModificationContext::ApiOnly,
+        );
+
+        SubstitutionStep::Macros.apply(&mut content, &p, None);
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(expected.to_string().into_boxed_str())
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby_2() {

@@ -438,23 +438,30 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
     }
 
     fn render_image(&self, params: &ImageRenderParams, dest: &mut String) {
-        let attrs = format!(
-            "{width}{height}{title}",
-            width = params
-                .width
-                .map(|width| format!(r#" width="{width}""#))
-                .unwrap_or_default(),
-            height = params
-                .height
-                .map(|height| format!(r#" height="{height}""#))
-                .unwrap_or_default(),
-            title = params
-                .attrlist
-                .named_attribute("title")
-                .map(|title| format!(r#" title="{}""#, title.value()))
-                .map(encode_attribute_value)
-                .unwrap_or_default()
-        );
+        let src = self.image_uri(params.target, params.parser, None);
+
+        let mut attrs: Vec<String> = vec![
+            format!(r#"src="{src}""#),
+            format!(
+                r#"alt="{alt}""#,
+                alt = encode_attribute_value(params.alt.to_string())
+            ),
+        ];
+
+        if let Some(width) = params.width {
+            attrs.push(format!(r#"width="{width}""#));
+        }
+
+        if let Some(height) = params.height {
+            attrs.push(format!(r#"height="{height}""#));
+        }
+
+        if let Some(title) = params.attrlist.named_attribute("title") {
+            attrs.push(format!(
+                r#"title="{title}""#,
+                title = encode_attribute_value(title.value().to_owned())
+            ));
+        }
 
         let format = params
             .attrlist
@@ -465,11 +472,14 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         // Enforce non-safe mode. Add this contraint to following `if` clause:
         // `&& node.document.safe < SafeMode::SECURE`
 
-        let (img, src) = if format == Some("svg") || params.target.contains(".svg") {
+        let img = if format == Some("svg") || params.target.contains(".svg") {
+            // NOTE: In the SVG case we may have to ignore the attrs list.
             if params.attrlist.has_option("inline") {
                 todo!(
                     "Port this: {}",
-                    r#"img = (read_svg_contents node, target) || %(<span class="alt">#{node.alt}</span>)"#
+                    r#"img = (read_svg_contents node, target) || %(<span class="alt">#{node.alt}</span>)
+                    NOTE: The attrs list calculated above may not be usable.
+                    "#
                 );
             } else if params.attrlist.has_option("interactive") {
                 todo!(
@@ -477,35 +487,24 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                     r##"
                         fallback = (node.attr? 'fallback') ? %(<img src="#{node.image_uri node.attr 'fallback'}" alt="#{encode_attribute_value node.alt}"#{attrs}#{@void_element_slash}>) : %(<span class="alt">#{node.alt}</span>)
                         img = %(<object type="image/svg+xml" data="#{src = node.image_uri target}"#{attrs}>#{fallback}</object>)
+                        NOTE: The attrs list calculated above may not be usable.
                     "##
                 );
             } else {
-                let src = self.image_uri(params.target, params.parser, None);
-
-                (
-                    format!(
-                        r#"<img src="{src}" alt="{alt}"{attrs}{void_element_slash}>"#,
-                        alt = encode_attribute_value(params.alt.to_string()),
-                        attrs = attrs,
-                        void_element_slash = "",
-                    ),
-                    src,
+                format!(
+                    r#"<img {attrs}{void_element_slash}>"#,
+                    attrs = attrs.join(" "),
+                    void_element_slash = "",
                 )
             }
         } else {
-            let src = self.image_uri(params.target, params.parser, None);
-
-            (
-                format!(
-                    r#"<img src="{src}" alt="{alt}"{attrs}{void_element_slash}>"#,
-                    alt = encode_attribute_value(params.alt.to_string()),
-                    attrs = attrs,
-                    void_element_slash = "",
-                    // img = %(<img src="#{src = node.image_uri target}"
-                    // alt="#{encode_attribute_value node.alt}"#{attrs}#{@
-                    // void_element_slash}>)
-                ),
-                src,
+            format!(
+                r#"<img {attrs}{void_element_slash}>"#,
+                attrs = attrs.join(" "),
+                void_element_slash = "",
+                // img = %(<img src="#{src = node.image_uri target}"
+                // alt="#{encode_attribute_value node.alt}"#{attrs}#{@
+                // void_element_slash}>)
             )
         };
 
@@ -592,15 +591,15 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
                 ];
 
                 if let Some(width) = params.attrlist.named_attribute("width") {
-                    attrs.push(format!(r#" width="{width}""#, width = width.value()));
+                    attrs.push(format!(r#"width="{width}""#, width = width.value()));
                 }
 
                 if let Some(height) = params.attrlist.named_attribute("height") {
-                    attrs.push(format!(r#" height="{height}""#, height = height.value()));
+                    attrs.push(format!(r#"height="{height}""#, height = height.value()));
                 }
 
                 if let Some(title) = params.attrlist.named_attribute("title") {
-                    attrs.push(format!(r#" title="{title}""#, title = title.value()));
+                    attrs.push(format!(r#"title="{title}""#, title = title.value()));
                 }
 
                 format!(
