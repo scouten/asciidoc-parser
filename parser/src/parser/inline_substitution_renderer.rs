@@ -107,24 +107,33 @@ pub trait InlineSubstitutionRenderer: Debug {
     /// safely converted to a data URI.
     ///
     /// The return value of this method can be safely used in an image tag.
-    fn icon_uri(&self, name: &str, attrlist: &Attrlist, parser: &Parser) -> String {
+    fn icon_uri(&self, name: &str, _attrlist: &Attrlist, parser: &Parser) -> String {
         let icontype = parser
             .attribute_value("icontype")
             .as_maybe_str()
             .unwrap_or("png")
             .to_owned();
 
-        let icon = if let Some(icon) = attrlist.named_attribute("icon") {
-            if false
-            /* Helpers.extname? icon */
-            {
-                icon.value().to_string()
-            } else {
-                format!("{icon}.{icontype}", icon = icon.value())
-            }
-        } else {
-            format!("{name}.{icontype}")
-        };
+        if false {
+            todo!(
+                "Enable this when doing block-related icon attributes: {}",
+                r#"
+                let icon = if let Some(icon) = attrlist.named_attribute("icon") {
+                    let icon_str = icon.value();
+                    if has_extname(icon_str) {
+                        icon_str.to_string()
+                    } else {
+                        format!("{icon_str}.{icontype}")
+                    }
+                } else {
+                    // This part is defaulted for now.
+                    format!("{name}.{icontype}")
+                };
+            "#
+            );
+        }
+
+        let icon = format!("{name}.{icontype}");
 
         self.image_uri(&icon, parser, Some("iconsdir"))
     }
