@@ -1706,6 +1706,38 @@ mod macros {
     }
 
     #[test]
+    fn an_escaped_image_macro_should_not_be_interpreted_as_an_image() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new(r#"\image:tiger.png[]"#), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: r#"\image:tiger.png[]"#,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"image:tiger.png[]"#,
+                },
+                source: TSpan {
+                    data: r#"\image:tiger.png[]"#,
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
     fn a_single_line_image_macro_with_text_and_dimensions_should_be_interpreted_as_an_image_with_alt_text_and_dimensions()
      {
         let mut p = Parser::default();
