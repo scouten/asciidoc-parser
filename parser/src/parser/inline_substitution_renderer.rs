@@ -1,6 +1,8 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, sync::LazyLock};
 
-use crate::attributes::Attrlist;
+use regex::Regex;
+
+use crate::{Parser, attributes::Attrlist};
 
 /// An implementation of `InlineSubstitutionRenderer` is used when converting
 /// the basic raw text of a simple block to the format which will ultimately be
@@ -45,6 +47,96 @@ pub trait InlineSubstitutionRenderer: Debug {
     ///
     /// [post-replacement substitutions]: https://docs.asciidoctor.org/asciidoc/latest/subs/post-replacements/
     fn render_line_break(&self, dest: &mut String);
+
+    /// Renders an image.
+    ///
+    /// The renderer should write an appropriate rendering of the specified
+    /// image to `dest`.
+    fn render_image(&self, params: &ImageRenderParams, dest: &mut String);
+
+    /// Construct a URI reference or data URI to the target image.
+    ///
+    /// If the `target_image_path` is a URI reference, then leave it untouched.
+    ///
+    /// The `target_image_path` is resolved relative to the directory retrieved
+    /// from the specified document-scoped attribute key, if provided.
+    ///
+    /// NOT YET IMPLEMENTED:
+    /// If the `data-uri` attribute is set on the document, and the safe mode
+    /// level is less than `SafeMode::SECURE`, the image will be safely
+    /// converted to a data URI by reading it from the same directory. If
+    /// neither of these conditions are satisfied, a relative path (i.e., URL)
+    /// will be returned.
+    ///
+    /// ## Parameters
+    ///
+    /// * `target_image_path`: path to the target image
+    /// * `parser`: Current document parser state
+    /// * `asset_dir_key`: If provided, the attribute key used to look up the
+    ///   directory where the image is located. If not provided, `imagesdir` is
+    ///   used.
+    ///
+    /// ## Return
+    ///
+    /// Returns a string reference or data URI for the target image that can be
+    /// safely used in an image tag.
+    fn image_uri(
+        &self,
+        target_image_path: &str,
+        parser: &Parser,
+        asset_dir_key: Option<&str>,
+    ) -> String;
+
+    /// Renders an icon.
+    ///
+    /// The renderer should write an appropriate rendering of the specified
+    /// icon to `dest`.
+    fn render_icon(&self, params: &IconRenderParams, dest: &mut String);
+
+    /// Construct a reference or data URI to an icon image for the specified
+    /// icon name.
+    ///
+    /// If the `icon` attribute is set on this block, the name is ignored and
+    /// the value of this attribute is used as the target image path. Otherwise,
+    /// construct a target image path by concatenating the value of the
+    /// `iconsdir` attribute, the icon name, and the value of the `icontype`
+    /// attribute (defaulting to `png`).
+    ///
+    /// The target image path is then passed through the `image_uri()` method.
+    /// If the `data-uri` attribute is set on the document, the image will be
+    /// safely converted to a data URI.
+    ///
+    /// The return value of this method can be safely used in an image tag.
+    fn icon_uri(&self, name: &str, _attrlist: &Attrlist, parser: &Parser) -> String {
+        let icontype = parser
+            .attribute_value("icontype")
+            .as_maybe_str()
+            .unwrap_or("png")
+            .to_owned();
+
+        if false {
+            todo!(
+                "Enable this when doing block-related icon attributes: {}",
+                r#"
+                let icon = if let Some(icon) = attrlist.named_attribute("icon") {
+                    let icon_str = icon.value();
+                    if has_extname(icon_str) {
+                        icon_str.to_string()
+                    } else {
+                        format!("{icon_str}.{icontype}")
+                    }
+                } else {
+                    // This part is defaulted for now.
+                    format!("{name}.{icontype}")
+                };
+            "#
+            );
+        }
+
+        let icon = format!("{name}.{icontype}");
+
+        self.image_uri(&icon, parser, Some("iconsdir"))
+    }
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -144,6 +236,49 @@ pub enum CharacterReplacementType {
 
     /// Character reference `&___;`.
     CharacterReference(String),
+}
+
+/// Provides parsed parameters for an image to be rendered.
+#[derive(Clone, Debug)]
+pub struct ImageRenderParams<'a> {
+    /// Target (the reference to the image).
+    pub target: &'a str,
+
+    /// Alt text (either explicitly set or defaulted).
+    pub alt: String,
+
+    /// Width. The data type is not checked; this may be any string.
+    pub width: Option<&'a str>,
+
+    /// Height. The data type is not checked; this may be any string.
+    pub height: Option<&'a str>,
+
+    /// Attribute list.
+    pub attrlist: &'a Attrlist<'a>,
+
+    /// Parser. The rendered may find document settings (such as an image
+    /// directory) in the parser's document attributes.
+    pub parser: &'a Parser<'a>,
+}
+
+/// Provides parsed parameters for an icon to be rendered.
+#[derive(Clone, Debug)]
+pub struct IconRenderParams<'a> {
+    /// Target (the reference to the image).
+    pub target: &'a str,
+
+    /// Alt text (either explicitly set or defaulted).
+    pub alt: String,
+
+    /// Size. The data type is not checked; this may be any string.
+    pub size: Option<&'a str>,
+
+    /// Attribute list.
+    pub attrlist: &'a Attrlist<'a>,
+
+    /// Parser. The rendered may find document settings (such as an image
+    /// directory) in the parser's document attributes.
+    pub parser: &'a Parser<'a>,
 }
 
 /// Implementation of [`InlineSubstitutionRenderer`] that renders substitutions
@@ -301,6 +436,184 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
     fn render_line_break(&self, dest: &mut String) {
         dest.push_str("<br>");
     }
+
+    fn render_image(&self, params: &ImageRenderParams, dest: &mut String) {
+        let src = self.image_uri(params.target, params.parser, None);
+
+        let mut attrs: Vec<String> = vec![
+            format!(r#"src="{src}""#),
+            format!(
+                r#"alt="{alt}""#,
+                alt = encode_attribute_value(params.alt.to_string())
+            ),
+        ];
+
+        if let Some(width) = params.width {
+            attrs.push(format!(r#"width="{width}""#));
+        }
+
+        if let Some(height) = params.height {
+            attrs.push(format!(r#"height="{height}""#));
+        }
+
+        if let Some(title) = params.attrlist.named_attribute("title") {
+            attrs.push(format!(
+                r#"title="{title}""#,
+                title = encode_attribute_value(title.value().to_owned())
+            ));
+        }
+
+        let format = params
+            .attrlist
+            .named_attribute("format")
+            .map(|format| format.value());
+
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/277):
+        // Enforce non-safe mode. Add this contraint to following `if` clause:
+        // `&& node.document.safe < SafeMode::SECURE`
+
+        let img = if format == Some("svg") || params.target.contains(".svg") {
+            // NOTE: In the SVG case we may have to ignore the attrs list.
+            if params.attrlist.has_option("inline") {
+                todo!(
+                    "Port this: {}",
+                    r#"img = (read_svg_contents node, target) || %(<span class="alt">#{node.alt}</span>)
+                    NOTE: The attrs list calculated above may not be usable.
+                    "#
+                );
+            } else if params.attrlist.has_option("interactive") {
+                todo!(
+                    "Port this: {}",
+                    r##"
+                        fallback = (node.attr? 'fallback') ? %(<img src="#{node.image_uri node.attr 'fallback'}" alt="#{encode_attribute_value node.alt}"#{attrs}#{@void_element_slash}>) : %(<span class="alt">#{node.alt}</span>)
+                        img = %(<object type="image/svg+xml" data="#{src = node.image_uri target}"#{attrs}>#{fallback}</object>)
+                        NOTE: The attrs list calculated above may not be usable.
+                    "##
+                );
+            } else {
+                format!(
+                    r#"<img {attrs}{void_element_slash}>"#,
+                    attrs = attrs.join(" "),
+                    void_element_slash = "",
+                )
+            }
+        } else {
+            format!(
+                r#"<img {attrs}{void_element_slash}>"#,
+                attrs = attrs.join(" "),
+                void_element_slash = "",
+                // img = %(<img src="#{src = node.image_uri target}"
+                // alt="#{encode_attribute_value node.alt}"#{attrs}#{@
+                // void_element_slash}>)
+            )
+        };
+
+        render_icon_or_image(params.attrlist, &img, &src, "image", dest);
+    }
+
+    fn image_uri(
+        &self,
+        target_image_path: &str,
+        parser: &Parser,
+        asset_dir_key: Option<&str>,
+    ) -> String {
+        let asset_dir_key = asset_dir_key.unwrap_or("imagesdir");
+
+        if false {
+            todo!(
+                // TO DO (https://github.com/scouten/asciidoc-parser/issues/277):
+                "Port this when implementing safe modes: {}",
+                r#"
+				if (doc = @document).safe < SafeMode::SECURE && (doc.attr? 'data-uri')
+				  if ((Helpers.uriish? target_image) && (target_image = Helpers.encode_spaces_in_uri target_image)) ||
+					  (asset_dir_key && (images_base = doc.attr asset_dir_key) && (Helpers.uriish? images_base) &&
+					  (target_image = normalize_web_path target_image, images_base, false))
+					(doc.attr? 'allow-uri-read') ? (generate_data_uri_from_uri target_image, (doc.attr? 'cache-uri')) : target_image
+				  else
+					generate_data_uri target_image, asset_dir_key
+				  end
+				else
+				  normalize_web_path target_image, (asset_dir_key ? (doc.attr asset_dir_key) : nil)
+				end
+            "#
+            );
+        } else {
+            dbg!(&asset_dir_key);
+
+            let asset_dir = parser
+                .attribute_value(asset_dir_key)
+                .as_maybe_str()
+                .map(|s| s.to_string());
+
+            normalize_web_path(target_image_path, parser, asset_dir.as_deref(), true)
+        }
+    }
+
+    fn render_icon(&self, params: &IconRenderParams, dest: &mut String) {
+        let src = self.icon_uri(params.target, params.attrlist, params.parser);
+
+        let img = if params.parser.has_attribute("icons") {
+            let icons = params.parser.attribute_value("icons");
+            if let Some(icons) = icons.as_maybe_str()
+                && icons == "font"
+            {
+                let mut i_class_attrs: Vec<String> = vec![
+                    "fa".to_owned(),
+                    format!("fa-{target}", target = params.target),
+                ];
+
+                if let Some(size) = params.attrlist.named_or_positional_attribute("size", 1) {
+                    i_class_attrs.push(format!("fa-{size}", size = size.value()));
+                }
+
+                if let Some(flip) = params.attrlist.named_attribute("flip") {
+                    i_class_attrs.push(format!("fa-flip-{flip}", flip = flip.value()));
+                } else if let Some(rotate) = params.attrlist.named_attribute("rotate") {
+                    i_class_attrs.push(format!("fa-rotate-{rotate}", rotate = rotate.value()));
+                }
+
+                format!(
+                    r##"<i class="{i_class_attr_val}"{title_attr}></i>"##,
+                    i_class_attr_val = i_class_attrs.join(" "),
+                    title_attr = if let Some(title) = params.attrlist.named_attribute("title") {
+                        format!(r#" title="{title}""#, title = title.value())
+                    } else {
+                        "".to_owned()
+                    }
+                )
+            } else {
+                let mut attrs: Vec<String> = vec![
+                    format!(r#"src="{src}""#),
+                    format!(
+                        r#"alt="{alt}""#,
+                        alt = encode_attribute_value(params.alt.to_string())
+                    ),
+                ];
+
+                if let Some(width) = params.attrlist.named_attribute("width") {
+                    attrs.push(format!(r#"width="{width}""#, width = width.value()));
+                }
+
+                if let Some(height) = params.attrlist.named_attribute("height") {
+                    attrs.push(format!(r#"height="{height}""#, height = height.value()));
+                }
+
+                if let Some(title) = params.attrlist.named_attribute("title") {
+                    attrs.push(format!(r#"title="{title}""#, title = title.value()));
+                }
+
+                format!(
+                    "<img {attrs}{void_element_slash}>",
+                    attrs = attrs.join(" "),
+                    void_element_slash = "",
+                )
+            }
+        } else {
+            format!("[{alt}&#93;", alt = params.alt)
+        };
+
+        render_icon_or_image(params.attrlist, &img, &src, "icon", dest);
+    }
 }
 
 fn wrap_body_in_html_tag(
@@ -332,4 +645,121 @@ fn wrap_body_in_html_tag(
     dest.push_str("</");
     dest.push_str(tag);
     dest.push('>');
+}
+
+fn render_icon_or_image(
+    attrlist: &Attrlist,
+    img: &str,
+    src: &str,
+    type_: &'static str,
+    dest: &mut String,
+) {
+    let mut img = img.to_string();
+
+    if let Some(link) = attrlist.named_attribute("link") {
+        let mut link = link.value();
+        if link == "self" {
+            link = src;
+        }
+
+        img = format!(
+            r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
+            link_constraint_attrs = link_constraint_attrs(attrlist)
+        );
+    }
+
+    let mut roles: Vec<&str> = attrlist.roles();
+
+    if let Some(float) = attrlist.named_attribute("float") {
+        roles.insert(0, float.value());
+    }
+
+    roles.insert(0, type_);
+
+    dest.push_str(r#"<span class=""#);
+    dest.push_str(&roles.join(" "));
+    dest.push_str(r#"">"#);
+    dest.push_str(&img);
+    dest.push_str("</span>");
+}
+
+fn encode_attribute_value(value: String) -> String {
+    value.replace('"', "&quot;")
+}
+
+fn normalize_web_path(
+    target: &str,
+    parser: &Parser,
+    start: Option<&str>,
+    preserve_uri_target: bool,
+) -> String {
+    if preserve_uri_target && is_uri_ish(target) {
+        encode_spaces_in_uri(target)
+    } else {
+        parser.path_resolver.web_path(target, start)
+    }
+}
+
+fn is_uri_ish(path: &str) -> bool {
+    path.contains(':') && URI_SNIFF.is_match(path)
+}
+
+fn encode_spaces_in_uri(s: &str) -> String {
+    s.replace(' ', "%20")
+}
+
+/// Detects strings that resemble URIs.
+///
+/// ## Examples
+///
+/// * `http://domain`
+/// * `https://domain`
+/// * `file:///path`
+/// * `data:info`
+///
+/// ## Counter-examples (do not match)
+///
+/// * `c:/sample.adoc`
+/// * `c:\sample.adoc`
+static URI_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(
+        r#"(?x)
+        \A                             # Anchor to start of string
+        \p{Alphabetic}                 # First character must be a letter
+        [\p{Alphabetic}\p{Nd}.+-]+     # Followed by one or more alphanum or . + -
+        :                              # Literal colon
+        /{0,2}                         # Zero to two slashes
+    "#,
+    )
+    .unwrap()
+});
+
+fn link_constraint_attrs(attrlist: &Attrlist<'_>) -> String {
+    let rel = if attrlist.has_option("nofollow") {
+        Some("nofollow")
+    } else {
+        None
+    };
+
+    if let Some(window) = attrlist.named_attribute("window") {
+        let rel_noopener = if window.value() == "_blank" || attrlist.has_option("noopener") {
+            if let Some(rel) = rel {
+                format!(r#" rel="{rel}" noopener"#)
+            } else {
+                r#" rel="noopener""#.to_owned()
+            }
+        } else {
+            "".to_string()
+        };
+
+        format!(
+            r#" target="{window}"{rel_noopener}"#,
+            window = window.value()
+        )
+    } else if let Some(rel) = rel {
+        format!(r#" rel="{rel}""#)
+    } else {
+        "".to_string()
+    }
 }

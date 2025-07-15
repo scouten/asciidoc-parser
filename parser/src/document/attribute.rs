@@ -162,3 +162,12 @@ pub enum InterpretedValue<'src> {
     /// Explicitly unset. This is typically interpreted as boolean `false`.
     Unset,
 }
+
+impl<'src> InterpretedValue<'src> {
+    pub(crate) fn as_maybe_str(&'src self) -> Option<&'src str> {
+        match self {
+            InterpretedValue::Value(cow) => Some(cow.as_ref()),
+            _ => None,
+        }
+    }
+}
