@@ -35,6 +35,7 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         }
     }
 
+    /*
     if (text.contains("((") && text.contains("))"))
         || (found_macroish_short && text.contains("dexterm"))
     {
@@ -81,6 +82,7 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         todo!("Port footnote macro");
         // Port Ruby Asciidoctor's implementation from lines 842..884.
     }
+    */
 }
 
 static INLINE_IMAGE_MACRO: LazyLock<Regex> = LazyLock::new(|| {
@@ -133,9 +135,7 @@ impl Replacer for InlineImageMacroReplacer<'_> {
             // TO DO: Register image with parser?
             // IMPORTANT: May require interior mutability on Parser because it looks like we
             // can't pass mutable references to Parser in a recursive Regex replacement.
-            if false {
-                todo!("Port this: {}", "doc.register :images, target");
-            }
+            // todo!("Port this: {}", "doc.register :images, target");
 
             let params = ImageRenderParams {
                 target,
