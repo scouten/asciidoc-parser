@@ -395,55 +395,102 @@ This longhand syntax can also be used on inline macros, but it cannot be used wi
     );
 }
 
-// No coverage as yet ...
+mod assign_roles_to_formatted_inline_elements {
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        tests::sdd::{non_normative, verifies},
+    };
 
-// == Assign roles to formatted inline elements
+    non_normative!(
+        r#"
+== Assign roles to formatted inline elements
 
-// You can assign roles to inline elements that are enclosed in formatting
-// syntax, such as bold (`+*+`), italic (`+_+`), and monospace (`++`++`).
-// To assign a role to an inline element that's enclosed in formatting syntax
-// block, prefix the value with a dot (`.`) in an attribute list.
+        "#
+    );
 
-// .Inline role assignments using shorthand syntax
-// [source#ex-role-dot]
-// ----
-// This sentence contains [.application]*bold inline content* that's assigned a
-// role.
+    #[test]
+    fn assign_roles_to_inline_elements() {
+        verifies!(
+            r#"
+You can assign roles to inline elements that are enclosed in formatting syntax, such as bold (`+*+`), italic (`+_+`), and monospace (`++`++`).
+To assign a role to an inline element that's enclosed in formatting syntax block, prefix the value with a dot (`.`) in an attribute list.
 
-// This sentence contains [.varname]`monospace text` that's assigned a role.
-// ----
+.Inline role assignments using shorthand syntax
+[source#ex-role-dot]
+----
+This sentence contains [.application]*bold inline content* that's assigned a role.
 
-// The HTML source code that is output from <<ex-role-dot>> is shown below.
+This sentence contains [.varname]`monospace text` that's assigned a role.
+----
 
-// .HTML source code produced by <<ex-role-dot>>
-// [source#ex-role-html,html]
-// ----
-// <p>This sentence contains <strong class="application">bold inline
-// content</strong> that&#8217;s assigned a role.</p>
+The HTML source code that is output from <<ex-role-dot>> is shown below.
 
-// <p>This sentence contains <code class="varname">monospace text</code>
-// that&#8217;s assigned a role.</p> </div>
-// ----
+.HTML source code produced by <<ex-role-dot>>
+[source#ex-role-html,html]
+----
+<p>This sentence contains <strong class="application">bold inline content</strong> that&#8217;s assigned a role.</p>
 
-// As you can see from this output, roles in AsciiDoc are translated to CSS
-// class names in HTML. Thus, roles are an ideal way to annotated elements in
-// your document so you can use CSS to uniquely style them.
+<p>This sentence contains <code class="varname">monospace text</code> that&#8217;s assigned a role.</p>
+</div>
+----
 
-// The role is often used on a phrase to represent semantics you might have
-// expressed using a dedicated element in DocBook or DITA.
+As you can see from this output, roles in AsciiDoc are translated to CSS class names in HTML.
+Thus, roles are an ideal way to annotated elements in your document so you can use CSS to uniquely style them.
 
-// ////
-// Using the shorthand notation, an id can also be specified:
+"#
+        );
 
-// [source]
-// ----
-// [#idname.rolename]`monospace text`
-// ----
+        let doc = Parser::default().parse(
+            "This sentence contains [.application]*bold inline content* that's assigned a role.\n\nThis sentence contains [.varname]`monospace text` that's assigned a role."
+        );
 
-// which produces:
+        // dbg!(&doc);
 
-// [source,html]
-// ----
-// <a id="idname"></a><code class="rolename">monospace text</code>
-// ----
-// ////
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+        let Block::Simple(sb1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            sb1.content().rendered(),
+            r#"This sentence contains <strong class="application">bold inline content</strong> that&#8217;s assigned a role."#
+        );
+
+        let block2 = blocks.next().unwrap();
+        let Block::Simple(sb2) = block2 else {
+            panic!("Unexpected block type: {block2:?}");
+        };
+
+        assert_eq!(
+            sb2.content().rendered(),
+            r#"This sentence contains <code class="varname">monospace text</code> that&#8217;s assigned a role."#
+        );
+
+        assert!(blocks.next().is_none());
+    }
+
+    non_normative!(
+        r#"
+The role is often used on a phrase to represent semantics you might have expressed using a dedicated element in DocBook or DITA.
+
+////
+Using the shorthand notation, an id can also be specified:
+
+[source]
+----
+[#idname.rolename]`monospace text`
+----
+
+which produces:
+
+[source,html]
+----
+<a id="idname"></a><code class="rolename">monospace text</code>
+----
+////
+        "#
+    );
+}
