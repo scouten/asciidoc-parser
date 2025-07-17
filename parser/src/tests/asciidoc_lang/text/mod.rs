@@ -1,4 +1,5 @@
 mod bold;
+mod highlight;
 mod index;
 mod italic;
 mod literal_monospace;
