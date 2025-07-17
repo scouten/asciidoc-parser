@@ -134,4 +134,106 @@ You can think of a constrained pair as being a weaker markup than an unconstrain
 
         assert!(blocks.next().is_none());
     }
+
+    #[test]
+    fn unconstrained_formatting_pair() {
+        verifies!(
+            r#"
+[#unconstrained]
+=== Unconstrained formatting pair
+
+An [.term]*unconstrained formatting pair* can be used anywhere in the text.
+When the conditions are not met for a constrained formatting pair, the situation calls for an unconstrained formatting pair.
+An unconstrained pair consists of a double opening mark and a double closing mark that encloses the text to be styled (e.g., `+Sara**h**+`).
+
+For example, you'd use an unconstrained pair to format one or more letters in a word.
+
+----
+The man page, short for **man**ual page, is a form of software documentation.
+----
+
+The unconstrained pair provides a more brute force approach to formatting at the tradeoff of being more verbose.
+You'll typically switch to an unconstrained pair when a constrained pair doesn't do the trick.
+See xref:troubleshoot-unconstrained-formatting.adoc#use-unconstrained[When should I use an unconstrained pair?] for more examples of when to use an unconstrained pair.
+
+"#
+        );
+
+        let doc = Parser::default()
+            .parse("The man page, short for **man**ual page, is a form of software documentation.");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+        let Block::Simple(sb1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            sb1.content().rendered(),
+            r#"The man page, short for <strong>man</strong>ual page, is a form of software documentation."#
+        );
+
+        assert!(blocks.next().is_none());
+    }
 }
+
+non_normative!(
+    r#"
+== Inline text and punctuation styles
+
+AsciiDoc provides six inline text styles and one punctuation style that are applied solely with formatting marks.
+
+xref:bold.adoc[Bold] (type: strong)::
+Text that is bold will stand out against the regular, surrounding text due to the application of a thicker and/or darker font.
+Bold is useful when the text needs to catch the attention of a person visually scanning a page.
+The formatting mark for bold is an asterisk (`*`).
+
+xref:italic.adoc[Italic] (type: emphasis)::
+Text is often italicized in order to stress a word or phrase, quote a speaker, or introduce a term.
+Italic type slants slightly to the right, and depending on the font, may have cursive swashes and flourishes.
+The formatting mark for italic is an underscore (`+_+`).
+
+xref:monospace.adoc[Monospace] (type: monospaced)::
+Technical content often requires text to be styled in a way that indicates a command or source code.
+Such text is usually emphasized using a fixed-width (i.e., monospace) font.
+The formatting mark for monospace is a backtick (`++`++`).
+
+xref:highlight.adoc[Highlight] (type: mark)::
+Another way to draw attention to text is to highlight it.
+This semantic style is used for reference or notation purposes, or to mark the importance of a key subject or point.
+The formatting mark for highlight is a hash (`+#+`).
+
+xref:custom-inline-styles.adoc[Styled phrase] (type: unquoted)::
+Adding a role to a span of text that uses the highlight formatting mark (`+#+`) converts to generic phrase that can be styled.
+AsciiDoc defines several built-in roles that you can use to style text, and the style/theming system of the converter can allow you to define styles for a custom role.
+
+xref:subscript-and-superscript.adoc[Subscript and superscript] (type: subscript/superscript)::
+Subscript and superscript text is common in mathematical expressions and chemical formulas.
+The formatting mark for subscript is a tilde (`{tilde}`).
+The formatting mark for superscript is a caret (`{caret}`).
+
+////
+AsciiDoc also provides two built-in styles that are applied with an additional role.
+
+Strike through::
+
+Underline::
+////
+
+xref:quotation-marks-and-apostrophes.adoc[Curved quotation marks and apostrophes] (type: double/single)::
+By default, the AsciiDoc processor outputs straight quotation marks and apostrophes.
+They can be changed to curved by adding backticks (`++`++`) as a formatting hint.
+
+== Quotes substitution
+
+When the AsciiDoc processor encounters text enclosed by designated formatting marks, those marks are replaced by the start and end tags of the corresponding HTML or XML element, depending on your backend, during the xref:subs:quotes.adoc[quotes substitution step].
+You can control when inline formatting is applied to inline text, macros, or blocks with the xref:subs:quotes.adoc#quotes-value[quotes substitution value].
+
+////
+CAUTION: You may not always want these symbols to indicate text formatting.
+In those cases, you'll need to use additional markup to xref:subs:prevent.adoc[escape the text formatting markup].
+////
+"#
+);
+
