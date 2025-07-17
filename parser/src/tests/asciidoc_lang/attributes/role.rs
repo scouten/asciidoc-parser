@@ -445,8 +445,6 @@ Thus, roles are an ideal way to annotated elements in your document so you can u
             "This sentence contains [.application]*bold inline content* that's assigned a role.\n\nThis sentence contains [.varname]`monospace text` that's assigned a role."
         );
 
-        // dbg!(&doc);
-
         let mut blocks = doc.nested_blocks();
 
         let block1 = blocks.next().unwrap();
