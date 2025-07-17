@@ -6,6 +6,37 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 The format of this changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.5.0](https://github.com/scouten/asciidoc-parser/compare/v0.4.0...v0.5.0)
+_17 July 2025_
+
+### Added
+
+* Implement `image:` and `icon:` macro substitutions ([#264](https://github.com/scouten/asciidoc-parser/pull/264))
+* Add `path_resolver` member to `Parser` ([#275](https://github.com/scouten/asciidoc-parser/pull/275))
+* Implement (part of) `PathResolver` struct ([#273](https://github.com/scouten/asciidoc-parser/pull/273))
+* Adopt Rust edition 2024 and bump MSRV to 1.88 ([#274](https://github.com/scouten/asciidoc-parser/pull/274))
+* [**breaking**] Attribute entry values should have special chars and document attribute substitutions applied ([#268](https://github.com/scouten/asciidoc-parser/pull/268))
+* Implement passthroughs ([#259](https://github.com/scouten/asciidoc-parser/pull/259))
+* Implement post-replacement substitution ([#257](https://github.com/scouten/asciidoc-parser/pull/257))
+* Add `has_option` accessor to `IsBlock` and `Attrlist` ([#258](https://github.com/scouten/asciidoc-parser/pull/258))
+* Implement character replacement substitutions ([#256](https://github.com/scouten/asciidoc-parser/pull/256))
+* Implement attribute substitution ([#255](https://github.com/scouten/asciidoc-parser/pull/255))
+* Apply substitutions when parsing simple and raw-delimited blocks ([#253](https://github.com/scouten/asciidoc-parser/pull/253))
+* Add `substitution_group` accessor to `IsBlock` trait ([#252](https://github.com/scouten/asciidoc-parser/pull/252))
+* Implement `SubstitutionGroup` ([#251](https://github.com/scouten/asciidoc-parser/pull/251))
+* Add a reference to `InlineSubstitutionRenderer` to `Parser` ([#250](https://github.com/scouten/asciidoc-parser/pull/250))
+* [**breaking**] Revise `Content` to be a simple text container with copy-on-write for substitutions ([#241](https://github.com/scouten/asciidoc-parser/pull/241))
+
+### Fixed
+
+* Apply attribute value substitution before parsing `Attrlist` ([#271](https://github.com/scouten/asciidoc-parser/pull/271))
+* `Attrlist` should trim trailing whitespace from shorthand items ([#245](https://github.com/scouten/asciidoc-parser/pull/245))
+
+### Updated dependencies
+
+* Update codspeed-criterion-compat requirement in /parser ([#267](https://github.com/scouten/asciidoc-parser/pull/267))
+* Update criterion requirement from 0.5.1 to 0.6.0 in /parser ([#248](https://github.com/scouten/asciidoc-parser/pull/248))
+
 ## [0.4.0](https://github.com/scouten/asciidoc-parser/compare/v0.3.1...v0.4.0)
 _27 April 2025_
 
