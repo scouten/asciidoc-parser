@@ -236,4 +236,3 @@ In those cases, you'll need to use additional markup to xref:subs:prevent.adoc[e
 ////
 "#
 );
-
