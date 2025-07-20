@@ -6,6 +6,7 @@ use crate::{
     Parser,
     attributes::Attrlist,
     document::InterpretedValue,
+    internal::{LookaheadReplacer, LookaheadResult, replace_with_lookahead},
     parser::{
         CharacterReplacementType, InlineSubstitutionRenderer, QuoteScope, QuoteType,
         SpecialCharacter,
@@ -291,10 +292,26 @@ struct QuoteReplacer<'r> {
     parser: &'r Parser<'r>,
 }
 
-impl Replacer for QuoteReplacer<'_> {
-    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+impl LookaheadReplacer for QuoteReplacer<'_> {
+    fn replace_append(
+        &mut self,
+        caps: &Captures<'_>,
+        dest: &mut String,
+        after: &str,
+    ) -> LookaheadResult {
         // Adapted from Asciidoctor#convert_quoted_text, found in
         // https://github.com/asciidoctor/asciidoctor/blob/main/lib/asciidoctor/substitutors.rb#L1419-L1445.
+
+        // The regex crate doesn't have a sophisticated lookahead mode, so we patch
+        // it up here.
+
+        if self.type_ == QuoteType::Monospaced && self.scope == QuoteScope::Constrained {
+            if after.starts_with(['"', '\'', '`']) {
+                let skip_ahead = if caps[0].starts_with('\\') { 2 } else { 1 };
+                dest.push_str(&caps[0][0..skip_ahead]);
+                return LookaheadResult::SkipAheadAndRetry(skip_ahead);
+            }
+        }
 
         let unescaped_attrs: Option<String> = if caps[0].starts_with('\\') {
             let maybe_attrs = caps.get(2).map(|a| a.as_str());
@@ -305,7 +322,7 @@ impl Replacer for QuoteReplacer<'_> {
                 ))
             } else {
                 dest.push_str(&caps[0][1..]);
-                return;
+                return LookaheadResult::Continue;
             }
         } else {
             None
@@ -386,6 +403,8 @@ impl Replacer for QuoteReplacer<'_> {
                     .render_quoted_substitition(type_, self.scope, attrlist, id, &caps[2], dest);
             }
         }
+
+        LookaheadResult::Continue
     }
 }
 
@@ -403,7 +422,7 @@ fn apply_quotes(content: &mut Content<'_>, parser: &Parser) {
             parser,
         };
 
-        if let Cow::Owned(new_result) = sub.pattern.replace_all(&result, replacer) {
+        if let Cow::Owned(new_result) = replace_with_lookahead(&sub.pattern, &result, replacer) {
             result = new_result.into();
         }
         // If it's Cow::Borrowed, there was no match for this pattern, so no
