@@ -21,7 +21,7 @@ pub fn replace_with_lookahead<'h, LR: LookaheadReplacer>(
             return Cow::Borrowed(haystack);
         }
 
-        for (i, cap) in it {
+        for (_i, cap) in it {
             // unwrap on 0 is OK because captures only reports matches
             #[allow(clippy::unwrap_used)]
             let m = cap.get(0).unwrap();
