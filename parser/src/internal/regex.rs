@@ -23,6 +23,7 @@ pub fn replace_with_lookahead<'h, LR: LookaheadReplacer>(
 
         for (i, cap) in it {
             // unwrap on 0 is OK because captures only reports matches
+            #[allow(clippy::unwrap_used)]
             let m = cap.get(0).unwrap();
             new.push_str(&haystack[last_match..m.start()]);
 
@@ -36,7 +37,7 @@ pub fn replace_with_lookahead<'h, LR: LookaheadReplacer>(
                 LookaheadResult::SkipAheadAndRetry(n) => {
                     assert!(n > 0);
                     haystack = &haystack[m.start() + n..];
-                    break 'retry;
+                    continue 'retry;
                 }
             }
         }

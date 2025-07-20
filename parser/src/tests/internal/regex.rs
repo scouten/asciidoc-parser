@@ -28,14 +28,14 @@ TheRiver 1980
     );
 }
 
-impl<'a> LookaheadReplacer for &'a str {
+impl LookaheadReplacer for &str {
     fn replace_append(
         &mut self,
         caps: &Captures<'_>,
         dst: &mut String,
         _after: &str,
     ) -> LookaheadResult {
-        caps.expand(*self, dst);
+        caps.expand(self, dst);
         LookaheadResult::Continue
     }
 }
