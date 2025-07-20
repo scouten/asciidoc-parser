@@ -11,6 +11,7 @@ mod attributes;
 mod blocks;
 mod document;
 pub(crate) mod fixtures;
+mod internal;
 mod parser;
 pub(crate) mod sdd;
 mod span;

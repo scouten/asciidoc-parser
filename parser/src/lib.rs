@@ -13,6 +13,8 @@ pub mod blocks;
 pub mod document;
 pub use document::Document;
 
+pub(crate) mod internal;
+
 pub mod parser;
 pub use parser::Parser;
 
