@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use regex::{Captures, Regex, RegexBuilder};
 
 use crate::internal::{LookaheadReplacer, LookaheadResult, replace_with_lookahead};
@@ -26,6 +28,17 @@ TheRiver 1980
 1980 TheRiver
 "
     );
+}
+
+#[test]
+fn no_match_optimization() {
+    let re = Regex::new(r"(?m)^(\S+)[\s--\r\n]+(\S+)$").unwrap();
+
+    let hay = "blah_blah_blah\nno_match";
+
+    let new = replace_with_lookahead(&re, hay, "$2 $1");
+
+    assert_eq!(new, Cow::Borrowed(hay));
 }
 
 impl LookaheadReplacer for &str {
