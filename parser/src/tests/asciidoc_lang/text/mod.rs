@@ -4,4 +4,5 @@ mod index;
 mod italic;
 mod literal_monospace;
 mod monospace;
+mod quotation_marks_and_apostrophes;
 mod text_span_built_in_roles;
