@@ -148,10 +148,11 @@ impl<'src> IsBlock<'src> for MediaBlock<'src> {
     }
 
     fn raw_context(&self) -> CowStr<'src> {
-        // TO DO: Different media types should provide different
-        // contexts. For now, just default to "image."
-
-        "image".into()
+        match self.type_ {
+            MediaType::Audio => "audio",
+            MediaType::Image => "image",
+            MediaType::Video => "video",
+        }.into()
     }
 
     fn title(&'src self) -> Option<Span<'src>> {
