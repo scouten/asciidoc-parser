@@ -152,7 +152,8 @@ impl<'src> IsBlock<'src> for MediaBlock<'src> {
             MediaType::Audio => "audio",
             MediaType::Image => "image",
             MediaType::Video => "video",
-        }.into()
+        }
+        .into()
     }
 
     fn title(&'src self) -> Option<Span<'src>> {
