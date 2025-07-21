@@ -25,5 +25,6 @@
 
 mod attributes;
 mod blocks;
+mod macros;
 mod root;
 mod text;
