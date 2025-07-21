@@ -78,6 +78,7 @@ mod macros {
 
     use crate::{
         Parser,
+        blocks::MediaType,
         tests::{
             fixtures::{
                 TSpan,
@@ -129,12 +130,7 @@ image::sunset.jpg[Sunset]
                     }
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
-                    name: TSpan {
-                        data: "image",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
+                    type_: MediaType::Image,
                     target: Some(TSpan {
                         data: "sunset.jpg",
                         line: 1,

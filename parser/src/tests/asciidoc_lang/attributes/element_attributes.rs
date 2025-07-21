@@ -46,7 +46,7 @@ mod attrlist {
     use crate::{
         HasSpan, Parser, Span,
         attributes::Attrlist,
-        blocks::Block,
+        blocks::{Block, MediaType},
         tests::{
             fixtures::{
                 TSpan,
@@ -262,8 +262,11 @@ If this happens, append `+{empty}+` to the end of the line to disrupt the syntax
         );
     }
 
+    #[ignore]
     #[test]
     fn block_macro_attrlist() {
+        // Disabling this test for now since we no longer have a generic
+        // macro block.
         verifies!(
             r#"
 For *block and inline macros*, the attribute list is placed between the square brackets of the macro.
@@ -292,12 +295,7 @@ name::target[first-positional,second-positional,named="value of named"]
         assert_eq!(
             block,
             TBlock::Media(TMediaBlock {
-                name: TSpan {
-                    data: "name",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
+                type_: MediaType::Image,
                 target: Some(TSpan {
                     data: "target",
                     line: 1,

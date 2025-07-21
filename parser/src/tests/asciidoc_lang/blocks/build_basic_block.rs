@@ -2,7 +2,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser, Span,
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{Block, ContentModel, IsBlock, MediaType},
     tests::{
         fixtures::{
             TSpan,
@@ -141,12 +141,7 @@ This is more content in the sidebar block.
                             attrlist: None,
                         },),
                         TBlock::Media(TMediaBlock {
-                            name: TSpan {
-                                data: "image",
-                                line: 6,
-                                col: 1,
-                                offset: 66,
-                            },
+                            type_: MediaType::Image,
                             target: Some(TSpan {
                                 data: "name.png",
                                 line: 6,

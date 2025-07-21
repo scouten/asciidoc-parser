@@ -4,7 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock},
+    blocks::{ContentModel, IsBlock, MediaType},
     span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
@@ -395,7 +395,7 @@ fn err_bad_header() {
 #[test]
 fn err_bad_header_and_bad_macro() {
     assert_eq!(
-        Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
+        Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         TDocument {
             header: THeader {
                 title: Some(TSpan {
@@ -446,18 +446,13 @@ fn err_bad_header_and_bad_macro() {
                     blocks: vec![
                         TBlock::Media(
                             TMediaBlock {
-                                name: TSpan {
-                                    data: "foo",
-                                    line: 6,
-                                    col: 1,
-                                    offset: 44,
-                                },
+                                type_: MediaType::Image,
                                 target: Some(
                                     TSpan {
                                         data: "bar",
                                         line: 6,
-                                        col: 6,
-                                        offset: 49,
+                                        col: 8,
+                                        offset: 51,
                                     },
                                 ),
                                 macro_attrlist: TAttrlist {
@@ -466,27 +461,27 @@ fn err_bad_header_and_bad_macro() {
                                             name: Some("alt"),
                                             shorthand_items: vec![],
                                             value: "Sunset"
-        },
+                                        },
                                         TElementAttribute {
                                             name: Some("width"),
                                             shorthand_items: vec![],
                                             value: "300"
-        },
+                                        },
                                         TElementAttribute {
                                             name: Some("height"),
                                             shorthand_items: vec![],
                                             value: "400"
-        },
+                                        },
                                     ],
                                     source: TSpan {
                                         data: "alt=Sunset,width=300,,height=400",
                                         line: 6,
-                                        col: 10,
-                                        offset: 53,
+                                        col: 12,
+                                        offset: 55,
                                     },
                                 },
                                 source: TSpan {
-                                    data: "foo::bar[alt=Sunset,width=300,,height=400]",
+                                    data: "image::bar[alt=Sunset,width=300,,height=400]",
                                     line: 6,
                                     col: 1,
                                     offset: 44,
@@ -498,7 +493,7 @@ fn err_bad_header_and_bad_macro() {
                         ),
                     ],
                     source: TSpan {
-                        data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+                        data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                         line: 4,
                         col: 1,
                         offset: 26,
@@ -509,7 +504,7 @@ fn err_bad_header_and_bad_macro() {
                 },
             )],
             source: TSpan {
-                data: "= Title\nnot an attribute\n\n== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+                data: "= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                 line: 1,
                 col: 1,
                 offset: 0
@@ -527,8 +522,8 @@ fn err_bad_header_and_bad_macro() {
                 source: TSpan {
                     data: "alt=Sunset,width=300,,height=400",
                     line: 6,
-                    col: 10,
-                    offset: 53,
+                    col: 12,
+                    offset: 55,
                 },
                 warning: WarningType::EmptyAttributeValue,
                 },

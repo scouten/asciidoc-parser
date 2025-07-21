@@ -2,13 +2,13 @@ use std::fmt;
 
 use crate::{
     HasSpan,
-    blocks::{IsBlock, MediaBlock},
+    blocks::{IsBlock, MediaBlock, MediaType},
     tests::fixtures::{TSpan, attributes::TAttrlist},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TMediaBlock {
-    pub name: TSpan,
+    pub type_: MediaType,
     pub target: Option<TSpan>,
     pub macro_attrlist: TAttrlist,
     pub source: TSpan,
@@ -20,10 +20,11 @@ pub(crate) struct TMediaBlock {
 impl fmt::Debug for TMediaBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("MediaBlock")
-            .field("name", &self.name)
+            .field("type_", &self.type_)
             .field("target", &self.target)
             .field("macro_attrlist", &self.macro_attrlist)
             .field("source", &self.source)
+            .field("title", &self.title)
             .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
             .finish()
@@ -43,7 +44,7 @@ impl PartialEq<TMediaBlock> for MediaBlock<'_> {
 }
 
 fn fixture_eq_observed(fixture: &TMediaBlock, observed: &MediaBlock) -> bool {
-    if &fixture.name != observed.name() {
+    if fixture.type_ != observed.type_() {
         return false;
     }
 

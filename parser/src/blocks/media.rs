@@ -10,13 +10,26 @@ use crate::{
 /// A media block is used to represent an image, video, or audio block macro.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MediaBlock<'src> {
-    name: Span<'src>,
+    type_: MediaType,
     target: Option<Span<'src>>,
     macro_attrlist: Attrlist<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
+}
+
+/// A media type may be one of three different types.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum MediaType {
+    /// Still image
+    Image,
+
+    /// Video
+    Video,
+
+    /// Audio
+    Audio,
 }
 
 impl<'src> MediaBlock<'src> {
@@ -37,11 +50,20 @@ impl<'src> MediaBlock<'src> {
         let Some(name) = line.item.take_ident() else {
             return MatchAndWarnings {
                 item: None,
-                warnings: vec![Warning {
-                    source: line.item,
-                    warning: WarningType::InvalidMacroName,
-                }],
+                warnings: vec![],
             };
+        };
+
+        let type_ = match name.item.data() {
+            "image" => MediaType::Image,
+            "video" => MediaType::Video,
+            "audio" => MediaType::Audio,
+            _ => {
+                return MatchAndWarnings {
+                    item: None,
+                    warnings: vec![],
+                };
+            }
         };
 
         let Some(colons) = name.after.take_prefix("::") else {
@@ -77,7 +99,7 @@ impl<'src> MediaBlock<'src> {
         MatchAndWarnings {
             item: Some(MatchedItem {
                 item: Self {
-                    name: name.item,
+                    type_,
                     target: if target.item.is_empty() {
                         None
                     } else {
@@ -97,8 +119,8 @@ impl<'src> MediaBlock<'src> {
     }
 
     /// Return a [`Span`] describing the macro name.
-    pub fn name(&'src self) -> &'src Span<'src> {
-        &self.name
+    pub fn type_(&self) -> MediaType {
+        self.type_
     }
 
     /// Return a [`Span`] describing the macro target.
@@ -122,16 +144,14 @@ impl<'src> MediaBlock<'src> {
 
 impl<'src> IsBlock<'src> for MediaBlock<'src> {
     fn content_model(&self) -> ContentModel {
-        // TO DO: We'll probably want different macro types to provide different content
-        // models. For now, just default to "simple."
-        ContentModel::Simple
+        ContentModel::Empty
     }
 
     fn raw_context(&self) -> CowStr<'src> {
-        // TO DO: We'll probably want different macro types to provide different
-        // contexts. For now, just default to "paragraph."
+        // TO DO: Different media types should provide different
+        // contexts. For now, just default to "image."
 
-        "paragraph".into()
+        "image".into()
     }
 
     fn title(&'src self) -> Option<Span<'src>> {
