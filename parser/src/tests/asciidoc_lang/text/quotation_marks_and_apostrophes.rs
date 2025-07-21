@@ -254,4 +254,115 @@ include::example$text.adoc[tag=apos]
 
         assert!(blocks.next().is_none());
     }
+
+    #[test]
+    fn possessive_monospace_in_a_word() {
+        verifies!(
+            r#"
+In order to make a possessive, monospaced phrase, you need to switch to unconstrained formatting followed by an explicit typographic apostrophe.
+
+.Use a curved apostrophe with monospace in a word
+[#ex-word]
+----
+``npm```'s job is to manage the dependencies for your application.
+
+A ``std::vector```'s size is the number of items it contains.
+----
+
+The result of <<ex-word>> is rendered below.
+
+====
+``npm```'s job is to manage the dependencies for your application.
+
+A ``std::vector```'s size is the number of items it contains.
+====
+
+"#
+        );
+
+        let doc = Parser::default().parse("``npm```'s job is to manage the dependencies for your application.\n\nA ``std::vector```'s size is the number of items it contains.");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+        let Block::Simple(sb1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            sb1.content().rendered(),
+            "<code>npm</code>&#8217;s job is to manage the dependencies for your application."
+        );
+
+        let block2 = blocks.next().unwrap();
+        let Block::Simple(sb2) = block2 else {
+            panic!("Unexpected block type: {block2:?}");
+        };
+
+        assert_eq!(
+            sb2.content().rendered(),
+            "A <code>std::vector</code>&#8217;s size is the number of items it contains."
+        );
+
+        assert!(blocks.next().is_none());
+    }
+
+    #[test]
+    fn possessive_monospace_at_end_of_word() {
+        verifies!(
+            r#"
+You'll need to use a similar syntax when the last (or only) word in the monospace phrase ends in an "`s`" (i.e., the plural possessive form).
+
+.Use a curved apostrophe with monospace at the end of a word
+[#ex-word-end]
+----
+This ``class```' static methods make it easy to operate on files and directories.
+----
+
+The result of <<ex-word-end>> is below.
+The word _class_ is rendered in monospace with a curved apostrophe at the end of it.
+
+====
+This ``class```' static methods make it easy to operate on files and directories.
+====
+
+You can get the same result by inserting a typographic apostrophe immediately following a constrained formatting pair.
+In this case, you're able to leverage the fact that a typographic apostrophe is a punctuation character to avoid the need to resort to unconstrained formatting.
+
+----
+The `class`’ static methods make it easy to operate on files and directories.
+----
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            "This ``class```' static methods make it easy to operate on files and directories.",
+        );
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+        let Block::Simple(sb1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            sb1.content().rendered(),
+            "This <code>class</code>&#8217; static methods make it easy to operate on files and directories."
+        );
+
+        assert!(blocks.next().is_none());
+    }
 }
+
+non_normative!(
+    r#"
+As you can see, it's often simpler to input the curved apostrophe directly using the character kbd:[’].
+The shorthand syntax AsciiDoc provides is only meant as a convenience.
+
+////
+Add a sidebar describing the history and concerns with smart quotes regarding copy and paste and correct Unicode output.
+////
+"#
+);
