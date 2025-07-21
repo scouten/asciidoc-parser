@@ -135,28 +135,31 @@ impl<'src> Block<'src> {
         // Try to discern the block type by scanning the first line.
         let line = preamble.block_start.take_normalized_line();
 
-        if line.item.contains("::") {
-            let mut macro_block_maw = MediaBlock::parse(&preamble, parser);
+        if line.item.starts_with("image::")
+            || line.item.starts_with("video::")
+            || line.item.starts_with("video::")
+        {
+            let mut media_block_maw = MediaBlock::parse(&preamble, parser);
 
-            if let Some(macro_block) = macro_block_maw.item {
-                // Only propagate warnings from macro block parsing if we think this
-                // *is* a macro block. Otherwise, there would likely be too many false
+            if let Some(media_block) = media_block_maw.item {
+                // Only propagate warnings from media block parsing if we think this
+                // *is* a media block. Otherwise, there would likely be too many false
                 // positives.
-                if !macro_block_maw.warnings.is_empty() {
-                    warnings.append(&mut macro_block_maw.warnings);
+                if !media_block_maw.warnings.is_empty() {
+                    warnings.append(&mut media_block_maw.warnings);
                 }
 
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
-                        item: Self::Media(macro_block.item),
-                        after: macro_block.after,
+                        item: Self::Media(media_block.item),
+                        after: media_block.after,
                     }),
                     warnings,
                 };
             }
 
-            // A line containing `::` might be some other kind of block, so we
-            // don't automatically error out on a parse failure.
+            // This might be some other kind of block, so we don't automatically
+            // error out on a parse failure.
         }
 
         if line.item.starts_with('=') {
