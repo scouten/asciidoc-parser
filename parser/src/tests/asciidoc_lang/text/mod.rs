@@ -1,4 +1,5 @@
 mod bold;
+mod custom_inline_styles;
 mod highlight;
 mod index;
 mod italic;
