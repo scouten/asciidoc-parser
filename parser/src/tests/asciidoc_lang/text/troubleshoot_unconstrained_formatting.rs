@@ -37,7 +37,7 @@ To help you determine whether a particular syntax pattern requires an unconstrai
 |The `o` is directly adjacent to the closing mark.
 
 |`+&ndash;**2016**+`
-|&ndash;**2016**
+|&#8211;**2016**
 |Unconstrained
 |The `;` is directly adjacent to the opening mark.
 
@@ -47,7 +47,7 @@ To help you determine whether a particular syntax pattern requires an unconstrai
 |There are spaces directly inside the formatting marks.
 
 |`+*2016*&ndash;+`
-|*2016*&ndash;
+|*2016*&#8211;
 |Constrained
 |The adjacent `&` is not a letter, number, underscore, colon, or semicolon.
 

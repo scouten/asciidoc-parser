@@ -11,7 +11,6 @@ use crate::{
 };
 
 track_file!("docs/modules/attributes/pages/custom-attributes.adoc");
-// Tracking commit 08289a9f, current as of 2025-04-13.
 
 non_normative!(
     r#"
@@ -42,7 +41,7 @@ mod user_defined_names {
 [#user-defined-names]
 == User-defined attribute names and values
 
-A user-defined attributes must have a name and explicitly assigned value.
+A user-defined attribute must have a name and explicitly assigned value.
 
 The attribute's name must:
 
