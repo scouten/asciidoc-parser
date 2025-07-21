@@ -259,6 +259,8 @@ include::example$text.adoc[tag=apos]
     fn possessive_monospace_in_a_word() {
         verifies!(
             r#"
+=== Possessive monospace
+
 In order to make a possessive, monospaced phrase, you need to switch to unconstrained formatting followed by an explicit typographic apostrophe.
 
 .Use a curved apostrophe with monospace in a word
