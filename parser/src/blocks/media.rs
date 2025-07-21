@@ -7,8 +7,7 @@ use crate::{
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
 
-/// A media block is used a block context to represent an image, video, or audio
-/// block macro.
+/// A media block is used to represent an image, video, or audio block macro.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MediaBlock<'src> {
     name: Span<'src>,
