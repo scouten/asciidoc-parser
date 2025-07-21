@@ -4,7 +4,7 @@ use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock,
+        CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, RawDelimitedBlock, SectionBlock,
         SimpleBlock, preamble::Preamble,
     },
     span::{MatchedItem, content::SubstitutionGroup},
@@ -34,7 +34,7 @@ pub enum Block<'src> {
 
     /// A block macro is a syntax for representing non-text elements or syntax
     /// that expands into text using the provided metadata.
-    Macro(MacroBlock<'src>),
+    Macro(MediaBlock<'src>),
 
     /// A section helps to partition the document into a content hierarchy.
     /// May also be a part, chapter, or special section.
@@ -136,7 +136,7 @@ impl<'src> Block<'src> {
         let line = preamble.block_start.take_normalized_line();
 
         if line.item.contains("::") {
-            let mut macro_block_maw = MacroBlock::parse(&preamble, parser);
+            let mut macro_block_maw = MediaBlock::parse(&preamble, parser);
 
             if let Some(macro_block) = macro_block_maw.item {
                 // Only propagate warnings from macro block parsing if we think this

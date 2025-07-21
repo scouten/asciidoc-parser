@@ -1,14 +1,14 @@
 use crate::{
     blocks::Block,
     tests::fixtures::blocks::{
-        TCompoundDelimitedBlock, TMacroBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock,
+        TCompoundDelimitedBlock, TMediaBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock,
     },
 };
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) enum TBlock {
     Simple(TSimpleBlock),
-    Macro(TMacroBlock),
+    Macro(TMediaBlock),
     Section(TSectionBlock),
     RawDelimited(TRawDelimitedBlock),
     CompoundDelimited(TCompoundDelimitedBlock),

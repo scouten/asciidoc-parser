@@ -9,14 +9,14 @@ use crate::{
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TMacroBlock, TSimpleBlock},
+        blocks::{TBlock, TMediaBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
     warnings::WarningType,
 };
 
-// NOTE: The "error" cases from the MacroBlock parser test suite are not
+// NOTE: The "error" cases from the MediaBlock parser test suite are not
 // necessarily error cases here because we can reparse as SimpleBlock.
 
 #[test]
@@ -241,7 +241,7 @@ fn simplest_block_macro() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMacroBlock {
+        TBlock::Macro(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -313,7 +313,7 @@ fn has_target() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMacroBlock {
+        TBlock::Macro(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -378,7 +378,7 @@ fn has_target_and_macro_attrlist() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMacroBlock {
+        TBlock::Macro(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -450,7 +450,7 @@ fn warn_macro_attrlist_has_extra_comma() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMacroBlock {
+        TBlock::Macro(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -543,7 +543,7 @@ fn has_title() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMacroBlock {
+        TBlock::Macro(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 2,

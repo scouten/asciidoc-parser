@@ -5,7 +5,7 @@ mod compound_delimited;
 pub(crate) use compound_delimited::TCompoundDelimitedBlock;
 
 mod r#macro;
-pub(crate) use r#macro::TMacroBlock;
+pub(crate) use r#macro::TMediaBlock;
 
 mod raw_delimited;
 pub(crate) use raw_delimited::TRawDelimitedBlock;

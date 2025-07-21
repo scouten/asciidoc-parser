@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -211,7 +211,7 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMacroBlock {
+            blocks: vec![TBlock::Macro(TMediaBlock {
                 name: TSpan {
                     data: "foo",
                     line: 3,
@@ -316,7 +316,7 @@ fn has_child_block_with_errors() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMacroBlock {
+            blocks: vec![TBlock::Macro(TMediaBlock {
                 name: TSpan {
                     data: "foo",
                     line: 3,

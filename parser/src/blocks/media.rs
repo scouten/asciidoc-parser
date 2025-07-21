@@ -7,15 +7,10 @@ use crate::{
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
 
-/// A macro block can be used in a block context to create a new block element.
-///
-/// This struct is returned when the block form of a *named macro* is detected.
-///
-/// ```asciidoc
-/// <name>::<target>?[<attrlist>?].
-/// ```
+/// A media block is used a block context to represent an image, video, or audio
+/// block macro.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct MacroBlock<'src> {
+pub struct MediaBlock<'src> {
     name: Span<'src>,
     target: Option<Span<'src>>,
     macro_attrlist: Attrlist<'src>,
@@ -25,7 +20,7 @@ pub struct MacroBlock<'src> {
     attrlist: Option<Attrlist<'src>>,
 }
 
-impl<'src> MacroBlock<'src> {
+impl<'src> MediaBlock<'src> {
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
         parser: &mut Parser,
@@ -126,7 +121,7 @@ impl<'src> MacroBlock<'src> {
     }
 }
 
-impl<'src> IsBlock<'src> for MacroBlock<'src> {
+impl<'src> IsBlock<'src> for MediaBlock<'src> {
     fn content_model(&self) -> ContentModel {
         // TO DO: We'll probably want different macro types to provide different content
         // models. For now, just default to "simple."
@@ -153,7 +148,7 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
     }
 }
 
-impl<'src> HasSpan<'src> for MacroBlock<'src> {
+impl<'src> HasSpan<'src> for MediaBlock<'src> {
     fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }

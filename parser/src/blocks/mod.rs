@@ -35,8 +35,8 @@ pub(crate) use context::is_built_in_context;
 mod is_block;
 pub use is_block::{ContentModel, IsBlock};
 
-mod r#macro;
-pub use r#macro::MacroBlock;
+mod media;
+pub use media::MediaBlock;
 
 pub(crate) mod parse_utils;
 pub(crate) mod preamble;

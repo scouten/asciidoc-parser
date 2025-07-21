@@ -51,7 +51,7 @@ mod attrlist {
             fixtures::{
                 TSpan,
                 attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMacroBlock, TSimpleBlock},
+                blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, to_do_verifies, verifies},
@@ -291,7 +291,7 @@ name::target[first-positional,second-positional,named="value of named"]
 
         assert_eq!(
             block,
-            TBlock::Macro(TMacroBlock {
+            TBlock::Macro(TMediaBlock {
                 name: TSpan {
                     data: "name",
                     line: 1,

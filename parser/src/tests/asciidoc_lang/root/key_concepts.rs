@@ -82,7 +82,7 @@ mod macros {
             fixtures::{
                 TSpan,
                 attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMacroBlock, TSimpleBlock},
+                blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -128,7 +128,7 @@ image::sunset.jpg[Sunset]
                         offset: 0
                     }
                 },
-                blocks: vec![TBlock::Macro(TMacroBlock {
+                blocks: vec![TBlock::Macro(TMediaBlock {
                     name: TSpan {
                         data: "image",
                         line: 1,

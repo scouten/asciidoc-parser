@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             TSpan,
             attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TCompoundDelimitedBlock, TMacroBlock, TSimpleBlock},
+            blocks::{TBlock, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -140,7 +140,7 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        TBlock::Macro(TMacroBlock {
+                        TBlock::Macro(TMediaBlock {
                             name: TSpan {
                                 data: "image",
                                 line: 6,

@@ -4,12 +4,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MacroBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, MediaBlock, preamble::Preamble},
     span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::TMacroBlock,
+        blocks::TMediaBlock,
         warnings::TWarning,
     },
     warnings::WarningType,
@@ -20,7 +20,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = MacroBlock::parse(&Preamble::new("foo::[]"), &mut parser)
+    let b1 = MediaBlock::parse(&Preamble::new("foo::[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -34,7 +34,7 @@ fn err_empty_source() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new(""), &mut parser)
+        MediaBlock::parse(&Preamble::new(""), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -45,7 +45,7 @@ fn err_only_spaces() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("    "), &mut parser)
+        MediaBlock::parse(&Preamble::new("    "), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -54,7 +54,7 @@ fn err_only_spaces() {
 #[test]
 fn err_macro_name_not_ident() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("98xyz::bar[blah,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("98xyz::bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -75,7 +75,7 @@ fn err_macro_name_not_ident() {
 #[test]
 fn err_missing_double_colon() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("foo:bar[blah,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("foo:bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -96,7 +96,7 @@ fn err_missing_double_colon() {
 #[test]
 fn err_missing_macro_attrlist() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("foo::barblah,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("foo::barblah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -119,7 +119,7 @@ fn err_no_attr_list() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("foo::bar"), &mut parser)
+        MediaBlock::parse(&Preamble::new("foo::bar"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -130,7 +130,7 @@ fn err_attr_list_not_closed() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("foo::bar[blah"), &mut parser)
+        MediaBlock::parse(&Preamble::new("foo::bar[blah"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -141,7 +141,7 @@ fn err_unexpected_after_attr_list() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("foo::bar[blah]bonus"), &mut parser)
+        MediaBlock::parse(&Preamble::new("foo::bar[blah]bonus"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -151,7 +151,7 @@ fn err_unexpected_after_attr_list() {
 fn simplest_block_macro() {
     let mut parser = Parser::default();
 
-    let mi = MacroBlock::parse(&Preamble::new("foo::[]"), &mut parser)
+    let mi = MediaBlock::parse(&Preamble::new("foo::[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -169,7 +169,7 @@ fn simplest_block_macro() {
 
     assert_eq!(
         mi.item,
-        TMacroBlock {
+        TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -213,13 +213,13 @@ fn simplest_block_macro() {
 fn has_target() {
     let mut parser = Parser::default();
 
-    let mi = MacroBlock::parse(&Preamble::new("foo::bar[]"), &mut parser)
+    let mi = MediaBlock::parse(&Preamble::new("foo::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMacroBlock {
+        TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -268,13 +268,13 @@ fn has_target() {
 fn has_target_and_attrlist() {
     let mut parser = Parser::default();
 
-    let mi = MacroBlock::parse(&Preamble::new("foo::bar[blah]"), &mut parser)
+    let mi = MediaBlock::parse(&Preamble::new("foo::bar[blah]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMacroBlock {
+        TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -326,13 +326,13 @@ fn has_target_and_attrlist() {
 #[test]
 fn err_duplicate_comma() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("foo::bar[blah,,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("foo::bar[blah,,blap]"), &mut parser);
 
     let mi = maw.item.unwrap().clone();
 
     assert_eq!(
         mi.item,
-        TMacroBlock {
+        TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,

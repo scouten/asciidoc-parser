@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         document::{TDocument, THeader},
         warnings::TWarning,
@@ -445,7 +445,7 @@ fn err_bad_header_and_bad_macro() {
                     },
                     blocks: vec![
                         TBlock::Macro(
-                            TMacroBlock {
+                            TMediaBlock {
                                 name: TSpan {
                                     data: "foo",
                                     line: 6,

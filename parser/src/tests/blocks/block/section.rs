@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -387,7 +387,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMacroBlock {
+            blocks: vec![TBlock::Macro(TMediaBlock {
                 name: TSpan {
                     data: "foo",
                     line: 3,
