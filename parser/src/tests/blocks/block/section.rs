@@ -387,7 +387,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMediaBlock {
+            blocks: vec![TBlock::Media(TMediaBlock {
                 name: TSpan {
                     data: "foo",
                     line: 3,

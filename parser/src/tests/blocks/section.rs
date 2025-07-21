@@ -211,7 +211,7 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMediaBlock {
+            blocks: vec![TBlock::Media(TMediaBlock {
                 name: TSpan {
                     data: "foo",
                     line: 3,
@@ -316,7 +316,7 @@ fn has_child_block_with_errors() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMediaBlock {
+            blocks: vec![TBlock::Media(TMediaBlock {
                 name: TSpan {
                     data: "foo",
                     line: 3,

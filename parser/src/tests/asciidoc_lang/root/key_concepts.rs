@@ -128,7 +128,7 @@ image::sunset.jpg[Sunset]
                         offset: 0
                     }
                 },
-                blocks: vec![TBlock::Macro(TMediaBlock {
+                blocks: vec![TBlock::Media(TMediaBlock {
                     name: TSpan {
                         data: "image",
                         line: 1,

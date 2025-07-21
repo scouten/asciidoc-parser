@@ -241,7 +241,7 @@ fn simplest_block_macro() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMediaBlock {
+        TBlock::Media(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -313,7 +313,7 @@ fn has_target() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMediaBlock {
+        TBlock::Media(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -378,7 +378,7 @@ fn has_target_and_macro_attrlist() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMediaBlock {
+        TBlock::Media(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -450,7 +450,7 @@ fn warn_macro_attrlist_has_extra_comma() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMediaBlock {
+        TBlock::Media(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 1,
@@ -543,7 +543,7 @@ fn has_title() {
 
     assert_eq!(
         mi.item,
-        TBlock::Macro(TMediaBlock {
+        TBlock::Media(TMediaBlock {
             name: TSpan {
                 data: "foo",
                 line: 2,

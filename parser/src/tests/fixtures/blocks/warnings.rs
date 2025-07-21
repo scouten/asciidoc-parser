@@ -35,13 +35,13 @@ pub enum WarningType {
     EmptyShorthandItem,
 
     // TO DO BEFORE CHECKING IN TO MAIN: Review these error names and descriptions.
-    #[error("Macro name is not a valid identifier")]
+    #[error("Media name is not a valid identifier")]
     InvalidMacroName,
 
-    #[error("Macro missing attribute list")]
+    #[error("Media missing attribute list")]
     MacroMissingAttributeList,
 
-    #[error("Macro missing :: separator")]
+    #[error("Media missing :: separator")]
     MacroMissingDoubleColon,
 
     #[error("Missing comma after quoted attribute value")]

@@ -444,7 +444,7 @@ fn err_bad_header_and_bad_macro() {
                         offset: 29,
                     },
                     blocks: vec![
-                        TBlock::Macro(
+                        TBlock::Media(
                             TMediaBlock {
                                 name: TSpan {
                                     data: "foo",

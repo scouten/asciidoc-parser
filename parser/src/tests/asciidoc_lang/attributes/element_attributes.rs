@@ -291,7 +291,7 @@ name::target[first-positional,second-positional,named="value of named"]
 
         assert_eq!(
             block,
-            TBlock::Macro(TMediaBlock {
+            TBlock::Media(TMediaBlock {
                 name: TSpan {
                     data: "name",
                     line: 1,

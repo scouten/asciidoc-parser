@@ -8,7 +8,7 @@ use crate::{
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) enum TBlock {
     Simple(TSimpleBlock),
-    Macro(TMediaBlock),
+    Media(TMediaBlock),
     Section(TSectionBlock),
     RawDelimited(TRawDelimitedBlock),
     CompoundDelimited(TCompoundDelimitedBlock),
@@ -33,8 +33,8 @@ fn fixture_eq_observed(fixture: &TBlock, observed: &Block) -> bool {
             _ => false,
         },
 
-        TBlock::Macro(macro_fixture) => match observed {
-            Block::Macro(macro_observed) => macro_fixture == macro_observed,
+        TBlock::Media(macro_fixture) => match observed {
+            Block::Media(macro_observed) => macro_fixture == macro_observed,
             _ => false,
         },
 

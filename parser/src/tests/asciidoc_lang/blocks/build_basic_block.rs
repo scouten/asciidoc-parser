@@ -140,7 +140,7 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        TBlock::Macro(TMediaBlock {
+                        TBlock::Media(TMediaBlock {
                             name: TSpan {
                                 data: "image",
                                 line: 6,
