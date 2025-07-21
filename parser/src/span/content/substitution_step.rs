@@ -305,12 +305,14 @@ impl LookaheadReplacer for QuoteReplacer<'_> {
         // The regex crate doesn't have a sophisticated lookahead mode, so we patch
         // it up here.
 
-        if self.type_ == QuoteType::Monospaced && self.scope == QuoteScope::Constrained
-            && after.starts_with(['"', '\'', '`']) {
-                let skip_ahead = if caps[0].starts_with('\\') { 2 } else { 1 };
-                dest.push_str(&caps[0][0..skip_ahead]);
-                return LookaheadResult::SkipAheadAndRetry(skip_ahead);
-            }
+        if self.type_ == QuoteType::Monospaced
+            && self.scope == QuoteScope::Constrained
+            && after.starts_with(['"', '\'', '`'])
+        {
+            let skip_ahead = if caps[0].starts_with('\\') { 2 } else { 1 };
+            dest.push_str(&caps[0][0..skip_ahead]);
+            return LookaheadResult::SkipAheadAndRetry(skip_ahead);
+        }
 
         let unescaped_attrs: Option<String> = if caps[0].starts_with('\\') {
             let maybe_attrs = caps.get(2).map(|a| a.as_str());
