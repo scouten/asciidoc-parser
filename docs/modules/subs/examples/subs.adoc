@@ -6,7 +6,7 @@ The curly braces around it are preserved.
 The asterisks around it are preserved.
 
 \&sect; appears as an entity reference.
-It's not converted into the section symbol (&sect;).
+It's not converted into the section symbol (&#167;).
 
 \=> The backslash prevents the equals sign followed by a greater
 than sign from combining to form a double arrow character (=>).

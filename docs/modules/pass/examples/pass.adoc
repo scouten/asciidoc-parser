@@ -1,27 +1,27 @@
 // tag::in-macro[]
-The text pass:[<u>underline me</u>] is underlined.
+The text pass:[<del>strike this</del>] is marked as deleted.
 // end::in-macro[]
 
 // tag::in-macro-sub[]
-The text pass:q[<u>underline *me*</u>] is underlined.
+The text pass:q[<del>strike *this*</del>] is marked as deleted.
 // end::in-macro-sub[]
 
 // tag::in-macro-subs[]
-The text pass:q,a[<u>underline _{docname}_</u>] is underlined.
+The text pass:q,a[<del>strike _{docname}_</del>] is marked as deleted.
 // end::in-macro-subs[]
 
 // tag::s-macro[]
-The text pass:q[<u>underline *me*</u>] is underlined and the word "`me`" is bold.
+The text pass:q[<del>strike *this*</del>] is marked as deleted, inside of which the word "`me`" is bold.
 // end::s-macro[]
 
 // tag::3p[]
-The text +++<u>underline me</u>+++ is underlined.
+The text +++<del>strike this</del>+++ is marked as deleted.
 // end::3p[]
 
 // tag::b-3p-macro[]
-+++<u>underline me</u>+++ is underlined.
++++<del>strike this</del>+++ is marked as deleted.
 
-pass:[<u>underline me</u>] is also underlined.
+pass:[<del>strike this</del>] is also marked as deleted.
 // end::b-3p-macro[]
 
 // tag::tick[]
@@ -44,7 +44,7 @@ like +``+, or formatting marks within a word, like all-natural++*++.
 // end::plus[]
 
 // tag::backtick-plus[]
-Output literal monospace text, such as `+{backtick}+` or `+http://localhost:8080+`, by enclosing the text in a pair of pluses surrounded by a pair backticks.
+Output literal monospace text, such as `+{backtick}+` or `+http://localhost:8080+`, by enclosing the text in a pair of pluses surrounded by a pair of backticks.
 // end::backtick-plus[]
 
 // tag::sub-in[]
@@ -100,5 +100,5 @@ Normal content which is not enclosed in a paragraph.
 
 // tag::pass-style[]
 [pass]
-<u>underline me</u> is underlined.
+<del>strike this</del> is marked as deleted.
 // end::pass-style[]

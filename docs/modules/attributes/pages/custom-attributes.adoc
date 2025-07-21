@@ -7,7 +7,7 @@ When you find yourself typing the same text repeatedly, or text that often needs
 [#user-defined-names]
 == User-defined attribute names and values
 
-A user-defined attributes must have a name and explicitly assigned value.
+A user-defined attribute must have a name and explicitly assigned value.
 
 The attribute's name must:
 
