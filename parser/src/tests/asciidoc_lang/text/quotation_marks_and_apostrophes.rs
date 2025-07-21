@@ -212,7 +212,7 @@ Olaf\'s desk ...
 An apostrophe directly bounded by two word characters is processed during the xref:subs:replacements.adoc[replacements substitution phase], not the inline formatting (quotes) phase.
 To learn about additional ways to prevent the replacements substitution, see xref:subs:prevent.adoc[] and xref:pass:pass-macro.adoc[].
 
-        "#
+"#
     );
 
     #[test]
