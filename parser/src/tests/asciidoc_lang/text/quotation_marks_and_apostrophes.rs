@@ -118,7 +118,7 @@ include::example$text.adoc[tag=c-quote]
 There's no unconstrained equivalent for producing double and single curved quotation marks.
 In that case, it's necessary to input the curved quotation marks directly using the characters kbd:[‘], kbd:[’], kbd:[“], and kbd:[”].
 
-        "#
+"#
     );
 }
 
@@ -128,6 +128,13 @@ mod apostrophe_syntax {
         blocks::{Block, IsBlock},
         tests::sdd::{non_normative, verifies},
     };
+
+    non_normative!(
+        r#"
+ == Apostrophe syntax
+
+"#
+    );
 
     #[test]
     fn apostrophe_replacement() {
