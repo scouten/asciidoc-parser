@@ -166,12 +166,12 @@ fn has_target() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Image,
-            target: Some(TSpan {
+            target: TSpan {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
-            }),
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
@@ -216,12 +216,12 @@ fn has_target_and_attrlist() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Image,
-            target: Some(TSpan {
+            target: TSpan {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
-            }),
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
@@ -269,12 +269,12 @@ fn err_duplicate_comma() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Image,
-            target: Some(TSpan {
+            target: TSpan {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
-            }),
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(
                     TElementAttribute {

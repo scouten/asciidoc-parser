@@ -131,12 +131,12 @@ image::sunset.jpg[Sunset]
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: Some(TSpan {
+                    target: TSpan {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
-                    }),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec!(TElementAttribute {
                             name: None,

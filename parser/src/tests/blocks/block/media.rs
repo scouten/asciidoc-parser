@@ -293,12 +293,12 @@ fn has_target() {
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: Some(TSpan {
+            target: TSpan {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
-            }),
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
@@ -353,12 +353,12 @@ fn has_target_and_macro_attrlist() {
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: Some(TSpan {
+            target: TSpan {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
-            }),
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
@@ -420,12 +420,12 @@ fn warn_macro_attrlist_has_extra_comma() {
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: Some(TSpan {
+            target: TSpan {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
-            }),
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
@@ -508,12 +508,12 @@ fn has_title() {
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: Some(TSpan {
+            target: TSpan {
                 data: "bar",
                 line: 2,
                 col: 8,
                 offset: 20,
-            }),
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {

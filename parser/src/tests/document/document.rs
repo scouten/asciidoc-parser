@@ -447,14 +447,12 @@ fn err_bad_header_and_bad_macro() {
                         TBlock::Media(
                             TMediaBlock {
                                 type_: MediaType::Image,
-                                target: Some(
-                                    TSpan {
-                                        data: "bar",
-                                        line: 6,
-                                        col: 8,
-                                        offset: 51,
-                                    },
-                                ),
+                                target: TSpan {
+                                    data: "bar",
+                                    line: 6,
+                                    col: 8,
+                                    offset: 51,
+                                },
                                 macro_attrlist: TAttrlist {
                                     attributes: vec![
                                         TElementAttribute {

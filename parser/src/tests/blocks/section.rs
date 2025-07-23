@@ -213,12 +213,12 @@ fn has_macro_block_with_extra_blank_line() {
             },
             blocks: vec![TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
-                target: Some(TSpan {
+                target: TSpan {
                     data: "bar",
                     line: 3,
                     col: 8,
                     offset: 25,
-                }),
+                },
                 macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
@@ -313,12 +313,12 @@ fn has_child_block_with_errors() {
             },
             blocks: vec![TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
-                target: Some(TSpan {
+                target: TSpan {
                     data: "bar",
                     line: 3,
                     col: 8,
                     offset: 25,
-                }),
+                },
                 macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {

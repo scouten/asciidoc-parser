@@ -9,7 +9,7 @@ use crate::{
 #[derive(Eq, PartialEq)]
 pub(crate) struct TMediaBlock {
     pub type_: MediaType,
-    pub target: Option<TSpan>,
+    pub target: TSpan,
     pub macro_attrlist: TAttrlist,
     pub source: TSpan,
     pub title: Option<TSpan>,
@@ -48,14 +48,11 @@ fn fixture_eq_observed(fixture: &TMediaBlock, observed: &MediaBlock) -> bool {
         return false;
     }
 
-    if fixture.target.is_some() != observed.target().is_some() {
-        return false;
-    }
-
-    if let Some(ref fixture_target) = fixture.target
-        && let Some(ref observed_target) = observed.target()
-        && &fixture_target != observed_target
-    {
+    if let Some(ref observed_target) = observed.target() {
+        if &fixture.target != *observed_target {
+            return false;
+        }
+    } else {
         return false;
     }
 

@@ -105,12 +105,12 @@ include::example$image.adoc[tag=base]
                     },),
                     TBlock::Media(TMediaBlock {
                         type_: MediaType::Image,
-                        target: Some(TSpan {
+                        target: TSpan {
                             data: "sunset.jpg",
                             line: 3,
                             col: 8,
                             offset: 29,
-                        },),
+                        },
                         macro_attrlist: TAttrlist {
                             attributes: vec![],
                             source: TSpan {
@@ -202,12 +202,12 @@ include::example$image.adoc[tag=alt]
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: Some(TSpan {
+                    target: TSpan {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
-                    },),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec![TElementAttribute {
                             name: None,
@@ -281,12 +281,12 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: Some(TSpan {
+                    target: TSpan {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
-                    },),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec![TElementAttribute {
                             name: None,
@@ -370,12 +370,12 @@ include::example$image.adoc[tag=attr]
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: Some(TSpan {
+                    target: TSpan {
                         data: "sunset.jpg",
                         line: 3,
                         col: 8,
                         offset: 91,
-                    },),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec![
                             TElementAttribute {

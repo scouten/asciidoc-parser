@@ -296,12 +296,12 @@ name::target[first-positional,second-positional,named="value of named"]
             block,
             TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
-                target: Some(TSpan {
+                target: TSpan {
                     data: "target",
                     line: 1,
                     col: 7,
                     offset: 6,
-                },),
+                },
                 macro_attrlist: TAttrlist {
                     attributes: vec![
                         TElementAttribute {

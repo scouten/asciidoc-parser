@@ -142,12 +142,12 @@ This is more content in the sidebar block.
                         },),
                         TBlock::Media(TMediaBlock {
                             type_: MediaType::Image,
-                            target: Some(TSpan {
+                            target: TSpan {
                                 data: "name.png",
                                 line: 6,
                                 col: 8,
                                 offset: 73,
-                            },),
+                            },
                             macro_attrlist: TAttrlist {
                                 attributes: vec![],
                                 source: TSpan {

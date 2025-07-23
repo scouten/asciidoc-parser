@@ -73,12 +73,12 @@ include::example$image.adoc[tag=url]
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: Some(TSpan {
+                    target: TSpan {
                         data: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
                         line: 1,
                         col: 8,
                         offset: 7,
-                    }),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec![
                             TElementAttribute {

@@ -87,12 +87,12 @@ include::example$image.adoc[tag=float]
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: Some(TSpan {
+                    target: TSpan {
                         data: "tiger.png",
                         line: 1,
                         col: 8,
                         offset: 7,
-                    }),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec![
                             TElementAttribute {
@@ -280,12 +280,12 @@ include::example$image.adoc[tag=role]
                 },
                 blocks: vec![TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: Some(TSpan {
+                    target: TSpan {
                         data: "tiger.png",
                         line: 2,
                         col: 8,
                         offset: 28,
-                    }),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec![
                             TElementAttribute {
