@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MediaBlock<'src> {
     type_: MediaType,
-    target: Option<Span<'src>>,
+    target: Span<'src>,
     macro_attrlist: Attrlist<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
@@ -76,7 +76,18 @@ impl<'src> MediaBlock<'src> {
             };
         };
 
+        // The target field must exist and be non-empty.
         let target = colons.after.take_while(|c| c != '[');
+
+        if target.item.is_empty() {
+            return MatchAndWarnings {
+                item: None,
+                warnings: vec![Warning {
+                    source: target.after,
+                    warning: WarningType::MediaMacroMissingTarget,
+                }],
+            };
+        }
 
         let Some(open_brace) = target.after.take_prefix("[") else {
             return MatchAndWarnings {
@@ -100,11 +111,7 @@ impl<'src> MediaBlock<'src> {
             item: Some(MatchedItem {
                 item: Self {
                     type_,
-                    target: if target.item.is_empty() {
-                        None
-                    } else {
-                        Some(target.item)
-                    },
+                    target: target.item,
                     macro_attrlist: macro_attrlist.item.item,
                     source,
                     title: preamble.title,
@@ -125,7 +132,7 @@ impl<'src> MediaBlock<'src> {
 
     /// Return a [`Span`] describing the macro target.
     pub fn target(&'src self) -> Option<&'src Span<'src>> {
-        self.target.as_ref()
+        Some(&self.target)
     }
 
     /// Return the macro's attribute list.

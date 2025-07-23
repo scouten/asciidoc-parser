@@ -1,11 +1,8 @@
-use std::ops::Deref;
-
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MediaBlock, MediaType, preamble::Preamble},
-    span::content::SubstitutionGroup,
+    blocks::{MediaBlock, MediaType, preamble::Preamble},
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
@@ -20,7 +17,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = MediaBlock::parse(&Preamble::new("image::[]"), &mut parser)
+    let b1 = MediaBlock::parse(&Preamble::new("image::foo.jpg[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -139,56 +136,21 @@ fn err_unexpected_after_attr_list() {
 fn simplest_block_macro() {
     let mut parser = Parser::default();
 
-    let mi = MediaBlock::parse(&Preamble::new("image::[]"), &mut parser)
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi = MediaBlock::parse(&Preamble::new("image::[]"), &mut parser);
 
-    assert_eq!(mi.item.content_model(), ContentModel::Empty);
-    assert_eq!(mi.item.raw_context().deref(), "image");
-    assert_eq!(mi.item.resolved_context().deref(), "image");
-    assert!(mi.item.declared_style().is_none());
-    assert!(mi.item.id().is_none());
-    assert!(mi.item.roles().is_empty());
-    assert!(mi.item.options().is_empty());
-    assert!(mi.item.title().is_none());
-    assert!(mi.item.anchor().is_none());
-    assert!(mi.item.attrlist().is_none());
-    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+    assert!(mi.item.is_none());
 
     assert_eq!(
-        mi.item,
-        TMediaBlock {
-            type_: MediaType::Image,
-            target: None,
-            macro_attrlist: TAttrlist {
-                attributes: vec!(),
-                source: TSpan {
-                    data: "",
-                    line: 1,
-                    col: 9,
-                    offset: 8,
-                }
-            },
+        mi.warnings,
+        vec![TWarning {
             source: TSpan {
-                data: "image::[]",
+                data: "[]",
                 line: 1,
-                col: 1,
-                offset: 0,
+                col: 8,
+                offset: 7,
             },
-            title: None,
-            anchor: None,
-            attrlist: None,
-        }
-    );
-
-    assert_eq!(
-        mi.after,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 10,
-            offset: 9,
-        }
+            warning: WarningType::MediaMacroMissingTarget,
+        }]
     );
 }
 

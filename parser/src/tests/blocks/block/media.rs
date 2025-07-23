@@ -1,11 +1,8 @@
-use std::ops::Deref;
-
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     HasSpan, Parser, Span,
-    blocks::{Block, ContentModel, IsBlock, MediaType},
-    span::content::SubstitutionGroup,
+    blocks::{Block, MediaType},
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
@@ -232,7 +229,7 @@ fn err_unexpected_after_attr_list() {
 }
 
 #[test]
-fn simplest_block_macro() {
+fn rejects_image_with_no_target() {
     let mut parser = Parser::default();
 
     let mi = Block::parse(Span::new("image::[]"), &mut parser)
@@ -241,17 +238,15 @@ fn simplest_block_macro() {
 
     assert_eq!(
         mi.item,
-        TBlock::Media(TMediaBlock {
-            type_: MediaType::Image,
-            target: None,
-            macro_attrlist: TAttrlist {
-                attributes: vec!(),
-                source: TSpan {
-                    data: "",
+        TBlock::Simple(TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "image::[]",
                     line: 1,
-                    col: 9,
-                    offset: 8,
-                }
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "image::[]",
             },
             source: TSpan {
                 data: "image::[]",
@@ -262,7 +257,7 @@ fn simplest_block_macro() {
             title: None,
             anchor: None,
             attrlist: None,
-        })
+        },)
     );
 
     assert_eq!(
@@ -274,18 +269,6 @@ fn simplest_block_macro() {
             offset: 0,
         }
     );
-
-    assert_eq!(mi.item.content_model(), ContentModel::Empty);
-    assert_eq!(mi.item.raw_context().deref(), "image");
-    assert_eq!(mi.item.resolved_context().deref(), "image");
-    assert_eq!(mi.item.nested_blocks().next(), None);
-    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
-    assert!(mi.item.id().is_none());
-    assert!(mi.item.roles().is_empty());
-    assert!(mi.item.options().is_empty());
-    assert!(mi.item.title().is_none());
-    assert!(mi.item.anchor().is_none());
-    assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
         mi.after,

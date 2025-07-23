@@ -38,6 +38,9 @@ pub enum WarningType {
     #[error("Macro name is not a valid identifier")]
     InvalidMacroName,
 
+    #[error("Media macro missing target")]
+    MediaMacroMissingTarget,
+
     #[error("Macro missing attribute list")]
     MacroMissingAttributeList,
 
