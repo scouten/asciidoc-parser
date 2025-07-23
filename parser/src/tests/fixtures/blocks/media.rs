@@ -48,8 +48,8 @@ fn fixture_eq_observed(fixture: &TMediaBlock, observed: &MediaBlock) -> bool {
         return false;
     }
 
-    if let Some(ref observed_target) = observed.target() {
-        if &fixture.target != *observed_target {
+    if let Some(observed_target) = observed.target() {
+        if &fixture.target != observed_target {
             return false;
         }
     } else {
