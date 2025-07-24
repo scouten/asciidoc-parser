@@ -120,7 +120,7 @@ include::example$subs.adoc[tag=subs-sub]
 ....
 
 You can also specify whether the substitution type is added to the end of the substitution group.
-If a `+` comes before the name of the substitution, then it's added to the end of the existing list, whereas if a `+` comes after the name, it's added to the beginning of the list.
+If a `{plus}` comes before the name of the substitution, then it's added to the end of the existing list, whereas if a `{plus}` comes after the name, it's added to the beginning of the list.
 
 [source,subs=-callouts]
 ....
