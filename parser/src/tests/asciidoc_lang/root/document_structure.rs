@@ -60,7 +60,7 @@ This is a basic AsciiDoc document.
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -127,7 +127,7 @@ This document contains two paragraphs.
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -223,7 +223,7 @@ It also has a header that specifies the document title.
                             offset: 2,
                         },
                     ),
-                    attributes: vec![
+                    attributes: &[
                         TAttribute {
                             name: TSpan {
                                 data: "reproducible",

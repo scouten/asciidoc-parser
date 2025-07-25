@@ -104,7 +104,7 @@ This is a sidebar with an option assigned to it, named option.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%option"],
                         value: "%option"
@@ -189,7 +189,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%option1", "%option2"],
                         value: "%option1%option2"
@@ -272,7 +272,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
                             shorthand_items: &["%header", "%footer", "%autowidth",],
@@ -372,7 +372,7 @@ This is a sidebar with an option assigned to it, named option.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("opts"),
                         shorthand_items: &[],
                         value: "option"
@@ -456,7 +456,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("opts"),
                         shorthand_items: &[],
                         value: "option1,option2"
@@ -539,7 +539,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: Some("cols"),
                             shorthand_items: &[],
@@ -658,7 +658,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["horizontal", ".properties", "%step"],
                         value: "horizontal.properties%step"
@@ -743,7 +743,7 @@ property 2:: does different stuff
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
                             shorthand_items: &["horizontal"],

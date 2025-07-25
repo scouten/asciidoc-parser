@@ -89,7 +89,7 @@ This is more content in the sidebar block.
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -149,7 +149,7 @@ This is more content in the sidebar block.
                                 offset: 73,
                             },
                             macro_attrlist: TAttrlist {
-                                attributes: vec![],
+                                attributes: &[],
                                 source: TSpan {
                                     data: "",
                                     line: 6,
@@ -268,7 +268,7 @@ include::example$block.adoc[tag=opt-listing]
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["listing"],
                     value: "listing"
@@ -333,7 +333,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["quote"],
                     value: "quote"

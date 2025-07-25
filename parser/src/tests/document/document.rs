@@ -45,7 +45,7 @@ fn empty_source() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -72,7 +72,7 @@ fn only_spaces() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -100,7 +100,7 @@ fn one_simple_block() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -148,7 +148,7 @@ fn two_simple_blocks() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -221,7 +221,7 @@ fn two_blocks_and_title() {
                     col: 3,
                     offset: 2,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "= Example Title",
                     line: 1,
@@ -294,7 +294,7 @@ fn extra_space_before_title() {
                     col: 5,
                     offset: 4,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "=   Example Title",
                     line: 1,
@@ -345,7 +345,7 @@ fn err_bad_header() {
                     col: 3,
                     offset: 2,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "= Title",
                     line: 1,
@@ -404,7 +404,7 @@ fn err_bad_header_and_bad_macro() {
                     col: 3,
                     offset: 2,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "= Title",
                     line: 1,
@@ -454,7 +454,7 @@ fn err_bad_header_and_bad_macro() {
                                     offset: 51,
                                 },
                                 macro_attrlist: TAttrlist {
-                                    attributes: vec![
+                                    attributes: &[
                                         TElementAttribute {
                                             name: Some("alt"),
                                             shorthand_items: &[],

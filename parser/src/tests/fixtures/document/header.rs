@@ -9,7 +9,7 @@ use crate::{
 #[derive(Eq, PartialEq)]
 pub(crate) struct THeader {
     pub title: Option<TSpan>,
-    pub attributes: Vec<TAttribute>,
+    pub attributes: &'static [TAttribute],
     pub source: TSpan,
 }
 

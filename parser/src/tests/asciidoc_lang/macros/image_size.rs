@@ -61,7 +61,7 @@ image::flower.jpg[Flower,640,480]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -78,7 +78,7 @@ image::flower.jpg[Flower,640,480]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Flower",
@@ -144,7 +144,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -161,7 +161,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: Some("alt",),
                                 value: "Flower",

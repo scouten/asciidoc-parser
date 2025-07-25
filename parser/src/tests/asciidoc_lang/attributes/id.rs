@@ -298,7 +298,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["#goals"],
                         value: "#goals"
@@ -359,7 +359,7 @@ In the longhand syntax, you use a standard named attribute.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("id"),
                         shorthand_items: &[],
                         value: "goals"
@@ -486,7 +486,7 @@ ____
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
                             shorthand_items: &["quote", ".movie", "#roads",],

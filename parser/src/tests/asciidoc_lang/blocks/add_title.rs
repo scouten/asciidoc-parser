@@ -255,7 +255,7 @@ stages: [ init, verify, deploy ]
             },),
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["source"],
@@ -347,7 +347,7 @@ If you don't plant it in a container, it will take over your garden.
             },),
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"

@@ -87,7 +87,7 @@ Content of delimited example block
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["#the-id-of-this-block",],
                     value: "#the-id-of-this-block"
@@ -170,7 +170,7 @@ Roads? Where we're going, we don't need roads.
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["quote", "#roads"],
                     value: "quote#roads"
@@ -235,7 +235,7 @@ Roads? Where we're going, we don't need roads.
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["quote", "#roads"],

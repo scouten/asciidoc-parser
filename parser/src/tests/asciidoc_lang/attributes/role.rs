@@ -121,7 +121,7 @@ This is a sidebar with a role assigned to it, rolename.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &[".rolename"],
                         value: ".rolename"
@@ -198,7 +198,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &[".role1", ".role2"],
                         value: ".role1.role2"
@@ -276,7 +276,7 @@ This is a sidebar with one role assigned to it, rolename.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
                         value: "rolename"
@@ -359,7 +359,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
                         value: "role1 role2"

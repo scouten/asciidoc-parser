@@ -29,7 +29,7 @@ fn empty_source() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(),
+            attributes: &[],
             source: TSpan {
                 data: "",
                 line: 1,
@@ -81,7 +81,7 @@ fn only_positional_attributes() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(
+            attributes: &[
                 TElementAttribute {
                     name: None,
                     shorthand_items: &["Sunset"],
@@ -97,7 +97,7 @@ fn only_positional_attributes() {
                     shorthand_items: &[],
                     value: "400"
                 }
-            ),
+            ],
             source: TSpan {
                 data: "Sunset,300,400",
                 line: 1,
@@ -202,7 +202,7 @@ fn only_named_attributes() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(
+            attributes: &[
                 TElementAttribute {
                     name: Some("alt"),
                     shorthand_items: &[],
@@ -218,7 +218,7 @@ fn only_named_attributes() {
                     shorthand_items: &[],
                     value: "400"
                 }
-            ),
+            ],
             source: TSpan {
                 data: "alt=Sunset,width=300,height=400",
                 line: 1,
@@ -326,11 +326,11 @@ fn err_unparsed_remainder_after_value() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: Some("alt"),
                 shorthand_items: &[],
                 value: "Sunset"
-            },),
+            }],
             source: TSpan {
                 data: "alt=\"Sunset\"width=300",
                 line: 1,
@@ -374,11 +374,11 @@ fn propagates_error_from_element_attribute() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: None,
                 shorthand_items: &["foo", "#id"],
                 value: "foo%#id"
-            },),
+            }],
             source: TSpan {
                 data: "foo%#id",
                 line: 1,
@@ -432,11 +432,11 @@ mod id {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["#goals"],
                     value: "#goals"
-                },),
+                }],
                 source: TSpan {
                     data: "#goals",
                     line: 1,
@@ -482,7 +482,7 @@ mod id {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
@@ -493,7 +493,7 @@ mod id {
                         shorthand_items: &[],
                         value: "goals"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo=bar,id=goals",
                     line: 1,
@@ -553,7 +553,7 @@ mod id {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["foo"],
@@ -564,7 +564,7 @@ mod id {
                         shorthand_items: &[],
                         value: "blah#goals"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo,blah#goals",
                     line: 1,
@@ -610,11 +610,11 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &[".rolename"],
                     value: ".rolename"
-                },),
+                }],
                 source: TSpan {
                     data: ".rolename",
                     line: 1,
@@ -663,11 +663,11 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &[".rolename"],
                     value: ".rolename "
-                },),
+                }],
                 source: TSpan {
                     data: ".rolename ",
                     line: 1,
@@ -716,11 +716,11 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1.role2.role3"
-                },),
+                }],
                 source: TSpan {
                     data: ".role1.role2.role3",
                     line: 1,
@@ -773,11 +773,11 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1 .role2 .role3 "
-                },),
+                }],
                 source: TSpan {
                     data: ".role1 .role2 .role3 ",
                     line: 1,
@@ -830,7 +830,7 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
@@ -841,7 +841,7 @@ mod roles {
                         shorthand_items: &[],
                         value: "role1"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo=bar,role=role1",
                     line: 1,
@@ -894,7 +894,7 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
@@ -905,7 +905,7 @@ mod roles {
                         shorthand_items: &[],
                         value: "role1 role2   role3 "
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo=bar,role=role1 role2   role3 ",
                     line: 1,
@@ -961,7 +961,7 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["#foo", ".sh1", ".sh2"],
@@ -972,7 +972,7 @@ mod roles {
                         shorthand_items: &[],
                         value: "na1 na2   na3 "
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "#foo.sh1.sh2,role=na1 na2   na3 ",
                     line: 1,
@@ -1022,7 +1022,7 @@ mod roles {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["foo"],
@@ -1033,7 +1033,7 @@ mod roles {
                         shorthand_items: &[],
                         value: "blah.rolename"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo,blah.rolename",
                     line: 1,
@@ -1078,11 +1078,11 @@ mod options {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["%option"],
                     value: "%option"
-                },),
+                }],
                 source: TSpan {
                     data: "%option",
                     line: 1,
@@ -1134,11 +1134,11 @@ mod options {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["%option1", "%option2", "%option3",],
                     value: "%option1%option2%option3"
-                },),
+                }],
                 source: TSpan {
                     data: "%option1%option2%option3",
                     line: 1,
@@ -1193,7 +1193,7 @@ mod options {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
@@ -1204,7 +1204,7 @@ mod options {
                         shorthand_items: &[],
                         value: "option1"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo=bar,options=option1",
                     line: 1,
@@ -1260,7 +1260,7 @@ mod options {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
@@ -1271,7 +1271,7 @@ mod options {
                         shorthand_items: &[],
                         value: "option1"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo=bar,opts=option1",
                     line: 1,
@@ -1329,7 +1329,7 @@ mod options {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
@@ -1340,7 +1340,7 @@ mod options {
                         shorthand_items: &[],
                         value: "option1,option2,option3"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo=bar,options=\"option1,option2,option3\"",
                     line: 1,
@@ -1401,7 +1401,7 @@ mod options {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["#foo", "%sh1", "%sh2"],
@@ -1412,7 +1412,7 @@ mod options {
                         shorthand_items: &[],
                         value: "na1,na2,na3"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "#foo%sh1%sh2,options=\"na1,na2,na3\"",
                     line: 1,
@@ -1470,7 +1470,7 @@ mod options {
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["foo"],
@@ -1481,7 +1481,7 @@ mod options {
                         shorthand_items: &[],
                         value: "blah%option"
                     },
-                ),
+                ],
                 source: TSpan {
                     data: "foo,blah%option",
                     line: 1,
@@ -1518,7 +1518,7 @@ fn err_double_comma() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(
+            attributes: &[
                 TElementAttribute {
                     name: Some("alt"),
                     shorthand_items: &[],
@@ -1534,7 +1534,7 @@ fn err_double_comma() {
                     shorthand_items: &[],
                     value: "400"
                 },
-            ),
+            ],
             source: TSpan {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 1,
@@ -1581,7 +1581,7 @@ fn applies_attribute_substitution_before_parsing() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(
+            attributes: &[
                 TElementAttribute {
                     name: None,
                     shorthand_items: &["Sunset"],
@@ -1597,7 +1597,7 @@ fn applies_attribute_substitution_before_parsing() {
                     shorthand_items: &[],
                     value: "400"
                 }
-            ),
+            ],
             source: TSpan {
                 data: "Sunset,{sunset_dimensions}",
                 line: 1,
@@ -1707,7 +1707,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
     assert_eq!(
         mi.item,
         TAttrlist {
-            attributes: vec!(
+            attributes: &[
                 TElementAttribute {
                     name: None,
                     shorthand_items: &["Sunset"],
@@ -1718,7 +1718,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
                     shorthand_items: &[],
                     value: "{not_sunset_dimensions}"
                 },
-            ),
+            ],
             source: TSpan {
                 data: "Sunset,{not_sunset_dimensions}",
                 line: 1,

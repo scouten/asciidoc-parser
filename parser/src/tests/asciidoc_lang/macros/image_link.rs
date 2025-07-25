@@ -64,7 +64,7 @@ image::logo.png[Logo]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -81,7 +81,7 @@ image::logo.png[Logo]
                         offset: 34,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: None,
                             value: "Logo",
                             shorthand_items: &["Logo"],
@@ -102,7 +102,7 @@ image::logo.png[Logo]
                     title: None,
                     anchor: None,
                     attrlist: Some(TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: Some("link",),
                             value: "https://example.org",
                             shorthand_items: &[],
@@ -146,7 +146,7 @@ image::logo.png[Logo,link=https://example.org]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -163,7 +163,7 @@ image::logo.png[Logo,link=https://example.org]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Logo",
@@ -226,7 +226,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -321,7 +321,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -338,7 +338,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Logo",

@@ -94,7 +94,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: None,
                         shorthand_items: &["first-positional"],
@@ -110,7 +110,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                         shorthand_items: &[],
                         value: "value of named",
                     }
-                ),
+                ],
                 source: TSpan {
                     data: r#"first-positional,second-positional,named="value of named""#,
                     line: 1,
@@ -222,7 +222,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
                             shorthand_items: &["style"],
@@ -303,7 +303,7 @@ name::target[first-positional,second-positional,named="value of named"]
                     offset: 6,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
                             shorthand_items: &["first-positional"],

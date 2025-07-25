@@ -74,7 +74,7 @@ include::example$image.adoc[tag=base]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -112,7 +112,7 @@ include::example$image.adoc[tag=base]
                             offset: 29,
                         },
                         macro_attrlist: TAttrlist {
-                            attributes: vec![],
+                            attributes: &[],
                             source: TSpan {
                                 data: "",
                                 line: 3,
@@ -192,7 +192,7 @@ include::example$image.adoc[tag=alt]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -209,7 +209,7 @@ include::example$image.adoc[tag=alt]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: None,
                             value: "Sunset",
                             shorthand_items: &["Sunset"],
@@ -271,7 +271,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -288,7 +288,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: None,
                             value: "Mesa Verde Sunset, by JAVH",
                             shorthand_items: &["Mesa Verde Sunset, by JAVH"],
@@ -360,7 +360,7 @@ include::example$image.adoc[tag=attr]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -377,7 +377,7 @@ include::example$image.adoc[tag=attr]
                         offset: 91,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Sunset",
@@ -415,7 +415,7 @@ include::example$image.adoc[tag=attr]
                     },),
                     anchor: None,
                     attrlist: Some(TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "#img-sunset",

@@ -60,7 +60,7 @@ include::example$paragraph.adoc[tag=para]
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,

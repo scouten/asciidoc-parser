@@ -5104,7 +5104,7 @@ mod post_replacements {
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
@@ -5151,7 +5151,7 @@ mod post_replacements {
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
@@ -5195,7 +5195,7 @@ mod post_replacements {
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"

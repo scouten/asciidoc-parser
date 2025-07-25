@@ -220,7 +220,7 @@ fn has_macro_block_with_extra_blank_line() {
                     offset: 25,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec!(
+                    attributes: &[
                         TElementAttribute {
                             name: Some("alt"),
                             shorthand_items: &[],
@@ -236,7 +236,7 @@ fn has_macro_block_with_extra_blank_line() {
                             shorthand_items: &[],
                             value: "400"
                         }
-                    ),
+                    ],
                     source: TSpan {
                         data: "alt=Sunset,width=300,height=400",
                         line: 3,
@@ -320,7 +320,7 @@ fn has_child_block_with_errors() {
                     offset: 25,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec!(
+                    attributes: &[
                         TElementAttribute {
                             name: Some("alt"),
                             shorthand_items: &[],
@@ -336,7 +336,7 @@ fn has_child_block_with_errors() {
                             shorthand_items: &[],
                             value: "400"
                         }
-                    ),
+                    ],
                     source: TSpan {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,

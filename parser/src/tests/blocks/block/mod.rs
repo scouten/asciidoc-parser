@@ -249,7 +249,7 @@ mod error_cases {
         assert_eq!(
             mi.item.attrlist().unwrap(),
             TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: Some("alt"),
                     shorthand_items: &[],
                     value: "Sunset"
@@ -302,7 +302,7 @@ mod error_cases {
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("alt"),
                         shorthand_items: &[],
                         value: "Sunset"

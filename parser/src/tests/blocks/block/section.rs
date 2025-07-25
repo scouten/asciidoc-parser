@@ -396,7 +396,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     offset: 25,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec!(
+                    attributes: &[
                         TElementAttribute {
                             name: Some("alt"),
                             shorthand_items: &[],
@@ -412,7 +412,7 @@ fn warn_child_attrlist_has_extra_comma() {
                             shorthand_items: &[],
                             value: "400"
                         }
-                    ),
+                    ],
                     source: TSpan {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,

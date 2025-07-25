@@ -77,7 +77,7 @@ include::example$image.adoc[tag=float]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -94,7 +94,7 @@ include::example$image.adoc[tag=float]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Tiger",
@@ -174,7 +174,7 @@ include::example$image.adoc[tag=in-float]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -270,7 +270,7 @@ include::example$image.adoc[tag=role]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -287,7 +287,7 @@ include::example$image.adoc[tag=role]
                         offset: 28,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Tiger",
@@ -320,7 +320,7 @@ include::example$image.adoc[tag=role]
                     title: None,
                     anchor: None,
                     attrlist: Some(TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: None,
                             value: ".right.text-center",
                             shorthand_items: &[".right", ".text-center"],
@@ -365,7 +365,7 @@ include::example$image.adoc[tag=in-role]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,

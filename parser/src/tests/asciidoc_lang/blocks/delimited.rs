@@ -736,7 +736,7 @@ Live within the simulated reality without want or fear.
                         },),
                         anchor: None,
                         attrlist: Some(TAttrlist {
-                            attributes: vec![TElementAttribute {
+                            attributes: &[TElementAttribute {
                                 name: None,
                                 shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
@@ -785,7 +785,7 @@ Live within the simulated reality without want or fear.
                         },),
                         anchor: None,
                         attrlist: Some(TAttrlist {
-                            attributes: vec![TElementAttribute {
+                            attributes: &[TElementAttribute {
                                 name: None,
                                 shorthand_items: &["%collapsible"],
                                 value: "%collapsible"

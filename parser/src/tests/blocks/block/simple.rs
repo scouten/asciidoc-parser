@@ -237,7 +237,7 @@ fn attrlist() {
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
@@ -267,7 +267,7 @@ fn attrlist() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         TAttrlist {
-            attributes: vec![TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
@@ -326,7 +326,7 @@ fn title_and_attrlist() {
             },),
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
@@ -356,7 +356,7 @@ fn title_and_attrlist() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         TAttrlist {
-            attributes: vec![TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
@@ -744,7 +744,7 @@ fn unterminated_block_anchor() {
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["[notice",],
                     value: "[notice"
@@ -785,7 +785,7 @@ fn unterminated_block_anchor() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         TAttrlist {
-            attributes: vec![TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: None,
                 shorthand_items: &["[notice"],
                 value: "[notice"

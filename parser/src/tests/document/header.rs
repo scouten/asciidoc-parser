@@ -34,7 +34,7 @@ fn only_title() {
                 col: 3,
                 offset: 2,
             }),
-            attributes: vec![],
+            attributes: &[],
             source: TSpan {
                 data: "= Just the Title",
                 line: 1,
@@ -71,7 +71,7 @@ fn trims_leading_spaces_in_title() {
                 col: 6,
                 offset: 5,
             }),
-            attributes: vec![],
+            attributes: &[],
             source: TSpan {
                 data: "=    Just the Title",
                 line: 1,
@@ -106,7 +106,7 @@ fn trims_trailing_spaces_in_title() {
                 col: 3,
                 offset: 2,
             }),
-            attributes: vec![],
+            attributes: &[],
             source: TSpan {
                 data: "= Just the Title",
                 line: 1,
@@ -146,7 +146,7 @@ fn title_and_attribute() {
                 col: 3,
                 offset: 2,
             }),
-            attributes: vec![TAttribute {
+            attributes: &[TAttribute {
                 name: TSpan {
                     data: "foo",
                     line: 2,
@@ -195,7 +195,7 @@ fn attribute_without_title() {
         mi.item,
         THeader {
             title: None,
-            attributes: vec![TAttribute {
+            attributes: &[TAttribute {
                 name: TSpan {
                     data: "foo",
                     line: 1,
