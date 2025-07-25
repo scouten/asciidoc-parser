@@ -1,8 +1,11 @@
+use std::ops::Deref;
+
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{MediaBlock, MediaType, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, MediaBlock, MediaType, preamble::Preamble},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
@@ -202,6 +205,14 @@ fn has_target() {
             offset: 12
         }
     );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert_eq!(mi.item.raw_context().deref(), "image");
+    assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
+    assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 }
 
 #[test]
