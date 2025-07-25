@@ -1,8 +1,11 @@
+use std::ops::Deref;
+
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     HasSpan, Parser, Span,
-    blocks::{Block, MediaType},
+    blocks::{Block, ContentModel, IsBlock, MediaType},
+    span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
@@ -319,6 +322,14 @@ fn has_target() {
             attrlist: None,
         })
     );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert_eq!(mi.item.raw_context().deref(), "image");
+    assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
+    assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(
         mi.item.span(),
