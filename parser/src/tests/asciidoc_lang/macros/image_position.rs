@@ -98,27 +98,27 @@ include::example$image.adoc[tag=float]
                             TElementAttribute {
                                 name: None,
                                 value: "Tiger",
-                                shorthand_items: vec!["Tiger"],
+                                shorthand_items: &["Tiger"],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("float",),
                                 value: "right",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("align",),
                                 value: "center",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -291,17 +291,17 @@ include::example$image.adoc[tag=role]
                             TElementAttribute {
                                 name: None,
                                 value: "Tiger",
-                                shorthand_items: vec!["Tiger",],
+                                shorthand_items: &["Tiger",],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -323,7 +323,7 @@ include::example$image.adoc[tag=role]
                         attributes: vec![TElementAttribute {
                             name: None,
                             value: ".right.text-center",
-                            shorthand_items: vec![".right", ".text-center"],
+                            shorthand_items: &[".right", ".text-center"],
                         },],
                         source: TSpan {
                             data: ".right.text-center",

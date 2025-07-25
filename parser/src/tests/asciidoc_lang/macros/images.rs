@@ -212,7 +212,7 @@ include::example$image.adoc[tag=alt]
                         attributes: vec![TElementAttribute {
                             name: None,
                             value: "Sunset",
-                            shorthand_items: vec!["Sunset"],
+                            shorthand_items: &["Sunset"],
                         },],
                         source: TSpan {
                             data: "Sunset",
@@ -291,7 +291,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                         attributes: vec![TElementAttribute {
                             name: None,
                             value: "Mesa Verde Sunset, by JAVH",
-                            shorthand_items: vec!["Mesa Verde Sunset, by JAVH"],
+                            shorthand_items: &["Mesa Verde Sunset, by JAVH"],
                         },],
                         source: TSpan {
                             data: "\"Mesa Verde Sunset, by JAVH\"",
@@ -381,17 +381,17 @@ include::example$image.adoc[tag=attr]
                             TElementAttribute {
                                 name: None,
                                 value: "Sunset",
-                                shorthand_items: vec!["Sunset"],
+                                shorthand_items: &["Sunset"],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "100",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -419,12 +419,12 @@ include::example$image.adoc[tag=attr]
                             TElementAttribute {
                                 name: None,
                                 value: "#img-sunset",
-                                shorthand_items: vec!["#img-sunset"],
+                                shorthand_items: &["#img-sunset"],
                             },
                             TElementAttribute {
                                 name: Some("link",),
                                 value: "https://www.flickr.com/photos/javh/5448336655",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {

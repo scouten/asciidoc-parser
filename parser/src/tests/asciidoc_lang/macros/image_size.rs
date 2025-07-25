@@ -82,17 +82,17 @@ image::flower.jpg[Flower,640,480]
                             TElementAttribute {
                                 name: None,
                                 value: "Flower",
-                                shorthand_items: vec!["Flower"],
+                                shorthand_items: &["Flower"],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "640",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "480",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -165,17 +165,17 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                             TElementAttribute {
                                 name: Some("alt",),
                                 value: "Flower",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("width",),
                                 value: "640",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("height",),
                                 value: "480",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {

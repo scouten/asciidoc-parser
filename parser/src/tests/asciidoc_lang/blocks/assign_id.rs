@@ -89,7 +89,7 @@ Content of delimited example block
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["#the-id-of-this-block",],
+                    shorthand_items: &["#the-id-of-this-block",],
                     value: "#the-id-of-this-block"
                 },],
                 source: TSpan {
@@ -172,7 +172,7 @@ Roads? Where we're going, we don't need roads.
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["quote", "#roads"],
+                    shorthand_items: &["quote", "#roads"],
                     value: "quote#roads"
                 },],
                 source: TSpan {
@@ -238,17 +238,17 @@ Roads? Where we're going, we don't need roads.
                 attributes: vec![
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["quote", "#roads"],
+                        shorthand_items: &["quote", "#roads"],
                         value: "quote#roads"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Dr. Emmett Brown"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Back to the Future"
                     },
                 ],

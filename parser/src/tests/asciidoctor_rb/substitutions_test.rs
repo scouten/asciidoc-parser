@@ -5106,7 +5106,7 @@ mod post_replacements {
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["%hardbreaks"],
+                        shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
                     },],
                     source: TSpan {
@@ -5153,7 +5153,7 @@ mod post_replacements {
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["%hardbreaks"],
+                        shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
                     },],
                     source: TSpan {
@@ -5197,7 +5197,7 @@ mod post_replacements {
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["%hardbreaks"],
+                        shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
                     },],
                     source: TSpan {

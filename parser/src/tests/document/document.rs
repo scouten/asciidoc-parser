@@ -457,17 +457,17 @@ fn err_bad_header_and_bad_macro() {
                                     attributes: vec![
                                         TElementAttribute {
                                             name: Some("alt"),
-                                            shorthand_items: vec![],
+                                            shorthand_items: &[],
                                             value: "Sunset"
                                         },
                                         TElementAttribute {
                                             name: Some("width"),
-                                            shorthand_items: vec![],
+                                            shorthand_items: &[],
                                             value: "300"
                                         },
                                         TElementAttribute {
                                             name: Some("height"),
-                                            shorthand_items: vec![],
+                                            shorthand_items: &[],
                                             value: "400"
                                         },
                                     ],

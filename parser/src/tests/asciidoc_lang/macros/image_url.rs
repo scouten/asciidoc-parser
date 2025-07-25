@@ -84,17 +84,17 @@ include::example$image.adoc[tag=url]
                             TElementAttribute {
                                 name: None,
                                 value: "Tux",
-                                shorthand_items: vec!["Tux"],
+                                shorthand_items: &["Tux"],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "250",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "350",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {

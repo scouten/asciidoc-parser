@@ -270,7 +270,7 @@ include::example$block.adoc[tag=opt-listing]
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["listing"],
+                    shorthand_items: &["listing"],
                     value: "listing"
                 },],
                 source: TSpan {
@@ -335,7 +335,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["quote"],
+                    shorthand_items: &["quote"],
                     value: "quote"
                 },],
                 source: TSpan {

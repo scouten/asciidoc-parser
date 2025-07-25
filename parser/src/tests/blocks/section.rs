@@ -223,17 +223,17 @@ fn has_macro_block_with_extra_blank_line() {
                     attributes: vec!(
                         TElementAttribute {
                             name: Some("alt"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Sunset"
                         },
                         TElementAttribute {
                             name: Some("width"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "300"
                         },
                         TElementAttribute {
                             name: Some("height"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "400"
                         }
                     ),
@@ -323,17 +323,17 @@ fn has_child_block_with_errors() {
                     attributes: vec!(
                         TElementAttribute {
                             name: Some("alt"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Sunset"
                         },
                         TElementAttribute {
                             name: Some("width"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "300"
                         },
                         TElementAttribute {
                             name: Some("height"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "400"
                         }
                     ),

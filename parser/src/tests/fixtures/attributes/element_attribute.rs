@@ -5,7 +5,7 @@ use crate::attributes::ElementAttribute;
 #[derive(Eq, PartialEq)]
 pub(crate) struct TElementAttribute {
     pub name: Option<&'static str>,
-    pub shorthand_items: Vec<&'static str>,
+    pub shorthand_items: &'static [&'static str],
     pub value: &'static str,
 }
 

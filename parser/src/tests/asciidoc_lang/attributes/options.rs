@@ -106,7 +106,7 @@ This is a sidebar with an option assigned to it, named option.
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["%option"],
+                        shorthand_items: &["%option"],
                         value: "%option"
                     },],
                     source: TSpan {
@@ -191,7 +191,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["%option1", "%option2"],
+                        shorthand_items: &["%option1", "%option2"],
                         value: "%option1%option2"
                     },],
                     source: TSpan {
@@ -275,12 +275,12 @@ For instance, consider a table with the three built-in option values, `header`, 
                     attributes: vec![
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["%header", "%footer", "%autowidth",],
+                            shorthand_items: &["%header", "%footer", "%autowidth",],
                             value: "%header%footer%autowidth"
                         },
                         TElementAttribute {
                             name: Some("cols"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "2*~"
                         },
                     ],
@@ -374,7 +374,7 @@ This is a sidebar with an option assigned to it, named option.
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: Some("opts"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "option"
                     },],
                     source: TSpan {
@@ -458,7 +458,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: Some("opts"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "option1,option2"
                     },],
                     source: TSpan {
@@ -542,12 +542,12 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                     attributes: vec![
                         TElementAttribute {
                             name: Some("cols"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "2*~"
                         },
                         TElementAttribute {
                             name: Some("opts"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "header,footer,autowidth"
                         },
                     ],
@@ -660,7 +660,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["horizontal", ".properties", "%step"],
+                        shorthand_items: &["horizontal", ".properties", "%step"],
                         value: "horizontal.properties%step"
                     },],
                     source: TSpan {
@@ -746,17 +746,17 @@ property 2:: does different stuff
                     attributes: vec![
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["horizontal"],
+                            shorthand_items: &["horizontal"],
                             value: "horizontal"
                         },
                         TElementAttribute {
                             name: Some("role"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "properties"
                         },
                         TElementAttribute {
                             name: Some("opts"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "step"
                         },
                     ],

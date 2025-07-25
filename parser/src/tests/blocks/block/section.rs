@@ -399,17 +399,17 @@ fn warn_child_attrlist_has_extra_comma() {
                     attributes: vec!(
                         TElementAttribute {
                             name: Some("alt"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Sunset"
                         },
                         TElementAttribute {
                             name: Some("width"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "300"
                         },
                         TElementAttribute {
                             name: Some("height"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "400"
                         }
                     ),

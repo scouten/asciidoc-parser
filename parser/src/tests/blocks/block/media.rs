@@ -373,7 +373,7 @@ fn has_target_and_macro_attrlist() {
             macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["blah"],
+                    shorthand_items: &["blah"],
                     value: "blah"
                 }),
                 source: TSpan {
@@ -441,17 +441,17 @@ fn warn_macro_attrlist_has_extra_comma() {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some("alt"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Sunset"
                     },
                     TElementAttribute {
                         name: Some("width"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "300"
                     },
                     TElementAttribute {
                         name: Some("height"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "400"
                     }
                 ),

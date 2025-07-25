@@ -300,7 +300,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#goals"],
+                        shorthand_items: &["#goals"],
                         value: "#goals"
                     },],
                     source: TSpan {
@@ -361,7 +361,7 @@ In the longhand syntax, you use a standard named attribute.
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: Some("id"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "goals"
                     },],
                     source: TSpan {
@@ -489,12 +489,12 @@ ____
                     attributes: vec![
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["quote", ".movie", "#roads",],
+                            shorthand_items: &["quote", ".movie", "#roads",],
                             value: "quote.movie#roads"
                         },
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Dr. Emmett Brown"
                         },
                     ],

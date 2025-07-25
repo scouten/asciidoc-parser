@@ -247,7 +247,7 @@ fn has_target_and_attrlist() {
             macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["blah"],
+                    shorthand_items: &["blah"],
                     value: "blah"
                 }),
                 source: TSpan {
@@ -417,12 +417,12 @@ fn err_duplicate_comma() {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["blah"],
+                        shorthand_items: &["blah"],
                         value: "blah"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "blap"
                     }
                 ),

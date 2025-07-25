@@ -97,17 +97,17 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["first-positional"],
+                        shorthand_items: &["first-positional"],
                         value: "first-positional",
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "second-positional",
                     },
                     TElementAttribute {
                         name: Some("named"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "value of named",
                     }
                 ),
@@ -127,7 +127,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             mi.item.nth_attribute(1).unwrap(),
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["first-positional"],
+                shorthand_items: &["first-positional"],
                 value: "first-positional",
             }
         );
@@ -136,7 +136,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             mi.item.nth_attribute(2).unwrap(),
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "second-positional",
             }
         );
@@ -147,7 +147,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             mi.item.named_attribute("named").unwrap(),
             TElementAttribute {
                 name: Some("named"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "value of named",
             }
         );
@@ -225,17 +225,17 @@ If the text cannot be parsed, an error message will be emitted to the log.
                     attributes: vec![
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["style"],
+                            shorthand_items: &["style"],
                             value: "style",
                         },
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "second-positional",
                         },
                         TElementAttribute {
                             name: Some("named"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "value of named"
                         },
                     ],
@@ -306,17 +306,17 @@ name::target[first-positional,second-positional,named="value of named"]
                     attributes: vec![
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["first-positional"],
+                            shorthand_items: &["first-positional"],
                             value: "first-positional"
                         },
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "second-positional"
                         },
                         TElementAttribute {
                             name: Some("named"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "value of named"
                         },
                     ],

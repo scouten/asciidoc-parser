@@ -140,7 +140,7 @@ image::sunset.jpg[Sunset]
                     macro_attrlist: TAttrlist {
                         attributes: vec!(TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["Sunset"],
+                            shorthand_items: &["Sunset"],
                             value: "Sunset"
                         }),
                         source: TSpan {

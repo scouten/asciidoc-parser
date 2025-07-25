@@ -258,12 +258,12 @@ stages: [ init, verify, deploy ]
                 attributes: vec![
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["source"],
+                        shorthand_items: &["source"],
                         value: "source"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "yaml"
                     },
                 ],
@@ -349,7 +349,7 @@ If you don't plant it in a container, it will take over your garden.
             attrlist: Some(TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["sidebar"],
+                    shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
                 source: TSpan {

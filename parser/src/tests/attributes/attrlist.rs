@@ -84,17 +84,17 @@ fn only_positional_attributes() {
             attributes: vec!(
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["Sunset"],
+                    shorthand_items: &["Sunset"],
                     value: "Sunset"
                 },
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "300"
                 },
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "400"
                 }
             ),
@@ -118,7 +118,7 @@ fn only_positional_attributes() {
         mi.item.nth_attribute(1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec!["Sunset"],
+            shorthand_items: &["Sunset"],
             value: "Sunset"
         }
     );
@@ -127,7 +127,7 @@ fn only_positional_attributes() {
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec!["Sunset"],
+            shorthand_items: &["Sunset"],
             value: "Sunset"
         }
     );
@@ -136,7 +136,7 @@ fn only_positional_attributes() {
         mi.item.nth_attribute(2).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "300"
         }
     );
@@ -145,7 +145,7 @@ fn only_positional_attributes() {
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "300"
         }
     );
@@ -154,7 +154,7 @@ fn only_positional_attributes() {
         mi.item.nth_attribute(3).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "400"
         }
     );
@@ -163,7 +163,7 @@ fn only_positional_attributes() {
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "400"
         }
     );
@@ -205,17 +205,17 @@ fn only_named_attributes() {
             attributes: vec!(
                 TElementAttribute {
                     name: Some("alt"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "Sunset"
                 },
                 TElementAttribute {
                     name: Some("width"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "300"
                 },
                 TElementAttribute {
                     name: Some("height"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "400"
                 }
             ),
@@ -235,7 +235,7 @@ fn only_named_attributes() {
         mi.item.named_attribute("alt").unwrap(),
         TElementAttribute {
             name: Some("alt"),
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "Sunset"
         }
     );
@@ -244,7 +244,7 @@ fn only_named_attributes() {
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: Some("alt"),
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "Sunset"
         }
     );
@@ -253,7 +253,7 @@ fn only_named_attributes() {
         mi.item.named_attribute("width").unwrap(),
         TElementAttribute {
             name: Some("width"),
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "300"
         }
     );
@@ -262,7 +262,7 @@ fn only_named_attributes() {
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: Some("width"),
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "300"
         }
     );
@@ -271,7 +271,7 @@ fn only_named_attributes() {
         mi.item.named_attribute("height").unwrap(),
         TElementAttribute {
             name: Some("height"),
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "400"
         }
     );
@@ -280,7 +280,7 @@ fn only_named_attributes() {
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: Some("height"),
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "400"
         }
     );
@@ -328,7 +328,7 @@ fn err_unparsed_remainder_after_value() {
         TAttrlist {
             attributes: vec!(TElementAttribute {
                 name: Some("alt"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "Sunset"
             },),
             source: TSpan {
@@ -376,7 +376,7 @@ fn propagates_error_from_element_attribute() {
         TAttrlist {
             attributes: vec!(TElementAttribute {
                 name: None,
-                shorthand_items: vec!["foo", "#id"],
+                shorthand_items: &["foo", "#id"],
                 value: "foo%#id"
             },),
             source: TSpan {
@@ -434,7 +434,7 @@ mod id {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["#goals"],
+                    shorthand_items: &["#goals"],
                     value: "#goals"
                 },),
                 source: TSpan {
@@ -485,12 +485,12 @@ mod id {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some("foo"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "bar"
                     },
                     TElementAttribute {
                         name: Some("id"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "goals"
                     },
                 ),
@@ -507,7 +507,7 @@ mod id {
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
                 name: Some("foo"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "bar"
             }
         );
@@ -516,7 +516,7 @@ mod id {
             mi.item.named_attribute("id").unwrap(),
             TElementAttribute {
                 name: Some("id"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "goals"
             }
         );
@@ -556,12 +556,12 @@ mod id {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["foo"],
+                        shorthand_items: &["foo"],
                         value: "foo"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "blah#goals"
                     },
                 ),
@@ -612,7 +612,7 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![".rolename"],
+                    shorthand_items: &[".rolename"],
                     value: ".rolename"
                 },),
                 source: TSpan {
@@ -665,7 +665,7 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![".rolename"],
+                    shorthand_items: &[".rolename"],
                     value: ".rolename "
                 },),
                 source: TSpan {
@@ -718,7 +718,7 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![".role1", ".role2", ".role3"],
+                    shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1.role2.role3"
                 },),
                 source: TSpan {
@@ -775,7 +775,7 @@ mod roles {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec![".role1", ".role2", ".role3"],
+                    shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1 .role2 .role3 "
                 },),
                 source: TSpan {
@@ -833,12 +833,12 @@ mod roles {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some("foo"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "bar"
                     },
                     TElementAttribute {
                         name: Some("role"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "role1"
                     },
                 ),
@@ -855,7 +855,7 @@ mod roles {
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
                 name: Some("foo"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "bar"
             }
         );
@@ -864,7 +864,7 @@ mod roles {
             mi.item.named_attribute("role").unwrap(),
             TElementAttribute {
                 name: Some("role"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "role1"
             }
         );
@@ -897,12 +897,12 @@ mod roles {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some("foo"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "bar"
                     },
                     TElementAttribute {
                         name: Some("role"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "role1 role2   role3 "
                     },
                 ),
@@ -919,7 +919,7 @@ mod roles {
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
                 name: Some("foo"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "bar"
             }
         );
@@ -928,7 +928,7 @@ mod roles {
             mi.item.named_attribute("role").unwrap(),
             TElementAttribute {
                 name: Some("role"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "role1 role2   role3 "
             }
         );
@@ -964,12 +964,12 @@ mod roles {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#foo", ".sh1", ".sh2"],
+                        shorthand_items: &["#foo", ".sh1", ".sh2"],
                         value: "#foo.sh1.sh2"
                     },
                     TElementAttribute {
                         name: Some("role"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "na1 na2   na3 "
                     },
                 ),
@@ -988,7 +988,7 @@ mod roles {
             mi.item.named_attribute("role").unwrap(),
             TElementAttribute {
                 name: Some("role"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "na1 na2   na3 "
             }
         );
@@ -1025,12 +1025,12 @@ mod roles {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["foo"],
+                        shorthand_items: &["foo"],
                         value: "foo"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "blah.rolename"
                     },
                 ),
@@ -1080,7 +1080,7 @@ mod options {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["%option"],
+                    shorthand_items: &["%option"],
                     value: "%option"
                 },),
                 source: TSpan {
@@ -1136,7 +1136,7 @@ mod options {
             TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["%option1", "%option2", "%option3",],
+                    shorthand_items: &["%option1", "%option2", "%option3",],
                     value: "%option1%option2%option3"
                 },),
                 source: TSpan {
@@ -1196,12 +1196,12 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some("foo"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "bar"
                     },
                     TElementAttribute {
                         name: Some("options"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "option1"
                     },
                 ),
@@ -1218,7 +1218,7 @@ mod options {
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
                 name: Some("foo"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "bar"
             }
         );
@@ -1227,7 +1227,7 @@ mod options {
             mi.item.named_attribute("options").unwrap(),
             TElementAttribute {
                 name: Some("options"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "option1"
             }
         );
@@ -1263,12 +1263,12 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some("foo"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "bar"
                     },
                     TElementAttribute {
                         name: Some("opts"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "option1"
                     },
                 ),
@@ -1285,7 +1285,7 @@ mod options {
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
                 name: Some("foo"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "bar"
             }
         );
@@ -1294,7 +1294,7 @@ mod options {
             mi.item.named_attribute("opts").unwrap(),
             TElementAttribute {
                 name: Some("opts"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "option1"
             }
         );
@@ -1332,12 +1332,12 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: Some("foo"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "bar"
                     },
                     TElementAttribute {
                         name: Some("options"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "option1,option2,option3"
                     },
                 ),
@@ -1354,7 +1354,7 @@ mod options {
             mi.item.named_attribute("foo").unwrap(),
             TElementAttribute {
                 name: Some("foo"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "bar"
             }
         );
@@ -1363,7 +1363,7 @@ mod options {
             mi.item.named_attribute("options").unwrap(),
             TElementAttribute {
                 name: Some("options"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "option1,option2,option3"
             }
         );
@@ -1404,12 +1404,12 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#foo", "%sh1", "%sh2"],
+                        shorthand_items: &["#foo", "%sh1", "%sh2"],
                         value: "#foo%sh1%sh2"
                     },
                     TElementAttribute {
                         name: Some("options"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "na1,na2,na3"
                     },
                 ),
@@ -1428,7 +1428,7 @@ mod options {
             mi.item.named_attribute("options").unwrap(),
             TElementAttribute {
                 name: Some("options"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "na1,na2,na3"
             }
         );
@@ -1473,12 +1473,12 @@ mod options {
                 attributes: vec!(
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["foo"],
+                        shorthand_items: &["foo"],
                         value: "foo"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "blah%option"
                     },
                 ),
@@ -1521,17 +1521,17 @@ fn err_double_comma() {
             attributes: vec!(
                 TElementAttribute {
                     name: Some("alt"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "Sunset"
                 },
                 TElementAttribute {
                     name: Some("width"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "300"
                 },
                 TElementAttribute {
                     name: Some("height"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "400"
                 },
             ),
@@ -1584,17 +1584,17 @@ fn applies_attribute_substitution_before_parsing() {
             attributes: vec!(
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["Sunset"],
+                    shorthand_items: &["Sunset"],
                     value: "Sunset"
                 },
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "300"
                 },
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "400"
                 }
             ),
@@ -1618,7 +1618,7 @@ fn applies_attribute_substitution_before_parsing() {
         mi.item.nth_attribute(1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec!["Sunset"],
+            shorthand_items: &["Sunset"],
             value: "Sunset"
         }
     );
@@ -1627,7 +1627,7 @@ fn applies_attribute_substitution_before_parsing() {
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec!["Sunset"],
+            shorthand_items: &["Sunset"],
             value: "Sunset"
         }
     );
@@ -1636,7 +1636,7 @@ fn applies_attribute_substitution_before_parsing() {
         mi.item.nth_attribute(2).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "300"
         }
     );
@@ -1645,7 +1645,7 @@ fn applies_attribute_substitution_before_parsing() {
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "300"
         }
     );
@@ -1654,7 +1654,7 @@ fn applies_attribute_substitution_before_parsing() {
         mi.item.nth_attribute(3).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "400"
         }
     );
@@ -1663,7 +1663,7 @@ fn applies_attribute_substitution_before_parsing() {
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "400"
         }
     );
@@ -1710,12 +1710,12 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
             attributes: vec!(
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["Sunset"],
+                    shorthand_items: &["Sunset"],
                     value: "Sunset"
                 },
                 TElementAttribute {
                     name: None,
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "{not_sunset_dimensions}"
                 },
             ),
@@ -1739,7 +1739,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
         mi.item.nth_attribute(1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec!["Sunset"],
+            shorthand_items: &["Sunset"],
             value: "Sunset"
         }
     );
@@ -1748,7 +1748,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec!["Sunset"],
+            shorthand_items: &["Sunset"],
             value: "Sunset"
         }
     );
@@ -1757,7 +1757,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
         mi.item.nth_attribute(2).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "{not_sunset_dimensions}"
         }
     );
@@ -1766,7 +1766,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "{not_sunset_dimensions}"
         }
     );

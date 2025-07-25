@@ -738,7 +738,7 @@ Live within the simulated reality without want or fear.
                         attrlist: Some(TAttrlist {
                             attributes: vec![TElementAttribute {
                                 name: None,
-                                shorthand_items: vec!["%collapsible"],
+                                shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
                             source: TSpan {
@@ -787,7 +787,7 @@ Live within the simulated reality without want or fear.
                         attrlist: Some(TAttrlist {
                             attributes: vec![TElementAttribute {
                                 name: None,
-                                shorthand_items: vec!["%collapsible"],
+                                shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
                             source: TSpan {

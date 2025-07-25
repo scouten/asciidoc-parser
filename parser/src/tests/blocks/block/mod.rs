@@ -251,7 +251,7 @@ mod error_cases {
             TAttrlist {
                 attributes: vec![TElementAttribute {
                     name: Some("alt"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "Sunset"
                 },],
                 source: TSpan {
@@ -304,7 +304,7 @@ mod error_cases {
                 attrlist: Some(TAttrlist {
                     attributes: vec![TElementAttribute {
                         name: Some("alt"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Sunset"
                     },],
                     source: TSpan {
