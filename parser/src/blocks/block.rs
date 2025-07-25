@@ -4,7 +4,7 @@ use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        CompoundDelimitedBlock, ContentModel, IsBlock, MacroBlock, RawDelimitedBlock, SectionBlock,
+        CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, RawDelimitedBlock, SectionBlock,
         SimpleBlock, preamble::Preamble,
     },
     span::{MatchedItem, content::SubstitutionGroup},
@@ -32,9 +32,9 @@ pub enum Block<'src> {
     /// subject to normal substitutions) (e.g., a paragraph block).
     Simple(SimpleBlock<'src>),
 
-    /// A block macro is a syntax for representing non-text elements or syntax
-    /// that expands into text using the provided metadata.
-    Macro(MacroBlock<'src>),
+    /// A media block is used to represent an image, video, or audio block
+    /// macro.
+    Media(MediaBlock<'src>),
 
     /// A section helps to partition the document into a content hierarchy.
     /// May also be a part, chapter, or special section.
@@ -135,28 +135,31 @@ impl<'src> Block<'src> {
         // Try to discern the block type by scanning the first line.
         let line = preamble.block_start.take_normalized_line();
 
-        if line.item.contains("::") {
-            let mut macro_block_maw = MacroBlock::parse(&preamble, parser);
+        if line.item.starts_with("image::")
+            || line.item.starts_with("video::")
+            || line.item.starts_with("video::")
+        {
+            let mut media_block_maw = MediaBlock::parse(&preamble, parser);
 
-            if let Some(macro_block) = macro_block_maw.item {
-                // Only propagate warnings from macro block parsing if we think this
-                // *is* a macro block. Otherwise, there would likely be too many false
+            if let Some(media_block) = media_block_maw.item {
+                // Only propagate warnings from media block parsing if we think this
+                // *is* a media block. Otherwise, there would likely be too many false
                 // positives.
-                if !macro_block_maw.warnings.is_empty() {
-                    warnings.append(&mut macro_block_maw.warnings);
+                if !media_block_maw.warnings.is_empty() {
+                    warnings.append(&mut media_block_maw.warnings);
                 }
 
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
-                        item: Self::Macro(macro_block.item),
-                        after: macro_block.after,
+                        item: Self::Media(media_block.item),
+                        after: media_block.after,
                     }),
                     warnings,
                 };
             }
 
-            // A line containing `::` might be some other kind of block, so we
-            // don't automatically error out on a parse failure.
+            // This might be some other kind of block, so we don't automatically
+            // error out on a parse failure.
         }
 
         if line.item.starts_with('=') {
@@ -218,7 +221,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
     fn content_model(&self) -> ContentModel {
         match self {
             Self::Simple(_) => ContentModel::Simple,
-            Self::Macro(b) => b.content_model(),
+            Self::Media(b) => b.content_model(),
             Self::Section(_) => ContentModel::Compound,
             Self::RawDelimited(b) => b.content_model(),
             Self::CompoundDelimited(b) => b.content_model(),
@@ -228,7 +231,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
     fn raw_context(&self) -> CowStr<'src> {
         match self {
             Self::Simple(b) => b.raw_context(),
-            Self::Macro(b) => b.raw_context(),
+            Self::Media(b) => b.raw_context(),
             Self::Section(b) => b.raw_context(),
             Self::RawDelimited(b) => b.raw_context(),
             Self::CompoundDelimited(b) => b.raw_context(),
@@ -238,7 +241,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
         match self {
             Self::Simple(b) => b.nested_blocks(),
-            Self::Macro(b) => b.nested_blocks(),
+            Self::Media(b) => b.nested_blocks(),
             Self::Section(b) => b.nested_blocks(),
             Self::RawDelimited(b) => b.nested_blocks(),
             Self::CompoundDelimited(b) => b.nested_blocks(),
@@ -248,7 +251,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
     fn title(&'src self) -> Option<Span<'src>> {
         match self {
             Self::Simple(b) => b.title(),
-            Self::Macro(b) => b.title(),
+            Self::Media(b) => b.title(),
             Self::Section(b) => b.title(),
             Self::RawDelimited(b) => b.title(),
             Self::CompoundDelimited(b) => b.title(),
@@ -258,7 +261,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
     fn anchor(&'src self) -> Option<Span<'src>> {
         match self {
             Self::Simple(b) => b.anchor(),
-            Self::Macro(b) => b.anchor(),
+            Self::Media(b) => b.anchor(),
             Self::Section(b) => b.anchor(),
             Self::RawDelimited(b) => b.anchor(),
             Self::CompoundDelimited(b) => b.anchor(),
@@ -268,7 +271,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         match self {
             Self::Simple(b) => b.attrlist(),
-            Self::Macro(b) => b.attrlist(),
+            Self::Media(b) => b.attrlist(),
             Self::Section(b) => b.attrlist(),
             Self::RawDelimited(b) => b.attrlist(),
             Self::CompoundDelimited(b) => b.attrlist(),
@@ -278,7 +281,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
     fn substitution_group(&self) -> SubstitutionGroup {
         match self {
             Self::Simple(b) => b.substitution_group(),
-            Self::Macro(b) => b.substitution_group(),
+            Self::Media(b) => b.substitution_group(),
             Self::Section(b) => b.substitution_group(),
             Self::RawDelimited(b) => b.substitution_group(),
             Self::CompoundDelimited(b) => b.substitution_group(),
@@ -290,7 +293,7 @@ impl<'src> HasSpan<'src> for Block<'src> {
     fn span(&'src self) -> &'src Span<'src> {
         match self {
             Self::Simple(b) => b.span(),
-            Self::Macro(b) => b.span(),
+            Self::Media(b) => b.span(),
             Self::Section(b) => b.span(),
             Self::RawDelimited(b) => b.span(),
             Self::CompoundDelimited(b) => b.span(),

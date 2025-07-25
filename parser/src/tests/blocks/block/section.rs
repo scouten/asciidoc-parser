@@ -4,12 +4,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     HasSpan, Parser, Span,
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{Block, ContentModel, IsBlock, MediaType},
     span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -371,7 +371,7 @@ fn warn_child_attrlist_has_extra_comma() {
     let mut parser = Parser::default();
 
     let maw = Block::parse(
-        Span::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
+        Span::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         &mut parser,
     );
 
@@ -387,19 +387,14 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMacroBlock {
-                name: TSpan {
-                    data: "foo",
-                    line: 3,
-                    col: 1,
-                    offset: 18,
-                },
-                target: Some(TSpan {
+            blocks: vec![TBlock::Media(TMediaBlock {
+                type_: MediaType::Image,
+                target: TSpan {
                     data: "bar",
                     line: 3,
-                    col: 6,
-                    offset: 23,
-                }),
+                    col: 8,
+                    offset: 25,
+                },
                 macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
@@ -421,12 +416,12 @@ fn warn_child_attrlist_has_extra_comma() {
                     source: TSpan {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,
-                        col: 10,
-                        offset: 27,
+                        col: 12,
+                        offset: 29,
                     }
                 },
                 source: TSpan {
-                    data: "foo::bar[alt=Sunset,width=300,,height=400]",
+                    data: "image::bar[alt=Sunset,width=300,,height=400]",
                     line: 3,
                     col: 1,
                     offset: 18,
@@ -436,7 +431,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 attrlist: None,
             })],
             source: TSpan {
-                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+                data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -450,7 +445,7 @@ fn warn_child_attrlist_has_extra_comma() {
     assert_eq!(
         mi.item.span(),
         TSpan {
-            data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+            data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
             line: 1,
             col: 1,
             offset: 0,
@@ -462,8 +457,8 @@ fn warn_child_attrlist_has_extra_comma() {
         TSpan {
             data: "",
             line: 3,
-            col: 43,
-            offset: 60
+            col: 45,
+            offset: 62
         }
     );
 
@@ -473,8 +468,8 @@ fn warn_child_attrlist_has_extra_comma() {
             source: TSpan {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 3,
-                col: 10,
-                offset: 27,
+                col: 12,
+                offset: 29,
             },
             warning: WarningType::EmptyAttributeValue,
         }]

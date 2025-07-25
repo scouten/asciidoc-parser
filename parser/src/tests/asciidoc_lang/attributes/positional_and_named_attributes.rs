@@ -17,7 +17,7 @@ mod positional_attribute {
 
     use crate::{
         Parser, Span,
-        blocks::{Block, IsBlock, MacroBlock, preamble::Preamble},
+        blocks::{Block, IsBlock, MediaBlock, preamble::Preamble},
         span::content::SubstitutionGroup,
         tests::{
             fixtures::{
@@ -73,7 +73,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         let mut parser = Parser::default();
 
-        let m1 = MacroBlock::parse(
+        let m1 = MediaBlock::parse(
             &Preamble::new("image::sunset.jpg[Sunset,300,400]"),
             &mut parser,
         )
@@ -82,7 +82,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         let mut parser = Parser::default();
 
-        let m2 = MacroBlock::parse(
+        let m2 = MediaBlock::parse(
             &Preamble::new("image::sunset.jpg[alt=Sunset,width=300,height=400]"),
             &mut parser,
         )

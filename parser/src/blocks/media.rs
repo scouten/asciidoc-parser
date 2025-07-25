@@ -7,17 +7,11 @@ use crate::{
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
 
-/// A macro block can be used in a block context to create a new block element.
-///
-/// This struct is returned when the block form of a *named macro* is detected.
-///
-/// ```asciidoc
-/// <name>::<target>?[<attrlist>?].
-/// ```
+/// A media block is used to represent an image, video, or audio block macro.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct MacroBlock<'src> {
-    name: Span<'src>,
-    target: Option<Span<'src>>,
+pub struct MediaBlock<'src> {
+    type_: MediaType,
+    target: Span<'src>,
     macro_attrlist: Attrlist<'src>,
     source: Span<'src>,
     title: Option<Span<'src>>,
@@ -25,7 +19,20 @@ pub struct MacroBlock<'src> {
     attrlist: Option<Attrlist<'src>>,
 }
 
-impl<'src> MacroBlock<'src> {
+/// A media type may be one of three different types.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum MediaType {
+    /// Still image
+    Image,
+
+    /// Video
+    Video,
+
+    /// Audio
+    Audio,
+}
+
+impl<'src> MediaBlock<'src> {
     pub(crate) fn parse(
         preamble: &Preamble<'src>,
         parser: &mut Parser,
@@ -43,11 +50,20 @@ impl<'src> MacroBlock<'src> {
         let Some(name) = line.item.take_ident() else {
             return MatchAndWarnings {
                 item: None,
-                warnings: vec![Warning {
-                    source: line.item,
-                    warning: WarningType::InvalidMacroName,
-                }],
+                warnings: vec![],
             };
+        };
+
+        let type_ = match name.item.data() {
+            "image" => MediaType::Image,
+            "video" => MediaType::Video,
+            "audio" => MediaType::Audio,
+            _ => {
+                return MatchAndWarnings {
+                    item: None,
+                    warnings: vec![],
+                };
+            }
         };
 
         let Some(colons) = name.after.take_prefix("::") else {
@@ -60,7 +76,18 @@ impl<'src> MacroBlock<'src> {
             };
         };
 
+        // The target field must exist and be non-empty.
         let target = colons.after.take_while(|c| c != '[');
+
+        if target.item.is_empty() {
+            return MatchAndWarnings {
+                item: None,
+                warnings: vec![Warning {
+                    source: target.after,
+                    warning: WarningType::MediaMacroMissingTarget,
+                }],
+            };
+        }
 
         let Some(open_brace) = target.after.take_prefix("[") else {
             return MatchAndWarnings {
@@ -83,12 +110,8 @@ impl<'src> MacroBlock<'src> {
         MatchAndWarnings {
             item: Some(MatchedItem {
                 item: Self {
-                    name: name.item,
-                    target: if target.item.is_empty() {
-                        None
-                    } else {
-                        Some(target.item)
-                    },
+                    type_,
+                    target: target.item,
                     macro_attrlist: macro_attrlist.item.item,
                     source,
                     title: preamble.title,
@@ -103,13 +126,13 @@ impl<'src> MacroBlock<'src> {
     }
 
     /// Return a [`Span`] describing the macro name.
-    pub fn name(&'src self) -> &'src Span<'src> {
-        &self.name
+    pub fn type_(&self) -> MediaType {
+        self.type_
     }
 
     /// Return a [`Span`] describing the macro target.
     pub fn target(&'src self) -> Option<&'src Span<'src>> {
-        self.target.as_ref()
+        Some(&self.target)
     }
 
     /// Return the macro's attribute list.
@@ -126,18 +149,18 @@ impl<'src> MacroBlock<'src> {
     }
 }
 
-impl<'src> IsBlock<'src> for MacroBlock<'src> {
+impl<'src> IsBlock<'src> for MediaBlock<'src> {
     fn content_model(&self) -> ContentModel {
-        // TO DO: We'll probably want different macro types to provide different content
-        // models. For now, just default to "simple."
-        ContentModel::Simple
+        ContentModel::Empty
     }
 
     fn raw_context(&self) -> CowStr<'src> {
-        // TO DO: We'll probably want different macro types to provide different
-        // contexts. For now, just default to "paragraph."
-
-        "paragraph".into()
+        match self.type_ {
+            MediaType::Audio => "audio",
+            MediaType::Image => "image",
+            MediaType::Video => "video",
+        }
+        .into()
     }
 
     fn title(&'src self) -> Option<Span<'src>> {
@@ -153,7 +176,7 @@ impl<'src> IsBlock<'src> for MacroBlock<'src> {
     }
 }
 
-impl<'src> HasSpan<'src> for MacroBlock<'src> {
+impl<'src> HasSpan<'src> for MediaBlock<'src> {
     fn span(&'src self) -> &'src Span<'src> {
         &self.source
     }

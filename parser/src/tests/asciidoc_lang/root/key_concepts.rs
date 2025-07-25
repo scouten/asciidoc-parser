@@ -78,11 +78,12 @@ mod macros {
 
     use crate::{
         Parser,
+        blocks::MediaType,
         tests::{
             fixtures::{
                 TSpan,
                 attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMacroBlock, TSimpleBlock},
+                blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -128,19 +129,14 @@ image::sunset.jpg[Sunset]
                         offset: 0
                     }
                 },
-                blocks: vec![TBlock::Macro(TMacroBlock {
-                    name: TSpan {
-                        data: "image",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                    target: Some(TSpan {
+                blocks: vec![TBlock::Media(TMediaBlock {
+                    type_: MediaType::Image,
+                    target: TSpan {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
-                    }),
+                    },
                     macro_attrlist: TAttrlist {
                         attributes: vec!(TElementAttribute {
                             name: None,

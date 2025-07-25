@@ -2,12 +2,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser, Span,
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{Block, ContentModel, IsBlock, MediaType},
     tests::{
         fixtures::{
             TSpan,
             attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TCompoundDelimitedBlock, TMacroBlock, TSimpleBlock},
+            blocks::{TBlock, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -140,19 +140,14 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        TBlock::Macro(TMacroBlock {
-                            name: TSpan {
-                                data: "image",
-                                line: 6,
-                                col: 1,
-                                offset: 66,
-                            },
-                            target: Some(TSpan {
+                        TBlock::Media(TMediaBlock {
+                            type_: MediaType::Image,
+                            target: TSpan {
                                 data: "name.png",
                                 line: 6,
                                 col: 8,
                                 offset: 73,
-                            },),
+                            },
                             macro_attrlist: TAttrlist {
                                 attributes: vec![],
                                 source: TSpan {

@@ -4,12 +4,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MacroBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, MediaBlock, MediaType, preamble::Preamble},
     span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::TMacroBlock,
+        blocks::TMediaBlock,
         warnings::TWarning,
     },
     warnings::WarningType,
@@ -20,7 +20,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = MacroBlock::parse(&Preamble::new("foo::[]"), &mut parser)
+    let b1 = MediaBlock::parse(&Preamble::new("image::foo.jpg[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -34,7 +34,7 @@ fn err_empty_source() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new(""), &mut parser)
+        MediaBlock::parse(&Preamble::new(""), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -45,7 +45,7 @@ fn err_only_spaces() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("    "), &mut parser)
+        MediaBlock::parse(&Preamble::new("    "), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -54,28 +54,16 @@ fn err_only_spaces() {
 #[test]
 fn err_macro_name_not_ident() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("98xyz::bar[blah,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("98xyz::bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
-
-    assert_eq!(
-        maw.warnings,
-        vec![TWarning {
-            source: TSpan {
-                data: "98xyz::bar[blah,blap]",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            warning: WarningType::InvalidMacroName,
-        }]
-    );
+    assert!(maw.warnings.is_empty());
 }
 
 #[test]
 fn err_missing_double_colon() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("foo:bar[blah,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("image:bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -85,8 +73,8 @@ fn err_missing_double_colon() {
             source: TSpan {
                 data: ":bar[blah,blap]",
                 line: 1,
-                col: 4,
-                offset: 3,
+                col: 6,
+                offset: 5,
             },
             warning: WarningType::MacroMissingDoubleColon,
         }]
@@ -96,7 +84,7 @@ fn err_missing_double_colon() {
 #[test]
 fn err_missing_macro_attrlist() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("foo::barblah,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("image::barblah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
@@ -106,11 +94,22 @@ fn err_missing_macro_attrlist() {
             source: TSpan {
                 data: "",
                 line: 1,
-                col: 19,
-                offset: 18,
+                col: 21,
+                offset: 20,
             },
             warning: WarningType::MacroMissingAttributeList,
         }]
+    );
+}
+
+#[test]
+fn err_unknown_type() {
+    let mut parser = Parser::default();
+
+    assert!(
+        MediaBlock::parse(&Preamble::new("imagex::bar[]"), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
     );
 }
 
@@ -119,7 +118,7 @@ fn err_no_attr_list() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("foo::bar"), &mut parser)
+        MediaBlock::parse(&Preamble::new("image::bar"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -130,7 +129,7 @@ fn err_attr_list_not_closed() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("foo::bar[blah"), &mut parser)
+        MediaBlock::parse(&Preamble::new("image::bar[blah"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -141,7 +140,7 @@ fn err_unexpected_after_attr_list() {
     let mut parser = Parser::default();
 
     assert!(
-        MacroBlock::parse(&Preamble::new("foo::bar[blah]bonus"), &mut parser)
+        MediaBlock::parse(&Preamble::new("image::bar[blah]bonus"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -151,61 +150,21 @@ fn err_unexpected_after_attr_list() {
 fn simplest_block_macro() {
     let mut parser = Parser::default();
 
-    let mi = MacroBlock::parse(&Preamble::new("foo::[]"), &mut parser)
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi = MediaBlock::parse(&Preamble::new("image::[]"), &mut parser);
 
-    assert_eq!(mi.item.content_model(), ContentModel::Simple);
-    assert_eq!(mi.item.raw_context().deref(), "paragraph");
-    assert_eq!(mi.item.resolved_context().deref(), "paragraph");
-    assert!(mi.item.declared_style().is_none());
-    assert!(mi.item.id().is_none());
-    assert!(mi.item.roles().is_empty());
-    assert!(mi.item.options().is_empty());
-    assert!(mi.item.title().is_none());
-    assert!(mi.item.anchor().is_none());
-    assert!(mi.item.attrlist().is_none());
-    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+    assert!(mi.item.is_none());
 
     assert_eq!(
-        mi.item,
-        TMacroBlock {
-            name: TSpan {
-                data: "foo",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            target: None,
-            macro_attrlist: TAttrlist {
-                attributes: vec!(),
-                source: TSpan {
-                    data: "",
-                    line: 1,
-                    col: 7,
-                    offset: 6,
-                }
-            },
+        mi.warnings,
+        vec![TWarning {
             source: TSpan {
-                data: "foo::[]",
+                data: "[]",
                 line: 1,
-                col: 1,
-                offset: 0,
+                col: 8,
+                offset: 7,
             },
-            title: None,
-            anchor: None,
-            attrlist: None,
-        }
-    );
-
-    assert_eq!(
-        mi.after,
-        TSpan {
-            data: "",
-            line: 1,
-            col: 8,
-            offset: 7
-        }
+            warning: WarningType::MediaMacroMissingTarget,
+        }]
     );
 }
 
@@ -213,36 +172,31 @@ fn simplest_block_macro() {
 fn has_target() {
     let mut parser = Parser::default();
 
-    let mi = MacroBlock::parse(&Preamble::new("foo::bar[]"), &mut parser)
+    let mi = MediaBlock::parse(&Preamble::new("image::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMacroBlock {
-            name: TSpan {
-                data: "foo",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            target: Some(TSpan {
+        TMediaBlock {
+            type_: MediaType::Image,
+            target: TSpan {
                 data: "bar",
                 line: 1,
-                col: 6,
-                offset: 5,
-            }),
+                col: 8,
+                offset: 7,
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(),
                 source: TSpan {
                     data: "",
                     line: 1,
-                    col: 10,
-                    offset: 9,
+                    col: 12,
+                    offset: 11,
                 }
             },
             source: TSpan {
-                data: "foo::bar[]",
+                data: "image::bar[]",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -258,35 +212,38 @@ fn has_target() {
         TSpan {
             data: "",
             line: 1,
-            col: 11,
-            offset: 10
+            col: 13,
+            offset: 12
         }
     );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert_eq!(mi.item.raw_context().deref(), "image");
+    assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
+    assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 }
 
 #[test]
 fn has_target_and_attrlist() {
     let mut parser = Parser::default();
 
-    let mi = MacroBlock::parse(&Preamble::new("foo::bar[blah]"), &mut parser)
+    let mi = MediaBlock::parse(&Preamble::new("image::bar[blah]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMacroBlock {
-            name: TSpan {
-                data: "foo",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            target: Some(TSpan {
+        TMediaBlock {
+            type_: MediaType::Image,
+            target: TSpan {
                 data: "bar",
                 line: 1,
-                col: 6,
-                offset: 5,
-            }),
+                col: 8,
+                offset: 7,
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(TElementAttribute {
                     name: None,
@@ -296,12 +253,12 @@ fn has_target_and_attrlist() {
                 source: TSpan {
                     data: "blah",
                     line: 1,
-                    col: 10,
-                    offset: 9,
+                    col: 12,
+                    offset: 11,
                 }
             },
             source: TSpan {
-                data: "foo::bar[blah]",
+                data: "image::bar[blah]",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -317,34 +274,145 @@ fn has_target_and_attrlist() {
         TSpan {
             data: "",
             line: 1,
-            col: 15,
-            offset: 14
+            col: 17,
+            offset: 16
         }
     );
 }
 
 #[test]
+fn audio() {
+    let mut parser = Parser::default();
+
+    let mi = MediaBlock::parse(&Preamble::new("audio::bar[]"), &mut parser)
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TMediaBlock {
+            type_: MediaType::Audio,
+            target: TSpan {
+                data: "bar",
+                line: 1,
+                col: 8,
+                offset: 7,
+            },
+            macro_attrlist: TAttrlist {
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 12,
+                    offset: 11,
+                }
+            },
+            source: TSpan {
+                data: "audio::bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: None,
+            attrlist: None,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 13,
+            offset: 12
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert_eq!(mi.item.raw_context().deref(), "audio");
+    assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
+    assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+}
+
+#[test]
+fn video() {
+    let mut parser = Parser::default();
+
+    let mi = MediaBlock::parse(&Preamble::new("video::bar[]"), &mut parser)
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TMediaBlock {
+            type_: MediaType::Video,
+            target: TSpan {
+                data: "bar",
+                line: 1,
+                col: 8,
+                offset: 7,
+            },
+            macro_attrlist: TAttrlist {
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 12,
+                    offset: 11,
+                }
+            },
+            source: TSpan {
+                data: "video::bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: None,
+            attrlist: None,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 13,
+            offset: 12
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert_eq!(mi.item.raw_context().deref(), "video");
+    assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
+    assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+}
+
+#[test]
 fn err_duplicate_comma() {
     let mut parser = Parser::default();
-    let maw = MacroBlock::parse(&Preamble::new("foo::bar[blah,,blap]"), &mut parser);
+    let maw = MediaBlock::parse(&Preamble::new("image::bar[blah,,blap]"), &mut parser);
 
     let mi = maw.item.unwrap().clone();
 
     assert_eq!(
         mi.item,
-        TMacroBlock {
-            name: TSpan {
-                data: "foo",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            target: Some(TSpan {
+        TMediaBlock {
+            type_: MediaType::Image,
+            target: TSpan {
                 data: "bar",
                 line: 1,
-                col: 6,
-                offset: 5,
-            }),
+                col: 8,
+                offset: 7,
+            },
             macro_attrlist: TAttrlist {
                 attributes: vec!(
                     TElementAttribute {
@@ -361,12 +429,12 @@ fn err_duplicate_comma() {
                 source: TSpan {
                     data: "blah,,blap",
                     line: 1,
-                    col: 10,
-                    offset: 9,
+                    col: 12,
+                    offset: 11,
                 }
             },
             source: TSpan {
-                data: "foo::bar[blah,,blap]",
+                data: "image::bar[blah,,blap]",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -382,8 +450,8 @@ fn err_duplicate_comma() {
         TSpan {
             data: "",
             line: 1,
-            col: 21,
-            offset: 20
+            col: 23,
+            offset: 22
         }
     );
 
@@ -393,8 +461,8 @@ fn err_duplicate_comma() {
             source: TSpan {
                 data: "blah,,blap",
                 line: 1,
-                col: 10,
-                offset: 9,
+                col: 12,
+                offset: 11,
             },
             warning: WarningType::EmptyAttributeValue,
         }]

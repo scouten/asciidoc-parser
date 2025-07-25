@@ -2,14 +2,14 @@ use std::fmt;
 
 use crate::{
     HasSpan,
-    blocks::{IsBlock, MacroBlock},
+    blocks::{IsBlock, MediaBlock, MediaType},
     tests::fixtures::{TSpan, attributes::TAttrlist},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TMacroBlock {
-    pub name: TSpan,
-    pub target: Option<TSpan>,
+pub(crate) struct TMediaBlock {
+    pub type_: MediaType,
+    pub target: TSpan,
     pub macro_attrlist: TAttrlist,
     pub source: TSpan,
     pub title: Option<TSpan>,
@@ -17,44 +17,42 @@ pub(crate) struct TMacroBlock {
     pub attrlist: Option<TAttrlist>,
 }
 
-impl fmt::Debug for TMacroBlock {
+impl fmt::Debug for TMediaBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("MacroBlock")
-            .field("name", &self.name)
+        f.debug_struct("MediaBlock")
+            .field("type_", &self.type_)
             .field("target", &self.target)
             .field("macro_attrlist", &self.macro_attrlist)
             .field("source", &self.source)
+            .field("title", &self.title)
             .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
             .finish()
     }
 }
 
-impl<'src> PartialEq<MacroBlock<'src>> for TMacroBlock {
-    fn eq(&self, other: &MacroBlock<'src>) -> bool {
+impl<'src> PartialEq<MediaBlock<'src>> for TMediaBlock {
+    fn eq(&self, other: &MediaBlock<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TMacroBlock> for MacroBlock<'_> {
-    fn eq(&self, other: &TMacroBlock) -> bool {
+impl PartialEq<TMediaBlock> for MediaBlock<'_> {
+    fn eq(&self, other: &TMediaBlock) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TMacroBlock, observed: &MacroBlock) -> bool {
-    if &fixture.name != observed.name() {
+fn fixture_eq_observed(fixture: &TMediaBlock, observed: &MediaBlock) -> bool {
+    if fixture.type_ != observed.type_() {
         return false;
     }
 
-    if fixture.target.is_some() != observed.target().is_some() {
-        return false;
-    }
-
-    if let Some(ref fixture_target) = fixture.target
-        && let Some(ref observed_target) = observed.target()
-        && &fixture_target != observed_target
-    {
+    if let Some(observed_target) = observed.target() {
+        if &fixture.target != observed_target {
+            return false;
+        }
+    } else {
         return false;
     }
 

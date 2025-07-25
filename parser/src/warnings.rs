@@ -34,8 +34,12 @@ pub enum WarningType {
     )]
     EmptyShorthandItem,
 
+    // TO DO BEFORE CHECKING IN TO MAIN: Review these error names and descriptions.
     #[error("Macro name is not a valid identifier")]
     InvalidMacroName,
+
+    #[error("Media macro missing target")]
+    MediaMacroMissingTarget,
 
     #[error("Macro missing attribute list")]
     MacroMissingAttributeList,

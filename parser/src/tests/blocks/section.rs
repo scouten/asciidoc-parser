@@ -4,12 +4,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, SectionBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, MediaType, SectionBlock, preamble::Preamble},
     span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
         attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TMacroBlock, TSectionBlock, TSimpleBlock},
+        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -183,7 +183,7 @@ fn has_macro_block_with_extra_blank_line() {
     let mut parser = Parser::default();
 
     let mi = SectionBlock::parse(
-        &Preamble::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]\n\n"),
+        &Preamble::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,height=400]\n\n"),
         &mut parser,
     )
     .unwrap()
@@ -211,19 +211,14 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMacroBlock {
-                name: TSpan {
-                    data: "foo",
-                    line: 3,
-                    col: 1,
-                    offset: 18,
-                },
-                target: Some(TSpan {
+            blocks: vec![TBlock::Media(TMediaBlock {
+                type_: MediaType::Image,
+                target: TSpan {
                     data: "bar",
                     line: 3,
-                    col: 6,
-                    offset: 23,
-                }),
+                    col: 8,
+                    offset: 25,
+                },
                 macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
@@ -245,12 +240,12 @@ fn has_macro_block_with_extra_blank_line() {
                     source: TSpan {
                         data: "alt=Sunset,width=300,height=400",
                         line: 3,
-                        col: 10,
-                        offset: 27,
+                        col: 12,
+                        offset: 29,
                     }
                 },
                 source: TSpan {
-                    data: "foo::bar[alt=Sunset,width=300,height=400]",
+                    data: "image::bar[alt=Sunset,width=300,height=400]",
                     line: 3,
                     col: 1,
                     offset: 18,
@@ -260,7 +255,7 @@ fn has_macro_block_with_extra_blank_line() {
                 attrlist: None,
             })],
             source: TSpan {
-                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,height=400]",
+                data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,height=400]",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -277,7 +272,7 @@ fn has_macro_block_with_extra_blank_line() {
             data: "",
             line: 5,
             col: 1,
-            offset: 61
+            offset: 63
         }
     );
 }
@@ -287,7 +282,7 @@ fn has_child_block_with_errors() {
     let mut parser = Parser::default();
 
     let maw = SectionBlock::parse(
-        &Preamble::new("== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]"),
+        &Preamble::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         &mut parser,
     )
     .unwrap();
@@ -316,19 +311,14 @@ fn has_child_block_with_errors() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Macro(TMacroBlock {
-                name: TSpan {
-                    data: "foo",
-                    line: 3,
-                    col: 1,
-                    offset: 18,
-                },
-                target: Some(TSpan {
+            blocks: vec![TBlock::Media(TMediaBlock {
+                type_: MediaType::Image,
+                target: TSpan {
                     data: "bar",
                     line: 3,
-                    col: 6,
-                    offset: 23,
-                }),
+                    col: 8,
+                    offset: 25,
+                },
                 macro_attrlist: TAttrlist {
                     attributes: vec!(
                         TElementAttribute {
@@ -350,12 +340,12 @@ fn has_child_block_with_errors() {
                     source: TSpan {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,
-                        col: 10,
-                        offset: 27,
+                        col: 12,
+                        offset: 29,
                     }
                 },
                 source: TSpan {
-                    data: "foo::bar[alt=Sunset,width=300,,height=400]",
+                    data: "image::bar[alt=Sunset,width=300,,height=400]",
                     line: 3,
                     col: 1,
                     offset: 18,
@@ -365,7 +355,7 @@ fn has_child_block_with_errors() {
                 attrlist: None,
             })],
             source: TSpan {
-                data: "== Section Title\n\nfoo::bar[alt=Sunset,width=300,,height=400]",
+                data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                 line: 1,
                 col: 1,
                 offset: 0,
@@ -381,8 +371,8 @@ fn has_child_block_with_errors() {
         TSpan {
             data: "",
             line: 3,
-            col: 43,
-            offset: 60
+            col: 45,
+            offset: 62
         }
     );
 
@@ -392,8 +382,8 @@ fn has_child_block_with_errors() {
             source: TSpan {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 3,
-                col: 10,
-                offset: 27,
+                col: 12,
+                offset: 29,
             },
             warning: WarningType::EmptyAttributeValue,
         }]
