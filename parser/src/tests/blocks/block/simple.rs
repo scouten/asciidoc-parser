@@ -237,9 +237,9 @@ fn attrlist() {
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["sidebar"],
+                    shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
                 source: TSpan {
@@ -267,9 +267,9 @@ fn attrlist() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         TAttrlist {
-            attributes: vec![TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: None,
-                shorthand_items: vec!["sidebar"],
+                shorthand_items: &["sidebar"],
                 value: "sidebar"
             },],
             source: TSpan {
@@ -326,9 +326,9 @@ fn title_and_attrlist() {
             },),
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["sidebar"],
+                    shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
                 source: TSpan {
@@ -356,9 +356,9 @@ fn title_and_attrlist() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         TAttrlist {
-            attributes: vec![TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: None,
-                shorthand_items: vec!["sidebar"],
+                shorthand_items: &["sidebar"],
                 value: "sidebar"
             },],
             source: TSpan {
@@ -744,9 +744,9 @@ fn unterminated_block_anchor() {
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["[notice",],
+                    shorthand_items: &["[notice",],
                     value: "[notice"
                 },],
                 source: TSpan {
@@ -785,9 +785,9 @@ fn unterminated_block_anchor() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         TAttrlist {
-            attributes: vec![TElementAttribute {
+            attributes: &[TElementAttribute {
                 name: None,
-                shorthand_items: vec!["[notice"],
+                shorthand_items: &["[notice"],
                 value: "[notice"
             },],
             source: TSpan {

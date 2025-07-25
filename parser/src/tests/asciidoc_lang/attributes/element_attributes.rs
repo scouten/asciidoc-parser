@@ -94,23 +94,23 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
         assert_eq!(
             mi.item,
             TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["first-positional"],
+                        shorthand_items: &["first-positional"],
                         value: "first-positional",
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "second-positional",
                     },
                     TElementAttribute {
                         name: Some("named"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "value of named",
                     }
-                ),
+                ],
                 source: TSpan {
                     data: r#"first-positional,second-positional,named="value of named""#,
                     line: 1,
@@ -127,7 +127,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             mi.item.nth_attribute(1).unwrap(),
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["first-positional"],
+                shorthand_items: &["first-positional"],
                 value: "first-positional",
             }
         );
@@ -136,7 +136,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             mi.item.nth_attribute(2).unwrap(),
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "second-positional",
             }
         );
@@ -147,7 +147,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             mi.item.named_attribute("named").unwrap(),
             TElementAttribute {
                 name: Some("named"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "value of named",
             }
         );
@@ -222,20 +222,20 @@ If the text cannot be parsed, an error message will be emitted to the log.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["style"],
+                            shorthand_items: &["style"],
                             value: "style",
                         },
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "second-positional",
                         },
                         TElementAttribute {
                             name: Some("named"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "value of named"
                         },
                     ],
@@ -303,20 +303,20 @@ name::target[first-positional,second-positional,named="value of named"]
                     offset: 6,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["first-positional"],
+                            shorthand_items: &["first-positional"],
                             value: "first-positional"
                         },
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "second-positional"
                         },
                         TElementAttribute {
                             name: Some("named"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "value of named"
                         },
                     ],

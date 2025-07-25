@@ -61,7 +61,7 @@ This is the content of the sidebar block.
     assert_eq!(
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "This is the content of the sidebar block.",
@@ -255,15 +255,15 @@ stages: [ init, verify, deploy ]
             },),
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![
+                attributes: &[
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["source"],
+                        shorthand_items: &["source"],
                         value: "source"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "yaml"
                     },
                 ],
@@ -347,9 +347,9 @@ If you don't plant it in a container, it will take over your garden.
             },),
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["sidebar"],
+                    shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
                 source: TSpan {

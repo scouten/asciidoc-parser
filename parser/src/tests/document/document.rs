@@ -45,7 +45,7 @@ fn empty_source() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -59,8 +59,8 @@ fn empty_source() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![],
-            warnings: vec![],
+            blocks: &[],
+            warnings: &[],
         }
     );
 }
@@ -72,7 +72,7 @@ fn only_spaces() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -86,8 +86,8 @@ fn only_spaces() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![],
-            warnings: vec![],
+            blocks: &[],
+            warnings: &[],
         }
     );
 }
@@ -100,7 +100,7 @@ fn one_simple_block() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -114,7 +114,7 @@ fn one_simple_block() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -134,7 +134,7 @@ fn one_simple_block() {
                 anchor: None,
                 attrlist: None,
             })],
-            warnings: vec![],
+            warnings: &[],
         }
     );
 
@@ -148,7 +148,7 @@ fn two_simple_blocks() {
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -162,7 +162,7 @@ fn two_simple_blocks() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -204,7 +204,7 @@ fn two_simple_blocks() {
                     attrlist: None,
                 })
             ],
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }
@@ -221,7 +221,7 @@ fn two_blocks_and_title() {
                     col: 3,
                     offset: 2,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "= Example Title",
                     line: 1,
@@ -229,7 +229,7 @@ fn two_blocks_and_title() {
                     offset: 0,
                 }
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -277,7 +277,7 @@ fn two_blocks_and_title() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }
@@ -294,7 +294,7 @@ fn extra_space_before_title() {
                     col: 5,
                     offset: 4,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "=   Example Title",
                     line: 1,
@@ -302,7 +302,7 @@ fn extra_space_before_title() {
                     offset: 0,
                 }
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -328,7 +328,7 @@ fn extra_space_before_title() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec!(),
+            warnings: &[],
         }
     );
 }
@@ -345,7 +345,7 @@ fn err_bad_header() {
                     col: 3,
                     offset: 2,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "= Title",
                     line: 1,
@@ -353,7 +353,7 @@ fn err_bad_header() {
                     offset: 0,
                 }
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "not an attribute",
@@ -379,7 +379,7 @@ fn err_bad_header() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec!(TWarning {
+            warnings: &[TWarning {
                 source: TSpan {
                     data: "not an attribute",
                     line: 2,
@@ -387,7 +387,7 @@ fn err_bad_header() {
                     offset: 8,
                 },
                 warning: WarningType::DocumentHeaderNotTerminated,
-            },),
+            },],
         }
     );
 }
@@ -404,7 +404,7 @@ fn err_bad_header_and_bad_macro() {
                     col: 3,
                     offset: 2,
                 }),
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "= Title",
                     line: 1,
@@ -412,7 +412,7 @@ fn err_bad_header_and_bad_macro() {
                     offset: 0,
                 }
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -443,7 +443,7 @@ fn err_bad_header_and_bad_macro() {
                         col: 4,
                         offset: 29,
                     },
-                    blocks: vec![
+                    blocks: &[
                         TBlock::Media(
                             TMediaBlock {
                                 type_: MediaType::Image,
@@ -454,20 +454,20 @@ fn err_bad_header_and_bad_macro() {
                                     offset: 51,
                                 },
                                 macro_attrlist: TAttrlist {
-                                    attributes: vec![
+                                    attributes: &[
                                         TElementAttribute {
                                             name: Some("alt"),
-                                            shorthand_items: vec![],
+                                            shorthand_items: &[],
                                             value: "Sunset"
                                         },
                                         TElementAttribute {
                                             name: Some("width"),
-                                            shorthand_items: vec![],
+                                            shorthand_items: &[],
                                             value: "300"
                                         },
                                         TElementAttribute {
                                             name: Some("height"),
-                                            shorthand_items: vec![],
+                                            shorthand_items: &[],
                                             value: "400"
                                         },
                                     ],
@@ -507,7 +507,7 @@ fn err_bad_header_and_bad_macro() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec![TWarning {
+            warnings: &[TWarning {
                 source: TSpan {
                     data: "not an attribute",
                     line: 2,

@@ -99,7 +99,7 @@ fn simplest_section_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![],
+            blocks: &[],
             source: TSpan {
                 data: "== Section Title",
                 line: 1,
@@ -155,7 +155,7 @@ fn has_child_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -263,7 +263,7 @@ fn title() {
                 col: 4,
                 offset: 24,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -387,7 +387,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Media(TMediaBlock {
+            blocks: &[TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
                 target: TSpan {
                     data: "bar",
@@ -396,23 +396,23 @@ fn warn_child_attrlist_has_extra_comma() {
                     offset: 25,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec!(
+                    attributes: &[
                         TElementAttribute {
                             name: Some("alt"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Sunset"
                         },
                         TElementAttribute {
                             name: Some("width"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "300"
                         },
                         TElementAttribute {
                             name: Some("height"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "400"
                         }
-                    ),
+                    ],
                     source: TSpan {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,

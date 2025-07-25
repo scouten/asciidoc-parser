@@ -303,7 +303,7 @@ fn has_target() {
                 offset: 7,
             },
             macro_attrlist: TAttrlist {
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -371,11 +371,11 @@ fn has_target_and_macro_attrlist() {
                 offset: 7,
             },
             macro_attrlist: TAttrlist {
-                attributes: vec!(TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["blah"],
+                    shorthand_items: &["blah"],
                     value: "blah"
-                }),
+                }],
                 source: TSpan {
                     data: "blah",
                     line: 1,
@@ -438,23 +438,23 @@ fn warn_macro_attrlist_has_extra_comma() {
                 offset: 7,
             },
             macro_attrlist: TAttrlist {
-                attributes: vec!(
+                attributes: &[
                     TElementAttribute {
                         name: Some("alt"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Sunset"
                     },
                     TElementAttribute {
                         name: Some("width"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "300"
                     },
                     TElementAttribute {
                         name: Some("height"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "400"
                     }
-                ),
+                ],
                 source: TSpan {
                     data: "alt=Sunset,width=300,,height=400",
                     line: 1,
@@ -526,7 +526,7 @@ fn has_title() {
                 offset: 20,
             },
             macro_attrlist: TAttrlist {
-                attributes: vec!(),
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 2,

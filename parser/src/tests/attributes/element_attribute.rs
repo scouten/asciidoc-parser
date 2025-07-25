@@ -55,7 +55,7 @@ fn unquoted_and_unnamed_value() {
         element_attr,
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "abc",
         }
     );
@@ -82,7 +82,7 @@ fn unquoted_stops_at_comma() {
         element_attr,
         TElementAttribute {
             name: None,
-            shorthand_items: vec![],
+            shorthand_items: &[],
             value: "abc",
         }
     );
@@ -134,7 +134,7 @@ mod quoted_string {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "abc"
             }
         );
@@ -165,7 +165,7 @@ mod quoted_string {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "a\\\"bc"
             }
         );
@@ -192,7 +192,7 @@ mod quoted_string {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "a'bc"
             }
         );
@@ -233,7 +233,7 @@ mod quoted_string {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "abc"
             }
         );
@@ -260,7 +260,7 @@ mod quoted_string {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "a\\'bc"
             }
         );
@@ -287,7 +287,7 @@ mod quoted_string {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "a\"bc"
             }
         );
@@ -325,7 +325,7 @@ mod named {
             element_attr,
             TElementAttribute {
                 name: Some("abc"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "def"
             }
         );
@@ -352,7 +352,7 @@ mod named {
             element_attr,
             TElementAttribute {
                 name: Some("abc"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "def"
             }
         );
@@ -375,7 +375,7 @@ mod named {
             element_attr,
             TElementAttribute {
                 name: Some("94-x"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "def"
             }
         );
@@ -402,7 +402,7 @@ mod named {
             element_attr,
             TElementAttribute {
                 name: Some("abc"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "def"
             }
         );
@@ -429,7 +429,7 @@ mod named {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "abc="
             }
         );
@@ -456,7 +456,7 @@ mod named {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "abc="
             }
         );
@@ -495,7 +495,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["abc"],
+                shorthand_items: &["abc"],
                 value: "abc"
             }
         );
@@ -527,7 +527,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: Some("name"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "block_style#id"
             }
         );
@@ -554,7 +554,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["abc"],
+                shorthand_items: &["abc"],
                 value: "abc#"
             }
         );
@@ -575,7 +575,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["abc", "#id"],
+                shorthand_items: &["abc", "#id"],
                 value: "abc##id"
             }
         );
@@ -597,7 +597,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["#xyz"],
+                shorthand_items: &["#xyz"],
                 value: "#xyz"
             }
         );
@@ -625,7 +625,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![".role1",],
+                shorthand_items: &[".role1",],
                 value: ".role1"
             }
         );
@@ -657,7 +657,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec![".role1", ".role2", ".role3"],
+                shorthand_items: &[".role1", ".role2", ".role3"],
                 value: ".role1.role2.role3"
             }
         );
@@ -690,7 +690,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["%option1"],
+                shorthand_items: &["%option1"],
                 value: "%option1"
             }
         );
@@ -722,7 +722,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["%option1", "%option2", "%option3"],
+                shorthand_items: &["%option1", "%option2", "%option3"],
                 value: "%option1%option2%option3"
             }
         );
@@ -762,7 +762,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["appendix", "#custom-id"],
+                shorthand_items: &["appendix", "#custom-id"],
                 value: "appendix#custom-id"
             }
         );
@@ -797,7 +797,7 @@ mod parse_with_shorthand {
             element_attr,
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["#rules", ".prominent", "%incremental"],
+                shorthand_items: &["#rules", ".prominent", "%incremental"],
                 value: "#rules.prominent%incremental"
             }
         );

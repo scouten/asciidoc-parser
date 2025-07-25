@@ -57,7 +57,7 @@ Content of delimited example block
     assert_eq!(
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "Content of delimited example block",
@@ -87,9 +87,9 @@ Content of delimited example block
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["#the-id-of-this-block",],
+                    shorthand_items: &["#the-id-of-this-block",],
                     value: "#the-id-of-this-block"
                 },],
                 source: TSpan {
@@ -170,9 +170,9 @@ Roads? Where we're going, we don't need roads.
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["quote", "#roads"],
+                    shorthand_items: &["quote", "#roads"],
                     value: "quote#roads"
                 },],
                 source: TSpan {
@@ -235,20 +235,20 @@ Roads? Where we're going, we don't need roads.
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![
+                attributes: &[
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["quote", "#roads"],
+                        shorthand_items: &["quote", "#roads"],
                         value: "quote#roads"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Dr. Emmett Brown"
                     },
                     TElementAttribute {
                         name: None,
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Back to the Future"
                     },
                 ],

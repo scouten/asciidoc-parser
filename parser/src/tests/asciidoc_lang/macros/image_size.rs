@@ -61,7 +61,7 @@ image::flower.jpg[Flower,640,480]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -69,7 +69,7 @@ image::flower.jpg[Flower,640,480]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "flower.jpg",
@@ -78,21 +78,21 @@ image::flower.jpg[Flower,640,480]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Flower",
-                                shorthand_items: vec!["Flower"],
+                                shorthand_items: &["Flower"],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "640",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "480",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -118,7 +118,7 @@ image::flower.jpg[Flower,640,480]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -144,7 +144,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -152,7 +152,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "flower.jpg",
@@ -161,21 +161,21 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: Some("alt",),
                                 value: "Flower",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("width",),
                                 value: "640",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("height",),
                                 value: "480",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -201,7 +201,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

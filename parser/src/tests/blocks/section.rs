@@ -81,7 +81,7 @@ fn simplest_section_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![],
+            blocks: &[],
             source: TSpan {
                 data: "== Section Title",
                 line: 1,
@@ -135,7 +135,7 @@ fn has_child_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -211,7 +211,7 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Media(TMediaBlock {
+            blocks: &[TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
                 target: TSpan {
                     data: "bar",
@@ -220,23 +220,23 @@ fn has_macro_block_with_extra_blank_line() {
                     offset: 25,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec!(
+                    attributes: &[
                         TElementAttribute {
                             name: Some("alt"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Sunset"
                         },
                         TElementAttribute {
                             name: Some("width"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "300"
                         },
                         TElementAttribute {
                             name: Some("height"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "400"
                         }
-                    ),
+                    ],
                     source: TSpan {
                         data: "alt=Sunset,width=300,height=400",
                         line: 3,
@@ -311,7 +311,7 @@ fn has_child_block_with_errors() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Media(TMediaBlock {
+            blocks: &[TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
                 target: TSpan {
                     data: "bar",
@@ -320,23 +320,23 @@ fn has_child_block_with_errors() {
                     offset: 25,
                 },
                 macro_attrlist: TAttrlist {
-                    attributes: vec!(
+                    attributes: &[
                         TElementAttribute {
                             name: Some("alt"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Sunset"
                         },
                         TElementAttribute {
                             name: Some("width"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "300"
                         },
                         TElementAttribute {
                             name: Some("height"),
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "400"
                         }
-                    ),
+                    ],
                     source: TSpan {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,
@@ -423,7 +423,7 @@ fn dont_stop_at_child_section() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -452,7 +452,7 @@ fn dont_stop_at_child_section() {
                         col: 5,
                         offset: 27,
                     },
-                    blocks: vec![TBlock::Simple(TSimpleBlock {
+                    blocks: &[TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
                                 data: "def",
@@ -539,7 +539,7 @@ fn stop_at_peer_section() {
                 col: 4,
                 offset: 3,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -615,7 +615,7 @@ fn stop_at_ancestor_section() {
                 col: 5,
                 offset: 4,
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",

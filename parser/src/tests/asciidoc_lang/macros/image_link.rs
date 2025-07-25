@@ -64,7 +64,7 @@ image::logo.png[Logo]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -72,7 +72,7 @@ image::logo.png[Logo]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "logo.png",
@@ -81,10 +81,10 @@ image::logo.png[Logo]
                         offset: 34,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: None,
                             value: "Logo",
-                            shorthand_items: vec!["Logo"],
+                            shorthand_items: &["Logo"],
                         },],
                         source: TSpan {
                             data: "Logo",
@@ -102,10 +102,10 @@ image::logo.png[Logo]
                     title: None,
                     anchor: None,
                     attrlist: Some(TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: Some("link",),
                             value: "https://example.org",
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                         },],
                         source: TSpan {
                             data: "link=https://example.org",
@@ -121,7 +121,7 @@ image::logo.png[Logo]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -146,7 +146,7 @@ image::logo.png[Logo,link=https://example.org]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -154,7 +154,7 @@ image::logo.png[Logo,link=https://example.org]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "logo.png",
@@ -163,16 +163,16 @@ image::logo.png[Logo,link=https://example.org]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Logo",
-                                shorthand_items: vec!["Logo"],
+                                shorthand_items: &["Logo"],
                             },
                             TElementAttribute {
                                 name: Some("link",),
                                 value: "https://example.org",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -198,7 +198,7 @@ image::logo.png[Logo,link=https://example.org]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -226,7 +226,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -234,7 +234,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
@@ -260,7 +260,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -321,7 +321,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -329,7 +329,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "logo.png",
@@ -338,26 +338,26 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Logo",
-                                shorthand_items: vec!["Logo"],
+                                shorthand_items: &["Logo"],
                             },
                             TElementAttribute {
                                 name: Some("link",),
                                 value: "https://example.org",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("window",),
                                 value: "_blank",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("opts",),
                                 value: "nofollow",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -383,7 +383,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

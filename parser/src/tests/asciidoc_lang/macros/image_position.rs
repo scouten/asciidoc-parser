@@ -77,7 +77,7 @@ include::example$image.adoc[tag=float]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -85,7 +85,7 @@ include::example$image.adoc[tag=float]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "tiger.png",
@@ -94,31 +94,31 @@ include::example$image.adoc[tag=float]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Tiger",
-                                shorthand_items: vec!["Tiger"],
+                                shorthand_items: &["Tiger"],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("float",),
                                 value: "right",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: Some("align",),
                                 value: "center",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -144,7 +144,7 @@ include::example$image.adoc[tag=float]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -174,7 +174,7 @@ include::example$image.adoc[tag=in-float]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -182,7 +182,7 @@ include::example$image.adoc[tag=in-float]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
@@ -208,7 +208,7 @@ include::example$image.adoc[tag=in-float]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -270,7 +270,7 @@ include::example$image.adoc[tag=role]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -278,7 +278,7 @@ include::example$image.adoc[tag=role]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "tiger.png",
@@ -287,21 +287,21 @@ include::example$image.adoc[tag=role]
                         offset: 28,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Tiger",
-                                shorthand_items: vec!["Tiger",],
+                                shorthand_items: &["Tiger",],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "200",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -320,10 +320,10 @@ include::example$image.adoc[tag=role]
                     title: None,
                     anchor: None,
                     attrlist: Some(TAttrlist {
-                        attributes: vec![TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: None,
                             value: ".right.text-center",
-                            shorthand_items: vec![".right", ".text-center"],
+                            shorthand_items: &[".right", ".text-center"],
                         },],
                         source: TSpan {
                             data: ".right.text-center",
@@ -339,7 +339,7 @@ include::example$image.adoc[tag=role]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -365,7 +365,7 @@ include::example$image.adoc[tag=in-role]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -373,7 +373,7 @@ include::example$image.adoc[tag=in-role]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
@@ -399,7 +399,7 @@ include::example$image.adoc[tag=in-role]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

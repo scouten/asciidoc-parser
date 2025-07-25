@@ -8,7 +8,7 @@ use crate::{
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TCompoundDelimitedBlock {
-    pub blocks: Vec<TBlock>,
+    pub blocks: &'static [TBlock],
     pub context: &'static str,
     pub source: TSpan,
     pub title: Option<TSpan>,

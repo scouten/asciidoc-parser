@@ -121,7 +121,7 @@ image::sunset.jpg[Sunset]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -129,7 +129,7 @@ image::sunset.jpg[Sunset]
                         offset: 0
                     }
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "sunset.jpg",
@@ -138,11 +138,11 @@ image::sunset.jpg[Sunset]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec!(TElementAttribute {
+                        attributes: &[TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["Sunset"],
+                            shorthand_items: &["Sunset"],
                             value: "Sunset"
-                        }),
+                        }],
                         source: TSpan {
                             data: "Sunset",
                             line: 1,
@@ -166,7 +166,7 @@ image::sunset.jpg[Sunset]
                     col: 1,
                     offset: 0
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -191,7 +191,7 @@ Click the button with the image:star.png[Star] to favorite the project.
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -199,7 +199,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                         offset: 0
                     }
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "Click the button with the image:star.png[Star] to favorite the project.",
@@ -225,7 +225,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     col: 1,
                     offset: 0
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
 

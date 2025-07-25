@@ -91,7 +91,7 @@ This is a sidebar with a role assigned to it, rolename.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with a role assigned to it, rolename.",
@@ -121,9 +121,9 @@ This is a sidebar with a role assigned to it, rolename.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
-                        shorthand_items: vec![".rolename"],
+                        shorthand_items: &[".rolename"],
                         value: ".rolename"
                     },],
                     source: TSpan {
@@ -168,7 +168,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",
@@ -198,9 +198,9 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
-                        shorthand_items: vec![".role1", ".role2"],
+                        shorthand_items: &[".role1", ".role2"],
                         value: ".role1.role2"
                     },],
                     source: TSpan {
@@ -246,7 +246,7 @@ This is a sidebar with one role assigned to it, rolename.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with one role assigned to it, rolename.",
@@ -276,9 +276,9 @@ This is a sidebar with one role assigned to it, rolename.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("role"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "rolename"
                     },],
                     source: TSpan {
@@ -329,7 +329,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",
@@ -359,9 +359,9 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("role"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "role1 role2"
                     },],
                     source: TSpan {

@@ -89,7 +89,7 @@ This is more content in the sidebar block.
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -97,7 +97,7 @@ This is more content in the sidebar block.
                     offset: 0,
                 },
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -119,7 +119,7 @@ This is more content in the sidebar block.
                     attrlist: None,
                 },),
                 TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                    blocks: vec![
+                    blocks: &[
                         TBlock::Simple(TSimpleBlock {
                             content: TContent {
                                 original: TSpan {
@@ -149,7 +149,7 @@ This is more content in the sidebar block.
                                 offset: 73,
                             },
                             macro_attrlist: TAttrlist {
-                                attributes: vec![],
+                                attributes: &[],
                                 source: TSpan {
                                     data: "",
                                     line: 6,
@@ -206,7 +206,7 @@ This is more content in the sidebar block.
                 col: 1,
                 offset: 0,
             },
-            warnings: vec![],
+            warnings: &[],
         }
     );
 
@@ -268,9 +268,9 @@ include::example$block.adoc[tag=opt-listing]
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["listing"],
+                    shorthand_items: &["listing"],
                     value: "listing"
                 },],
                 source: TSpan {
@@ -333,9 +333,9 @@ However, note that the lines of a styled paragraph are first parsed like a parag
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: None,
-                    shorthand_items: vec!["quote"],
+                    shorthand_items: &["quote"],
                     value: "quote"
                 },],
                 source: TSpan {

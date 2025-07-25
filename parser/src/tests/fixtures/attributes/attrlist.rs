@@ -8,7 +8,7 @@ use crate::{
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TAttrlist {
-    pub attributes: Vec<TElementAttribute>,
+    pub attributes: &'static [TElementAttribute],
     pub source: TSpan,
 }
 

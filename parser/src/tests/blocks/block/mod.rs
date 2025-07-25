@@ -67,7 +67,7 @@ mod error_cases {
                     col: 5,
                     offset: 4,
                 },
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -249,9 +249,9 @@ mod error_cases {
         assert_eq!(
             mi.item.attrlist().unwrap(),
             TAttrlist {
-                attributes: vec![TElementAttribute {
+                attributes: &[TElementAttribute {
                     name: Some("alt"),
-                    shorthand_items: vec![],
+                    shorthand_items: &[],
                     value: "Sunset"
                 },],
                 source: TSpan {
@@ -273,7 +273,7 @@ mod error_cases {
                     col: 5,
                     offset: 28,
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "abc",
@@ -302,9 +302,9 @@ mod error_cases {
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("alt"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "Sunset"
                     },],
                     source: TSpan {

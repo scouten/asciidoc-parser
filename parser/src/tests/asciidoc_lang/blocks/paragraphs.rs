@@ -60,7 +60,7 @@ include::example$paragraph.adoc[tag=para]
         TDocument {
             header: THeader {
                 title: None,
-                attributes: vec![],
+                attributes: &[],
                 source: TSpan {
                     data: "",
                     line: 1,
@@ -68,7 +68,7 @@ include::example$paragraph.adoc[tag=para]
                     offset: 0,
                 },
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -116,7 +116,7 @@ include::example$paragraph.adoc[tag=para]
                 col: 1,
                 offset: 0,
             },
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }

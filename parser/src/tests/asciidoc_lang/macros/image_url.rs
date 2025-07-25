@@ -63,7 +63,7 @@ include::example$image.adoc[tag=url]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -71,7 +71,7 @@ include::example$image.adoc[tag=url]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
@@ -80,21 +80,21 @@ include::example$image.adoc[tag=url]
                         offset: 7,
                     },
                     macro_attrlist: TAttrlist {
-                        attributes: vec![
+                        attributes: &[
                             TElementAttribute {
                                 name: None,
                                 value: "Tux",
-                                shorthand_items: vec!["Tux"],
+                                shorthand_items: &["Tux"],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "250",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                             TElementAttribute {
                                 name: None,
                                 value: "350",
-                                shorthand_items: vec![],
+                                shorthand_items: &[],
                             },
                         ],
                         source: TSpan {
@@ -120,7 +120,7 @@ include::example$image.adoc[tag=url]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -154,7 +154,7 @@ include::example$image.adoc[tag=in-url]
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -162,7 +162,7 @@ include::example$image.adoc[tag=in-url]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",
@@ -188,7 +188,7 @@ include::example$image.adoc[tag=in-url]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

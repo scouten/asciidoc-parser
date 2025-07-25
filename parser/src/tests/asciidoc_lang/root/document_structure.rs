@@ -60,7 +60,7 @@ This is a basic AsciiDoc document.
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -74,7 +74,7 @@ This is a basic AsciiDoc document.
                     col: 1,
                     offset: 0
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a basic AsciiDoc document.",
@@ -94,7 +94,7 @@ This is a basic AsciiDoc document.
                     anchor: None,
                     attrlist: None,
                 })],
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -127,7 +127,7 @@ This document contains two paragraphs.
             TDocument {
                 header: THeader {
                     title: None,
-                    attributes: vec![],
+                    attributes: &[],
                     source: TSpan {
                         data: "",
                         line: 1,
@@ -141,7 +141,7 @@ This document contains two paragraphs.
                     col: 1,
                     offset: 0
                 },
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -183,7 +183,7 @@ This document contains two paragraphs.
                         attrlist: None,
                     })
                 ],
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -223,7 +223,7 @@ It also has a header that specifies the document title.
                             offset: 2,
                         },
                     ),
-                    attributes: vec![
+                    attributes: &[
                         TAttribute {
                             name: TSpan {
                                 data: "reproducible",
@@ -247,7 +247,7 @@ It also has a header that specifies the document title.
                         offset: 0,
                     },
                 },
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -295,7 +295,7 @@ It also has a header that specifies the document title.
                     col: 1,
                     offset: 0
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

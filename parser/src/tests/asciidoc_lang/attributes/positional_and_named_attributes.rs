@@ -96,7 +96,7 @@ The second macro is the same as the first, but written out in longhand form.
             a1.named_or_positional_attribute("alt", 1).unwrap(),
             TElementAttribute {
                 name: None,
-                shorthand_items: vec!["Sunset"],
+                shorthand_items: &["Sunset"],
                 value: "Sunset"
             },
         );
@@ -105,7 +105,7 @@ The second macro is the same as the first, but written out in longhand form.
             a2.named_or_positional_attribute("alt", 1).unwrap(),
             TElementAttribute {
                 name: Some("alt"),
-                shorthand_items: vec![],
+                shorthand_items: &[],
                 value: "Sunset"
             }
         );
@@ -168,7 +168,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                     col: 4,
                     offset: 16,
                 },
-                blocks: vec![],
+                blocks: &[],
                 source: TSpan {
                     data: "[#custom-id]\n== Section with Custom ID",
                     line: 1,
@@ -178,9 +178,9 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#custom-id"],
+                        shorthand_items: &["#custom-id"],
                         value: "#custom-id"
                     },],
                     source: TSpan {
@@ -228,7 +228,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                     col: 4,
                     offset: 24,
                 },
-                blocks: vec![],
+                blocks: &[],
                 source: TSpan {
                     data: "[appendix#custom-id]\n== Appendix with Custom ID",
                     line: 1,
@@ -238,9 +238,9 @@ Here's an example that shows how to set an ID on an appendix section using this 
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["appendix", "#custom-id"],
+                        shorthand_items: &["appendix", "#custom-id"],
                         value: "appendix#custom-id"
                     },],
                     source: TSpan {
@@ -304,9 +304,9 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#rules", ".prominent", "%incremental"],
+                        shorthand_items: &["#rules", ".prominent", "%incremental"],
                         value: "#rules.prominent%incremental"
                     },],
                     source: TSpan {
@@ -374,9 +374,9 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["%header", "%footer", "%autowidth",],
+                        shorthand_items: &["%header", "%footer", "%autowidth",],
                         value: "%header%footer%autowidth"
                     },],
                     source: TSpan {

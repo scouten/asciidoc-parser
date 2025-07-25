@@ -298,9 +298,9 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: None,
-                        shorthand_items: vec!["#goals"],
+                        shorthand_items: &["#goals"],
                         value: "#goals"
                     },],
                     source: TSpan {
@@ -359,9 +359,9 @@ In the longhand syntax, you use a standard named attribute.
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![TElementAttribute {
+                    attributes: &[TElementAttribute {
                         name: Some("id"),
-                        shorthand_items: vec![],
+                        shorthand_items: &[],
                         value: "goals"
                     },],
                     source: TSpan {
@@ -456,7 +456,7 @@ ____
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "Roads? Where we're going, we don't need roads.",
@@ -486,15 +486,15 @@ ____
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
-                    attributes: vec![
+                    attributes: &[
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec!["quote", ".movie", "#roads",],
+                            shorthand_items: &["quote", ".movie", "#roads",],
                             value: "quote.movie#roads"
                         },
                         TElementAttribute {
                             name: None,
-                            shorthand_items: vec![],
+                            shorthand_items: &[],
                             value: "Dr. Emmett Brown"
                         },
                     ],

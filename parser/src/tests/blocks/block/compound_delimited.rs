@@ -206,7 +206,7 @@ mod example {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(),
+                blocks: &[],
                 context: "example",
                 source: TSpan {
                     data: "====\n====",
@@ -254,7 +254,7 @@ mod example {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -295,7 +295,7 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                ),
+                ],
                 context: "example",
                 source: TSpan {
                     data: "====\nblock1\n\nblock2\n====",
@@ -395,7 +395,7 @@ mod example {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -436,7 +436,7 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                ),
+                ],
                 context: "example",
                 source: TSpan {
                     data: ".block title \n====\nblock1\n\nblock2\n====",
@@ -551,7 +551,7 @@ mod example {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -573,7 +573,7 @@ mod example {
                         attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                        blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
                                 original: TSpan {
                                     data: "block2",
@@ -592,7 +592,7 @@ mod example {
                             title: None,
                             anchor: None,
                             attrlist: None,
-                        },)),
+                        },)],
                         context: "example",
                         source: TSpan {
                             data: "=====\nblock2\n=====",
@@ -604,7 +604,7 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },)
-                ),
+                ],
                 context: "example",
                 source: TSpan {
                     data: "====\nblock1\n\n=====\nblock2\n=====\n====",
@@ -656,7 +656,7 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "block2",
@@ -675,7 +675,7 @@ mod example {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                },),),
+                },),],
                 context: "example",
                 source: TSpan {
                     data: "=====\nblock2\n=====",
@@ -726,7 +726,7 @@ mod open {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(),
+                blocks: &[],
                 context: "open",
                 source: TSpan {
                     data: "--\n--",
@@ -772,7 +772,7 @@ mod open {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -813,7 +813,7 @@ mod open {
                         anchor: None,
                         attrlist: None,
                     },),
-                ),
+                ],
                 context: "open",
                 source: TSpan {
                     data: "--\nblock1\n\nblock2\n--",
@@ -909,7 +909,7 @@ mod open {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -950,7 +950,7 @@ mod open {
                         anchor: None,
                         attrlist: None,
                     },)
-                ),
+                ],
                 context: "open",
                 source: TSpan {
                     data: "--\nblock1\n\n---\nblock2\n---\n--",
@@ -1060,7 +1060,7 @@ mod sidebar {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(),
+                blocks: &[],
                 context: "sidebar",
                 source: TSpan {
                     data: "****\n****",
@@ -1106,7 +1106,7 @@ mod sidebar {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -1147,7 +1147,7 @@ mod sidebar {
                         anchor: None,
                         attrlist: None,
                     },),
-                ),
+                ],
                 context: "sidebar",
                 source: TSpan {
                     data: "****\nblock1\n\nblock2\n****",
@@ -1247,7 +1247,7 @@ mod sidebar {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -1269,7 +1269,7 @@ mod sidebar {
                         attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                        blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
                                 original: TSpan {
                                     data: "block2",
@@ -1288,7 +1288,7 @@ mod sidebar {
                             title: None,
                             anchor: None,
                             attrlist: None,
-                        },)),
+                        },)],
                         context: "sidebar",
                         source: TSpan {
                             data: "*****\nblock2\n*****",
@@ -1300,7 +1300,7 @@ mod sidebar {
                         anchor: None,
                         attrlist: None,
                     })
-                ),
+                ],
                 context: "sidebar",
                 source: TSpan {
                     data: "****\nblock1\n\n*****\nblock2\n*****\n****",
@@ -1352,7 +1352,7 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "block2",
@@ -1371,7 +1371,7 @@ mod sidebar {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                },),),
+                },),],
                 context: "sidebar",
                 source: TSpan {
                     data: "*****\nblock2\n*****",
@@ -1422,7 +1422,7 @@ mod quote {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(),
+                blocks: &[],
                 context: "quote",
                 source: TSpan {
                     data: "____\n____",
@@ -1468,7 +1468,7 @@ mod quote {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -1509,7 +1509,7 @@ mod quote {
                         anchor: None,
                         attrlist: None,
                     },),
-                ),
+                ],
                 context: "quote",
                 source: TSpan {
                     data: "____\nblock1\n\nblock2\n____",
@@ -1609,7 +1609,7 @@ mod quote {
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -1631,7 +1631,7 @@ mod quote {
                         attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec!(TBlock::Simple(TSimpleBlock {
+                        blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
                                 original: TSpan {
                                     data: "block2",
@@ -1650,7 +1650,7 @@ mod quote {
                             title: None,
                             anchor: None,
                             attrlist: None,
-                        },),),
+                        },),],
                         context: "quote",
                         source: TSpan {
                             data: "_____\nblock2\n_____",
@@ -1662,7 +1662,7 @@ mod quote {
                         anchor: None,
                         attrlist: None,
                     })
-                ),
+                ],
                 context: "quote",
                 source: TSpan {
                     data: "____\nblock1\n\n_____\nblock2\n_____\n____",
@@ -1714,7 +1714,7 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec!(TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "block2",
@@ -1733,7 +1733,7 @@ mod quote {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                },),),
+                },),],
                 context: "quote",
                 source: TSpan {
                     data: "_____\nblock2\n_____",

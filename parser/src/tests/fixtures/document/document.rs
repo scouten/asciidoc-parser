@@ -10,9 +10,9 @@ use crate::{
 #[derive(Eq, PartialEq)]
 pub(crate) struct TDocument {
     pub header: THeader,
-    pub blocks: Vec<TBlock>,
+    pub blocks: &'static [TBlock],
     pub source: TSpan,
-    pub warnings: Vec<TWarning>,
+    pub warnings: &'static [TWarning],
 }
 
 impl fmt::Debug for TDocument {

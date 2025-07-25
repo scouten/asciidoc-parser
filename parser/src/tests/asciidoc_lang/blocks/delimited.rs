@@ -214,7 +214,7 @@ That's so meta.
     assert_eq!(
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "This is an example of an example block.\nThat's so meta.",
@@ -560,7 +560,7 @@ The document header is useful, but not required.
         assert_eq!(
             block,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -679,7 +679,7 @@ Live within the simulated reality without want or fear.
         assert_eq!(
             block,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -701,7 +701,7 @@ Live within the simulated reality without want or fear.
                         attrlist: None,
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec![TBlock::Simple(TSimpleBlock {
+                        blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
                                 original: TSpan {
                                     data: "Escape into the real world.",
@@ -736,9 +736,9 @@ Live within the simulated reality without want or fear.
                         },),
                         anchor: None,
                         attrlist: Some(TAttrlist {
-                            attributes: vec![TElementAttribute {
+                            attributes: &[TElementAttribute {
                                 name: None,
-                                shorthand_items: vec!["%collapsible"],
+                                shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
                             source: TSpan {
@@ -750,7 +750,7 @@ Live within the simulated reality without want or fear.
                         },),
                     },),
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: vec![TBlock::Simple(TSimpleBlock {
+                        blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
                                 original: TSpan {
                                     data: "Live within the simulated reality without want or fear.",
@@ -785,9 +785,9 @@ Live within the simulated reality without want or fear.
                         },),
                         anchor: None,
                         attrlist: Some(TAttrlist {
-                            attributes: vec![TElementAttribute {
+                            attributes: &[TElementAttribute {
                                 name: None,
-                                shorthand_items: vec!["%collapsible"],
+                                shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
                             source: TSpan {
