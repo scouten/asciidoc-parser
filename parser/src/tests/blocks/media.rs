@@ -103,6 +103,17 @@ fn err_missing_macro_attrlist() {
 }
 
 #[test]
+fn err_unknown_type() {
+    let mut parser = Parser::default();
+
+    assert!(
+        MediaBlock::parse(&Preamble::new("imagex::bar[]"), &mut parser)
+            .unwrap_if_no_warnings()
+            .is_none()
+    );
+}
+
+#[test]
 fn err_no_attr_list() {
     let mut parser = Parser::default();
 
