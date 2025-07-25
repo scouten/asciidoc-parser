@@ -97,7 +97,7 @@ This is more content in the sidebar block.
                     offset: 0,
                 },
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -119,7 +119,7 @@ This is more content in the sidebar block.
                     attrlist: None,
                 },),
                 TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                    blocks: vec![
+                    blocks: &[
                         TBlock::Simple(TSimpleBlock {
                             content: TContent {
                                 original: TSpan {

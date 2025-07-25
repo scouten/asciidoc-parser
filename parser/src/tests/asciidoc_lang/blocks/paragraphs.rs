@@ -68,7 +68,7 @@ include::example$paragraph.adoc[tag=para]
                     offset: 0,
                 },
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {

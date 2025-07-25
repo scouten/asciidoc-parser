@@ -71,7 +71,7 @@ include::example$image.adoc[tag=url]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
@@ -162,7 +162,7 @@ include::example$image.adoc[tag=in-url]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",

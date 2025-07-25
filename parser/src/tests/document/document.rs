@@ -59,7 +59,7 @@ fn empty_source() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![],
+            blocks: &[],
             warnings: &[],
         }
     );
@@ -86,7 +86,7 @@ fn only_spaces() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![],
+            blocks: &[],
             warnings: &[],
         }
     );
@@ -114,7 +114,7 @@ fn one_simple_block() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -162,7 +162,7 @@ fn two_simple_blocks() {
                 col: 1,
                 offset: 0
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -229,7 +229,7 @@ fn two_blocks_and_title() {
                     offset: 0,
                 }
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -302,7 +302,7 @@ fn extra_space_before_title() {
                     offset: 0,
                 }
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "abc",
@@ -353,7 +353,7 @@ fn err_bad_header() {
                     offset: 0,
                 }
             },
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "not an attribute",
@@ -412,7 +412,7 @@ fn err_bad_header_and_bad_macro() {
                     offset: 0,
                 }
             },
-            blocks: vec![
+            blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
@@ -443,7 +443,7 @@ fn err_bad_header_and_bad_macro() {
                         col: 4,
                         offset: 29,
                     },
-                    blocks: vec![
+                    blocks: &[
                         TBlock::Media(
                             TMediaBlock {
                                 type_: MediaType::Image,

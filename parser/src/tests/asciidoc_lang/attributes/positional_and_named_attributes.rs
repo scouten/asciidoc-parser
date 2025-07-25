@@ -168,7 +168,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                     col: 4,
                     offset: 16,
                 },
-                blocks: vec![],
+                blocks: &[],
                 source: TSpan {
                     data: "[#custom-id]\n== Section with Custom ID",
                     line: 1,
@@ -228,7 +228,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                     col: 4,
                     offset: 24,
                 },
-                blocks: vec![],
+                blocks: &[],
                 source: TSpan {
                     data: "[appendix#custom-id]\n== Appendix with Custom ID",
                     line: 1,

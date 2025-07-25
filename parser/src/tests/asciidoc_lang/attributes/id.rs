@@ -456,7 +456,7 @@ ____
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "Roads? Where we're going, we don't need roads.",

@@ -74,7 +74,7 @@ This is a basic AsciiDoc document.
                     col: 1,
                     offset: 0
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a basic AsciiDoc document.",
@@ -141,7 +141,7 @@ This document contains two paragraphs.
                     col: 1,
                     offset: 0
                 },
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -247,7 +247,7 @@ It also has a header that specifies the document title.
                         offset: 0,
                     },
                 },
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {

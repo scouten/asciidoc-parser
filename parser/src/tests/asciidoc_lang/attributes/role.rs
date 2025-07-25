@@ -91,7 +91,7 @@ This is a sidebar with a role assigned to it, rolename.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with a role assigned to it, rolename.",
@@ -168,7 +168,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",
@@ -246,7 +246,7 @@ This is a sidebar with one role assigned to it, rolename.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with one role assigned to it, rolename.",
@@ -329,7 +329,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",

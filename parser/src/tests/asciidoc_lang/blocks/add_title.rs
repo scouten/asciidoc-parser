@@ -61,7 +61,7 @@ This is the content of the sidebar block.
     assert_eq!(
         block,
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: vec![TBlock::Simple(TSimpleBlock {
+            blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
                     original: TSpan {
                         data: "This is the content of the sidebar block.",

@@ -82,7 +82,7 @@ include::example$image.adoc[tag=base]
                         offset: 0,
                     },
                 },
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -200,7 +200,7 @@ include::example$image.adoc[tag=alt]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "sunset.jpg",
@@ -279,7 +279,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "sunset.jpg",
@@ -368,7 +368,7 @@ include::example$image.adoc[tag=attr]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "sunset.jpg",

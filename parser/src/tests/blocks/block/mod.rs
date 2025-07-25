@@ -67,7 +67,7 @@ mod error_cases {
                     col: 5,
                     offset: 4,
                 },
-                blocks: vec![
+                blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
@@ -273,7 +273,7 @@ mod error_cases {
                     col: 5,
                     offset: 28,
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "abc",

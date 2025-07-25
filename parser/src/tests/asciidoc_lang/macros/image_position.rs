@@ -85,7 +85,7 @@ include::example$image.adoc[tag=float]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "tiger.png",
@@ -182,7 +182,7 @@ include::example$image.adoc[tag=in-float]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
@@ -278,7 +278,7 @@ include::example$image.adoc[tag=role]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "tiger.png",
@@ -373,7 +373,7 @@ include::example$image.adoc[tag=in-role]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",

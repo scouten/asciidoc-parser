@@ -72,7 +72,7 @@ image::logo.png[Logo]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "logo.png",
@@ -154,7 +154,7 @@ image::logo.png[Logo,link=https://example.org]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "logo.png",
@@ -234,7 +234,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
@@ -329,7 +329,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                         offset: 0,
                     },
                 },
-                blocks: vec![TBlock::Media(TMediaBlock {
+                blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: TSpan {
                         data: "logo.png",

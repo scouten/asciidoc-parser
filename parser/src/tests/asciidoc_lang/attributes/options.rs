@@ -74,7 +74,7 @@ This is a sidebar with an option assigned to it, named option.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with an option assigned to it, named option.",
@@ -159,7 +159,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with two options assigned to it, named option1 and option2.",
@@ -342,7 +342,7 @@ This is a sidebar with an option assigned to it, named option.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with an option assigned to it, named option.",
@@ -426,7 +426,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
         assert_eq!(
             mi.item,
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: vec![TBlock::Simple(TSimpleBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
                             data: "This is a sidebar with two options assigned to it, option1 and option2.",

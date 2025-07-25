@@ -10,7 +10,7 @@ use crate::{
 pub(crate) struct TSectionBlock {
     pub level: usize,
     pub section_title: TSpan,
-    pub blocks: Vec<TBlock>,
+    pub blocks: &'static [TBlock],
     pub source: TSpan,
     pub title: Option<TSpan>,
     pub anchor: Option<TSpan>,
