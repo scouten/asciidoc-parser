@@ -1,3 +1,4 @@
+mod icon_macro;
 mod icons;
 mod image_link;
 mod image_position;
