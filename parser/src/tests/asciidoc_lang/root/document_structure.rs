@@ -94,7 +94,7 @@ This is a basic AsciiDoc document.
                     anchor: None,
                     attrlist: None,
                 })],
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -183,7 +183,7 @@ This document contains two paragraphs.
                         attrlist: None,
                     })
                 ],
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -295,7 +295,7 @@ It also has a header that specifies the document title.
                     col: 1,
                     offset: 0
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

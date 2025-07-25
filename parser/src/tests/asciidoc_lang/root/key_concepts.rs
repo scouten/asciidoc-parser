@@ -166,7 +166,7 @@ image::sunset.jpg[Sunset]
                     col: 1,
                     offset: 0
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -225,7 +225,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     col: 1,
                     offset: 0
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
 

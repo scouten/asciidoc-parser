@@ -144,7 +144,7 @@ include::example$image.adoc[tag=float]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -208,7 +208,7 @@ include::example$image.adoc[tag=in-float]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -339,7 +339,7 @@ include::example$image.adoc[tag=role]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -399,7 +399,7 @@ include::example$image.adoc[tag=in-role]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

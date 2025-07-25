@@ -120,7 +120,7 @@ include::example$image.adoc[tag=url]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -188,7 +188,7 @@ include::example$image.adoc[tag=in-url]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

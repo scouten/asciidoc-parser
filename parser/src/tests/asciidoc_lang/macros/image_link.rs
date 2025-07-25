@@ -121,7 +121,7 @@ image::logo.png[Logo]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -198,7 +198,7 @@ image::logo.png[Logo,link=https://example.org]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -260,7 +260,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -383,7 +383,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

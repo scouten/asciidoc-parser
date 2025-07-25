@@ -206,7 +206,7 @@ This is more content in the sidebar block.
                 col: 1,
                 offset: 0,
             },
-            warnings: vec![],
+            warnings: &[],
         }
     );
 

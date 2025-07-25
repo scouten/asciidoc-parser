@@ -116,7 +116,7 @@ include::example$paragraph.adoc[tag=para]
                 col: 1,
                 offset: 0,
             },
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }

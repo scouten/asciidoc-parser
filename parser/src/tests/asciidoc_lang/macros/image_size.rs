@@ -118,7 +118,7 @@ image::flower.jpg[Flower,640,480]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -201,7 +201,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

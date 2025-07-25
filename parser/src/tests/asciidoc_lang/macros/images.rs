@@ -157,7 +157,7 @@ include::example$image.adoc[tag=base]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -237,7 +237,7 @@ include::example$image.adoc[tag=alt]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -316,7 +316,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }
@@ -441,7 +441,7 @@ include::example$image.adoc[tag=attr]
                     col: 1,
                     offset: 0,
                 },
-                warnings: vec![],
+                warnings: &[],
             }
         );
     }

@@ -60,7 +60,7 @@ fn empty_source() {
                 offset: 0
             },
             blocks: vec![],
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }
@@ -87,7 +87,7 @@ fn only_spaces() {
                 offset: 0
             },
             blocks: vec![],
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }
@@ -134,7 +134,7 @@ fn one_simple_block() {
                 anchor: None,
                 attrlist: None,
             })],
-            warnings: vec![],
+            warnings: &[],
         }
     );
 
@@ -204,7 +204,7 @@ fn two_simple_blocks() {
                     attrlist: None,
                 })
             ],
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }
@@ -277,7 +277,7 @@ fn two_blocks_and_title() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec![],
+            warnings: &[],
         }
     );
 }
@@ -328,7 +328,7 @@ fn extra_space_before_title() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec!(),
+            warnings: &[],
         }
     );
 }
@@ -379,7 +379,7 @@ fn err_bad_header() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec!(TWarning {
+            warnings: &[TWarning {
                 source: TSpan {
                     data: "not an attribute",
                     line: 2,
@@ -387,7 +387,7 @@ fn err_bad_header() {
                     offset: 8,
                 },
                 warning: WarningType::DocumentHeaderNotTerminated,
-            },),
+            },],
         }
     );
 }
@@ -507,7 +507,7 @@ fn err_bad_header_and_bad_macro() {
                 col: 1,
                 offset: 0
             },
-            warnings: vec![TWarning {
+            warnings: &[TWarning {
                 source: TSpan {
                     data: "not an attribute",
                     line: 2,
