@@ -339,6 +339,64 @@ fn audio() {
 }
 
 #[test]
+fn video() {
+    let mut parser = Parser::default();
+
+    let mi = MediaBlock::parse(&Preamble::new("video::bar[]"), &mut parser)
+        .unwrap_if_no_warnings()
+        .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TMediaBlock {
+            type_: MediaType::Video,
+            target: TSpan {
+                data: "bar",
+                line: 1,
+                col: 8,
+                offset: 7,
+            },
+            macro_attrlist: TAttrlist {
+                attributes: vec!(),
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 12,
+                    offset: 11,
+                }
+            },
+            source: TSpan {
+                data: "video::bar[]",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title: None,
+            anchor: None,
+            attrlist: None,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 13,
+            offset: 12
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert_eq!(mi.item.raw_context().deref(), "video");
+    assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title().is_none());
+    assert!(mi.item.anchor().is_none());
+    assert!(mi.item.attrlist().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+}
+
+#[test]
 fn err_duplicate_comma() {
     let mut parser = Parser::default();
     let maw = MediaBlock::parse(&Preamble::new("image::bar[blah,,blap]"), &mut parser);
