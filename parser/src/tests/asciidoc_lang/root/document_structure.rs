@@ -1,7 +1,6 @@
 use crate::tests::sdd::{non_normative, track_file};
 
 track_file!("docs/modules/ROOT/pages/document-structure.adoc");
-// Tracking commit 9765f83b, current as of 2024-10-26.
 
 non_normative!(
     r#"
@@ -26,7 +25,7 @@ mod documents {
                 TSpan,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
-                document::{TAttribute, TDocument, THeader, TRawAttributeValue},
+                document::{TAttribute, TDocument, THeader, TInterpretedValue},
             },
             sdd::{non_normative, verifies},
         },
@@ -231,7 +230,8 @@ It also has a header that specifies the document title.
                                 col: 2,
                                 offset: 18,
                             },
-                            value: TRawAttributeValue::Set,
+                            value_source: None,
+                            value: TInterpretedValue::Set,
                             source: TSpan {
                                 data: ":reproducible:",
                                 line: 2,
@@ -313,12 +313,12 @@ mod lines {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Span,
+        Parser, Span,
         document::Attribute,
         tests::{
             fixtures::{
                 TSpan,
-                document::{TAttribute, TInterpretedValue, TRawAttributeValue},
+                document::{TAttribute, TInterpretedValue},
             },
             sdd::verifies,
         },
@@ -384,7 +384,7 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 "#
         );
 
-        let mi = Attribute::parse(Span::new(":name: value\n")).unwrap();
+        let mi = Attribute::parse(Span::new(":name: value\n"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
@@ -395,12 +395,13 @@ The same is true for an attribute entry, a block title, a block attribute list, 
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Value(TSpan {
+                value_source: Some(TSpan {
                     data: "value",
                     line: 1,
                     col: 8,
                     offset: 7,
                 }),
+                value: TInterpretedValue::Value("value"),
                 source: TSpan {
                     data: ":name: value",
                     line: 1,
@@ -435,7 +436,11 @@ more value
 "#
         );
 
-        let mi = Attribute::parse(Span::new(":name: value \\\nmore value\n")).unwrap();
+        let mi = Attribute::parse(
+            Span::new(":name: value \\\nmore value\n"),
+            &Parser::default(),
+        )
+        .unwrap();
 
         assert_eq!(
             mi.item,
@@ -446,12 +451,13 @@ more value
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Value(TSpan {
+                value_source: Some(TSpan {
                     data: "value \\\nmore value",
                     line: 1,
                     col: 8,
                     offset: 7,
                 }),
+                value: TInterpretedValue::Value("value more value"),
                 source: TSpan {
                     data: ":name: value \\\nmore value",
                     line: 1,

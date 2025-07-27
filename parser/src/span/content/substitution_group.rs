@@ -151,6 +151,13 @@ impl SubstitutionGroup {
                 SubstitutionStep::PostReplacement.apply(content, parser, attrlist);
             }
 
+            Self::Header => {
+                passthroughs = Some(Passthroughs::extract_from(content));
+
+                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
+                SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
+            }
+
             Self::Verbatim => {
                 SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
             }

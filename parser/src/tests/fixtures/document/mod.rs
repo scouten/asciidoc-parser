@@ -20,6 +20,3 @@ pub(crate) use document::TDocument;
 
 mod header;
 pub(crate) use header::THeader;
-
-mod raw_attribute_value;
-pub(crate) use raw_attribute_value::TRawAttributeValue;
