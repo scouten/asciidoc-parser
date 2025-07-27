@@ -46,6 +46,9 @@ impl<'p> Parser<'p> {
     /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
     /// UTF-8 prior to parsing.
     ///
+    /// **IMPORTANT:** The `Parser` struct will be updated with attributes and
+    /// similar values discovered during parsing.
+    ///
     /// # Warnings, not errors
     ///
     /// Any UTF-8 string is a valid AsciiDoc document, so this function does not
@@ -55,9 +58,8 @@ impl<'p> Parser<'p> {
     /// provided via the [`warnings()`] iterator.
     ///
     /// [`warnings()`]: Document::warnings
-    pub fn parse<'src>(&self, source: &'src str) -> Document<'src> {
-        let mut temp_copy = self.clone();
-        Document::parse(source, &mut temp_copy)
+    pub fn parse<'src>(&mut self, source: &'src str) -> Document<'src> {
+        Document::parse(source, self)
     }
 
     /// Retrieves the current interpreted value of a [document attribute].
