@@ -1,0 +1,110 @@
+use crate::tests::sdd::{non_normative, track_file};
+
+track_file!("docs/modules/macros/pages/icon-macro.adoc");
+
+non_normative!(
+    r#"
+= Icon Macro
+
+In addition to built-in icons, you can add icons anywhere in your content where macros are substituted using the icon macro.
+This page covers the anatomy of the icon macro, how the target is resolved, and what features it support (subject to the icon mode).
+
+"#
+);
+
+mod anatomy {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+                document::{TDocument, THeader},
+            },
+            sdd::{non_normative, verifies},
+        },
+    };
+
+    non_normative!(
+        r#"
+== Anatomy
+
+The icon macro is an inline macro.
+Like other inline macros, its syntax follows the familiar pattern of the macro name and target separated by a colon followed by an attribute list enclosed in square brackets.
+
+[source]
+----
+icon:<target>[<attrlist>]
+----
+
+The `<target>` is the icon name or path.
+The `<attrlist>` specifies various named attributes to configure how the icon is displayed.
+
+"#
+    );
+
+    #[test]
+    fn example() {
+        verifies!(
+            r#"
+For example:
+
+[source]
+----
+icon:heart[2x,role=red]
+----
+
+"#
+        );
+
+        let doc = Parser::default().parse("icon:heart[2x,role=red]");
+
+        dbg!(&doc);
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "icon:heart[2x,role=red]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<span class=\"icon red\">[heart&#93;</span>",
+                    },
+                    source: TSpan {
+                        data: "icon:heart[2x,role=red]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "icon:heart[2x,role=red]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
