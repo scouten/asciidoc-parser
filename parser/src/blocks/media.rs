@@ -177,7 +177,7 @@ impl<'src> IsBlock<'src> for MediaBlock<'src> {
 }
 
 impl<'src> HasSpan<'src> for MediaBlock<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }

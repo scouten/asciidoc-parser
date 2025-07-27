@@ -163,7 +163,7 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
 }
 
 impl<'src> HasSpan<'src> for RawDelimitedBlock<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }

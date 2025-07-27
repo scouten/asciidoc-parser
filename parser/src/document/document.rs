@@ -117,7 +117,7 @@ impl<'src> IsBlock<'src> for Document<'src> {
 }
 
 impl<'src> HasSpan<'src> for Document<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }

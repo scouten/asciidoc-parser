@@ -94,8 +94,8 @@ impl<'src> Header<'src> {
 }
 
 impl<'src> HasSpan<'src> for Header<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }
 

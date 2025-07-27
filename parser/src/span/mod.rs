@@ -127,5 +127,5 @@ pub(crate) use matched_item::MatchedItem;
 pub trait HasSpan<'src> {
     /// Return a [`Span`] describing the syntactic element's
     /// location within the source string/file.
-    fn span(&'src self) -> &'src Span<'src>;
+    fn span(&self) -> Span<'src>;
 }

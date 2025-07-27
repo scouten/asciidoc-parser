@@ -93,7 +93,7 @@ impl<'src> IsBlock<'src> for SimpleBlock<'src> {
 }
 
 impl<'src> HasSpan<'src> for SimpleBlock<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }

@@ -290,7 +290,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
 }
 
 impl<'src> HasSpan<'src> for Block<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
+    fn span(&self) -> Span<'src> {
         match self {
             Self::Simple(b) => b.span(),
             Self::Media(b) => b.span(),

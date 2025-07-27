@@ -45,7 +45,7 @@ impl PartialEq<TDocument> for &Document<'_> {
 }
 
 fn fixture_eq_observed(fixture: &TDocument, observed: &Document) -> bool {
-    if &fixture.source != observed.span() {
+    if fixture.source != observed.span() {
         return false;
     }
 

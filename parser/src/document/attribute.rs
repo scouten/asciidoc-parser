@@ -73,8 +73,8 @@ impl<'src> Attribute<'src> {
 }
 
 impl<'src> HasSpan<'src> for Attribute<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }
 
