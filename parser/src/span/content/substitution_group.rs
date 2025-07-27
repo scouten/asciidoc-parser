@@ -178,11 +178,6 @@ impl SubstitutionGroup {
                     step.apply(content, parser, attrlist);
                 }
             }
-
-            _ => {
-                // Do passthroughs if sub steps includes macros.
-                todo!("Implement apply for SubstitutionGroup::{self:?}");
-            }
         }
 
         if let Some(passthroughs) = passthroughs {
