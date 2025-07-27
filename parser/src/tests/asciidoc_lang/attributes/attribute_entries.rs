@@ -348,3 +348,70 @@ Attribute references in the value of an attribute entry are resolved immediately
         TInterpretedValue::Value("https://example.org/projects/project-name")
     );
 }
+
+#[test]
+fn implicit_value() {
+    verifies!(
+        r#"
+Some built-in attributes don't require a value to be explicitly assigned in an attribute entry because they're a boolean attribute or have an implied value.
+
+[source]
+----
+:name-of-an-attribute: <.>
+----
+<.> If you don't want to explicitly assign a value to the attribute, press kbd:[Enter] after the closing colon (`:`).
+
+When set, the value of a built-in boolean attribute is always empty (i.e., an _empty string_).
+If you set a built-in attribute and leave its value empty, the AsciiDoc processor may infer a value at processing time.
+
+"#
+    );
+
+    let mut parser = Parser::default();
+
+    let doc = parser.parse(":name-of-an-attribute:");
+
+    assert_eq!(
+        doc,
+        TDocument {
+            header: THeader {
+                title: None,
+                attributes: &[TAttribute {
+                    name: TSpan {
+                        data: "name-of-an-attribute",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    value_source: None,
+                    value: TInterpretedValue::Set,
+                    source: TSpan {
+                        data: ":name-of-an-attribute:",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },],
+                source: TSpan {
+                    data: ":name-of-an-attribute:",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },
+            blocks: &[],
+            source: TSpan {
+                data: ":name-of-an-attribute:",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+
+    assert_eq!(
+        parser.attribute_value("name-of-an-attribute"),
+        TInterpretedValue::Set
+    );
+}
