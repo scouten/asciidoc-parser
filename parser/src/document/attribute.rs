@@ -146,7 +146,7 @@ impl InterpretedValue {
             content.rendered = CowStr::Boxed(value.join("").into_boxed_str());
         }
 
-        SubstitutionGroup::Header.apply(&mut content, &parser, None);
+        SubstitutionGroup::Header.apply(&mut content, parser, None);
 
         InterpretedValue::Value(content.rendered.into_string())
     }
