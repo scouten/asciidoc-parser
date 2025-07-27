@@ -62,7 +62,6 @@ impl<'src> Attrlist<'src> {
             // reason, individual attribute parsing only returns the warning type and we
             // then map it back to the entire attrlist source.
             for warning_type in warning_types {
-                dbg!(&warning_type);
                 warnings.push(Warning {
                     source,
                     warning: warning_type,

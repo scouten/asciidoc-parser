@@ -62,8 +62,6 @@ icon:heart[2x,role=red]
 
         let doc = Parser::default().parse("icon:heart[2x,role=red]");
 
-        dbg!(&doc);
-
         assert_eq!(
             doc,
             TDocument {

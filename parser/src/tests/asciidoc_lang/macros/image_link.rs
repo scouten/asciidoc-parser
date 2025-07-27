@@ -219,8 +219,6 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
         let doc =
             Parser::default().parse("image:apply.jpg[Apply,link=https://apply.example.org] today!");
 
-        dbg!(&doc);
-
         assert_eq!(
             doc,
             TDocument {

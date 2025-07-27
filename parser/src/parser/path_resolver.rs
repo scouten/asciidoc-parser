@@ -64,7 +64,6 @@ impl PathResolver {
         let mut uri_prefix: Option<String> = None;
 
         if !(start.is_none() || self.is_web_root(&target)) {
-            dbg!(&target);
             (target, uri_prefix) = extract_uri_prefix(&format!(
                 "{start}{maybe_add_slash}{target}",
                 start = start.as_deref().unwrap_or_default(),
@@ -73,9 +72,6 @@ impl PathResolver {
                     .map(|s| if s.ends_with("/") { "" } else { "/" })
                     .unwrap_or_default()
             ));
-
-            dbg!(&target);
-            dbg!(&uri_prefix);
         }
 
         let (target_segments, target_root) = self.partition_path(&target, WebPath(true));

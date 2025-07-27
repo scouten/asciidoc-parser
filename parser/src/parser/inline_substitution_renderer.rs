@@ -538,8 +538,6 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             "#
             );
         } else {
-            dbg!(&asset_dir_key);
-
             let asset_dir = parser
                 .attribute_value(asset_dir_key)
                 .as_maybe_str()
