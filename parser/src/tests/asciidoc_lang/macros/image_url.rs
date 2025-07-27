@@ -212,8 +212,6 @@ This time, `imagesdir` is used since the image target is not a URL (the value of
 "#
         );
 
-        let doc = Parser::default().parse(":imagesdir-old: {imagesdir}\n:imagesdir: https://upload.wikimedia.org/wikipedia/commons\n\nimage::3/35/Tux.svg[Tux,250,350]\n\n:imagesdir: {imagesdir-old}");
-
-        dbg!(&doc);
+        let _doc = Parser::default().parse(":imagesdir-old: {imagesdir}\n:imagesdir: https://upload.wikimedia.org/wikipedia/commons\n\nimage::3/35/Tux.svg[Tux,250,350]\n\n:imagesdir: {imagesdir-old}");
     }
 }
