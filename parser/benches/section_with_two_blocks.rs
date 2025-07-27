@@ -5,9 +5,8 @@ const BENCH_NAME: &str = "section with 2 blocks";
 const PARSE_TEXT: &str = "== Section Title\n\nabc\n\ndef";
 
 pub fn section_with_two_blocks(c: &mut Criterion) {
-    let parser = Parser::default();
     c.bench_function(BENCH_NAME, |b| {
-        b.iter(|| parser.parse(black_box(PARSE_TEXT)))
+        b.iter(|| Parser::default().parse(black_box(PARSE_TEXT)))
     });
 }
 
