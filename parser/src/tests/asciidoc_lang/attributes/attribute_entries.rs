@@ -1,17 +1,20 @@
+use pretty_assertions_sorted::assert_eq;
+
 use crate::{
     Parser, Span,
     document::{Attribute, InterpretedValue},
     tests::{
         fixtures::{
             TSpan,
-            document::{TAttribute, TInterpretedValue},
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            document::{TAttribute, TDocument, THeader, TInterpretedValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
 };
 
 track_file!("docs/modules/attributes/pages/attribute-entries.adoc");
-// Tracking commit 76c9fe63, current as of 2025-04-11.
 
 non_normative!(
     r#"
@@ -89,42 +92,164 @@ At the end of the value, press kbd:[Enter].
 "#
     );
 
-    let mi = Attribute::parse(
-        Span::new(":name-of-an-attribute: value of the attribute"),
-        &Parser::default(),
-    )
-    .unwrap();
+    let mut parser = Parser::default();
+
+    let doc = parser.parse("= Testing\n:name-of-an-attribute: value of the attribute\n\nThe value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}");
 
     assert_eq!(
-        mi.item,
-        TAttribute {
-            name: TSpan {
-                data: "name-of-an-attribute",
-                line: 1,
-                col: 2,
-                offset: 1,
+        doc,
+        TDocument {
+            header: THeader {
+                title: Some(TSpan {
+                    data: "Testing",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                },),
+                attributes: &[TAttribute {
+                    name: TSpan {
+                        data: "name-of-an-attribute",
+                        line: 2,
+                        col: 2,
+                        offset: 11,
+                    },
+                    value_source: Some(TSpan {
+                        data: "value of the attribute",
+                        line: 2,
+                        col: 24,
+                        offset: 33,
+                    }),
+                    value: TInterpretedValue::Value("value of the attribute"),
+                    source: TSpan {
+                        data: ":name-of-an-attribute: value of the attribute",
+                        line: 2,
+                        col: 1,
+                        offset: 10,
+                    },
+                },],
+                source: TSpan {
+                    data: "= Testing\n:name-of-an-attribute: value of the attribute",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
             },
-            value_source: Some(TSpan {
-                data: "value of the attribute",
-                line: 1,
-                col: 24,
-                offset: 23,
-            }),
-            value: TInterpretedValue::Value("value of the attribute"),
+            blocks: &[TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "The value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
+                        line: 4,
+                        col: 1,
+                        offset: 57,
+                    },
+                    rendered: "The value of the attribute named <code>name-of-an-attribute</code> is: value of the attribute",
+                },
+                source: TSpan {
+                    data: "The value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
+                    line: 4,
+                    col: 1,
+                    offset: 57,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },),],
             source: TSpan {
-                data: ":name-of-an-attribute: value of the attribute",
+                data: "= Testing\n:name-of-an-attribute: value of the attribute\n\nThe value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
+            warnings: &[],
         }
     );
 
-    if let InterpretedValue::Value(value) = mi.item.value() {
-        assert_eq!(value, "value of the attribute");
-    } else {
-        panic!("unexpected value type {v:?}", v = mi.item.value());
-    }
+    assert_eq!(
+        parser.attribute_value("name-of-an-attribute"),
+        TInterpretedValue::Value("value of the attribute")
+    );
+}
+
+#[test]
+fn header_substitutions_applied() {
+    verifies!(
+        r#"
+Take note that xref:attribute-entry-substitutions.adoc[header substitutions] automatically get applied to the value by default.
+That means you don't need to escape special characters such in an HTML tag.
+"#
+    );
+
+    let mut parser = Parser::default();
+
+    let doc = parser.parse("= Testing\n:lt-attribute: <\n\nThe value of the attribute named `lt-attribute` is: {lt-attribute}");
+
+    assert_eq!(
+        doc,
+        TDocument {
+            header: THeader {
+                title: Some(TSpan {
+                    data: "Testing",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                },),
+                attributes: &[TAttribute {
+                    name: TSpan {
+                        data: "lt-attribute",
+                        line: 2,
+                        col: 2,
+                        offset: 11,
+                    },
+                    value_source: Some(TSpan {
+                        data: "<",
+                        line: 2,
+                        col: 16,
+                        offset: 25,
+                    },),
+                    value: TInterpretedValue::Value("&lt;"),
+                    source: TSpan {
+                        data: ":lt-attribute: <",
+                        line: 2,
+                        col: 1,
+                        offset: 10,
+                    },
+                },],
+                source: TSpan {
+                    data: "= Testing\n:lt-attribute: <",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },
+            blocks: &[TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "The value of the attribute named `lt-attribute` is: {lt-attribute}",
+                        line: 4,
+                        col: 1,
+                        offset: 28,
+                    },
+                    rendered: "The value of the attribute named <code>lt-attribute</code> is: &lt;",
+                },
+                source: TSpan {
+                    data: "The value of the attribute named `lt-attribute` is: {lt-attribute}",
+                    line: 4,
+                    col: 1,
+                    offset: 28,
+                },
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },),],
+            source: TSpan {
+                data: "= Testing\n:lt-attribute: <\n\nThe value of the attribute named `lt-attribute` is: {lt-attribute}",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
 }
 
 // No coverage after this until we do substitutions.

@@ -36,6 +36,7 @@ impl<'src> Header<'src> {
         };
 
         while let Some(attr) = Attribute::parse(after, parser) {
+            parser.set_attribute_from_header(&attr.item, &mut warnings);
             attributes.push(attr.item);
             after = attr.after;
         }

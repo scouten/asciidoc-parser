@@ -61,6 +61,9 @@ pub enum WarningType {
 
     #[error("Block anchor name contains invalid name characters")]
     InvalidBlockAnchorName,
+
+    #[error("Attribute {0:?} can not be modified by document")]
+    AttributeValueIsLocked(String),
 }
 
 /// Return type used to signal one or more possible parse error.
