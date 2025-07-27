@@ -415,3 +415,5 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
         TInterpretedValue::Set
     );
 }
+
+// TO DO: Defer remainder of this page until we can set attributes mid-document.
