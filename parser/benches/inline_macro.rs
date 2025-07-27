@@ -5,9 +5,8 @@ const BENCH_NAME: &str = "inline macro";
 const PARSE_TEXT: &str = "= Example Title\n\nblah foo:bar[blah] bonus";
 
 pub fn inline_macro(c: &mut Criterion) {
-    let parser = Parser::default();
     c.bench_function(BENCH_NAME, |b| {
-        b.iter(|| parser.parse(black_box(PARSE_TEXT)))
+        b.iter(|| Parser::default().parse(black_box(PARSE_TEXT)))
     });
 }
 

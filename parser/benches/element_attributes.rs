@@ -15,9 +15,8 @@ ghi
 "#;
 
 pub fn perf(c: &mut Criterion) {
-    let parser = Parser::default();
     c.bench_function(BENCH_NAME, |b| {
-        b.iter(|| parser.parse(black_box(PARSE_TEXT)))
+        b.iter(|| Parser::default().parse(black_box(PARSE_TEXT)))
     });
 }
 
