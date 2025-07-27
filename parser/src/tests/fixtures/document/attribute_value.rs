@@ -31,7 +31,7 @@ fn fixture_eq_observed(fixture: &TInterpretedValue, observed: &InterpretedValue)
     match fixture {
         TInterpretedValue::Value(fixture_value) => {
             if let InterpretedValue::Value(observed_value) = observed {
-                fixture_value == &observed_value
+                fixture_value == observed_value
             } else {
                 false
             }

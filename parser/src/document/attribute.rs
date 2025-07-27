@@ -163,7 +163,7 @@ pub enum InterpretedValue {
     Unset,
 }
 
-impl<'src> InterpretedValue {
+impl InterpretedValue {
     pub(crate) fn as_maybe_str(&self) -> Option<&str> {
         match self {
             InterpretedValue::Value(value) => Some(value.as_ref()),

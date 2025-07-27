@@ -128,7 +128,7 @@ impl<'p> Parser<'p> {
         let attribute_value = AttributeValue {
             allowable_value: AllowableValue::Any,
             modification_context,
-            value: InterpretedValue::Value(value.as_ref().to_string().into()),
+            value: InterpretedValue::Value(value.as_ref().to_string()),
         };
 
         self.attribute_values
@@ -194,7 +194,7 @@ impl Default for Parser<'_> {
     }
 }
 
-fn built_in_attrs<'p>() -> HashMap<String, AttributeValue> {
+fn built_in_attrs() -> HashMap<String, AttributeValue> {
     let mut attrs: HashMap<String, AttributeValue> = HashMap::new();
 
     attrs.insert(
