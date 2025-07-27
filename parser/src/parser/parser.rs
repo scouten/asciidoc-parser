@@ -61,7 +61,7 @@ impl<'p> Parser<'p> {
     pub fn parse<'src>(&mut self, source: &'src str) -> Document<'src> {
         Document::parse(source, self)
     }
-
+    
     /// Retrieves the current interpreted value of a [document attribute].
     ///
     /// Each document holds a set of name-value pairs called document
