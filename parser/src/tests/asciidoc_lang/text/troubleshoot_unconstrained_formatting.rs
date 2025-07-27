@@ -287,7 +287,7 @@ mod escape_unconstrained_formatting_marks {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::sdd::{non_normative, verifies},
     };
 
     non_normative!(
@@ -360,13 +360,9 @@ There are two reliable solutions for escaping unconstrained formatting marks:
 "#
     );
 
-    #[ignore]
     #[test]
     fn attribute_reference() {
-        // TODO: Enable this test when document attributes are fully supported.
-        // See https://github.com/scouten/asciidoc-parser/issues/283.
-
-        to_do_verifies!(
+        verifies!(
             r#"
 The attribute reference is preferred because it's the easiest to read:
 
@@ -395,7 +391,7 @@ This works because xref:subs:attributes.adoc[attribute expansion] is performed a
 
         assert_eq!(
             sb1.content().rendered(),
-            r#"The <em>kernel qualifier can be used with the </em>attribute__ keyword&#8230;&#8203;"#
+            r#"The __kernel qualifier can be used with the __attribute__ keyword&#8230;&#8203;"#
         );
 
         let block2 = blocks.next().unwrap();
@@ -405,7 +401,7 @@ This works because xref:subs:attributes.adoc[attribute expansion] is performed a
 
         assert_eq!(
             sb2.content().rendered(),
-            r#"<mark><code>CB<mark>#2</code></mark> and <mark><code>CB</mark>#3</code></mark>"#
+            r#"<mark><code>CB###2</code></mark> and <mark><code>CB###3</code></mark>"#
         );
 
         assert!(blocks.next().is_none());

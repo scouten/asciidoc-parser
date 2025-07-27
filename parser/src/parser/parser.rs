@@ -2,12 +2,13 @@ use std::collections::HashMap;
 
 use super::HtmlSubstitutionRenderer;
 use crate::{
-    Document,
-    document::InterpretedValue,
+    Document, HasSpan,
+    document::{Attribute, InterpretedValue},
     parser::{
         AllowableValue, AttributeValue, InlineSubstitutionRenderer, ModificationContext,
         PathResolver,
     },
+    warnings::{Warning, WarningType},
 };
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
@@ -179,6 +180,34 @@ impl<'p> Parser<'p> {
             .insert(name.as_ref().to_string(), attribute_value);
 
         self
+    }
+
+    /// Called from [`Header::parse()`] to accept or reject an attribute value.
+    pub(crate) fn set_attribute_from_header<'src>(
+        &mut self,
+        attr: &Attribute<'src>,
+        warnings: &mut Vec<Warning<'src>>,
+    ) {
+        let attr_name = attr.name().data().to_owned();
+
+        // Verify that we have permission to overwrite any existing attribute value.
+        if let Some(existing_attr) = self.attribute_values.get(&attr_name)
+            && existing_attr.modification_context == ModificationContext::ApiOnly
+        {
+            warnings.push(Warning {
+                source: attr.span(),
+                warning: WarningType::AttributeValueIsLocked(attr_name),
+            });
+            return;
+        }
+
+        let attribute_value = AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::Anywhere,
+            value: attr.value().clone(),
+        };
+
+        self.attribute_values.insert(attr_name, attribute_value);
     }
 }
 

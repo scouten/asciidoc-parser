@@ -1,4 +1,7 @@
-use crate::{Parser, document::InterpretedValue, parser::ModificationContext};
+use crate::{
+    Parser, document::InterpretedValue, parser::ModificationContext,
+    tests::fixtures::document::TInterpretedValue, warnings::WarningType,
+};
 
 #[test]
 fn default_is_unset() {
@@ -37,4 +40,18 @@ fn with_intrinsic_attribute_unset() {
 
     assert_eq!(p.attribute_value("foo"), InterpretedValue::Unset);
     assert_eq!(p.attribute_value("foo2"), InterpretedValue::Unset);
+}
+
+#[test]
+fn can_not_override_locked_default_value() {
+    let mut parser = Parser::default();
+
+    let doc = parser.parse(":sp: not a space!");
+
+    assert_eq!(
+        doc.warnings().next().unwrap().warning,
+        WarningType::AttributeValueIsLocked("sp".to_owned())
+    );
+
+    assert_eq!(parser.attribute_value("sp"), TInterpretedValue::Value(" "));
 }
