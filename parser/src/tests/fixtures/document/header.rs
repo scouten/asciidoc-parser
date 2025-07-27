@@ -42,7 +42,7 @@ impl PartialEq<THeader> for &Header<'_> {
 }
 
 fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
-    if &fixture.source != observed.span() {
+    if fixture.source != observed.span() {
         return false;
     }
 

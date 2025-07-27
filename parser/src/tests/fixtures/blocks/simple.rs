@@ -73,5 +73,5 @@ fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
         return false;
     }
 
-    &fixture.source == observed.span() && &fixture.content == observed.content()
+    fixture.source == observed.span() && &fixture.content == observed.content()
 }

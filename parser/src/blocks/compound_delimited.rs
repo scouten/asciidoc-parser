@@ -151,7 +151,7 @@ impl<'src> IsBlock<'src> for CompoundDelimitedBlock<'src> {
 }
 
 impl<'src> HasSpan<'src> for CompoundDelimitedBlock<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }

@@ -92,6 +92,5 @@ fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBloc
         return false;
     }
 
-    &fixture.source == observed.span()
-        && fixture.substitution_group == observed.substitution_group()
+    fixture.source == observed.span() && fixture.substitution_group == observed.substitution_group()
 }

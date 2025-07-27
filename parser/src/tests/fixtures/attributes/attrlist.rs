@@ -40,7 +40,7 @@ impl PartialEq<TAttrlist> for &Attrlist<'_> {
 }
 
 fn fixture_eq_observed(fixture: &TAttrlist, observed: &Attrlist) -> bool {
-    if &fixture.source != observed.span() {
+    if fixture.source != observed.span() {
         return false;
     }
 

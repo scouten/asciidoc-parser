@@ -368,7 +368,7 @@ impl<'src> Attrlist<'src> {
 }
 
 impl<'src> HasSpan<'src> for Attrlist<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }
