@@ -1,4 +1,4 @@
-use crate::{Parser, document::InterpretedValue, parser::ModificationContext, strings::CowStr};
+use crate::{Parser, document::InterpretedValue, parser::ModificationContext};
 
 #[test]
 fn default_is_unset() {
@@ -12,7 +12,7 @@ fn with_intrinsic_attribute() {
 
     assert_eq!(
         p.attribute_value("foo"),
-        InterpretedValue::Value(CowStr::from("bar"))
+        InterpretedValue::Value("bar".to_owned())
     );
 
     assert_eq!(p.attribute_value("foo2"), InterpretedValue::Unset);

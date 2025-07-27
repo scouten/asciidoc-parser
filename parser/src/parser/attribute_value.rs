@@ -10,20 +10,20 @@ use crate::document::InterpretedValue;
 /// [`Parser::with_intrinsic_attribute()`]: crate::Parser::with_intrinsic_attribute
 /// [`Parser::with_intrinsic_attribute_bool()`]: crate::Parser::with_intrinsic_attribute_bool
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct AttributeValue<'src> {
+pub(crate) struct AttributeValue {
     /// Allowable values for the attribute.
-    pub(crate) allowable_value: AllowableValue<'src>,
+    pub(crate) allowable_value: AllowableValue,
 
     /// Allowable contexts for modifying the attribute value.
     pub(crate) modification_context: ModificationContext,
 
     /// Current value of the attribute.
-    pub(crate) value: InterpretedValue<'src>,
+    pub(crate) value: InterpretedValue,
 }
 
 /// Allowable values for the attribute.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum AllowableValue<'src> {
+pub enum AllowableValue {
     /// Any value is accepted.
     Any,
 
@@ -36,7 +36,7 @@ pub enum AllowableValue<'src> {
     /// equals sign and enclosed in square brackets (e.g., `[=auto]`). An
     /// attribute reference will resolve to an empty value rather than the
     /// effective value.
-    Effective(InterpretedValue<'src>),
+    Effective(InterpretedValue),
 
     /// Built-in attributes that are not set may have an implied value. The
     /// implied value is enclosed in parentheses (e.g., (attributes)). An

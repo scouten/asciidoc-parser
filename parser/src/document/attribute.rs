@@ -1,4 +1,4 @@
-use crate::{HasSpan, Span, span::MatchedItem, strings::CowStr};
+use crate::{HasSpan, Span, span::MatchedItem};
 
 /// Document attributes are effectively document-scoped variables for the
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in
@@ -67,7 +67,7 @@ impl<'src> Attribute<'src> {
     }
 
     /// Return the attribute's interpolated value.
-    pub fn value(&'src self) -> InterpretedValue<'src> {
+    pub fn value(&'src self) -> InterpretedValue {
         self.value.as_interpreted_value()
     }
 }
@@ -98,7 +98,7 @@ pub enum RawAttributeValue<'src> {
 impl<'src> RawAttributeValue<'src> {
     /// Convert this to an [`InterpretedValue`], resolving any interpolation
     /// necessary if the value contains a textual value.
-    pub fn as_interpreted_value(&self) -> InterpretedValue<'src> {
+    pub fn as_interpreted_value(&self) -> InterpretedValue {
         match self {
             Self::Value(span) => {
                 let data = span.data();
@@ -133,9 +133,9 @@ impl<'src> RawAttributeValue<'src> {
                         .collect();
 
                     let value = value.join("");
-                    InterpretedValue::Value(CowStr::from(value))
+                    InterpretedValue::Value(value)
                 } else {
-                    InterpretedValue::Value(CowStr::Borrowed(data))
+                    InterpretedValue::Value(data.to_owned())
                 }
             }
 
@@ -151,9 +151,9 @@ impl<'src> RawAttributeValue<'src> {
 /// have any continuation markers resolved, but will no longer
 /// contain a reference to the [`Span`] that contains the value.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum InterpretedValue<'src> {
+pub enum InterpretedValue {
     /// A custom value with all necessary interpolations applied.
-    Value(CowStr<'src>),
+    Value(String),
 
     /// No explicit value. This is typically interpreted as either
     /// boolean `true` or a default value for a built-in attribute.
@@ -163,10 +163,10 @@ pub enum InterpretedValue<'src> {
     Unset,
 }
 
-impl<'src> InterpretedValue<'src> {
-    pub(crate) fn as_maybe_str(&'src self) -> Option<&'src str> {
+impl InterpretedValue {
+    pub(crate) fn as_maybe_str(&self) -> Option<&str> {
         match self {
-            InterpretedValue::Value(cow) => Some(cow.as_ref()),
+            InterpretedValue::Value(value) => Some(value.as_ref()),
             _ => None,
         }
     }
