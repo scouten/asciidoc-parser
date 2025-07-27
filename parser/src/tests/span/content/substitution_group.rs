@@ -423,12 +423,74 @@ mod header {
     use crate::{Content, Parser, Span, span::content::SubstitutionGroup, strings::CowStr};
 
     #[test]
-    #[should_panic]
-    fn not_yet_implemented() {
+    fn empty() {
         let mut content = Content::from(Span::new(""));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(content.is_empty());
         assert_eq!(content.rendered, CowStr::Borrowed(""));
+    }
+
+    #[test]
+    fn basic_non_empty_span() {
+        let mut content = Content::from(Span::new("blah"));
+        let p = Parser::default();
+        SubstitutionGroup::Header.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("blah"));
+    }
+
+    #[test]
+    fn match_lt_and_gt() {
+        let mut content = Content::from(Span::new("bl<ah>"));
+        let p = Parser::default();
+        SubstitutionGroup::Header.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;ah&gt;".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn match_amp() {
+        let mut content = Content::from(Span::new("bl<a&h>"));
+        let p = Parser::default();
+        SubstitutionGroup::Header.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;a&amp;h&gt;".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn ignores_strong_word() {
+        let mut content = Content::from(Span::new("One *word* is strong."));
+        let p = Parser::default();
+        SubstitutionGroup::Header.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("One *word* is strong."));
+    }
+
+    #[test]
+    fn ignores_strong_word_with_special_chars() {
+        let mut content = Content::from(Span::new("One *wo<r>d* is strong."));
+        let p = Parser::default();
+        SubstitutionGroup::Header.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("One *wo&lt;r&gt;d* is strong.".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn ignores_marked_string_with_id() {
+        let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
+        let p = Parser::default();
+        SubstitutionGroup::Header.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("[#id]#a few words#"));
     }
 }

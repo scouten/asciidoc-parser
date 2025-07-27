@@ -20,7 +20,7 @@ pub struct Header<'src> {
 impl<'src> Header<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
-        _parser: &mut Parser,
+        parser: &mut Parser,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let original_src = source;
 
@@ -35,7 +35,7 @@ impl<'src> Header<'src> {
             (None, source)
         };
 
-        while let Some(attr) = Attribute::parse(after) {
+        while let Some(attr) = Attribute::parse(after, parser) {
             attributes.push(attr.item);
             after = attr.after;
         }

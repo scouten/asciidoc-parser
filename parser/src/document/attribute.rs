@@ -1,4 +1,8 @@
-use crate::{HasSpan, Span, span::MatchedItem};
+use crate::{
+    Content, HasSpan, Parser, Span,
+    span::{MatchedItem, content::SubstitutionGroup},
+    strings::CowStr,
+};
 
 /// Document attributes are effectively document-scoped variables for the
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in
@@ -7,12 +11,16 @@ use crate::{HasSpan, Span, span::MatchedItem};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Attribute<'src> {
     name: Span<'src>,
-    value: RawAttributeValue<'src>,
+    value_source: Option<Span<'src>>,
+    value: InterpretedValue,
     source: Span<'src>,
 }
 
 impl<'src> Attribute<'src> {
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(
+        source: Span<'src>,
+        parser: &Parser<'_>,
+    ) -> Option<MatchedItem<'src, Self>> {
         let attr_line = source.take_line_with_continuation()?;
         let colon = attr_line.item.take_prefix(":")?;
 
@@ -35,20 +43,24 @@ impl<'src> Attribute<'src> {
 
         let line = line.take_prefix(":")?;
 
-        let value = if unset {
+        let (value, value_source) = if unset {
             // Ensure line is now empty except for comment.
-            RawAttributeValue::Unset
+            (InterpretedValue::Unset, None)
         } else if line.after.is_empty() {
-            RawAttributeValue::Set
+            (InterpretedValue::Set, None)
         } else {
-            let value = line.after.take_whitespace();
-            RawAttributeValue::Value(value.after)
+            let raw_value = line.after.take_whitespace();
+            (
+                InterpretedValue::from_raw_value(&raw_value.after, parser),
+                Some(raw_value.after),
+            )
         };
 
         let source = source.trim_remainder(attr_line.after);
         Some(MatchedItem {
             item: Self {
                 name: name.item,
+                value_source,
                 value,
                 source: source.trim_trailing_whitespace(),
             },
@@ -61,87 +73,20 @@ impl<'src> Attribute<'src> {
         &self.name
     }
 
-    /// Return the attribute's raw value.
-    pub fn raw_value(&'src self) -> &'src RawAttributeValue<'src> {
-        &self.value
+    /// Return a [`Span`] containing the attribute's raw value (if present).
+    pub fn raw_value(&'src self) -> Option<Span<'src>> {
+        self.value_source
     }
 
     /// Return the attribute's interpolated value.
-    pub fn value(&'src self) -> InterpretedValue {
-        self.value.as_interpreted_value()
+    pub fn value(&'src self) -> &'src InterpretedValue {
+        &self.value
     }
 }
 
 impl<'src> HasSpan<'src> for Attribute<'src> {
     fn span(&self) -> Span<'src> {
         self.source
-    }
-}
-
-/// The raw value of an [`Attribute`].
-///
-/// If the value contains a textual value, this value will
-/// contain continuation markers.
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub enum RawAttributeValue<'src> {
-    /// A custom value, described by its accompanying [`Span`].
-    Value(Span<'src>),
-
-    /// No explicit value. This is typically interpreted as either
-    /// boolean `true` or a default value for a built-in attribute.
-    Set,
-
-    /// Explicitly unset. This is typically interpreted as boolean `false`.
-    Unset,
-}
-
-impl<'src> RawAttributeValue<'src> {
-    /// Convert this to an [`InterpretedValue`], resolving any interpolation
-    /// necessary if the value contains a textual value.
-    pub fn as_interpreted_value(&self) -> InterpretedValue {
-        match self {
-            Self::Value(span) => {
-                let data = span.data();
-                if data.contains('\n') {
-                    let lines: Vec<&str> = data.lines().collect();
-                    let last_count = lines.len() - 1;
-
-                    let value: Vec<String> = lines
-                        .iter()
-                        .enumerate()
-                        .map(|(count, line)| {
-                            let line = if count > 0 {
-                                line.trim_start_matches(' ')
-                            } else {
-                                line
-                            };
-
-                            let line = line
-                                .trim_start_matches('\r')
-                                .trim_end_matches(' ')
-                                .trim_end_matches('\\')
-                                .trim_end_matches(' ');
-
-                            if line.ends_with('+') {
-                                format!("{}\n", line.trim_end_matches('+').trim_end_matches(' '))
-                            } else if count < last_count {
-                                format!("{line} ")
-                            } else {
-                                line.to_string()
-                            }
-                        })
-                        .collect();
-
-                    let value = value.join("");
-                    InterpretedValue::Value(value)
-                } else {
-                    InterpretedValue::Value(data.to_owned())
-                }
-            }
-
-            Self::Set => InterpretedValue::Set,
-            Self::Unset => InterpretedValue::Unset,
-        }
     }
 }
 
@@ -164,6 +109,48 @@ pub enum InterpretedValue {
 }
 
 impl InterpretedValue {
+    fn from_raw_value(raw_value: &Span<'_>, parser: &Parser) -> Self {
+        let data = raw_value.data();
+        let mut content = Content::from(*raw_value);
+
+        if data.contains('\n') {
+            let lines: Vec<&str> = data.lines().collect();
+            let last_count = lines.len() - 1;
+
+            let value: Vec<String> = lines
+                .iter()
+                .enumerate()
+                .map(|(count, line)| {
+                    let line = if count > 0 {
+                        line.trim_start_matches(' ')
+                    } else {
+                        line
+                    };
+
+                    let line = line
+                        .trim_start_matches('\r')
+                        .trim_end_matches(' ')
+                        .trim_end_matches('\\')
+                        .trim_end_matches(' ');
+
+                    if line.ends_with('+') {
+                        format!("{}\n", line.trim_end_matches('+').trim_end_matches(' '))
+                    } else if count < last_count {
+                        format!("{line} ")
+                    } else {
+                        line.to_string()
+                    }
+                })
+                .collect();
+
+            content.rendered = CowStr::Boxed(value.join("").into_boxed_str());
+        }
+
+        SubstitutionGroup::Header.apply(&mut content, parser, None);
+
+        InterpretedValue::Value(content.rendered.into_string())
+    }
+
     pub(crate) fn as_maybe_str(&self) -> Option<&str> {
         match self {
             InterpretedValue::Value(value) => Some(value.as_ref()),

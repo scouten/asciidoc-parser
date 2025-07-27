@@ -1,10 +1,10 @@
 use crate::{
-    Span,
+    Parser, Span,
     document::{Attribute, InterpretedValue},
     tests::{
         fixtures::{
             TSpan,
-            document::{TAttribute, TRawAttributeValue},
+            document::{TAttribute, TInterpretedValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -47,7 +47,7 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":name-of-an-attribute:")).unwrap();
+    let mi = Attribute::parse(Span::new(":name-of-an-attribute:"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -58,7 +58,8 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Set,
+            value_source: None,
+            value: TInterpretedValue::Set,
             source: TSpan {
                 data: ":name-of-an-attribute:",
                 line: 1,
@@ -68,7 +69,7 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
         }
     );
 
-    assert_eq!(mi.item.value(), InterpretedValue::Set);
+    assert_eq!(mi.item.value(), &InterpretedValue::Set);
 }
 
 #[test]
@@ -88,7 +89,11 @@ At the end of the value, press kbd:[Enter].
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":name-of-an-attribute: value of the attribute")).unwrap();
+    let mi = Attribute::parse(
+        Span::new(":name-of-an-attribute: value of the attribute"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
@@ -99,12 +104,13 @@ At the end of the value, press kbd:[Enter].
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "value of the attribute",
                 line: 1,
                 col: 24,
                 offset: 23,
-            },),
+            }),
+            value: TInterpretedValue::Value("value of the attribute"),
             source: TSpan {
                 data: ":name-of-an-attribute: value of the attribute",
                 line: 1,

@@ -5,7 +5,7 @@ use crate::{
     document::Header,
     tests::fixtures::{
         TSpan,
-        document::{TAttribute, THeader, TRawAttributeValue},
+        document::{TAttribute, THeader, TInterpretedValue},
     },
 };
 
@@ -153,12 +153,13 @@ fn title_and_attribute() {
                     col: 2,
                     offset: 18,
                 },
-                value: TRawAttributeValue::Value(TSpan {
+                value_source: Some(TSpan {
                     data: "bar",
                     line: 2,
                     col: 7,
                     offset: 23,
                 }),
+                value: TInterpretedValue::Value("bar"),
                 source: TSpan {
                     data: ":foo: bar",
                     line: 2,
@@ -202,12 +203,13 @@ fn attribute_without_title() {
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Value(TSpan {
+                value_source: Some(TSpan {
                     data: "bar",
                     line: 1,
                     col: 7,
                     offset: 6,
                 }),
+                value: TInterpretedValue::Value("bar"),
                 source: TSpan {
                     data: ":foo: bar",
                     line: 1,
