@@ -9,19 +9,19 @@ pub(crate) enum TInterpretedValue {
     Unset,
 }
 
-impl<'src> PartialEq<InterpretedValue<'src>> for TInterpretedValue {
-    fn eq(&self, other: &InterpretedValue<'src>) -> bool {
+impl PartialEq<InterpretedValue> for TInterpretedValue {
+    fn eq(&self, other: &InterpretedValue) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TInterpretedValue> for InterpretedValue<'_> {
+impl PartialEq<TInterpretedValue> for InterpretedValue {
     fn eq(&self, other: &TInterpretedValue) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TInterpretedValue> for &InterpretedValue<'_> {
+impl PartialEq<TInterpretedValue> for &InterpretedValue {
     fn eq(&self, other: &TInterpretedValue) -> bool {
         fixture_eq_observed(other, self)
     }
@@ -31,7 +31,7 @@ fn fixture_eq_observed(fixture: &TInterpretedValue, observed: &InterpretedValue)
     match fixture {
         TInterpretedValue::Value(fixture_value) => {
             if let InterpretedValue::Value(observed_value) = observed {
-                fixture_value == &observed_value.as_ref()
+                fixture_value == observed_value
             } else {
                 false
             }

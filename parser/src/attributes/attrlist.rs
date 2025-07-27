@@ -62,7 +62,6 @@ impl<'src> Attrlist<'src> {
             // reason, individual attribute parsing only returns the warning type and we
             // then map it back to the entire attrlist source.
             for warning_type in warning_types {
-                dbg!(&warning_type);
                 warnings.push(Warning {
                     source,
                     warning: warning_type,
@@ -368,7 +367,7 @@ impl<'src> Attrlist<'src> {
 }
 
 impl<'src> HasSpan<'src> for Attrlist<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }

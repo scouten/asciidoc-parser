@@ -2,12 +2,13 @@ use std::collections::HashMap;
 
 use super::HtmlSubstitutionRenderer;
 use crate::{
-    Document,
-    document::InterpretedValue,
+    Document, HasSpan,
+    document::{Attribute, InterpretedValue},
     parser::{
         AllowableValue, AttributeValue, InlineSubstitutionRenderer, ModificationContext,
         PathResolver,
     },
+    warnings::{Warning, WarningType},
 };
 
 /// The [`Parser`] struct and its related structs allow a caller to configure
@@ -15,7 +16,7 @@ use crate::{
 #[derive(Clone, Debug)]
 pub struct Parser<'p> {
     /// Attribute values at current state of parsing.
-    pub(crate) attribute_values: HashMap<String, AttributeValue<'p>>,
+    pub(crate) attribute_values: HashMap<String, AttributeValue>,
 
     /// Specifies how the basic raw text of a simple block will be converted to
     /// the format which will ultimately be presented in the final output.
@@ -46,6 +47,9 @@ impl<'p> Parser<'p> {
     /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
     /// UTF-8 prior to parsing.
     ///
+    /// **IMPORTANT:** The `Parser` struct will be updated with attributes and
+    /// similar values discovered during parsing.
+    ///
     /// # Warnings, not errors
     ///
     /// Any UTF-8 string is a valid AsciiDoc document, so this function does not
@@ -55,9 +59,8 @@ impl<'p> Parser<'p> {
     /// provided via the [`warnings()`] iterator.
     ///
     /// [`warnings()`]: Document::warnings
-    pub fn parse<'src>(&self, source: &'src str) -> Document<'src> {
-        let mut temp_copy = self.clone();
-        Document::parse(source, &mut temp_copy)
+    pub fn parse<'src>(&mut self, source: &'src str) -> Document<'src> {
+        Document::parse(source, self)
     }
 
     /// Retrieves the current interpreted value of a [document attribute].
@@ -84,7 +87,7 @@ impl<'p> Parser<'p> {
     /// attributes are stored in the order in which they are defined.
     ///
     /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
-    pub fn attribute_value<N: AsRef<str>>(&self, name: N) -> InterpretedValue<'p> {
+    pub fn attribute_value<N: AsRef<str>>(&self, name: N) -> InterpretedValue {
         self.attribute_values
             .get(name.as_ref())
             .map(|av| av.value.clone())
@@ -126,7 +129,7 @@ impl<'p> Parser<'p> {
         let attribute_value = AttributeValue {
             allowable_value: AllowableValue::Any,
             modification_context,
-            value: InterpretedValue::Value(value.as_ref().to_string().into()),
+            value: InterpretedValue::Value(value.as_ref().to_string()),
         };
 
         self.attribute_values
@@ -178,6 +181,34 @@ impl<'p> Parser<'p> {
 
         self
     }
+
+    /// Called from [`Header::parse()`] to accept or reject an attribute value.
+    pub(crate) fn set_attribute_from_header<'src>(
+        &mut self,
+        attr: &Attribute<'src>,
+        warnings: &mut Vec<Warning<'src>>,
+    ) {
+        let attr_name = attr.name().data().to_owned();
+
+        // Verify that we have permission to overwrite any existing attribute value.
+        if let Some(existing_attr) = self.attribute_values.get(&attr_name)
+            && existing_attr.modification_context == ModificationContext::ApiOnly
+        {
+            warnings.push(Warning {
+                source: attr.span(),
+                warning: WarningType::AttributeValueIsLocked(attr_name),
+            });
+            return;
+        }
+
+        let attribute_value = AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::Anywhere,
+            value: attr.value().clone(),
+        };
+
+        self.attribute_values.insert(attr_name, attribute_value);
+    }
 }
 
 const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitutionRenderer {};
@@ -192,8 +223,8 @@ impl Default for Parser<'_> {
     }
 }
 
-fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
-    let mut attrs: HashMap<String, AttributeValue<'static>> = HashMap::new();
+fn built_in_attrs() -> HashMap<String, AttributeValue> {
+    let mut attrs: HashMap<String, AttributeValue> = HashMap::new();
 
     attrs.insert(
         "sp".to_owned(),

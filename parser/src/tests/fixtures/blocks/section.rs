@@ -95,5 +95,5 @@ fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool
         return false;
     }
 
-    &fixture.source == observed.span()
+    fixture.source == observed.span()
 }

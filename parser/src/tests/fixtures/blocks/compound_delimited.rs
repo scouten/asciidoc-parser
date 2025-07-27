@@ -91,5 +91,5 @@ fn fixture_eq_observed(
         return false;
     }
 
-    &fixture.source == observed.span()
+    fixture.source == observed.span()
 }

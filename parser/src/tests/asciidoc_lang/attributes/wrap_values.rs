@@ -1,18 +1,18 @@
+use pretty_assertions_sorted::assert_eq;
+
 use crate::{
-    Span,
+    Parser, Span,
     document::{Attribute, InterpretedValue},
-    strings::CowStr,
     tests::{
         fixtures::{
             TSpan,
-            document::{TAttribute, TRawAttributeValue},
+            document::{TAttribute, TInterpretedValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
 };
 
 track_file!("docs/modules/attributes/pages/wrap-values.adoc");
-// Tracking commit 389fd8f7, current as of 2025-04-13.
 
 non_normative!(
     r#"
@@ -53,7 +53,7 @@ If the line continuation is missing, the processor will assume it has found the 
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.")).unwrap();
+    let mi = Attribute::parse(Span::new(":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source."), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -64,12 +64,15 @@ If the line continuation is missing, the processor will assume it has found the 
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.",
                 line: 1,
                 col: 15,
                 offset: 14,
-            },),
+            }),
+            value: TInterpretedValue::Value(
+                "If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source."
+            ),
             source: TSpan {
                 data: ":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.",
                 line: 1,
@@ -79,9 +82,11 @@ If the line continuation is missing, the processor will assume it has found the 
         }
     );
 
-    assert_eq!(mi.item.value(), InterpretedValue::Value(
-        CowStr::Boxed("If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source.".to_string().into_boxed_str())
-        ),
+    assert_eq!(
+        mi.item.value(),
+        &InterpretedValue::Value(
+            "If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source.".to_string()
+        )
     );
 }
 
@@ -114,7 +119,7 @@ This syntax ensures that the newlines are preserved in the output as hard line b
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!")).unwrap();
+    let mi = Attribute::parse(Span::new(":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -125,12 +130,15 @@ This syntax ensures that the newlines are preserved in the output as hard line b
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!",
                 line: 1,
                 col: 9,
                 offset: 8,
-            },),
+            }),
+            value: TInterpretedValue::Value(
+                "Write your docs in text,\nAsciiDoc makes it easy,\nNow get back to work!"
+            ),
             source: TSpan {
                 data: ":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!",
                 line: 1,
@@ -142,10 +150,8 @@ This syntax ensures that the newlines are preserved in the output as hard line b
 
     assert_eq!(
         mi.item.value(),
-        InterpretedValue::Value(CowStr::Boxed(
-            "Write your docs in text,\nAsciiDoc makes it easy,\nNow get back to work!"
-                .to_string()
-                .into_boxed_str()
-        )),
+        &InterpretedValue::Value(
+            "Write your docs in text,\nAsciiDoc makes it easy,\nNow get back to work!".to_string()
+        ),
     );
 }

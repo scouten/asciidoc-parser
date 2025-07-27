@@ -1,25 +1,25 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Span,
+    Parser, Span,
     document::Attribute,
     tests::fixtures::{
         TSpan,
-        document::{TAttribute, TInterpretedValue, TRawAttributeValue},
+        document::{TAttribute, TInterpretedValue},
     },
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Attribute::parse(Span::new(":foo: bar")).unwrap();
+    let h1 = Attribute::parse(Span::new(":foo: bar"), &Parser::default()).unwrap();
     let h2 = h1.clone();
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn simple_value() {
-    let mi = Attribute::parse(Span::new(":foo: bar\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo: bar\nblah"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -30,12 +30,13 @@ fn simple_value() {
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "bar",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
+            value: TInterpretedValue::Value("bar"),
             source: TSpan {
                 data: ":foo: bar",
                 line: 1,
@@ -60,7 +61,7 @@ fn simple_value() {
 
 #[test]
 fn no_value() {
-    let mi = Attribute::parse(Span::new(":foo:\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo:\nblah"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -71,7 +72,8 @@ fn no_value() {
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Set,
+            value_source: None,
+            value: TInterpretedValue::Set,
             source: TSpan {
                 data: ":foo:",
                 line: 1,
@@ -96,7 +98,7 @@ fn no_value() {
 
 #[test]
 fn name_with_hyphens() {
-    let mi = Attribute::parse(Span::new(":name-with-hyphen:")).unwrap();
+    let mi = Attribute::parse(Span::new(":name-with-hyphen:"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -107,7 +109,8 @@ fn name_with_hyphens() {
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Set,
+            value_source: None,
+            value: TInterpretedValue::Set,
             source: TSpan {
                 data: ":name-with-hyphen:",
                 line: 1,
@@ -132,7 +135,7 @@ fn name_with_hyphens() {
 
 #[test]
 fn unset_prefix() {
-    let mi = Attribute::parse(Span::new(":!foo:\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":!foo:\nblah"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -143,7 +146,8 @@ fn unset_prefix() {
                 col: 3,
                 offset: 2,
             },
-            value: TRawAttributeValue::Unset,
+            value_source: None,
+            value: TInterpretedValue::Unset,
             source: TSpan {
                 data: ":!foo:",
                 line: 1,
@@ -168,7 +172,7 @@ fn unset_prefix() {
 
 #[test]
 fn unset_postfix() {
-    let mi = Attribute::parse(Span::new(":foo!:\nblah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo!:\nblah"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -179,7 +183,8 @@ fn unset_postfix() {
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Unset,
+            value_source: None,
+            value: TInterpretedValue::Unset,
             source: TSpan {
                 data: ":foo!:",
                 line: 1,
@@ -204,27 +209,27 @@ fn unset_postfix() {
 
 #[test]
 fn err_unset_prefix_and_postfix() {
-    assert!(Attribute::parse(Span::new(":!foo!:\nblah")).is_none());
+    assert!(Attribute::parse(Span::new(":!foo!:\nblah"), &Parser::default()).is_none());
 }
 
 #[test]
 fn err_invalid_ident1() {
-    assert!(Attribute::parse(Span::new(":@invalid:\nblah")).is_none());
+    assert!(Attribute::parse(Span::new(":@invalid:\nblah"), &Parser::default()).is_none());
 }
 
 #[test]
 fn err_invalid_ident2() {
-    assert!(Attribute::parse(Span::new(":invalid@:\nblah")).is_none());
+    assert!(Attribute::parse(Span::new(":invalid@:\nblah"), &Parser::default()).is_none());
 }
 
 #[test]
 fn err_invalid_ident3() {
-    assert!(Attribute::parse(Span::new(":-invalid:\nblah")).is_none());
+    assert!(Attribute::parse(Span::new(":-invalid:\nblah"), &Parser::default()).is_none());
 }
 
 #[test]
 fn value_with_soft_wrap() {
-    let mi = Attribute::parse(Span::new(":foo: bar \\\n blah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo: bar \\\n blah"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -235,12 +240,13 @@ fn value_with_soft_wrap() {
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "bar \\\n blah",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
+            value: TInterpretedValue::Value("bar blah"),
             source: TSpan {
                 data: ":foo: bar \\\n blah",
                 line: 1,
@@ -265,7 +271,7 @@ fn value_with_soft_wrap() {
 
 #[test]
 fn value_with_hard_wrap() {
-    let mi = Attribute::parse(Span::new(":foo: bar + \\\n blah")).unwrap();
+    let mi = Attribute::parse(Span::new(":foo: bar + \\\n blah"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -276,12 +282,13 @@ fn value_with_hard_wrap() {
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "bar + \\\n blah",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
+            value: TInterpretedValue::Value("bar\nblah"),
             source: TSpan {
                 data: ":foo: bar + \\\n blah",
                 line: 1,

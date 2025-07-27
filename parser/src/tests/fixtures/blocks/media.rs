@@ -93,5 +93,5 @@ fn fixture_eq_observed(fixture: &TMediaBlock, observed: &MediaBlock) -> bool {
         return false;
     }
 
-    &fixture.source == observed.span()
+    fixture.source == observed.span()
 }

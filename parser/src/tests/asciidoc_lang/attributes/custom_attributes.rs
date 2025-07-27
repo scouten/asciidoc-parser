@@ -1,10 +1,12 @@
+use pretty_assertions_sorted::assert_eq;
+
 use crate::{
-    Span,
+    Parser, Span,
     document::Attribute,
     tests::{
         fixtures::{
             TSpan,
-            document::{TAttribute, TInterpretedValue, TRawAttributeValue},
+            document::{TAttribute, TInterpretedValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -25,12 +27,12 @@ When you find yourself typing the same text repeatedly, or text that often needs
 
 mod user_defined_names {
     use crate::{
-        Span,
+        Parser, Span,
         document::{Attribute, InterpretedValue},
         tests::{
             fixtures::{
                 TSpan,
-                document::{TAttribute, TRawAttributeValue},
+                document::{TAttribute, TInterpretedValue},
             },
             sdd::verifies,
         },
@@ -60,9 +62,9 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn at_least_one_character_long() {
-        assert!(Attribute::parse(Span::new("::")).is_none());
+        assert!(Attribute::parse(Span::new("::"), &Parser::default()).is_none());
 
-        let mi = Attribute::parse(Span::new(":a:")).unwrap();
+        let mi = Attribute::parse(Span::new(":a:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
@@ -73,7 +75,8 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Set,
+                value_source: None,
+                value: TInterpretedValue::Set,
                 source: TSpan {
                     data: ":a:",
                     line: 1,
@@ -83,14 +86,14 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), InterpretedValue::Set);
+        assert_eq!(mi.item.value(), &InterpretedValue::Set);
     }
 
     #[test]
     fn begin_with_word_character() {
-        assert!(Attribute::parse(Span::new(":-abc:")).is_none());
+        assert!(Attribute::parse(Span::new(":-abc:"), &Parser::default()).is_none());
 
-        let mi = Attribute::parse(Span::new(":9abc:")).unwrap();
+        let mi = Attribute::parse(Span::new(":9abc:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
@@ -101,7 +104,8 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Set,
+                value_source: None,
+                value: TInterpretedValue::Set,
                 source: TSpan {
                     data: ":9abc:",
                     line: 1,
@@ -111,9 +115,9 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), InterpretedValue::Set);
+        assert_eq!(mi.item.value(), &InterpretedValue::Set);
 
-        let mi = Attribute::parse(Span::new(":_abc:")).unwrap();
+        let mi = Attribute::parse(Span::new(":_abc:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
@@ -124,7 +128,8 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Set,
+                value_source: None,
+                value: TInterpretedValue::Set,
                 source: TSpan {
                     data: ":_abc:",
                     line: 1,
@@ -134,15 +139,15 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), InterpretedValue::Set);
+        assert_eq!(mi.item.value(), &InterpretedValue::Set);
     }
 
     #[test]
     fn only_contain_word_characters_and_hyphens() {
-        assert!(Attribute::parse(Span::new(":abc def:")).is_none());
-        assert!(Attribute::parse(Span::new(":abc.def:")).is_none());
+        assert!(Attribute::parse(Span::new(":abc def:"), &Parser::default()).is_none());
+        assert!(Attribute::parse(Span::new(":abc.def:"), &Parser::default()).is_none());
 
-        let mi = Attribute::parse(Span::new(":9ab-cdef:")).unwrap();
+        let mi = Attribute::parse(Span::new(":9ab-cdef:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
@@ -153,7 +158,8 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Set,
+                value_source: None,
+                value: TInterpretedValue::Set,
                 source: TSpan {
                     data: ":9ab-cdef:",
                     line: 1,
@@ -163,14 +169,14 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), InterpretedValue::Set);
+        assert_eq!(mi.item.value(), &InterpretedValue::Set);
     }
 
     #[test]
     fn may_contain_uppercase() {
         // IMPORTANT: We've defined the lower-case normalization as out of scope for
         // the parser crate for now.
-        let mi = Attribute::parse(Span::new(":URL:")).unwrap();
+        let mi = Attribute::parse(Span::new(":URL:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
@@ -181,7 +187,8 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Set,
+                value_source: None,
+                value: TInterpretedValue::Set,
                 source: TSpan {
                     data: ":URL:",
                     line: 1,
@@ -191,9 +198,9 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), InterpretedValue::Set);
+        assert_eq!(mi.item.value(), &InterpretedValue::Set);
 
-        let mi = Attribute::parse(Span::new(":Url:")).unwrap();
+        let mi = Attribute::parse(Span::new(":Url:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
@@ -204,7 +211,8 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     col: 2,
                     offset: 1,
                 },
-                value: TRawAttributeValue::Set,
+                value_source: None,
+                value: TInterpretedValue::Set,
                 source: TSpan {
                     data: ":Url:",
                     line: 1,
@@ -214,7 +222,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
             }
         );
 
-        assert_eq!(mi.item.value(), InterpretedValue::Set);
+        assert_eq!(mi.item.value(), &InterpretedValue::Set);
     }
 }
 
@@ -250,7 +258,7 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.")).unwrap();
+    let mi = Attribute::parse(Span::new(":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks."), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
@@ -261,12 +269,15 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.",
                 line: 1,
                 col: 14,
                 offset: 13,
-            },),
+            }),
+            value: TInterpretedValue::Value(
+                "Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."
+            ),
             source: TSpan {
                 data: ":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.",
                 line: 1,
@@ -283,9 +294,10 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
         )
     );
 
-    let mi = Attribute::parse(Span::new(
-        ":url-repo: https://github.com/asciidoctor/asciidoctor",
-    ))
+    let mi = Attribute::parse(
+        Span::new(":url-repo: https://github.com/asciidoctor/asciidoctor"),
+        &Parser::default(),
+    )
     .unwrap();
 
     assert_eq!(
@@ -297,12 +309,13 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
                 col: 2,
                 offset: 1,
             },
-            value: TRawAttributeValue::Value(TSpan {
+            value_source: Some(TSpan {
                 data: "https://github.com/asciidoctor/asciidoctor",
                 line: 1,
                 col: 12,
                 offset: 11,
-            },),
+            }),
+            value: TInterpretedValue::Value("https://github.com/asciidoctor/asciidoctor"),
             source: TSpan {
                 data: ":url-repo: https://github.com/asciidoctor/asciidoctor",
                 line: 1,

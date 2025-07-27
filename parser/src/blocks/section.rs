@@ -107,8 +107,8 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 }
 
 impl<'src> HasSpan<'src> for SectionBlock<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }
 

@@ -20,7 +20,7 @@ pub struct Header<'src> {
 impl<'src> Header<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
-        _parser: &mut Parser,
+        parser: &mut Parser,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let original_src = source;
 
@@ -35,7 +35,8 @@ impl<'src> Header<'src> {
             (None, source)
         };
 
-        while let Some(attr) = Attribute::parse(after) {
+        while let Some(attr) = Attribute::parse(after, parser) {
+            parser.set_attribute_from_header(&attr.item, &mut warnings);
             attributes.push(attr.item);
             after = attr.after;
         }
@@ -94,8 +95,8 @@ impl<'src> Header<'src> {
 }
 
 impl<'src> HasSpan<'src> for Header<'src> {
-    fn span(&'src self) -> &'src Span<'src> {
-        &self.source
+    fn span(&self) -> Span<'src> {
+        self.source
     }
 }
 
