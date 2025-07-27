@@ -15,7 +15,7 @@ use crate::{
 #[derive(Clone, Debug)]
 pub struct Parser<'p> {
     /// Attribute values at current state of parsing.
-    pub(crate) attribute_values: HashMap<String, AttributeValue<'p>>,
+    pub(crate) attribute_values: HashMap<String, AttributeValue>,
 
     /// Specifies how the basic raw text of a simple block will be converted to
     /// the format which will ultimately be presented in the final output.
@@ -86,7 +86,7 @@ impl<'p> Parser<'p> {
     /// attributes are stored in the order in which they are defined.
     ///
     /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
-    pub fn attribute_value<N: AsRef<str>>(&self, name: N) -> InterpretedValue<'p> {
+    pub fn attribute_value<N: AsRef<str>>(&self, name: N) -> InterpretedValue {
         self.attribute_values
             .get(name.as_ref())
             .map(|av| av.value.clone())
@@ -194,8 +194,8 @@ impl Default for Parser<'_> {
     }
 }
 
-fn built_in_attrs<'p>() -> HashMap<String, AttributeValue<'p>> {
-    let mut attrs: HashMap<String, AttributeValue<'static>> = HashMap::new();
+fn built_in_attrs<'p>() -> HashMap<String, AttributeValue> {
+    let mut attrs: HashMap<String, AttributeValue> = HashMap::new();
 
     attrs.insert(
         "sp".to_owned(),

@@ -115,7 +115,7 @@ At the end of the value, press kbd:[Enter].
     );
 
     if let InterpretedValue::Value(value) = mi.item.value() {
-        assert_eq!(value.as_ref(), "value of the attribute");
+        assert_eq!(value, "value of the attribute");
     } else {
         panic!("unexpected value type {v:?}", v = mi.item.value());
     }
