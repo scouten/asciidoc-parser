@@ -76,6 +76,7 @@ include::example$image.adoc[tag=float]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -173,6 +174,7 @@ include::example$image.adoc[tag=in-float]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -269,6 +271,7 @@ include::example$image.adoc[tag=role]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -364,6 +367,7 @@ include::example$image.adoc[tag=in-role]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
