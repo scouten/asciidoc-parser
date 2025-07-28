@@ -196,4 +196,210 @@ mod default_special_characters_substitution {
         let title = doc.header().title().unwrap();
         assert_eq!(title, "Title &amp; So On");
     }
+
+    #[test]
+    fn literal_listings_and_source() {
+        verifies!(
+            r#"
+|Literal, listings, and source |{y}
+
+"#
+        );
+
+        let doc = Parser::default().parse("....\nfoo > bar\n....");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "foo &gt; bar");
+    }
+
+    #[test]
+    fn macros() {
+        verifies!(
+            r#"
+|Macros |{y} +
+"#
+        );
+
+        let doc = Parser::default()
+            .parse("Click image:pause.png[title=Pause & Resume] when you need a break.");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            r#"Click <span class="image"><img src="pause.png" alt="pause" title="Pause &amp; Resume"></span> when you need a break."#
+        );
+    }
+
+    #[test]
+    fn macros_except_pass_macro() {
+        verifies!(
+            r#"
+(except triple plus and inline pass macros)
+
+"#
+        );
+
+        let doc = Parser::default().parse("Click +++Pause & Resume+++ when you need a break.");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            r#"Click Pause & Resume when you need a break."#
+        );
+    }
+
+    #[test]
+    fn open() {
+        verifies!(
+            r#"
+|Open |{y}
+
+"#
+        );
+
+        let doc = Parser::default().parse("--\nOpened & closed!\n--");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::CompoundDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        // Dig an extra level deeper to get the simple block that has the content.
+        let block1 = block1.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "Opened &amp; closed!");
+    }
+
+    #[test]
+    fn paragraphs() {
+        verifies!(
+            r#"
+|Paragraphs |{y}
+
+"#
+        );
+
+        let doc = Parser::default().parse("This is a <paragraph>.");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            r#"This is a &lt;paragraph&gt;."#
+        );
+    }
+
+    #[test]
+    fn passthrough_blocks() {
+        verifies!(
+            r#"
+|Passthrough blocks |{n}
+
+"#
+        );
+
+        let doc = Parser::default().parse("++++\nfoo > bar\n++++");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "foo > bar");
+    }
+
+    #[test]
+    fn quotes_and_verses() {
+        verifies!(
+            r#"
+|Quotes and verses |{y}
+
+"#
+        );
+
+        let doc = Parser::default().parse("____\nThis & that\n____");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::CompoundDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        // Dig an extra level deeper to get the simple block that has the content.
+        let block1 = block1.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "This &amp; that");
+    }
+
+    #[test]
+    fn sidebars() {
+        verifies!(
+            r#"
+|Sidebars |{y}
+
+"#
+        );
+
+        let doc = Parser::default().parse("****\nStuff > nonsense\n****");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::CompoundDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        // Dig an extra level deeper to get the simple block that has the content.
+        let block1 = block1.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "Stuff &gt; nonsense");
+    }
+
+    #[ignore]
+    #[test]
+    fn tables() {
+        to_do_verifies!(
+            r#"
+|Tables |{y}
+
+"#
+        );
+
+        todo!("Write test once table parsing is implemented");
+
+        // Blocked on https://github.com/scouten/asciidoc-parser/issues/296:
+        // Implement table parsing
+    }
 }
