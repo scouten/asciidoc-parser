@@ -24,7 +24,8 @@ pub struct RawDelimitedBlock<'src> {
     content_model: ContentModel,
     context: CowStr<'src>,
     source: Span<'src>,
-    title: Option<Span<'src>>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
     substitution_group: SubstitutionGroup,
@@ -107,7 +108,8 @@ impl<'src> RawDelimitedBlock<'src> {
                                 .source
                                 .trim_remainder(line.after)
                                 .trim_trailing_line_end(),
-                            title: metadata.title,
+                            title_source: metadata.title_source,
+                            title: metadata.title.clone(),
                             anchor: metadata.anchor,
                             attrlist: metadata.attrlist.clone(),
                             substitution_group,
@@ -145,8 +147,12 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
         self.context.clone()
     }
 
-    fn title(&self) -> Option<Span<'src>> {
-        self.title
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    fn title(&self) -> Option<&str> {
+        self.title.as_deref()
     }
 
     fn anchor(&'src self) -> Option<Span<'src>> {

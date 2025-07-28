@@ -12,7 +12,8 @@ pub(crate) struct TSectionBlock {
     pub section_title: TSpan,
     pub blocks: &'static [TBlock],
     pub source: TSpan,
-    pub title: Option<TSpan>,
+    pub title_source: Option<TSpan>,
+    pub title: Option<&'static str>,
     pub anchor: Option<TSpan>,
     pub attrlist: Option<TAttrlist>,
 }
@@ -24,6 +25,7 @@ impl fmt::Debug for TSectionBlock {
             .field("section_title", &self.section_title)
             .field("blocks", &self.blocks)
             .field("source", &self.source)
+            .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
@@ -60,6 +62,17 @@ fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool
         if fixture_block != observed_block {
             return false;
         }
+    }
+
+    if fixture.title_source.is_some() != observed.title_source().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_title_source) = fixture.title_source
+        && let Some(ref observed_title_source) = observed.title_source()
+        && fixture_title_source != observed_title_source
+    {
+        return false;
     }
 
     if fixture.title.is_some() != observed.title().is_some() {

@@ -1,16 +1,16 @@
 use crate::{
-    Parser, Span,
-    attributes::Attrlist,
-    span::MatchedItem,
-    warnings::{MatchAndWarnings, Warning, WarningType},
+    attributes::Attrlist, span::{content::SubstitutionGroup, MatchedItem}, warnings::{MatchAndWarnings, Warning, WarningType}, Content, Parser, Span
 };
 
 /// `BlockMetadata` represents the common elements that can precede any block
 /// type (such as title and attribute list). It is used internally to track
 /// those values before the specific block type is fully formed.
 pub(crate) struct BlockMetadata<'src> {
-    /// The block's title, if any.
-    pub(crate) title: Option<Span<'src>>,
+    /// The block's raw title, if any.
+    pub(crate) title_source: Option<Span<'src>>,
+
+    /// The block's rendered title, if any.
+    pub(crate) title: Option<String>,
 
     /// The block's anchor, if any. The span does not include the opening or
     /// closing square brace pair.
@@ -46,7 +46,7 @@ impl<'src> BlockMetadata<'src> {
 
         // Does this block have a title?
         let maybe_title = source.take_normalized_line();
-        let (title, block_start) =
+        let (title_source, block_start) =
             if maybe_title.item.starts_with('.') && !maybe_title.item.starts_with("..") {
                 let title = maybe_title.item.discard(1);
                 if title.take_whitespace().item.is_empty() {
@@ -57,6 +57,14 @@ impl<'src> BlockMetadata<'src> {
             } else {
                 (None, source)
             };
+
+                    let title = title_source.map(|ref span| {
+            let mut content = Content::from(*span);
+            SubstitutionGroup::Normal.apply(&mut content, parser, None);
+            content.rendered.into_string()
+        });
+
+
 
         // Does this block have a block anchor?
         let (anchor, block_start) = if let Some(MatchAndWarnings {
@@ -98,6 +106,7 @@ impl<'src> BlockMetadata<'src> {
 
         MatchAndWarnings {
             item: Self {
+                title_source,
                 title,
                 anchor,
                 attrlist,

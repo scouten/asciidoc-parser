@@ -245,8 +245,11 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
             .is_some_and(|attrlist| attrlist.has_option(name))
     }
 
-    /// Returns the title for this block, if present.
-    fn title(&'src self) -> Option<Span<'src>>;
+    /// Returns the source text for the title for this block, if present.
+    fn title_source(&'src self) -> Option<Span<'src>>;
+
+    /// Returns the rendered title for this block, if present.
+    fn title(&self) -> Option<&str>;
 
     /// Returns the anchor for this bloc, if present.
     fn anchor(&'src self) -> Option<Span<'src>>;

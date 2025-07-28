@@ -52,9 +52,9 @@ fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
         return false;
     }
 
-    if let Some(ref fixture_title) = fixture.title_source
-        && let Some(ref observed_title) = observed.title_source()
-        && fixture_title != observed_title
+    if let Some(ref fixture_title_source) = fixture.title_source
+        && let Some(ref observed_title_source) = observed.title_source()
+        && fixture_title_source != observed_title_source
     {
         return false;
     }

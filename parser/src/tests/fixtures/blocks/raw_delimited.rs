@@ -13,7 +13,8 @@ pub(crate) struct TRawDelimitedBlock {
     pub content_model: ContentModel,
     pub context: &'static str,
     pub source: TSpan,
-    pub title: Option<TSpan>,
+    pub title_source: Option<TSpan>,
+    pub title: Option<&'static str>,
     pub anchor: Option<TSpan>,
     pub attrlist: Option<TAttrlist>,
     pub substitution_group: SubstitutionGroup,
@@ -26,6 +27,7 @@ impl fmt::Debug for TRawDelimitedBlock {
             .field("content_model", &self.content_model)
             .field("context", &self.context)
             .field("source", &self.source)
+            .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
@@ -56,6 +58,17 @@ fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBloc
     }
 
     if fixture.context != observed.raw_context().as_ref() {
+        return false;
+    }
+
+    if fixture.title_source.is_some() != observed.title_source().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_title_source) = fixture.title_source
+        && let Some(ref observed_title_source) = observed.title_source()
+        && fixture_title_source != observed_title_source
+    {
         return false;
     }
 

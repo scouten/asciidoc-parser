@@ -248,7 +248,17 @@ impl<'src> IsBlock<'src> for Block<'src> {
         }
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        match self {
+            Self::Simple(b) => b.title_source(),
+            Self::Media(b) => b.title_source(),
+            Self::Section(b) => b.title_source(),
+            Self::RawDelimited(b) => b.title_source(),
+            Self::CompoundDelimited(b) => b.title_source(),
+        }
+    }
+
+    fn title(&self) -> Option<&str> {
         match self {
             Self::Simple(b) => b.title(),
             Self::Media(b) => b.title(),
