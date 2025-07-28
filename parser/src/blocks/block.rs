@@ -181,10 +181,10 @@ impl<'src> Block<'src> {
             // don't automatically error out on a parse failure.
         }
 
-        // First, let's look for a fun edge case. Perhaps the text contains a metadata
-        // but no block immediately following. If we're not careful, we could spin in a
-        // loop (for example, `parse_blocks_until`) thinking there will be another
-        // block, but there isn't.
+        // First, let's look for a fun edge case. Perhaps the text contains block
+        // metadata but no block immediately following. If we're not careful, we could
+        // spin in a loop (for example, `parse_blocks_until`) thinking there will be
+        // another block, but there isn't.
 
         // The following check disables that spin loop.
         let simple_block_mi = SimpleBlock::parse(&metadata, parser);
