@@ -120,6 +120,7 @@ image::sunset.jpg[Sunset]
             Parser::default().parse("image::sunset.jpg[Sunset]\n"),
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -190,6 +191,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                 .parse("Click the button with the image:star.png[Star] to favorite the project.\n"),
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {

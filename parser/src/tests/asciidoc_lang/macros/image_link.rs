@@ -63,6 +63,7 @@ image::logo.png[Logo]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -145,6 +146,7 @@ image::logo.png[Logo,link=https://example.org]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -223,6 +225,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -318,6 +321,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {

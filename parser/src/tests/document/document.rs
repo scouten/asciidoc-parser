@@ -44,6 +44,7 @@ fn empty_source() {
         doc,
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[],
                 source: TSpan {
@@ -71,6 +72,7 @@ fn only_spaces() {
         Parser::default().parse("    "),
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[],
                 source: TSpan {
@@ -99,6 +101,7 @@ fn one_simple_block() {
         doc,
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[],
                 source: TSpan {
@@ -147,6 +150,7 @@ fn two_simple_blocks() {
         Parser::default().parse("abc\n\ndef"),
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[],
                 source: TSpan {
@@ -215,12 +219,13 @@ fn two_blocks_and_title() {
         Parser::default().parse("= Example Title\n\nabc\n\ndef"),
         TDocument {
             header: THeader {
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "Example Title",
                     line: 1,
                     col: 3,
                     offset: 2,
                 }),
+                title: Some("Example Title"),
                 attributes: &[],
                 source: TSpan {
                     data: "= Example Title",
@@ -288,12 +293,13 @@ fn extra_space_before_title() {
         Parser::default().parse("=   Example Title\n\nabc"),
         TDocument {
             header: THeader {
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "Example Title",
                     line: 1,
                     col: 5,
                     offset: 4,
                 }),
+                title: Some("Example Title"),
                 attributes: &[],
                 source: TSpan {
                     data: "=   Example Title",
@@ -339,12 +345,13 @@ fn err_bad_header() {
         Parser::default().parse("= Title\nnot an attribute\n"),
         TDocument {
             header: THeader {
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "Title",
                     line: 1,
                     col: 3,
                     offset: 2,
                 }),
+                title: Some("Title"),
                 attributes: &[],
                 source: TSpan {
                     data: "= Title",
@@ -398,12 +405,13 @@ fn err_bad_header_and_bad_macro() {
         Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         TDocument {
             header: THeader {
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "Title",
                     line: 1,
                     col: 3,
                     offset: 2,
                 }),
+                title: Some("Title"),
                 attributes: &[],
                 source: TSpan {
                     data: "= Title",

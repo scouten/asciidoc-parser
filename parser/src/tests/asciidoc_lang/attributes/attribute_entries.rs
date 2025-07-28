@@ -100,12 +100,13 @@ At the end of the value, press kbd:[Enter].
         doc,
         TDocument {
             header: THeader {
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "Testing",
                     line: 1,
                     col: 3,
                     offset: 2,
                 },),
+                title: Some("Testing"),
                 attributes: &[TAttribute {
                     name: TSpan {
                         data: "name-of-an-attribute",
@@ -187,12 +188,13 @@ That means you don't need to escape special characters such in an HTML tag.
         doc,
         TDocument {
             header: THeader {
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "Testing",
                     line: 1,
                     col: 3,
                     offset: 2,
                 },),
+                title: Some("Testing"),
                 attributes: &[TAttribute {
                     name: TSpan {
                         data: "lt-attribute",
@@ -278,6 +280,7 @@ Attribute references in the value of an attribute entry are resolved immediately
         doc,
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[
                     TAttribute {
@@ -375,6 +378,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
         doc,
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[TAttribute {
                     name: TSpan {

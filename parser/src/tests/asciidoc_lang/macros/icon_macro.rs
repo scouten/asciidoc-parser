@@ -66,6 +66,7 @@ icon:heart[2x,role=red]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {

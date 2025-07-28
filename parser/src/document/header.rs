@@ -1,9 +1,9 @@
 use std::slice::Iter;
 
 use crate::{
-    HasSpan, Parser, Span,
+    Content, HasSpan, Parser, Span,
     document::Attribute,
-    span::MatchedItem,
+    span::{MatchedItem, content::SubstitutionGroup},
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
 
@@ -12,7 +12,8 @@ use crate::{
 /// document-wide attributes, and other document metadata.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Header<'src> {
-    title: Option<Span<'src>>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
     attributes: Vec<Attribute<'src>>,
     source: Span<'src>,
 }
@@ -29,11 +30,17 @@ impl<'src> Header<'src> {
 
         let source = source.discard_empty_lines();
 
-        let (title, mut after) = if let Some(mi) = parse_title(source) {
+        let (title_source, mut after) = if let Some(mi) = parse_title(source) {
             (Some(mi.item), mi.after)
         } else {
             (None, source)
         };
+
+        let title = title_source.map(|ref span| {
+            let mut content = Content::from(*span);
+            SubstitutionGroup::Header.apply(&mut content, parser, None);
+            content.rendered.into_string()
+        });
 
         while let Some(attr) = Attribute::parse(after, parser) {
             parser.set_attribute_from_header(&attr.item, &mut warnings);
@@ -44,10 +51,11 @@ impl<'src> Header<'src> {
         let source = source.trim_remainder(after);
 
         // Nothing resembling a header so far? Don't look for empty line.
-        if title.is_none() && attributes.is_empty() {
+        if title_source.is_none() && attributes.is_empty() {
             return MatchAndWarnings {
                 item: MatchedItem {
                     item: Self {
+                        title_source: None,
                         title: None,
                         attributes,
                         source: original_src.into_parse_result(0).item,
@@ -73,6 +81,7 @@ impl<'src> Header<'src> {
         MatchAndWarnings {
             item: MatchedItem {
                 item: Self {
+                    title_source,
                     title,
                     attributes,
                     source: source.trim_trailing_whitespace(),
@@ -83,9 +92,15 @@ impl<'src> Header<'src> {
         }
     }
 
-    /// Return a [`Span`] describing the document title, if there was one.
-    pub fn title(&'src self) -> Option<Span<'src>> {
-        self.title
+    /// Return a [`Span`] describing the raw document title, if there was one.
+    pub fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    /// Return the document's title, if there was one, having applied header
+    /// substitutions.
+    pub fn title(&self) -> Option<&str> {
+        self.title.as_deref()
     }
 
     /// Return an iterator over the attributes in this header.

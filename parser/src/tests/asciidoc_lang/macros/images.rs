@@ -73,6 +73,7 @@ include::example$image.adoc[tag=base]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -191,6 +192,7 @@ include::example$image.adoc[tag=alt]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -270,6 +272,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -359,6 +362,7 @@ include::example$image.adoc[tag=attr]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
