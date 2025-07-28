@@ -1,7 +1,7 @@
 use crate::{
     Content, HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
     span::{MatchedItem, content::SubstitutionGroup},
     strings::CowStr,
 };
@@ -19,25 +19,25 @@ pub struct SimpleBlock<'src> {
 
 impl<'src> SimpleBlock<'src> {
     pub(crate) fn parse(
-        preamble: &Preamble<'src>,
+        metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchedItem<'src, Self>> {
-        let source = preamble.block_start.take_non_empty_lines()?;
+        let source = metadata.block_start.take_non_empty_lines()?;
 
         // TO DO: Allow overrides for SubstitutionGroup.
         let mut content: Content<'src> = source.item.into();
-        SubstitutionGroup::Normal.apply(&mut content, parser, preamble.attrlist.as_ref());
+        SubstitutionGroup::Normal.apply(&mut content, parser, metadata.attrlist.as_ref());
 
         Some(MatchedItem {
             item: Self {
                 content,
-                source: preamble
+                source: metadata
                     .source
                     .trim_remainder(source.after)
                     .trim_trailing_whitespace(),
-                title: preamble.title,
-                anchor: preamble.anchor,
-                attrlist: preamble.attrlist.clone(),
+                title: metadata.title,
+                anchor: metadata.anchor,
+                attrlist: metadata.attrlist.clone(),
             },
             after: source.after.discard_empty_lines(),
         })
