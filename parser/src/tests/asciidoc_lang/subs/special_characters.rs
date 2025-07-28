@@ -154,4 +154,46 @@ mod default_special_characters_substitution {
 
         assert_eq!(block1.content().rendered(), "abc < def");
     }
+
+    #[test]
+    fn examples() {
+        verifies!(
+            r#"
+|Examples |{y}
+
+"#
+        );
+
+        let doc = Parser::default().parse("====\nHello & goodbye.\n====");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::CompoundDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        // Dig an extra level deeper to get the simple block that has the content.
+        let block1 = block1.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "Hello &amp; goodbye.");
+    }
+
+    #[test]
+    fn headers() {
+        verifies!(
+            r#"
+|Headers |{y}
+
+"#
+        );
+
+        let doc = Parser::default().parse("= Title & So{sp}On");
+
+        let title = doc.header().title().unwrap();
+        assert_eq!(title, "Title &amp; So On");
+    }
 }
