@@ -23,7 +23,7 @@ mod error_cases {
 
     use crate::{
         Parser, Span,
-        blocks::{Block, ContentModel, IsBlock, SectionBlock, preamble::Preamble},
+        blocks::{Block, ContentModel, IsBlock, SectionBlock, metadata::BlockMetadata},
         span::{HasSpan, content::SubstitutionGroup},
         tests::fixtures::{
             TSpan,
@@ -40,7 +40,7 @@ mod error_cases {
         let mut parser = Parser::default();
 
         let MatchAndWarnings { item: mi, warnings } = SectionBlock::parse(
-            &Preamble::new("=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef"),
+            &BlockMetadata::new("=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef"),
             &mut parser,
         )
         .unwrap();

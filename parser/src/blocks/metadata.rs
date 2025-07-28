@@ -5,10 +5,10 @@ use crate::{
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
 
-/// A preamble represents the common elements that can precede any block type
-/// (title and attribute list). It is used internally to track those values
-/// before the specific block type is fully formed.
-pub(crate) struct Preamble<'src> {
+/// `BlockMetadata` represents the common elements that can precede any block
+/// type (such as title and attribute list). It is used internally to track
+/// those values before the specific block type is fully formed.
+pub(crate) struct BlockMetadata<'src> {
     /// The block's title, if any.
     pub(crate) title: Option<Span<'src>>,
 
@@ -19,7 +19,7 @@ pub(crate) struct Preamble<'src> {
     /// The block's attribute list, if any.
     pub(crate) attrlist: Option<Attrlist<'src>>,
 
-    /// The source span as understood when the preamble content was first
+    /// The source span as understood when the block metadata was first
     /// encountered. Does not necessarily end at the end of the block.
     pub(crate) source: Span<'src>,
 
@@ -28,8 +28,8 @@ pub(crate) struct Preamble<'src> {
     pub(crate) block_start: Span<'src>,
 }
 
-impl<'src> Preamble<'src> {
-    /// (For testing only) Parse the preamble from a raw text constant.
+impl<'src> BlockMetadata<'src> {
+    /// (For testing only) Parse the block metadata from a raw text constant.
     #[cfg(test)]
     pub(crate) fn new(data: &'src str) -> Self {
         let mut temp_parser = Parser::default();

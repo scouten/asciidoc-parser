@@ -3,7 +3,9 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until, preamble::Preamble},
+    blocks::{
+        Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
+    },
     span::MatchedItem,
     strings::CowStr,
     warnings::MatchAndWarnings,
@@ -29,10 +31,10 @@ pub struct SectionBlock<'src> {
 
 impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
-        preamble: &Preamble<'src>,
+        metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
-        let source = preamble.block_start.discard_empty_lines();
+        let source = metadata.block_start.discard_empty_lines();
         let level = parse_title_line(source)?;
 
         let maw_blocks = parse_blocks_until(
@@ -42,7 +44,7 @@ impl<'src> SectionBlock<'src> {
         );
 
         let blocks = maw_blocks.item;
-        let source = preamble.source.trim_remainder(blocks.after);
+        let source = metadata.source.trim_remainder(blocks.after);
 
         Some(MatchAndWarnings {
             item: MatchedItem {
@@ -51,9 +53,9 @@ impl<'src> SectionBlock<'src> {
                     section_title: level.item.1,
                     blocks: blocks.item,
                     source: source.trim_trailing_whitespace(),
-                    title: preamble.title,
-                    anchor: preamble.anchor,
-                    attrlist: preamble.attrlist.clone(),
+                    title: metadata.title,
+                    anchor: metadata.anchor,
+                    attrlist: metadata.attrlist.clone(),
                 },
                 after: blocks.after,
             },

@@ -4,7 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MediaType, SectionBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, MediaType, SectionBlock, metadata::BlockMetadata},
     span::content::SubstitutionGroup,
     tests::fixtures::{
         TSpan,
@@ -21,7 +21,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = SectionBlock::parse(&Preamble::new("== Section Title"), &mut parser).unwrap();
+    let b1 = SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser).unwrap();
 
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
@@ -30,32 +30,32 @@ fn impl_clone() {
 #[test]
 fn err_empty_source() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&Preamble::new(""), &mut parser).is_none());
+    assert!(SectionBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
 }
 
 #[test]
 fn err_only_spaces() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&Preamble::new("    "), &mut parser).is_none());
+    assert!(SectionBlock::parse(&BlockMetadata::new("    "), &mut parser).is_none());
 }
 
 #[test]
 fn err_not_section() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&Preamble::new("blah blah"), &mut parser).is_none());
+    assert!(SectionBlock::parse(&BlockMetadata::new("blah blah"), &mut parser).is_none());
 }
 
 #[test]
 fn err_missing_space_before_title() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&Preamble::new("=blah blah"), &mut parser).is_none());
+    assert!(SectionBlock::parse(&BlockMetadata::new("=blah blah"), &mut parser).is_none());
 }
 
 #[test]
 fn simplest_section_block() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(&Preamble::new("== Section Title"), &mut parser)
+    let mi = SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser)
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -109,7 +109,7 @@ fn simplest_section_block() {
 fn has_child_block() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(&Preamble::new("== Section Title\n\nabc"), &mut parser)
+    let mi = SectionBlock::parse(&BlockMetadata::new("== Section Title\n\nabc"), &mut parser)
         .unwrap()
         .unwrap_if_no_warnings();
 
@@ -183,7 +183,7 @@ fn has_macro_block_with_extra_blank_line() {
     let mut parser = Parser::default();
 
     let mi = SectionBlock::parse(
-        &Preamble::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,height=400]\n\n"),
+        &BlockMetadata::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,height=400]\n\n"),
         &mut parser,
     )
     .unwrap()
@@ -282,7 +282,7 @@ fn has_child_block_with_errors() {
     let mut parser = Parser::default();
 
     let maw = SectionBlock::parse(
-        &Preamble::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
+        &BlockMetadata::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         &mut parser,
     )
     .unwrap();
@@ -395,7 +395,7 @@ fn dont_stop_at_child_section() {
     let mut parser = Parser::default();
 
     let mi = SectionBlock::parse(
-        &Preamble::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"),
+        &BlockMetadata::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"),
         &mut parser,
     )
     .unwrap()
@@ -511,7 +511,7 @@ fn stop_at_peer_section() {
     let mut parser = Parser::default();
 
     let mi = SectionBlock::parse(
-        &Preamble::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"),
+        &BlockMetadata::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"),
         &mut parser,
     )
     .unwrap()
@@ -587,7 +587,7 @@ fn stop_at_ancestor_section() {
     let mut parser = Parser::default();
 
     let mi = SectionBlock::parse(
-        &Preamble::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"),
+        &BlockMetadata::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"),
         &mut parser,
     )
     .unwrap()

@@ -166,7 +166,7 @@ mod parse {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
         tests::fixtures::{TSpan, warnings::TWarning},
         warnings::WarningType,
     };
@@ -174,22 +174,24 @@ mod parse {
     #[test]
     fn err_invalid_delimiter() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new(""), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("///"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("///"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("////x"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("////x"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("--x"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("--x"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("****x"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("****x"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("__\n__"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("__\n__"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -197,7 +199,7 @@ mod parse {
         let mut parser = Parser::default();
 
         let maw =
-            CompoundDelimitedBlock::parse(&Preamble::new("====\nblah blah blah"), &mut parser)
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("====\nblah blah blah"), &mut parser)
                 .unwrap();
 
         assert!(maw.item.is_none());
@@ -220,13 +222,15 @@ mod parse {
 mod comment {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("////\n////"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("////\n////"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -235,7 +239,7 @@ mod comment {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("////\nline1  \nline2\n////"),
+                &BlockMetadata::new("////\nline1  \nline2\n////"),
                 &mut parser
             )
             .is_none()
@@ -248,7 +252,7 @@ mod example {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -261,7 +265,8 @@ mod example {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("====\n===="), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("====\n===="), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -300,7 +305,7 @@ mod example {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("====\nblock1\n\nblock2\n===="),
+            &BlockMetadata::new("====\nblock1\n\nblock2\n===="),
             &mut parser,
         )
         .unwrap();
@@ -434,7 +439,7 @@ mod example {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
+            &BlockMetadata::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
             &mut parser,
         )
         .unwrap();
@@ -591,13 +596,15 @@ mod example {
 mod listing {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("----\n----"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("----\n----"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -606,7 +613,7 @@ mod listing {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("----\nline1  \nline2\n----"),
+                &BlockMetadata::new("----\nline1  \nline2\n----"),
                 &mut parser
             )
             .is_none()
@@ -617,13 +624,15 @@ mod listing {
 mod literal {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("....\n...."), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("....\n...."), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -632,7 +641,7 @@ mod literal {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("....\nline1  \nline2\n...."),
+                &BlockMetadata::new("....\nline1  \nline2\n...."),
                 &mut parser
             )
             .is_none()
@@ -645,7 +654,7 @@ mod open {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -658,7 +667,8 @@ mod open {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("--\n--"), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("--\n--"), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -696,9 +706,11 @@ mod open {
     fn multiple_blocks() {
         let mut parser = Parser::default();
 
-        let maw =
-            CompoundDelimitedBlock::parse(&Preamble::new("--\nblock1\n\nblock2\n--"), &mut parser)
-                .unwrap();
+        let maw = CompoundDelimitedBlock::parse(
+            &BlockMetadata::new("--\nblock1\n\nblock2\n--"),
+            &mut parser,
+        )
+        .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -830,7 +842,7 @@ mod open {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("--\nblock1\n\n---\nblock2\n---\n--"),
+            &BlockMetadata::new("--\nblock1\n\n---\nblock2\n---\n--"),
             &mut parser,
         )
         .unwrap();
@@ -965,7 +977,7 @@ mod sidebar {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -978,7 +990,8 @@ mod sidebar {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("****\n****"), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("****\n****"), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -1017,7 +1030,7 @@ mod sidebar {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("****\nblock1\n\nblock2\n****"),
+            &BlockMetadata::new("****\nblock1\n\nblock2\n****"),
             &mut parser,
         )
         .unwrap();
@@ -1151,7 +1164,7 @@ mod sidebar {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
+            &BlockMetadata::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
             &mut parser,
         )
         .unwrap();
@@ -1308,22 +1321,30 @@ mod sidebar {
 mod table {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("|===\n|==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("|===\n|==="), &mut parser).is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new(",===\n,==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new(",===\n,==="), &mut parser).is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new(":===\n:==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new(":===\n:==="), &mut parser).is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("!===\n!==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("!===\n!==="), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -1331,7 +1352,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("|===\nline1  \nline2\n|==="),
+                &BlockMetadata::new("|===\nline1  \nline2\n|==="),
                 &mut parser
             )
             .is_none()
@@ -1340,7 +1361,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new(",===\nline1  \nline2\n,==="),
+                &BlockMetadata::new(",===\nline1  \nline2\n,==="),
                 &mut parser
             )
             .is_none()
@@ -1349,7 +1370,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new(":===\nline1  \nline2\n:==="),
+                &BlockMetadata::new(":===\nline1  \nline2\n:==="),
                 &mut parser
             )
             .is_none()
@@ -1358,7 +1379,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("!===\nline1  \nline2\n!==="),
+                &BlockMetadata::new("!===\nline1  \nline2\n!==="),
                 &mut parser
             )
             .is_none()
@@ -1369,13 +1390,15 @@ mod table {
 mod pass {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("++++\n++++"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("++++\n++++"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -1384,7 +1407,7 @@ mod pass {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("++++\nline1  \nline2\n++++"),
+                &BlockMetadata::new("++++\nline1  \nline2\n++++"),
                 &mut parser
             )
             .is_none()
@@ -1397,7 +1420,7 @@ mod quote {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -1410,7 +1433,8 @@ mod quote {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("____\n____"), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("____\n____"), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -1449,7 +1473,7 @@ mod quote {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("____\nblock1\n\nblock2\n____"),
+            &BlockMetadata::new("____\nblock1\n\nblock2\n____"),
             &mut parser,
         )
         .unwrap();
@@ -1583,7 +1607,7 @@ mod quote {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
+            &BlockMetadata::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
             &mut parser,
         )
         .unwrap();

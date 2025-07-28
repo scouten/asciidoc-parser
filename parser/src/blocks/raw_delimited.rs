@@ -1,7 +1,7 @@
 use crate::{
     Content, HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
     span::{MatchedItem, content::SubstitutionGroup},
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -56,10 +56,10 @@ impl<'src> RawDelimitedBlock<'src> {
     }
 
     pub(crate) fn parse(
-        preamble: &Preamble<'src>,
+        metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
-        let delimiter = preamble.block_start.take_normalized_line();
+        let delimiter = metadata.block_start.take_normalized_line();
 
         if delimiter.item.len() < 4 {
             return None;
@@ -95,7 +95,7 @@ impl<'src> RawDelimitedBlock<'src> {
                 let content = content_start.trim_remainder(next).trim_trailing_line_end();
 
                 let mut content: Content<'src> = content.into();
-                substitution_group.apply(&mut content, parser, preamble.attrlist.as_ref());
+                substitution_group.apply(&mut content, parser, metadata.attrlist.as_ref());
 
                 return Some(MatchAndWarnings {
                     item: Some(MatchedItem {
@@ -103,13 +103,13 @@ impl<'src> RawDelimitedBlock<'src> {
                             content,
                             content_model,
                             context: context.into(),
-                            source: preamble
+                            source: metadata
                                 .source
                                 .trim_remainder(line.after)
                                 .trim_trailing_line_end(),
-                            title: preamble.title,
-                            anchor: preamble.anchor,
-                            attrlist: preamble.attrlist.clone(),
+                            title: metadata.title,
+                            anchor: metadata.anchor,
+                            attrlist: metadata.attrlist.clone(),
                             substitution_group,
                         },
                         after: line.after,

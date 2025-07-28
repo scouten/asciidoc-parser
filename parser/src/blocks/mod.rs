@@ -37,8 +37,8 @@ pub use is_block::{ContentModel, IsBlock};
 mod media;
 pub use media::{MediaBlock, MediaType};
 
+pub(crate) mod metadata;
 pub(crate) mod parse_utils;
-pub(crate) mod preamble;
 
 mod raw_delimited;
 pub use raw_delimited::RawDelimitedBlock;
