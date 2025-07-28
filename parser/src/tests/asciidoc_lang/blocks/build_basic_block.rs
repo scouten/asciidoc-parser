@@ -88,6 +88,7 @@ This is more content in the sidebar block.
         doc,
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[],
                 source: TSpan {

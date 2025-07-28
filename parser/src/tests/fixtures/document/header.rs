@@ -8,7 +8,8 @@ use crate::{
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct THeader {
-    pub title: Option<TSpan>,
+    pub title_source: Option<TSpan>,
+    pub title: Option<&'static str>,
     pub attributes: &'static [TAttribute],
     pub source: TSpan,
 }
@@ -16,6 +17,7 @@ pub(crate) struct THeader {
 impl fmt::Debug for THeader {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Header")
+            .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("attributes", &self.attributes)
             .field("source", &self.source)
@@ -43,6 +45,17 @@ impl PartialEq<THeader> for &Header<'_> {
 
 fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
     if fixture.source != observed.span() {
+        return false;
+    }
+
+    if fixture.title_source.is_some() != observed.title_source().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_title) = fixture.title_source
+        && let Some(ref observed_title) = observed.title_source()
+        && fixture_title != observed_title
+    {
         return false;
     }
 

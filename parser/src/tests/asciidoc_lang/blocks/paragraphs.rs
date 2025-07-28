@@ -59,6 +59,7 @@ include::example$paragraph.adoc[tag=para]
         doc,
         TDocument {
             header: THeader {
+                title_source: None,
                 title: None,
                 attributes: &[],
                 source: TSpan {

@@ -62,6 +62,7 @@ include::example$image.adoc[tag=url]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -153,6 +154,7 @@ include::example$image.adoc[tag=in-url]
             doc,
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {

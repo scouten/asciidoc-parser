@@ -58,6 +58,7 @@ This is a basic AsciiDoc document.
             Parser::default().parse("This is a basic AsciiDoc document.\n"),
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -125,6 +126,7 @@ This document contains two paragraphs.
             ),
             TDocument {
                 header: THeader {
+                    title_source: None,
                     title: None,
                     attributes: &[],
                     source: TSpan {
@@ -214,7 +216,7 @@ It also has a header that specifies the document title.
             ),
             TDocument {
                 header: THeader {
-                    title: Some(
+                    title_source: Some(
                         TSpan {
                             data: "Document Title",
                             line: 1,
@@ -222,6 +224,7 @@ It also has a header that specifies the document title.
                             offset: 2,
                         },
                     ),
+                    title: Some("Document Title"),
                     attributes: &[
                         TAttribute {
                             name: TSpan {

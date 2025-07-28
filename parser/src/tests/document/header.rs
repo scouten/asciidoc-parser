@@ -28,12 +28,13 @@ fn only_title() {
     assert_eq!(
         mi.item,
         THeader {
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "Just the Title",
                 line: 1,
                 col: 3,
                 offset: 2,
             }),
+            title: Some("Just the Title"),
             attributes: &[],
             source: TSpan {
                 data: "= Just the Title",
@@ -65,12 +66,13 @@ fn trims_leading_spaces_in_title() {
     assert_eq!(
         mi.item,
         THeader {
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "Just the Title",
                 line: 1,
                 col: 6,
                 offset: 5,
             }),
+            title: Some("Just the Title"),
             attributes: &[],
             source: TSpan {
                 data: "=    Just the Title",
@@ -100,12 +102,13 @@ fn trims_trailing_spaces_in_title() {
     assert_eq!(
         mi.item,
         THeader {
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "Just the Title",
                 line: 1,
                 col: 3,
                 offset: 2,
             }),
+            title: Some("Just the Title"),
             attributes: &[],
             source: TSpan {
                 data: "= Just the Title",
@@ -140,12 +143,13 @@ fn title_and_attribute() {
     assert_eq!(
         mi.item,
         THeader {
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "Just the Title",
                 line: 1,
                 col: 3,
                 offset: 2,
             }),
+            title: Some("Just the Title"),
             attributes: &[TAttribute {
                 name: TSpan {
                     data: "foo",
@@ -195,6 +199,7 @@ fn attribute_without_title() {
     assert_eq!(
         mi.item,
         THeader {
+            title_source: None,
             title: None,
             attributes: &[TAttribute {
                 name: TSpan {
