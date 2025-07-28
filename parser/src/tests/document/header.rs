@@ -192,6 +192,67 @@ fn title_and_attribute() {
 }
 
 #[test]
+fn title_applies_header_substitutions() {
+    let mut parser = Parser::default();
+
+    let mi = Header::parse(
+        Span::new("= The Title & Some{sp}Nonsense\n:foo: bar\n\nblah"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item,
+        THeader {
+            title_source: Some(TSpan {
+                data: "The Title & Some{sp}Nonsense",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }),
+            title: Some("The Title &amp; Some Nonsense"),
+            attributes: &[TAttribute {
+                name: TSpan {
+                    data: "foo",
+                    line: 2,
+                    col: 2,
+                    offset: 32,
+                },
+                value_source: Some(TSpan {
+                    data: "bar",
+                    line: 2,
+                    col: 7,
+                    offset: 37,
+                }),
+                value: TInterpretedValue::Value("bar"),
+                source: TSpan {
+                    data: ":foo: bar",
+                    line: 2,
+                    col: 1,
+                    offset: 31,
+                }
+            }],
+            source: TSpan {
+                data: "= The Title & Some{sp}Nonsense\n:foo: bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "blah",
+            line: 4,
+            col: 1,
+            offset: 42
+        }
+    );
+}
+
+#[test]
 fn attribute_without_title() {
     let mut parser = Parser::default();
     let mi = Header::parse(Span::new(":foo: bar\n\nblah"), &mut parser).unwrap_if_no_warnings();
