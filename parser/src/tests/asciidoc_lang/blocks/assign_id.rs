@@ -73,6 +73,7 @@ Content of delimited example block
                     col: 1,
                     offset: 29,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -84,6 +85,7 @@ Content of delimited example block
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
@@ -167,6 +169,7 @@ Roads? Where we're going, we don't need roads.
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
@@ -232,6 +235,7 @@ Roads? Where we're going, we don't need roads.
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {

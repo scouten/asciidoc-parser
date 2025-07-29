@@ -55,6 +55,7 @@ fn single_line() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -68,6 +69,7 @@ fn single_line() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -107,6 +109,7 @@ fn multiple_lines() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -147,6 +150,7 @@ fn consumes_blank_lines_after() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,

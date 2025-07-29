@@ -175,6 +175,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -235,6 +236,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -301,6 +303,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -371,6 +374,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {

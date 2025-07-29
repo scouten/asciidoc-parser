@@ -45,6 +45,7 @@ fn err_inline_syntax() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -98,6 +99,7 @@ fn err_no_attr_list() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -151,6 +153,7 @@ fn err_attr_list_not_closed() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -204,6 +207,7 @@ fn err_unexpected_after_attr_list() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -257,6 +261,7 @@ fn rejects_image_with_no_target() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -317,6 +322,7 @@ fn has_target() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -326,6 +332,7 @@ fn has_target() {
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
     assert_eq!(mi.item.raw_context().deref(), "image");
     assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -389,6 +396,7 @@ fn has_target_and_macro_attrlist() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -468,6 +476,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -540,12 +549,13 @@ fn has_title() {
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "macro title",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("macro title"),
             anchor: None,
             attrlist: None,
         })

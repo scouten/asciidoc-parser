@@ -26,7 +26,8 @@ pub struct CompoundDelimitedBlock<'src> {
     blocks: Vec<Block<'src>>,
     context: CowStr<'src>,
     source: Span<'src>,
-    title: Option<Span<'src>>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
@@ -115,7 +116,8 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     blocks: blocks.item,
                     context: context.into(),
                     source: source.trim_trailing_whitespace(),
-                    title: metadata.title,
+                    title_source: metadata.title_source,
+                    title: metadata.title.clone(),
                     anchor: metadata.anchor,
                     attrlist: metadata.attrlist.clone(),
                 },
@@ -139,8 +141,12 @@ impl<'src> IsBlock<'src> for CompoundDelimitedBlock<'src> {
         self.blocks.iter()
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
-        self.title
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    fn title(&self) -> Option<&str> {
+        self.title.as_deref()
     }
 
     fn anchor(&'src self) -> Option<Span<'src>> {

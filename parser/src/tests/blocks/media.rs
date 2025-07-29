@@ -201,6 +201,7 @@ fn has_target() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -220,6 +221,7 @@ fn has_target() {
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
     assert_eq!(mi.item.raw_context().deref(), "image");
     assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -263,6 +265,7 @@ fn has_target_and_attrlist() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -313,6 +316,7 @@ fn audio() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -332,6 +336,7 @@ fn audio() {
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
     assert_eq!(mi.item.raw_context().deref(), "audio");
     assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -371,6 +376,7 @@ fn video() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -390,6 +396,7 @@ fn video() {
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
     assert_eq!(mi.item.raw_context().deref(), "video");
     assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -439,6 +446,7 @@ fn err_duplicate_comma() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,

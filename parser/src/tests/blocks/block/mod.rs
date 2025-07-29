@@ -52,6 +52,7 @@ mod error_cases {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -84,6 +85,7 @@ mod error_cases {
                             col: 1,
                             offset: 19,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -104,6 +106,7 @@ mod error_cases {
                             col: 1,
                             offset: 24,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -124,6 +127,7 @@ mod error_cases {
                             col: 1,
                             offset: 55,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -136,6 +140,7 @@ mod error_cases {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -184,6 +189,7 @@ mod error_cases {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -207,6 +213,7 @@ mod error_cases {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -242,6 +249,7 @@ mod error_cases {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
@@ -289,6 +297,7 @@ mod error_cases {
                         col: 1,
                         offset: 61,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -299,6 +308,7 @@ mod error_cases {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -369,6 +379,7 @@ mod error_cases {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,

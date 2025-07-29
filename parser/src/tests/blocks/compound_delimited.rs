@@ -280,6 +280,7 @@ mod example {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -294,6 +295,7 @@ mod example {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -332,6 +334,7 @@ mod example {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -352,6 +355,7 @@ mod example {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -364,6 +368,7 @@ mod example {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -377,6 +382,7 @@ mod example {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -401,6 +407,7 @@ mod example {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -425,6 +432,7 @@ mod example {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -466,6 +474,7 @@ mod example {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -487,6 +496,7 @@ mod example {
                                 col: 1,
                                 offset: 19,
                             },
+                            title_source: None,
                             title: None,
                             anchor: None,
                             attrlist: None,
@@ -498,6 +508,7 @@ mod example {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -510,6 +521,7 @@ mod example {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -523,6 +535,7 @@ mod example {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -547,6 +560,7 @@ mod example {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -572,6 +586,7 @@ mod example {
                         col: 1,
                         offset: 19,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -583,6 +598,7 @@ mod example {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -682,6 +698,7 @@ mod open {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -696,6 +713,7 @@ mod open {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -734,6 +752,7 @@ mod open {
                             col: 1,
                             offset: 3,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -754,6 +773,7 @@ mod open {
                             col: 1,
                             offset: 11,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -766,6 +786,7 @@ mod open {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -779,6 +800,7 @@ mod open {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -803,6 +825,7 @@ mod open {
                     col: 1,
                     offset: 3,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -827,6 +850,7 @@ mod open {
                     col: 1,
                     offset: 11,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -869,6 +893,7 @@ mod open {
                             col: 1,
                             offset: 3,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -889,6 +914,7 @@ mod open {
                             col: 1,
                             offset: 11,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -901,6 +927,7 @@ mod open {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -914,6 +941,7 @@ mod open {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -938,6 +966,7 @@ mod open {
                     col: 1,
                     offset: 3,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -962,6 +991,7 @@ mod open {
                     col: 1,
                     offset: 11,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1005,6 +1035,7 @@ mod sidebar {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1019,6 +1050,7 @@ mod sidebar {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1057,6 +1089,7 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1077,6 +1110,7 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1089,6 +1123,7 @@ mod sidebar {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1102,6 +1137,7 @@ mod sidebar {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1126,6 +1162,7 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1150,6 +1187,7 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1191,6 +1229,7 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1212,6 +1251,7 @@ mod sidebar {
                                 col: 1,
                                 offset: 19,
                             },
+                            title_source: None,
                             title: None,
                             anchor: None,
                             attrlist: None,
@@ -1223,6 +1263,7 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1235,6 +1276,7 @@ mod sidebar {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1248,6 +1290,7 @@ mod sidebar {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1272,6 +1315,7 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1297,6 +1341,7 @@ mod sidebar {
                         col: 1,
                         offset: 19,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -1308,6 +1353,7 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1448,6 +1494,7 @@ mod quote {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1462,6 +1509,7 @@ mod quote {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1500,6 +1548,7 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1520,6 +1569,7 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1532,6 +1582,7 @@ mod quote {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1545,6 +1596,7 @@ mod quote {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1569,6 +1621,7 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1593,6 +1646,7 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1634,6 +1688,7 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1655,6 +1710,7 @@ mod quote {
                                 col: 1,
                                 offset: 19,
                             },
+                            title_source: None,
                             title: None,
                             anchor: None,
                             attrlist: None,
@@ -1666,6 +1722,7 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1678,6 +1735,7 @@ mod quote {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1691,6 +1749,7 @@ mod quote {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1715,6 +1774,7 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1740,6 +1800,7 @@ mod quote {
                         col: 1,
                         offset: 19,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -1751,6 +1812,7 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,

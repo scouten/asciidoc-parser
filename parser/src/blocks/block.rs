@@ -200,6 +200,7 @@ impl<'src> Block<'src> {
 
             // Remove the metadata content so that SimpleBlock will read the title/attrlist
             // line(s) as regular content.
+            metadata.title_source = None;
             metadata.title = None;
             metadata.anchor = None;
             metadata.attrlist = None;
@@ -248,7 +249,17 @@ impl<'src> IsBlock<'src> for Block<'src> {
         }
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        match self {
+            Self::Simple(b) => b.title_source(),
+            Self::Media(b) => b.title_source(),
+            Self::Section(b) => b.title_source(),
+            Self::RawDelimited(b) => b.title_source(),
+            Self::CompoundDelimited(b) => b.title_source(),
+        }
+    }
+
+    fn title(&self) -> Option<&str> {
         match self {
             Self::Simple(b) => b.title(),
             Self::Media(b) => b.title(),

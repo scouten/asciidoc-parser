@@ -66,6 +66,7 @@ fn simplest_section_block() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -88,6 +89,7 @@ fn simplest_section_block() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -120,6 +122,7 @@ fn has_child_block() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -151,6 +154,7 @@ fn has_child_block() {
                     col: 1,
                     offset: 18,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -161,6 +165,7 @@ fn has_child_block() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -196,6 +201,7 @@ fn has_macro_block_with_extra_blank_line() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -250,6 +256,7 @@ fn has_macro_block_with_extra_blank_line() {
                     col: 1,
                     offset: 18,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -260,6 +267,7 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -296,6 +304,7 @@ fn has_child_block_with_errors() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -350,6 +359,7 @@ fn has_child_block_with_errors() {
                     col: 1,
                     offset: 18,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -360,6 +370,7 @@ fn has_child_block_with_errors() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -408,6 +419,7 @@ fn dont_stop_at_child_section() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -440,6 +452,7 @@ fn dont_stop_at_child_section() {
                         col: 1,
                         offset: 18,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -468,6 +481,7 @@ fn dont_stop_at_child_section() {
                             col: 1,
                             offset: 38,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -478,6 +492,7 @@ fn dont_stop_at_child_section() {
                         col: 1,
                         offset: 23,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -489,6 +504,7 @@ fn dont_stop_at_child_section() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -524,6 +540,7 @@ fn stop_at_peer_section() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -555,6 +572,7 @@ fn stop_at_peer_section() {
                     col: 1,
                     offset: 18,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -565,6 +583,7 @@ fn stop_at_peer_section() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -600,6 +619,7 @@ fn stop_at_ancestor_section() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -631,6 +651,7 @@ fn stop_at_ancestor_section() {
                     col: 1,
                     offset: 19,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -641,6 +662,7 @@ fn stop_at_ancestor_section() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
