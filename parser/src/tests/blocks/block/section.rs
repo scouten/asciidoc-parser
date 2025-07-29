@@ -85,6 +85,7 @@ fn simplest_section_block() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -142,6 +143,7 @@ fn has_child_block() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -321,6 +323,10 @@ fn title() {
         }
     );
 
+    assert_eq!(
+        mi.item.title_source().unwrap().data(),
+        "other section title"
+    );
     assert_eq!(mi.item.title().unwrap(), "other section title");
 
     assert!(mi.item.anchor().is_none());

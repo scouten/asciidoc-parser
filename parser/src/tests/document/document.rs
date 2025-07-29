@@ -35,6 +35,7 @@ fn empty_source() {
     assert!(doc.declared_style().is_none());
     assert!(doc.id().is_none());
     assert!(doc.roles().is_empty());
+    assert!(doc.title_source().is_none());
     assert!(doc.title().is_none());
     assert!(doc.anchor().is_none());
     assert!(doc.attrlist().is_none());

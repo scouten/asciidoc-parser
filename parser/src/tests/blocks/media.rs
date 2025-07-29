@@ -221,6 +221,7 @@ fn has_target() {
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
     assert_eq!(mi.item.raw_context().deref(), "image");
     assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -335,6 +336,7 @@ fn audio() {
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
     assert_eq!(mi.item.raw_context().deref(), "audio");
     assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -394,6 +396,7 @@ fn video() {
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
     assert_eq!(mi.item.raw_context().deref(), "video");
     assert!(mi.item.nested_blocks().next().is_none());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());

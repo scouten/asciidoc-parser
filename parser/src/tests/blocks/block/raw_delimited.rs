@@ -252,6 +252,7 @@ mod comment {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -321,6 +322,7 @@ mod comment {
             }
         );
 
+        assert_eq!(mi.item.title_source().unwrap().data(), "comment");
         assert_eq!(mi.item.title().unwrap(), "comment");
 
         assert!(mi.item.anchor().is_none());
@@ -370,6 +372,7 @@ mod comment {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -419,6 +422,7 @@ mod comment {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -483,6 +487,7 @@ mod listing {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -533,6 +538,7 @@ mod listing {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -613,6 +619,7 @@ mod listing {
             }
         );
 
+        assert_eq!(mi.item.title_source().unwrap().data(), "listing title");
         assert_eq!(mi.item.title().unwrap(), "listing title");
 
         assert!(mi.item.anchor().is_none());
@@ -673,6 +680,7 @@ mod listing {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -748,6 +756,7 @@ mod pass {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -808,6 +817,7 @@ mod pass {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -888,6 +898,7 @@ mod pass {
             }
         );
 
+        assert_eq!(mi.item.title_source().unwrap().data(), "pass title");
         assert_eq!(mi.item.title().unwrap(), "pass title");
 
         assert!(mi.item.anchor().is_none());
@@ -948,6 +959,7 @@ mod pass {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
