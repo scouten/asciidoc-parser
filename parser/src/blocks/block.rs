@@ -200,6 +200,7 @@ impl<'src> Block<'src> {
 
             // Remove the metadata content so that SimpleBlock will read the title/attrlist
             // line(s) as regular content.
+            metadata.title_source = None;
             metadata.title = None;
             metadata.anchor = None;
             metadata.attrlist = None;

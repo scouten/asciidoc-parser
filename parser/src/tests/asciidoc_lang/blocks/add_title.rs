@@ -77,6 +77,7 @@ This is the content of the sidebar block.
                     col: 1,
                     offset: 43,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -88,12 +89,13 @@ This is the content of the sidebar block.
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "This is the title of a sidebar block",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("This is the title of a sidebar block"),
             anchor: None,
             attrlist: None,
         },)
@@ -164,12 +166,13 @@ Don't put a space between the dot and the first character of the title.
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "Terminal Output",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("Terminal Output"),
             anchor: None,
             attrlist: None,
             substitution_group: SubstitutionGroup::Verbatim,
@@ -247,12 +250,13 @@ stages: [ init, verify, deploy ]
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "Specify GitLab CI stages",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("Specify GitLab CI stages"),
             anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: &[
@@ -339,12 +343,13 @@ If you don't plant it in a container, it will take over your garden.
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "Mint",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("Mint"),
             anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: &[TElementAttribute {

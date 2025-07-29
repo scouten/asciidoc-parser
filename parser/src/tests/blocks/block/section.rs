@@ -42,6 +42,7 @@ fn err_missing_space_before_title() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -106,6 +107,7 @@ fn simplest_section_block() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -171,6 +173,7 @@ fn has_child_block() {
                     col: 1,
                     offset: 18,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -181,6 +184,7 @@ fn has_child_block() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -207,6 +211,7 @@ fn has_child_block() {
                 col: 1,
                 offset: 18,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -279,6 +284,7 @@ fn title() {
                     col: 1,
                     offset: 39,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -289,12 +295,13 @@ fn title() {
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "other section title",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("other section title"),
             anchor: None,
             attrlist: None,
         })
@@ -305,7 +312,7 @@ fn title() {
     assert!(mi.item.options().is_empty());
 
     assert_eq!(
-        mi.item.title().unwrap(),
+        mi.item.title_source().unwrap(),
         TSpan {
             data: "other section title",
             line: 1,
@@ -313,6 +320,8 @@ fn title() {
             offset: 1,
         }
     );
+
+    assert_eq!(mi.item.title().unwrap(), "other section title");
 
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -337,6 +346,7 @@ fn title() {
                 col: 1,
                 offset: 39,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -426,6 +436,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     col: 1,
                     offset: 18,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -436,6 +447,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,

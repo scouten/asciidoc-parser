@@ -219,6 +219,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -333,6 +334,7 @@ name::target[first-positional,second-positional,named="value of named"]
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,

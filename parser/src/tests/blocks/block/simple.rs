@@ -77,6 +77,7 @@ fn single_line() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -143,6 +144,7 @@ fn multiple_lines() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -196,12 +198,13 @@ fn title() {
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "simple block",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("simple block"),
             anchor: None,
             attrlist: None,
         })
@@ -234,6 +237,7 @@ fn attrlist() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
@@ -318,12 +322,13 @@ fn title_and_attrlist() {
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "title",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("title"),
             anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: &[TElementAttribute {
@@ -407,6 +412,7 @@ fn consumes_blank_lines_after() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -463,6 +469,7 @@ fn with_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: Some(TSpan {
                 data: "notice",
@@ -560,6 +567,7 @@ fn err_empty_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: Some(TSpan {
                 data: "",
@@ -657,6 +665,7 @@ fn err_invalid_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: Some(TSpan {
                 data: "3 blind mice",
@@ -741,6 +750,7 @@ fn unterminated_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {

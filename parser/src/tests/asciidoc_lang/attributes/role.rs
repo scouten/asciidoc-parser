@@ -107,6 +107,7 @@ This is a sidebar with a role assigned to it, rolename.
                         col: 1,
                         offset: 17,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -118,6 +119,7 @@ This is a sidebar with a role assigned to it, rolename.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -184,6 +186,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                         col: 1,
                         offset: 20,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -195,6 +198,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -262,6 +266,7 @@ This is a sidebar with one role assigned to it, rolename.
                         col: 1,
                         offset: 21,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -273,6 +278,7 @@ This is a sidebar with one role assigned to it, rolename.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -345,6 +351,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                         col: 1,
                         offset: 26,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -356,6 +363,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {

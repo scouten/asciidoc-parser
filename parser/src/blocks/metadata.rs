@@ -1,10 +1,14 @@
 use crate::{
-    attributes::Attrlist, span::{content::SubstitutionGroup, MatchedItem}, warnings::{MatchAndWarnings, Warning, WarningType}, Content, Parser, Span
+    Content, Parser, Span,
+    attributes::Attrlist,
+    span::{MatchedItem, content::SubstitutionGroup},
+    warnings::{MatchAndWarnings, Warning, WarningType},
 };
 
 /// `BlockMetadata` represents the common elements that can precede any block
 /// type (such as title and attribute list). It is used internally to track
 /// those values before the specific block type is fully formed.
+#[derive(Debug)]
 pub(crate) struct BlockMetadata<'src> {
     /// The block's raw title, if any.
     pub(crate) title_source: Option<Span<'src>>,
@@ -58,13 +62,11 @@ impl<'src> BlockMetadata<'src> {
                 (None, source)
             };
 
-                    let title = title_source.map(|ref span| {
+        let title = title_source.map(|ref span| {
             let mut content = Content::from(*span);
             SubstitutionGroup::Normal.apply(&mut content, parser, None);
             content.rendered.into_string()
         });
-
-
 
         // Does this block have a block anchor?
         let (anchor, block_start) = if let Some(MatchAndWarnings {
