@@ -100,6 +100,7 @@ All the language requires in this case is that the value be non-empty.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: Some(TSpan {
                     data: "",
@@ -198,6 +199,7 @@ install the gem
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: Some(TSpan {
                     data: "3 blind mice",
@@ -295,6 +297,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -356,6 +359,7 @@ In the longhand syntax, you use a standard named attribute.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -417,6 +421,7 @@ In the block anchor syntax, you surround the name with double square brackets:
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: Some(TSpan {
                     data: "goals",
@@ -472,6 +477,7 @@ ____
                         col: 1,
                         offset: 42,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -483,6 +489,7 @@ ____
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {

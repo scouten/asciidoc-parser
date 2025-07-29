@@ -3,7 +3,9 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until, preamble::Preamble},
+    blocks::{
+        Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
+    },
     span::MatchedItem,
     strings::CowStr,
     warnings::MatchAndWarnings,
@@ -22,17 +24,18 @@ pub struct SectionBlock<'src> {
     section_title: Span<'src>,
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
-    title: Option<Span<'src>>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
 impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
-        preamble: &Preamble<'src>,
+        metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
-        let source = preamble.block_start.discard_empty_lines();
+        let source = metadata.block_start.discard_empty_lines();
         let level = parse_title_line(source)?;
 
         let maw_blocks = parse_blocks_until(
@@ -42,7 +45,7 @@ impl<'src> SectionBlock<'src> {
         );
 
         let blocks = maw_blocks.item;
-        let source = preamble.source.trim_remainder(blocks.after);
+        let source = metadata.source.trim_remainder(blocks.after);
 
         Some(MatchAndWarnings {
             item: MatchedItem {
@@ -51,9 +54,10 @@ impl<'src> SectionBlock<'src> {
                     section_title: level.item.1,
                     blocks: blocks.item,
                     source: source.trim_trailing_whitespace(),
-                    title: preamble.title,
-                    anchor: preamble.anchor,
-                    attrlist: preamble.attrlist.clone(),
+                    title_source: metadata.title_source,
+                    title: metadata.title.clone(),
+                    anchor: metadata.anchor,
+                    attrlist: metadata.attrlist.clone(),
                 },
                 after: blocks.after,
             },
@@ -93,8 +97,12 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
         self.blocks.iter()
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
-        self.title
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    fn title(&self) -> Option<&str> {
+        self.title.as_deref()
     }
 
     fn anchor(&'src self) -> Option<Span<'src>> {

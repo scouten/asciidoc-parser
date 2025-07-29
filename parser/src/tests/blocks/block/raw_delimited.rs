@@ -47,6 +47,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -77,6 +78,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -107,6 +109,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -137,6 +140,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -169,6 +173,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -232,6 +237,7 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -246,6 +252,7 @@ mod comment {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -283,12 +290,13 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "comment",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },),
+                title: Some("comment"),
                 anchor: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::None,
@@ -305,7 +313,7 @@ mod comment {
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
 
         assert_eq!(
-            mi.item.title().unwrap(),
+            mi.item.title_source().unwrap(),
             TSpan {
                 data: "comment",
                 line: 1,
@@ -313,6 +321,9 @@ mod comment {
                 offset: 1,
             }
         );
+
+        assert_eq!(mi.item.title_source().unwrap().data(), "comment");
+        assert_eq!(mi.item.title().unwrap(), "comment");
 
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -346,6 +357,7 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -360,6 +372,7 @@ mod comment {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -394,6 +407,7 @@ mod comment {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -408,6 +422,7 @@ mod comment {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -457,6 +472,7 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -471,6 +487,7 @@ mod listing {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -505,6 +522,7 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -520,6 +538,7 @@ mod listing {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -567,12 +586,13 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "listing title",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },),
+                title: Some("listing title"),
                 anchor: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Verbatim,
@@ -590,7 +610,7 @@ mod listing {
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
 
         assert_eq!(
-            mi.item.title().unwrap(),
+            mi.item.title_source().unwrap(),
             TSpan {
                 data: "listing title",
                 line: 1,
@@ -598,6 +618,9 @@ mod listing {
                 offset: 1,
             }
         );
+
+        assert_eq!(mi.item.title_source().unwrap().data(), "listing title");
+        assert_eq!(mi.item.title().unwrap(), "listing title");
 
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -641,6 +664,7 @@ mod listing {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -656,6 +680,7 @@ mod listing {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -715,6 +740,7 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -730,6 +756,7 @@ mod pass {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -774,6 +801,7 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -789,6 +817,7 @@ mod pass {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -836,12 +865,13 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
-                title: Some(TSpan {
+                title_source: Some(TSpan {
                     data: "pass title",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },),
+                title: Some("pass title"),
                 anchor: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Pass,
@@ -859,7 +889,7 @@ mod pass {
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
 
         assert_eq!(
-            mi.item.title().unwrap(),
+            mi.item.title_source().unwrap(),
             TSpan {
                 data: "pass title",
                 line: 1,
@@ -867,6 +897,9 @@ mod pass {
                 offset: 1,
             }
         );
+
+        assert_eq!(mi.item.title_source().unwrap().data(), "pass title");
+        assert_eq!(mi.item.title().unwrap(), "pass title");
 
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -910,6 +943,7 @@ mod pass {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -925,6 +959,7 @@ mod pass {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());

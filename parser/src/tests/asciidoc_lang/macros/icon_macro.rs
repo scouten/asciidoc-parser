@@ -92,6 +92,7 @@ icon:heart[2x,role=red]
                         col: 1,
                         offset: 0,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,

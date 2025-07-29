@@ -4,7 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, SimpleBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, SimpleBlock, metadata::BlockMetadata},
     span::content::SubstitutionGroup,
     tests::fixtures::{TSpan, blocks::TSimpleBlock, content::TContent},
 };
@@ -14,7 +14,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = SimpleBlock::parse(&Preamble::new("abc"), &mut parser).unwrap();
+    let b1 = SimpleBlock::parse(&BlockMetadata::new("abc"), &mut parser).unwrap();
 
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
@@ -23,19 +23,19 @@ fn impl_clone() {
 #[test]
 fn empty_source() {
     let mut parser = Parser::default();
-    assert!(SimpleBlock::parse(&Preamble::new(""), &mut parser).is_none());
+    assert!(SimpleBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
 }
 
 #[test]
 fn only_spaces() {
     let mut parser = Parser::default();
-    assert!(SimpleBlock::parse(&Preamble::new("    "), &mut parser).is_none());
+    assert!(SimpleBlock::parse(&BlockMetadata::new("    "), &mut parser).is_none());
 }
 
 #[test]
 fn single_line() {
     let mut parser = Parser::default();
-    let mi = SimpleBlock::parse(&Preamble::new("abc"), &mut parser).unwrap();
+    let mi = SimpleBlock::parse(&BlockMetadata::new("abc"), &mut parser).unwrap();
 
     assert_eq!(
         mi.item,
@@ -55,6 +55,7 @@ fn single_line() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -68,6 +69,7 @@ fn single_line() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -87,7 +89,7 @@ fn single_line() {
 #[test]
 fn multiple_lines() {
     let mut parser = Parser::default();
-    let mi = SimpleBlock::parse(&Preamble::new("abc\ndef"), &mut parser).unwrap();
+    let mi = SimpleBlock::parse(&BlockMetadata::new("abc\ndef"), &mut parser).unwrap();
 
     assert_eq!(
         mi.item,
@@ -107,6 +109,7 @@ fn multiple_lines() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -127,7 +130,7 @@ fn multiple_lines() {
 #[test]
 fn consumes_blank_lines_after() {
     let mut parser = Parser::default();
-    let mi = SimpleBlock::parse(&Preamble::new("abc\n\ndef"), &mut parser).unwrap();
+    let mi = SimpleBlock::parse(&BlockMetadata::new("abc\n\ndef"), &mut parser).unwrap();
 
     assert_eq!(
         mi.item,
@@ -147,6 +150,7 @@ fn consumes_blank_lines_after() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,

@@ -1,7 +1,7 @@
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -14,7 +14,8 @@ pub struct MediaBlock<'src> {
     target: Span<'src>,
     macro_attrlist: Attrlist<'src>,
     source: Span<'src>,
-    title: Option<Span<'src>>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
@@ -34,10 +35,10 @@ pub enum MediaType {
 
 impl<'src> MediaBlock<'src> {
     pub(crate) fn parse(
-        preamble: &Preamble<'src>,
+        metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        let line = preamble.block_start.take_normalized_line();
+        let line = metadata.block_start.take_normalized_line();
 
         // Line must end with `]`; otherwise, it's not a block macro.
         if !line.item.ends_with(']') {
@@ -104,7 +105,7 @@ impl<'src> MediaBlock<'src> {
 
         let macro_attrlist = Attrlist::parse(attrlist, parser);
 
-        let source: Span = preamble.source.trim_remainder(line.after);
+        let source: Span = metadata.source.trim_remainder(line.after);
         let source = source.slice(0..source.trim().len());
 
         MatchAndWarnings {
@@ -114,9 +115,10 @@ impl<'src> MediaBlock<'src> {
                     target: target.item,
                     macro_attrlist: macro_attrlist.item.item,
                     source,
-                    title: preamble.title,
-                    anchor: preamble.anchor,
-                    attrlist: preamble.attrlist.clone(),
+                    title_source: metadata.title_source,
+                    title: metadata.title.clone(),
+                    anchor: metadata.anchor,
+                    attrlist: metadata.attrlist.clone(),
                 },
 
                 after: line.after.discard_empty_lines(),
@@ -163,8 +165,12 @@ impl<'src> IsBlock<'src> for MediaBlock<'src> {
         .into()
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
-        self.title
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    fn title(&self) -> Option<&str> {
+        self.title.as_deref()
     }
 
     fn anchor(&'src self) -> Option<Span<'src>> {

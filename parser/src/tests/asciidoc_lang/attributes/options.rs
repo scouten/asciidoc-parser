@@ -90,6 +90,7 @@ This is a sidebar with an option assigned to it, named option.
                         col: 1,
                         offset: 15,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -101,6 +102,7 @@ This is a sidebar with an option assigned to it, named option.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -175,6 +177,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                         col: 1,
                         offset: 24,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -186,6 +189,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -269,6 +273,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -358,6 +363,7 @@ This is a sidebar with an option assigned to it, named option.
                         col: 1,
                         offset: 19,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -369,6 +375,7 @@ This is a sidebar with an option assigned to it, named option.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -442,6 +449,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                         col: 1,
                         offset: 30,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -453,6 +461,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -536,6 +545,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -655,6 +665,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -740,6 +751,7 @@ property 2:: does different stuff
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {

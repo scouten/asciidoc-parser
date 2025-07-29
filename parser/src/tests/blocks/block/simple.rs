@@ -77,6 +77,7 @@ fn single_line() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -101,6 +102,7 @@ fn single_line() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert!(mi.item.attrlist().is_none());
@@ -143,6 +145,7 @@ fn multiple_lines() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -196,12 +199,13 @@ fn title() {
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "simple block",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("simple block"),
             anchor: None,
             attrlist: None,
         })
@@ -234,6 +238,7 @@ fn attrlist() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
@@ -318,12 +323,13 @@ fn title_and_attrlist() {
                 col: 1,
                 offset: 0,
             },
-            title: Some(TSpan {
+            title_source: Some(TSpan {
                 data: "title",
                 line: 1,
                 col: 2,
                 offset: 1,
             },),
+            title: Some("title"),
             anchor: None,
             attrlist: Some(TAttrlist {
                 attributes: &[TElementAttribute {
@@ -407,6 +413,7 @@ fn consumes_blank_lines_after() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: None,
@@ -463,6 +470,7 @@ fn with_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: Some(TSpan {
                 data: "notice",
@@ -492,6 +500,7 @@ fn with_block_anchor() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -560,6 +569,7 @@ fn err_empty_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: Some(TSpan {
                 data: "",
@@ -589,6 +599,7 @@ fn err_empty_block_anchor() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -657,6 +668,7 @@ fn err_invalid_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: Some(TSpan {
                 data: "3 blind mice",
@@ -686,6 +698,7 @@ fn err_invalid_block_anchor() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -741,6 +754,7 @@ fn unterminated_block_anchor() {
                 col: 1,
                 offset: 0,
             },
+            title_source: None,
             title: None,
             anchor: None,
             attrlist: Some(TAttrlist {
@@ -778,6 +792,7 @@ fn unterminated_block_anchor() {
     assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);

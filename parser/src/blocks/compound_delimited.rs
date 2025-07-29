@@ -3,7 +3,9 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until, preamble::Preamble},
+    blocks::{
+        Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
+    },
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -24,7 +26,8 @@ pub struct CompoundDelimitedBlock<'src> {
     blocks: Vec<Block<'src>>,
     context: CowStr<'src>,
     source: Span<'src>,
-    title: Option<Span<'src>>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
@@ -57,10 +60,10 @@ impl<'src> CompoundDelimitedBlock<'src> {
     }
 
     pub(crate) fn parse(
-        preamble: &Preamble<'src>,
+        metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
-        let delimiter = preamble.block_start.take_normalized_line();
+        let delimiter = metadata.block_start.take_normalized_line();
         let maybe_delimiter_text = delimiter.item.data();
 
         // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
@@ -105,7 +108,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
         let maw_blocks = parse_blocks_until(inside_delimiters, |_| false, parser);
 
         let blocks = maw_blocks.item;
-        let source = preamble.source.trim_remainder(closing_delimiter.after);
+        let source = metadata.source.trim_remainder(closing_delimiter.after);
 
         Some(MatchAndWarnings {
             item: Some(MatchedItem {
@@ -113,9 +116,10 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     blocks: blocks.item,
                     context: context.into(),
                     source: source.trim_trailing_whitespace(),
-                    title: preamble.title,
-                    anchor: preamble.anchor,
-                    attrlist: preamble.attrlist.clone(),
+                    title_source: metadata.title_source,
+                    title: metadata.title.clone(),
+                    anchor: metadata.anchor,
+                    attrlist: metadata.attrlist.clone(),
                 },
                 after: closing_delimiter.after,
             }),
@@ -137,8 +141,12 @@ impl<'src> IsBlock<'src> for CompoundDelimitedBlock<'src> {
         self.blocks.iter()
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
-        self.title
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    fn title(&self) -> Option<&str> {
+        self.title.as_deref()
     }
 
     fn anchor(&'src self) -> Option<Span<'src>> {

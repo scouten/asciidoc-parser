@@ -12,7 +12,8 @@ pub(crate) struct TMediaBlock {
     pub target: TSpan,
     pub macro_attrlist: TAttrlist,
     pub source: TSpan,
-    pub title: Option<TSpan>,
+    pub title_source: Option<TSpan>,
+    pub title: Option<&'static str>,
     pub anchor: Option<TSpan>,
     pub attrlist: Option<TAttrlist>,
 }
@@ -24,6 +25,7 @@ impl fmt::Debug for TMediaBlock {
             .field("target", &self.target)
             .field("macro_attrlist", &self.macro_attrlist)
             .field("source", &self.source)
+            .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
@@ -57,6 +59,17 @@ fn fixture_eq_observed(fixture: &TMediaBlock, observed: &MediaBlock) -> bool {
     }
 
     if fixture.macro_attrlist != *observed.macro_attrlist() {
+        return false;
+    }
+
+    if fixture.title_source.is_some() != observed.title_source().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_title_source) = fixture.title_source
+        && let Some(ref observed_title_source) = observed.title_source()
+        && fixture_title_source != observed_title_source
+    {
         return false;
     }
 

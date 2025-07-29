@@ -101,7 +101,12 @@ impl<'src> IsBlock<'src> for Document<'src> {
         self.blocks.iter()
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        // Document title is reflected in the Header.
+        None
+    }
+
+    fn title(&self) -> Option<&str> {
         // Document title is reflected in the Header.
         None
     }

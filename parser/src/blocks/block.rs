@@ -5,7 +5,7 @@ use crate::{
     attributes::Attrlist,
     blocks::{
         CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, RawDelimitedBlock, SectionBlock,
-        SimpleBlock, preamble::Preamble,
+        SimpleBlock, metadata::BlockMetadata,
     },
     span::{MatchedItem, content::SubstitutionGroup},
     strings::CowStr,
@@ -87,14 +87,14 @@ impl<'src> Block<'src> {
             }
         }
 
-        // Optimization not possible; start by looking for a preamble (title and/or
-        // attrlist).
+        // Optimization not possible; start by looking for block metadata (title,
+        // attrlist, etc.).
         let MatchAndWarnings {
-            item: mut preamble,
+            item: mut metadata,
             mut warnings,
-        } = Preamble::parse(source, parser);
+        } = BlockMetadata::parse(source, parser);
 
-        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&preamble, parser) {
+        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&metadata, parser) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -113,7 +113,7 @@ impl<'src> Block<'src> {
             }
         }
 
-        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&preamble, parser) {
+        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&metadata, parser) {
             // If we found an initial delimiter without its matching
             // closing delimiter, we will issue an unmatched delimiter warning
             // and attempt to parse this as some other kind of block.
@@ -133,13 +133,13 @@ impl<'src> Block<'src> {
         }
 
         // Try to discern the block type by scanning the first line.
-        let line = preamble.block_start.take_normalized_line();
+        let line = metadata.block_start.take_normalized_line();
 
         if line.item.starts_with("image::")
             || line.item.starts_with("video::")
             || line.item.starts_with("video::")
         {
-            let mut media_block_maw = MediaBlock::parse(&preamble, parser);
+            let mut media_block_maw = MediaBlock::parse(&metadata, parser);
 
             if let Some(media_block) = media_block_maw.item {
                 // Only propagate warnings from media block parsing if we think this
@@ -163,7 +163,7 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=') {
-            if let Some(mut maw_section_block) = SectionBlock::parse(&preamble, parser) {
+            if let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser) {
                 if !maw_section_block.warnings.is_empty() {
                     warnings.append(&mut maw_section_block.warnings);
                 }
@@ -181,34 +181,35 @@ impl<'src> Block<'src> {
             // don't automatically error out on a parse failure.
         }
 
-        // First, let's look for a fun edge case. Perhaps the text contains a preamble
-        // but no block immediately following. If we're not careful, we could spin in a
-        // loop (for example, `parse_blocks_until`) thinking there will be another
-        // block, but there isn't.
+        // First, let's look for a fun edge case. Perhaps the text contains block
+        // metadata but no block immediately following. If we're not careful, we could
+        // spin in a loop (for example, `parse_blocks_until`) thinking there will be
+        // another block, but there isn't.
 
         // The following check disables that spin loop.
-        let simple_block_mi = SimpleBlock::parse(&preamble, parser);
+        let simple_block_mi = SimpleBlock::parse(&metadata, parser);
 
-        if simple_block_mi.is_none() && !preamble.is_empty() {
-            // We have a preamble with no block. Treat it as a simple block but issue a
+        if simple_block_mi.is_none() && !metadata.is_empty() {
+            // We have a metadata with no block. Treat it as a simple block but issue a
             // warning.
 
             warnings.push(Warning {
-                source: preamble.source,
+                source: metadata.source,
                 warning: WarningType::MissingBlockAfterTitleOrAttributeList,
             });
 
-            // Remove the preamble content so that SimpleBlock will read the title/attrlist
+            // Remove the metadata content so that SimpleBlock will read the title/attrlist
             // line(s) as regular content.
-            preamble.title = None;
-            preamble.anchor = None;
-            preamble.attrlist = None;
-            preamble.block_start = preamble.source;
+            metadata.title_source = None;
+            metadata.title = None;
+            metadata.anchor = None;
+            metadata.attrlist = None;
+            metadata.block_start = metadata.source;
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
         MatchAndWarnings {
-            item: SimpleBlock::parse(&preamble, parser).map(|mi| MatchedItem {
+            item: SimpleBlock::parse(&metadata, parser).map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
                 after: mi.after,
             }),
@@ -248,7 +249,17 @@ impl<'src> IsBlock<'src> for Block<'src> {
         }
     }
 
-    fn title(&'src self) -> Option<Span<'src>> {
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        match self {
+            Self::Simple(b) => b.title_source(),
+            Self::Media(b) => b.title_source(),
+            Self::Section(b) => b.title_source(),
+            Self::RawDelimited(b) => b.title_source(),
+            Self::CompoundDelimited(b) => b.title_source(),
+        }
+    }
+
+    fn title(&self) -> Option<&str> {
         match self {
             Self::Simple(b) => b.title(),
             Self::Media(b) => b.title(),

@@ -166,7 +166,7 @@ mod parse {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
         tests::fixtures::{TSpan, warnings::TWarning},
         warnings::WarningType,
     };
@@ -174,22 +174,24 @@ mod parse {
     #[test]
     fn err_invalid_delimiter() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new(""), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("///"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("///"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("////x"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("////x"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("--x"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("--x"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("****x"), &mut parser).is_none());
+        assert!(CompoundDelimitedBlock::parse(&BlockMetadata::new("****x"), &mut parser).is_none());
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("__\n__"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("__\n__"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -197,7 +199,7 @@ mod parse {
         let mut parser = Parser::default();
 
         let maw =
-            CompoundDelimitedBlock::parse(&Preamble::new("====\nblah blah blah"), &mut parser)
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("====\nblah blah blah"), &mut parser)
                 .unwrap();
 
         assert!(maw.item.is_none());
@@ -220,13 +222,15 @@ mod parse {
 mod comment {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("////\n////"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("////\n////"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -235,7 +239,7 @@ mod comment {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("////\nline1  \nline2\n////"),
+                &BlockMetadata::new("////\nline1  \nline2\n////"),
                 &mut parser
             )
             .is_none()
@@ -248,7 +252,7 @@ mod example {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -261,7 +265,8 @@ mod example {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("====\n===="), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("====\n===="), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -275,6 +280,7 @@ mod example {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -289,6 +295,7 @@ mod example {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -300,7 +307,7 @@ mod example {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("====\nblock1\n\nblock2\n===="),
+            &BlockMetadata::new("====\nblock1\n\nblock2\n===="),
             &mut parser,
         )
         .unwrap();
@@ -327,6 +334,7 @@ mod example {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -347,6 +355,7 @@ mod example {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -359,6 +368,7 @@ mod example {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -372,6 +382,7 @@ mod example {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -396,6 +407,7 @@ mod example {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -420,6 +432,7 @@ mod example {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -434,7 +447,7 @@ mod example {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
+            &BlockMetadata::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
             &mut parser,
         )
         .unwrap();
@@ -461,6 +474,7 @@ mod example {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -482,6 +496,7 @@ mod example {
                                 col: 1,
                                 offset: 19,
                             },
+                            title_source: None,
                             title: None,
                             anchor: None,
                             attrlist: None,
@@ -493,6 +508,7 @@ mod example {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -505,6 +521,7 @@ mod example {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -518,6 +535,7 @@ mod example {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -542,6 +560,7 @@ mod example {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -567,6 +586,7 @@ mod example {
                         col: 1,
                         offset: 19,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -578,6 +598,7 @@ mod example {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -591,13 +612,15 @@ mod example {
 mod listing {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("----\n----"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("----\n----"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -606,7 +629,7 @@ mod listing {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("----\nline1  \nline2\n----"),
+                &BlockMetadata::new("----\nline1  \nline2\n----"),
                 &mut parser
             )
             .is_none()
@@ -617,13 +640,15 @@ mod listing {
 mod literal {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("....\n...."), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("....\n...."), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -632,7 +657,7 @@ mod literal {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("....\nline1  \nline2\n...."),
+                &BlockMetadata::new("....\nline1  \nline2\n...."),
                 &mut parser
             )
             .is_none()
@@ -645,7 +670,7 @@ mod open {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -658,7 +683,8 @@ mod open {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("--\n--"), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("--\n--"), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -672,6 +698,7 @@ mod open {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -686,6 +713,7 @@ mod open {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -696,141 +724,8 @@ mod open {
     fn multiple_blocks() {
         let mut parser = Parser::default();
 
-        let maw =
-            CompoundDelimitedBlock::parse(&Preamble::new("--\nblock1\n\nblock2\n--"), &mut parser)
-                .unwrap();
-
-        let mi = maw.item.unwrap().clone();
-
-        assert_eq!(
-            mi.item,
-            TCompoundDelimitedBlock {
-                blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
-                                data: "block1",
-                                line: 2,
-                                col: 1,
-                                offset: 3,
-                            },
-                            rendered: "block1",
-                        },
-                        source: TSpan {
-                            data: "block1",
-                            line: 2,
-                            col: 1,
-                            offset: 3,
-                        },
-                        title: None,
-                        anchor: None,
-                        attrlist: None,
-                    },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
-                                data: "block2",
-                                line: 4,
-                                col: 1,
-                                offset: 11,
-                            },
-                            rendered: "block2",
-                        },
-                        source: TSpan {
-                            data: "block2",
-                            line: 4,
-                            col: 1,
-                            offset: 11,
-                        },
-                        title: None,
-                        anchor: None,
-                        attrlist: None,
-                    },),
-                ],
-                context: "open",
-                source: TSpan {
-                    data: "--\nblock1\n\nblock2\n--",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-                title: None,
-                anchor: None,
-                attrlist: None,
-            }
-        );
-
-        assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.raw_context().as_ref(), "open");
-        assert_eq!(mi.item.resolved_context().as_ref(), "open");
-        assert!(mi.item.declared_style().is_none());
-        assert!(mi.item.id().is_none());
-        assert!(mi.item.roles().is_empty());
-        assert!(mi.item.options().is_empty());
-        assert!(mi.item.title().is_none());
-        assert!(mi.item.anchor().is_none());
-        assert!(mi.item.attrlist().is_none());
-        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
-
-        let mut blocks = mi.item.nested_blocks();
-        assert_eq!(
-            blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
-                        data: "block1",
-                        line: 2,
-                        col: 1,
-                        offset: 3,
-                    },
-                    rendered: "block1",
-                },
-                source: TSpan {
-                    data: "block1",
-                    line: 2,
-                    col: 1,
-                    offset: 3,
-                },
-                title: None,
-                anchor: None,
-                attrlist: None,
-            },)
-        );
-
-        assert_eq!(
-            blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
-                        data: "block2",
-                        line: 4,
-                        col: 1,
-                        offset: 11,
-                    },
-                    rendered: "block2",
-                },
-                source: TSpan {
-                    data: "block2",
-                    line: 4,
-                    col: 1,
-                    offset: 11,
-                },
-                title: None,
-                anchor: None,
-                attrlist: None,
-            },)
-        );
-
-        assert!(blocks.next().is_none());
-    }
-
-    #[test]
-    fn nested_blocks() {
-        // Spec says three hyphens does NOT mark an open block.
-        let mut parser = Parser::default();
-
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("--\nblock1\n\n---\nblock2\n---\n--"),
+            &BlockMetadata::new("--\nblock1\n\nblock2\n--"),
             &mut parser,
         )
         .unwrap();
@@ -857,6 +752,7 @@ mod open {
                             col: 1,
                             offset: 3,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -864,31 +760,33 @@ mod open {
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
                             original: TSpan {
-                                data: "---\nblock2\n---",
+                                data: "block2",
                                 line: 4,
                                 col: 1,
                                 offset: 11,
                             },
-                            rendered: "---\nblock2\n---",
+                            rendered: "block2",
                         },
                         source: TSpan {
-                            data: "---\nblock2\n---",
+                            data: "block2",
                             line: 4,
                             col: 1,
                             offset: 11,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
-                    })
+                    },),
                 ],
                 context: "open",
                 source: TSpan {
-                    data: "--\nblock1\n\n---\nblock2\n---\n--",
+                    data: "--\nblock1\n\nblock2\n--",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -902,6 +800,7 @@ mod open {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -926,6 +825,148 @@ mod open {
                     col: 1,
                     offset: 3,
                 },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 11,
+                    },
+                    rendered: "block2",
+                },
+                source: TSpan {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 11,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+
+        assert!(blocks.next().is_none());
+    }
+
+    #[test]
+    fn nested_blocks() {
+        // Spec says three hyphens does NOT mark an open block.
+        let mut parser = Parser::default();
+
+        let maw = CompoundDelimitedBlock::parse(
+            &BlockMetadata::new("--\nblock1\n\n---\nblock2\n---\n--"),
+            &mut parser,
+        )
+        .unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TCompoundDelimitedBlock {
+                blocks: &[
+                    TBlock::Simple(TSimpleBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 3,
+                            },
+                            rendered: "block1",
+                        },
+                        source: TSpan {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "---\nblock2\n---",
+                                line: 4,
+                                col: 1,
+                                offset: 11,
+                            },
+                            rendered: "---\nblock2\n---",
+                        },
+                        source: TSpan {
+                            data: "---\nblock2\n---",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    })
+                ],
+                context: "open",
+                source: TSpan {
+                    data: "--\nblock1\n\n---\nblock2\n---\n--",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert_eq!(mi.item.raw_context().as_ref(), "open");
+        assert_eq!(mi.item.resolved_context().as_ref(), "open");
+        assert!(mi.item.declared_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
+        assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
+        assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 3,
+                    },
+                    rendered: "block1",
+                },
+                source: TSpan {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 3,
+                },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -950,6 +991,7 @@ mod open {
                     col: 1,
                     offset: 11,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -965,7 +1007,7 @@ mod sidebar {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -978,7 +1020,8 @@ mod sidebar {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("****\n****"), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("****\n****"), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -992,6 +1035,7 @@ mod sidebar {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1006,6 +1050,7 @@ mod sidebar {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1017,7 +1062,7 @@ mod sidebar {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("****\nblock1\n\nblock2\n****"),
+            &BlockMetadata::new("****\nblock1\n\nblock2\n****"),
             &mut parser,
         )
         .unwrap();
@@ -1044,6 +1089,7 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1064,6 +1110,7 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1076,6 +1123,7 @@ mod sidebar {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1089,6 +1137,7 @@ mod sidebar {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1113,6 +1162,7 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1137,6 +1187,7 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1151,7 +1202,7 @@ mod sidebar {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
+            &BlockMetadata::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
             &mut parser,
         )
         .unwrap();
@@ -1178,6 +1229,7 @@ mod sidebar {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1199,6 +1251,7 @@ mod sidebar {
                                 col: 1,
                                 offset: 19,
                             },
+                            title_source: None,
                             title: None,
                             anchor: None,
                             attrlist: None,
@@ -1210,6 +1263,7 @@ mod sidebar {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1222,6 +1276,7 @@ mod sidebar {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1235,6 +1290,7 @@ mod sidebar {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1259,6 +1315,7 @@ mod sidebar {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1284,6 +1341,7 @@ mod sidebar {
                         col: 1,
                         offset: 19,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -1295,6 +1353,7 @@ mod sidebar {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1308,22 +1367,30 @@ mod sidebar {
 mod table {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("|===\n|==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("|===\n|==="), &mut parser).is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new(",===\n,==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new(",===\n,==="), &mut parser).is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new(":===\n:==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new(":===\n:==="), &mut parser).is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("!===\n!==="), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("!===\n!==="), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -1331,7 +1398,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("|===\nline1  \nline2\n|==="),
+                &BlockMetadata::new("|===\nline1  \nline2\n|==="),
                 &mut parser
             )
             .is_none()
@@ -1340,7 +1407,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new(",===\nline1  \nline2\n,==="),
+                &BlockMetadata::new(",===\nline1  \nline2\n,==="),
                 &mut parser
             )
             .is_none()
@@ -1349,7 +1416,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new(":===\nline1  \nline2\n:==="),
+                &BlockMetadata::new(":===\nline1  \nline2\n:==="),
                 &mut parser
             )
             .is_none()
@@ -1358,7 +1425,7 @@ mod table {
         let mut parser = Parser::default();
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("!===\nline1  \nline2\n!==="),
+                &BlockMetadata::new("!===\nline1  \nline2\n!==="),
                 &mut parser
             )
             .is_none()
@@ -1369,13 +1436,15 @@ mod table {
 mod pass {
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(CompoundDelimitedBlock::parse(&Preamble::new("++++\n++++"), &mut parser).is_none());
+        assert!(
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("++++\n++++"), &mut parser).is_none()
+        );
     }
 
     #[test]
@@ -1384,7 +1453,7 @@ mod pass {
 
         assert!(
             CompoundDelimitedBlock::parse(
-                &Preamble::new("++++\nline1  \nline2\n++++"),
+                &BlockMetadata::new("++++\nline1  \nline2\n++++"),
                 &mut parser
             )
             .is_none()
@@ -1397,7 +1466,7 @@ mod quote {
 
     use crate::{
         Parser,
-        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, preamble::Preamble},
+        blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
@@ -1410,7 +1479,8 @@ mod quote {
     fn empty() {
         let mut parser = Parser::default();
 
-        let maw = CompoundDelimitedBlock::parse(&Preamble::new("____\n____"), &mut parser).unwrap();
+        let maw =
+            CompoundDelimitedBlock::parse(&BlockMetadata::new("____\n____"), &mut parser).unwrap();
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
@@ -1424,6 +1494,7 @@ mod quote {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1438,6 +1509,7 @@ mod quote {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1449,7 +1521,7 @@ mod quote {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("____\nblock1\n\nblock2\n____"),
+            &BlockMetadata::new("____\nblock1\n\nblock2\n____"),
             &mut parser,
         )
         .unwrap();
@@ -1476,6 +1548,7 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1496,6 +1569,7 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1508,6 +1582,7 @@ mod quote {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1521,6 +1596,7 @@ mod quote {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1545,6 +1621,7 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1569,6 +1646,7 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1583,7 +1661,7 @@ mod quote {
         let mut parser = Parser::default();
 
         let maw = CompoundDelimitedBlock::parse(
-            &Preamble::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
+            &BlockMetadata::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
             &mut parser,
         )
         .unwrap();
@@ -1610,6 +1688,7 @@ mod quote {
                             col: 1,
                             offset: 5,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1631,6 +1710,7 @@ mod quote {
                                 col: 1,
                                 offset: 19,
                             },
+                            title_source: None,
                             title: None,
                             anchor: None,
                             attrlist: None,
@@ -1642,6 +1722,7 @@ mod quote {
                             col: 1,
                             offset: 13,
                         },
+                        title_source: None,
                         title: None,
                         anchor: None,
                         attrlist: None,
@@ -1654,6 +1735,7 @@ mod quote {
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1667,6 +1749,7 @@ mod quote {
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
         assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
         assert!(mi.item.attrlist().is_none());
@@ -1691,6 +1774,7 @@ mod quote {
                     col: 1,
                     offset: 5,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -1716,6 +1800,7 @@ mod quote {
                         col: 1,
                         offset: 19,
                     },
+                    title_source: None,
                     title: None,
                     anchor: None,
                     attrlist: None,
@@ -1727,6 +1812,7 @@ mod quote {
                     col: 1,
                     offset: 13,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,

@@ -11,7 +11,8 @@ pub(crate) struct TCompoundDelimitedBlock {
     pub blocks: &'static [TBlock],
     pub context: &'static str,
     pub source: TSpan,
-    pub title: Option<TSpan>,
+    pub title_source: Option<TSpan>,
+    pub title: Option<&'static str>,
     pub anchor: Option<TSpan>,
     pub attrlist: Option<TAttrlist>,
 }
@@ -22,6 +23,7 @@ impl fmt::Debug for TCompoundDelimitedBlock {
             .field("blocks", &self.blocks)
             .field("context", &self.context)
             .field("source", &self.source)
+            .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
             .field("attrlist", &self.attrlist)
@@ -59,13 +61,24 @@ fn fixture_eq_observed(
         return false;
     }
 
+    if fixture.title_source.is_some() != observed.title_source().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_title_source) = fixture.title_source
+        && let Some(ref observed_title_source) = observed.title_source()
+        && fixture_title_source != observed_title_source
+    {
+        return false;
+    }
+
     if fixture.title.is_some() != observed.title().is_some() {
         return false;
     }
 
-    if let Some(ref tcdb_title) = fixture.title
-        && let Some(ref cdb_title) = observed.title()
-        && tcdb_title != cdb_title
+    if let Some(ref fixture_title) = fixture.title
+        && let Some(ref observed_title) = observed.title()
+        && fixture_title != observed_title
     {
         return false;
     }

@@ -17,7 +17,7 @@ mod positional_attribute {
 
     use crate::{
         Parser, Span,
-        blocks::{Block, IsBlock, MediaBlock, preamble::Preamble},
+        blocks::{Block, IsBlock, MediaBlock, metadata::BlockMetadata},
         span::content::SubstitutionGroup,
         tests::{
             fixtures::{
@@ -74,7 +74,7 @@ The second macro is the same as the first, but written out in longhand form.
         let mut parser = Parser::default();
 
         let m1 = MediaBlock::parse(
-            &Preamble::new("image::sunset.jpg[Sunset,300,400]"),
+            &BlockMetadata::new("image::sunset.jpg[Sunset,300,400]"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -83,7 +83,7 @@ The second macro is the same as the first, but written out in longhand form.
         let mut parser = Parser::default();
 
         let m2 = MediaBlock::parse(
-            &Preamble::new("image::sunset.jpg[alt=Sunset,width=300,height=400]"),
+            &BlockMetadata::new("image::sunset.jpg[alt=Sunset,width=300,height=400]"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -175,6 +175,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -235,6 +236,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -301,6 +303,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {
@@ -371,6 +374,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                     col: 1,
                     offset: 0,
                 },
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: Some(TAttrlist {

@@ -1,7 +1,7 @@
 use crate::{
     Content, HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock, preamble::Preamble},
+    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
     span::{MatchedItem, content::SubstitutionGroup},
     strings::CowStr,
 };
@@ -12,32 +12,34 @@ use crate::{
 pub struct SimpleBlock<'src> {
     content: Content<'src>,
     source: Span<'src>,
-    title: Option<Span<'src>>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
 impl<'src> SimpleBlock<'src> {
     pub(crate) fn parse(
-        preamble: &Preamble<'src>,
+        metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchedItem<'src, Self>> {
-        let source = preamble.block_start.take_non_empty_lines()?;
+        let source = metadata.block_start.take_non_empty_lines()?;
 
         // TO DO: Allow overrides for SubstitutionGroup.
         let mut content: Content<'src> = source.item.into();
-        SubstitutionGroup::Normal.apply(&mut content, parser, preamble.attrlist.as_ref());
+        SubstitutionGroup::Normal.apply(&mut content, parser, metadata.attrlist.as_ref());
 
         Some(MatchedItem {
             item: Self {
                 content,
-                source: preamble
+                source: metadata
                     .source
                     .trim_remainder(source.after)
                     .trim_trailing_whitespace(),
-                title: preamble.title,
-                anchor: preamble.anchor,
-                attrlist: preamble.attrlist.clone(),
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                attrlist: metadata.attrlist.clone(),
             },
             after: source.after.discard_empty_lines(),
         })
@@ -56,6 +58,7 @@ impl<'src> SimpleBlock<'src> {
             item: Self {
                 content,
                 source: source.item,
+                title_source: None,
                 title: None,
                 anchor: None,
                 attrlist: None,
@@ -79,8 +82,12 @@ impl<'src> IsBlock<'src> for SimpleBlock<'src> {
         "paragraph".into()
     }
 
-    fn title(&self) -> Option<Span<'src>> {
-        self.title
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    fn title(&self) -> Option<&str> {
+        self.title.as_deref()
     }
 
     fn anchor(&'src self) -> Option<Span<'src>> {
