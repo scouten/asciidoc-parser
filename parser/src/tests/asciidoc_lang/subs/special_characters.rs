@@ -402,4 +402,25 @@ mod default_special_characters_substitution {
         // Blocked on https://github.com/scouten/asciidoc-parser/issues/296:
         // Implement table parsing
     }
+
+    #[test]
+    fn titles() {
+        verifies!(
+            r#"
+|Titles |{y}
+|===
+
+"#
+        );
+
+        let doc = Parser::default().parse(".Title & such\n****\nStuff > nonsense\n****");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::CompoundDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.title().unwrap(), "Title &amp; such");
+    }
 }
