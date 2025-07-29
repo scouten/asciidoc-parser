@@ -75,6 +75,7 @@ The special characters substitution step searches for three characters (`<`, `>`
         verifies!(
             r#"
 * An ampersand, `&`, is replaced with the named character reference `\&amp;`.
+
 "#
         );
 
