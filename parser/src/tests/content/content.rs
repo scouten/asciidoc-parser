@@ -1,5 +1,5 @@
 mod is_empty {
-    use crate::{Content, Span};
+    use crate::{Span, content::Content};
 
     #[test]
     fn basic_empty_span() {
@@ -18,7 +18,8 @@ mod replace_str {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Content, Span,
+        Span,
+        content::Content,
         tests::fixtures::{TSpan, content::TContent},
     };
 

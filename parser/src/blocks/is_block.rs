@@ -4,7 +4,7 @@ use crate::{
     HasSpan, Span,
     attributes::Attrlist,
     blocks::{Block, is_built_in_context},
-    span::content::SubstitutionGroup,
+    content::SubstitutionGroup,
     strings::CowStr,
 };
 

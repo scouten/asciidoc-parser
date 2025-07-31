@@ -61,7 +61,7 @@ mod context {
     use crate::{
         Parser, Span,
         blocks::{Block, ContentModel, IsBlock, is_built_in_context},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
     };
 
@@ -523,7 +523,7 @@ mod block_style {
     use crate::{
         Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::sdd::{non_normative, verifies},
     };
 

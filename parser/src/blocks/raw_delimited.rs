@@ -1,8 +1,9 @@
 use crate::{
-    Content, HasSpan, Parser, Span,
+    HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
-    span::{MatchedItem, content::SubstitutionGroup},
+    content::{Content, SubstitutionGroup},
+    span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };

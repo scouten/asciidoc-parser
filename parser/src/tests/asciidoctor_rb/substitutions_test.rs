@@ -64,10 +64,10 @@ mod quotes {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Content, Parser, Span,
+        Parser, Span,
         blocks::Block,
+        content::{Content, SubstitutionGroup, SubstitutionStep},
         parser::ModificationContext,
-        span::content::{SubstitutionGroup, SubstitutionStep},
         strings::CowStr,
         tests::fixtures::{
             TSpan,
@@ -1331,10 +1331,10 @@ mod macros {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Content, Parser, Span,
+        Parser, Span,
         blocks::Block,
+        content::{Content, SubstitutionStep},
         parser::ModificationContext,
-        span::content::SubstitutionStep,
         strings::CowStr,
         tests::fixtures::{
             TSpan,
@@ -3541,10 +3541,12 @@ mod passthroughs {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Content, Parser, Span,
+        Parser, Span,
         blocks::Block,
+        content::{
+            Content, Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough,
+        },
         parser::{ModificationContext, QuoteType},
-        span::content::{Passthrough, Passthroughs, SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TSimpleBlock},
@@ -4848,9 +4850,9 @@ mod replacements {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Content, Parser, Span,
+        Parser, Span,
         blocks::Block,
-        span::content::SubstitutionStep,
+        content::{Content, SubstitutionStep},
         strings::CowStr,
         tests::fixtures::{
             TSpan,

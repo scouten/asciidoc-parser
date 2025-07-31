@@ -1,9 +1,10 @@
 use std::slice::Iter;
 
 use crate::{
-    Content, HasSpan, Parser, Span,
+    HasSpan, Parser, Span,
+    content::{Content, SubstitutionGroup},
     document::Attribute,
-    span::{MatchedItem, content::SubstitutionGroup},
+    span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
 

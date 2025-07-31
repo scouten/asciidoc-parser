@@ -2,10 +2,12 @@ mod passthroughs {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Content, Parser, Span,
+        Parser, Span,
         blocks::Block,
+        content::{
+            Content, Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough,
+        },
         parser::ModificationContext,
-        span::content::{Passthrough, Passthroughs, SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TSimpleBlock},

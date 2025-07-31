@@ -1,9 +1,7 @@
-use std::ops::Sub;
-
 use crate::{
     Parser,
     attributes::Attrlist,
-    span::content::{Content, Passthroughs, SubstitutionStep},
+    content::{Content, Passthroughs, SubstitutionStep},
 };
 
 /// Each block and inline element has a default substitution group that is

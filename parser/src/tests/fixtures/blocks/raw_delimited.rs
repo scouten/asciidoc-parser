@@ -3,7 +3,7 @@ use std::fmt;
 use crate::{
     HasSpan,
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
-    span::content::SubstitutionGroup,
+    content::SubstitutionGroup,
     tests::fixtures::{TSpan, attributes::TAttrlist, content::TContent},
 };
 

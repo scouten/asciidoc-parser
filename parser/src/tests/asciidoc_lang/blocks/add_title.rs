@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     Parser, Span,
     blocks::{Block, ContentModel},
-    span::content::SubstitutionGroup,
+    content::SubstitutionGroup,
     tests::{
         fixtures::{
             TSpan,

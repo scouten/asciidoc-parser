@@ -2,20 +2,19 @@ use std::{borrow::Cow, path::Path, sync::LazyLock};
 
 use regex::{Captures, Regex, Replacer};
 
-#[allow(unused)] // TEMPORARY while building
-use crate::{Content, Parser};
 use crate::{
-    Span,
+    Parser, Span,
     attributes::Attrlist,
+    content::Content,
     parser::{IconRenderParams, ImageRenderParams},
 };
 
 pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
-    let mut text = content.rendered().to_string();
+    let /* mut */ text = content.rendered().to_string();
     let found_square_bracket = text.contains('[');
     let found_colon = text.contains(':');
     let found_macroish = found_square_bracket && found_colon;
-    let found_macroish_short = found_macroish && text.contains(":[");
+    // let found_macroish_short = found_macroish && text.contains(":[");
 
     // TO DO (#262): Implement extensions that can define macros.
     // Port Ruby Asciidoctor's implementation from
@@ -31,7 +30,7 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         if let Cow::Owned(new_result) = INLINE_IMAGE_MACRO.replace_all(content.rendered(), replacer)
         {
             content.rendered = new_result.into();
-            text = content.rendered.to_string();
+            // text = content.rendered.to_string();
         }
     }
 

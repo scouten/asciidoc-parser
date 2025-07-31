@@ -603,7 +603,7 @@ Let's consider `options` when combined with other attributes.
     use crate::{
         Parser, Span,
         blocks::{Block, IsBlock},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::{
             fixtures::{
                 TSpan,

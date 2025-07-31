@@ -1,12 +1,12 @@
 use std::{borrow::Cow, sync::LazyLock};
 
-use regex::{Captures, Match, Regex, RegexBuilder, Replacer};
+use regex::{Captures, Regex, Replacer};
 
 use crate::{
-    Content, Parser, Span,
+    Parser, Span,
     attributes::Attrlist,
+    content::{Content, SubstitutionGroup},
     parser::{QuoteScope, QuoteType},
-    span::content::SubstitutionGroup,
 };
 
 /// Saves the content of one passthrough (`+++` or similarly bracketed) passage
@@ -342,7 +342,7 @@ impl Replacer for InlinePassReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         if dest.ends_with('\\') || dest.ends_with(':') || dest.ends_with(';') {
             // Honor the prohibited prefix.
-            let dest_ended_with_backslash = dest.ends_with('\\');
+            // let dest_ended_with_backslash = dest.ends_with('\\');
             // if dest_ended_with_backslash {
             //     dest.truncate(dest.len() - 1);
             // }
