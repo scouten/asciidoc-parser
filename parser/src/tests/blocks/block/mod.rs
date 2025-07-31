@@ -24,7 +24,8 @@ mod error_cases {
     use crate::{
         Parser, Span,
         blocks::{Block, ContentModel, IsBlock, SectionBlock, metadata::BlockMetadata},
-        span::{HasSpan, content::SubstitutionGroup},
+        content::SubstitutionGroup,
+        span::HasSpan,
         tests::fixtures::{
             TSpan,
             attributes::{TAttrlist, TElementAttribute},

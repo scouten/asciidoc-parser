@@ -2,8 +2,8 @@ mod from_custom_string {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Content, Parser, Span,
-        span::content::{SubstitutionGroup, SubstitutionStep},
+        Parser, Span,
+        content::{Content, SubstitutionGroup, SubstitutionStep},
         strings::CowStr,
     };
 
@@ -251,7 +251,11 @@ mod from_custom_string {
 }
 
 mod normal {
-    use crate::{Content, Parser, Span, span::content::SubstitutionGroup, strings::CowStr};
+    use crate::{
+        Parser, Span,
+        content::{Content, SubstitutionGroup},
+        strings::CowStr,
+    };
 
     #[test]
     fn empty() {
@@ -342,7 +346,9 @@ mod normal {
 
 mod attribute_entry_value {
     use crate::{
-        Content, Parser, Span, parser::ModificationContext, span::content::SubstitutionGroup,
+        Parser, Span,
+        content::{Content, SubstitutionGroup},
+        parser::ModificationContext,
         strings::CowStr,
     };
 
@@ -420,7 +426,11 @@ mod attribute_entry_value {
 }
 
 mod header {
-    use crate::{Content, Parser, Span, span::content::SubstitutionGroup, strings::CowStr};
+    use crate::{
+        Parser, Span,
+        content::{Content, SubstitutionGroup},
+        strings::CowStr,
+    };
 
     #[test]
     fn empty() {

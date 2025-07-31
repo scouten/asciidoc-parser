@@ -1,8 +1,11 @@
-#![allow(unused)] // TEMPORARY while building
+//! Describes the content of a non-compound block after any relevant
+//! [substitutions] have been performed.
+//!
+//! [substitutions]: https://docs.asciidoctor.org/asciidoc/latest/subs/
 
 use crate::{Span, strings::CowStr};
 
-/// Describes the annotated content of a [`Span`] after any relevant
+/// Describes the annotated content of a block after any relevant
 /// [substitutions] have been performed.
 ///
 /// This is typically used to represent the main body of block types that don't
@@ -38,6 +41,7 @@ impl<'src> Content<'src> {
         self.rendered.as_ref().is_empty()
     }
 
+    #[allow(unused)]
     /// Replaces an exact string with another exact string.
     pub(crate) fn replace_str(&mut self, from: &str, to: &'static str) {
         if self.rendered.contains(from) {
@@ -54,14 +58,3 @@ impl<'src> From<Span<'src>> for Content<'src> {
         }
     }
 }
-
-mod macros;
-
-mod passthroughs;
-pub(crate) use passthroughs::{Passthrough, Passthroughs};
-
-mod substitution_group;
-pub(crate) use substitution_group::SubstitutionGroup;
-
-mod substitution_step;
-pub(crate) use substitution_step::SubstitutionStep;

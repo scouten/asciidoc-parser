@@ -5,7 +5,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     Parser,
     blocks::{ContentModel, IsBlock, SimpleBlock, metadata::BlockMetadata},
-    span::content::SubstitutionGroup,
+    content::SubstitutionGroup,
     tests::fixtures::{TSpan, blocks::TSimpleBlock, content::TContent},
 };
 

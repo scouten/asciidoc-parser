@@ -7,8 +7,8 @@
 #![doc = include_str!(concat!("../", std::env!("CARGO_PKG_README")))]
 
 pub mod attributes;
-
 pub mod blocks;
+pub mod content;
 
 pub mod document;
 pub use document::Document;
@@ -19,7 +19,7 @@ pub mod parser;
 pub use parser::Parser;
 
 mod span;
-pub use span::{Content, HasSpan, Span};
+pub use span::{HasSpan, Span};
 
 pub mod strings;
 
