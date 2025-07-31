@@ -12,7 +12,7 @@ pub(crate) mod passthroughs;
 pub(crate) use passthroughs::Passthroughs;
 
 mod substitution_group;
-pub(crate) use substitution_group::SubstitutionGroup;
+pub use substitution_group::SubstitutionGroup;
 
 mod substitution_step;
-pub(crate) use substitution_step::SubstitutionStep;
+pub use substitution_step::SubstitutionStep;
