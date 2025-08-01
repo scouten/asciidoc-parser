@@ -26,9 +26,11 @@ impl<'src> SimpleBlock<'src> {
     ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.take_non_empty_lines()?;
 
-        // TO DO: Allow overrides for SubstitutionGroup.
         let mut content: Content<'src> = source.item.into();
-        SubstitutionGroup::Normal.apply(&mut content, parser, metadata.attrlist.as_ref());
+
+        SubstitutionGroup::Normal
+            .override_via_attrlist(metadata.attrlist.as_ref())
+            .apply(&mut content, parser, metadata.attrlist.as_ref());
 
         Some(MatchedItem {
             item: Self {

@@ -182,4 +182,16 @@ impl SubstitutionGroup {
             passthroughs.restore_to(content, parser);
         }
     }
+
+    pub(crate) fn override_via_attrlist(&self, attrlist: Option<&Attrlist>) -> Self {
+        if let Some(sub_group) = attrlist
+            .and_then(|a| a.named_attribute("subs"))
+            .map(|attr| attr.value())
+            .and_then(|subs| Self::from_custom_string(subs))
+        {
+            sub_group
+        } else {
+            self.clone()
+        }
+    }
 }
