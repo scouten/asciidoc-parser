@@ -433,6 +433,7 @@ mod specialchars_substitution_value {
         Parser,
         blocks::{Block, IsBlock},
         content::SubstitutionGroup,
+        parser::ModificationContext,
         tests::sdd::{non_normative, to_do_verifies, verifies},
     };
 
@@ -483,6 +484,38 @@ For inline elements, the built-in values `c` or `specialchars` can be applied to
         assert_eq!(
             block1.content().rendered(),
             "abc&lt;lt{sp}space and then &#8230;&#8203;"
+        );
+    }
+
+    #[test]
+    fn manually_escape_api_attributes() {
+        verifies!(
+            r#"
+[NOTE]
+====
+Special character substitution precedes attribute substitution, so you need to manually escape any attributes containing special characters that you set in the CLI or API.
+For example, on the command line, type `+-a toc-title="Sections, Tables \&amp; Figures"+` instead of `-a toc-title="Sections, Tables & Figures"`.
+====
+"#
+        );
+
+        let doc = Parser::default()
+            .with_intrinsic_attribute(
+                "toc-title",
+                "Sections, Tables & Figures",
+                ModificationContext::Anywhere,
+            )
+            .parse("The value of toc-title is {toc-title}.");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "The value of toc-title is Sections, Tables & Figures."
         );
     }
 }
