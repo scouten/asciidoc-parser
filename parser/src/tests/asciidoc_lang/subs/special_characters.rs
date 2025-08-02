@@ -462,4 +462,27 @@ For blocks, the step's name, `specialchars`, can be assigned to the xref:apply-s
 
         assert_eq!(block1.content().rendered(), "abc&lt;lt{sp}space");
     }
+
+    #[test]
+    fn for_inline_elements() {
+        verifies!(
+            r#"
+For inline elements, the built-in values `c` or `specialchars` can be applied to xref:apply-subs-to-text.adoc[inline text] to add the special characters substitution step.
+
+"#
+        );
+
+        let doc = Parser::default().parse("pass:c[abc<lt{sp}space]{sp}and then ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "abc&lt;lt{sp}space and then &#8230;&#8203;"
+        );
+    }
 }
