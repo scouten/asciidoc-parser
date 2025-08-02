@@ -21,7 +21,7 @@ mod substitutions {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
     };
 
@@ -97,8 +97,8 @@ mod default_special_characters_substitution {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
+        content::SubstitutionGroup,
         parser::ModificationContext,
-        span::content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
     };
 

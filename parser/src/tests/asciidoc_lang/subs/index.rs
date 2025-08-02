@@ -64,7 +64,7 @@ mod substitution_groups {
     use crate::{
         Parser,
         blocks::IsBlock,
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
     };
 
