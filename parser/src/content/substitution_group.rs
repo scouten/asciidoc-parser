@@ -187,7 +187,7 @@ impl SubstitutionGroup {
         if let Some(sub_group) = attrlist
             .and_then(|a| a.named_attribute("subs"))
             .map(|attr| attr.value())
-            .and_then(|subs| Self::from_custom_string(subs))
+            .and_then(Self::from_custom_string)
         {
             sub_group
         } else {
