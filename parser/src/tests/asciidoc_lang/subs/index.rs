@@ -1,0 +1,209 @@
+use crate::tests::sdd::{non_normative, track_file};
+
+track_file!("docs/modules/subs/pages/index.adoc");
+
+non_normative!(
+    r#"
+= Substitutions
+:page-aliases: substitutions.adoc
+:y: Yes
+//icon:check[role="green"]
+:n: No
+//icon:times[role="red"]
+
+////
+user manual anchor: subs
+
+This page needs to become a more user friendly overview of what substitutions can do, how to leverage them and how to escape them and/or prevent them with a pass through.
+
+The groups and individual substitution categories (and tables) needs to be reorganized into a more cohesive body (and then squashed into a single reference page maybe?).
+The apply, prevent, and control pages need to be organized into a logical flow with clear statements of ... I have this problem: I need to get this attribute reference in this block to be replaced by not have the other <whatever> replaced, what do I use?
+All the groups and subs need to be hooked up to clear use cases.
+The single plus macro has no explanation (at least not in this module).
+The deprecate syntax needs to be moved to the deprecated table and/or migration docs.
+////
+
+Substitutions are applied to leaf content of a block.
+Substitutions determine how the text is interpreted.
+If no substitutions are applied, the text is passed to the converter as entered.
+Otherwise, the substitutions transform that text.
+
+Substitutions replace references, formatting marks, characters and character sequences, and macros.
+Substitutions are organized into types and those types are bundled into groups.
+This page provides an overview of these classifications.
+Subsequent pages go into detail about each substitution type.
+
+"#
+);
+
+// The following declarations are well-covered in other tests so not
+// specifically testing them here.
+non_normative!(
+    r#"
+== Substitution types
+
+Each substitution type replace characters, markup, attribute references, and macros in text with the appropriate output for a given converter.
+When a document is processed, up to six substitution types may be carried out depending on the block or inline element's assigned substitution group.
+The processor runs the substitutions in the following order:
+
+. xref:special-characters.adoc[]
+. xref:quotes.adoc[] (i.e., inline formatting)
+. xref:attributes.adoc[]
+. xref:replacements.adoc[]
+. xref:macros.adoc[]
+. xref:post-replacements.adoc[]
+
+For convenience, these types are grouped and ordered into substitution groups.
+
+"#
+);
+
+mod substitution_groups {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::IsBlock,
+        content::SubstitutionGroup,
+        tests::sdd::{non_normative, to_do_verifies, verifies},
+    };
+
+    non_normative!(
+        r#"
+[#substitution-groups]
+== Substitution groups
+
+Each block and inline element has a default substitution group that is applied unless you customize the substitutions for a particular element.
+<<table-subs-groups>> shows the substitution types that are executed in each group.
+
+include::partial$subs-group-table.adoc[]
+
+"#
+    );
+
+    #[test]
+    fn normal_group() {
+        verifies!(
+            r#"
+[#normal-group]
+=== Normal substitution group
+
+The normal substitution group (`normal`) is applied to the majority of the AsciiDoc block and inline elements except for those specific elements listed under the groups described in the next sections.
+
+"#
+        );
+
+        let doc = Parser::default().parse("Normal paragraph text");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        assert_eq!(block1.substitution_group(), SubstitutionGroup::Normal);
+    }
+
+    #[ignore]
+    #[test]
+    fn header_group() {
+        // We don't describe the substitution group for header lines, so this isn't
+        // directly verifiable.
+        to_do_verifies!(
+            r#"
+[#header-group]
+=== Header substitution group
+
+The header substitution group (`header`) is applied to metadata lines (author and revision information) in the document header.
+It's also applied to the values of attribute entries, regardless of whether those entries are defined in the document header or body.
+Only special characters, attribute references, and the inline pass macro are replaced in elements that fall under the header group.
+
+TIP: You can use the inline pass macro in attribute entries to xref:apply-subs-to-text.adoc[customize the substitution types applied to the attribute's value].
+
+"#
+        );
+    }
+
+    #[test]
+    fn verbatim_group() {
+        verifies!(
+            r#"
+[#verbatim-group]
+=== Verbatim substitution group
+
+Literal, listing, and source blocks are processed using the verbatim substitution group (`verbatim`).
+Only special characters are replaced in these blocks.
+
+"#
+        );
+
+        let doc = Parser::default().parse("....\n....");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        assert_eq!(block1.substitution_group(), SubstitutionGroup::Verbatim);
+
+        let doc = Parser::default().parse("----\n----");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        assert_eq!(block1.substitution_group(), SubstitutionGroup::Verbatim);
+
+        let doc = Parser::default().parse("[source]\n----\n----");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        assert_eq!(block1.substitution_group(), SubstitutionGroup::Verbatim);
+    }
+
+    #[test]
+    fn pass_group() {
+        verifies!(
+            r#"
+[#pass-group]
+=== Pass substitution group
+
+No substitutions are applied to three of the elements in the pass substitution group (`pass`).
+These elements include the xref:pass:pass-block.adoc[passthrough block], xref:pass:pass-macro.adoc#inline-pass[inline pass macro], and xref:pass:pass-macro.adoc#triple-plus[triple plus macro].
+
+The xref:pass:pass-macro.adoc#def-plus[inline single plus and double plus macros] also belong to the pass group.
+Only the special characters substitution is applied to these elements.
+
+"#
+        );
+
+        let doc = Parser::default().parse("++++\n++++");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        assert_eq!(block1.substitution_group(), SubstitutionGroup::Pass);
+    }
+
+    #[test]
+    fn none_group() {
+        verifies!(
+            r#"
+[#none-group]
+=== None substitution group
+
+The none substitution group (`none`) is applied to comment blocks.
+No substitutions are applied to comments.
+
+"#
+        );
+
+        let doc = Parser::default().parse("////\n////");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        assert_eq!(block1.substitution_group(), SubstitutionGroup::None);
+    }
+}
+
+// The following declarations are well-covered in other tests so not
+// specifically testing them here.
+non_normative!(
+    r#"
+== Escaping substitutions
+
+The AsciiDoc syntax offers several approaches for preventing substitutions from being applied.
+When you want to prevent punctuation and symbols from being interpreted as formatting markup, xref:prevent.adoc[escaping the punctuation with a backslash] may be sufficient.
+For more comprehensive substitution prevention and control, you can use xref:pass:pass-macro.adoc[inline passthrough macros] or xref:pass:pass-block.adoc[passthrough blocks].
+"#
+);
