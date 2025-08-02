@@ -1,5 +1,3 @@
-#![allow(unused)]
-
 use crate::tests::sdd::{non_normative, track_file};
 
 track_file!("docs/modules/subs/pages/special-characters.adoc");
@@ -21,8 +19,7 @@ mod substitutions {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        content::SubstitutionGroup,
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::sdd::{non_normative, verifies},
     };
 
     non_normative!(
@@ -97,8 +94,6 @@ mod default_special_characters_substitution {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        content::SubstitutionGroup,
-        parser::ModificationContext,
         tests::sdd::{non_normative, to_do_verifies, verifies},
     };
 
@@ -432,9 +427,8 @@ mod specialchars_substitution_value {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        content::SubstitutionGroup,
         parser::ModificationContext,
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::sdd::{non_normative, verifies},
     };
 
     non_normative!(
