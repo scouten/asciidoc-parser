@@ -193,7 +193,7 @@ mod example {
     use crate::{
         HasSpan, Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},

@@ -1,6 +1,7 @@
 use crate::{
-    Content, HasSpan, Parser, Span,
-    span::{MatchedItem, content::SubstitutionGroup},
+    HasSpan, Parser, Span,
+    content::{Content, SubstitutionGroup},
+    span::MatchedItem,
     strings::CowStr,
 };
 

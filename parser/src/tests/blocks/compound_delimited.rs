@@ -253,7 +253,7 @@ mod example {
     use crate::{
         Parser,
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
@@ -671,7 +671,7 @@ mod open {
     use crate::{
         Parser,
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
@@ -1008,7 +1008,7 @@ mod sidebar {
     use crate::{
         Parser,
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
@@ -1467,7 +1467,7 @@ mod quote {
     use crate::{
         Parser,
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},

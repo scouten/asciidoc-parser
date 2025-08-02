@@ -201,7 +201,7 @@ mod comment {
     use crate::{
         Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TRawDelimitedBlock},
@@ -436,7 +436,8 @@ mod listing {
     use crate::{
         Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
-        span::{HasSpan, content::SubstitutionGroup},
+        content::SubstitutionGroup,
+        span::HasSpan,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TRawDelimitedBlock},
@@ -704,7 +705,8 @@ mod pass {
     use crate::{
         Parser, Span,
         blocks::{Block, ContentModel, IsBlock},
-        span::{HasSpan, content::SubstitutionGroup},
+        content::SubstitutionGroup,
+        span::HasSpan,
         tests::fixtures::{
             TSpan,
             blocks::{TBlock, TRawDelimitedBlock},

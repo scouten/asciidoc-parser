@@ -108,9 +108,6 @@ impl<'src> Deref for Span<'src> {
 // available inside this crate only. (Exception: `Content` is defined here and
 // exported publicly.)
 
-pub(crate) mod content;
-pub use content::Content;
-
 mod discard;
 mod line;
 mod matched_item;

@@ -5,13 +5,13 @@ use regex::{Captures, Regex, RegexBuilder, Replacer};
 use crate::{
     Parser,
     attributes::Attrlist,
+    content::Content,
     document::InterpretedValue,
     internal::{LookaheadReplacer, LookaheadResult, replace_with_lookahead},
     parser::{
         CharacterReplacementType, InlineSubstitutionRenderer, QuoteScope, QuoteType,
         SpecialCharacter,
     },
-    span::Content,
 };
 
 /// Each substitution type replaces characters, markup, attribute references,

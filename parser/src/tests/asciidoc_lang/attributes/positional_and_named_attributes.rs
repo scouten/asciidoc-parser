@@ -18,7 +18,7 @@ mod positional_attribute {
     use crate::{
         Parser, Span,
         blocks::{Block, IsBlock, MediaBlock, metadata::BlockMetadata},
-        span::content::SubstitutionGroup,
+        content::SubstitutionGroup,
         tests::{
             fixtures::{
                 TSpan,

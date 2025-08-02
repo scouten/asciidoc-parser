@@ -7,7 +7,8 @@ use crate::{
         CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, RawDelimitedBlock, SectionBlock,
         SimpleBlock, metadata::BlockMetadata,
     },
-    span::{MatchedItem, content::SubstitutionGroup},
+    content::SubstitutionGroup,
+    span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
