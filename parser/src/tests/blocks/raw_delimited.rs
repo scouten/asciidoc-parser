@@ -378,8 +378,13 @@ mod listing {
     use crate::{
         Parser,
         blocks::{ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata},
-        content::SubstitutionGroup,
-        tests::fixtures::{TSpan, blocks::TRawDelimitedBlock, content::TContent},
+        content::{SubstitutionGroup, SubstitutionStep},
+        tests::fixtures::{
+            TSpan,
+            attributes::{TAttrlist, TElementAttribute},
+            blocks::TRawDelimitedBlock,
+            content::TContent,
+        },
     };
 
     #[test]
@@ -495,6 +500,105 @@ mod listing {
                     offset: 5,
                 },
                 rendered: "line1  \nline2",
+            }
+        );
+    }
+
+    #[test]
+    fn overrides_sub_group_via_subs_attribute() {
+        let mut parser = Parser::default();
+
+        let maw = RawDelimitedBlock::parse(
+            &BlockMetadata::new("[subs=quotes]\n----\nline1 < *line2*\n----"),
+            &mut parser,
+        )
+        .unwrap();
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            TRawDelimitedBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "line1 < *line2*",
+                        line: 3,
+                        col: 1,
+                        offset: 19,
+                    },
+                    rendered: "line1 < <strong>line2</strong>",
+                },
+                content_model: ContentModel::Verbatim,
+                context: "listing",
+                source: TSpan {
+                    data: "[subs=quotes]\n----\nline1 < *line2*\n----",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: &[TElementAttribute {
+                        name: Some("subs"),
+                        value: "quotes",
+                        shorthand_items: &[],
+                    },],
+                    source: TSpan {
+                        data: "subs=quotes",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                },),
+                substitution_group: SubstitutionGroup::Custom(vec![SubstitutionStep::Quotes]),
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
+        assert_eq!(mi.item.raw_context().as_ref(), "listing");
+        assert_eq!(mi.item.resolved_context().as_ref(), "listing");
+        assert!(mi.item.declared_style().is_none());
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
+        assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
+
+        assert_eq!(
+            mi.item.attrlist().unwrap(),
+            TAttrlist {
+                attributes: &[TElementAttribute {
+                    name: Some("subs"),
+                    value: "quotes",
+                    shorthand_items: &[],
+                },],
+                source: TSpan {
+                    data: "subs=quotes",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            }
+        );
+
+        assert_eq!(
+            mi.item.substitution_group(),
+            SubstitutionGroup::Custom(vec![SubstitutionStep::Quotes])
+        );
+
+        assert_eq!(
+            mi.item.content(),
+            TContent {
+                original: TSpan {
+                    data: "line1 < *line2*",
+                    line: 3,
+                    col: 1,
+                    offset: 19,
+                },
+                rendered: "line1 < <strong>line2</strong>",
             }
         );
     }
