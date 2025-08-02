@@ -6,7 +6,12 @@ use crate::{
     Parser,
     blocks::{ContentModel, IsBlock, SimpleBlock, metadata::BlockMetadata},
     content::SubstitutionGroup,
-    tests::fixtures::{TSpan, blocks::TSimpleBlock, content::TContent},
+    tests::fixtures::{
+        TSpan,
+        attributes::{TAttrlist, TElementAttribute},
+        blocks::TSimpleBlock,
+        content::TContent,
+    },
 };
 
 #[test]
@@ -164,6 +169,63 @@ fn consumes_blank_lines_after() {
             line: 3,
             col: 1,
             offset: 5
+        }
+    );
+}
+
+#[test]
+fn overrides_sub_group_via_subs_attribute() {
+    let mut parser = Parser::default();
+    let mi = SimpleBlock::parse(
+        &BlockMetadata::new("[subs=quotes]\na<b>c *bold*\n\ndef"),
+        &mut parser,
+    )
+    .unwrap();
+
+    assert_eq!(
+        mi.item,
+        TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "a<b>c *bold*",
+                    line: 2,
+                    col: 1,
+                    offset: 14,
+                },
+                rendered: "a<b>c <strong>bold</strong>",
+            },
+            source: TSpan {
+                data: "[subs=quotes]\na<b>c *bold*",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title_source: None,
+            title: None,
+            anchor: None,
+            attrlist: Some(TAttrlist {
+                attributes: &[TElementAttribute {
+                    name: Some("subs"),
+                    value: "quotes",
+                    shorthand_items: &[],
+                },],
+                source: TSpan {
+                    data: "subs=quotes",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
+                },
+            },),
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "def",
+            line: 4,
+            col: 1,
+            offset: 28
         }
     );
 }
