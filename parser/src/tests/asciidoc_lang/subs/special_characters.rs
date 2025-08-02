@@ -425,3 +425,41 @@ mod default_special_characters_substitution {
         assert_eq!(block1.title().unwrap(), "Title &amp; such");
     }
 }
+
+mod specialchars_substitution_value {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        content::SubstitutionGroup,
+        tests::sdd::{non_normative, to_do_verifies, verifies},
+    };
+
+    non_normative!(
+        r#"
+== specialchars substitution value
+
+The special characters substitution step can be modified on blocks and inline elements.
+"#
+    );
+
+    #[test]
+    fn for_blocks() {
+        verifies!(
+            r#"
+For blocks, the step's name, `specialchars`, can be assigned to the xref:apply-subs-to-blocks.adoc[subs attribute].
+"#
+        );
+
+        let doc = Parser::default().parse("[subs=specialchars]\nabc<lt{sp}space");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "abc&lt;lt{sp}space");
+    }
+}
