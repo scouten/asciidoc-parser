@@ -561,3 +561,63 @@ mod default_quotes_substitution {
         assert_eq!(block1.title().unwrap(), "Title and <em>such</em>");
     }
 }
+
+mod quotes_substitution_value {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        tests::sdd::{non_normative, verifies},
+    };
+
+    non_normative!(
+        r#"
+[#quotes-value]
+== quotes substitution value
+
+The quotes substitution step can be modified on blocks and inline elements.
+"#
+    );
+
+    #[test]
+    fn for_blocks() {
+        verifies!(
+            r#"
+For blocks, the step's name, `quotes`, can be assigned to the xref:apply-subs-to-blocks.adoc[subs attribute].
+"#
+        );
+
+        let doc = Parser::default().parse("[subs=quotes]\nabc<lt *bold*");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "abc<lt <strong>bold</strong>");
+    }
+
+    #[test]
+    fn for_inline_elements() {
+        verifies!(
+            r#"
+For inline elements, the built-in values `q` or `quotes` can be applied to xref:apply-subs-to-text.adoc[inline text] to add the quotes substitution step.
+"#
+        );
+
+        let doc = Parser::default().parse("pass:q[abc<lt *bold*]{sp}and then ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "abc<lt <strong>bold</strong> and then &#8230;&#8203;"
+        );
+    }
+}
