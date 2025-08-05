@@ -571,3 +571,86 @@ mod blocks_and_inline_elements_subject_to_the_replacements_substitution {
         assert_eq!(block1.title().unwrap(), "Title &#169; such");
     }
 }
+
+mod replacements_substitution_value {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        tests::sdd::{non_normative, verifies},
+    };
+
+    non_normative!(
+        r#"
+== replacements substitution value
+
+The replacements substitution step can be modified on blocks and inline elements.
+"#
+    );
+
+    #[test]
+    fn for_blocks() {
+        verifies!(
+            r#"
+For blocks, the step's name, `replacements`, can be assigned to the xref:apply-subs-to-blocks.adoc[subs attribute].
+"#
+        );
+
+        let doc = Parser::default().parse("[subs=replacements]\nabc<lt (C) *bold*");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(block1.content().rendered(), "abc<lt &#169; *bold*");
+    }
+
+    #[test]
+    fn for_inline_elements() {
+        verifies!(
+            r#"
+For inline elements, the built-in values `r` or `replacements` can be applied to xref:apply-subs-to-text.adoc[inline text] to add the replacements substitution step.
+
+"#
+        );
+
+        let doc = Parser::default().parse("pass:r[abc<lt (C) *bold*] and then ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "abc<lt &#169; *bold* and then &#8230;&#8203;"
+        );
+    }
+
+    #[test]
+    fn warning_dependency() {
+        verifies!(
+            r#"
+WARNING: The replacements step depends on the substitutions completed by the xref:special-characters.adoc[special characters step].
+This is important to keep in mind when applying the `replacements` value to blocks and inline elements.
+"#
+        );
+
+        let doc = Parser::default().parse("pass:r[left-arrow <- not here] but <- there ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "left-arrow <- not here but &#8592; there &#8230;&#8203;"
+        );
+    }
+}
