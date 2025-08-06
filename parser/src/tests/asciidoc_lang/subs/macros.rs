@@ -159,6 +159,7 @@ mod default_macros_substitution {
         verifies!(
             r#"
 |Macros |{y}
+
 "#
         );
 
