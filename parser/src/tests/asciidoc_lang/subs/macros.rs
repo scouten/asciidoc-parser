@@ -4,6 +4,14 @@ track_file!("docs/modules/subs/pages/macros.adoc");
 
 non_normative!(
     r#"
+= Macro Substitutions
+:navtitle: Macros
+:table-caption: Table
+:y: Yes
+//icon:check[role="green"]
+:n: No
+//icon:times[role="red"]
+
 The content of inline and block macros, such as cross references, links, and block images, are processed by the macros substitution step.
 The macros step replaces a macro's content with the appropriate built-in and user-defined configuration.
 
