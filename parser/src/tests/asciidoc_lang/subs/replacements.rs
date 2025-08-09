@@ -23,7 +23,7 @@ mod replacements {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::sdd::{non_normative, verifies},
     };
 
     non_normative!(
@@ -185,20 +185,54 @@ include::partial$subs-symbol-repl.adoc[]
         assert_eq!(sb1.content().rendered(), "Sam&#8217;s");
     }
 
-    #[ignore]
     #[test]
-    fn issue_304_reencode_character_reference() {
-        // Ignoring for now. I don't believe this section accurately describes what is
-        // implemented in the Ruby version of Asciidoctor.
-
-        // Tracking issue: Track https://github.com/scouten/asciidoc-parser/issues/304
-
-        to_do_verifies!(
+    fn preserve_character_reference() {
+        verifies!(
             r#"
 For example, to produce the `&#167;` symbol you could write `\&sect;`, `\&#x00A7;`, or `\&#167;`.
-When the document is processed, `replacements` will replace the section symbol reference, regardless of whether it is a named character reference or a numeric character reference, with `\&#167;`.
-In turn, `\&#167;` will display as &#167;.
+When the document is processed, `replacements` will preserve the section symbol reference so the reference will appear as &#167; when rendered.
+"#
+        );
 
+        let doc = Parser::default().parse("In &sect; 8.1.5, we say ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(sb1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            sb1.content().rendered(),
+            "In &sect; 8.1.5, we say &#8230;&#8203;"
+        );
+    }
+
+    #[test]
+    fn preserve_numeric_character_reference() {
+        verifies!(
+            r#"
+In turn, `\&#167;` in the AsciiDoc source will display as &#167; in the rendered document.
+
+"#
+        );
+
+        let doc = Parser::default().parse("In &#167; 8.1.5, we say ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(sb1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            sb1.content().rendered(),
+            "In &#167; 8.1.5, we say &#8230;&#8203;"
+        );
+    }
+
+    non_normative!(
+        r#"
 An AsciiDoc processor allows you to use any of the named character references (aka named entities) defined in HTML (e.g., \&euro; resolves to &#8364;).
 However, using named character references can cause problems when generating non-HTML output such as PDF because the lookup table needed to resolve these names may not be defined.
 The recommendation is avoid using named character references, with the exception of the well-known ones defined in XML (i.e., lt, gt, amp, quot, apos).
@@ -239,8 +273,7 @@ TIP: AsciiDoc also provides built-in attributes for representing some common sym
 These attributes and their corresponding output are listed in xref:attributes:character-replacement-ref.adoc[].
 
             "#
-        );
-    }
+    );
 }
 
 mod blocks_and_inline_elements_subject_to_the_replacements_substitution {
