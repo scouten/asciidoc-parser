@@ -378,3 +378,65 @@ mod default_post_replacements_substitution {
         );
     }
 }
+
+mod post_replacements_substitution_value {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        tests::sdd::{non_normative, verifies},
+    };
+
+    non_normative!(
+        r#"
+== post_replacements substitution value
+
+The post replacements substitution step can be modified on blocks and inline elements.
+"#
+    );
+
+    #[test]
+    fn for_blocks() {
+        verifies!(
+            r#"
+For blocks, the step's name, `post_replacements`, can be assigned to the xref:apply-subs-to-blocks.adoc[subs attribute].
+"#
+        );
+
+        let doc = Parser::default().parse("[subs=post-replacements]\nabc *bold* +\ndef");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "abc <strong>bold</strong><br>\ndef"
+        );
+    }
+
+    #[test]
+    fn for_inline_elements() {
+        verifies!(
+            r#"
+For inline elements, the built-in values `p` or `post_replacements` can be applied to xref:apply-subs-to-text.adoc[inline text] to add the post replacements substitution step.
+"#
+        );
+
+        let doc = Parser::default().parse("pass:p[abc +\n *bold*]{sp}and then ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "abc<br>\n *bold* and then &#8230;&#8203;"
+        );
+    }
+}
