@@ -352,3 +352,67 @@ mod default_macros_substitution {
         );
     }
 }
+
+mod macros_substitution_value {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        tests::sdd::{non_normative, verifies},
+    };
+
+    non_normative!(
+        r#"
+== macros substitution value
+
+The macros substitution step can be modified on blocks and inline elements.
+"#
+    );
+
+    #[test]
+    fn for_blocks() {
+        verifies!(
+            r#"
+For blocks, the step's name, `macros`, can be assigned to the xref:apply-subs-to-blocks.adoc[subs attribute].
+"#
+        );
+
+        let doc =
+            Parser::default().parse(":icons:\n\n[subs=macros]\nHello icon:heart[] *Asciidoc*.");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            r#"Hello <span class="icon"><img src="./images/icons/heart.png" alt="heart"></span> *Asciidoc*."#
+        );
+    }
+
+    #[test]
+    fn for_inline_elements() {
+        verifies!(
+            r#"
+For inline elements, the built-in values `m` or `macros` can be applied to xref:apply-subs-to-text.adoc[inline text] to add the macros substitution step.
+"#
+        );
+
+        let doc = Parser::default()
+            .parse(":icons:\n\npass:m[Hello icon:heart[\\] *Asciidoc*] and then ...");
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            r#"Hello <span class="icon"><img src="./images/icons/heart.png" alt="heart"></span> *Asciidoc* and then &#8230;&#8203;"#
+        );
+    }
+}
