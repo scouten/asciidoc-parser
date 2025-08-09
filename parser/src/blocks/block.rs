@@ -76,15 +76,15 @@ impl<'src> Block<'src> {
                     item: simple_block,
                     after,
                 }) = SimpleBlock::parse_fast(source, parser)
-                {
-                    return MatchAndWarnings {
-                        item: Some(MatchedItem {
-                            item: Self::Simple(simple_block),
-                            after,
-                        }),
-                        warnings: vec![],
-                    };
-                }
+            {
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::Simple(simple_block),
+                        after,
+                    }),
+                    warnings: vec![],
+                };
+            }
         }
 
         // Optimization not possible; start by looking for block metadata (title,
@@ -163,22 +163,23 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=')
-            && let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser) {
-                if !maw_section_block.warnings.is_empty() {
-                    warnings.append(&mut maw_section_block.warnings);
-                }
-
-                return MatchAndWarnings {
-                    item: Some(MatchedItem {
-                        item: Self::Section(maw_section_block.item.item),
-                        after: maw_section_block.item.after,
-                    }),
-                    warnings,
-                };
+            && let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser)
+        {
+            if !maw_section_block.warnings.is_empty() {
+                warnings.append(&mut maw_section_block.warnings);
             }
 
-            // A line starting with `=` might be some other kind of block, so we
-            // don't automatically error out on a parse failure.
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::Section(maw_section_block.item.item),
+                    after: maw_section_block.item.after,
+                }),
+                warnings,
+            };
+        }
+
+        // A line starting with `=` might be some other kind of block, so we
+        // don't automatically error out on a parse failure.
 
         // First, let's look for a fun edge case. Perhaps the text contains block
         // metadata but no block immediately following. If we're not careful, we could
