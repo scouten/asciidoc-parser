@@ -34,7 +34,7 @@ The macros step replaces a macro's content with the appropriate built-in and use
 
 |Paragraphs |{y}
 
-|Passthrough blocks |{y}
+|Passthrough blocks |{n}
 
 |Quotes and verses |{y}
 

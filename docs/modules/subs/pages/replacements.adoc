@@ -17,8 +17,8 @@ include::partial$subs-symbol-repl.adoc[]
 This substitution step also recognizes {url-html-ref}[HTML and XML character references^] as well as {url-unicode}[decimal and hexadecimal Unicode code points^] and substitutes them for their corresponding decimal form Unicode code point.
 
 For example, to produce the `&#167;` symbol you could write `\&sect;`, `\&#x00A7;`, or `\&#167;`.
-When the document is processed, `replacements` will replace the section symbol reference, regardless of whether it is a named character reference or a numeric character reference, with `\&#167;`.
-In turn, `\&#167;` will display as &#167;.
+When the document is processed, `replacements` will preserve the section symbol reference so the reference will appear as &#167; when rendered.
+In turn, `\&#167;` in the AsciiDoc source will display as &#167; in the rendered document.
 
 An AsciiDoc processor allows you to use any of the named character references (aka named entities) defined in HTML (e.g., \&euro; resolves to &#8364;).
 However, using named character references can cause problems when generating non-HTML output such as PDF because the lookup table needed to resolve these names may not be defined.
