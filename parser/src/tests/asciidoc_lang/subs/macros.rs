@@ -233,11 +233,9 @@ mod default_macros_substitution {
 
     #[test]
     fn passthrough_blocks() {
-        // TO DO (https://github.com/scouten/asciidoc-parser/issues/306):
-        // Track doc errata issue filed.
         verifies!(
             r#"
-|Passthrough blocks |{y}
+|Passthrough blocks |{n}
 
 "#
         );
