@@ -104,15 +104,14 @@ fn parse_rs_file(path: &Path) -> Option<(String, Vec<(String, bool)>)> {
     for line in rs_file.lines() {
         let line = line.unwrap();
 
-        if let Some(tf) = line.strip_prefix("track_file!(\"") {
-            if let Some(tf) = tf.strip_suffix("\");") {
+        if let Some(tf) = line.strip_prefix("track_file!(\"")
+            && let Some(tf) = tf.strip_suffix("\");") {
                 if tracked_file.is_some() {
                     panic!("ERROR: {path:?} contains multiple track_file! macros");
                 }
                 tracked_file = Some(tf.to_string());
                 continue;
             }
-        }
 
         if line.contains("non_normative!(") {
             // println!("NN+");

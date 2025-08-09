@@ -71,8 +71,8 @@ impl<'src> Block<'src> {
             )
         {
             let first_line = source.take_line();
-            if !first_line.item.contains("::") {
-                if let Some(MatchedItem {
+            if !first_line.item.contains("::")
+                && let Some(MatchedItem {
                     item: simple_block,
                     after,
                 }) = SimpleBlock::parse_fast(source, parser)
@@ -85,7 +85,6 @@ impl<'src> Block<'src> {
                         warnings: vec![],
                     };
                 }
-            }
         }
 
         // Optimization not possible; start by looking for block metadata (title,
@@ -163,8 +162,8 @@ impl<'src> Block<'src> {
             // error out on a parse failure.
         }
 
-        if line.item.starts_with('=') {
-            if let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser) {
+        if line.item.starts_with('=')
+            && let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser) {
                 if !maw_section_block.warnings.is_empty() {
                     warnings.append(&mut maw_section_block.warnings);
                 }
@@ -180,7 +179,6 @@ impl<'src> Block<'src> {
 
             // A line starting with `=` might be some other kind of block, so we
             // don't automatically error out on a parse failure.
-        }
 
         // First, let's look for a fun edge case. Perhaps the text contains block
         // metadata but no block immediately following. If we're not careful, we could
