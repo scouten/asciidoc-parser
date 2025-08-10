@@ -79,8 +79,6 @@ mod default_post_replacements_substitution {
         );
     }
 
-    // --- START HERE WITH FIXES ---
-
     #[test]
     fn comments() {
         verifies!(
