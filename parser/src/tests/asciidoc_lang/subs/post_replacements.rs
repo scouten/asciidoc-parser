@@ -167,8 +167,7 @@ mod default_post_replacements_substitution {
     fn macros() {
         verifies!(
             r#"
-|Macros |{y}
-
+|Macros |{y} +
 "#
         );
 
@@ -192,7 +191,7 @@ mod default_post_replacements_substitution {
     fn macros_except_pass_macro() {
         verifies!(
             r#"
-(except triple plus and inline pass macros)
+(except passthrough macros)
 
 "#
         );
