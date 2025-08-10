@@ -13,6 +13,16 @@ mod from_custom_string {
     }
 
     #[test]
+    fn none() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string("none"),
+            Some(SubstitutionGroup::None)
+        );
+
+        assert_eq!(SubstitutionGroup::from_custom_string("nermal"), None);
+    }
+
+    #[test]
     fn normal() {
         assert_eq!(
             SubstitutionGroup::from_custom_string("n"),
