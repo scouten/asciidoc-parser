@@ -71,20 +71,19 @@ impl<'src> Block<'src> {
             )
         {
             let first_line = source.take_line();
-            if !first_line.item.contains("::") {
-                if let Some(MatchedItem {
+            if !first_line.item.contains("::")
+                && let Some(MatchedItem {
                     item: simple_block,
                     after,
                 }) = SimpleBlock::parse_fast(source, parser)
-                {
-                    return MatchAndWarnings {
-                        item: Some(MatchedItem {
-                            item: Self::Simple(simple_block),
-                            after,
-                        }),
-                        warnings: vec![],
-                    };
-                }
+            {
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::Simple(simple_block),
+                        after,
+                    }),
+                    warnings: vec![],
+                };
             }
         }
 
@@ -163,23 +162,23 @@ impl<'src> Block<'src> {
             // error out on a parse failure.
         }
 
-        if line.item.starts_with('=') {
-            if let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser) {
-                if !maw_section_block.warnings.is_empty() {
-                    warnings.append(&mut maw_section_block.warnings);
-                }
+        if line.item.starts_with('=')
+            && let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser)
+        {
+            // A line starting with `=` might be some other kind of block, so we continue
+            // quietly if `SectionBlock` parser rejects this block.
 
-                return MatchAndWarnings {
-                    item: Some(MatchedItem {
-                        item: Self::Section(maw_section_block.item.item),
-                        after: maw_section_block.item.after,
-                    }),
-                    warnings,
-                };
+            if !maw_section_block.warnings.is_empty() {
+                warnings.append(&mut maw_section_block.warnings);
             }
 
-            // A line starting with `=` might be some other kind of block, so we
-            // don't automatically error out on a parse failure.
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::Section(maw_section_block.item.item),
+                    after: maw_section_block.item.after,
+                }),
+                warnings,
+            };
         }
 
         // First, let's look for a fun edge case. Perhaps the text contains block
