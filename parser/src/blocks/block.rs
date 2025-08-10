@@ -165,6 +165,9 @@ impl<'src> Block<'src> {
         if line.item.starts_with('=')
             && let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser)
         {
+            // A line starting with `=` might be some other kind of block, so we continue
+            // quietly if `SectionBlock` parser rejects this block.
+
             if !maw_section_block.warnings.is_empty() {
                 warnings.append(&mut maw_section_block.warnings);
             }
@@ -177,9 +180,6 @@ impl<'src> Block<'src> {
                 warnings,
             };
         }
-
-        // A line starting with `=` might be some other kind of block, so we
-        // don't automatically error out on a parse failure.
 
         // First, let's look for a fun edge case. Perhaps the text contains block
         // metadata but no block immediately following. If we're not careful, we could

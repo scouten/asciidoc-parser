@@ -70,6 +70,10 @@ impl SubstitutionGroup {
     pub(crate) fn from_custom_string(mut custom: &str) -> Option<Self> {
         custom = custom.trim();
 
+        if custom == "none" {
+            return Some(Self::None);
+        }
+
         if custom == "n" || custom == "normal" {
             return Some(Self::Normal);
         }
