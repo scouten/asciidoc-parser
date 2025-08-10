@@ -139,7 +139,7 @@ mod from_custom_string {
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("post replacements"),
+            SubstitutionGroup::from_custom_string("post_replacements"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::PostReplacement
             ]))
