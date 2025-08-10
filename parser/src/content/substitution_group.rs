@@ -117,7 +117,7 @@ impl SubstitutionGroup {
                 "a" | "attributes" => SubstitutionStep::AttributeReferences,
                 "r" | "replacements" => SubstitutionStep::CharacterReplacements,
                 "m" | "macros" => SubstitutionStep::Macros,
-                "p" | "post replacements" => SubstitutionStep::PostReplacement,
+                "p" | "post_replacements" => SubstitutionStep::PostReplacement,
                 _ => {
                     return None;
                 }
