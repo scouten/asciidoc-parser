@@ -9,60 +9,63 @@ mod from_custom_string {
 
     #[test]
     fn empty() {
-        assert_eq!(SubstitutionGroup::from_custom_string(""), None);
+        assert_eq!(SubstitutionGroup::from_custom_string(None, ""), None);
     }
 
     #[test]
     fn none() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("none"),
+            SubstitutionGroup::from_custom_string(None, "none"),
             Some(SubstitutionGroup::None)
         );
 
-        assert_eq!(SubstitutionGroup::from_custom_string("nermal"), None);
+        assert_eq!(SubstitutionGroup::from_custom_string(None, "nermal"), None);
     }
 
     #[test]
     fn normal() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("n"),
+            SubstitutionGroup::from_custom_string(None, "n"),
             Some(SubstitutionGroup::Normal)
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("normal"),
+            SubstitutionGroup::from_custom_string(None, "normal"),
             Some(SubstitutionGroup::Normal)
         );
 
-        assert_eq!(SubstitutionGroup::from_custom_string("nermal"), None);
+        assert_eq!(SubstitutionGroup::from_custom_string(None, "nermal"), None);
     }
 
     #[test]
     fn verbatim() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("v"),
+            SubstitutionGroup::from_custom_string(None, "v"),
             Some(SubstitutionGroup::Verbatim)
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("verbatim"),
+            SubstitutionGroup::from_custom_string(None, "verbatim"),
             Some(SubstitutionGroup::Verbatim)
         );
 
-        assert_eq!(SubstitutionGroup::from_custom_string("verboten"), None);
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(None, "verboten"),
+            None
+        );
     }
 
     #[test]
     fn special_chars() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("c"),
+            SubstitutionGroup::from_custom_string(None, "c"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::SpecialCharacters
             ]))
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("specialchars"),
+            SubstitutionGroup::from_custom_string(None, "specialchars"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::SpecialCharacters
             ]))
@@ -72,12 +75,12 @@ mod from_custom_string {
     #[test]
     fn quotes() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("q"),
+            SubstitutionGroup::from_custom_string(None, "q"),
             Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Quotes]))
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("quotes"),
+            SubstitutionGroup::from_custom_string(None, "quotes"),
             Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Quotes]))
         );
     }
@@ -85,14 +88,14 @@ mod from_custom_string {
     #[test]
     fn attributes() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("a"),
+            SubstitutionGroup::from_custom_string(None, "a"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::AttributeReferences
             ]))
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("attributes"),
+            SubstitutionGroup::from_custom_string(None, "attributes"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::AttributeReferences
             ]))
@@ -102,14 +105,14 @@ mod from_custom_string {
     #[test]
     fn replacements() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("r"),
+            SubstitutionGroup::from_custom_string(None, "r"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::CharacterReplacements
             ]))
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("replacements"),
+            SubstitutionGroup::from_custom_string(None, "replacements"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::CharacterReplacements
             ]))
@@ -119,12 +122,12 @@ mod from_custom_string {
     #[test]
     fn macros() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("m"),
+            SubstitutionGroup::from_custom_string(None, "m"),
             Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Macros]))
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("macros"),
+            SubstitutionGroup::from_custom_string(None, "macros"),
             Some(SubstitutionGroup::Custom(vec![SubstitutionStep::Macros]))
         );
     }
@@ -132,14 +135,14 @@ mod from_custom_string {
     #[test]
     fn post_replacements() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("p"),
+            SubstitutionGroup::from_custom_string(None, "p"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::PostReplacement
             ]))
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("post_replacements"),
+            SubstitutionGroup::from_custom_string(None, "post_replacements"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::PostReplacement
             ]))
@@ -149,7 +152,7 @@ mod from_custom_string {
     #[test]
     fn multiple() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("q,a"),
+            SubstitutionGroup::from_custom_string(None, "q,a"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::Quotes,
                 SubstitutionStep::AttributeReferences
@@ -157,7 +160,7 @@ mod from_custom_string {
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("q, a"),
+            SubstitutionGroup::from_custom_string(None, "q, a"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::Quotes,
                 SubstitutionStep::AttributeReferences
@@ -165,7 +168,7 @@ mod from_custom_string {
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("quotes,attributes"),
+            SubstitutionGroup::from_custom_string(None, "quotes,attributes"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::Quotes,
                 SubstitutionStep::AttributeReferences
@@ -173,7 +176,7 @@ mod from_custom_string {
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("x,bogus,no such step"),
+            SubstitutionGroup::from_custom_string(None, "x,bogus,no such step"),
             None
         );
     }
@@ -181,7 +184,7 @@ mod from_custom_string {
     #[test]
     fn subtraction() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("n,-r"),
+            SubstitutionGroup::from_custom_string(None, "n,-r"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::SpecialCharacters,
                 SubstitutionStep::Quotes,
@@ -192,7 +195,7 @@ mod from_custom_string {
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("n,-r,-r,-m"),
+            SubstitutionGroup::from_custom_string(None, "n,-r,-r,-m"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::SpecialCharacters,
                 SubstitutionStep::Quotes,
@@ -202,14 +205,14 @@ mod from_custom_string {
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("v,-r"),
+            SubstitutionGroup::from_custom_string(None, "v,-r"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::SpecialCharacters,
             ]))
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("v,-c"),
+            SubstitutionGroup::from_custom_string(None, "v,-c"),
             Some(SubstitutionGroup::Custom(vec![]))
         );
     }
@@ -217,7 +220,7 @@ mod from_custom_string {
     #[test]
     fn addition() {
         assert_eq!(
-            SubstitutionGroup::from_custom_string("n,r"),
+            SubstitutionGroup::from_custom_string(None, "n,r"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::SpecialCharacters,
                 SubstitutionStep::Quotes,
@@ -230,7 +233,7 @@ mod from_custom_string {
         );
 
         assert_eq!(
-            SubstitutionGroup::from_custom_string("v,m"),
+            SubstitutionGroup::from_custom_string(None, "v,m"),
             Some(SubstitutionGroup::Custom(vec![
                 SubstitutionStep::SpecialCharacters,
                 SubstitutionStep::Macros,
@@ -239,8 +242,32 @@ mod from_custom_string {
     }
 
     #[test]
-    fn custon_group_with_macros_preserves_passthroughs() {
-        let custom_group = SubstitutionGroup::from_custom_string("q,m").unwrap();
+    fn incremental() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(None, "n,r"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences,
+                SubstitutionStep::CharacterReplacements,
+                SubstitutionStep::Macros,
+                SubstitutionStep::PostReplacement,
+                SubstitutionStep::CharacterReplacements,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(None, "v,m"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Macros,
+            ]))
+        );
+    }
+
+    #[test]
+    fn custom_group_with_macros_preserves_passthroughs() {
+        let custom_group = SubstitutionGroup::from_custom_string(None, "q,m").unwrap();
 
         let mut content = Content::from(Span::new(
             "Text with +++pass<through>+++ icon:github[] content.",
