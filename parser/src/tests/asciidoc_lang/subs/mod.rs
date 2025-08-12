@@ -1,3 +1,4 @@
+mod apply_subs_to_blocks;
 mod attributes;
 mod index;
 mod macros;
