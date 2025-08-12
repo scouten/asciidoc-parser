@@ -266,6 +266,67 @@ mod from_custom_string {
     }
 
     #[test]
+    fn prepend() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(
+                Some(&SubstitutionGroup::Verbatim),
+                "attributes+"
+            ),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::AttributeReferences,
+                SubstitutionStep::SpecialCharacters,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(None, "attributes+"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::AttributeReferences,
+            ]))
+        );
+    }
+
+    #[test]
+    fn append() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(
+                Some(&SubstitutionGroup::Verbatim),
+                "+attributes"
+            ),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::AttributeReferences,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(None, "attributes+"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::AttributeReferences,
+            ]))
+        );
+    }
+
+    #[test]
+    fn subtract() {
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(Some(&SubstitutionGroup::Normal), "-attributes"),
+            Some(SubstitutionGroup::Custom(vec![
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Quotes,
+                SubstitutionStep::CharacterReplacements,
+                SubstitutionStep::Macros,
+                SubstitutionStep::PostReplacement,
+            ]))
+        );
+
+        assert_eq!(
+            SubstitutionGroup::from_custom_string(None, "-attributes"),
+            Some(SubstitutionGroup::Custom(vec![]))
+        );
+    }
+
+    #[test]
     fn custom_group_with_macros_preserves_passthroughs() {
         let custom_group = SubstitutionGroup::from_custom_string(None, "q,m").unwrap();
 
