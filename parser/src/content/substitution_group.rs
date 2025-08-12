@@ -164,47 +164,16 @@ impl SubstitutionGroup {
         parser: &Parser,
         attrlist: Option<&Attrlist>,
     ) {
-        let mut passthroughs: Option<Passthroughs> = None;
+        let steps = self.steps();
 
-        match self {
-            Self::Normal => {
-                passthroughs = Some(Passthroughs::extract_from(content));
+        let passthroughs: Option<Passthroughs> = if steps.contains(&SubstitutionStep::Macros) {
+            Some(Passthroughs::extract_from(content))
+        } else {
+            None
+        };
 
-                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
-                SubstitutionStep::Quotes.apply(content, parser, attrlist);
-                SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
-                SubstitutionStep::CharacterReplacements.apply(content, parser, attrlist);
-                SubstitutionStep::Macros.apply(content, parser, attrlist);
-                SubstitutionStep::PostReplacement.apply(content, parser, attrlist);
-            }
-
-            Self::Header => {
-                passthroughs = Some(Passthroughs::extract_from(content));
-
-                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
-                SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
-            }
-
-            Self::Verbatim => {
-                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
-            }
-
-            Self::Pass | Self::None => {}
-
-            Self::AttributeEntryValue => {
-                SubstitutionStep::SpecialCharacters.apply(content, parser, attrlist);
-                SubstitutionStep::AttributeReferences.apply(content, parser, attrlist);
-            }
-
-            Self::Custom(steps) => {
-                if steps.contains(&SubstitutionStep::Macros) {
-                    passthroughs = Some(Passthroughs::extract_from(content));
-                }
-
-                for step in steps {
-                    step.apply(content, parser, attrlist);
-                }
-            }
+        for step in steps {
+            step.apply(content, parser, attrlist);
         }
 
         if let Some(passthroughs) = passthroughs {
@@ -221,6 +190,30 @@ impl SubstitutionGroup {
             sub_group
         } else {
             self.clone()
+        }
+    }
+
+    fn steps(&self) -> &[SubstitutionStep] {
+        match self {
+            Self::Normal => &[
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::Quotes,
+                SubstitutionStep::AttributeReferences,
+                SubstitutionStep::CharacterReplacements,
+                SubstitutionStep::Macros,
+                SubstitutionStep::PostReplacement,
+            ],
+
+            Self::Header | Self::AttributeEntryValue => &[
+                SubstitutionStep::SpecialCharacters,
+                SubstitutionStep::AttributeReferences,
+            ],
+
+            Self::Verbatim => &[SubstitutionStep::SpecialCharacters],
+
+            Self::Pass | Self::None => &[],
+
+            Self::Custom(steps) => steps,
         }
     }
 }
