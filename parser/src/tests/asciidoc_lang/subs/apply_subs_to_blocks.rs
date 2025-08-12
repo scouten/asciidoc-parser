@@ -365,3 +365,65 @@ It can only be applied to a leaf block, which is any block that cannot have chil
         );
     }
 }
+
+mod set_subs_attribute_on_block {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        tests::sdd::{non_normative, verifies},
+    };
+
+    non_normative!(
+        r#"
+w== Set the subs attribute on a block
+
+CAUTION: You should always prefer to use <<incremental,incremental substitutions>>, and only revert to exact substitutions when you require the additional control.
+
+"#
+    );
+
+    #[test]
+    fn inline_formatting_in_source() {
+        verifies!(
+            r#"
+Let's look at an example where you want to process inline formatting markup in a source block.
+By default, source blocks (as well as other verbatim blocks) are only subject to the verbatim substitution group (specialchars and callouts).
+You can change this behavior by setting the `subs` attribute in the block's attribute list.
+
+[source,asciidoc]
+....
+include::example$subs.adoc[tag=subs-in]
+....
+<.> The `subs` attribute is set in the attribute list and assigned the `verbatim` and `quotes` values.
+It's important to reinstate the `verbatim` substitution step to ensure special characters are encoded (which, for source blocks, also enables syntax highlighting).
+<.> The formatting markup in this line will be replaced when the `quotes` substitution step runs.
+
+Here's the result.
+
+====
+include::example$subs.adoc[tag=subs-out]
+====
+<.> The `verbatim` value enables any special characters and callouts to be processed.
+<.> The `quotes` value enables the bold text formatting to be processed.
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            "[source,java,subs=\"verbatim,quotes\"]\n----\nSystem.out.println(\"Hello *<name>*\")\n----",
+        );
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "System.out.println(\"Hello <strong>&lt;name&gt;</strong>\")"
+        );
+    }
+}
