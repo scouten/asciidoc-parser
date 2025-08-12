@@ -426,4 +426,39 @@ include::example$subs.adoc[tag=subs-out]
             "System.out.println(\"Hello <strong>&lt;name&gt;</strong>\")"
         );
     }
+
+    #[test]
+    fn enable_macros_substitution_step() {
+        verifies!(
+            r#"
+If enabling the quotes substitution step on the whole block causes problems, you can instead enable the macros substitution step, then use the pass macro to enable the quotes substitution step locally.
+
+[source,asciidoc]
+....
+[source,java,subs="verbatim,macros"]
+----
+System.out.println("No bold *here*");
+pass:c,q[System.out.println("Hello *<name>*");] <1>
+----
+....
+<1> The pass macro with the `c,q` target applies the specialchars and quotes substitution steps to the enclosed text.
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            "[source,java,subs=\"verbatim,macros\"]\n----\nSystem.out.println(\"No bold *here*\");\npass:c,q[System.out.println(\"Hello *<name>*\");]\n----",
+        );
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "System.out.println(\"No bold *here*\");\nSystem.out.println(\"Hello <strong>&lt;name&gt;</strong>\");"
+        );
+    }
 }
