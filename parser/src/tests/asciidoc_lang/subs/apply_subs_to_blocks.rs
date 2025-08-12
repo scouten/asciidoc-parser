@@ -332,4 +332,36 @@ The value also specifies the order in which the substitutions are applied.
             "This &#169; <em>that</em> and icon:github[]<br>\nanother line with a space there &#8230;&#8203;"
         );
     }
+
+    #[test]
+    fn does_not_inherit() {
+        verifies!(
+            r#"
+NOTE: The `subs` element attribute does not inherit to nested blocks.
+It can only be applied to a leaf block, which is any block that cannot have child blocks (e.g., a paragraph or a listing block).
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            ":icons:\n\n[subs=none]\n****\nThis &#169; _that_ and icon:github[] +\nanother line with a{sp}space there ...\n****",
+        );
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::CompoundDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        let block1 = block1.nested_blocks().next().unwrap();
+
+        let Block::Simple(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "This &#169; <em>that</em> and <span class=\"icon\"><img src=\"./images/icons/github.png\" alt=\"github\"></span><br>\nanother line with a space there &#8230;&#8203;"
+        );
+    }
 }
