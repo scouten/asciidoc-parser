@@ -461,4 +461,209 @@ pass:c,q[System.out.println("Hello *<name>*");] <1>
             "System.out.println(\"No bold *here*\");\nSystem.out.println(\"Hello <strong>&lt;name&gt;</strong>\");"
         );
     }
+
+    non_normative!(
+        r#"
+You may be wondering why `verbatim` is specified in the previous examples since it's applied to literal blocks by default.
+The reason is that when you specify substitutions without a modifier, it replaces all existing substitutions.
+Therefore, it's necessary to start with `verbatim` in order to restore the default substitutions.
+You can avoid having to do this by using incremental substitutions instead, which is covered in the next section.
+
+"#
+    );
+}
+
+mod add_remove_steps {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{Block, IsBlock},
+        tests::sdd::{non_normative, to_do_verifies, verifies},
+    };
+
+    non_normative!(
+        r#"
+[#incremental]
+== Add and remove substitution types from a default substitution group
+
+When you set the `subs` attribute on a block, you automatically *remove* all of its default substitutions.
+For example, if you set `subs` on a literal block, and assign it a value of `attributes`, only attribute references are substituted.
+The `verbatim` substitution group will not be applied.
+To remedy this situation, AsciiDoc provides a syntax to append or remove substitutions instead of replacing them outright.
+
+You can add or remove a substitution type from the default substitution group using the plus (`+`) and minus (`-`) modifiers.
+These are known as [.term]*incremental substitutions*.
+
+"#
+    );
+
+    #[test]
+    fn prepend() {
+        verifies!(
+            r#"
+`<substitution>+`::
+Prepends the substitution to the default list.
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            "[source,java,subs=\"+attributes\"]\n----\nSystem.out.println(\"Hello{sp}*<name>*\")\n----",
+        );
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "System.out.println(\"Hello *&lt;name&gt;*\")"
+        );
+    }
+
+    #[test]
+    fn append() {
+        verifies!(
+            r#"
+`+<substitution>`::
+Appends the substitution to the default list.
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            "[source,java,subs=\"attributes+\"]\n----\nSystem.out.println(\"Hello{sp}*<name>*\")\n----",
+        );
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "System.out.println(\"Hello *&lt;name&gt;*\")"
+        );
+    }
+
+    #[test]
+    fn subtract() {
+        verifies!(
+            r#"
+`-<substitution>`::
+Removes the substitution from the default list.
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            "[source,java,subs=\"-specialchars\"]\n----\nSystem.out.println(\"Hello <name>\")\n----",
+        );
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "System.out.println(\"Hello <name>\")"
+        );
+    }
+
+    #[test]
+    fn example_add() {
+        verifies!(
+            r#"
+For example, you can add the `attributes` substitution to the beginning of a listing block's default substitution group by placing the plus (`+`) modifier at the end of the `attributes` value.
+
+.Add attributes substitution to default substitution group
+[source]
+....
+include::example$subs.adoc[tag=subs-add]
+....
+
+"#
+        );
+
+        let doc = Parser::default().parse(
+            ":version: 1.42\n\n[source,xml,subs=\"attributes+\"]\n----\n<version>{version}</version>\n----",
+        );
+
+        let block1 = doc.nested_blocks().next().unwrap();
+
+        let Block::RawDelimited(block1) = block1 else {
+            panic!("Unexpected block type: {block1:?}");
+        };
+
+        assert_eq!(
+            block1.content().rendered(),
+            "&lt;version&gt;1.42&lt;/version&gt;"
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn example_subtract() {
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/311):
+        // Implement this test when implementing callouts.
+
+        to_do_verifies!(
+            r#"
+Similarly, you can remove the `callouts` substitution from a block's default substitution group by placing the minus (`-`) modifier in front of the `callouts` value.
+
+.Remove callouts substitution from default substitution group
+[source,subs=-callouts]
+....
+include::example$subs.adoc[tag=subs-sub]
+....
+
+"#
+        );
+    }
+
+    #[ignore]
+    #[test]
+    fn plus_before_or_after() {
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/311):
+        // Implement this test when implementing callouts.
+
+        to_do_verifies!(
+            r#"
+You can also specify whether the substitution type is added to the end of the substitution group.
+If a `{plus}` comes before the name of the substitution, then it's added to the end of the existing list, whereas if a `{plus}` comes after the name, it's added to the beginning of the list.
+
+[source,subs=-callouts]
+....
+include::example$subs.adoc[tag=subs-multi]
+....
+
+In the above example, the `attributes` substitution step is added to the beginning of the default substitution group, the `replacements` step is added to the end of the group, and the `callouts` step is removed from the group.
+
+"#
+        );
+    }
+
+    non_normative!(
+        r#"
+// NOTE: More examples are pending. Information about the callouts substitution also needs to be included here.
+
+[TIP]
+====
+If you are applying the same set of substitutions to numerous blocks, you should consider making them an attribute entry to ensure consistency.
+
+[source]
+....
+include::example$subs.adoc[tag=subs-attr]
+....
+
+Another way to ensure consistency and keep your documents clean and simple is to use the xref:asciidoctor:extensions:tree-processor.adoc[tree Processor extension].
+====
+"#
+    );
 }
