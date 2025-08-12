@@ -126,10 +126,10 @@ impl SubstitutionGroup {
             };
 
             if count == 0
-                && let Some(_start_from) = start_from
+                && let Some(start_from) = start_from
                 && (append || prepend || subtract)
             {
-                todo!();
+                steps = start_from.steps().to_owned();
             }
 
             let step = match step {
@@ -144,11 +144,11 @@ impl SubstitutionGroup {
                 }
             };
 
-            if prepend || append {
-                todo!();
-            }
-
-            if subtract {
+            if prepend {
+                steps.insert(0, step);
+            } else if append {
+                steps.push(step);
+            } else if subtract {
                 steps.retain(|s| s != &step);
             } else {
                 steps.push(step);
