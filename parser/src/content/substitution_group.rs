@@ -166,11 +166,12 @@ impl SubstitutionGroup {
     ) {
         let steps = self.steps();
 
-        let passthroughs: Option<Passthroughs> = if steps.contains(&SubstitutionStep::Macros) {
-            Some(Passthroughs::extract_from(content))
-        } else {
-            None
-        };
+        let passthroughs: Option<Passthroughs> =
+            if steps.contains(&SubstitutionStep::Macros) || self == &Self::Header {
+                Some(Passthroughs::extract_from(content))
+            } else {
+                None
+            };
 
         for step in steps {
             step.apply(content, parser, attrlist);
