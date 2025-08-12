@@ -67,7 +67,7 @@ impl SubstitutionGroup {
     /// substitutions].
     ///
     /// [Custom substitutions]: https://docs.asciidoctor.org/asciidoc/latest/pass/pass-macro/#custom-substitutions
-    pub(crate) fn from_custom_string(mut custom: &str) -> Option<Self> {
+    pub(crate) fn from_custom_string(start_from: Option<&Self>, mut custom: &str) -> Option<Self> {
         custom = custom.trim();
 
         if custom == "none" {
@@ -84,7 +84,7 @@ impl SubstitutionGroup {
 
         let mut steps: Vec<SubstitutionStep> = vec![];
 
-        for mut step in custom.split(",") {
+        for (count, mut step) in custom.split(",").enumerate() {
             step = step.trim();
 
             if step == "n" || step == "normal" {
@@ -104,12 +104,33 @@ impl SubstitutionGroup {
                 continue;
             }
 
-            let subtract = if step.starts_with('-') {
+            let append = if step.starts_with('+') {
                 step = &step[1..];
                 true
             } else {
                 false
             };
+
+            let prepend = if !append && step.ends_with('+') {
+                step = &step[0..step.len() - 1];
+                true
+            } else {
+                false
+            };
+
+            let subtract = if !append && !prepend && step.starts_with('-') {
+                step = &step[1..];
+                true
+            } else {
+                false
+            };
+
+            if count == 0
+                && let Some(start_from) = start_from
+                && (append || prepend || subtract)
+            {
+                steps = start_from.steps().to_owned();
+            }
 
             let step = match step {
                 "c" | "specialcharacters" | "specialchars" => SubstitutionStep::SpecialCharacters,
@@ -123,7 +144,11 @@ impl SubstitutionGroup {
                 }
             };
 
-            if subtract {
+            if prepend {
+                steps.insert(0, step);
+            } else if append {
+                steps.push(step);
+            } else if subtract {
                 steps.retain(|s| s != &step);
             } else {
                 steps.push(step);
@@ -160,7 +185,7 @@ impl SubstitutionGroup {
         if let Some(sub_group) = attrlist
             .and_then(|a| a.named_attribute("subs"))
             .map(|attr| attr.value())
-            .and_then(Self::from_custom_string)
+            .and_then(|s| Self::from_custom_string(Some(self), s))
         {
             sub_group
         } else {

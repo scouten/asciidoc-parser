@@ -165,7 +165,7 @@ impl Replacer for InlinePassMacroReplacer<'_> {
 
             let subs = caps
                 .get(14)
-                .and_then(|m| SubstitutionGroup::from_custom_string(m.as_str()))
+                .and_then(|m| SubstitutionGroup::from_custom_string(None, m.as_str()))
                 .unwrap_or(SubstitutionGroup::Normal);
 
             let mut text = caps[15].to_string();
