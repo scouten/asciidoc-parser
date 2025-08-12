@@ -188,7 +188,7 @@ impl SubstitutionGroup {
 
             Self::Pass | Self::None => &[],
 
-            Self::Custom(steps) => &steps,
+            Self::Custom(steps) => steps,
         }
     }
 }
