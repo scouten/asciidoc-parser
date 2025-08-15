@@ -235,6 +235,15 @@ fn built_in_attrs() -> HashMap<String, AttributeValue> {
         },
     );
 
+    attrs.insert(
+        "plus".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value("+".into()),
+        },
+    );
+
     // TO DO: Replace ./images with value of imagesdir if that is non-default.
     attrs.insert(
         "iconsdir".to_owned(),
