@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+As is typical in the Rust community, the minimum supported Rust version may be increased without a major version increase.
 
 ## [0.5.0](https://github.com/scouten/asciidoc-parser/compare/v0.4.0...v0.5.0)
 _16 August 2025_
@@ -52,13 +52,6 @@ _16 August 2025_
 * Update criterion requirement from 0.6.0 to 0.7.0 in /parser ([#286](https://github.com/scouten/asciidoc-parser/pull/286))
 * Update codspeed-criterion-compat requirement in /parser ([#267](https://github.com/scouten/asciidoc-parser/pull/267))
 * Update criterion requirement from 0.5.1 to 0.6.0 in /parser ([#248](https://github.com/scouten/asciidoc-parser/pull/248))
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html), except that – as is typical in the Rust community – the minimum supported Rust version may be increased without a major version increase.
-
-The format of this changelog is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.4.0](https://github.com/scouten/asciidoc-parser/compare/v0.3.1...v0.4.0)
 _27 April 2025_
