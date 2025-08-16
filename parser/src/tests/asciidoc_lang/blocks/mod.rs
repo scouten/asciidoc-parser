@@ -4,3 +4,4 @@ mod build_basic_block;
 mod delimited;
 mod index;
 mod paragraphs;
+mod troubleshoot_blocks;
