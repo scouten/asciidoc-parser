@@ -183,15 +183,27 @@ impl SubstitutionGroup {
     }
 
     pub(crate) fn override_via_attrlist(&self, attrlist: Option<&Attrlist>) -> Self {
-        if let Some(sub_group) = attrlist
-            .and_then(|a| a.named_attribute("subs"))
-            .map(|attr| attr.value())
-            .and_then(|s| Self::from_custom_string(Some(self), s))
-        {
-            sub_group
-        } else {
-            self.clone()
+        let mut result = self.clone();
+
+        if let Some(attrlist) = attrlist {
+            if let Some(block_style) = attrlist.nth_attribute(1).and_then(|a| a.block_style()) {
+                result = match block_style {
+                    // TO DO: Many other style-specific substitution groups.
+                    "pass" => SubstitutionGroup::None,
+                    _ => result,
+                };
+            }
+
+            if let Some(sub_group) = attrlist
+                .named_attribute("subs")
+                .map(|attr| attr.value())
+                .and_then(|s| Self::from_custom_string(Some(self), s))
+            {
+                result = sub_group;
+            }
         }
+
+        result
     }
 
     fn steps(&self) -> &[SubstitutionStep] {

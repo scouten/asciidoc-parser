@@ -314,18 +314,18 @@ static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
             (?:
                                         # Option 1: [... x-] followed by `xxx`
                 \[(x-|[^\[\]]+\ x-)\]       # Group 1: [attrlist] with x- suffix
-                \`(\S(?:.*?\S)?)\`          # Group 2: `...` content
+                \`(\S(?:.*?\S)??)\`         # Group 2: `...` content
             
             |                           # --OR--
                                         # Option 2: [...] followed by +xxx+
                 \[([^\[\]]+)\]              # Group 3: [attrlist]
                 (\\{0,2})                   # Group 4: optional escapes
-                \+(\S(?:.*?\S)?)\+          # Group 5: +...+ content (surrounded by non-space)
+                \+(\S(?:.*?\S)??)\+         # Group 5: +...+ content (surrounded by non-space)
 
             |                           # --OR--
                                         # Option 3: +xxx+ without attrlist
                 (\\)?                       # Group 6: optional escape
-                \+(\S(?:.*?\S)?)\+          # Group 7: +...+ content (surrounded by non-space)
+                \+(\S(?:.*?\S)??)\+         # Group 7: +...+ content (surrounded by non-space)
 
             )
 
