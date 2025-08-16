@@ -128,8 +128,26 @@ impl<'src> RawDelimitedBlock<'src> {
             next = line.after;
         }
 
+        let content = content_start.trim_remainder(next).trim_trailing_line_end();
+
         Some(MatchAndWarnings {
-            item: None,
+            item: Some(MatchedItem {
+                item: Self {
+                    content: content.into(),
+                    content_model,
+                    context: context.into(),
+                    source: metadata
+                        .source
+                        .trim_remainder(next)
+                        .trim_trailing_line_end(),
+                    title_source: metadata.title_source,
+                    title: metadata.title.clone(),
+                    anchor: metadata.anchor,
+                    attrlist: metadata.attrlist.clone(),
+                    substitution_group,
+                },
+                after: next,
+            }),
             warnings: vec![Warning {
                 source: delimiter.item,
                 warning: WarningType::UnterminatedDelimitedBlock,
