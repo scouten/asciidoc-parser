@@ -1,5 +1,7 @@
 use crate::{
     HasSpan, Parser, Span,
+    attributes::Attrlist,
+    blocks::{ContentModel, IsBlock},
     content::{Content, SubstitutionGroup},
     span::MatchedItem,
     strings::CowStr,
@@ -9,6 +11,23 @@ use crate::{
 /// AsciiDoc language. The AsciiDoc language defines a set of built-in
 /// attributes, and also allows the author (or extensions) to define additional
 /// document attributes, which may replace built-in attributes when permitted.
+///
+/// An attribute entry is most often declared in the document header. For
+/// attributes that allow it (which includes general purpose attributes), the
+/// attribute entry can alternately be declared between blocks in the document
+/// body (i.e., the portion of the document below the header).
+///
+/// When an attribute is defined in the document body using an attribute entry,
+/// that’s simply referred to as a document attribute. For any attribute defined
+/// in the body, the attribute is available from the point it is set until it is
+/// unset. Attributes defined in the body are not available via the document
+/// metadata.
+///
+/// An attribute declared between blocks (i.e. in the document body) is
+/// represented in this using the same structure (`Attribute`) as a header
+/// attribute. Since it lives between blocks, we treat it as though it was a
+/// block (and thus implement [`IsBlock`] on this type) even though is not
+/// technically a block.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Attribute<'src> {
     name: Span<'src>,
@@ -88,6 +107,32 @@ impl<'src> Attribute<'src> {
 impl<'src> HasSpan<'src> for Attribute<'src> {
     fn span(&self) -> Span<'src> {
         self.source
+    }
+}
+
+impl<'src> IsBlock<'src> for Attribute<'src> {
+    fn content_model(&self) -> ContentModel {
+        ContentModel::Empty
+    }
+
+    fn raw_context(&self) -> CowStr<'src> {
+        "attribute".into()
+    }
+
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        None
+    }
+
+    fn title(&self) -> Option<&str> {
+        None
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        None
+    }
+
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
+        None
     }
 }
 
