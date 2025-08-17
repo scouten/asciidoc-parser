@@ -75,8 +75,7 @@ impl<'src> Block<'src> {
                 first_char,
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':'
             )
-        {
-            if !first_line.item.contains("::")
+            && !first_line.item.contains("::")
                 && let Some(MatchedItem {
                     item: simple_block,
                     after,
@@ -90,7 +89,6 @@ impl<'src> Block<'src> {
                     warnings: vec![],
                 };
             }
-        }
 
         // Look for document attributes first since these don't support block metadata.
         if first_line.item.starts_with(':')
