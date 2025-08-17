@@ -94,42 +94,36 @@ impl<'src> Block<'src> {
             mut warnings,
         } = BlockMetadata::parse(source, parser);
 
-        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&metadata, parser) {
-            // If we found an initial delimiter without its matching
-            // closing delimiter, we will issue an unmatched delimiter warning
-            // and attempt to parse this as some other kind of block.
+        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&metadata, parser)
+            && let Some(rdb) = rdb_maw.item
+        {
             if !rdb_maw.warnings.is_empty() {
                 warnings.append(&mut rdb_maw.warnings);
             }
 
-            if let Some(rdb) = rdb_maw.item {
-                return MatchAndWarnings {
-                    item: Some(MatchedItem {
-                        item: Self::RawDelimited(rdb.item),
-                        after: rdb.after,
-                    }),
-                    warnings,
-                };
-            }
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::RawDelimited(rdb.item),
+                    after: rdb.after,
+                }),
+                warnings,
+            };
         }
 
-        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&metadata, parser) {
-            // If we found an initial delimiter without its matching
-            // closing delimiter, we will issue an unmatched delimiter warning
-            // and attempt to parse this as some other kind of block.
+        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&metadata, parser)
+            && let Some(cdb) = cdb_maw.item
+        {
             if !cdb_maw.warnings.is_empty() {
                 warnings.append(&mut cdb_maw.warnings);
             }
 
-            if let Some(cdb) = cdb_maw.item {
-                return MatchAndWarnings {
-                    item: Some(MatchedItem {
-                        item: Self::CompoundDelimited(cdb.item),
-                        after: cdb.after,
-                    }),
-                    warnings,
-                };
-            }
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::CompoundDelimited(cdb.item),
+                    after: cdb.after,
+                }),
+                warnings,
+            };
         }
 
         // Try to discern the block type by scanning the first line.
