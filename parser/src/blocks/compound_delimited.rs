@@ -85,30 +85,26 @@ impl<'src> CompoundDelimitedBlock<'src> {
         }
 
         let mut next = delimiter.after;
-        let closing_delimiter = loop {
+        let (closing_delimiter, after) = loop {
             if next.is_empty() {
-                return Some(MatchAndWarnings {
-                    item: None,
-                    warnings: vec![Warning {
-                        source: delimiter.item,
-                        warning: WarningType::UnterminatedDelimitedBlock,
-                    }],
-                });
+                break (next, next);
             }
 
             let line = next.take_normalized_line();
             if line.item.data() == delimiter.item.data() {
-                break line;
+                break (line.item, line.after);
             }
             next = line.after;
         };
 
-        let inside_delimiters = delimiter.after.trim_remainder(closing_delimiter.item);
+        let inside_delimiters = delimiter.after.trim_remainder(closing_delimiter);
 
         let maw_blocks = parse_blocks_until(inside_delimiters, |_| false, parser);
 
         let blocks = maw_blocks.item;
-        let source = metadata.source.trim_remainder(closing_delimiter.after);
+        let source = metadata
+            .source
+            .trim_remainder(closing_delimiter.discard_all());
 
         Some(MatchAndWarnings {
             item: Some(MatchedItem {
@@ -121,9 +117,21 @@ impl<'src> CompoundDelimitedBlock<'src> {
                     anchor: metadata.anchor,
                     attrlist: metadata.attrlist.clone(),
                 },
-                after: closing_delimiter.after,
+                after,
             }),
-            warnings: maw_blocks.warnings,
+            warnings: if closing_delimiter.is_empty() {
+                let mut warnings = maw_blocks.warnings;
+                warnings.insert(
+                    0,
+                    Warning {
+                        source: delimiter.item,
+                        warning: WarningType::UnterminatedDelimitedBlock,
+                    },
+                );
+                warnings
+            } else {
+                maw_blocks.warnings
+            },
         })
     }
 }

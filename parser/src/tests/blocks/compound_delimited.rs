@@ -167,7 +167,12 @@ mod parse {
     use crate::{
         Parser,
         blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
-        tests::fixtures::{TSpan, warnings::TWarning},
+        tests::fixtures::{
+            TSpan,
+            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            content::TContent,
+            warnings::TWarning,
+        },
         warnings::WarningType,
     };
 
@@ -202,7 +207,43 @@ mod parse {
             CompoundDelimitedBlock::parse(&BlockMetadata::new("====\nblah blah blah"), &mut parser)
                 .unwrap();
 
-        assert!(maw.item.is_none());
+        assert_eq!(
+            maw.item.unwrap().item,
+            TCompoundDelimitedBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "blah blah blah",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "blah blah blah",
+                    },
+                    source: TSpan {
+                        data: "blah blah blah",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                context: "example",
+                source: TSpan {
+                    data: "====\nblah blah blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },
+        );
 
         assert_eq!(
             maw.warnings,

@@ -134,8 +134,6 @@ mod parse {
             RawDelimitedBlock::parse(&BlockMetadata::new("....\nblah blah blah"), &mut parser)
                 .unwrap();
 
-        assert!(maw.item.is_none());
-
         assert_eq!(
             maw.warnings,
             vec![TWarning {

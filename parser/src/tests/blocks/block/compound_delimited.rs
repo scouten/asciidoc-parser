@@ -6,7 +6,7 @@ mod parse {
         blocks::Block,
         tests::fixtures::{
             TSpan,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -149,16 +149,29 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
-                        data: "====\nblah blah blah",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
+            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "blah blah blah",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "blah blah blah",
                     },
-                    rendered: "====\nblah blah blah",
-                },
+                    source: TSpan {
+                        data: "blah blah blah",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                context: "example",
                 source: TSpan {
                     data: "====\nblah blah blah",
                     line: 1,
@@ -169,7 +182,7 @@ mod parse {
                 title: None,
                 anchor: None,
                 attrlist: None,
-            })
+            },)
         );
 
         assert_eq!(

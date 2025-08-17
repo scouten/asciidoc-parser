@@ -3,10 +3,11 @@ mod parse {
 
     use crate::{
         Parser, Span,
-        blocks::Block,
+        blocks::{Block, ContentModel},
+        content::SubstitutionGroup,
         tests::fixtures::{
             TSpan,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{TBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -157,16 +158,18 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            TBlock::RawDelimited(TRawDelimitedBlock {
                 content: TContent {
                     original: TSpan {
-                        data: "....\nblah blah blah",
-                        line: 1,
+                        data: "blah blah blah",
+                        line: 2,
                         col: 1,
-                        offset: 0,
+                        offset: 5,
                     },
-                    rendered: "&#8230;&#8203;.\nblah blah blah",
+                    rendered: "blah blah blah",
                 },
+                content_model: ContentModel::Verbatim,
+                context: "literal",
                 source: TSpan {
                     data: "....\nblah blah blah",
                     line: 1,
@@ -177,7 +180,8 @@ mod parse {
                 title: None,
                 anchor: None,
                 attrlist: None,
-            })
+                substitution_group: SubstitutionGroup::Verbatim,
+            },)
         );
 
         assert_eq!(
