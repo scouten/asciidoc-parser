@@ -76,19 +76,19 @@ impl<'src> Block<'src> {
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':'
             )
             && !first_line.item.contains("::")
-                && let Some(MatchedItem {
-                    item: simple_block,
+            && let Some(MatchedItem {
+                item: simple_block,
+                after,
+            }) = SimpleBlock::parse_fast(source, parser)
+        {
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::Simple(simple_block),
                     after,
-                }) = SimpleBlock::parse_fast(source, parser)
-            {
-                return MatchAndWarnings {
-                    item: Some(MatchedItem {
-                        item: Self::Simple(simple_block),
-                        after,
-                    }),
-                    warnings: vec![],
-                };
-            }
+                }),
+                warnings: vec![],
+            };
+        }
 
         // Look for document attributes first since these don't support block metadata.
         if first_line.item.starts_with(':')
