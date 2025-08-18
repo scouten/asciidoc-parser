@@ -7,11 +7,14 @@ use crate::{
     blocks::{Block, ContentModel, IsBlock},
     content::SubstitutionGroup,
     document::Attribute,
+    parser::ModificationContext,
     tests::fixtures::{
         TSpan,
-        blocks::TBlock,
+        blocks::{TBlock, TSimpleBlock},
+        content::TContent,
         document::{TAttribute, TInterpretedValue},
     },
+    warnings::WarningType,
 };
 
 #[test]
@@ -383,4 +386,64 @@ fn is_block() {
             offset: 10
         }
     );
+}
+
+#[test]
+fn block_enforces_permission() {
+    let mut parser =
+        Parser::default().with_intrinsic_attribute("agreed", "yes", ModificationContext::ApiOnly);
+
+    let doc = parser.parse("Hello\n\n:agreed: no\n\nAre we agreed? {agreed}");
+
+    let mut blocks = doc.nested_blocks();
+    let _ = blocks.next().unwrap();
+    let _ = blocks.next().unwrap();
+    let block3 = blocks.next().unwrap();
+
+    assert_eq!(
+        block3,
+        &TBlock::Simple(TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "Are we agreed? {agreed}",
+                    line: 5,
+                    col: 1,
+                    offset: 20,
+                },
+                rendered: "Are we agreed? yes",
+            },
+            source: TSpan {
+                data: "Are we agreed? {agreed}",
+                line: 5,
+                col: 1,
+                offset: 20,
+            },
+            title_source: None,
+            title: None,
+            anchor: None,
+            attrlist: None,
+        })
+    );
+
+    let mut warnings = doc.warnings();
+    let warning1 = warnings.next().unwrap();
+
+    dbg!(&warning1);
+
+    assert_eq!(
+        &warning1.source,
+        TSpan {
+            data: ":agreed: no",
+            line: 3,
+            col: 1,
+            offset: 7,
+        }
+    );
+
+    assert_eq!(
+        warning1.warning,
+        WarningType::AttributeValueIsLocked("agreed".to_owned(),)
+    );
+
+    assert!(warnings.next().is_none());
 }
