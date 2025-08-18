@@ -1,10 +1,15 @@
+use std::ops::Deref;
+
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser, Span,
+    blocks::{Block, ContentModel, IsBlock},
+    content::SubstitutionGroup,
     document::Attribute,
     tests::fixtures::{
         TSpan,
+        blocks::TBlock,
         document::{TAttribute, TInterpretedValue},
     },
 };
@@ -307,6 +312,65 @@ fn value_with_hard_wrap() {
             line: 2,
             col: 6,
             offset: 19
+        }
+    );
+}
+
+#[test]
+fn is_block() {
+    let mut parser = Parser::default();
+    let maw = Block::parse(Span::new(":foo: bar\nblah"), &mut parser);
+
+    let mi = maw.item.unwrap();
+    let block = mi.item;
+
+    assert_eq!(
+        block,
+        TBlock::DocumentAttribute(TAttribute {
+            name: TSpan {
+                data: "foo",
+                line: 1,
+                col: 2,
+                offset: 1,
+            },
+            value_source: Some(TSpan {
+                data: "bar",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }),
+            value: TInterpretedValue::Value("bar"),
+            source: TSpan {
+                data: ":foo: bar",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        })
+    );
+
+    assert_eq!(block.content_model(), ContentModel::Empty);
+    assert_eq!(block.raw_context().deref(), "attribute");
+    assert!(block.nested_blocks().next().is_none());
+    assert!(block.title_source().is_none());
+    assert!(block.title().is_none());
+    assert!(block.anchor().is_none());
+    assert!(block.attrlist().is_none());
+    assert_eq!(block.substitution_group(), SubstitutionGroup::Normal);
+
+    let Block::DocumentAttribute(attr) = block else {
+        panic!("Wrong type");
+    };
+
+    assert_eq!(attr.value(), TInterpretedValue::Value("bar"));
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "blah",
+            line: 2,
+            col: 1,
+            offset: 10
         }
     );
 }

@@ -93,18 +93,17 @@ impl<'src> Block<'src> {
         // Look for document attributes first since these don't support block metadata.
         if first_line.item.starts_with(':')
             && (first_line.item.ends_with(':') || first_line.item.contains(": "))
-            && let Some(doc_attr) = Attribute::parse(source, parser)
+            && let Some(attr) = Attribute::parse(source, parser)
         {
-            if true {
-                todo!("Update parser with new value if allowed; issue warning if not");
-            }
+            let mut warnings: Vec<Warning<'src>> = vec![];
+            parser.set_attribute_from_body(&attr.item, &mut warnings);
 
             return MatchAndWarnings {
                 item: Some(MatchedItem {
-                    item: Self::DocumentAttribute(doc_attr.item),
-                    after: doc_attr.after,
+                    item: Self::DocumentAttribute(attr.item),
+                    after: attr.after,
                 }),
-                warnings: vec![],
+                warnings,
             };
         }
 
