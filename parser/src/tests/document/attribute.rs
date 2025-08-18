@@ -3,7 +3,7 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
+    HasSpan, Parser, Span,
     blocks::{Block, ContentModel, IsBlock},
     content::SubstitutionGroup,
     document::Attribute,
@@ -357,6 +357,16 @@ fn is_block() {
     assert!(block.anchor().is_none());
     assert!(block.attrlist().is_none());
     assert_eq!(block.substitution_group(), SubstitutionGroup::Normal);
+
+    assert_eq!(
+        block.span(),
+        TSpan {
+            data: ":foo: bar",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
 
     let Block::DocumentAttribute(attr) = block else {
         panic!("Wrong type");
