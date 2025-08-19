@@ -389,6 +389,76 @@ fn is_block() {
 }
 
 #[test]
+fn affects_document_state() {
+    let mut parser =
+        Parser::default().with_intrinsic_attribute("agreed", "yes", ModificationContext::Anywhere);
+
+    let doc =
+        parser.parse("We are agreed? {agreed}\n\n:agreed: no\n\nAre we still agreed? {agreed}");
+
+    let mut blocks = doc.nested_blocks();
+
+    let block1 = blocks.next().unwrap();
+
+    assert_eq!(
+        block1,
+        &TBlock::Simple(TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "We are agreed? {agreed}",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                rendered: "We are agreed? yes",
+            },
+            source: TSpan {
+                data: "We are agreed? {agreed}",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title_source: None,
+            title: None,
+            anchor: None,
+            attrlist: None,
+        })
+    );
+
+    let _ = blocks.next().unwrap();
+
+    let block3 = blocks.next().unwrap();
+
+    assert_eq!(
+        block3,
+        &TBlock::Simple(TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "Are we still agreed? {agreed}",
+                    line: 5,
+                    col: 1,
+                    offset: 38,
+                },
+                rendered: "Are we still agreed? no",
+            },
+            source: TSpan {
+                data: "Are we still agreed? {agreed}",
+                line: 5,
+                col: 1,
+                offset: 38,
+            },
+            title_source: None,
+            title: None,
+            anchor: None,
+            attrlist: None,
+        })
+    );
+
+    let mut warnings = doc.warnings();
+    assert!(warnings.next().is_none());
+}
+
+#[test]
 fn block_enforces_permission() {
     let mut parser =
         Parser::default().with_intrinsic_attribute("agreed", "yes", ModificationContext::ApiOnly);
