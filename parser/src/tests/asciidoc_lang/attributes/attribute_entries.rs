@@ -422,4 +422,125 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
     );
 }
 
-// TO DO: Defer remainder of this page until we can set attributes mid-document.
+mod where_declared {
+    use crate::{
+        Parser,
+        blocks::IsBlock,
+        parser::ModificationContext,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+            },
+            sdd::{non_normative, verifies},
+        },
+    };
+
+    non_normative!(
+        r#"
+== Where can an attribute entry be declared?
+
+An attribute entry is most often declared in the document header.
+"#
+    );
+
+    #[test]
+    fn declared_between_blocks() {
+        verifies!(
+            r#"
+For attributes that allow it (which includes general purpose attributes), the attribute entry can alternately be declared between blocks in the document body (i.e., the portion of the document below the header).
+
+"#
+        );
+        let mut parser = Parser::default().with_intrinsic_attribute(
+            "agreed",
+            "yes",
+            ModificationContext::Anywhere,
+        );
+
+        let doc =
+            parser.parse("We are agreed? {agreed}\n\n:agreed: no\n\nAre we still agreed? {agreed}");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+
+        assert_eq!(
+            block1,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "We are agreed? {agreed}",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "We are agreed? yes",
+                },
+                source: TSpan {
+                    data: "We are agreed? {agreed}",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+
+        let _ = blocks.next().unwrap();
+
+        let block3 = blocks.next().unwrap();
+
+        assert_eq!(
+            block3,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Are we still agreed? {agreed}",
+                        line: 5,
+                        col: 1,
+                        offset: 38,
+                    },
+                    rendered: "Are we still agreed? no",
+                },
+                source: TSpan {
+                    data: "Are we still agreed? {agreed}",
+                    line: 5,
+                    col: 1,
+                    offset: 38,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+
+        let mut warnings = doc.warnings();
+        assert!(warnings.next().is_none());
+    }
+
+    non_normative!(
+        r#"
+WARNING: An attribute entry should not be declared inside the boundaries of a delimited block.
+When an attribute entry is declared inside a delimited block, the behavior is undefined.
+
+When an attribute is defined in the document header using an attribute entry, that's referred to as a header attribute.
+A header attribute is available to the entire document until it is unset.
+A header attribute is also accessible from the document metadata for use by built-in behavior, extensions, and other applications that need to consult its value (e.g., `source-highlighter`).
+
+When an attribute is defined in the document body using an attribute entry, that's simply referred to as a document attribute.
+For any attribute defined in the body, the attribute is available from the point it is set until it is unset.
+Attributes defined in the body are not available via the document metadata.
+
+Unless the attribute is unlocked, it can be unset or assigned a new value in the document header or body.
+However, note that unsetting or redefining a header attribute that controls behavior in the document body usually has no affect.
+See the xref:document-attributes-ref.adoc[] for where in a document each attribute can be set.
+
+"#
+    );
+}
