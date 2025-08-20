@@ -537,7 +537,7 @@ When an attribute is defined in the document body using an attribute entry, that
 For any attribute defined in the body, the attribute is available from the point it is set until it is unset.
 Attributes defined in the body are not available via the document metadata.
 
-Unless the attribute is unlocked, it can be unset or assigned a new value in the document header or body.
+Unless the attribute is locked, it can be unset or assigned a new value in the document header or body.
 However, note that unsetting or redefining a header attribute that controls behavior in the document body usually has no affect.
 See the xref:document-attributes-ref.adoc[] for where in a document each attribute can be set.
 
