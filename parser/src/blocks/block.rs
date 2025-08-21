@@ -8,6 +8,7 @@ use crate::{
         SimpleBlock, metadata::BlockMetadata,
     },
     content::SubstitutionGroup,
+    document::Attribute,
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -48,6 +49,10 @@ pub enum Block<'src> {
 
     /// A delimited block that can contain other blocks.
     CompoundDelimited(CompoundDelimitedBlock<'src>),
+
+    /// When an attribute is defined in the document body using an attribute
+    /// entry, that’s simply referred to as a document attribute.
+    DocumentAttribute(Attribute<'src>),
 }
 
 impl<'src> Block<'src> {
@@ -61,30 +66,45 @@ impl<'src> Block<'src> {
         // Optimization: If the first line doesn't match any of the early indications
         // for delimited blocks, titles, or attrlists, we can skip directly to treating
         // this as a simple block. That saves quite a bit of parsing time.
+        let first_line = source.take_line();
 
         // If it does contain any of those markers, we fall through to the more costly
         // tests below which can more accurately classify the upcoming block.
         if let Some(first_char) = source.chars().next()
             && !matches!(
                 first_char,
-                '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '['
+                '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':'
             )
+            && !first_line.item.contains("::")
+            && let Some(MatchedItem {
+                item: simple_block,
+                after,
+            }) = SimpleBlock::parse_fast(source, parser)
         {
-            let first_line = source.take_line();
-            if !first_line.item.contains("::")
-                && let Some(MatchedItem {
-                    item: simple_block,
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::Simple(simple_block),
                     after,
-                }) = SimpleBlock::parse_fast(source, parser)
-            {
-                return MatchAndWarnings {
-                    item: Some(MatchedItem {
-                        item: Self::Simple(simple_block),
-                        after,
-                    }),
-                    warnings: vec![],
-                };
-            }
+                }),
+                warnings: vec![],
+            };
+        }
+
+        // Look for document attributes first since these don't support block metadata.
+        if first_line.item.starts_with(':')
+            && (first_line.item.ends_with(':') || first_line.item.contains(": "))
+            && let Some(attr) = Attribute::parse(source, parser)
+        {
+            let mut warnings: Vec<Warning<'src>> = vec![];
+            parser.set_attribute_from_body(&attr.item, &mut warnings);
+
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::DocumentAttribute(attr.item),
+                    after: attr.after,
+                }),
+                warnings,
+            };
         }
 
         // Optimization not possible; start by looking for block metadata (title,
@@ -220,6 +240,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(_) => ContentModel::Compound,
             Self::RawDelimited(b) => b.content_model(),
             Self::CompoundDelimited(b) => b.content_model(),
+            Self::DocumentAttribute(b) => b.content_model(),
         }
     }
 
@@ -230,6 +251,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.raw_context(),
             Self::RawDelimited(b) => b.raw_context(),
             Self::CompoundDelimited(b) => b.raw_context(),
+            Self::DocumentAttribute(b) => b.raw_context(),
         }
     }
 
@@ -240,6 +262,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.nested_blocks(),
             Self::RawDelimited(b) => b.nested_blocks(),
             Self::CompoundDelimited(b) => b.nested_blocks(),
+            Self::DocumentAttribute(b) => b.nested_blocks(),
         }
     }
 
@@ -250,6 +273,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.title_source(),
             Self::RawDelimited(b) => b.title_source(),
             Self::CompoundDelimited(b) => b.title_source(),
+            Self::DocumentAttribute(b) => b.title_source(),
         }
     }
 
@@ -260,6 +284,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.title(),
             Self::RawDelimited(b) => b.title(),
             Self::CompoundDelimited(b) => b.title(),
+            Self::DocumentAttribute(b) => b.title(),
         }
     }
 
@@ -270,6 +295,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.anchor(),
             Self::RawDelimited(b) => b.anchor(),
             Self::CompoundDelimited(b) => b.anchor(),
+            Self::DocumentAttribute(b) => b.anchor(),
         }
     }
 
@@ -280,6 +306,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.attrlist(),
             Self::RawDelimited(b) => b.attrlist(),
             Self::CompoundDelimited(b) => b.attrlist(),
+            Self::DocumentAttribute(b) => b.attrlist(),
         }
     }
 
@@ -290,6 +317,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.substitution_group(),
             Self::RawDelimited(b) => b.substitution_group(),
             Self::CompoundDelimited(b) => b.substitution_group(),
+            Self::DocumentAttribute(b) => b.substitution_group(),
         }
     }
 }
@@ -302,6 +330,7 @@ impl<'src> HasSpan<'src> for Block<'src> {
             Self::Section(b) => b.span(),
             Self::RawDelimited(b) => b.span(),
             Self::CompoundDelimited(b) => b.span(),
+            Self::DocumentAttribute(b) => b.span(),
         }
     }
 }

@@ -213,11 +213,8 @@ A best practice is to only use lowercase letters in the name and avoid starting 
     }
 }
 
-// TO DO (https://github.com/scouten/asciidoc-parser/issues/219): Determine how or whether to handle default/built-in document attributes values in parser.
-//
-// For now, assuming that default and built-in values are not in scope for
-// parser, but more likely part of an upstream renderer crate. For that reason,
-// treating these sections as non-normative.
+// Handling of specific built-in attributes is described and tested elsewhere,
+// so considering these sections as non-normative.
 non_normative!(
     r#"
 == Attribute value types and assignment methods

@@ -422,4 +422,269 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
     );
 }
 
-// TO DO: Defer remainder of this page until we can set attributes mid-document.
+mod where_declared {
+    use crate::{
+        Parser,
+        blocks::IsBlock,
+        parser::ModificationContext,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+            },
+            sdd::{non_normative, verifies},
+        },
+    };
+
+    non_normative!(
+        r#"
+== Where can an attribute entry be declared?
+
+An attribute entry is most often declared in the document header.
+"#
+    );
+
+    #[test]
+    fn declared_between_blocks() {
+        verifies!(
+            r#"
+For attributes that allow it (which includes general purpose attributes), the attribute entry can alternately be declared between blocks in the document body (i.e., the portion of the document below the header).
+
+"#
+        );
+        let mut parser = Parser::default().with_intrinsic_attribute(
+            "agreed",
+            "yes",
+            ModificationContext::Anywhere,
+        );
+
+        let doc =
+            parser.parse("We are agreed? {agreed}\n\n:agreed: no\n\nAre we still agreed? {agreed}");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+
+        assert_eq!(
+            block1,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "We are agreed? {agreed}",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "We are agreed? yes",
+                },
+                source: TSpan {
+                    data: "We are agreed? {agreed}",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+
+        let _ = blocks.next().unwrap();
+
+        let block3 = blocks.next().unwrap();
+
+        assert_eq!(
+            block3,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "Are we still agreed? {agreed}",
+                        line: 5,
+                        col: 1,
+                        offset: 38,
+                    },
+                    rendered: "Are we still agreed? no",
+                },
+                source: TSpan {
+                    data: "Are we still agreed? {agreed}",
+                    line: 5,
+                    col: 1,
+                    offset: 38,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+
+        let mut warnings = doc.warnings();
+        assert!(warnings.next().is_none());
+    }
+
+    non_normative!(
+        r#"
+WARNING: An attribute entry should not be declared inside the boundaries of a delimited block.
+When an attribute entry is declared inside a delimited block, the behavior is undefined.
+
+When an attribute is defined in the document header using an attribute entry, that's referred to as a header attribute.
+A header attribute is available to the entire document until it is unset.
+A header attribute is also accessible from the document metadata for use by built-in behavior, extensions, and other applications that need to consult its value (e.g., `source-highlighter`).
+
+When an attribute is defined in the document body using an attribute entry, that's simply referred to as a document attribute.
+For any attribute defined in the body, the attribute is available from the point it is set until it is unset.
+Attributes defined in the body are not available via the document metadata.
+
+Unless the attribute is locked, it can be unset or assigned a new value in the document header or body.
+However, note that unsetting or redefining a header attribute that controls behavior in the document body usually has no affect.
+See the xref:document-attributes-ref.adoc[] for where in a document each attribute can be set.
+
+"#
+    );
+}
+
+mod defining_without_attribute_entry {
+    use crate::{
+        Parser,
+        blocks::IsBlock,
+        parser::ModificationContext,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+            },
+            sdd::{non_normative, verifies},
+        },
+    };
+
+    non_normative!(
+        r#"
+== Defining document attributes without an attribute entry
+
+Document attributes can also be declared (set with an optional value or unset) outside the document via the CLI and API.
+The attribute entry syntax is not used in these cases.
+Rather, they are declared using the provided option.
+For the API, attributes are declared using the `:attributes` option (which supports various entry formats).
+For the CLI, the attribute is declared using the `-a` option.
+
+"#
+    );
+
+    #[test]
+    fn no_substitutions_applied() {
+        verifies!(
+            r#"
+When an attribute is assigned a value outside of the document, the value is stored as is, meaning substitutions are not applied to it.
+That also means that the xref:subs:index.adoc[special characters and quote substitutions] are not applied to the value of that attribute when it is referenced in the document.
+However, subsequent substitutions, such as the macro substitution, do get applied.
+This behavior is due to that fact that the attributes substitution is applied after the special characters and quote substitutions.
+In order to force these substitutions to be applied to the value of the attribute, you must alter the substitution order at the point of reference.
+Here's an example using the inline pass macro.
+
+[,asciidoc]
+----
+pass:a,q[{attribute-with-formatted-text}]
+----
+
+"#
+        );
+
+        let mut parser = Parser::default().with_intrinsic_attribute(
+            "attribute-with-formatted-text",
+            "attribute with *formatted* _text_",
+            ModificationContext::Anywhere,
+        );
+
+        let doc =
+            parser.parse("formatting applied: pass:a,q[{attribute-with-formatted-text}]\n\nformatting suppressed: {attribute-with-formatted-text}");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+
+        assert_eq!(
+            block1,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "formatting applied: attribute with <strong>formatted</strong> <em>text</em>",
+                },
+                source: TSpan {
+                    data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+
+        let block2 = blocks.next().unwrap();
+
+        assert_eq!(
+            block2,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "formatting suppressed: {attribute-with-formatted-text}",
+                        line: 3,
+                        col: 1,
+                        offset: 63,
+                    },
+                    rendered: "formatting suppressed: attribute with *formatted* _text_",
+                },
+                source: TSpan {
+                    data: "formatting suppressed: {attribute-with-formatted-text}",
+                    line: 3,
+                    col: 1,
+                    offset: 63,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+    }
+
+    non_normative!(
+        r#"
+When an attribute is declared from the command line or API, it is implicitly a document header attribute.
+By default, the attribute becomes locked (i.e., hard set or unset) and thus cannot be changed by the document.
+This behavior can be changed by adding an `@` to the end of the attribute name or value (i.e., the soft set modifier).
+See xref:assignment-precedence.adoc[] for more information.
+
+The one exception to this rule is the `sectnums` attribute, which can always be changed.
+
+"#
+    );
+}
+
+non_normative!(
+    r#"
+////
+An exclamation point (`!`) before (or after) the attribute name unsets the attribute.
+
+[source]
+----
+:!name: <1>
+----
+<1> The leading `!` indicates this attribute should be unset.
+In this case, the value is ignored.
+
+An attribute entry must start at the beginning of the line.
+If the attribute entry follows a paragraph, it must be offset by an empty line.
+////
+"#
+);

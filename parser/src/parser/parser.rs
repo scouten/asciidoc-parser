@@ -209,6 +209,35 @@ impl<'p> Parser<'p> {
 
         self.attribute_values.insert(attr_name, attribute_value);
     }
+
+    /// Called from [`Block::parse()`] to accept or reject an attribute value
+    /// from a document (body) attribute.
+    pub(crate) fn set_attribute_from_body<'src>(
+        &mut self,
+        attr: &Attribute<'src>,
+        warnings: &mut Vec<Warning<'src>>,
+    ) {
+        let attr_name = attr.name().data().to_owned();
+
+        // Verify that we have permission to overwrite any existing attribute value.
+        if let Some(existing_attr) = self.attribute_values.get(&attr_name)
+            && existing_attr.modification_context != ModificationContext::Anywhere
+        {
+            warnings.push(Warning {
+                source: attr.span(),
+                warning: WarningType::AttributeValueIsLocked(attr_name),
+            });
+            return;
+        }
+
+        let attribute_value = AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::Anywhere,
+            value: attr.value().clone(),
+        };
+
+        self.attribute_values.insert(attr_name, attribute_value);
+    }
 }
 
 const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitutionRenderer {};

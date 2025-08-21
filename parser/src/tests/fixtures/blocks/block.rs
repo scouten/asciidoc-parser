@@ -1,7 +1,10 @@
 use crate::{
     blocks::Block,
-    tests::fixtures::blocks::{
-        TCompoundDelimitedBlock, TMediaBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock,
+    tests::fixtures::{
+        blocks::{
+            TCompoundDelimitedBlock, TMediaBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock,
+        },
+        document::TAttribute,
     },
 };
 
@@ -12,6 +15,7 @@ pub(crate) enum TBlock {
     Section(TSectionBlock),
     RawDelimited(TRawDelimitedBlock),
     CompoundDelimited(TCompoundDelimitedBlock),
+    DocumentAttribute(TAttribute),
 }
 
 impl<'src> PartialEq<Block<'src>> for TBlock {
@@ -50,6 +54,11 @@ fn fixture_eq_observed(fixture: &TBlock, observed: &Block) -> bool {
 
         TBlock::CompoundDelimited(cdb_fixture) => match observed {
             Block::CompoundDelimited(cdb_observed) => cdb_fixture == cdb_observed,
+            _ => false,
+        },
+
+        TBlock::DocumentAttribute(attr_fixture) => match observed {
+            Block::DocumentAttribute(attr_observed) => attr_fixture == attr_observed,
             _ => false,
         },
     }
