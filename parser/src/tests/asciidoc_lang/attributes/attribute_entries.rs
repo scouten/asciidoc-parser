@@ -544,3 +544,147 @@ See the xref:document-attributes-ref.adoc[] for where in a document each attribu
 "#
     );
 }
+
+mod defining_without_attribute_entry {
+    use crate::{
+        Parser,
+        blocks::IsBlock,
+        parser::ModificationContext,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+            },
+            sdd::{non_normative, verifies},
+        },
+    };
+
+    non_normative!(
+        r#"
+== Defining document attributes without an attribute entry
+
+Document attributes can also be declared (set with an optional value or unset) outside the document via the CLI and API.
+The attribute entry syntax is not used in these cases.
+Rather, they are declared using the provided option.
+For the API, attributes are declared using the `:attributes` option (which supports various entry formats).
+For the CLI, the attribute is declared using the `-a` option.
+
+"#
+    );
+
+    #[test]
+    fn no_substitutions_applied() {
+        verifies!(
+            r#"
+When an attribute is assigned a value outside of the document, the value is stored as is, meaning substitutions are not applied to it.
+That also means that the xref:subs:index.adoc[special characters and quote substitutions] are not applied to the value of that attribute when it is referenced in the document.
+However, subsequent substitutions, such as the macro substitution, do get applied.
+This behavior is due to that fact that the attributes substitution is applied after the special characters and quote substitutions.
+In order to force these substitutions to be applied to the value of the attribute, you must alter the substitution order at the point of reference.
+Here's an example using the inline pass macro.
+
+[,asciidoc]
+----
+pass:a,q[{attribute-with-formatted-text}]
+----
+
+"#
+        );
+
+        let mut parser = Parser::default().with_intrinsic_attribute(
+            "attribute-with-formatted-text",
+            "attribute with *formatted* _text_",
+            ModificationContext::Anywhere,
+        );
+
+        let doc =
+            parser.parse("formatting applied: pass:a,q[{attribute-with-formatted-text}]\n\nformatting suppressed: {attribute-with-formatted-text}");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+
+        assert_eq!(
+            block1,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "formatting applied: attribute with <strong>formatted</strong> <em>text</em>",
+                },
+                source: TSpan {
+                    data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+
+        let block2 = blocks.next().unwrap();
+
+        assert_eq!(
+            block2,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "formatting suppressed: {attribute-with-formatted-text}",
+                        line: 3,
+                        col: 1,
+                        offset: 63,
+                    },
+                    rendered: "formatting suppressed: attribute with *formatted* _text_",
+                },
+                source: TSpan {
+                    data: "formatting suppressed: {attribute-with-formatted-text}",
+                    line: 3,
+                    col: 1,
+                    offset: 63,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })
+        );
+    }
+
+    non_normative!(
+        r#"
+When an attribute is declared from the command line or API, it is implicitly a document header attribute.
+By default, the attribute becomes locked (i.e., hard set or unset) and thus cannot be changed by the document.
+This behavior can be changed by adding an `@` to the end of the attribute name or value (i.e., the soft set modifier).
+See xref:assignment-precedence.adoc[] for more information.
+
+The one exception to this rule is the `sectnums` attribute, which can always be changed.
+
+"#
+    );
+}
+
+non_normative!(
+    r#"
+////
+An exclamation point (`!`) before (or after) the attribute name unsets the attribute.
+
+[source]
+----
+:!name: <1>
+----
+<1> The leading `!` indicates this attribute should be unset.
+In this case, the value is ignored.
+
+An attribute entry must start at the beginning of the line.
+If the attribute entry follows a paragraph, it must be offset by an empty line.
+////
+"#
+);
