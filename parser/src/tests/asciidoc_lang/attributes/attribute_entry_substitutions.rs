@@ -23,7 +23,6 @@ non_normative!(
 = Attribute Entry Substitutions
 
 The AsciiDoc processor automatically applies substitutions from the header substitution group to the value of an attribute entry prior to the assignment, regardless of where the attribute entry is declared in the document.
-
 "#
 );
 
