@@ -15,6 +15,7 @@ The following features are supported in the [Ruby implementation of Asciidoctor]
 * Parsing UTF-16 content is not supported. (UTF-16 documents must be re-encoded to UTF-8 prior to parsing with this crate.)
 * The document attribute [`compat-mode`](https://docs.asciidoctor.org/asciidoctor/latest/migrate/asciidoc-py/#compatibility-mode) is not supported.
 * The parser has built-in support for HTML5 rendering similar to what is provided in Asciidoctor. Other back ends could be supported by other crates by implementing the `InlineSub stitutionRenderer` trait. They will not be directly supported in this crate.
+* Setting document attributes via the [inline attribute entry syntax](https://docs.asciidoctor.org/asciidoc/latest/attributes/inline-attribute-entries/) is not supported. (Note that this syntax is discouraged in the AsciiDoc language documentation.)
 
 ## Incomplete implementations
 
