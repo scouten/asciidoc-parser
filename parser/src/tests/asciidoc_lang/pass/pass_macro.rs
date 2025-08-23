@@ -294,7 +294,7 @@ Let's look at how to use the inline pass macro to hand select substitutions.
 
     assert_eq!(
         sb1.content().rendered(),
-        "The text &lt;del&gt;strike this&lt;/del&gt; is marked as deleted."
+        "The text <del>strike this</del> is marked as deleted."
     );
 }
 
