@@ -131,6 +131,7 @@ You can inspect the value stored in an attribute using this trick:
 {app-name}
 ------
 ----
+
 "#
         );
 
@@ -188,6 +189,176 @@ You can inspect the value stored in an attribute using this trick:
                     SubstitutionStep::AttributeReferences,
                     SubstitutionStep::SpecialCharacters,
                 ],),
+            },)
+        );
+    }
+
+    #[test]
+    fn apply_quotes_single_char_alias() {
+        verifies!(
+            r#"
+You can also specify the substitution using the single-character alias, `q`.
+
+[source]
+----
+:app-name: pass:q[MyApp^2^]
+----
+
+The inline pass macro kind of works like an attribute value preprocessor.
+If the processor detects that an inline pass macro completely surrounds the attribute value, it:
+
+. reads the list of substitutions from the target slot of the macro
+. unwraps the value from the macro
+. applies the substitutions to the value
+
+If the macro is absent, the value is processed with the header substitution group.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+        let doc = parser
+            .parse(":app-name: pass:q[MyApp^2^]\n\n[subs=attributes+]\n------\n{app-name}\n------");
+
+        assert_eq!(
+            parser.attribute_value("app-name").as_maybe_str().unwrap(),
+            "MyApp<sup>2</sup>"
+        );
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+
+        assert_eq!(
+            block1,
+            &TBlock::RawDelimited(TRawDelimitedBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "{app-name}",
+                        line: 5,
+                        col: 1,
+                        offset: 55,
+                    },
+                    rendered: "MyApp&lt;sup&gt;2&lt;/sup&gt;",
+                },
+                content_model: ContentModel::Verbatim,
+                context: "listing",
+                source: TSpan {
+                    data: "[subs=attributes+]\n------\n{app-name}\n------",
+                    line: 3,
+                    col: 1,
+                    offset: 29,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: Some(TAttrlist {
+                    attributes: &[TElementAttribute {
+                        name: Some("subs"),
+                        value: "attributes+",
+                        shorthand_items: &[],
+                    },],
+                    source: TSpan {
+                        data: "subs=attributes+",
+                        line: 3,
+                        col: 2,
+                        offset: 30,
+                    },
+                },),
+                substitution_group: SubstitutionGroup::Custom(vec![
+                    SubstitutionStep::AttributeReferences,
+                    SubstitutionStep::SpecialCharacters,
+                ],),
+            },)
+        );
+    }
+}
+
+mod attributes_defined_outside_document {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::IsBlock,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+            },
+            sdd::{non_normative, verifies},
+        },
+    };
+
+    non_normative!(
+        r#"
+== Substitutions for attributes defined outside the document
+
+Unlike attribute entries, substitutions are *not* applied to the value of an attribute passed in to the AsciiDoc processor.
+An attribute can be passed into the AsciiDoc processor using the `-a` CLI option or the `:attributes` API option.
+When attributes are defined external to the document, the value must be prepared so it's ready to be referenced as is.
+If the value contains XML special characters, that means those characters must be pre-escaped.
+The exception would be if you intend for XML/HTML tags in the value to be preserved.
+If the value needs to reference other attributes, those values must be pre-replaced.
+
+"#
+    );
+
+    #[test]
+    fn escape_ampersand_example() {
+        verifies!(
+            r#"
+Let's consider the case when the value of an attribute defined external to the document contains an ampersand.
+In order to reference this attribute safely in the AsciiDoc document, the ampersand must be escaped:
+
+ $ asciidoctor -a equipment="a bat &amp; ball" document.adoc
+
+You can reference the attribute as follows:
+
+[,asciidoc]
+----
+To play, you'll need {equipment}.
+----
+
+"#
+        );
+
+        let mut parser = Parser::default().with_intrinsic_attribute(
+            "equipment",
+            "a bat &amp; ball",
+            crate::parser::ModificationContext::Anywhere,
+        );
+
+        let doc = parser.parse("To play, you'll need {equipment}.");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+
+        dbg!(&block1);
+
+        assert_eq!(
+            block1,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "To play, you'll need {equipment}.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "To play, you&#8217;ll need a bat &amp; ball.",
+                },
+                source: TSpan {
+                    data: "To play, you'll need {equipment}.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
             },)
         );
     }
