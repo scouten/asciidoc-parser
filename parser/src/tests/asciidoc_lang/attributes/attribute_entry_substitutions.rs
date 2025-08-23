@@ -82,7 +82,7 @@ If no substitutions are specified, no substitutions will be applied.
 In order for the inline macro to work in this context, it must completely surround the attribute value.
 If it's used anywhere else in the value, it will be ignored.
 
-    "#
+"#
     );
 
     #[test]
