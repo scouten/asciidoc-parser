@@ -2,7 +2,16 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    tests::sdd::{non_normative, track_file, verifies},
+    blocks::IsBlock,
+    tests::{
+        fixtures::{
+            TSpan,
+            attributes::{TAttrlist, TElementAttribute},
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+        },
+        sdd::{non_normative, track_file, verifies},
+    },
 };
 
 track_file!("docs/modules/attributes/pages/attribute-entry-substitutions.adoc");
@@ -362,4 +371,131 @@ To play, you'll need {equipment}.
             },)
         );
     }
+
+    #[test]
+    fn defined_inline_example() {
+        verifies!(
+            r#"
+If the attribute were to be defined in the document, this escaping would not be necessary.
+
+[,asciidoc]
+----
+:equipment: a bat & ball
+----
+
+That's because, in contrast, substitutions are applied to the value of an attribute entry.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse(
+            ":equipment: a bat & ball
+\n\nTo play, you'll need {equipment}.",
+        );
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+
+        assert_eq!(
+            block1,
+            &TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "To play, you'll need {equipment}.",
+                        line: 4,
+                        col: 1,
+                        offset: 27,
+                    },
+                    rendered: "To play, you&#8217;ll need a bat &amp; ball.",
+                },
+                source: TSpan {
+                    data: "To play, you'll need {equipment}.",
+                    line: 4,
+                    col: 1,
+                    offset: 27,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+}
+
+#[test]
+fn change_subs_when_referencing() {
+    verifies!(
+        r#"
+== Change substitutions when referencing an attribute
+
+You can also change the substitutions that are applied to an attribute at the time it is resolved.
+This is done by manipulating the substitutions applied to the text where it is referenced.
+For example, here's how we could get the processor to apply quote substitutions to the value of an attribute:
+
+[source]
+----
+:app-name: MyApp^2^
+
+[subs="specialchars,attributes,quotes,replacements,macros,post_replacements"]
+The application is called {app-name}.
+----
+
+Notice that we've swapped the order of the `attributes` and `quotes` substitutions.
+This strategy is akin to post-processing the attribute value.
+"#
+    );
+
+    let mut parser = Parser::default();
+
+    let doc = parser.parse(":app-name: MyApp^2^\n\n[subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"]\nThe application is called {app-name}.");
+
+    assert_eq!(
+        parser.attribute_value("app-name").as_maybe_str().unwrap(),
+        "MyApp^2^"
+    );
+
+    let mut blocks = doc.nested_blocks();
+
+    let block1 = blocks.next().unwrap();
+
+    assert_eq!(
+        block1,
+        &TBlock::Simple(TSimpleBlock {
+            content: TContent {
+                original: TSpan {
+                    data: "The application is called {app-name}.",
+                    line: 4,
+                    col: 1,
+                    offset: 99,
+                },
+                rendered: "The application is called MyApp<sup>2</sup>.",
+            },
+            source: TSpan {
+                data: "[subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"]\nThe application is called {app-name}.",
+                line: 3,
+                col: 1,
+                offset: 21,
+            },
+            title_source: None,
+            title: None,
+            anchor: None,
+            attrlist: Some(TAttrlist {
+                attributes: &[TElementAttribute {
+                    name: Some("subs"),
+                    value: "specialchars,attributes,quotes,replacements,macros,post_replacements",
+                    shorthand_items: &[],
+                },],
+                source: TSpan {
+                    data: "subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"",
+                    line: 3,
+                    col: 2,
+                    offset: 22,
+                },
+            },),
+        },)
+    );
 }
