@@ -1,19 +1,8 @@
-#![allow(unused)] // TEMPORARY
-
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
-    document::{Attribute, InterpretedValue},
-    tests::{
-        fixtures::{
-            TSpan,
-            blocks::{TBlock, TSimpleBlock},
-            content::TContent,
-            document::{TAttribute, TDocument, THeader, TInterpretedValue},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
+    Parser,
+    tests::sdd::{non_normative, track_file, verifies},
 };
 
 track_file!("docs/modules/attributes/pages/attribute-entry-substitutions.adoc");
@@ -67,19 +56,17 @@ mod change_subs_when_assigning {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
+        Parser,
         blocks::{ContentModel, IsBlock},
         content::{SubstitutionGroup, SubstitutionStep},
-        document::{Attribute, InterpretedValue},
         tests::{
             fixtures::{
                 TSpan,
                 attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TRawDelimitedBlock, TSimpleBlock},
+                blocks::{TBlock, TRawDelimitedBlock},
                 content::TContent,
-                document::{TAttribute, TDocument, THeader, TInterpretedValue},
             },
-            sdd::{non_normative, track_file, verifies},
+            sdd::{non_normative, verifies},
         },
     };
 
