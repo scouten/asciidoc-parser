@@ -98,7 +98,7 @@ Here's how to prevent substitutions from being applied to the value of an attrib
 
 This might be useful if you're referencing the attribute in a place that depends on the unaltered text, such as the value of the `cols` attribute on a table.
 
-    "#
+"#
         );
 
         let mut parser = Parser::default();
@@ -131,7 +131,7 @@ You can inspect the value stored in an attribute using this trick:
 {app-name}
 ------
 ----
-    "#
+"#
         );
 
         let mut parser = Parser::default();
