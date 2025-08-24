@@ -1,5 +1,6 @@
 mod attribute_entries;
 mod attribute_entry_substitutions;
+mod boolean_attributes;
 mod built_in_attributes;
 mod custom_attributes;
 mod document_attributes;
