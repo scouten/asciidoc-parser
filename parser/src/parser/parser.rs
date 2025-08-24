@@ -298,7 +298,7 @@ fn built_in_attrs() -> HashMap<String, AttributeValue> {
         "iconsdir".to_owned(),
         AttributeValue {
             allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::ApiOnly,
+            modification_context: ModificationContext::Anywhere,
             value: InterpretedValue::Value("./images/icons".into()),
         },
     );
