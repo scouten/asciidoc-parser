@@ -128,7 +128,9 @@ mod unset_in_body {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        document::InterpretedValue, tests::sdd::{non_normative, to_do_verifies, verifies}, Parser
+        Parser,
+        document::InterpretedValue,
+        tests::sdd::{non_normative, to_do_verifies, verifies},
     };
 
     non_normative!(
