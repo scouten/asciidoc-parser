@@ -174,55 +174,15 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn may_contain_uppercase() {
-        // IMPORTANT: We've defined the lower-case normalization as out of scope for
-        // the parser crate for now.
-        let mi = Attribute::parse(Span::new(":URL:"), &Parser::default()).unwrap();
+        let mut parser = Parser::default();
+        parser.parse(":URL: /foo/bar");
+
+        assert_eq!(parser.attribute_value("URL"), TInterpretedValue::Unset);
 
         assert_eq!(
-            mi.item,
-            TAttribute {
-                name: TSpan {
-                    data: "URL",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },
-                value_source: None,
-                value: TInterpretedValue::Set,
-                source: TSpan {
-                    data: ":URL:",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-            }
+            parser.attribute_value("url"),
+            TInterpretedValue::Value("/foo/bar")
         );
-
-        assert_eq!(mi.item.value(), &InterpretedValue::Set);
-
-        let mi = Attribute::parse(Span::new(":Url:"), &Parser::default()).unwrap();
-
-        assert_eq!(
-            mi.item,
-            TAttribute {
-                name: TSpan {
-                    data: "Url",
-                    line: 1,
-                    col: 2,
-                    offset: 1,
-                },
-                value_source: None,
-                value: TInterpretedValue::Set,
-                source: TSpan {
-                    data: ":Url:",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                },
-            }
-        );
-
-        assert_eq!(mi.item.value(), &InterpretedValue::Set);
     }
 }
 

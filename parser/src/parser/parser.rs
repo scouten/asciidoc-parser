@@ -132,7 +132,7 @@ impl<'p> Parser<'p> {
         };
 
         self.attribute_values
-            .insert(name.as_ref().to_string(), attribute_value);
+            .insert(name.as_ref().to_lowercase(), attribute_value);
 
         self
     }
@@ -176,7 +176,7 @@ impl<'p> Parser<'p> {
         };
 
         self.attribute_values
-            .insert(name.as_ref().to_string(), attribute_value);
+            .insert(name.as_ref().to_lowercase(), attribute_value);
 
         self
     }
@@ -187,7 +187,7 @@ impl<'p> Parser<'p> {
         attr: &Attribute<'src>,
         warnings: &mut Vec<Warning<'src>>,
     ) {
-        let attr_name = attr.name().data().to_owned();
+        let attr_name = attr.name().data().to_lowercase();
 
         let existing_attr = self.attribute_values.get(&attr_name);
 
@@ -227,7 +227,7 @@ impl<'p> Parser<'p> {
         attr: &Attribute<'src>,
         warnings: &mut Vec<Warning<'src>>,
     ) {
-        let attr_name = attr.name().data().to_owned();
+        let attr_name = attr.name().data().to_lowercase();
 
         // Verify that we have permission to overwrite any existing attribute value.
         if let Some(existing_attr) = self.attribute_values.get(&attr_name)
