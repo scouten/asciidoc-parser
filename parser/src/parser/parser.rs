@@ -1,12 +1,11 @@
 use std::collections::HashMap;
 
-use super::HtmlSubstitutionRenderer;
 use crate::{
     Document, HasSpan,
     document::{Attribute, InterpretedValue},
     parser::{
-        AllowableValue, AttributeValue, InlineSubstitutionRenderer, ModificationContext,
-        PathResolver,
+        AllowableValue, AttributeValue, HtmlSubstitutionRenderer, InlineSubstitutionRenderer,
+        ModificationContext, PathResolver,
     },
     warnings::{Warning, WarningType},
 };
