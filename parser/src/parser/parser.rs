@@ -17,6 +17,9 @@ pub struct Parser<'p> {
     /// Attribute values at current state of parsing.
     pub(crate) attribute_values: HashMap<String, AttributeValue>,
 
+    /// Default values for attributes if "set."
+    default_attribute_values: HashMap<String, String>,
+
     /// Specifies how the basic raw text of a simple block will be converted to
     /// the format which will ultimately be presented in the final output.
     ///
@@ -90,6 +93,15 @@ impl<'p> Parser<'p> {
         self.attribute_values
             .get(name.as_ref())
             .map(|av| av.value.clone())
+            .map(|av| {
+                if let InterpretedValue::Set = av
+                    && let Some(default) = self.default_attribute_values.get(name.as_ref())
+                {
+                    InterpretedValue::Value(default.clone())
+                } else {
+                    av
+                }
+            })
             .unwrap_or(InterpretedValue::Unset)
     }
 
@@ -133,6 +145,30 @@ impl<'p> Parser<'p> {
 
         self.attribute_values
             .insert(name.as_ref().to_lowercase(), attribute_value);
+
+        self
+    }
+
+    /// Sets the default value for an [intrinsic attribute].
+    ///
+    /// Default values for attributes are provided automatically by the
+    /// processor. These values provide a falllback textual value for an
+    /// attribute when it is merely "set" by the document via API, header, or
+    /// document body.
+    ///
+    /// Calling this does not imply that the value is set automatically by
+    /// default, nor does it establish any policy for where the value may be
+    /// modified. For that, please use [`with_intrinsic_attribute`].
+    ///
+    /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
+    /// [`with_intrinsic_attribute`]: Self::with_intrinsic_attribute
+    pub fn with_default_attribute_value<N: AsRef<str>, V: AsRef<str>>(
+        mut self,
+        name: N,
+        value: V,
+    ) -> Self {
+        self.default_attribute_values
+            .insert(name.as_ref().to_string(), value.as_ref().to_string());
 
         self
     }
@@ -205,10 +241,9 @@ impl<'p> Parser<'p> {
         let mut value = attr.value().clone();
 
         if let InterpretedValue::Set = value
-            && let Some(existing_attr) = existing_attr
-            && let AllowableValue::Effective(ref effective_value) = existing_attr.allowable_value
+            && let Some(default_value) = self.default_attribute_values.get(&attr_name)
         {
-            value = effective_value.clone();
+            value = InterpretedValue::Value(default_value.clone());
         }
 
         let attribute_value = AttributeValue {
@@ -256,6 +291,7 @@ impl Default for Parser<'_> {
     fn default() -> Self {
         Self {
             attribute_values: built_in_attrs(),
+            default_attribute_values: built_in_default_values(),
             renderer: DEFAULT_RENDERER,
             path_resolver: PathResolver::default(),
         }
@@ -286,7 +322,7 @@ fn built_in_attrs() -> HashMap<String, AttributeValue> {
     attrs.insert(
         "toc".to_owned(),
         AttributeValue {
-            allowable_value: AllowableValue::Effective(InterpretedValue::Value("auto".to_owned())),
+            allowable_value: AllowableValue::Any,
             modification_context: ModificationContext::ApiOrHeader,
             value: InterpretedValue::Unset,
         },
@@ -298,9 +334,18 @@ fn built_in_attrs() -> HashMap<String, AttributeValue> {
         AttributeValue {
             allowable_value: AllowableValue::Any,
             modification_context: ModificationContext::Anywhere,
-            value: InterpretedValue::Value("./images/icons".into()),
+            value: InterpretedValue::Set,
         },
     );
 
     attrs
+}
+
+fn built_in_default_values() -> HashMap<String, String> {
+    let mut defaults: HashMap<String, String> = HashMap::new();
+
+    defaults.insert("iconsdir".to_owned(), "./images/icons".to_owned());
+    defaults.insert("toc".to_owned(), "auto".to_owned());
+
+    defaults
 }
