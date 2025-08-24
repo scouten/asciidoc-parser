@@ -190,8 +190,10 @@ impl<'p> Parser<'p> {
     ) {
         let attr_name = attr.name().data().to_owned();
 
+        let existing_attr = self.attribute_values.get(&attr_name);
+
         // Verify that we have permission to overwrite any existing attribute value.
-        if let Some(existing_attr) = self.attribute_values.get(&attr_name)
+        if let Some(existing_attr) = existing_attr
             && existing_attr.modification_context == ModificationContext::ApiOnly
         {
             warnings.push(Warning {
@@ -201,10 +203,19 @@ impl<'p> Parser<'p> {
             return;
         }
 
+        let mut value = attr.value().clone();
+
+        if let InterpretedValue::Set = value
+            && let Some(existing_attr) = existing_attr
+            && let AllowableValue::Effective(ref effective_value) = existing_attr.allowable_value
+        {
+            value = effective_value.clone();
+        }
+
         let attribute_value = AttributeValue {
             allowable_value: AllowableValue::Any,
             modification_context: ModificationContext::Anywhere,
-            value: attr.value().clone(),
+            value,
         };
 
         self.attribute_values.insert(attr_name, attribute_value);
@@ -270,6 +281,15 @@ fn built_in_attrs() -> HashMap<String, AttributeValue> {
             allowable_value: AllowableValue::Any,
             modification_context: ModificationContext::ApiOnly,
             value: InterpretedValue::Value("+".into()),
+        },
+    );
+
+    attrs.insert(
+        "toc".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Effective(InterpretedValue::Value("auto".to_owned())),
+            modification_context: ModificationContext::ApiOrHeader,
+            value: InterpretedValue::Unset,
         },
     );
 
