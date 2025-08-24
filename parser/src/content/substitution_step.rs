@@ -460,8 +460,9 @@ impl Replacer for AttributeReplacer<'_> {
             InterpretedValue::Value(value) => {
                 dest.push_str(value.as_ref());
             }
-            x => {
-                unimplemented!("What is the replacement value for InterpretedValue::{x:?}?");
+            _ => {
+                // TO DO: What is the correct replacement value for Set and
+                // Unset? For now, they look alike (nothing).
             }
         }
     }

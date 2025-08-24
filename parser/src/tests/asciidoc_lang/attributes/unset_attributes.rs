@@ -123,3 +123,66 @@ This is an attribute that is set and assigned a default value of `Example` autom
         );
     }
 }
+
+mod unset_in_body {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        document::InterpretedValue, tests::sdd::{non_normative, to_do_verifies, verifies}, Parser
+    };
+
+    non_normative!(
+        r#"
+== Unset a document attribute in the header
+
+"#
+    );
+
+    #[ignore]
+    #[test]
+    fn sectnums_example() {
+        to_do_verifies!(
+            r#"
+== Unset a document attribute in the body
+
+Custom document attributes and some built-in document attributes can be turned off in the body of the document using an attribute entry and the bang symbol (`!`) as described in the previous section.
+For example, let's say you set the section numbering attribute in the header of your document; however, you don't want the two sections midway through the document to be numbered.
+To disable the numbering on these two sections, you'd unset `sectnums` before the first section you didn't want numbered and then reset it when you wanted the numbering to start again.
+
+[source]
+----
+= Title
+:sectnums: <.>
+
+== Section Title
+
+:!sectnums: <.>
+== Section Title
+
+=== Section Title
+
+:sectnums: <.>
+== Section Title
+----
+<.> The `sectnums` attribute is set in the header to activate section numbering throughout the document.
+<.> `sectnums` is unset by adding a `!` to it's name.
+The `!` can be placed either before or after the attribute's name.
+The attribute entry must be placed on its own line.
+All of the sections below where the attribute is unset will not be numbered.
+<.> `sectnums` is set and all subsequent sections will be numbered.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        parser.parse("= Title\n:sectnums:\n\n== Section Title\n\nsectnums = {sectnums}\n\n:!sectnums:\n\nsectnums = {sectnums}\n\n== Section Title\n\n=== Section Title\n\n:sectnums:\n\n== Section Title\n\nsectnums = {sectnums}");
+
+        assert_eq!(
+            parser.attribute_value("sectnums"),
+            InterpretedValue::Value("all".to_owned())
+        );
+
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/328):
+        // Differentiate between numbers on and numbers off when we can.
+    }
+}

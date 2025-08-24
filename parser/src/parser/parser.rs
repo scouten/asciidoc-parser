@@ -364,6 +364,7 @@ fn built_in_default_values() -> HashMap<String, String> {
 
     defaults.insert("example-caption".to_owned(), "Example".to_owned());
     defaults.insert("iconsdir".to_owned(), "./images/icons".to_owned());
+    defaults.insert("sectnums".to_owned(), "all".to_owned());
     defaults.insert("toc".to_owned(), "auto".to_owned());
 
     defaults
