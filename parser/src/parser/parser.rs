@@ -149,29 +149,31 @@ impl<'p> Parser<'p> {
         self
     }
 
-    /// Sets the default value for an [intrinsic attribute].
-    ///
-    /// Default values for attributes are provided automatically by the
-    /// processor. These values provide a falllback textual value for an
-    /// attribute when it is merely "set" by the document via API, header, or
-    /// document body.
-    ///
-    /// Calling this does not imply that the value is set automatically by
-    /// default, nor does it establish any policy for where the value may be
-    /// modified. For that, please use [`with_intrinsic_attribute`].
-    ///
-    /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
-    /// [`with_intrinsic_attribute`]: Self::with_intrinsic_attribute
-    pub fn with_default_attribute_value<N: AsRef<str>, V: AsRef<str>>(
-        mut self,
-        name: N,
-        value: V,
-    ) -> Self {
-        self.default_attribute_values
-            .insert(name.as_ref().to_string(), value.as_ref().to_string());
+    /* Comment out until we're prepared to use and test this.
+        /// Sets the default value for an [intrinsic attribute].
+        ///
+        /// Default values for attributes are provided automatically by the
+        /// processor. These values provide a falllback textual value for an
+        /// attribute when it is merely "set" by the document via API, header, or
+        /// document body.
+        ///
+        /// Calling this does not imply that the value is set automatically by
+        /// default, nor does it establish any policy for where the value may be
+        /// modified. For that, please use [`with_intrinsic_attribute`].
+        ///
+        /// [intrinsic attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes-ref/#intrinsic-attributes
+        /// [`with_intrinsic_attribute`]: Self::with_intrinsic_attribute
+        pub fn with_default_attribute_value<N: AsRef<str>, V: AsRef<str>>(
+            mut self,
+            name: N,
+            value: V,
+        ) -> Self {
+            self.default_attribute_values
+                .insert(name.as_ref().to_string(), value.as_ref().to_string());
 
-        self
-    }
+            self
+        }
+    */
 
     /// Sets the value of an [intrinsic attribute] from a boolean flag.
     ///
