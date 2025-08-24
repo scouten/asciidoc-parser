@@ -138,3 +138,29 @@ This explicit user-defined value replaces the default value (assuming the attrib
         "./js"
     );
 }
+
+non_normative!(
+    r#"
+////
+Many built-in attributes have a built-in value that is designated as the default value.
+This default value is assigned when the attribute is set and its value is left empty.
+For example, the xref:sections:id.adoc#separator[ID word separator attribute] can accept <<user-values,user-defined values>> and it has one default value.
+If you set `idseparator` and leave the value empty, the default value will be assigned automatically when the document is processed.
+
+[source]
+----
+:idseparator: <1>
+----
+<1> The words in automatically generated IDs will be separated with an underscore (`_`), the attribute's default value, because the value is empty.
+
+To override the default value of an attribute, you have to explicitly assign a new value when you set the attribute.
+
+[source]
+----
+:idseparator: - <1>
+----
+<1> The words in automatically generated IDs will be separated with a hyphen (`-`).
+The value must be offset from the attribute's name by a space.
+////
+"#
+);
