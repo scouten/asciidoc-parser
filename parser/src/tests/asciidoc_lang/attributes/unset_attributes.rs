@@ -130,7 +130,7 @@ mod unset_in_body {
     use crate::{
         Parser,
         document::InterpretedValue,
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::sdd::{non_normative, to_do_verifies},
     };
 
     non_normative!(
