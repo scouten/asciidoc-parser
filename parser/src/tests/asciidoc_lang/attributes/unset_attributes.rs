@@ -65,4 +65,61 @@ Don't add a value to the entry.
             InterpretedValue::Value("name3".to_owned())
         );
     }
+
+    #[test]
+    fn sectids() {
+        verifies!(
+            r#"
+Let's use an attribute entry to turn off the built-in boolean attribute named `sectids`.
+The AsciiDoc processor automatically sets `sectids` at processing time unless you unset it.
+The `sectids` attribute xref:sections:auto-ids.adoc[generates an ID for each section] from the section's title.
+
+.Unset a boolean attribute
+[source#ex-unset-boolean]
+----
+≈----
+<.> On a new line, type a colon (`:`), directly followed by a bang symbol (`!`), the attribute's name, and then another colon (`:`).
+After the closing colon, press kbd:[Enter].
+The attribute is now unset and its behavior won't be applied to the document.
+
+Once an attribute is unset, its behavior is deactivated.
+When `sectids` is unset, the AsciiDoc processor will not generate IDs from section titles at processing time.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        parser.parse("= Document Title\n:!sectids:");
+
+        assert_eq!(parser.attribute_value("sectids"), InterpretedValue::Unset);
+    }
+
+    #[test]
+    fn example_caption() {
+        verifies!(
+            r#"
+Let's unset the built-in attribute `example-caption`.
+This is an attribute that is set and assigned a default value of `Example` automatically by the AsciiDoc processor when you use an example block.
+
+.Unset an automatically declared attribute
+[source#ex-unset-built-in]
+----
+= Title
+:!example-caption: <.>
+----
+<.> Example blocks won't be labeled and numbered, e.g., Example 1, because the attribute controlling that behavior is unset with the leading `!`.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        parser.parse("= Title\n:!example-caption:");
+
+        assert_eq!(
+            parser.attribute_value("example-caption"),
+            InterpretedValue::Unset
+        );
+    }
 }
