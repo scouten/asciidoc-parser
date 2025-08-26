@@ -258,10 +258,10 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             link_text = link_text.replace("\\]", "]");
 
             if let Some(_mailto) = mailto {
-                todo!(
-                    "Port this: {}",
-                    r#"
-                    if !doc.compat_mode && (link_text.include? ',')
+                if link_text.contains(',') {
+                    todo!(
+                        "Port this: {}",
+                        r#"
                         # NOTE if a comma (,) is present, extract attributes from link text
                         link_text, attrs = extract_attributes_from_text link_text, ''
                         link_opts[:id] = attrs['id']
@@ -272,9 +272,9 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
                                 target = %(#{target}?subject=#{Helpers.encode_uri_component attrs[2]})
                             end
                         end
-                    end
-                "#
-                );
+                    "#
+                    );
+                }
             } else if link_text.contains('=') {
                 let link_text = Span::new(&link_text_for_attrlist);
                 let attrs = Attrlist::parse(link_text, self.0).item.item;
