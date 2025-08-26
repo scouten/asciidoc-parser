@@ -232,7 +232,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             return;
         }
 
-        let (mailto, _mailto_text, target) = if caps.get(1).is_some() {
+        let (mailto, mailto_text, target) = if caps.get(1).is_some() {
             let mailto_text = &caps[3];
             (
                 caps.get(1).map(|c| c.as_str()),
@@ -312,7 +312,10 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
         if link_text.is_empty() {
             // mailto is a special case; already processed.
             if let Some(_mailto) = mailto {
-                todo!("link_text = mailto_text");
+                link_text = match mailto_text {
+                    Some(txt) => txt.to_owned(),
+                    None => "".to_owned(),
+                };
             } else {
                 if false {
                     // Skip for the moment?
