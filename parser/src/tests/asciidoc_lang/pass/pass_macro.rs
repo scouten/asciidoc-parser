@@ -175,12 +175,9 @@ If you want to do both, you must enclose the pair in a monospace formatting pair
         panic!("Unexpected block type: {block1:?}");
     };
 
-    // WARNING: This test will break when link: macro is implemented.
-    // https://github.com/scouten/asciidoc-parser/issues/316
-
     assert_eq!(
         sb1.content().rendered(),
-        "Text formatting is not applied to a link target if it is surrounded by double pluses.\nFor example, link:https://example.org/now_this__link_works.html[]."
+        "Text formatting is not applied to a link target if it is surrounded by double pluses.\nFor example, <a href=\"https://example.org/now_this__link_works.html\" class=\"bare\">https://example.org/now_this__link_works.html</a>."
     );
 
     let block2 = blocks.next().unwrap();
