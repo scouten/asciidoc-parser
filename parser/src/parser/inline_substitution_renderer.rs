@@ -137,6 +137,12 @@ pub trait InlineSubstitutionRenderer: Debug {
 
         self.image_uri(&icon, parser, Some("iconsdir"))
     }
+
+    /// Renders a link.
+    ///
+    /// The renderer should write an appropriate rendering of the specified
+    /// link, to `dest`.
+    fn render_link(&self, params: &LinkRenderParams, dest: &mut String);
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -279,6 +285,39 @@ pub struct IconRenderParams<'a> {
     /// Parser. The rendered may find document settings (such as an image
     /// directory) in the parser's document attributes.
     pub parser: &'a Parser<'a>,
+}
+
+/// Provides parsed parameters for an icon to be rendered.
+#[derive(Clone, Debug)]
+pub struct LinkRenderParams<'a> {
+    /// Target (the target of this link).
+    pub target: String,
+
+    /// Link text.
+    pub link_text: String,
+
+    /// Roles (CSS classes) for this link.
+    pub roles: Vec<&'a str>,
+
+    /// Link ID.
+    pub id: Option<String>,
+
+    /// What type of link is being rendered?
+    pub type_: LinkRenderType,
+
+    /// Attribute list.
+    pub attrlist: &'a Attrlist<'a>,
+
+    /// Parser. The rendered may find document settings (such as an image
+    /// directory) in the parser's document attributes.
+    pub parser: &'a Parser<'a>,
+}
+
+/// What type of link is being rendered?
+#[derive(Clone, Debug)]
+pub enum LinkRenderType {
+    /// TEMPORARY: I don't know the different types of links yet.
+    Link,
 }
 
 /// Implementation of [`InlineSubstitutionRenderer`] that renders substitutions
@@ -611,6 +650,34 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         };
 
         render_icon_or_image(params.attrlist, &img, &src, "icon", dest);
+    }
+
+    fn render_link(&self, params: &LinkRenderParams, dest: &mut String) {
+        let link = format!(
+            r##"<a href="{target}"{class}{link_constraint_attrs}>{link_text}</a>"##,
+            target = params.target,
+            class = if params.roles.is_empty() {
+                "".to_owned()
+            } else {
+                format!(r#" class="{roles}""#, roles = params.roles.join(" "))
+            },
+            link_constraint_attrs = link_constraint_attrs(params.attrlist),
+            link_text = params.link_text,
+        );
+
+        dest.push_str(&link);
+
+        if false {
+            todo!(
+                "Port this: {}",
+                r##"
+                attrs = node.id ? [%( id="#{node.id}")] : []
+                attrs << %( class="#{node.role}") if node.role
+                attrs << %( title="#{node.attr 'title'}") if node.attr? 'title'
+                %(<a href="#{node.target}"#{(append_link_constraint_attrs node, attrs).join}>#{node.text}</a>)
+            "##
+            );
+        }
     }
 }
 
