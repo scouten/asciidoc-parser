@@ -1376,17 +1376,45 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_single_line_link_macro_with_text_should_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("link:/home.html[Home]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "link:/home.html[Home]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="/home.html">Home</a>"#,
+                },
+                source: TSpan {
+                    data: "link:/home.html[Home]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'a single-line link macro with text should be interpreted as a link' do
-            para = block_from_string 'link:/home.html[Home]'
-            assert_equal '<a href="/home.html">Home</a>', para.sub_macros(para.source)
-        end
-
         test 'a mailto macro should be interpreted as a mailto link' do
             para = block_from_string 'mailto:doc.writer@asciidoc.org[]'
             assert_equal '<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>', para.sub_macros(para.source)
