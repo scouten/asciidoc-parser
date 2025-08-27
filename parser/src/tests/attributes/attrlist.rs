@@ -74,6 +74,126 @@ fn empty_source() {
 }
 
 #[test]
+fn empty_positional_attributes() {
+    let p = Parser::default();
+    let mi = Attrlist::parse(Span::new(",300,400"), &p).unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item,
+        TAttrlist {
+            attributes: &[
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: &[],
+                    value: ""
+                },
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: &[],
+                    value: "300"
+                },
+                TElementAttribute {
+                    name: None,
+                    shorthand_items: &[],
+                    value: "400"
+                }
+            ],
+            source: TSpan {
+                data: ",300,400",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(mi.item.named_attribute("foo").is_none());
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+
+    assert_eq!(
+        mi.item.nth_attribute(1).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: ""
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("alt", 1).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: ""
+        }
+    );
+
+    assert_eq!(
+        mi.item.nth_attribute(2).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "300"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("width", 2).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "300"
+        }
+    );
+
+    assert_eq!(
+        mi.item.nth_attribute(3).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "400"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("height", 3).unwrap(),
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "400"
+        }
+    );
+
+    assert!(mi.item.nth_attribute(4).is_none());
+    assert!(mi.item.named_or_positional_attribute("height", 4).is_none());
+    assert!(mi.item.nth_attribute(42).is_none());
+
+    assert_eq!(
+        mi.item.span(),
+        TSpan {
+            data: ",300,400",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        TSpan {
+            data: "",
+            line: 1,
+            col: 9,
+            offset: 8
+        }
+    );
+}
+
+#[test]
 fn only_positional_attributes() {
     let p = Parser::default();
     let mi = Attrlist::parse(Span::new("Sunset,300,400"), &p).unwrap_if_no_warnings();
