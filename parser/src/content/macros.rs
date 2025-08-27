@@ -275,22 +275,13 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
                             "{target}?subject={subject}",
                             subject = encode_uri_component(target_attr.value())
                         );
-                    }
 
-                    if false {
-                        todo!(
-                            "Port this: {}",
-                            r#"
-                        # NOTE if a comma (,) is present, extract attributes from link text
-                        if attrs.key? 2
-                            if attrs.key? 3
-                                target = %(#{target}?subject=#{Helpers.encode_uri_component attrs[2]}&amp;body=#{Helpers.encode_uri_component attrs[3]})
-                            else
-                                target = %(#{target}?subject=#{Helpers.encode_uri_component attrs[2]})
-                            end
-                        end
-                    "#
-                        );
+                        if let Some(body) = attrs.nth_attribute(3) {
+                            target = format!(
+                                "{target}&amp;body={body}",
+                                body = encode_uri_component(body.value())
+                            );
+                        }
                     }
                 }
             } else if link_text.contains('=') {
