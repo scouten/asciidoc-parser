@@ -1,5 +1,6 @@
 use std::{borrow::Cow, path::Path, sync::LazyLock};
 
+use percent_encoding::{AsciiSet, CONTROLS, utf8_percent_encode};
 use regex::{Captures, Regex, Replacer};
 
 use crate::{
@@ -232,7 +233,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             return;
         }
 
-        let (mailto, mailto_text, target) = if caps.get(1).is_some() {
+        let (mailto, mailto_text, mut target) = if caps.get(1).is_some() {
             let mailto_text = &caps[3];
             (
                 caps.get(1).map(|c| c.as_str()),
@@ -252,19 +253,35 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             .map(|c| c.as_str().to_string())
             .unwrap_or_default();
 
-        let link_text_for_attrlist = link_text.clone();
+        let link_text_for_attrlist = link_text.replace("\n", " ");
+        let span_for_attrlist = Span::new(&link_text_for_attrlist);
 
         if !link_text.is_empty() {
             link_text = link_text.replace("\\]", "]");
 
             if let Some(_mailto) = mailto {
                 if link_text.contains(',') {
-                    todo!(
-                        "Port this: {}",
-                        r#"
+                    let (lt, attrs) =
+                        extract_attributes_from_text(&span_for_attrlist, &self.0, None);
+
+                    link_text = lt;
+
+                    if let Some(id_attr) = attrs.named_attribute("id") {
+                        id = Some(id_attr.value().to_string());
+                    }
+
+                    if let Some(target_attr) = attrs.nth_attribute(2) {
+                        target = format!(
+                            "{target}?subject={subject}",
+                            subject = encode_uri_component(target_attr.value())
+                        );
+                    }
+
+                    if false {
+                        todo!(
+                            "Port this: {}",
+                            r#"
                         # NOTE if a comma (,) is present, extract attributes from link text
-                        link_text, attrs = extract_attributes_from_text link_text, ''
-                        link_opts[:id] = attrs['id']
                         if attrs.key? 2
                             if attrs.key? 3
                                 target = %(#{target}?subject=#{Helpers.encode_uri_component attrs[2]}&amp;body=#{Helpers.encode_uri_component attrs[3]})
@@ -273,11 +290,12 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
                             end
                         end
                     "#
-                    );
+                        );
+                    }
                 }
             } else if link_text.contains('=') {
-                let link_text = Span::new(&link_text_for_attrlist);
-                let attrs = Attrlist::parse(link_text, self.0).item.item;
+                let (lt, attrs) = extract_attributes_from_text(&span_for_attrlist, &self.0, None);
+                link_text = lt;
 
                 if let Some(id_attr) = attrs.named_attribute("id") {
                     id = Some(id_attr.value().to_string());
@@ -357,4 +375,79 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
 
         self.0.renderer.render_link(&params, dest);
     }
+}
+
+/// This function is used in cases when the attrlist can be mixed with the text
+/// of a macro. If no attributes are detected aside from the first positional
+/// attribute, and the first positional attribute matches the attrlist, then the
+/// original text is returned.
+///
+/// Precondition: Any new-line characters (`\n`) must be replaced with spaces
+/// prior to calling this function.
+fn extract_attributes_from_text<'src>(
+    text: &'src Span<'src>,
+    parser: &Parser,
+    default_text: Option<&str>,
+) -> (String, Attrlist<'src>) {
+    let attrs = Attrlist::parse(*text, parser).item.item;
+
+    if let Some(resolved_text) = attrs.nth_attribute(1) {
+        // NOTE: If resolved text remains unchanged, return an empty attribute list and
+        // return unparsed text.
+        if resolved_text.value() == text.data() {
+            const EMPTY_SPAN: &Span = &Span::new("");
+            let empty_attrs = Attrlist::parse(*EMPTY_SPAN, parser).item.item;
+            (text.data().to_owned(), empty_attrs)
+        } else {
+            (resolved_text.value().to_owned(), attrs)
+        }
+    } else {
+        let default_text = default_text.map(|s| s.to_string());
+        (default_text.unwrap_or_default(), attrs)
+    }
+}
+
+// Ruby CGI.escape allows A-Z a-z 0-9 *_.-
+// It encodes space as '+'. (We'll fix afterward.)
+// Start with the standard URL encoding set.
+const CGI_ESCAPE_SET: &AsciiSet = &CONTROLS
+    .add(b' ') // space
+    .add(b'!')
+    .add(b'"')
+    .add(b'#')
+    .add(b'$')
+    .add(b'%')
+    .add(b'&')
+    .add(b'\'')
+    .add(b'(')
+    .add(b')')
+    .add(b'+') // plus must be escaped
+    .add(b',')
+    .add(b'/')
+    .add(b':')
+    .add(b';')
+    .add(b'<')
+    .add(b'=')
+    .add(b'>')
+    .add(b'?')
+    .add(b'@')
+    .add(b'[')
+    .add(b'\\')
+    .add(b']')
+    .add(b'^')
+    .add(b'`')
+    .add(b'{')
+    .add(b'|')
+    .add(b'}');
+
+fn encode_uri_component(s: &str) -> String {
+    // First escape with percent-encoding.
+    let encoded = utf8_percent_encode(s, CGI_ESCAPE_SET).to_string();
+
+    // Then apply the Ruby `.gsub('+', '%20')` logic.
+    // But note: percent-encoding gives us "%20" for space already,
+    // so we need to manually *introduce* '+' for space first,
+    // then swap them out.
+    let with_plus = encoded.replace("%20", "+");
+    with_plus.replace('+', "%20")
 }

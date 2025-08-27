@@ -59,7 +59,7 @@ pub struct Span<'src> {
 
 impl<'src> Span<'src> {
     /// Create a new `Span` that describes an entire UTF-8 input stream.
-    pub fn new(data: &'src str) -> Self {
+    pub const fn new(data: &'src str) -> Self {
         Self {
             data,
             line: 1,
