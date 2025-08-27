@@ -59,12 +59,7 @@ impl<'src> ElementAttribute<'src> {
                 _ => after.take_while(|c| c != ','),
             };
 
-            if value.item.is_empty() {
-                return (None, warnings);
-            }
-
             let after = value.after;
-
             let value = cowstr_from_source_and_span(source_text, &value.item);
 
             // TO DO: Redo this to support substitutions but only in correct circumstances.

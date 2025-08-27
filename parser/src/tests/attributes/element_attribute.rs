@@ -25,21 +25,55 @@ fn impl_clone() {
 #[test]
 fn empty_source() {
     let p = Parser::default();
-    let (maybe_attr, warning_types) =
+    let (maybe_mi, warning_types) =
         ElementAttribute::parse(&CowStr::from(""), 0, &p, ParseShorthand(false));
 
-    assert!(maybe_attr.is_none());
+    let (element_attr, offset) = maybe_mi.unwrap();
     assert!(warning_types.is_empty());
+
+    assert_eq!(
+        element_attr,
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "",
+        }
+    );
+
+    assert!(element_attr.name().is_none());
+    assert!(element_attr.block_style().is_none());
+    assert!(element_attr.id().is_none());
+    assert!(element_attr.roles().is_empty());
+    assert!(element_attr.options().is_empty());
+
+    assert_eq!(offset, 0);
 }
 
 #[test]
 fn only_spaces() {
     let p = Parser::default();
-    let (maybe_attr, warning_types) =
+    let (maybe_mi, warning_types) =
         ElementAttribute::parse(&CowStr::from("   "), 0, &p, ParseShorthand(false));
 
+    let (element_attr, offset) = maybe_mi.unwrap();
     assert!(warning_types.is_empty());
-    assert!(maybe_attr.is_none());
+
+    assert_eq!(
+        element_attr,
+        TElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "",
+        }
+    );
+
+    assert!(element_attr.name().is_none());
+    assert!(element_attr.block_style().is_none());
+    assert!(element_attr.id().is_none());
+    assert!(element_attr.roles().is_empty());
+    assert!(element_attr.options().is_empty());
+
+    assert_eq!(offset, 3);
 }
 
 #[test]
