@@ -77,9 +77,18 @@ impl<'src> Attrlist<'src> {
                 parse_shorthand_items = false;
             }
 
+            let mut after = Span::new(source_cow.as_ref()).discard(new_index);
+
+            if attr.name().is_none()
+                && attr.value().is_empty()
+                && after.is_empty()
+                && attributes.is_empty()
+            {
+                break index;
+            }
+
             attributes.push(attr);
 
-            let mut after = Span::new(source_cow.as_ref()).discard(new_index);
             after = after.take_whitespace().after;
 
             match after.take_prefix(",") {
