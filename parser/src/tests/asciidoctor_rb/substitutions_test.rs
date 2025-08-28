@@ -1552,17 +1552,50 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_mailto_macro_with_subject_and_body_only_should_use_e_mail_as_text() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new(
+                "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
+            ),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request&amp;body=Please%20accept%20my%20pull%20request">doc.writer@asciidoc.org</a>"#,
+                },
+                source: TSpan {
+                    data: "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'a mailto macro with subject and body only should use e-mail as text' do
-            para = block_from_string 'mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]'
-            assert_equal '<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request&amp;body=Please%20accept%20my%20pull%20request">doc.writer@asciidoc.org</a>', para.sub_macros(para.source)
-        end
-
         test 'a mailto macro supports id and role attributes' do
             para = block_from_string 'mailto:doc.writer@asciidoc.org[,id=contact,role=icon]'
             assert_equal '<a href="mailto:doc.writer@asciidoc.org" id="contact" class="icon">doc.writer@asciidoc.org</a>', para.sub_macros(para.source)

@@ -380,7 +380,8 @@ fn extract_attributes_from_text<'src>(
     parser: &Parser,
     default_text: Option<&str>,
 ) -> (String, Attrlist<'src>) {
-    let attrs = Attrlist::parse(*text, parser).item.item;
+    let attrlist_maw = Attrlist::parse(*text, parser);
+    let attrs = attrlist_maw.item.item;
 
     if let Some(resolved_text) = attrs.nth_attribute(1) {
         // NOTE: If resolved text remains unchanged, return an empty attribute list and
