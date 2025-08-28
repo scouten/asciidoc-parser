@@ -262,7 +262,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             if let Some(_mailto) = mailto {
                 if link_text.contains(',') {
                     let (lt, attrs) =
-                        extract_attributes_from_text(&span_for_attrlist, &self.0, None);
+                        extract_attributes_from_text(&span_for_attrlist, self.0, None);
 
                     link_text = lt;
 
@@ -285,7 +285,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
                     }
                 }
             } else if link_text.contains('=') {
-                let (lt, attrs) = extract_attributes_from_text(&span_for_attrlist, &self.0, None);
+                let (lt, attrs) = extract_attributes_from_text(&span_for_attrlist, self.0, None);
                 link_text = lt;
 
                 if let Some(id_attr) = attrs.named_attribute("id") {
