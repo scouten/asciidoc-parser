@@ -296,11 +296,8 @@ pub struct LinkRenderParams<'a> {
     /// Link text.
     pub link_text: String,
 
-    /// Roles (CSS classes) for this link.
-    pub roles: Vec<&'a str>,
-
-    /// Link ID.
-    pub id: Option<String>,
+    /// Roles (CSS classes) for this link not specified in the attrlist.
+    pub extra_roles: Vec<&'a str>,
 
     /// What type of link is being rendered?
     pub type_: LinkRenderType,
@@ -653,13 +650,24 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
     }
 
     fn render_link(&self, params: &LinkRenderParams, dest: &mut String) {
+        let id = params.attrlist.id();
+
+        let mut roles = params.extra_roles.clone();
+        let mut attrlist_roles = params.attrlist.roles().clone();
+        roles.append(&mut attrlist_roles);
+
         let link = format!(
-            r##"<a href="{target}"{class}{link_constraint_attrs}>{link_text}</a>"##,
+            r##"<a href="{target}"{id}{class}{link_constraint_attrs}>{link_text}</a>"##,
             target = params.target,
-            class = if params.roles.is_empty() {
+            id = if let Some(id) = id {
+                format!(r#" id="{id}""#)
+            } else {
+                "".to_owned()
+            },
+            class = if roles.is_empty() {
                 "".to_owned()
             } else {
-                format!(r#" class="{roles}""#, roles = params.roles.join(" "))
+                format!(r#" class="{roles}""#, roles = roles.join(" "))
             },
             link_constraint_attrs = link_constraint_attrs(params.attrlist),
             link_text = params.link_text,

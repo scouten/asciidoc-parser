@@ -246,7 +246,6 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
 
         let mut attrlist: Option<Attrlist<'_>> = None;
         let link_type = LinkRenderType::Link;
-        let mut id: Option<String> = None;
 
         let mut link_text = caps
             .get(5)
@@ -266,10 +265,6 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
 
                     link_text = lt;
 
-                    if let Some(id_attr) = attrs.named_attribute("id") {
-                        id = Some(id_attr.value().to_string());
-                    }
-
                     if let Some(target_attr) = attrs.nth_attribute(2) {
                         target = format!(
                             "{target}?subject={subject}",
@@ -283,14 +278,12 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
                             );
                         }
                     }
+
+                    attrlist = Some(attrs);
                 }
             } else if link_text.contains('=') {
                 let (lt, attrs) = extract_attributes_from_text(&span_for_attrlist, self.0, None);
                 link_text = lt;
-
-                if let Some(id_attr) = attrs.named_attribute("id") {
-                    id = Some(id_attr.value().to_string());
-                }
 
                 attrlist = Some(attrs);
             }
@@ -316,7 +309,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             Attrlist::parse(Span::new(""), self.0).item.item
         };
 
-        let mut roles: Vec<&str> = attrlist.roles();
+        let mut extra_roles: Vec<&str> = vec![];
 
         if link_text.is_empty() {
             // mailto is a special case; already processed.
@@ -342,10 +335,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
                     );
                 }
                 link_text = target.clone();
-
-                if !roles.contains(&"bare") {
-                    roles.insert(0, "bare");
-                }
+                extra_roles.push("bare");
             }
         }
 
@@ -357,8 +347,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
         let params = LinkRenderParams {
             target,
             link_text: link_text.clone(),
-            id,
-            roles,
+            extra_roles,
             type_: link_type,
             attrlist: &attrlist,
             parser: self.0,
