@@ -1706,23 +1706,6 @@ mod macros {
         todo!(
             "{}",
             r###"
-        test 'should recognize inline email addresses' do
-            %w(
-            doc.writer@asciidoc.org
-            author+website@4fs.no
-            john@domain.uk.co
-            name@somewhere.else.com
-            joe_bloggs@mail_server.com
-            joe-bloggs@mail-server.com
-            joe.bloggs@mail.server.com
-            FOO@BAR.COM
-            docs@writing.ninja
-            ).each do |input|
-            para = block_from_string input
-            assert_equal %(<a href="mailto:#{input}">#{input}</a>), (para.sub_macros para.source)
-            end
-        end
-
         test 'should recognize inline email address containing an ampersand' do
             para = block_from_string 'bert&ernie@sesamestreet.com'
             assert_equal '<a href="mailto:bert&amp;ernie@sesamestreet.com">bert&amp;ernie@sesamestreet.com</a>', para.apply_subs(para.source)
