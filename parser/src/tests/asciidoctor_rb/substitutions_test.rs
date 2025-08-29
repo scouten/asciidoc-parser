@@ -1766,17 +1766,45 @@ mod macros {
         );
     }
 
+    #[test]
+    fn should_ignore_escaped_inline_email_address() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("\\doc.writer@asciidoc.org"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "\\doc.writer@asciidoc.org",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"doc.writer@asciidoc.org"#,
+                },
+                source: TSpan {
+                    data: "\\doc.writer@asciidoc.org",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should ignore escaped inline email address' do
-            para = block_from_string %(#{BACKSLASH}doc.writer@asciidoc.org)
-            assert_equal 'doc.writer@asciidoc.org', para.sub_macros(para.source)
-        end
-
         test 'a single-line raw url should be interpreted as a link' do
             para = block_from_string 'http://google.com'
             assert_equal '<a href="http://google.com" class="bare">http://google.com</a>', para.sub_macros(para.source)
