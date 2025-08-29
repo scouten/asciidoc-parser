@@ -1626,6 +1626,80 @@ mod macros {
         );
     }
 
+    const EMAIL_ADDRESSES: &[(&'static str, &'static str)] = &[
+        (
+            "doc.writer@asciidoc.org",
+            r#"<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>"#,
+        ),
+        (
+            "author+website@4fs.no",
+            r#"<a href="mailto:author+website@4fs.no">author+website@4fs.no</a>"#,
+        ),
+        (
+            "john@domain.uk.co",
+            r#"<a href="mailto:john@domain.uk.co">john@domain.uk.co</a>"#,
+        ),
+        (
+            "name@somewhere.else.com",
+            r#"<a href="mailto:name@somewhere.else.com">name@somewhere.else.com</a>"#,
+        ),
+        (
+            "joe_bloggs@mail_server.com",
+            r#"<a href="mailto:joe_bloggs@mail_server.com">joe_bloggs@mail_server.com</a>"#,
+        ),
+        (
+            "joe-bloggs@mail-server.com",
+            r#"<a href="mailto:joe-bloggs@mail-server.com">joe-bloggs@mail-server.com</a>"#,
+        ),
+        (
+            "joe.bloggs@mail.server.com",
+            r#"<a href="mailto:joe.bloggs@mail.server.com">joe.bloggs@mail.server.com</a>"#,
+        ),
+        (
+            "FOO@BAR.COM",
+            r#"<a href="mailto:FOO@BAR.COM">FOO@BAR.COM</a>"#,
+        ),
+        (
+            "docs@writing.ninja",
+            r#"<a href="mailto:docs@writing.ninja">docs@writing.ninja</a>"#,
+        ),
+    ];
+
+    #[test]
+    fn should_recognize_inline_email_addresses() {
+        for (input, expected) in EMAIL_ADDRESSES {
+            let mut p = Parser::default();
+            let maw = Block::parse(Span::new(input), &mut p);
+
+            let block = maw.item.unwrap().item;
+
+            assert_eq!(
+                block,
+                TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: input,
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: &expected,
+                    },
+                    source: TSpan {
+                        data: input,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+        }
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {

@@ -58,12 +58,15 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         }
     }
 
-    /*
     if text.contains('@') {
-        todo!("Maybe found email macro");
-        // Port Ruby Asciidoctor's implementation from lines 706..717.
+        let replacer = InlineEmailReplacer(parser);
+
+        if let Cow::Owned(new_result) = INLINE_EMAIL.replace_all(content.rendered(), replacer) {
+            content.rendered = new_result.into();
+        }
     }
 
+    /*
     if
     /* found_square_bracket && */
     false {
@@ -431,4 +434,64 @@ fn encode_uri_component(s: &str) -> String {
     // then swap them out.
     let with_plus = encoded.replace("%20", "+");
     with_plus.replace('+', "%20")
+}
+
+/// Matches an inline e-mail address.
+///
+/// # Example
+/// `doc.writer@example.com`
+static INLINE_EMAIL: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(
+        r#"(?x)                         # verbose mode (ignore whitespace & comments)
+
+        ([\\>:/]?)                      # capture group 1: prefix that causes mismatch: \, >, :, or /
+
+        (                               # capture group 2: actual e-mail address
+            [\w_]                           # leading word character
+            (?: &amp; | [\w\-.%+] )*        # subsequent word chars or symbols (&amp;, ., -, %, +)
+            @                               # at sign
+            [\p{L}\p{Nd}]                   # leading letter or digit in domain
+            [\p{L}\p{Nd}_\-.]*              # rest of domain
+            \.[a-zA-Z]{2,5}                 # dot + TLD (2–5 ASCII letters)
+        )
+
+        \b                              # word boundary
+        "#,
+    )
+    .unwrap()
+});
+
+#[derive(Debug)]
+#[allow(unused)] // TEMPORARY while building
+struct InlineEmailReplacer<'p>(&'p Parser<'p>);
+
+#[allow(unused)] // TEMPORARY while building
+impl Replacer for InlineEmailReplacer<'_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        if let Some(escape) = &caps.get(1)
+            && !escape.is_empty()
+        {
+            if escape.as_str() == "\\" {
+                dest.push_str(&caps[0][1..]);
+            } else {
+                dest.push_str(&caps[0]);
+            }
+            return;
+        }
+
+        let target = format!("mailto:{mailto}", mailto = &caps[2]);
+        let attrlist = Attrlist::parse(Span::new(""), self.0).item.item;
+
+        let params = LinkRenderParams {
+            target: target.clone(),
+            link_text: caps[2].to_owned(),
+            extra_roles: vec![],
+            type_: LinkRenderType::Link,
+            attrlist: &attrlist,
+            parser: self.0,
+        };
+
+        self.0.renderer.render_link(&params, dest);
+    }
 }
