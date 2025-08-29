@@ -1700,17 +1700,45 @@ mod macros {
         }
     }
 
+    #[test]
+    fn should_recognize_inline_email_address_containing_an_ampersand() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("bert&ernie@sesamestreet.com"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "bert&ernie@sesamestreet.com",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:bert&amp;ernie@sesamestreet.com">bert&amp;ernie@sesamestreet.com</a>"#,
+                },
+                source: TSpan {
+                    data: "bert&ernie@sesamestreet.com",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should recognize inline email address containing an ampersand' do
-            para = block_from_string 'bert&ernie@sesamestreet.com'
-            assert_equal '<a href="mailto:bert&amp;ernie@sesamestreet.com">bert&amp;ernie@sesamestreet.com</a>', para.apply_subs(para.source)
-        end
-
         test 'should recognize inline email address surrounded by angle brackets' do
             para = block_from_string '<doc.writer@asciidoc.org>'
             assert_equal '&lt;<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>&gt;', para.apply_subs(para.source)
