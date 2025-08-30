@@ -6,3 +6,4 @@ mod image_size;
 mod image_url;
 mod images;
 mod images_directory;
+mod links;
