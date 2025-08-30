@@ -1937,22 +1937,91 @@ mod macros {
         );
     }
 
+    #[test]
+    fn should_not_resolve_an_escaped_attribute_in_link_text_1() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "google_homepage",
+            "Google Homepage",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(Span::new("http://google.com[\\{google_homepage}]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com[\\{google_homepage}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com">{google_homepage}</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com[\\{google_homepage}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_not_resolve_an_escaped_attribute_in_link_text_2() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "google_homepage",
+            "Google Homepage",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(
+            Span::new("http://google.com?q=,[\\{google_homepage}]"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com?q=,[\\{google_homepage}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com?q=,">{google_homepage}</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com?q=,[\\{google_homepage}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'should not resolve an escaped attribute in link text' do
-            {
-            'http://google.com' => "http://google.com[#{BACKSLASH}{google_homepage}]",
-            'http://google.com?q=,' => "link:http://google.com?q=,[#{BACKSLASH}{google_homepage}]",
-            }.each do |uri, macro|
-            para = block_from_string macro
-            para.document.attributes['google_homepage'] = 'Google Homepage'
-            assert_equal %(<a href="#{uri}">{google_homepage}</a>), para.sub_macros(para.sub_attributes(para.source))
-            end
-        end
 
         test 'a single-line escaped raw url should not be interpreted as a link' do
             para = block_from_string %(#{BACKSLASH}http://google.com)
