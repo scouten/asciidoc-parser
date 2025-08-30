@@ -296,7 +296,7 @@ impl Replacer for InlineLinkReplacer<'_> {
 
         let mut bare = false;
 
-        let link_text_for_attrlist = link_text.as_ref().map(|s| s.clone()).unwrap_or_default();
+        let link_text_for_attrlist = link_text.clone().unwrap_or_default();
 
         let span_for_attrlist = Span::new(&link_text_for_attrlist);
 
