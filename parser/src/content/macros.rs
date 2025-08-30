@@ -260,13 +260,13 @@ impl Replacer for InlineLinkReplacer<'_> {
 
         // NOTE: If capture group 5 exists (the attrlist), we're looking at a formal macro (e.g., https://example.org[]).
         if let Some(attrlist) = caps.get(5) {
-            todo!(
-                "Port this: {}",
-                r#"
-                    prefix = '' if prefix == 'link:'
-                    link_text = nil if (link_text = $5).empty?
-                    "#
-            );
+            if prefix == "link:" {
+                prefix = "".to_owned();
+            }
+
+            if !attrlist.is_empty() {
+                link_text = Some(attrlist.as_str().to_owned());
+            }
         } else {
             if prefix == "link" || prefix == "\"" || prefix == "'" {
                 // Note from the Ruby implementation which also applies to this if clause:
@@ -296,34 +296,45 @@ impl Replacer for InlineLinkReplacer<'_> {
 
         let mut bare = false;
 
-        let link_text = if let Some(link_text) = link_text {
-            todo!(
-                "Port this: {}",
-                r#"
-                    new_link_text = link_text = link_text.gsub ESC_R_SB, R_SB if link_text.include? R_SB
-                    if !doc.compat_mode && (link_text.include? '=')
-                        # NOTE if an equals sign (=) is present, extract attributes from link text
-                        link_text, attrs = extract_attributes_from_text link_text, ''
-                        new_link_text = link_text
-                        link_opts[:id] = attrs['id']
-                    end
+        let link_text_for_attrlist = link_text.as_ref().map(|s| s.clone()).unwrap_or_default();
 
-                    if link_text.end_with? '^'
+        let span_for_attrlist = Span::new(&link_text_for_attrlist);
+
+        let link_text = if let Some(mut link_text) = link_text {
+            link_text = link_text.replace("\\]", "]");
+
+            if link_text.contains('=') {
+                let (lt, attrs) = extract_attributes_from_text(&span_for_attrlist, self.0, None);
+
+                link_text = lt;
+            }
+
+            if link_text.ends_with('^') {
+                todo!(
+                    "Port this: {}",
+                    r#"
                         new_link_text = link_text = link_text.chop
                         if attrs
                             attrs['window'] ||= '_blank'
                         else
                             attrs = { 'window' => '_blank' }
                         end
-                    end
+                    "#
+                );
+            }
 
-                    if new_link_text && new_link_text.empty?
-                        # NOTE the modified target will not be a bare URI scheme (e.g., http://) in this case
-                        link_text = (doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target
-                        bare = true
-                    end
-                "#
-            );
+            if link_text.is_empty() {
+                // NOTE: The modified target will not be a bare URI scheme (e.g., http://) in this case.
+                if false {
+                    todo!(
+                        "link_text = (doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target"
+                    );
+                }
+                bare = true;
+                target.clone()
+            } else {
+                link_text
+            }
         } else {
             // NOTE: The modified target will not be a bare URI scheme (e.g., http://) in this case.
             bare = true;
