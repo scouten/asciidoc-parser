@@ -200,14 +200,14 @@ static INLINE_LINK: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(
         r#"(?msx)
         ( ^ | link: | [\ \t] | \\?&lt;() | [>\(\)\[\st];"'] ) # capture group 1: prefix
-                                                                # capture group 2: flag for prefix == "&lt;"
+                                                              # capture group 2: flag for prefix == "&lt;"
         ( \\? (?: https? | file | ftp | irc ):// )            # capture group 3: scheme
         (?:
             ( [^\s\[\]]+ )                                    # capture group 4: target
             \[ ( | .*?[^\\] ) \]                              # capture group 5: attrlist
-            | ( \\?(?:https?|file|ftp|irc):// [^\s]+? ) &gt;    # capture group 6: URL inside <>
-            | ( [^\s\[\]<]* ( [^\s,.?!\[\]<\)] ) )              # capture group 7: bare link,
-                                                                # capture group 8: trailing char
+          | ( \\?(?:https?|file|ftp|irc):// [^\s]+? ) &gt;    # capture group 6: URL inside <>
+          | ( [^\s\[\]<]* ( [^\s,.?!\[\]<\)] ) )              # capture group 7: bare link,
+                                                              # capture group 8: trailing char
         )
     "#,
     )
