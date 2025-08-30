@@ -1865,17 +1865,45 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_multi_line_raw_url_with_text_should_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("http://google.com[Google\nHomepage]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com[Google\nHomepage]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<a href=\"http://google.com\">Google\nHomepage</a>",
+                },
+                source: TSpan {
+                    data: "http://google.com[Google\nHomepage]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'a multi-line raw url with text should be interpreted as a link' do
-            para = block_from_string %(http://google.com[Google\nHomepage])
-            assert_equal %(<a href="http://google.com">Google\nHomepage</a>), para.sub_macros(para.source)
-        end
-
         test 'a single-line raw url with attribute as text should be interpreted as a link with resolved attribute' do
             para = block_from_string 'http://google.com[{google_homepage}]'
             para.document.attributes['google_homepage'] = 'Google Homepage'

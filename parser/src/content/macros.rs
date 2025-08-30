@@ -198,7 +198,7 @@ fn normalize_text_lf_escaped_bracket(text: &str) -> String {
 static INLINE_LINK: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(
-        r#"(?mx)
+        r#"(?msx)
       ( ^ | link: | [ \t] | \\?&lt;() | [>\(\)\[\];"'] )    # capture group 1: prefix
                                                             # capture group 2: flag for prefix == "&lt;"
       ( \\? (?: https? | file | ftp | irc ):// )            # capture group 3: scheme
