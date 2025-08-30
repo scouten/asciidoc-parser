@@ -41,13 +41,15 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         todo!("Index term macro");
         // Port Ruby Asciidoctor's implementation from lines 439..536.
     }
+    */
 
     if found_colon && text.contains("://") {
-        // Don't panic here -- other tests are generating URLs now.
-        // todo!("URL macro");
-        // Port Ruby Asciidoctor's implementation from lines 538..634.
+        let replacer = InlineLinkReplacer(parser);
+
+        if let Cow::Owned(new_result) = INLINE_LINK.replace_all(content.rendered(), replacer) {
+            content.rendered = new_result.into();
+        }
     }
-    */
 
     if found_macroish && (text.contains("link:") || text.contains("ilto:")) {
         let replacer = InlineLinkMacroReplacer(parser);
@@ -191,6 +193,176 @@ fn basename(path: &str) -> String {
 
 fn normalize_text_lf_escaped_bracket(text: &str) -> String {
     text.replace("\n", " ").replace("\\]", "]")
+}
+
+static INLINE_LINK: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(
+        r#"(?mx)
+      ( ^ | link: | [ \t] | \\?&lt;() | [>\(\)\[\];"'] )    # capture group 1: prefix
+                                                            # capture group 2: flag for prefix == "&lt;"
+      ( \\? (?: https? | file | ftp | irc ):// )            # capture group 3: scheme
+      (?:
+          ( [^\s\[\]]+ )                                    # capture group 4: target
+          \[ ( | .*?[^\\] ) \]                              # capture group 5: attrlist
+        | ( \\?(?:https?|file|ftp|irc):// [^\s]+? ) &gt;    # capture group 6: URL inside <>
+        | ( [^\s\[\]<]* ( [^\s,.?!\[\]<\)] ) )              # capture group 7: bare link,
+                                                            # capture group 8: trailing char
+      )
+    "#,
+    )
+    .unwrap()
+});
+
+#[derive(Debug)]
+#[allow(unused)] // TEMPORARY
+struct InlineLinkReplacer<'p>(&'p Parser<'p>);
+
+impl Replacer for InlineLinkReplacer<'_> {
+    #[allow(unused)] // TEMPORARY
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        dbg!(&caps);
+
+        let mut attrlist = Attrlist::parse(Span::new(""), self.0).item.item;
+
+        if caps.get(2).is_some() && caps.get(5).is_none() {
+            todo!(
+                "Port this: {}",
+                r#"
+                    # honor the escapes
+                    next $&.slice 1, $&.length if $1.start_with? RS
+                    next %(#{$1}#{$&.slice $1.length + 1, $&.length}) if $3.start_with? RS
+                    next $& unless $6
+                    doc.register :links, (target = $3 + $6)
+                    link_text = (doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target
+                    (Inline.new self, :anchor, link_text, type: :link, target: target, attributes: { 'role' => 'bare' }).convert
+"#
+            );
+        }
+
+        let mut prefix = caps[1].to_string();
+        let scheme = &caps[3];
+
+        // Honor the escape.
+        if scheme.starts_with('\\') {
+            dest.push_str(&prefix);
+            dest.push_str(&caps[0][prefix.len() + 1..]);
+            return;
+        }
+
+        let mut target = format!(
+            "{scheme}{link_text}",
+            link_text = caps.get(4).map(|m| m.as_str()).unwrap_or_else(|| &caps[7])
+        );
+
+        let mut suffix = "".to_owned();
+        let mut link_text: Option<String> = None;
+
+        // NOTE: If capture group 5 exists (the attrlist), we're looking at a formal macro (e.g., https://example.org[]).
+        if let Some(attrlist) = caps.get(5) {
+            todo!(
+                "Port this: {}",
+                r#"
+                    prefix = '' if prefix == 'link:'
+                    link_text = nil if (link_text = $5).empty?
+                    "#
+            );
+        } else {
+            if prefix == "link" || prefix == "\"" || prefix == "'" {
+                // Note from the Ruby implementation which also applies to this if clause:
+
+                // Invalid macro syntax (link: prefix w/o trailing square brackets or URL
+                // enclosed in quotes).
+
+                // FIXME: We probably shouldn't even get here when the link: prefix is present.
+                // The regex is doing too much.
+                dest.push_str(&caps[0]);
+                return;
+            }
+
+            let tail = &caps[8];
+            if tail == ";" || tail == ":" {
+                // Move trailing semicolon or colon and adjacent ) if it exists
+                // out of the URL.
+                if target.ends_with(')') {
+                    target.truncate(target.len() - 2);
+                    suffix = format!("){tail}");
+                } else {
+                    target.truncate(target.len() - 1);
+                    suffix = tail.to_string();
+                }
+            }
+        }
+
+        let mut bare = false;
+
+        let link_text = if let Some(link_text) = link_text {
+            todo!(
+                "Port this: {}",
+                r#"
+                    new_link_text = link_text = link_text.gsub ESC_R_SB, R_SB if link_text.include? R_SB
+                    if !doc.compat_mode && (link_text.include? '=')
+                        # NOTE if an equals sign (=) is present, extract attributes from link text
+                        link_text, attrs = extract_attributes_from_text link_text, ''
+                        new_link_text = link_text
+                        link_opts[:id] = attrs['id']
+                    end
+
+                    if link_text.end_with? '^'
+                        new_link_text = link_text = link_text.chop
+                        if attrs
+                            attrs['window'] ||= '_blank'
+                        else
+                            attrs = { 'window' => '_blank' }
+                        end
+                    end
+
+                    if new_link_text && new_link_text.empty?
+                        # NOTE the modified target will not be a bare URI scheme (e.g., http://) in this case
+                        link_text = (doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target
+                        bare = true
+                    end
+                "#
+            );
+        } else {
+            // NOTE: The modified target will not be a bare URI scheme (e.g., http://) in this case.
+            bare = true;
+
+            if false {
+                todo!(
+                    "Port this {}",
+                    r#"(doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target"#
+                );
+            }
+            target.clone()
+        };
+
+        let extra_roles = if bare { vec!["bare"] } else { vec![] };
+
+        if false {
+            todo!(
+                "Port this: {}",
+                r#"
+            doc.register :links, (link_opts[:target] = target)
+            "#
+            );
+        }
+
+        dest.push_str(&prefix);
+
+        let params = LinkRenderParams {
+            target,
+            link_text,
+            extra_roles,
+            type_: LinkRenderType::Link,
+            attrlist: &attrlist,
+            parser: self.0,
+        };
+
+        self.0.renderer.render_link(&params, dest);
+
+        dest.push_str(&suffix);
+    }
 }
 
 static INLINE_LINK_MACRO: LazyLock<Regex> = LazyLock::new(|| {
