@@ -199,27 +199,25 @@ static INLINE_LINK: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(
         r#"(?msx)
-      ( ^ | link: | [ \t] | \\?&lt;() | [>\(\)\[\];"'] )    # capture group 1: prefix
-                                                            # capture group 2: flag for prefix == "&lt;"
-      ( \\? (?: https? | file | ftp | irc ):// )            # capture group 3: scheme
-      (?:
-          ( [^\s\[\]]+ )                                    # capture group 4: target
-          \[ ( | .*?[^\\] ) \]                              # capture group 5: attrlist
-        | ( \\?(?:https?|file|ftp|irc):// [^\s]+? ) &gt;    # capture group 6: URL inside <>
-        | ( [^\s\[\]<]* ( [^\s,.?!\[\]<\)] ) )              # capture group 7: bare link,
-                                                            # capture group 8: trailing char
-      )
+        ( ^ | link: | [\ \t] | \\?&lt;() | [>\(\)\[\st];"'] ) # capture group 1: prefix
+                                                                # capture group 2: flag for prefix == "&lt;"
+        ( \\? (?: https? | file | ftp | irc ):// )            # capture group 3: scheme
+        (?:
+            ( [^\s\[\]]+ )                                    # capture group 4: target
+            \[ ( | .*?[^\\] ) \]                              # capture group 5: attrlist
+            | ( \\?(?:https?|file|ftp|irc):// [^\s]+? ) &gt;    # capture group 6: URL inside <>
+            | ( [^\s\[\]<]* ( [^\s,.?!\[\]<\)] ) )              # capture group 7: bare link,
+                                                                # capture group 8: trailing char
+        )
     "#,
     )
     .unwrap()
 });
 
 #[derive(Debug)]
-#[allow(unused)] // TEMPORARY
 struct InlineLinkReplacer<'p>(&'p Parser<'p>);
 
 impl Replacer for InlineLinkReplacer<'_> {
-    #[allow(unused)] // TEMPORARY
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         dbg!(&caps);
 
@@ -297,7 +295,6 @@ impl Replacer for InlineLinkReplacer<'_> {
         let mut bare = false;
 
         let link_text_for_attrlist = link_text.clone().unwrap_or_default();
-
         let span_for_attrlist = Span::new(&link_text_for_attrlist);
 
         let link_text = if let Some(mut link_text) = link_text {
@@ -307,6 +304,7 @@ impl Replacer for InlineLinkReplacer<'_> {
                 let (lt, attrs) = extract_attributes_from_text(&span_for_attrlist, self.0, None);
 
                 link_text = lt;
+                attrlist = attrs; // ???
             }
 
             if link_text.ends_with('^') {

@@ -2049,17 +2049,39 @@ mod macros {
         );
     }
 
-    #[ignore]
     #[test]
-    fn todo_migrate_from_ruby() {
-        todo!(
-            "{}",
-            r###"
-        test 'a comma separated list of links should not include commas in links' do
-            para = block_from_string 'http://foo.com, http://bar.com, http://example.org'
-            assert_equal '<a href="http://foo.com" class="bare">http://foo.com</a>, <a href="http://bar.com" class="bare">http://bar.com</a>, <a href="http://example.org" class="bare">http://example.org</a>', para.sub_macros(para.source)
-        end
-        "###
+    fn a_comma_separated_list_of_links_should_not_include_commas_in_links() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("http://foo.com, http://bar.com, http://example.org"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://foo.com, http://bar.com, http://example.org",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://foo.com" class="bare">http://foo.com</a>, <a href="http://bar.com" class="bare">http://bar.com</a>, <a href="http://example.org" class="bare">http://example.org</a>"#,
+                },
+                source: TSpan {
+                    data: "http://foo.com, http://bar.com, http://example.org",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
         );
     }
 
