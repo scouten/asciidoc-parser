@@ -1898,18 +1898,51 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_single_line_raw_url_with_attribute_as_text_should_be_interpreted_as_a_link_with_resolved_attribute()
+     {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "google_homepage",
+            "Google Homepage",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(Span::new("http://google.com[{google_homepage}]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com[{google_homepage}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com">Google Homepage</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com[{google_homepage}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-        test 'a single-line raw url with attribute as text should be interpreted as a link with resolved attribute' do
-            para = block_from_string 'http://google.com[{google_homepage}]'
-            para.document.attributes['google_homepage'] = 'Google Homepage'
-            assert_equal '<a href="http://google.com">Google Homepage</a>', para.sub_macros(para.sub_attributes(para.source))
-        end
-
         test 'should not resolve an escaped attribute in link text' do
             {
             'http://google.com' => "http://google.com[#{BACKSLASH}{google_homepage}]",
