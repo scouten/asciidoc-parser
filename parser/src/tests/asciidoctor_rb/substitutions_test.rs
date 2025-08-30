@@ -1626,7 +1626,7 @@ mod macros {
         );
     }
 
-    const EMAIL_ADDRESSES: &[(&'static str, &'static str)] = &[
+    const EMAIL_ADDRESSES: &[(&str, &str)] = &[
         (
             "doc.writer@asciidoc.org",
             r#"<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>"#,
@@ -1683,7 +1683,7 @@ mod macros {
                             col: 1,
                             offset: 0,
                         },
-                        rendered: &expected,
+                        rendered: expected,
                     },
                     source: TSpan {
                         data: input,
