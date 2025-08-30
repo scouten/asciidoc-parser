@@ -669,23 +669,13 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             } else {
                 format!(r#" class="{roles}""#, roles = roles.join(" "))
             },
+            // title = %( title="#{node.attr 'title'}") if node.attr? 'title'
+            // Haven't seen this in the wild yet.
             link_constraint_attrs = link_constraint_attrs(params.attrlist),
             link_text = params.link_text,
         );
 
         dest.push_str(&link);
-
-        if false {
-            todo!(
-                "Port this: {}",
-                r##"
-                attrs = node.id ? [%( id="#{node.id}")] : []
-                attrs << %( class="#{node.role}") if node.role
-                attrs << %( title="#{node.attr 'title'}") if node.attr? 'title'
-                %(<a href="#{node.target}"#{(append_link_constraint_attrs node, attrs).join}>#{node.text}</a>)
-            "##
-            );
-        }
     }
 }
 
