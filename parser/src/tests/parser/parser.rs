@@ -19,6 +19,10 @@ fn with_intrinsic_attribute() {
     );
 
     assert_eq!(p.attribute_value("foo2"), InterpretedValue::Unset);
+
+    assert!(p.is_attribute_set("foo"));
+    assert!(!p.is_attribute_set("foo2"));
+    assert!(!p.is_attribute_set("xyz"));
 }
 
 #[test]
@@ -28,6 +32,10 @@ fn with_intrinsic_attribute_set() {
 
     assert_eq!(p.attribute_value("foo"), InterpretedValue::Set);
     assert_eq!(p.attribute_value("foo2"), InterpretedValue::Unset);
+
+    assert!(p.is_attribute_set("foo"));
+    assert!(!p.is_attribute_set("foo2"));
+    assert!(!p.is_attribute_set("xyz"));
 }
 
 #[test]
@@ -40,6 +48,10 @@ fn with_intrinsic_attribute_unset() {
 
     assert_eq!(p.attribute_value("foo"), InterpretedValue::Unset);
     assert_eq!(p.attribute_value("foo2"), InterpretedValue::Unset);
+
+    assert!(!p.is_attribute_set("foo"));
+    assert!(!p.is_attribute_set("foo2"));
+    assert!(!p.is_attribute_set("xyz"));
 }
 
 #[test]
