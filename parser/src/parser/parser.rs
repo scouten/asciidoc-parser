@@ -112,10 +112,11 @@ impl<'p> Parser<'p> {
         self.attribute_values.contains_key(name.as_ref())
     }
 
-    /// Returns `true` if the parser has a [document attribute] which has been
-    /// set by this name.
+    /// Returns `true` if the parser has a [document attribute] by this name
+    /// which has been set (i.e. is present and not [unset]).
     ///
     /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
+    /// [unset]: https://docs.asciidoctor.org/asciidoc/latest/attributes/unset-attributes/
     pub fn is_attribute_set<N: AsRef<str>>(&self, name: N) -> bool {
         self.attribute_values
             .get(name.as_ref())
