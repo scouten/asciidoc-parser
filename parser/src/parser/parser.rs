@@ -112,6 +112,17 @@ impl<'p> Parser<'p> {
         self.attribute_values.contains_key(name.as_ref())
     }
 
+    /// Returns `true` if the parser has a [document attribute] which has been
+    /// set by this name.
+    ///
+    /// [document attribute]: https://docs.asciidoctor.org/asciidoc/latest/attributes/document-attributes/
+    pub fn is_attribute_set<N: AsRef<str>>(&self, name: N) -> bool {
+        self.attribute_values
+            .get(name.as_ref())
+            .map(|a| a.value != InterpretedValue::Unset)
+            .unwrap_or(false)
+    }
+
     /// Sets the value of an [intrinsic attribute].
     ///
     /// Intrinsic attributes are set automatically by the processor. These
