@@ -5,6 +5,62 @@
 // limitation of `asciidoc-parser` crate) and alternate (non-HTML) back ends.
 
 mod dispatcher {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser, Span,
+        blocks::Block,
+        parser::ModificationContext,
+        tests::fixtures::{
+            TSpan,
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+        },
+    };
+
+    #[test]
+    fn apply_normal_substitutions() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "inception_year",
+            "2012",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(
+            Span::new(
+                "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
+            ),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<em class=\"blue\"><a href=\"http://asciidoc.org\">AsciiDoc</a></em> &amp; <strong class=\"red\">Ruby</strong>\n&#167; Making <u>documentation</u> together<br>\nsince &#169; 2012.",
+                },
+                source: TSpan {
+                    data: "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
@@ -14,13 +70,6 @@ mod dispatcher {
         # TODO
         # - test negatives
         # - test role on every quote type
-
-        test 'apply normal substitutions' do
-          para = block_from_string "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}."
-          para.document.attributes['inception_year'] = '2012'
-          result = para.apply_subs para.source
-          assert_equal %(<em class="blue"><a href="http://asciidoc.org">AsciiDoc</a></em> &amp; <strong class="red">Ruby</strong>\n&#167; Making <u>documentation</u> together<br>\nsince &#169; 2012.), result
-        end
 
         test 'apply_subs should not modify string directly' do
           input = '<html> -- the root of all web'

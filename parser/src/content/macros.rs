@@ -199,7 +199,7 @@ static INLINE_LINK: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(
         r#"(?msx)
-        ( ^ | link: | [\ \t] | \\?&lt;() | [>\(\)\[\st];"'] ) # capture group 1: prefix
+        ( ^ | link: | [\ \t] | \\?&lt;() | [>\(\)\[\];"'] )   # capture group 1: prefix
                                                               # capture group 2: flag for prefix == "&lt;"
         ( \\? (?: https? | file | ftp | irc ):// )            # capture group 3: scheme
         (?:
