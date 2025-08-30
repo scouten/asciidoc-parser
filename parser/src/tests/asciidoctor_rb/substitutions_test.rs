@@ -2016,18 +2016,45 @@ mod macros {
         );
     }
 
+    #[test]
+    fn a_single_line_escaped_raw_url_should_not_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("\\http://google.com"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "\\http://google.com",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"http://google.com"#,
+                },
+                source: TSpan {
+                    data: "\\http://google.com",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
         todo!(
             "{}",
             r###"
-
-        test 'a single-line escaped raw url should not be interpreted as a link' do
-            para = block_from_string %(#{BACKSLASH}http://google.com)
-            assert_equal 'http://google.com', para.sub_macros(para.source)
-        end
-
         test 'a comma separated list of links should not include commas in links' do
             para = block_from_string 'http://foo.com, http://bar.com, http://example.org'
             assert_equal '<a href="http://foo.com" class="bare">http://foo.com</a>, <a href="http://bar.com" class="bare">http://bar.com</a>, <a href="http://example.org" class="bare">http://example.org</a>', para.sub_macros(para.source)
