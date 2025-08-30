@@ -147,3 +147,129 @@ Depending on the capabilities of the web application, the space character can be
         );
     }
 }
+
+mod hide_uri_scheme {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+                document::{TAttribute, TDocument, THeader, TInterpretedValue},
+            },
+            sdd::{non_normative, verifies},
+        },
+    };
+
+    non_normative!(
+        r#"
+== Hide the URL scheme
+
+If the link text is a bare URL (aka URI), whether that link was created automatically or using a link-related macro, you can configure the AsciiDoc processor to hide the scheme (e.g., _https://_).
+Hiding the scheme can make the URL more readable--perhaps even recognizable--to a person less familiar with technical nomenclature.
+
+"#
+    );
+
+    #[test]
+    fn example() {
+        verifies!(
+            r#"
+To configure the AsciiDoc processor to display the linked URL without the scheme part, set the `hide-uri-scheme` attribute in the header of the AsciiDoc document.
+
+[source]
+----
+= Document Title
+:hide-uri-scheme: <.>
+
+https://asciidoctor.org
+----
+<.> Note the use of `uri` instead of `url` in the attribute name.
+
+When the `hide-uri-scheme` attribute is set, the above URL will be displayed to the reader as follows:
+
+====
+https://asciidoctor.org[asciidoctor.org]
+====
+
+Note the absence of _https://_ in the URL.
+The prefix will still be present in the link target.
+
+"#
+        );
+
+        let doc = Parser::default()
+            .parse("= Document Title\n:hide-uri-scheme:\n\nhttps://asciidoctor.org");
+
+        dbg!(&doc);
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: Some(TSpan {
+                        data: "Document Title",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },),
+                    title: Some("Document Title",),
+                    attributes: &[TAttribute {
+                        name: TSpan {
+                            data: "hide-uri-scheme",
+                            line: 2,
+                            col: 2,
+                            offset: 18,
+                        },
+                        value_source: None,
+                        value: TInterpretedValue::Set,
+                        source: TSpan {
+                            data: ":hide-uri-scheme:",
+                            line: 2,
+                            col: 1,
+                            offset: 17,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "= Document Title\n:hide-uri-scheme:",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "https://asciidoctor.org",
+                            line: 4,
+                            col: 1,
+                            offset: 36,
+                        },
+                        rendered: r#"<a href="https://asciidoctor.org" class="bare">asciidoctor.org</a>"#,
+                        // Expected output verified by running Asciidoc locally.
+                    },
+                    source: TSpan {
+                        data: "https://asciidoctor.org",
+                        line: 4,
+                        col: 1,
+                        offset: 36,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "= Document Title\n:hide-uri-scheme:\n\nhttps://asciidoctor.org",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}

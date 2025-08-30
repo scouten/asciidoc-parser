@@ -337,13 +337,11 @@ impl Replacer for InlineLinkReplacer<'_> {
             // NOTE: The modified target will not be a bare URI scheme (e.g., http://) in this case.
             bare = true;
 
-            if false {
-                todo!(
-                    "Port this {}",
-                    r#"(doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target"#
-                );
+            if self.0.is_attribute_set("hide-uri-scheme") {
+                URI_SNIFF.replace_all(&target, "").into_owned()
+            } else {
+                target.clone()
             }
-            target.clone()
         };
 
         let extra_roles = if bare { vec!["bare"] } else { vec![] };
@@ -676,3 +674,8 @@ impl Replacer for InlineEmailReplacer<'_> {
         self.0.renderer.render_link(&params, dest);
     }
 }
+
+static URI_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(r#"^\p{alpha}[\p{alpha}\p{digit}.+-]+:/{0,2}"#).unwrap()
+});
