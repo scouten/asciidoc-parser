@@ -273,3 +273,157 @@ The prefix will still be present in the link target.
         );
     }
 }
+
+non_normative!(
+    r#"
+////
+= URLs and Links
+
+A Uniform Resource Link (URL) represents the location of a resource on the web.
+Typical URLs contain a scheme, domain name, file name, and extension.
+
+#move image#
+//image::url.png[]
+
+// tag::basic[]
+AsciiDoc recognizes the following common schemes without the help of any markup.
+
+[#schemes]
+* http
+* https
+* ftp
+* irc
+* mailto
+* \email@email.com
+
+You can think of these schemas as implicit macro names (with the exception of a bare email address).
+Since the URL in the example below begins with a protocol (in this case _https_ followed by a colon), the AsciiDoc processor will automatically turn it into a hyperlink.
+We call this a URL macro.
+
+[source]
+----
+include::example$url.adoc[tag=base-co]
+----
+<.> The trailing period will not get caught up in the link.
+
+To prevent automatic linking of an URL, prepend it with a backslash (`\`).
+
+[source]
+----
+Once launched, the site will be available at \https://example.org.
+----
+
+== Link text
+
+To attach a URL to text, enclose the text in square brackets at the end of the URL, thus making it a URL macro.
+
+[source]
+----
+include::example$url.adoc[tag=irc]
+----
+// end::basic[]
+
+Additionally, you can format the link text.
+
+[source]
+----
+include::example$url.adoc[tag=text]
+----
+
+.Rendered URLs
+====
+include::example$url.adoc[tag=base]
+====
+
+You may also want to append empty square brackets to force the URL to be parsed when it would not normally be recognized, such as if it's enclosed in double quotes:
+
+[source]
+----
+Type "https://asciidoctor.org[]" into the location bar of your browser.
+----
+
+== The link macro
+
+// tag::link[]
+When a URL does not start with one of the <<schemes,common schemes>>, or the URL is not surrounded by word boundaries, you must use the `link` macro.
+The `link` macro is a stronger version of a URI macro, which you can think of like an unconstrained macro.
+The URL is preceded by `link:` and followed by square brackets.
+The square brackets may include optional link text.
+The URL is used for the text of the link if link text is not specified.
+Attributes inside the square brackets are parsed automatically if an equal sign is found after a comma (e.g., `[link text,window=_blank]`).
+
+.Anatomy of a link macro
+[source]
+----
+link:url[optional link text, optional target attribute, optional role attribute]
+----
+
+Let's consider a case where we need to use the link macro (instead of just a URI macro) to expand a link when it's not adjacent to a word boundary (i.e., unconstrained).
+
+[source]
+----
+include::example$url.adoc[tag=unconstrained]
+----
+
+====
+include::example$url.adoc[tag=unconstrained]
+====
+
+If we didn't use the `link:` prefix in this case, the URL macro would not be detected by the parser.
+// end::link[]
+
+[#complex-urls]
+.Troubleshooting Complex URLs
+****
+A URL may not display correctly when it contains characters such as underscores (`+_+`) or carets (`+^`).
+include::partial$ts-url-format.adoc[tag=sb]
+****
+
+Next, we'll add a target and role to a link macro.
+
+// tag::attr[]
+[#link-macro-attributes]
+=== Link macro attributes
+
+AsciiDoc didn't used to recognize attributes in the link macro by default.
+This is no longer the case.
+The AsciiDoc processor automatically parses attributes in the link macro, but only under certain contains (introduced in Asciidoctor 1.5.7).
+If the AsciiDoc processor detects an equal sign after the first comma, it must parse the attributes in the link macro.
+For example, when attribute parsing is enabled, you can specify the name of the target window using the `window` attribute.
+
+[source]
+----
+include::example$url.adoc[tag=linkattrs-h]
+----
+
+====
+include::example$url.adoc[tag=linkattrs]
+====
+
+Since `_blank` is the most common window name, we've introduced shorthand for it.
+Just end the link text with a caret (`+^+`):
+
+[source]
+----
+include::example$url.adoc[tag=linkattrs-s]
+----
+
+CAUTION: If you use the caret syntax more than once in a single paragraph, you may need to escape the first occurrence with a backslash.
+
+You can also add a role (i.e., CSS class) to the link using an attribute declaration (which implicitly enables attribute parsing).
+
+[source]
+----
+include::example$url.adoc[tag=css]
+----
+
+====
+include::example$url.adoc[tag=css]
+====
+
+TIP: Links with attributes (including the subject and body segments on mailto links) weren't always supported in AsciiDoc.
+Now that they are, you must surround the link text in double quotes if it contains a comma.
+// end::attr[]
+////
+"#
+);
