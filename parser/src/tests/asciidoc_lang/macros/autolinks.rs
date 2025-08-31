@@ -492,8 +492,6 @@ For email address which do not conform to these restriction, you can use the xre
 
         let doc = Parser::default().parse("Email us at hello@example.com to say hello.");
 
-        dbg!(&doc);
-
         assert_eq!(
             doc,
             TDocument {
@@ -531,6 +529,115 @@ For email address which do not conform to these restriction, you can use the xre
                 },),],
                 source: TSpan {
                     data: "Email us at hello@example.com to say hello.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
+
+mod escaping_urls_and_email_addresses {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+                document::{TDocument, THeader},
+            },
+            sdd::verifies,
+        },
+    };
+
+    #[test]
+    fn url_and_email_examples() {
+        verifies!(
+            r#"
+== Escaping URLs and email addresses
+
+To prevent automatic linking of a URL or email address, you can add a single backslash (`\`) in front of it.
+
+[source]
+----
+Once launched, the site will be available at \https://example.org.
+
+If you cannot access the site, email \help@example.org for assistance.
+----
+
+The backslash in front of the URL and email address will not appear in the output.
+The URL and email address will both be shown in plain text.
+
+"#
+        );
+
+        let doc = Parser::default().parse("Once launched, the site will be available at \\https://example.org.\n\nIf you cannot access the site, email \\help@example.org for assistance.");
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    TBlock::Simple(TSimpleBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "Once launched, the site will be available at \\https://example.org.",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            rendered: r#"Once launched, the site will be available at https://example.org."#,
+                        },
+                        source: TSpan {
+                            data: "Once launched, the site will be available at \\https://example.org.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),
+                    TBlock::Simple(TSimpleBlock {
+                        content: TContent {
+                            original: TSpan {
+                                data: "If you cannot access the site, email \\help@example.org for assistance.",
+                                line: 3,
+                                col: 1,
+                                offset: 68,
+                            },
+                            rendered: r#"If you cannot access the site, email help@example.org for assistance."#,
+                        },
+                        source: TSpan {
+                            data: "If you cannot access the site, email \\help@example.org for assistance.",
+                            line: 3,
+                            col: 1,
+                            offset: 68,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },)
+                ],
+                source: TSpan {
+                    data: "Once launched, the site will be available at \\https://example.org.\n\nIf you cannot access the site, email \\help@example.org for assistance.",
                     line: 1,
                     col: 1,
                     offset: 0,
