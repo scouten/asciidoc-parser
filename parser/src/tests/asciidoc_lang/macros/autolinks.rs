@@ -547,6 +547,7 @@ mod escaping_urls_and_email_addresses {
         tests::{
             fixtures::{
                 TSpan,
+                attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -638,6 +639,84 @@ The URL and email address will both be shown in plain text.
                 ],
                 source: TSpan {
                     data: "Once launched, the site will be available at \\https://example.org.\n\nIf you cannot access the site, email \\help@example.org for assistance.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn disable_via_incremental_subs() {
+        verifies!(
+            r#"
+Since autolinks are a feature of the xref:subs:macros.adoc[macros substitution], another way to prevent automatic linking of a URL or email address is to turn off the macros substitution using xref:subs:apply-subs-to-blocks.adoc#incremental[incremental subs].
+
+[source]
+----
+[subs=-macros]
+Once launched, the site will be available at https://example.org.
+----
+
+The `subs` attribute is only recognized on a leaf block, such as a paragraph.
+"#
+        );
+
+        let doc = Parser::default().parse(
+            "[subs=-macros]\nOnce launched, the site will be available at https://example.org.",
+        );
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "Once launched, the site will be available at https://example.org.",
+                            line: 2,
+                            col: 1,
+                            offset: 15,
+                        },
+                        rendered: r#"Once launched, the site will be available at https://example.org."#,
+                    },
+                    source: TSpan {
+                        data: "[subs=-macros]\nOnce launched, the site will be available at https://example.org.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(TAttrlist {
+                        attributes: &[TElementAttribute {
+                            name: Some("subs",),
+                            value: "-macros",
+                            shorthand_items: &[],
+                        },],
+                        source: TSpan {
+                            data: "subs=-macros",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: TSpan {
+                    data: "[subs=-macros]\nOnce launched, the site will be available at https://example.org.",
                     line: 1,
                     col: 1,
                     offset: 0,
