@@ -399,6 +399,9 @@ You'll often see <https://example.org> used in examples.
 
 To accommodate this convention, the AsciiDoc processor will still recognize the URL as an autolink, but will discard the angle brackets in the output (as they are not deemed significant).
 
+Any link created from a bare URL (i.e., an autolink) automatically gets assigned the "bare" role.
+This allows the theming system (e.g., CSS) to recognize autolinks (and other bare URLs) and style them distinctly.
+
 "#
         );
 
@@ -442,6 +445,92 @@ To accommodate this convention, the AsciiDoc processor will still recognize the 
                 },),],
                 source: TSpan {
                     data: "You'll often see <https://example.org> used in examples.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
+
+mod email_autolinks {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        tests::{
+            fixtures::{
+                TSpan,
+                blocks::{TBlock, TSimpleBlock},
+                content::TContent,
+                document::{TDocument, THeader},
+            },
+            sdd::verifies,
+        },
+    };
+
+    #[test]
+    fn example() {
+        verifies!(
+            r#"
+== Email autolinks
+
+AsciiDoc also detects and autolinks most email addresses.
+
+[source]
+----
+include::example$url.adoc[tag=bare-email]
+----
+
+In order for this to work, the domain suffix must be between 2 and 5 characters (e.g., .com) and only common symbols like period (`.`), hyphen (`-`), and plus (`+`) are permitted.
+For email address which do not conform to these restriction, you can use the xref:mailto-macro.adoc[email macro].
+
+"#
+        );
+
+        let doc = Parser::default().parse("Email us at hello@example.com to say hello.");
+
+        dbg!(&doc);
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "Email us at hello@example.com to say hello.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: r#"Email us at <a href="mailto:hello@example.com">hello@example.com</a> to say hello."#,
+                    },
+                    source: TSpan {
+                        data: "Email us at hello@example.com to say hello.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "Email us at hello@example.com to say hello.",
                     line: 1,
                     col: 1,
                     offset: 0,
