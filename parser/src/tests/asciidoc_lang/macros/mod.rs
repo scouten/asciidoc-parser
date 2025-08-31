@@ -1,3 +1,4 @@
+mod autolinks;
 mod icon_macro;
 mod icons;
 mod image_link;

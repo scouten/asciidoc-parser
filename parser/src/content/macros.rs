@@ -205,7 +205,7 @@ static INLINE_LINK: LazyLock<Regex> = LazyLock::new(|| {
         (?:
             ( [^\s\[\]]+ )                                    # capture group 4: target
             \[ ( | .*?[^\\] ) \]                              # capture group 5: attrlist
-          | ( \\?(?:https?|file|ftp|irc):// [^\s]+? ) &gt;    # capture group 6: URL inside <>
+          | ( [^\s]+? ) &gt;                                  # capture group 6: URL inside <>
           | ( [^\s\[\]<]* ( [^\s,.?!\[\]<\)] ) )              # capture group 7: bare link,
                                                               # capture group 8: trailing char
         )
@@ -224,18 +224,49 @@ impl Replacer for InlineLinkReplacer<'_> {
         let mut attrlist = Attrlist::parse(Span::new(""), self.0).item.item;
 
         if caps.get(2).is_some() && caps.get(5).is_none() {
-            todo!(
-                "Port this: {}",
-                r#"
-                    # honor the escapes
-                    next $&.slice 1, $&.length if $1.start_with? RS
-                    next %(#{$1}#{$&.slice $1.length + 1, $&.length}) if $3.start_with? RS
-                    next $& unless $6
-                    doc.register :links, (target = $3 + $6)
-                    link_text = (doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target
-                    (Inline.new self, :anchor, link_text, type: :link, target: target, attributes: { 'role' => 'bare' }).convert
-"#
+            // Honor the escapes.
+            if caps[1].starts_with('\\') {
+                dest.push_str(&caps[0][1..]);
+                return;
+            }
+
+            if caps[3].starts_with('\\') {
+                dest.push_str(&caps[1]);
+                dest.push_str(&caps[0][caps[1].len() + 1..]);
+                return;
+            }
+
+            let Some(link_suffix) = caps.get(6) else {
+                dest.push_str(&caps[0]);
+                return;
+            };
+
+            let target = format!(
+                "{scheme}{link_suffix}",
+                scheme = &caps[3],
+                link_suffix = link_suffix.as_str()
             );
+
+            // doc.register :links, target
+
+            let link_text = if self.0.is_attribute_set("hide-uri-scheme") {
+                URI_SNIFF.replace_all(&target, "").into_owned()
+            } else {
+                target.clone()
+            };
+
+            let params = LinkRenderParams {
+                target,
+                link_text,
+                extra_roles: vec!["bare"],
+                type_: LinkRenderType::Link,
+                attrlist: &attrlist,
+                parser: self.0,
+            };
+
+            self.0.renderer.render_link(&params, dest);
+
+            return;
         }
 
         let mut prefix = caps[1].to_string();
