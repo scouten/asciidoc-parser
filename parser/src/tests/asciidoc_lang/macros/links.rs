@@ -166,6 +166,7 @@ mod hide_uri_scheme {
 
     non_normative!(
         r#"
+[#hide-uri-scheme]
 == Hide the URL scheme
 
 If the link text is a bare URL (aka URI), whether that link was created automatically or using a link-related macro, you can configure the AsciiDoc processor to hide the scheme (e.g., _https://_).
