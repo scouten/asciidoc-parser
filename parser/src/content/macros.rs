@@ -259,6 +259,7 @@ impl Replacer for InlineLinkReplacer<'_> {
                 target,
                 link_text,
                 extra_roles: vec!["bare"],
+                window: None,
                 type_: LinkRenderType::Link,
                 attrlist: &attrlist,
                 parser: self.0,
@@ -327,6 +328,7 @@ impl Replacer for InlineLinkReplacer<'_> {
 
         let link_text_for_attrlist = link_text.clone().unwrap_or_default();
         let span_for_attrlist = Span::new(&link_text_for_attrlist);
+        let mut window: Option<&'static str> = None;
 
         let link_text = if let Some(mut link_text) = link_text {
             link_text = link_text.replace("\\]", "]");
@@ -339,17 +341,8 @@ impl Replacer for InlineLinkReplacer<'_> {
             }
 
             if link_text.ends_with('^') {
-                todo!(
-                    "Port this: {}",
-                    r#"
-                        new_link_text = link_text = link_text.chop
-                        if attrs
-                            attrs['window'] ||= '_blank'
-                        else
-                            attrs = { 'window' => '_blank' }
-                        end
-                    "#
-                );
+                link_text.truncate(link_text.len() - 1);
+                window = Some("_blank");
             }
 
             if link_text.is_empty() {
@@ -392,6 +385,7 @@ impl Replacer for InlineLinkReplacer<'_> {
             target,
             link_text,
             extra_roles,
+            window,
             type_: LinkRenderType::Link,
             attrlist: &attrlist,
             parser: self.0,
@@ -561,6 +555,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             target,
             link_text: link_text.clone(),
             extra_roles,
+            window: None,
             type_: link_type,
             attrlist: &attrlist,
             parser: self.0,
@@ -697,6 +692,7 @@ impl Replacer for InlineEmailReplacer<'_> {
             target: target.clone(),
             link_text: caps[2].to_owned(),
             extra_roles: vec![],
+            window: None,
             type_: LinkRenderType::Link,
             attrlist: &attrlist,
             parser: self.0,

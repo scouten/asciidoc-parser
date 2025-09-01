@@ -299,6 +299,9 @@ pub struct LinkRenderParams<'a> {
     /// Roles (CSS classes) for this link not specified in the attrlist.
     pub extra_roles: Vec<&'a str>,
 
+    /// Target window selection (passed through to `window` function in HTML).
+    pub window: Option<&'static str>,
+
     /// What type of link is being rendered?
     pub type_: LinkRenderType,
 
@@ -671,7 +674,7 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
             },
             // title = %( title="#{node.attr 'title'}") if node.attr? 'title'
             // Haven't seen this in the wild yet.
-            link_constraint_attrs = link_constraint_attrs(params.attrlist),
+            link_constraint_attrs = link_constraint_attrs(params.attrlist, params.window),
             link_text = params.link_text,
         );
 
@@ -727,7 +730,7 @@ fn render_icon_or_image(
 
         img = format!(
             r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
-            link_constraint_attrs = link_constraint_attrs(attrlist)
+            link_constraint_attrs = link_constraint_attrs(attrlist, None)
         );
     }
 
@@ -798,15 +801,19 @@ static URI_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-fn link_constraint_attrs(attrlist: &Attrlist<'_>) -> String {
+fn link_constraint_attrs(attrlist: &Attrlist<'_>, window: Option<&'static str>) -> String {
     let rel = if attrlist.has_option("nofollow") {
         Some("nofollow")
     } else {
         None
     };
 
-    if let Some(window) = attrlist.named_attribute("window") {
-        let rel_noopener = if window.value() == "_blank" || attrlist.has_option("noopener") {
+    if let Some(window) = attrlist
+        .named_attribute("window")
+        .map(|a| a.value())
+        .or(window)
+    {
+        let rel_noopener = if window == "_blank" || attrlist.has_option("noopener") {
             if let Some(rel) = rel {
                 format!(r#" rel="{rel}" noopener"#)
             } else {
@@ -816,10 +823,7 @@ fn link_constraint_attrs(attrlist: &Attrlist<'_>) -> String {
             "".to_string()
         };
 
-        format!(
-            r#" target="{window}"{rel_noopener}"#,
-            window = window.value()
-        )
+        format!(r#" target="{window}"{rel_noopener}"#)
     } else if let Some(rel) = rel {
         format!(r#" rel="{rel}""#)
     } else {

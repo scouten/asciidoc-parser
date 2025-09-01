@@ -8,3 +8,4 @@ mod image_url;
 mod images;
 mod images_directory;
 mod links;
+mod url_macro;
