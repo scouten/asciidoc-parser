@@ -44,6 +44,9 @@ mod from_url_to_macro {
     fn example() {
         verifies!(
             r#"
+To transform a URL into a macro, add a pair of square brackets to the end of the URL.
+For example:
+
 [source]
 ----
 https://asciidoctor.org[]
