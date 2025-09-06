@@ -295,6 +295,7 @@ Here are the few cases when the link macro is necessary:
 * The target must be enclosed in a passthrough to escape characters with special meaning
 * The URL macro is not bounded by spaces, brackets, or quotes.
 * The target is a URL that does not start with a scheme recognized by AsciiDoc
+
 "#
     );
 
