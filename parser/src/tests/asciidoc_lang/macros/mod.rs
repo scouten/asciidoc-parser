@@ -7,5 +7,6 @@ mod image_size;
 mod image_url;
 mod images;
 mod images_directory;
+mod link_macro;
 mod links;
 mod url_macro;
