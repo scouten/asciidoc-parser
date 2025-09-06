@@ -214,6 +214,7 @@ include::example$url.adoc[tag=hash]
 ----
 
 Note that when linking to a relative file, even if it's an HTML file, the link text is required.
+
 "#
         );
 
