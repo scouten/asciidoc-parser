@@ -459,6 +459,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
 
         let link_text_for_attrlist = link_text.replace("\n", " ");
         let span_for_attrlist = Span::new(&link_text_for_attrlist);
+        let mut window: Option<&'static str> = None;
 
         if !link_text.is_empty() {
             link_text = link_text.replace("\\]", "]");
@@ -494,17 +495,8 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             }
 
             if link_text.ends_with('^') {
-                todo!(
-                    "Port this: {}",
-                    r#"
-                    link_text = link_text.chop
-                    if attrs
-                        attrs['window'] ||= '_blank'
-                    else
-                        attrs = { 'window' => '_blank' }
-                    end
-                "#
-                );
+                link_text.truncate(link_text.len() - 1);
+                window = Some("_blank");
             }
         }
 
@@ -553,7 +545,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             target,
             link_text: link_text.clone(),
             extra_roles,
-            window: None,
+            window,
             type_: link_type,
             attrlist: &attrlist,
             parser: self.0,
