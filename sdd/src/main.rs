@@ -135,7 +135,7 @@ fn parse_rs_file(path: &Path) -> Option<(String, Vec<(String, bool)>)> {
             continue;
         }
 
-        if line.ends_with("r#\"") {
+        if line.ends_with("r#\"") || line.ends_with("r##\"") {
             // println!("<<<");
             continue;
         }
