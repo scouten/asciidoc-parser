@@ -298,7 +298,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                         attributes: &[TElementAttribute {
                             name: None,
                             value: "Mesa Verde Sunset, by JAVH",
-                            shorthand_items: &["Mesa Verde Sunset, by JAVH"],
+                            shorthand_items: &[],
                         },],
                         source: TSpan {
                             data: "\"Mesa Verde Sunset, by JAVH\"",
