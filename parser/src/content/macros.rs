@@ -334,7 +334,7 @@ impl Replacer for InlineLinkReplacer<'_> {
             if link_text.contains('=') {
                 let (lt, attrs) = extract_attributes_from_text(&span_for_attrlist, self.0, None);
 
-                link_text = lt;
+                link_text = lt.replace("\\\"", "\"");
                 attrlist = attrs; // ???
             }
 
