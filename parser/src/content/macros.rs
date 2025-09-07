@@ -219,8 +219,6 @@ struct InlineLinkReplacer<'p>(&'p Parser<'p>);
 
 impl Replacer for InlineLinkReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        dbg!(&caps);
-
         let mut attrlist = Attrlist::parse(Span::new(""), self.0).item.item;
 
         if caps.get(2).is_some() && caps.get(5).is_none() {
