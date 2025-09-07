@@ -19,7 +19,7 @@ impl<'src> ElementAttribute<'src> {
         source_text: &CowStr<'src>,
         start_index: usize,
         _parser: &Parser,
-        parse_shorthand: ParseShorthand,
+        mut parse_shorthand: ParseShorthand,
     ) -> (Option<(Self, usize)>, Vec<WarningType>) {
         let mut warnings: Vec<WarningType> = vec![];
 
@@ -50,7 +50,10 @@ impl<'src> ElementAttribute<'src> {
 
             let value = match after.data().chars().next() {
                 Some('\'') | Some('"') => match after.take_quoted_string() {
-                    Some(v) => v,
+                    Some(v) => {
+                        parse_shorthand = ParseShorthand(false);
+                        v
+                    }
                     None => {
                         warnings.push(WarningType::AttributeValueMissingTerminatingQuote);
                         return (None, warnings);
