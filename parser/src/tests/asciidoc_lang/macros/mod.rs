@@ -9,5 +9,6 @@ mod image_url;
 mod images;
 mod images_directory;
 mod link_macro;
+mod link_macro_attribute_parsing;
 mod links;
 mod url_macro;
