@@ -1,0 +1,211 @@
+use pretty_assertions_sorted::assert_eq;
+
+use crate::{
+    Parser,
+    tests::{
+        fixtures::{
+            TSpan,
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            document::{TAttribute, TDocument, THeader, TInterpretedValue},
+        },
+        sdd::{non_normative, track_file, verifies},
+    },
+};
+
+track_file!("docs/modules/macros/pages/complex-urls.adoc");
+
+non_normative!(
+    r#"
+= Troubleshooting Complex URLs
+
+A URL may not display correctly when it contains characters such as underscores (`+_+`) or carets (`+^+`).
+"#
+);
+
+// This source file is tricky because our prototype spec coverage tool isn't
+// prepared to follow includes or partials.
+
+#[test]
+fn assign_to_attribute() {
+    verifies!(
+        r#"
+include::partial$ts-url-format.adoc[tag=sb]
+"#
+    );
+
+    let doc = Parser::default().parse("= Document Title\n:link-with-underscores: https://asciidoctor.org/now_this__link_works.html\n\nThis URL has repeating underscores {link-with-underscores}.");
+
+    assert_eq!(
+        doc,
+        TDocument {
+            header: THeader {
+                title_source: Some(TSpan {
+                    data: "Document Title",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                },),
+                title: Some("Document Title",),
+                attributes: &[TAttribute {
+                    name: TSpan {
+                        data: "link-with-underscores",
+                        line: 2,
+                        col: 2,
+                        offset: 18,
+                    },
+                    value_source: Some(TSpan {
+                        data: "https://asciidoctor.org/now_this__link_works.html",
+                        line: 2,
+                        col: 25,
+                        offset: 41,
+                    },),
+                    value: TInterpretedValue::Value(
+                        "https://asciidoctor.org/now_this__link_works.html",
+                    ),
+                    source: TSpan {
+                        data: ":link-with-underscores: https://asciidoctor.org/now_this__link_works.html",
+                        line: 2,
+                        col: 1,
+                        offset: 17,
+                    },
+                },],
+                source: TSpan {
+                    data: "= Document Title\n:link-with-underscores: https://asciidoctor.org/now_this__link_works.html",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },
+            blocks: &[TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "This URL has repeating underscores {link-with-underscores}.",
+                        line: 4,
+                        col: 1,
+                        offset: 92,
+                    },
+                    rendered: "This URL has repeating underscores <a href=\"https://asciidoctor.org/now_this__link_works.html\" class=\"bare\">https://asciidoctor.org/now_this__link_works.html</a>.",
+                },
+                source: TSpan {
+                    data: "This URL has repeating underscores {link-with-underscores}.",
+                    line: 4,
+                    col: 1,
+                    offset: 92,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },),],
+            source: TSpan {
+                data: "= Document Title\n:link-with-underscores: https://asciidoctor.org/now_this__link_works.html\n\nThis URL has repeating underscores {link-with-underscores}.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+}
+
+#[test]
+fn pass_macro() {
+    let doc = Parser::default().parse("This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].");
+
+    assert_eq!(
+        doc,
+        TDocument {
+            header: THeader {
+                title_source: None,
+                title: None,
+                attributes: &[],
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },
+            blocks: &[TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "This URL has repeating underscores <a href=\"https://asciidoctor.org/now_this__link_works.html\" class=\"bare\">https://asciidoctor.org/now_this__link_works.html</a>.",
+                },
+                source: TSpan {
+                    data: "This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },),],
+            source: TSpan {
+                data: "This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+}
+
+#[test]
+fn double_plus_inline_macro() {
+    let doc = Parser::default().parse("This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].
+");
+
+    assert_eq!(
+        doc,
+        TDocument {
+            header: THeader {
+                title_source: None,
+                title: None,
+                attributes: &[],
+                source: TSpan {
+                    data: "",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },
+            blocks: &[TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "This URL has repeating underscores <a href=\"https://asciidoctor.org/now_this__link_works.html\" class=\"bare\">https://asciidoctor.org/now_this__link_works.html</a>.",
+                },
+                source: TSpan {
+                    data: "This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },),],
+            source: TSpan {
+                data: "This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+}

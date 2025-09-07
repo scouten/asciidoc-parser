@@ -1,4 +1,5 @@
 mod autolinks;
+mod complex_urls;
 mod icon_macro;
 mod icons;
 mod image_link;
