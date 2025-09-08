@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/element-attributes.adoc");
 // Tracking commit 76c9fe63, current as of 2024-10-26.
@@ -43,19 +43,7 @@ Unlike document attributes, element attributes are defined directly on the eleme
 mod attrlist {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, to_do_verifies, verifies},
-        },
-    };
+    use crate::{HasSpan, Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"

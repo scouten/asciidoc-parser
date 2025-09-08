@@ -26,20 +26,7 @@ There are two approaches you can take when positioning your images:
 mod positioning_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, SimpleBlock},
-                content::Content,
-                document::{Document, Header},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -230,20 +217,7 @@ It's far better to use CSS classes for these sorts of things, which map to roles
 mod positioning_roles {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, SimpleBlock},
-                content::Content,
-                document::{Document, Header},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"

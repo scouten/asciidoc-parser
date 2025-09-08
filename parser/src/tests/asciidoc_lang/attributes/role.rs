@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/role.adoc");
 // Tracking commit c7d2b3e4, current as of 2025-04-10.
@@ -35,19 +35,7 @@ mod assign_roles_to_blocks {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -407,7 +395,7 @@ mod assign_roles_to_formatted_inline_elements {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(

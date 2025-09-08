@@ -18,19 +18,7 @@ In most output formats, the specified width is obeyed unless the image would exc
 mod width_and_height_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock},
-                document::{Document, Header},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"

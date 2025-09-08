@@ -165,10 +165,7 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
-        blocks::metadata::BlockMetadata,
-        tests::fixtures::{Span, warnings::Warning},
-        warnings::WarningType,
+        Parser, blocks::metadata::BlockMetadata, tests::prelude::*, warnings::WarningType,
     };
 
     #[test]
@@ -241,7 +238,7 @@ mod comment {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{Span, blocks::RawDelimitedBlock, content::Content},
+        tests::prelude::*,
     };
 
     #[test]
@@ -464,12 +461,7 @@ mod listing {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::{SubstitutionGroup, SubstitutionStep},
-        tests::fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-            blocks::RawDelimitedBlock,
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -873,7 +865,7 @@ mod pass {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{Span, blocks::RawDelimitedBlock, content::Content},
+        tests::prelude::*,
     };
 
     #[test]

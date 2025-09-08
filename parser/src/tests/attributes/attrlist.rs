@@ -1,14 +1,7 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    HasSpan, Parser,
-    parser::ModificationContext,
-    tests::fixtures::{
-        Span,
-        attributes::{Attrlist, ElementAttribute},
-        warnings::Warning,
-    },
-    warnings::WarningType,
+    HasSpan, Parser, parser::ModificationContext, tests::prelude::*, warnings::WarningType,
 };
 
 #[test]
@@ -538,13 +531,7 @@ fn propagates_error_from_element_attribute() {
 mod id {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser,
-        tests::fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-        },
-    };
+    use crate::{HasSpan, Parser, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
@@ -719,13 +706,7 @@ mod id {
 mod roles {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser,
-        tests::fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-        },
-    };
+    use crate::{HasSpan, Parser, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
@@ -1198,13 +1179,7 @@ mod roles {
 mod options {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser,
-        tests::fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-        },
-    };
+    use crate::{HasSpan, Parser, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {

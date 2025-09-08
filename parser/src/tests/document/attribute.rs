@@ -7,12 +7,7 @@ use crate::{
     blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
     parser::ModificationContext,
-    tests::fixtures::{
-        Span,
-        blocks::{Block, SimpleBlock},
-        content::Content,
-        document::{Attribute, InterpretedValue},
-    },
+    tests::prelude::*,
     warnings::WarningType,
 };
 

@@ -1,5 +1,5 @@
 mod discard {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -73,7 +73,7 @@ mod discard {
 }
 
 mod discard_whitespace {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -147,7 +147,7 @@ mod discard_whitespace {
 }
 
 mod discard_all {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {

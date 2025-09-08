@@ -1,18 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    blocks::IsBlock,
-    tests::{
-        fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/attribute-entry-substitutions.adoc");
 
@@ -68,15 +56,7 @@ mod change_subs_when_assigning {
         Parser,
         blocks::{ContentModel, IsBlock},
         content::{SubstitutionGroup, SubstitutionStep},
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, RawDelimitedBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -284,20 +264,7 @@ If the macro is absent, the value is processed with the header substitution grou
 }
 
 mod attributes_defined_outside_document {
-    use pretty_assertions_sorted::assert_eq;
-
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
     non_normative!(
         r#"

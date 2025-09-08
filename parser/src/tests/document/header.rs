@@ -1,12 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    tests::fixtures::{
-        Span,
-        document::{Attribute, Header, InterpretedValue},
-    },
-};
+use crate::{Parser, tests::prelude::*};
 
 #[test]
 fn impl_clone() {

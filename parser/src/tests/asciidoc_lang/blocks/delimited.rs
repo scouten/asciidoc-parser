@@ -4,15 +4,7 @@ use crate::{
     Parser,
     blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
-    tests::{
-        fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
-            content::Content,
-            warnings::Warning,
-        },
-        sdd::{non_normative, to_do_verifies, track_file, verifies},
-    },
+    tests::prelude::*,
     warnings::WarningType,
 };
 
@@ -497,20 +489,7 @@ The structural container provides a default context and expected content model, 
 mod nesting_blocks {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::ContentModel,
-        content::SubstitutionGroup,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::ContentModel, content::SubstitutionGroup, tests::prelude::*};
 
     non_normative!(
         r#"

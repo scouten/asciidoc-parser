@@ -18,18 +18,7 @@ Right now, we're just aiming to get a sense of what makes up an AsciiDoc documen
 mod documents {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-                document::{Attribute, Document, Header, InterpretedValue},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -320,16 +309,7 @@ Documents can range from a single sentence to a multi-part book.
 mod lines {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                document::{Attribute, InterpretedValue},
-            },
-            sdd::verifies,
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     #[test]
     fn section_title() {

@@ -1,15 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    tests::{
-        fixtures::{
-            Span,
-            document::{Attribute, InterpretedValue},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/wrap-values.adoc");
 

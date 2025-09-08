@@ -1,18 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    blocks::IsBlock,
-    tests::{
-        fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
 track_file!("docs/modules/blocks/pages/assign-id.adoc");
 

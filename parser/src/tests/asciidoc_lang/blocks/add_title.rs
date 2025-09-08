@@ -1,19 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    blocks::ContentModel,
-    content::SubstitutionGroup,
-    tests::{
-        fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, blocks::ContentModel, content::SubstitutionGroup, tests::prelude::*};
 
 track_file!("docs/modules/blocks/pages/add-title.adoc");
 // Tracking commit 62d91913, current as of 2024-11-29.

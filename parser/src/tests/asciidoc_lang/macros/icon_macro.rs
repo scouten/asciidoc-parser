@@ -15,18 +15,7 @@ This page covers the anatomy of the icon macro, how the target is resolved, and 
 mod anatomy {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-                document::{Document, Header},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"

@@ -20,18 +20,7 @@ This page introduces the URL macro, when you would want to use it, and how it di
 mod from_url_to_macro {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-                document::{Document, Header},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -182,18 +171,7 @@ The more typical reason, however, is to specify custom link text.
 mod custom_link_text {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-                document::{Document, Header},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -335,18 +313,7 @@ include::example$url.adoc[tag=text]
 mod link_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-                document::{Document, Header},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"

@@ -1,7 +1,4 @@
-use crate::{
-    Parser, parser::ModificationContext, tests::fixtures::document::InterpretedValue,
-    warnings::WarningType,
-};
+use crate::{Parser, parser::ModificationContext, tests::prelude::*, warnings::WarningType};
 
 #[test]
 fn default_is_unset() {

@@ -1,17 +1,4 @@
-use pretty_assertions_sorted::assert_eq;
-
-use crate::{
-    Parser,
-    tests::{
-        fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-            document::{Attribute, Document, Header, InterpretedValue},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/attribute-entries.adoc");
 
@@ -424,19 +411,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
 }
 
 mod where_declared {
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        parser::ModificationContext,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -547,19 +522,7 @@ See the xref:document-attributes-ref.adoc[] for where in a document each attribu
 }
 
 mod defining_without_attribute_entry {
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        parser::ModificationContext,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
 
     non_normative!(
         r#"

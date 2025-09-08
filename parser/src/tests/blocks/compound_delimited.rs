@@ -165,15 +165,7 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
-        blocks::metadata::BlockMetadata,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-            warnings::Warning,
-        },
-        warnings::WarningType,
+        Parser, blocks::metadata::BlockMetadata, tests::prelude::*, warnings::WarningType,
     };
 
     #[test]
@@ -317,11 +309,7 @@ mod example {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -740,11 +728,7 @@ mod open {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -1080,11 +1064,7 @@ mod sidebar {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -1556,11 +1536,7 @@ mod quote {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]

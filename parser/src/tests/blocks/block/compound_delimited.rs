@@ -1,16 +1,7 @@
 mod parse {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-            warnings::Warning,
-        },
-        warnings::WarningType,
-    };
+    use crate::{Parser, tests::prelude::*, warnings::WarningType};
 
     #[test]
     fn err_invalid_delimiter() {
@@ -207,11 +198,7 @@ mod example {
         HasSpan, Parser,
         blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -754,11 +741,7 @@ mod open {
     use crate::{
         HasSpan, Parser,
         blocks::{ContentModel, IsBlock},
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -1106,11 +1089,7 @@ mod sidebar {
     use crate::{
         HasSpan, Parser,
         blocks::{ContentModel, IsBlock},
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -1487,11 +1466,7 @@ mod quote {
     use crate::{
         HasSpan, Parser,
         blocks::{ContentModel, IsBlock},
-        tests::fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]

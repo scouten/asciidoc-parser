@@ -15,7 +15,7 @@ mod is_empty {
 mod replace_str {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::{Span, content::Content};
+    use crate::tests::prelude::*;
 
     #[test]
     fn basic_empty_span() {

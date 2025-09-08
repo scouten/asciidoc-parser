@@ -1,7 +1,7 @@
 mod take_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -197,7 +197,7 @@ mod take_line {
 mod take_normalized_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -419,7 +419,7 @@ mod take_normalized_line {
 mod take_non_empty_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -601,7 +601,7 @@ mod take_non_empty_line {
 mod take_empty_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -793,7 +793,7 @@ mod take_empty_line {
 mod discard_empty_lines {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -956,7 +956,7 @@ mod discard_empty_lines {
 mod take_line_with_continuation {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {

@@ -1,17 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    tests::{
-        fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-            document::{Document, Header},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, tests::prelude::*};
 
 track_file!("docs/modules/macros/pages/link-macro-ref.adoc");
 

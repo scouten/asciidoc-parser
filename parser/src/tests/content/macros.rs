@@ -4,15 +4,7 @@
 mod inline_link {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-            document::{Attribute, Document, Header, InterpretedValue},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     #[test]
     fn escape_angle_bracket_autolink_before_lt() {
@@ -415,15 +407,7 @@ mod inline_link {
 mod link_macro {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-            document::{Attribute, Document, Header, InterpretedValue},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     #[test]
     fn escape_link_macro() {

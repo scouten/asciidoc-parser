@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/options.adoc");
 // Tracking commit 6ef733aa, current as of 2025-04-10.
@@ -28,19 +28,7 @@ You can assign one or more options to a block using the shorthand or formal synt
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
     #[test]
     fn shorthand_syntax_single() {
@@ -600,20 +588,7 @@ Let's consider `options` when combined with other attributes.
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        content::SubstitutionGroup,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::IsBlock, content::SubstitutionGroup, tests::prelude::*};
 
     #[test]
     fn style_role_and_options() {

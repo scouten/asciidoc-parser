@@ -1,9 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::tests::{
-    fixtures::Span,
-    sdd::{non_normative, track_file, verifies},
-};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/ROOT/pages/normalization.adoc");
 // Tracking commit 08289a9f, current as of 2024-10-26.

@@ -1,5 +1,5 @@
 mod trim_trailing_whitespace {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -78,7 +78,7 @@ mod trim_trailing_whitespace {
 }
 
 mod trim_trailing_line_end {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {

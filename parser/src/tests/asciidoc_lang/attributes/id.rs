@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/id.adoc");
 // Tracking commit 493cbec4, current as of 2025-04-10.
@@ -29,19 +29,7 @@ Likewise, you can assign an ID to a list item by using an anchor (`[[]]`) at the
 mod valid_id_characters {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                blocks::{Block, SimpleBlock},
-                content::Content,
-                warnings::Warning,
-            },
-            sdd::{non_normative, verifies},
-        },
-        warnings::WarningType,
-    };
+    use crate::{Parser, tests::prelude::*, warnings::WarningType};
 
     non_normative!(
         r#"
@@ -230,18 +218,7 @@ NOTE: Section pending
 mod block_assignment {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"

@@ -5,11 +5,7 @@ mod passthroughs {
         Parser,
         content::{Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough},
         parser::ModificationContext,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]

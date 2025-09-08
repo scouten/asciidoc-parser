@@ -6,12 +6,7 @@ use crate::{
     Parser,
     blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
     content::SubstitutionGroup,
-    tests::fixtures::{
-        Span,
-        attributes::{Attrlist, ElementAttribute},
-        blocks::SimpleBlock,
-        content::Content,
-    },
+    tests::prelude::*,
 };
 
 #[test]

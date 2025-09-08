@@ -1,5 +1,5 @@
 mod take_prefix {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -73,7 +73,7 @@ mod take_prefix {
 }
 
 mod take_whitespace {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -207,7 +207,7 @@ mod take_whitespace {
 }
 
 mod take_whitespace_with_newline {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -341,7 +341,7 @@ mod take_whitespace_with_newline {
 }
 
 mod take_required_whitespace {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -409,7 +409,7 @@ mod take_required_whitespace {
 }
 
 mod take_while {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -517,7 +517,7 @@ mod take_while {
 }
 
 mod take_non_empty_lines {
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {

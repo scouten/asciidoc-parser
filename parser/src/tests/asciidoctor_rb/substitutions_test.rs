@@ -7,15 +7,7 @@
 mod dispatcher {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        parser::ModificationContext,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
-    };
+    use crate::{Parser, parser::ModificationContext, tests::prelude::*};
 
     #[test]
     fn apply_normal_substitutions() {
@@ -107,11 +99,7 @@ mod quotes {
         content::{SubstitutionGroup, SubstitutionStep},
         parser::ModificationContext,
         strings::CowStr,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -1412,15 +1400,8 @@ mod macros {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
-        content::SubstitutionStep,
-        parser::ModificationContext,
-        strings::CowStr,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
+        Parser, content::SubstitutionStep, parser::ModificationContext, strings::CowStr,
+        tests::prelude::*,
     };
 
     #[test]
@@ -4283,11 +4264,7 @@ mod passthroughs {
         Parser,
         content::{Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough},
         parser::{ModificationContext, QuoteType},
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
+        tests::prelude::*,
     };
 
     #[test]
@@ -5609,16 +5586,7 @@ mod passthroughs {
 mod replacements {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        content::SubstitutionStep,
-        strings::CowStr,
-        tests::fixtures::{
-            Span,
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
-    };
+    use crate::{Parser, content::SubstitutionStep, strings::CowStr, tests::prelude::*};
 
     #[test]
     fn unescapes_xml_entities() {
@@ -5852,15 +5820,7 @@ foo&#8201;&#8212;&#8201;"#;
 mod post_replacements {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, SimpleBlock},
-            content::Content,
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     #[test]
     fn line_break_inserted_after_line_with_line_break_character() {

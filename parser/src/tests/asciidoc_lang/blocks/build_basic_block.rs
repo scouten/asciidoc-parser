@@ -3,16 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     Parser,
     blocks::{ContentModel, IsBlock, MediaType},
-    tests::{
-        fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, MediaBlock, SimpleBlock},
-            content::Content,
-            document::{Document, Header},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
+    tests::prelude::*,
 };
 
 track_file!("docs/modules/blocks/pages/build-basic-block.adoc");

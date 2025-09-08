@@ -6,12 +6,7 @@ use crate::{
     Parser,
     blocks::{ContentModel, IsBlock, MediaType, metadata::BlockMetadata},
     content::SubstitutionGroup,
-    tests::fixtures::{
-        Span,
-        attributes::{Attrlist, ElementAttribute},
-        blocks::MediaBlock,
-        warnings::Warning,
-    },
+    tests::prelude::*,
     warnings::WarningType,
 };
 

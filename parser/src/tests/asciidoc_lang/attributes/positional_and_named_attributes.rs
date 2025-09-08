@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/positional-and-named-attributes.adoc");
 // Tracking commit 3474df92, current as of 2024-10-26.
@@ -19,15 +19,7 @@ mod positional_attribute {
         Parser,
         blocks::{IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::{
-            fixtures::{
-                Span,
-                attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, SectionBlock, SimpleBlock},
-                content::Content,
-            },
-            sdd::{non_normative, verifies},
-        },
+        tests::prelude::*,
     };
 
     non_normative!(

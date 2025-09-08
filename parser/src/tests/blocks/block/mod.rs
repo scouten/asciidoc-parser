@@ -26,13 +26,7 @@ mod error_cases {
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         span::HasSpan,
-        tests::fixtures::{
-            Span,
-            attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, SectionBlock, SimpleBlock},
-            content::Content,
-            warnings::Warning,
-        },
+        tests::prelude::*,
         warnings::{MatchAndWarnings, WarningType},
     };
 

@@ -1,7 +1,7 @@
 mod take_ident {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -187,7 +187,7 @@ mod take_ident {
 mod take_attr_name {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -315,7 +315,7 @@ mod take_attr_name {
 mod take_user_attr_name {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -464,7 +464,7 @@ fn is_xml_name() {
 mod take_quoted_string {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
@@ -644,7 +644,7 @@ mod take_quoted_string {
 mod trim_remainder {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::tests::fixtures::Span;
+    use crate::tests::prelude::*;
 
     fn advanced_span(source: &'static str, skip: usize) -> crate::Span<'static> {
         let span = crate::Span::new(source);

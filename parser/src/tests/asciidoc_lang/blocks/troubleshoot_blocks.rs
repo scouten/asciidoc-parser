@@ -1,19 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    tests::{
-        fixtures::{
-            Span,
-            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::Content,
-            document::{Document, Header},
-            warnings::Warning,
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-    warnings::WarningType,
-};
+use crate::{Parser, tests::prelude::*, warnings::WarningType};
 
 track_file!("docs/modules/blocks/pages/troubleshoot-blocks.adoc");
 

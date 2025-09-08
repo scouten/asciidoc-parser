@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/names-and-values.adoc");
 // Tracking commit 636ceedc, current as of 2025-04-12.
@@ -16,16 +16,7 @@ The built-in attribute names are listed in the xref:document-attributes-ref.adoc
 );
 
 mod valid_user_defined_names {
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                Span,
-                document::{Attribute, InterpretedValue},
-            },
-            sdd::verifies,
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     verifies!(
         r#"

@@ -1,8 +1,7 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
-    tests::fixtures::attributes::ElementAttribute,
+    Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
 };
 
 #[test]
@@ -149,8 +148,8 @@ mod quoted_string {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
-        tests::fixtures::attributes::ElementAttribute, warnings::WarningType,
+        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
+        warnings::WarningType,
     };
 
     #[test]
@@ -380,8 +379,7 @@ mod named {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
-        tests::fixtures::attributes::ElementAttribute,
+        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
     };
 
     #[test]
@@ -571,8 +569,8 @@ mod parse_with_shorthand {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
-        tests::fixtures::attributes::ElementAttribute, warnings::WarningType,
+        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
+        warnings::WarningType,
     };
 
     #[test]
