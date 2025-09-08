@@ -4,13 +4,13 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     HasSpan, Parser,
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
     document::Attribute,
     parser::ModificationContext,
     tests::fixtures::{
         Span,
-        blocks::{TBlock, TSimpleBlock},
+        blocks::{Block, TSimpleBlock},
         content::TContent,
         document::{TAttribute, TInterpretedValue},
     },
@@ -326,14 +326,14 @@ fn value_with_hard_wrap() {
 #[test]
 fn is_block() {
     let mut parser = Parser::default();
-    let maw = Block::parse(crate::Span::new(":foo: bar\nblah"), &mut parser);
+    let maw = crate::blocks::Block::parse(crate::Span::new(":foo: bar\nblah"), &mut parser);
 
     let mi = maw.item.unwrap();
     let block = mi.item;
 
     assert_eq!(
         block,
-        TBlock::DocumentAttribute(TAttribute {
+        Block::DocumentAttribute(TAttribute {
             name: Span {
                 data: "foo",
                 line: 1,
@@ -375,7 +375,7 @@ fn is_block() {
         }
     );
 
-    let Block::DocumentAttribute(attr) = block else {
+    let crate::blocks::Block::DocumentAttribute(attr) = block else {
         panic!("Wrong type");
     };
 
@@ -406,7 +406,7 @@ fn affects_document_state() {
 
     assert_eq!(
         block1,
-        &TBlock::Simple(TSimpleBlock {
+        &Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "We are agreed? {agreed}",
@@ -435,7 +435,7 @@ fn affects_document_state() {
 
     assert_eq!(
         block3,
-        &TBlock::Simple(TSimpleBlock {
+        &Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Are we still agreed? {agreed}",
@@ -476,7 +476,7 @@ fn block_enforces_permission() {
 
     assert_eq!(
         block3,
-        &TBlock::Simple(TSimpleBlock {
+        &Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Are we agreed? {agreed}",

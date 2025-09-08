@@ -21,7 +21,7 @@ mod anatomy {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -69,7 +69,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:target[link text]",
@@ -119,7 +119,7 @@ mod link_to_relative_file {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -170,7 +170,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:downloads/report.pdf[Get Report]",
@@ -234,7 +234,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:tools.html#editors[]",
@@ -275,7 +275,7 @@ mod when_to_use {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -330,7 +330,7 @@ link:report.pdf[Get Report]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:report.pdf[Get Report]",
@@ -403,7 +403,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:pass:[My Documents/report.pdf][Get Report]",
@@ -464,7 +464,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:My&#32;Documents/report.pdf[Get Report]",
@@ -525,7 +525,7 @@ link:My%20Documents/report.pdf[Get Report]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:My%20Documents/report.pdf[Get Report]",
@@ -598,7 +598,7 @@ link:Avengers%3A%20Endgame.html[]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:Avengers%3A%20Endgame.html[]",
@@ -663,7 +663,7 @@ link:++https://example.org/now_this__link_works.html++[]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:++https://example.org/now_this__link_works.html++[]",
@@ -726,7 +726,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "|link:https://asciidoctor.org[]|",
@@ -789,7 +789,7 @@ link:file:///home/username[Your files]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:file:///home/username[Your files]",

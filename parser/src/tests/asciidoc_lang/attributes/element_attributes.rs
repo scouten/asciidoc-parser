@@ -45,12 +45,12 @@ mod attrlist {
 
     use crate::{
         HasSpan, Parser,
-        blocks::{Block, MediaType},
+        blocks::MediaType,
         tests::{
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
+                blocks::{Block, TMediaBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, to_do_verifies, verifies},
@@ -193,7 +193,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
+        let block = crate::blocks::Block::parse(
             crate::Span::new("[style,second-positional,named=\"value of named\"]\nSimple block\n"),
             &mut parser,
         )
@@ -203,7 +203,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Simple block",
@@ -283,7 +283,7 @@ name::target[first-positional,second-positional,named="value of named"]
         );
 
         let mut parser = Parser::default();
-        let block = Block::parse(
+        let block = crate::blocks::Block::parse(
             crate::Span::new(
                 "name::target[first-positional,second-positional,named=\"value of named\"]\n",
             ),
@@ -295,7 +295,7 @@ name::target[first-positional,second-positional,named="value of named"]
 
         assert_eq!(
             block,
-            TBlock::Media(TMediaBlock {
+            Block::Media(TMediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "target",

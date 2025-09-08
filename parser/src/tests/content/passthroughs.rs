@@ -3,14 +3,13 @@ mod passthroughs {
 
     use crate::{
         Parser,
-        blocks::Block,
         content::{
             Content, Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough,
         },
         parser::ModificationContext,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
     };
@@ -18,13 +17,13 @@ mod passthroughs {
     #[test]
     fn inline_double_plus_with_escaped_attrlist() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"abc \[attrs]++text++"#), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new(r#"abc \[attrs]++text++"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"abc \[attrs]++text++"#,

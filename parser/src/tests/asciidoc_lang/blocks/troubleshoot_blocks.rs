@@ -5,7 +5,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
             warnings::TWarning,
@@ -65,8 +65,8 @@ It will be styled as a sidebar.
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a valid delimited block.\nIt will be styled as a sidebar.",
@@ -148,8 +148,8 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is an invalid sidebar block because the delimiter lines are different lengths.\n****",

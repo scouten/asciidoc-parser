@@ -23,13 +23,13 @@ mod error_cases {
 
     use crate::{
         Parser,
-        blocks::{Block, ContentModel, IsBlock, SectionBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, SectionBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         span::HasSpan,
         tests::fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{TBlock, TSectionBlock, TSimpleBlock},
+            blocks::{Block, TSectionBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -70,7 +70,7 @@ mod error_cases {
                     offset: 4,
                 },
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "abc",
@@ -91,7 +91,7 @@ mod error_cases {
                         anchor: None,
                         attrlist: None,
                     }),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: ".ancestor section== Section 2",
@@ -112,7 +112,7 @@ mod error_cases {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "def",
@@ -176,7 +176,7 @@ mod error_cases {
     fn missing_close_brace_on_attrlist() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new("[incomplete attrlist\n=== Section Title (except it isn't)\n\nabc\n"),
             &mut parser,
         )
@@ -198,7 +198,7 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[incomplete attrlist\n=== Section Title (except it isn't)",
@@ -236,7 +236,7 @@ mod error_cases {
     fn attrlist_warning_carried_forward() {
         let mut parser = Parser::default();
 
-        let MatchAndWarnings { item: mi, warnings } = Block::parse(
+        let MatchAndWarnings { item: mi, warnings } = crate::blocks::Block::parse(
             crate::Span::new(
                 "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n",
             ),
@@ -276,7 +276,7 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            TBlock::Section(TSectionBlock {
+            Block::Section(TSectionBlock {
                 level: 2,
                 section_title: Span {
                     data: "Section Title (except it isn't)",
@@ -284,7 +284,7 @@ mod error_cases {
                     col: 5,
                     offset: 28,
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -360,13 +360,13 @@ mod error_cases {
         // IMPORTANT: This test will fail once we implement support for list items.
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(". abc\ndef"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new(". abc\ndef"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: ". abc\ndef",

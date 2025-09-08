@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         document::{TDocument, THeader},
         warnings::TWarning,
@@ -118,7 +118,7 @@ fn one_simple_block() {
                 col: 1,
                 offset: 0
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -169,7 +169,7 @@ fn two_simple_blocks() {
                 offset: 0
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -190,7 +190,7 @@ fn two_simple_blocks() {
                     anchor: None,
                     attrlist: None,
                 }),
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "def",
@@ -239,7 +239,7 @@ fn two_blocks_and_title() {
                 }
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -260,7 +260,7 @@ fn two_blocks_and_title() {
                     anchor: None,
                     attrlist: None,
                 }),
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "def",
@@ -314,7 +314,7 @@ fn extra_space_before_title() {
                     offset: 0,
                 }
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -367,7 +367,7 @@ fn err_bad_header() {
                     offset: 0,
                 }
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "not an attribute",
@@ -429,7 +429,7 @@ fn err_bad_header_and_bad_macro() {
                 }
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "not an attribute",
@@ -451,7 +451,7 @@ fn err_bad_header_and_bad_macro() {
                     attrlist: None,
                 }
             ),
-            TBlock::Section(
+            Block::Section(
                 TSectionBlock {
                     level: 1,
                     section_title: Span {
@@ -461,7 +461,7 @@ fn err_bad_header_and_bad_macro() {
                         offset: 29,
                     },
                     blocks: &[
-                        TBlock::Media(
+                        Block::Media(
                             TMediaBlock {
                                 type_: MediaType::Image,
                                 target: Span {

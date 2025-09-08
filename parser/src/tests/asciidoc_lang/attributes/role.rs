@@ -37,12 +37,12 @@ mod assign_roles_to_blocks {
 
     use crate::{
         Parser,
-        blocks::{Block, IsBlock},
+        blocks::IsBlock,
         tests::{
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+                blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -79,7 +79,7 @@ This is a sidebar with a role assigned to it, rolename.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new(
                 "[.rolename]\n****\nThis is a sidebar with a role assigned to it, rolename.\n****",
             ),
@@ -90,8 +90,8 @@ This is a sidebar with a role assigned to it, rolename.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with a role assigned to it, rolename.",
@@ -161,7 +161,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[.role1.role2]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -169,8 +169,8 @@ The role values are turned into a space-separated list of values, `role1 role2`.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",
@@ -241,7 +241,7 @@ This is a sidebar with one role assigned to it, rolename.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[role=rolename]\n****\nThis is a sidebar with one role assigned to it, rolename.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -249,8 +249,8 @@ This is a sidebar with one role assigned to it, rolename.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with one role assigned to it, rolename.",
@@ -326,7 +326,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[role=\"role1 role2\"]\n****\nThis is a sidebar with two roles assigned to it, role1 and role2.\n****"
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -334,8 +334,8 @@ This is a sidebar with two roles assigned to it, role1 and role2.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",

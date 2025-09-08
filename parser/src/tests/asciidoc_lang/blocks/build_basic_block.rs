@@ -2,12 +2,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{Block, ContentModel, IsBlock, MediaType},
+    blocks::{ContentModel, IsBlock, MediaType},
     tests::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{TBlock, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -99,7 +99,7 @@ This is more content in the sidebar block.
                 },
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Text in your document.",
@@ -120,9 +120,9 @@ This is more content in the sidebar block.
                     anchor: None,
                     attrlist: None,
                 },),
-                TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                Block::CompoundDelimited(TCompoundDelimitedBlock {
                     blocks: &[
-                        TBlock::Simple(TSimpleBlock {
+                        Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "This is content in a sidebar block.",
@@ -143,7 +143,7 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        TBlock::Media(TMediaBlock {
+                        Block::Media(TMediaBlock {
                             type_: MediaType::Image,
                             target: Span {
                                 data: "name.png",
@@ -171,7 +171,7 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        TBlock::Simple(TSimpleBlock {
+                        Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "This is more content in the sidebar block.",
@@ -246,7 +246,7 @@ include::example$block.adoc[tag=opt-listing]
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
+    let mi = crate::blocks::Block::parse(
         crate::Span::new("[listing]\nsudo dnf install asciidoc"),
         &mut parser,
     )
@@ -255,7 +255,7 @@ include::example$block.adoc[tag=opt-listing]
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "sudo dnf install asciidoc",
@@ -312,7 +312,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
+    let mi = crate::blocks::Block::parse(
         crate::Span::new("[quote]\nNever do today what you can put off `'til tomorrow."),
         &mut parser,
     )
@@ -321,7 +321,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Never do today what you can put off `'til tomorrow.",

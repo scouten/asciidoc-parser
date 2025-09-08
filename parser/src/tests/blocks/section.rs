@@ -4,12 +4,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MediaType, SectionBlock, metadata::BlockMetadata},
+    blocks::{ContentModel, IsBlock, MediaType, metadata::BlockMetadata},
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -21,7 +21,9 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser).unwrap();
+    let b1 =
+        crate::blocks::SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser)
+            .unwrap();
 
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
@@ -30,34 +32,40 @@ fn impl_clone() {
 #[test]
 fn err_empty_source() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
+    assert!(crate::blocks::SectionBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
 }
 
 #[test]
 fn err_only_spaces() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&BlockMetadata::new("    "), &mut parser).is_none());
+    assert!(crate::blocks::SectionBlock::parse(&BlockMetadata::new("    "), &mut parser).is_none());
 }
 
 #[test]
 fn err_not_section() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&BlockMetadata::new("blah blah"), &mut parser).is_none());
+    assert!(
+        crate::blocks::SectionBlock::parse(&BlockMetadata::new("blah blah"), &mut parser).is_none()
+    );
 }
 
 #[test]
 fn err_missing_space_before_title() {
     let mut parser = Parser::default();
-    assert!(SectionBlock::parse(&BlockMetadata::new("=blah blah"), &mut parser).is_none());
+    assert!(
+        crate::blocks::SectionBlock::parse(&BlockMetadata::new("=blah blah"), &mut parser)
+            .is_none()
+    );
 }
 
 #[test]
 fn simplest_section_block() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser)
-        .unwrap()
-        .unwrap_if_no_warnings();
+    let mi =
+        crate::blocks::SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser)
+            .unwrap()
+            .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -111,9 +119,12 @@ fn simplest_section_block() {
 fn has_child_block() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(&BlockMetadata::new("== Section Title\n\nabc"), &mut parser)
-        .unwrap()
-        .unwrap_if_no_warnings();
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Section Title\n\nabc"),
+        &mut parser,
+    )
+    .unwrap()
+    .unwrap_if_no_warnings();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -138,7 +149,7 @@ fn has_child_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -187,7 +198,7 @@ fn has_child_block() {
 fn has_macro_block_with_extra_blank_line() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(
+    let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,height=400]\n\n"),
         &mut parser,
     )
@@ -217,7 +228,7 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[TBlock::Media(TMediaBlock {
+            blocks: &[Block::Media(TMediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "bar",
@@ -289,7 +300,7 @@ fn has_macro_block_with_extra_blank_line() {
 fn has_child_block_with_errors() {
     let mut parser = Parser::default();
 
-    let maw = SectionBlock::parse(
+    let maw = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         &mut parser,
     )
@@ -320,7 +331,7 @@ fn has_child_block_with_errors() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[TBlock::Media(TMediaBlock {
+            blocks: &[Block::Media(TMediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "bar",
@@ -405,7 +416,7 @@ fn has_child_block_with_errors() {
 fn dont_stop_at_child_section() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(
+    let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"),
         &mut parser,
     )
@@ -436,7 +447,7 @@ fn dont_stop_at_child_section() {
                 offset: 3,
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -457,7 +468,7 @@ fn dont_stop_at_child_section() {
                     anchor: None,
                     attrlist: None,
                 }),
-                TBlock::Section(TSectionBlock {
+                Block::Section(TSectionBlock {
                     level: 2,
                     section_title: Span {
                         data: "Section 2",
@@ -465,7 +476,7 @@ fn dont_stop_at_child_section() {
                         col: 5,
                         offset: 27,
                     },
-                    blocks: &[TBlock::Simple(TSimpleBlock {
+                    blocks: &[Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "def",
@@ -526,7 +537,7 @@ fn dont_stop_at_child_section() {
 fn stop_at_peer_section() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(
+    let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"),
         &mut parser,
     )
@@ -556,7 +567,7 @@ fn stop_at_peer_section() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -605,7 +616,7 @@ fn stop_at_peer_section() {
 fn stop_at_ancestor_section() {
     let mut parser = Parser::default();
 
-    let mi = SectionBlock::parse(
+    let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"),
         &mut parser,
     )
@@ -635,7 +646,7 @@ fn stop_at_ancestor_section() {
                 col: 5,
                 offset: 4,
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",

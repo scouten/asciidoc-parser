@@ -60,7 +60,7 @@ mod context {
 
     use crate::{
         Parser,
-        blocks::{Block, ContentModel, IsBlock, is_built_in_context},
+        blocks::{ContentModel, IsBlock, is_built_in_context},
         content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
     };
@@ -101,7 +101,7 @@ You can think of the context as the block's type.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new("== Section Title\n\nContent of section."),
             &mut parser,
         )
@@ -158,7 +158,7 @@ For example, all sections implicitly have the compound content model because a s
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new("== Section Title\n\nContent of section."),
             &mut parser,
         )
@@ -180,9 +180,10 @@ All literal blocks implicitly have the verbatim content model because the purpos
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new("....\nliteral text\n...."), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi =
+            crate::blocks::Block::parse(crate::Span::new("....\nliteral text\n...."), &mut parser)
+                .unwrap_if_no_warnings()
+                .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
     }
@@ -522,7 +523,7 @@ In the converter, these blocks must be accessed from their parent block.
 mod block_style {
     use crate::{
         Parser,
-        blocks::{Block, ContentModel, IsBlock},
+        blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
         tests::sdd::{non_normative, verifies},
     };
@@ -571,7 +572,7 @@ The context of the block is still the same, but it has additional metadata to in
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new("[source,ruby]\n----\nputs \"Hello, World!\"\n----"),
             &mut parser,
         )

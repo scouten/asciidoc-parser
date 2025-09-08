@@ -30,12 +30,12 @@ You can assign one or more options to a block using the shorthand or formal synt
 
     use crate::{
         Parser,
-        blocks::{Block, IsBlock},
+        blocks::IsBlock,
         tests::{
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+                blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -65,7 +65,7 @@ This is a sidebar with an option assigned to it, named option.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[%option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -73,8 +73,8 @@ This is a sidebar with an option assigned to it, named option.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with an option assigned to it, named option.",
@@ -152,7 +152,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[%option1%option2]\n****\nThis is a sidebar with two options assigned to it, named option1 and option2.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -160,8 +160,8 @@ This is a sidebar with two options assigned to it, named option1 and option2.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with two options assigned to it, named option1 and option2.",
@@ -247,7 +247,7 @@ For instance, consider a table with the three built-in option values, `header`, 
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[%header%footer%autowidth,cols=2*~]\n|===\n|Cell A1 |Cell B1\n\n|Cell A2 |Cell B2\n\n|Cell A3 |Cell B3\n|===",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -257,7 +257,7 @@ For instance, consider a table with the three built-in option values, `header`, 
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "|===\n|Cell A1 |Cell B1",
@@ -338,7 +338,7 @@ This is a sidebar with an option assigned to it, named option.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[opts=option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -346,8 +346,8 @@ This is a sidebar with an option assigned to it, named option.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with an option assigned to it, named option.",
@@ -424,7 +424,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[opts=\"option1,option2\"]\n****\nThis is a sidebar with two options assigned to it, option1 and option2.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -432,8 +432,8 @@ This is a sidebar with two options assigned to it, option1 and option2.
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "This is a sidebar with two options assigned to it, option1 and option2.",
@@ -519,7 +519,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[cols=2*~,opts=\"header,footer,autowidth\"]\n|===\n|Cell A1 |Cell B1\n\n|Cell A2 |Cell B2\n\n|Cell A3 |Cell B3\n|===",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -529,7 +529,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "|===\n|Cell A1 |Cell B1",
@@ -602,13 +602,13 @@ Let's consider `options` when combined with other attributes.
 
     use crate::{
         Parser,
-        blocks::{Block, IsBlock},
+        blocks::IsBlock,
         content::SubstitutionGroup,
         tests::{
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -639,7 +639,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -649,7 +649,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",
@@ -725,7 +725,7 @@ property 2:: does different stuff
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new(
+        let mi = crate::blocks::Block::parse(crate::Span::new(
             "[horizontal,role=properties,opts=step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -735,7 +735,7 @@ property 2:: does different stuff
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",

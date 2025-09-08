@@ -22,7 +22,7 @@ mod image_url_targets {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
+                blocks::{Block, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -72,7 +72,7 @@ include::example$image.adoc[tag=url]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
@@ -165,7 +165,7 @@ include::example$image.adoc[tag=in-url]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",

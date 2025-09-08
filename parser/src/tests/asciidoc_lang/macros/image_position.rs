@@ -33,7 +33,7 @@ mod positioning_attributes {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
+                blocks::{Block, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -86,7 +86,7 @@ include::example$image.adoc[tag=float]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "tiger.png",
@@ -185,7 +185,7 @@ include::example$image.adoc[tag=in-float]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
@@ -237,7 +237,7 @@ mod positioning_roles {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
+                blocks::{Block, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -283,7 +283,7 @@ include::example$image.adoc[tag=role]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "tiger.png",
@@ -380,7 +380,7 @@ include::example$image.adoc[tag=in-role]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",

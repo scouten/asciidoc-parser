@@ -3,14 +3,14 @@ use std::fmt;
 use crate::{
     HasSpan,
     blocks::{IsBlock, SectionBlock},
-    tests::fixtures::{Span, attributes::Attrlist, blocks::TBlock},
+    tests::fixtures::{Span, attributes::Attrlist, blocks::Block},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TSectionBlock {
     pub level: usize,
     pub section_title: Span,
-    pub blocks: &'static [TBlock],
+    pub blocks: &'static [Block],
     pub source: Span,
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,

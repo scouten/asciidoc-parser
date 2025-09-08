@@ -4,12 +4,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     HasSpan, Parser,
-    blocks::{Block, ContentModel, IsBlock, MediaType},
+    blocks::{ContentModel, IsBlock, MediaType},
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -20,13 +20,13 @@ use crate::{
 fn err_missing_space_before_title() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("=blah blah"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("=blah blah"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "=blah blah",
@@ -74,7 +74,7 @@ fn err_missing_space_before_title() {
 fn simplest_section_block() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("== Section Title"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("== Section Title"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -93,7 +93,7 @@ fn simplest_section_block() {
 
     assert_eq!(
         mi.item,
-        TBlock::Section(TSectionBlock {
+        Block::Section(TSectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -132,7 +132,7 @@ fn simplest_section_block() {
 fn has_child_block() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("== Section Title\n\nabc"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("== Section Title\n\nabc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -151,7 +151,7 @@ fn has_child_block() {
 
     assert_eq!(
         mi.item,
-        TBlock::Section(TSectionBlock {
+        Block::Section(TSectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -159,7 +159,7 @@ fn has_child_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -197,7 +197,7 @@ fn has_child_block() {
 
     assert_eq!(
         nested_blocks.next().unwrap(),
-        &TBlock::Simple(TSimpleBlock {
+        &Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -247,7 +247,7 @@ fn has_child_block() {
 fn title() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
+    let mi = crate::blocks::Block::parse(
         crate::Span::new(".other section title\n== Section Title\n\nabc"),
         &mut parser,
     )
@@ -262,7 +262,7 @@ fn title() {
 
     assert_eq!(
         mi.item,
-        TBlock::Section(TSectionBlock {
+        Block::Section(TSectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -270,7 +270,7 @@ fn title() {
                 col: 4,
                 offset: 24,
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -336,7 +336,7 @@ fn title() {
 
     assert_eq!(
         nested_blocks.next().unwrap(),
-        &TBlock::Simple(TSimpleBlock {
+        &Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -386,7 +386,7 @@ fn title() {
 fn warn_child_attrlist_has_extra_comma() {
     let mut parser = Parser::default();
 
-    let maw = Block::parse(
+    let maw = crate::blocks::Block::parse(
         crate::Span::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         &mut parser,
     );
@@ -395,7 +395,7 @@ fn warn_child_attrlist_has_extra_comma() {
 
     assert_eq!(
         mi.item,
-        TBlock::Section(TSectionBlock {
+        Block::Section(TSectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -403,7 +403,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[TBlock::Media(TMediaBlock {
+            blocks: &[Block::Media(TMediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "bar",

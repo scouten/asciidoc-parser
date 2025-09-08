@@ -25,7 +25,7 @@ mod from_url_to_macro {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -80,7 +80,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "https://asciidoctor.org[]",
@@ -146,7 +146,7 @@ The more typical reason, however, is to specify custom link text.
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: r#"Type "https://asciidoctor.org[]" into the location bar of your browser."#,
@@ -187,7 +187,7 @@ mod custom_link_text {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -236,7 +236,7 @@ include::example$url.adoc[tag=irc]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Chat with other Fedora users in the irc://irc.freenode.org/#fedora[Fedora IRC channel].",
@@ -299,7 +299,7 @@ include::example$url.adoc[tag=text]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Ask questions in the https://chat.asciidoc.org[*community chat*].",
@@ -340,7 +340,7 @@ mod link_attributes {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -385,7 +385,7 @@ include::example$url.adoc[tag=css]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Chat with other AsciiDoc users in the https://chat.asciidoc.org[*project chat*^,role=green].",

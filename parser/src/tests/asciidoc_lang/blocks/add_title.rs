@@ -2,13 +2,13 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{Block, ContentModel},
+    blocks::ContentModel,
     content::SubstitutionGroup,
     tests::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -51,7 +51,7 @@ This is the content of the sidebar block.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(crate::Span::new(
+    let block = crate::blocks::Block::parse(crate::Span::new(
         ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****\n",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -60,8 +60,8 @@ This is the content of the sidebar block.
 
     assert_eq!(
         block,
-        TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: &[TBlock::Simple(TSimpleBlock {
+        Block::CompoundDelimited(TCompoundDelimitedBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This is the content of the sidebar block.",
@@ -139,7 +139,7 @@ Don't put a space between the dot and the first character of the title.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(crate::Span::new(
+    let block = crate::blocks::Block::parse(crate::Span::new(
         ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....\n",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -148,7 +148,7 @@ Don't put a space between the dot and the first character of the title.
 
     assert_eq!(
         block,
-        TBlock::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(TRawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
@@ -223,7 +223,7 @@ stages: [ init, verify, deploy ]
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(crate::Span::new(
+    let block = crate::blocks::Block::parse(crate::Span::new(
         ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -232,7 +232,7 @@ stages: [ init, verify, deploy ]
 
     assert_eq!(
         block,
-        TBlock::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(TRawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
@@ -318,7 +318,7 @@ If you don't plant it in a container, it will take over your garden.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(crate::Span::new(
+    let block = crate::blocks::Block::parse(crate::Span::new(
         ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -327,7 +327,7 @@ If you don't plant it in a container, it will take over your garden.
 
     assert_eq!(
         block,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",

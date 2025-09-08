@@ -9,11 +9,10 @@ mod dispatcher {
 
     use crate::{
         Parser,
-        blocks::Block,
         parser::ModificationContext,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
     };
@@ -26,7 +25,7 @@ mod dispatcher {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
             ),
@@ -37,7 +36,7 @@ mod dispatcher {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
@@ -105,13 +104,12 @@ mod quotes {
 
     use crate::{
         Parser,
-        blocks::Block,
         content::{Content, SubstitutionGroup, SubstitutionStep},
         parser::ModificationContext,
         strings::CowStr,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
     };
@@ -407,13 +405,14 @@ mod quotes {
     #[test]
     fn should_ignore_enclosing_square_brackets_when_processing_formatted_text_with_attribute() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("nums = [1, 2, 3, [.blue]#4#]"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("nums = [1, 2, 3, [.blue]#4#]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "nums = [1, 2, 3, [.blue]#4#]",
@@ -613,13 +612,13 @@ mod quotes {
     #[test]
     fn should_ignore_role_that_ends_with_transitional_role_on_constrained_monospace_span() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("[foox-]`leave it alone`"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("[foox-]`leave it alone`"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[foox-]`leave it alone`",
@@ -646,13 +645,13 @@ mod quotes {
     #[test]
     fn escaped_single_line_constrained_monospace_string_with_forced_compat_role() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"[x-]\`leave it alone`"#), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new(r#"[x-]\`leave it alone`"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"[x-]\`leave it alone`"#,
@@ -679,13 +678,13 @@ mod quotes {
     #[test]
     fn escaped_forced_compat_role_on_single_line_constrained_monospace_string() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"\[x-]`just *mono*`"#), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new(r#"\[x-]`just *mono*`"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\[x-]`just *mono*`"#,
@@ -717,13 +716,14 @@ mod quotes {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(crate::Span::new("`a few\n<{monospaced}> words`"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("`a few\n<{monospaced}> words`"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "`a few\n<{monospaced}> words`",
@@ -1379,13 +1379,12 @@ mod macros {
 
     use crate::{
         Parser,
-        blocks::Block,
         content::{Content, SubstitutionStep},
         parser::ModificationContext,
         strings::CowStr,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
     };
@@ -1393,13 +1392,13 @@ mod macros {
     #[test]
     fn a_single_line_link_macro_should_be_interpreted_as_a_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("link:/home.html[]"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("link:/home.html[]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "link:/home.html[]",
@@ -1426,13 +1425,13 @@ mod macros {
     #[test]
     fn a_single_line_link_macro_with_text_should_be_interpreted_as_a_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("link:/home.html[Home]"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("link:/home.html[Home]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "link:/home.html[Home]",
@@ -1459,13 +1458,16 @@ mod macros {
     #[test]
     fn a_mailto_macro_should_be_interpreted_as_a_mailto_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("mailto:doc.writer@asciidoc.org[]"), &mut p);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("mailto:doc.writer@asciidoc.org[]"),
+            &mut p,
+        );
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[]",
@@ -1492,7 +1494,7 @@ mod macros {
     #[test]
     fn a_mailto_macro_with_text_should_be_interpreted_as_a_mailto_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("mailto:doc.writer@asciidoc.org[Doc Writer]"),
             &mut p,
         );
@@ -1501,7 +1503,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer]",
@@ -1528,7 +1530,7 @@ mod macros {
     #[test]
     fn a_mailto_macro_with_text_and_subject_should_be_interpreted_as_a_mailto_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]"),
             &mut p,
         );
@@ -1537,7 +1539,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]",
@@ -1564,7 +1566,7 @@ mod macros {
     #[test]
     fn a_mailto_macro_with_text_subject_and_body_should_be_interpreted_as_a_mailto_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]",
             ),
@@ -1575,7 +1577,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]",
@@ -1602,7 +1604,7 @@ mod macros {
     #[test]
     fn a_mailto_macro_with_subject_and_body_only_should_use_e_mail_as_text() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
             ),
@@ -1613,7 +1615,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
@@ -1640,7 +1642,7 @@ mod macros {
     #[test]
     fn a_mailto_macro_supports_id_and_role_attributes() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("mailto:doc.writer@asciidoc.org[,id=contact,role=icon]"),
             &mut p,
         );
@@ -1649,7 +1651,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[,id=contact,role=icon]",
@@ -1716,13 +1718,13 @@ mod macros {
     fn should_recognize_inline_email_addresses() {
         for (input, expected) in EMAIL_ADDRESSES {
             let mut p = Parser::default();
-            let maw = Block::parse(crate::Span::new(input), &mut p);
+            let maw = crate::blocks::Block::parse(crate::Span::new(input), &mut p);
 
             let block = maw.item.unwrap().item;
 
             assert_eq!(
                 block,
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: input,
@@ -1750,13 +1752,14 @@ mod macros {
     #[test]
     fn should_recognize_inline_email_address_containing_an_ampersand() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("bert&ernie@sesamestreet.com"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("bert&ernie@sesamestreet.com"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "bert&ernie@sesamestreet.com",
@@ -1783,13 +1786,14 @@ mod macros {
     #[test]
     fn should_recognize_inline_email_address_surrounded_by_angle_brackets() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("<doc.writer@asciidoc.org>"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("<doc.writer@asciidoc.org>"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "<doc.writer@asciidoc.org>",
@@ -1816,13 +1820,14 @@ mod macros {
     #[test]
     fn should_ignore_escaped_inline_email_address() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("\\doc.writer@asciidoc.org"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("\\doc.writer@asciidoc.org"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "\\doc.writer@asciidoc.org",
@@ -1849,13 +1854,13 @@ mod macros {
     #[test]
     fn a_single_line_raw_url_should_be_interpreted_as_a_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("http://google.com"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("http://google.com"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com",
@@ -1882,13 +1887,14 @@ mod macros {
     #[test]
     fn a_single_line_raw_url_with_text_should_be_interpreted_as_a_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("http://google.com[Google]"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("http://google.com[Google]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[Google]",
@@ -1915,7 +1921,7 @@ mod macros {
     #[test]
     fn a_multi_line_raw_url_with_text_should_be_interpreted_as_a_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("http://google.com[Google\nHomepage]"),
             &mut p,
         );
@@ -1924,7 +1930,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[Google\nHomepage]",
@@ -1957,7 +1963,7 @@ mod macros {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("http://google.com[{google_homepage}]"),
             &mut p,
         );
@@ -1966,7 +1972,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[{google_homepage}]",
@@ -1998,7 +2004,7 @@ mod macros {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("http://google.com[\\{google_homepage}]"),
             &mut p,
         );
@@ -2007,7 +2013,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[\\{google_homepage}]",
@@ -2039,7 +2045,7 @@ mod macros {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("http://google.com?q=,[\\{google_homepage}]"),
             &mut p,
         );
@@ -2048,7 +2054,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com?q=,[\\{google_homepage}]",
@@ -2075,13 +2081,13 @@ mod macros {
     #[test]
     fn a_single_line_escaped_raw_url_should_not_be_interpreted_as_a_link() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("\\http://google.com"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("\\http://google.com"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "\\http://google.com",
@@ -2108,7 +2114,7 @@ mod macros {
     #[test]
     fn a_comma_separated_list_of_links_should_not_include_commas_in_links() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("http://foo.com, http://bar.com, http://example.org"),
             &mut p,
         );
@@ -2117,7 +2123,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://foo.com, http://bar.com, http://example.org",
@@ -2144,13 +2150,13 @@ mod macros {
     #[test]
     fn a_single_line_image_macro_should_be_interpreted_as_an_image() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("image:tiger.png[]"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("image:tiger.png[]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.png[]",
@@ -2177,13 +2183,16 @@ mod macros {
     #[test]
     fn should_replace_underscore_and_hyphen_with_space_in_generated_alt_text_for_an_inline_image() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("image:tiger-with-family_1.png[]"), &mut p);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("image:tiger-with-family_1.png[]"),
+            &mut p,
+        );
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger-with-family_1.png[]",
@@ -2210,13 +2219,13 @@ mod macros {
     #[test]
     fn a_single_line_image_macro_with_text_should_be_interpreted_as_an_image_with_alt_text() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("image:tiger.png[Tiger]"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("image:tiger.png[Tiger]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.png[Tiger]",
@@ -2243,7 +2252,7 @@ mod macros {
     #[test]
     fn should_encode_special_characters_in_alt_text_of_inline_image() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"image:tiger-roar.png[A tiger's "roar" is < a bear's "growl"]"#),
             &mut p,
         );
@@ -2252,7 +2261,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger-roar.png[A tiger's "roar" is < a bear's "growl"]"#,
@@ -2279,13 +2288,13 @@ mod macros {
     #[test]
     fn an_image_macro_with_svg_image_and_text_should_be_interpreted_as_an_image_with_alt_text() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("image:tiger.svg[Tiger]"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("image:tiger.svg[Tiger]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.svg[Tiger]",
@@ -2360,7 +2369,7 @@ mod macros {
     fn a_single_line_image_macro_with_text_containing_escaped_square_bracket_should_be_interpreted_as_an_image_with_alt_text()
      {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"image:tiger.png[[Another\] Tiger]"#),
             &mut p,
         );
@@ -2369,7 +2378,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[[Another\] Tiger]"#,
@@ -2396,13 +2405,13 @@ mod macros {
     #[test]
     fn an_escaped_image_macro_should_not_be_interpreted_as_an_image() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"\image:tiger.png[]"#), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new(r#"\image:tiger.png[]"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\image:tiger.png[]"#,
@@ -2430,7 +2439,7 @@ mod macros {
     fn a_single_line_image_macro_with_text_and_dimensions_should_be_interpreted_as_an_image_with_alt_text_and_dimensions()
      {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"image:tiger.png[Tiger, 200, 100]"#),
             &mut p,
         );
@@ -2439,7 +2448,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, 200, 100]"#,
@@ -2482,7 +2491,7 @@ mod macros {
     fn a_single_line_image_macro_with_text_and_link_should_be_interpreted_as_a_linked_image_with_alt_text()
      {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 r#"image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]"#,
             ),
@@ -2493,7 +2502,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]"#,
@@ -2526,7 +2535,7 @@ mod macros {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"image:tiger.png[Tiger, link=self]"#),
             &mut p,
         );
@@ -2535,7 +2544,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, link=self]"#,
@@ -2579,7 +2588,7 @@ mod macros {
     fn rel_noopener_should_be_added_to_an_image_with_a_link_that_targets_the_blank_window() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=_blank]"#,
             ),
@@ -2590,7 +2599,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=_blank]"#,
@@ -2619,7 +2628,7 @@ mod macros {
      {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=name,opts=noopener]"#,
             ),
@@ -2630,7 +2639,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=name,opts=noopener]"#,
@@ -2658,7 +2667,7 @@ mod macros {
     fn rel_nofollow_should_be_added_to_an_image_with_a_link_when_the_nofollow_option_is_set() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]"#,
             ),
@@ -2669,7 +2678,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]"#,
@@ -2698,7 +2707,7 @@ mod macros {
      {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("image:tiger.png[Another\nAwesome\nTiger, 200,\n100]"),
             &mut p,
         );
@@ -2707,7 +2716,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.png[Another\nAwesome\nTiger, 200,\n100]",
@@ -2735,7 +2744,7 @@ mod macros {
     fn an_inline_image_macro_with_a_url_target_should_be_interpreted_as_an_image() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#),
             &mut p,
         );
@@ -2744,7 +2753,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#,
@@ -2772,7 +2781,7 @@ mod macros {
     fn an_inline_image_macro_with_a_float_attribute_should_be_interpreted_as_a_floating_image() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 r#"image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!"#,
             ),
@@ -2783,7 +2792,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!"#,
@@ -2816,7 +2825,7 @@ mod macros {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"Beware of the image:tiger.png[tiger]."#),
             &mut p,
         );
@@ -2825,7 +2834,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:tiger.png[tiger]."#,
@@ -2858,7 +2867,7 @@ mod macros {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"Beware of the image:/tiger.png[tiger]."#),
             &mut p,
         );
@@ -2867,7 +2876,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:/tiger.png[tiger]."#,
@@ -2899,7 +2908,7 @@ mod macros {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#),
             &mut p,
         );
@@ -2908,7 +2917,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#,
@@ -2936,7 +2945,7 @@ mod macros {
     fn should_match_an_inline_image_macro_if_target_contains_a_space_character() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"Beware of the image:big cats.png[] around here."#),
             &mut p,
         );
@@ -2945,7 +2954,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:big cats.png[] around here."#,
@@ -2973,7 +2982,7 @@ mod macros {
     fn should_not_match_an_inline_image_macro_if_target_contains_a_newline_character() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("Fear not. There are no image:big\ncats.png[] around here."),
             &mut p,
         );
@@ -2982,7 +2991,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Fear not. There are no image:big\ncats.png[] around here.",
@@ -3010,7 +3019,7 @@ mod macros {
     fn should_not_match_an_inline_image_macro_if_target_begins_with_space_character() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("Fear not. There are no image: big cats.png[] around here."),
             &mut p,
         );
@@ -3019,7 +3028,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Fear not. There are no image: big cats.png[] around here.",
@@ -3047,7 +3056,7 @@ mod macros {
     fn should_not_match_an_inline_image_macro_if_target_ends_with_space_character() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("Fear not. There are no image:big cats.png [] around here."),
             &mut p,
         );
@@ -3056,7 +3065,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Fear not. There are no image:big cats.png [] around here.",
@@ -3084,7 +3093,7 @@ mod macros {
     fn should_not_detect_a_block_image_macro_found_inline() {
         let mut p = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("Not an inline image macro image::tiger.png[]."),
             &mut p,
         );
@@ -3093,7 +3102,7 @@ mod macros {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Not an inline image macro image::tiger.png[].",
@@ -4230,14 +4239,13 @@ mod passthroughs {
 
     use crate::{
         Parser,
-        blocks::Block,
         content::{
             Content, Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough,
         },
         parser::{ModificationContext, QuoteType},
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
     };
@@ -4391,13 +4399,14 @@ mod passthroughs {
     #[test]
     fn should_not_crash_if_role_on_passthrough_is_enclosed_in_quotes_1() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("['role']\\++This++++++++++++"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("['role']\\++This++++++++++++"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "['role']\\++This++++++++++++",
@@ -4424,7 +4433,7 @@ mod passthroughs {
     #[test]
     fn should_not_crash_if_role_on_passthrough_is_enclosed_in_quotes_2() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("['role']\\+++++++++This++++++++++++"),
             &mut p,
         );
@@ -4433,7 +4442,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "['role']\\+++++++++This++++++++++++",
@@ -4460,7 +4469,7 @@ mod passthroughs {
     #[test]
     fn should_allow_inline_double_plus_passthrough_to_be_escaped_using_backslash() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("you need to replace `int a = n\\++;` with `int a = ++n;`!"),
             &mut p,
         );
@@ -4469,7 +4478,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "you need to replace `int a = n\\++;` with `int a = ++n;`!",
@@ -4496,13 +4505,13 @@ mod passthroughs {
     #[test]
     fn should_allow_inline_double_plus_passthrough_with_attributes_to_be_escaped_using_backslash() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"=[attrs]\\++text++"#), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new(r#"=[attrs]\\++text++"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"=[attrs]\\++text++"#,
@@ -4629,7 +4638,7 @@ mod passthroughs {
         // TO DO: Restore test when macros are supported.
 
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(
                 "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
             ),
@@ -4640,7 +4649,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
@@ -4845,13 +4854,13 @@ mod passthroughs {
     #[test]
     fn should_allow_content_of_inline_pass_macro_to_be_empty() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("pass:[]"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("pass:[]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "pass:[]",
@@ -4948,7 +4957,7 @@ mod passthroughs {
     #[test]
     fn should_restore_nested_passthroughs() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+."),
             &mut p,
         );
@@ -4957,7 +4966,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.",
@@ -4987,13 +4996,13 @@ mod passthroughs {
      {
         // TO DO: Enable this test when macro substitution is implemented.
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("pass:m[.] pass:[.]"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("pass:m[.] pass:[.]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "pass:m[.] pass:[.]",
@@ -5021,7 +5030,7 @@ mod passthroughs {
     fn should_honor_role_on_double_dollar_passthrough() {
         // NOTE: Not in the Ruby test suite.
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("Print the version using [var]$${asciidoctor-version}$$."),
             &mut p,
         );
@@ -5030,7 +5039,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Print the version using [var]$${asciidoctor-version}$$.",
@@ -5057,7 +5066,7 @@ mod passthroughs {
     #[test]
     fn should_honor_role_on_double_plus_passthrough() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("Print the version using [var]++{asciidoctor-version}++."),
             &mut p,
         );
@@ -5066,7 +5075,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Print the version using [var]++{asciidoctor-version}++.",
@@ -5155,13 +5164,14 @@ mod passthroughs {
     #[test]
     fn inline_pass_macro_with_a_composite_sub() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("pass:verbatim[<{backend}>]"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("pass:verbatim[<{backend}>]"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "pass:verbatim[<{backend}>]",
@@ -5188,13 +5198,16 @@ mod passthroughs {
     #[test]
     fn should_support_constrained_passthrough_in_middle_of_monospace_span() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("a `foo +bar+ baz` kind of thing"), &mut p);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("a `foo +bar+ baz` kind of thing"),
+            &mut p,
+        );
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "a `foo +bar+ baz` kind of thing",
@@ -5222,13 +5235,13 @@ mod passthroughs {
     fn should_support_constrained_passthrough_in_monospace_span_preceded_by_escaped_boxed_attrlist_with_transitional_role()
      {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"\[x-]`foo +bar+ baz`"#), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new(r#"\[x-]`foo +bar+ baz`"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\[x-]`foo +bar+ baz`"#,
@@ -5256,13 +5269,14 @@ mod passthroughs {
     fn should_treat_monospace_phrase_with_escaped_boxed_attrlist_with_transitional_role_as_monospace()
      {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"\[x-]`*foo* +bar+ baz`"#), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new(r#"\[x-]`*foo* +bar+ baz`"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\[x-]`*foo* +bar+ baz`"#,
@@ -5290,13 +5304,13 @@ mod passthroughs {
     fn should_ignore_escaped_attrlist_with_transitional_role_on_monospace_phrase_if_not_proceeded_by_bracket()
      {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"\x-]`*foo* +bar+ baz`"#), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new(r#"\x-]`*foo* +bar+ baz`"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\x-]`*foo* +bar+ baz`"#,
@@ -5323,7 +5337,7 @@ mod passthroughs {
     #[test]
     fn should_not_process_passthrough_inside_transitional_literal_monospace_span() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("a [x-]`foo +bar+ baz` kind of thing"),
             &mut p,
         );
@@ -5332,7 +5346,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "a [x-]`foo +bar+ baz` kind of thing",
@@ -5359,13 +5373,13 @@ mod passthroughs {
     #[test]
     fn should_support_constrained_passthrough_in_monospace_phrase_with_attrlist() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("[.role]`foo +bar+ baz`"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("[.role]`foo +bar+ baz`"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[.role]`foo +bar+ baz`",
@@ -5392,13 +5406,13 @@ mod passthroughs {
     #[test]
     fn should_support_attrlist_on_a_literal_monospace_phrase() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("[.baz]`+foo--bar+`"), &mut p);
+        let maw = crate::blocks::Block::parse(crate::Span::new("[.baz]`+foo--bar+`"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[.baz]`+foo--bar+`",
@@ -5425,13 +5439,14 @@ mod passthroughs {
     #[test]
     fn should_not_process_an_escaped_passthrough_macro_inside_a_monospaced_phrase() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"use the `\pass:c[]` macro"#), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new(r#"use the `\pass:c[]` macro"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"use the `\pass:c[]` macro"#,
@@ -5459,7 +5474,7 @@ mod passthroughs {
     fn should_not_process_an_escaped_passthrough_macro_inside_a_monospaced_phrase_with_attributes()
     {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"use the [syntax]`\pass:c[]` macro"#),
             &mut p,
         );
@@ -5468,7 +5483,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"use the [syntax]`\pass:c[]` macro"#,
@@ -5500,7 +5515,7 @@ mod passthroughs {
             ModificationContext::Anywhere,
         );
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"use `\+{author}+` to show an attribute reference"#),
             &mut p,
         );
@@ -5509,7 +5524,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"use `\+{author}+` to show an attribute reference"#,
@@ -5548,12 +5563,11 @@ mod replacements {
 
     use crate::{
         Parser,
-        blocks::Block,
         content::{Content, SubstitutionStep},
         strings::CowStr,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
     };
@@ -5561,13 +5575,16 @@ mod replacements {
     #[test]
     fn unescapes_xml_entities() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("< &quot; &there4; &#34; &#x22; >"), &mut p);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("< &quot; &there4; &#34; &#x22; >"),
+            &mut p,
+        );
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "< &quot; &there4; &#34; &#x22; >",
@@ -5594,13 +5611,14 @@ mod replacements {
     #[test]
     fn replaces_arrows() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new(r#"<- -> <= => \<- \-> \<= \=>"#), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new(r#"<- -> <= => \<- \-> \<= \=>"#), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"<- -> <= => \<- \-> \<= \=>"#,
@@ -5707,7 +5725,7 @@ foo&#8201;&#8212;&#8201;"#;
     #[test]
     fn replaces_punctuation() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new(r#"John's Hideout is the Whites`' place... foo\'bar"#),
             &mut p,
         );
@@ -5716,7 +5734,7 @@ foo&#8201;&#8212;&#8201;"#;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"John's Hideout is the Whites`' place... foo\'bar"#,
@@ -5787,11 +5805,10 @@ mod post_replacements {
 
     use crate::{
         Parser,
-        blocks::Block,
         tests::fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
     };
@@ -5799,13 +5816,14 @@ mod post_replacements {
     #[test]
     fn line_break_inserted_after_line_with_line_break_character() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("First line +\nSecond line"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("First line +\nSecond line"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line +\nSecond line",
@@ -5832,7 +5850,7 @@ mod post_replacements {
     #[test]
     fn line_break_inserted_after_line_wrap_with_hardbreaks_enabled() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("[%hardbreaks]\nFirst line\nSecond line"),
             &mut p,
         );
@@ -5841,7 +5859,7 @@ mod post_replacements {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line\nSecond line",
@@ -5880,7 +5898,7 @@ mod post_replacements {
     #[test]
     fn line_break_character_stripped_from_end_of_line_with_hardbreaks_enabled() {
         let mut p = Parser::default();
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("[%hardbreaks]\nFirst line +\nSecond line"),
             &mut p,
         );
@@ -5889,7 +5907,7 @@ mod post_replacements {
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line +\nSecond line",
@@ -5928,13 +5946,14 @@ mod post_replacements {
     #[test]
     fn line_break_not_inserted_for_single_line_with_hardbreaks_enabled() {
         let mut p = Parser::default();
-        let maw = Block::parse(crate::Span::new("[%hardbreaks]\nFirst line"), &mut p);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("[%hardbreaks]\nFirst line"), &mut p);
 
         let block = maw.item.unwrap().item;
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line",

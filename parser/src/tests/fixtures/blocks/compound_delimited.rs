@@ -3,12 +3,12 @@ use std::fmt;
 use crate::{
     HasSpan,
     blocks::{CompoundDelimitedBlock, IsBlock},
-    tests::fixtures::{Span, attributes::Attrlist, blocks::TBlock},
+    tests::fixtures::{Span, attributes::Attrlist, blocks::Block},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TCompoundDelimitedBlock {
-    pub blocks: &'static [TBlock],
+    pub blocks: &'static [Block],
     pub context: &'static str,
     pub source: Span,
     pub title_source: Option<Span>,

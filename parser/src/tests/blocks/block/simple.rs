@@ -4,12 +4,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     HasSpan, Parser,
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{TBlock, TSimpleBlock},
+        blocks::{Block, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -21,7 +21,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = Block::parse(crate::Span::new("abc"), &mut parser)
+    let b1 = crate::blocks::Block::parse(crate::Span::new("abc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -34,7 +34,7 @@ fn err_empty_source() {
     let mut parser = Parser::default();
 
     assert!(
-        Block::parse(crate::Span::new(""), &mut parser)
+        crate::blocks::Block::parse(crate::Span::new(""), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -45,7 +45,7 @@ fn err_only_spaces() {
     let mut parser = Parser::default();
 
     assert!(
-        Block::parse(crate::Span::new("    "), &mut parser)
+        crate::blocks::Block::parse(crate::Span::new("    "), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -55,13 +55,13 @@ fn err_only_spaces() {
 fn single_line() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("abc"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("abc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -123,13 +123,13 @@ fn single_line() {
 fn multiple_lines() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("abc\ndef"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("abc\ndef"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -177,13 +177,14 @@ fn multiple_lines() {
 fn title() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new(".simple block\nabc\ndef\n"), &mut parser)
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi =
+        crate::blocks::Block::parse(crate::Span::new(".simple block\nabc\ndef\n"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -216,13 +217,13 @@ fn title() {
 fn attrlist() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("[sidebar]\nabc\ndef\n"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("[sidebar]\nabc\ndef\n"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -301,7 +302,7 @@ fn attrlist() {
 fn title_and_attrlist() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
+    let mi = crate::blocks::Block::parse(
         crate::Span::new(".title\n[sidebar]\nabc\ndef\n"),
         &mut parser,
     )
@@ -310,7 +311,7 @@ fn title_and_attrlist() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -394,13 +395,13 @@ fn title_and_attrlist() {
 fn consumes_blank_lines_after() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("abc\n\ndef"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("abc\n\ndef"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -448,7 +449,7 @@ fn consumes_blank_lines_after() {
 fn with_block_anchor() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
+    let mi = crate::blocks::Block::parse(
         crate::Span::new("[[notice]]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     )
@@ -457,7 +458,7 @@ fn with_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",
@@ -534,7 +535,7 @@ fn with_block_anchor() {
 fn err_empty_block_anchor() {
     let mut parser = Parser::default();
 
-    let maw = Block::parse(
+    let maw = crate::blocks::Block::parse(
         crate::Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     );
@@ -556,7 +557,7 @@ fn err_empty_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",
@@ -633,7 +634,7 @@ fn err_empty_block_anchor() {
 fn err_invalid_block_anchor() {
     let mut parser = Parser::default();
 
-    let maw = Block::parse(
+    let maw = crate::blocks::Block::parse(
         crate::Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     );
@@ -655,7 +656,7 @@ fn err_invalid_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",
@@ -732,7 +733,7 @@ fn err_invalid_block_anchor() {
 fn unterminated_block_anchor() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
+    let mi = crate::blocks::Block::parse(
         crate::Span::new("[[notice]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     )
@@ -741,7 +742,7 @@ fn unterminated_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",

@@ -169,7 +169,7 @@ mod parse {
         blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -210,7 +210,7 @@ mod parse {
         assert_eq!(
             maw.item.unwrap().item,
             TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "blah blah blah",
@@ -297,7 +297,7 @@ mod example {
         content::SubstitutionGroup,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -359,7 +359,7 @@ mod example {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -380,7 +380,7 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block2",
@@ -432,7 +432,7 @@ mod example {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -457,7 +457,7 @@ mod example {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block2",
@@ -499,7 +499,7 @@ mod example {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -520,8 +520,8 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
+                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "block2",
@@ -585,7 +585,7 @@ mod example {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -610,8 +610,8 @@ mod example {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            &Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "block2",
@@ -715,7 +715,7 @@ mod open {
         content::SubstitutionGroup,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -777,7 +777,7 @@ mod open {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -798,7 +798,7 @@ mod open {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block2",
@@ -850,7 +850,7 @@ mod open {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -875,7 +875,7 @@ mod open {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block2",
@@ -918,7 +918,7 @@ mod open {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -939,7 +939,7 @@ mod open {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "---\nblock2\n---",
@@ -991,7 +991,7 @@ mod open {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -1016,7 +1016,7 @@ mod open {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "---\nblock2\n---",
@@ -1052,7 +1052,7 @@ mod sidebar {
         content::SubstitutionGroup,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -1114,7 +1114,7 @@ mod sidebar {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -1135,7 +1135,7 @@ mod sidebar {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block2",
@@ -1187,7 +1187,7 @@ mod sidebar {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -1212,7 +1212,7 @@ mod sidebar {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block2",
@@ -1254,7 +1254,7 @@ mod sidebar {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -1275,8 +1275,8 @@ mod sidebar {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
+                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "block2",
@@ -1340,7 +1340,7 @@ mod sidebar {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -1365,8 +1365,8 @@ mod sidebar {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            &Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "block2",
@@ -1511,7 +1511,7 @@ mod quote {
         content::SubstitutionGroup,
         tests::fixtures::{
             Span,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -1573,7 +1573,7 @@ mod quote {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -1594,7 +1594,7 @@ mod quote {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block2",
@@ -1646,7 +1646,7 @@ mod quote {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -1671,7 +1671,7 @@ mod quote {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block2",
@@ -1713,7 +1713,7 @@ mod quote {
             mi.item,
             TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "block1",
@@ -1734,8 +1734,8 @@ mod quote {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
+                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "block2",
@@ -1799,7 +1799,7 @@ mod quote {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "block1",
@@ -1824,8 +1824,8 @@ mod quote {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            &Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "block2",

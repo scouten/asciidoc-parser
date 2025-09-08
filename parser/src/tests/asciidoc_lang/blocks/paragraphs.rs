@@ -5,7 +5,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -70,7 +70,7 @@ include::example$paragraph.adoc[tag=para]
                 },
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Paragraphs don't require any special markup in AsciiDoc.\nA paragraph is just one or more lines of consecutive text.",
@@ -91,7 +91,7 @@ include::example$paragraph.adoc[tag=para]
                     anchor: None,
                     attrlist: None,
                 },),
-                TBlock::Simple(TSimpleBlock {
+                Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "To begin a new paragraph, separate it by at least one empty line from the previous paragraph or block.",

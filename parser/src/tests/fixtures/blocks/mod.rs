@@ -1,5 +1,5 @@
 mod block;
-pub(crate) use block::TBlock;
+pub(crate) use block::Block;
 
 mod compound_delimited;
 pub(crate) use compound_delimited::TCompoundDelimitedBlock;

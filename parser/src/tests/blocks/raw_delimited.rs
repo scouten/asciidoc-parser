@@ -166,7 +166,7 @@ mod parse {
 
     use crate::{
         Parser,
-        blocks::{RawDelimitedBlock, metadata::BlockMetadata},
+        blocks::metadata::BlockMetadata,
         tests::fixtures::{Span, warnings::TWarning},
         warnings::WarningType,
     };
@@ -174,31 +174,50 @@ mod parse {
     #[test]
     fn err_invalid_delimiter() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new(""), &mut parser).is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("..."), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("..."), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("++++x"), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("++++x"), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("____x"), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("____x"), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("====x"), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("====x"), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("==\n=="), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("==\n=="), &mut parser)
+                .is_none()
+        );
     }
 
     #[test]
     fn err_unterminated() {
         let mut parser = Parser::default();
 
-        let maw =
-            RawDelimitedBlock::parse(&BlockMetadata::new("....\nblah blah blah"), &mut parser)
-                .unwrap();
+        let maw = crate::blocks::RawDelimitedBlock::parse(
+            &BlockMetadata::new("....\nblah blah blah"),
+            &mut parser,
+        )
+        .unwrap();
 
         assert_eq!(
             maw.warnings,
@@ -220,7 +239,7 @@ mod comment {
 
     use crate::{
         Parser,
-        blocks::{ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::fixtures::{Span, blocks::TRawDelimitedBlock, content::TContent},
     };
@@ -228,7 +247,9 @@ mod comment {
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        let maw = RawDelimitedBlock::parse(&BlockMetadata::new("////\n////"), &mut parser).unwrap();
+        let maw =
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("////\n////"), &mut parser)
+                .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -279,7 +300,7 @@ mod comment {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        let maw = RawDelimitedBlock::parse(
+        let maw = crate::blocks::RawDelimitedBlock::parse(
             &BlockMetadata::new("////\nline1  \nline2\n////"),
             &mut parser,
         )
@@ -346,7 +367,7 @@ mod comment {
     fn ignores_delimiter_prefix() {
         let mut parser = Parser::default();
 
-        let maw = RawDelimitedBlock::parse(
+        let maw = crate::blocks::RawDelimitedBlock::parse(
             &BlockMetadata::new("////\nline1  \n/////\nline2\n////"),
             &mut parser,
         )
@@ -411,15 +432,15 @@ mod comment {
 }
 
 mod example {
-    use crate::{
-        Parser,
-        blocks::{RawDelimitedBlock, metadata::BlockMetadata},
-    };
+    use crate::{Parser, blocks::metadata::BlockMetadata};
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("====\n===="), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("====\n===="), &mut parser)
+                .is_none()
+        );
     }
 
     #[test]
@@ -427,7 +448,7 @@ mod example {
         let mut parser = Parser::default();
 
         assert!(
-            RawDelimitedBlock::parse(
+            crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new("====\nline1  \nline2\n===="),
                 &mut parser
             )
@@ -441,7 +462,7 @@ mod listing {
 
     use crate::{
         Parser,
-        blocks::{ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::{SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
             Span,
@@ -454,7 +475,9 @@ mod listing {
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        let maw = RawDelimitedBlock::parse(&BlockMetadata::new("----\n----"), &mut parser).unwrap();
+        let maw =
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("----\n----"), &mut parser)
+                .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -505,7 +528,7 @@ mod listing {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        let maw = RawDelimitedBlock::parse(
+        let maw = crate::blocks::RawDelimitedBlock::parse(
             &BlockMetadata::new("----\nline1  \nline2\n----"),
             &mut parser,
         )
@@ -572,7 +595,7 @@ mod listing {
     fn overrides_sub_group_via_subs_attribute() {
         let mut parser = Parser::default();
 
-        let maw = RawDelimitedBlock::parse(
+        let maw = crate::blocks::RawDelimitedBlock::parse(
             &BlockMetadata::new("[subs=quotes]\n----\nline1 < *line2*\n----"),
             &mut parser,
         )
@@ -671,7 +694,7 @@ mod listing {
     fn ignores_delimiter_prefix() {
         let mut parser = Parser::default();
 
-        let maw = RawDelimitedBlock::parse(
+        let maw = crate::blocks::RawDelimitedBlock::parse(
             &BlockMetadata::new("----\nline1  \n-----\nline2\n----"),
             &mut parser,
         )
@@ -749,22 +772,22 @@ mod listing {
 }
 
 mod sidebar {
-    use crate::{
-        Parser,
-        blocks::{RawDelimitedBlock, metadata::BlockMetadata},
-    };
+    use crate::{Parser, blocks::metadata::BlockMetadata};
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("****\n****"), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("****\n****"), &mut parser)
+                .is_none()
+        );
     }
 
     #[test]
     fn multiple_lines() {
         let mut parser = Parser::default();
         assert!(
-            RawDelimitedBlock::parse(
+            crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new("****\nline1  \nline2\n****"),
                 &mut parser
             )
@@ -774,31 +797,40 @@ mod sidebar {
 }
 
 mod table {
-    use crate::{
-        Parser,
-        blocks::{RawDelimitedBlock, metadata::BlockMetadata},
-    };
+    use crate::{Parser, blocks::metadata::BlockMetadata};
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("|===\n|==="), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("|===\n|==="), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new(",===\n,==="), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new(",===\n,==="), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new(":===\n:==="), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new(":===\n:==="), &mut parser)
+                .is_none()
+        );
 
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("!===\n!==="), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("!===\n!==="), &mut parser)
+                .is_none()
+        );
     }
 
     #[test]
     fn multiple_lines() {
         let mut parser = Parser::default();
         assert!(
-            RawDelimitedBlock::parse(
+            crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new("|===\nline1  \nline2\n|==="),
                 &mut parser
             )
@@ -807,7 +839,7 @@ mod table {
 
         let mut parser = Parser::default();
         assert!(
-            RawDelimitedBlock::parse(
+            crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new(",===\nline1  \nline2\n,==="),
                 &mut parser
             )
@@ -816,7 +848,7 @@ mod table {
 
         let mut parser = Parser::default();
         assert!(
-            RawDelimitedBlock::parse(
+            crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new(":===\nline1  \nline2\n:==="),
                 &mut parser
             )
@@ -825,7 +857,7 @@ mod table {
 
         let mut parser = Parser::default();
         assert!(
-            RawDelimitedBlock::parse(
+            crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new("!===\nline1  \nline2\n!==="),
                 &mut parser
             )
@@ -839,7 +871,7 @@ mod pass {
 
     use crate::{
         Parser,
-        blocks::{ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::fixtures::{Span, blocks::TRawDelimitedBlock, content::TContent},
     };
@@ -847,7 +879,9 @@ mod pass {
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        let maw = RawDelimitedBlock::parse(&BlockMetadata::new("++++\n++++"), &mut parser).unwrap();
+        let maw =
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("++++\n++++"), &mut parser)
+                .unwrap();
 
         let mi = maw.item.unwrap().clone();
 
@@ -898,7 +932,7 @@ mod pass {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        let maw = RawDelimitedBlock::parse(
+        let maw = crate::blocks::RawDelimitedBlock::parse(
             &BlockMetadata::new("++++\nline1  \nline2\n++++"),
             &mut parser,
         )
@@ -965,7 +999,7 @@ mod pass {
     fn ignores_delimiter_prefix() {
         let mut parser = Parser::default();
 
-        let maw = RawDelimitedBlock::parse(
+        let maw = crate::blocks::RawDelimitedBlock::parse(
             &BlockMetadata::new("++++\nline1  \n+++++\nline2\n++++"),
             &mut parser,
         )
@@ -1030,22 +1064,22 @@ mod pass {
 }
 
 mod quote {
-    use crate::{
-        Parser,
-        blocks::{RawDelimitedBlock, metadata::BlockMetadata},
-    };
+    use crate::{Parser, blocks::metadata::BlockMetadata};
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        assert!(RawDelimitedBlock::parse(&BlockMetadata::new("____\n____"), &mut parser).is_none());
+        assert!(
+            crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("____\n____"), &mut parser)
+                .is_none()
+        );
     }
 
     #[test]
     fn multiple_lines() {
         let mut parser = Parser::default();
         assert!(
-            RawDelimitedBlock::parse(
+            crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new("____\nline1  \nline2\n____"),
                 &mut parser
             )

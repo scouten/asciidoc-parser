@@ -23,7 +23,7 @@ mod block_image_macro {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
+                blocks::{Block, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -84,7 +84,7 @@ include::example$image.adoc[tag=base]
                     },
                 },
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Content in document.",
@@ -105,7 +105,7 @@ include::example$image.adoc[tag=base]
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Media(TMediaBlock {
+                    Block::Media(TMediaBlock {
                         type_: MediaType::Image,
                         target: Span {
                             data: "sunset.jpg",
@@ -133,7 +133,7 @@ include::example$image.adoc[tag=base]
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Content in document",
@@ -205,7 +205,7 @@ include::example$image.adoc[tag=alt]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "sunset.jpg",
@@ -286,7 +286,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "sunset.jpg",
@@ -377,7 +377,7 @@ include::example$image.adoc[tag=attr]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "sunset.jpg",

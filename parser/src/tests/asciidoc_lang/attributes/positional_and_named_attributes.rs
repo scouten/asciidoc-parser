@@ -17,13 +17,13 @@ mod positional_attribute {
 
     use crate::{
         Parser,
-        blocks::{Block, IsBlock, MediaBlock, metadata::BlockMetadata},
+        blocks::{IsBlock, MediaBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::{
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TSectionBlock, TSimpleBlock},
+                blocks::{Block, TSectionBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -150,7 +150,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
+        let block = crate::blocks::Block::parse(
             crate::Span::new("[#custom-id]\n== Section with Custom ID\n"),
             &mut parser,
         )
@@ -160,7 +160,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
 
         assert_eq!(
             block,
-            TBlock::Section(TSectionBlock {
+            Block::Section(TSectionBlock {
                 level: 1,
                 section_title: Span {
                     data: "Section with Custom ID",
@@ -211,7 +211,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
+        let block = crate::blocks::Block::parse(
             crate::Span::new("[appendix#custom-id]\n== Appendix with Custom ID\n"),
             &mut parser,
         )
@@ -221,7 +221,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
 
         assert_eq!(
             block,
-            TBlock::Section(TSectionBlock {
+            Block::Section(TSectionBlock {
                 level: 1,
                 section_title: Span {
                     data: "Appendix with Custom ID",
@@ -276,7 +276,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
+        let block = crate::blocks::Block::parse(
             crate::Span::new(
                 "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n",
             ),
@@ -289,7 +289,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         // TO DO: This will change when we understand lists.
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "* Work hard\n* Play hard\n* Be happy",
@@ -351,7 +351,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(crate::Span::new(
+        let block = crate::blocks::Block::parse(crate::Span::new(
             "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -360,7 +360,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",

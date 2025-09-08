@@ -83,7 +83,7 @@ mod macros {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
+                blocks::{Block, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -130,7 +130,7 @@ image::sunset.jpg[Sunset]
                         offset: 0
                     }
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "sunset.jpg",
@@ -202,7 +202,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                         offset: 0
                     }
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Click the button with the image:star.png[Star] to favorite the project.",

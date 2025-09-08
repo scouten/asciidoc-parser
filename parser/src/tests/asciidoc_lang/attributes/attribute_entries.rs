@@ -6,7 +6,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
         },
@@ -139,7 +139,7 @@ At the end of the value, press kbd:[Enter].
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "The value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
@@ -228,7 +228,7 @@ That means you don't need to escape special characters such in an HTML tag.
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "The value of the attribute named `lt-attribute` is: {lt-attribute}",
@@ -434,7 +434,7 @@ mod where_declared {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -472,7 +472,7 @@ For attributes that allow it (which includes general purpose attributes), the at
 
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "We are agreed? {agreed}",
@@ -501,7 +501,7 @@ For attributes that allow it (which includes general purpose attributes), the at
 
         assert_eq!(
             block3,
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Are we still agreed? {agreed}",
@@ -557,7 +557,7 @@ mod defining_without_attribute_entry {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -611,7 +611,7 @@ pass:a,q[{attribute-with-formatted-text}]
 
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
@@ -638,7 +638,7 @@ pass:a,q[{attribute-with-formatted-text}]
 
         assert_eq!(
             block2,
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "formatting suppressed: {attribute-with-formatted-text}",

@@ -49,7 +49,7 @@ mod encode_reserved_characters {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -115,7 +115,7 @@ Depending on the capabilities of the web application, the space character can be
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "https://example.org?q=label:%22Requires%20docs%22",
@@ -156,7 +156,7 @@ mod hide_uri_scheme {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TAttribute, TDocument, THeader, TInterpretedValue},
             },
@@ -241,7 +241,7 @@ The prefix will still be present in the link target.
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "https://asciidoctor.org",

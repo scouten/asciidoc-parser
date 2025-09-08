@@ -21,7 +21,7 @@ mod link_attribute {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
+                blocks::{Block, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -73,7 +73,7 @@ image::logo.png[Logo]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "logo.png",
@@ -157,7 +157,7 @@ image::logo.png[Logo,link=https://example.org]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "logo.png",
@@ -237,7 +237,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
@@ -280,7 +280,7 @@ mod link_controls {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TMediaBlock},
+                blocks::{Block, TMediaBlock},
                 document::{TDocument, THeader},
             },
             sdd::{non_normative, verifies},
@@ -334,7 +334,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(TMediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "logo.png",

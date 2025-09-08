@@ -2,12 +2,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{Block, ContentModel, IsBlock},
+    blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
     tests::{
         fixtures::{
             Span,
-            blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -50,7 +50,7 @@ This text will be treated as verbatim content.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(
+    let block = crate::blocks::Block::parse(
         crate::Span::new("....\nThis text will be treated as verbatim content.\n...."),
         &mut parser,
     )
@@ -60,7 +60,7 @@ This text will be treated as verbatim content.
 
     assert_eq!(
         block,
-        TBlock::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(TRawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "This text will be treated as verbatim content.",
@@ -101,7 +101,7 @@ The remaining lines define a block's content.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(
+    let block = crate::blocks::Block::parse(
         crate::Span::new("....\n\n\nThis text will be treated as verbatim content.\n\n\n...."),
         &mut parser,
     )
@@ -111,7 +111,7 @@ The remaining lines define a block's content.
 
     assert_eq!(
         block,
-        TBlock::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(TRawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "\n\nThis text will be treated as verbatim content.\n\n",
@@ -168,7 +168,7 @@ The block metadata (block attribute and anchor lines) goes above the opening del
 
     let mut parser = Parser::default();
 
-    let maw_block = Block::parse(
+    let maw_block = crate::blocks::Block::parse(
         crate::Span::new("....\nThis text will be treated as verbatim content.\n....."),
         &mut parser,
     );
@@ -205,7 +205,7 @@ That's so meta.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(
+    let block = crate::blocks::Block::parse(
         crate::Span::new("====\nThis is an example of an example block.\nThat's so meta.\n===="),
         &mut parser,
     )
@@ -215,8 +215,8 @@ That's so meta.
 
     assert_eq!(
         block,
-        TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: &[TBlock::Simple(TSimpleBlock {
+        Block::CompoundDelimited(TCompoundDelimitedBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This is an example of an example block.\nThat's so meta.",
@@ -304,7 +304,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("////\n////"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("////\n////"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -324,7 +324,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("====\n===="), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("====\n===="), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -344,7 +344,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("----\n----"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("----\n----"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -364,7 +364,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("....\n...."), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("....\n...."), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -384,7 +384,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("--\n--"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("--\n--"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -404,7 +404,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("****\n****"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("****\n****"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -441,7 +441,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("++++\n++++"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("++++\n++++"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -462,7 +462,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(crate::Span::new("____\n____"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("____\n____"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -499,13 +499,13 @@ mod nesting_blocks {
 
     use crate::{
         Parser,
-        blocks::{Block, ContentModel},
+        blocks::ContentModel,
         content::SubstitutionGroup,
         tests::{
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+                blocks::{Block, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -554,7 +554,7 @@ The document header is useful, but not required.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(crate::Span::new(
+        let block = crate::blocks::Block::parse(crate::Span::new(
             "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -563,9 +563,9 @@ The document header is useful, but not required.
 
         assert_eq!(
             block,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Here's a sample AsciiDoc document:",
@@ -586,7 +586,7 @@ The document header is useful, but not required.
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::RawDelimited(TRawDelimitedBlock {
+                    Block::RawDelimited(TRawDelimitedBlock {
                         content: TContent {
                             original: Span {
                                 data: "= Document Title\nAuthor Name\n\nContent goes here.",
@@ -610,7 +610,7 @@ The document header is useful, but not required.
                         attrlist: None,
                         substitution_group: SubstitutionGroup::Verbatim,
                     },),
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "The document header is useful, but not required.",
@@ -677,7 +677,7 @@ Live within the simulated reality without want or fear.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(crate::Span::new(
+        let block = crate::blocks::Block::parse(crate::Span::new(
             "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -686,9 +686,9 @@ Live within the simulated reality without want or fear.
 
         assert_eq!(
             block,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
+                    Block::Simple(TSimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Here are your options:",
@@ -709,8 +709,8 @@ Live within the simulated reality without want or fear.
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
+                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "Escape into the real world.",
@@ -760,8 +760,8 @@ Live within the simulated reality without want or fear.
                             },
                         },),
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
+                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                        blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "Live within the simulated reality without want or fear.",

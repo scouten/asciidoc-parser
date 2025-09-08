@@ -20,7 +20,7 @@ mod link_text_and_named_attributes {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -67,7 +67,7 @@ mailto:join@discuss.example.org[Subscribe]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe]",
@@ -128,7 +128,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,role=email]",
@@ -191,7 +191,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
@@ -239,7 +239,7 @@ mod subject_and_body {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -289,7 +289,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
@@ -354,7 +354,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
@@ -416,7 +416,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
@@ -477,7 +477,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me]",
@@ -538,7 +538,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",

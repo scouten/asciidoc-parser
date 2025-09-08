@@ -5,7 +5,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -56,7 +56,7 @@ fn id() {
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "https://asciidoctor.org[Home,id=home]",
@@ -116,7 +116,7 @@ fn role() {
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=teal]",
@@ -176,7 +176,7 @@ fn title() {
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "https://asciidoctor.org[Home,title=Project home page]",
@@ -236,7 +236,7 @@ fn window() {
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc,window=_blank]",
@@ -298,7 +298,7 @@ fn window_shorthand() {
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
@@ -357,7 +357,7 @@ fn opts() {
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "https://asciidoctor.org[Home,opts=nofollow]",

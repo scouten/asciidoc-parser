@@ -2,12 +2,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{Block, IsBlock},
+    blocks::IsBlock,
     tests::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -46,7 +46,7 @@ Content of delimited example block
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(
+    let block = crate::blocks::Block::parse(
         crate::Span::new("[#the-id-of-this-block]\n====\nContent of delimited example block\n===="),
         &mut parser,
     )
@@ -56,8 +56,8 @@ Content of delimited example block
 
     assert_eq!(
         block,
-        TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: &[TBlock::Simple(TSimpleBlock {
+        Block::CompoundDelimited(TCompoundDelimitedBlock {
+            blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Content of delimited example block",
@@ -143,7 +143,7 @@ Roads? Where we're going, we don't need roads.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(
+    let block = crate::blocks::Block::parse(
         crate::Span::new("[quote#roads]\nRoads? Where we're going, we don't need roads."),
         &mut parser,
     )
@@ -153,7 +153,7 @@ Roads? Where we're going, we don't need roads.
 
     assert_eq!(
         block,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Roads? Where we're going, we don't need roads.",
@@ -210,7 +210,7 @@ Roads? Where we're going, we don't need roads.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(crate::Span::new(
+    let block = crate::blocks::Block::parse(crate::Span::new(
         "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -219,7 +219,7 @@ Roads? Where we're going, we don't need roads.
 
     assert_eq!(
         block,
-        TBlock::Simple(TSimpleBlock {
+        Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Roads? Where we're going, we don't need roads.",

@@ -31,11 +31,10 @@ mod valid_id_characters {
 
     use crate::{
         Parser,
-        blocks::Block,
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
                 warnings::TWarning,
             },
@@ -62,7 +61,7 @@ All the language requires in this case is that the value be non-empty.
 
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
             &mut parser,
         );
@@ -84,7 +83,7 @@ All the language requires in this case is that the value be non-empty.
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This paragraph gets a lot of attention.",
@@ -161,7 +160,7 @@ install the gem
 
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
+        let maw = crate::blocks::Block::parse(
             crate::Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
             &mut parser,
         );
@@ -183,7 +182,7 @@ install the gem
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This paragraph gets a lot of attention.",
@@ -233,12 +232,11 @@ mod block_assignment {
 
     use crate::{
         Parser,
-        blocks::Block,
         tests::{
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
+                blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -273,7 +271,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new("[#goals]\n* Goal 1\n* Goal 2"),
             &mut parser,
         )
@@ -284,7 +282,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "* Goal 1\n* Goal 2",
@@ -338,7 +336,7 @@ In the longhand syntax, you use a standard named attribute.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new("[id=goals]\n* Goal 1\n* Goal 2"),
             &mut parser,
         )
@@ -349,7 +347,7 @@ In the longhand syntax, you use a standard named attribute.
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "* Goal 1\n* Goal 2",
@@ -403,7 +401,7 @@ In the block anchor syntax, you surround the name with double square brackets:
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
+        let mi = crate::blocks::Block::parse(
             crate::Span::new("[[goals]]\n* Goal 1\n* Goal 2"),
             &mut parser,
         )
@@ -414,7 +412,7 @@ In the block anchor syntax, you surround the name with double square brackets:
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
+            Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "* Goal 1\n* Goal 2",
@@ -463,14 +461,14 @@ ____
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(crate::Span::new("[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
+            Block::CompoundDelimited(TCompoundDelimitedBlock {
+                blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Roads? Where we're going, we don't need roads.",

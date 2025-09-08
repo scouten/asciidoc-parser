@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{TBlock, TSimpleBlock},
+            blocks::{Block, TSimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -72,7 +72,7 @@ mod change_subs_when_assigning {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{TBlock, TRawDelimitedBlock},
+                blocks::{Block, TRawDelimitedBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -160,7 +160,7 @@ You can inspect the value stored in an attribute using this trick:
 
         assert_eq!(
             block1,
-            &TBlock::RawDelimited(TRawDelimitedBlock {
+            &Block::RawDelimited(TRawDelimitedBlock {
                 content: TContent {
                     original: Span {
                         data: "{app-name}",
@@ -240,7 +240,7 @@ If the macro is absent, the value is processed with the header substitution grou
 
         assert_eq!(
             block1,
-            &TBlock::RawDelimited(TRawDelimitedBlock {
+            &Block::RawDelimited(TRawDelimitedBlock {
                 content: TContent {
                     original: Span {
                         data: "{app-name}",
@@ -292,7 +292,7 @@ mod attributes_defined_outside_document {
         tests::{
             fixtures::{
                 Span,
-                blocks::{TBlock, TSimpleBlock},
+                blocks::{Block, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -348,7 +348,7 @@ To play, you'll need {equipment}.
 
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "To play, you'll need {equipment}.",
@@ -401,7 +401,7 @@ That's because, in contrast, substitutions are applied to the value of an attrib
 
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
+            &Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "To play, you'll need {equipment}.",
@@ -464,7 +464,7 @@ This strategy is akin to post-processing the attribute value.
 
     assert_eq!(
         block1,
-        &TBlock::Simple(TSimpleBlock {
+        &Block::Simple(TSimpleBlock {
             content: TContent {
                 original: Span {
                     data: "The application is called {app-name}.",
