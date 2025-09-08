@@ -600,7 +600,7 @@ mod link_macro {
     #[test]
     fn empty_mailto_link_text_with_hide_uri_scheme() {
         let doc = Parser::default()
-            .parse("= Test Document\n:hide-uri-scheme:\n\n:mailto:fred@example.com[]");
+            .parse("= Test Document\n:hide-uri-scheme:\n\nlink:mailto:fred@example.com[]");
 
         assert_eq!(
             doc,
@@ -639,15 +639,15 @@ mod link_macro {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
                         original: TSpan {
-                            data: ":mailto:fred@example.com[]",
+                            data: "link:mailto:fred@example.com[]",
                             line: 4,
                             col: 1,
                             offset: 35,
                         },
-                        rendered: ":<a href=\"mailto:fred@example.com\">fred@example.com</a>",
+                        rendered: "<a href=\"mailto:fred@example.com\" class=\"bare\">fred@example.com</a>",
                     },
                     source: TSpan {
-                        data: ":mailto:fred@example.com[]",
+                        data: "link:mailto:fred@example.com[]",
                         line: 4,
                         col: 1,
                         offset: 35,
@@ -658,7 +658,7 @@ mod link_macro {
                     attrlist: None,
                 },),],
                 source: TSpan {
-                    data: "= Test Document\n:hide-uri-scheme:\n\n:mailto:fred@example.com[]",
+                    data: "= Test Document\n:hide-uri-scheme:\n\nlink:mailto:fred@example.com[]",
                     line: 1,
                     col: 1,
                     offset: 0,
