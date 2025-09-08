@@ -16,7 +16,7 @@ mod attribute_value;
 pub(crate) use attribute_value::InterpretedValue;
 
 mod document;
-pub(crate) use document::TDocument;
+pub(crate) use document::Document;
 
 mod header;
 pub(crate) use header::THeader;

@@ -23,7 +23,7 @@ mod link_attribute {
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -61,7 +61,7 @@ image::logo.png[Logo]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -145,7 +145,7 @@ image::logo.png[Logo,link=https://example.org]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -225,7 +225,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -281,7 +281,7 @@ mod link_controls {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock},
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -322,7 +322,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

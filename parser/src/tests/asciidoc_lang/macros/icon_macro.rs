@@ -22,7 +22,7 @@ mod anatomy {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -64,7 +64,7 @@ icon:heart[2x,role=red]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

@@ -85,7 +85,7 @@ mod macros {
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -118,7 +118,7 @@ image::sunset.jpg[Sunset]
 
         assert_eq!(
             Parser::default().parse("image::sunset.jpg[Sunset]\n"),
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -190,7 +190,7 @@ Click the button with the image:star.png[Star] to favorite the project.
         assert_eq!(
             Parser::default()
                 .parse("Click the button with the image:star.png[Star] to favorite the project.\n"),
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

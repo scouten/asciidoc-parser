@@ -22,7 +22,7 @@ mod link_text_and_named_attributes {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -55,7 +55,7 @@ mailto:join@discuss.example.org[Subscribe]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -116,7 +116,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -179,7 +179,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -241,7 +241,7 @@ mod subject_and_body {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -277,7 +277,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -342,7 +342,7 @@ When the reader clicks the link, a conforming email client will fill in the body
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -404,7 +404,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -465,7 +465,7 @@ mailto:join@discuss.example.org[,Subscribe me]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -526,7 +526,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

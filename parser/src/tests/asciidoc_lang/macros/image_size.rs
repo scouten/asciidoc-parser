@@ -26,7 +26,7 @@ mod width_and_height_attributes {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock},
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -58,7 +58,7 @@ image::flower.jpg[Flower,640,480]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -143,7 +143,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

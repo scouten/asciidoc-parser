@@ -9,7 +9,7 @@ use crate::{
             attributes::{Attrlist, ElementAttribute},
             blocks::{Block, CompoundDelimitedBlock, MediaBlock, SimpleBlock},
             content::TContent,
-            document::{TDocument, THeader},
+            document::{Document, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -86,7 +86,7 @@ This is more content in the sidebar block.
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,

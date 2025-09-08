@@ -3,19 +3,18 @@ use std::{cmp::PartialEq, fmt};
 use crate::{
     HasSpan,
     blocks::IsBlock,
-    document::Document,
     tests::fixtures::{Span, blocks::Block, document::THeader, warnings::TWarning},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TDocument {
+pub(crate) struct Document {
     pub header: THeader,
     pub blocks: &'static [Block],
     pub source: Span,
     pub warnings: &'static [TWarning],
 }
 
-impl fmt::Debug for TDocument {
+impl fmt::Debug for Document {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Document")
             .field("header", &self.header)
@@ -26,25 +25,25 @@ impl fmt::Debug for TDocument {
     }
 }
 
-impl<'src> PartialEq<Document<'src>> for TDocument {
-    fn eq(&self, other: &Document<'src>) -> bool {
+impl<'src> PartialEq<crate::Document<'src>> for Document {
+    fn eq(&self, other: &crate::Document<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TDocument> for Document<'_> {
-    fn eq(&self, other: &TDocument) -> bool {
+impl PartialEq<Document> for crate::Document<'_> {
+    fn eq(&self, other: &Document) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TDocument> for &Document<'_> {
-    fn eq(&self, other: &TDocument) -> bool {
+impl PartialEq<Document> for &crate::Document<'_> {
+    fn eq(&self, other: &Document) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TDocument, observed: &Document) -> bool {
+fn fixture_eq_observed(fixture: &Document, observed: &crate::Document) -> bool {
     if fixture.source != observed.span() {
         return false;
     }

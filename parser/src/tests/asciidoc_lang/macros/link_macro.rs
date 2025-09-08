@@ -23,7 +23,7 @@ mod anatomy {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -57,7 +57,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -121,7 +121,7 @@ mod link_to_relative_file {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -158,7 +158,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -222,7 +222,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -277,7 +277,7 @@ mod when_to_use {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -318,7 +318,7 @@ link:report.pdf[Get Report]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -391,7 +391,7 @@ link:pass:[My Documents/report.pdf][Get Report]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -452,7 +452,7 @@ link:My&#32;Documents/report.pdf[Get Report]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -513,7 +513,7 @@ link:My%20Documents/report.pdf[Get Report]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -586,7 +586,7 @@ link:Avengers%3A%20Endgame.html[]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -651,7 +651,7 @@ link:++https://example.org/now_this__link_works.html++[]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -714,7 +714,7 @@ In this case, the link macro prefix is required to increase the precedence so th
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -777,7 +777,7 @@ link:file:///home/username[Your files]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

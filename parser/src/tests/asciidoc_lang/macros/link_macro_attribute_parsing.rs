@@ -22,7 +22,7 @@ mod link_text_alongside_named_attributes {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -53,7 +53,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -128,7 +128,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -192,7 +192,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -255,7 +255,7 @@ https://example.org["1=2 posits the problem of inequality"]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -319,7 +319,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -392,7 +392,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -455,7 +455,7 @@ mod target_separate_window {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -491,7 +491,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -560,7 +560,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -637,7 +637,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -700,7 +700,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -764,7 +764,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -828,7 +828,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -890,7 +890,7 @@ link:post.html[My Post,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -958,7 +958,7 @@ include::example$url.adoc[tag=linkattrs-s]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -1029,7 +1029,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -1090,7 +1090,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

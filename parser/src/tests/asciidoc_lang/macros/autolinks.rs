@@ -22,7 +22,7 @@ mod url_schemes_for_autolinks {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -50,7 +50,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -106,7 +106,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -162,7 +162,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -218,7 +218,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -275,7 +275,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -342,7 +342,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -410,7 +410,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -465,7 +465,7 @@ mod email_autolinks {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::verifies,
         },
@@ -494,7 +494,7 @@ For email address which do not conform to these restriction, you can use the xre
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -550,7 +550,7 @@ mod escaping_urls_and_email_addresses {
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::verifies,
         },
@@ -581,7 +581,7 @@ The URL and email address will both be shown in plain text.
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -670,7 +670,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,

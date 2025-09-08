@@ -7,7 +7,7 @@ use crate::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{Attribute, InterpretedValue, TDocument, THeader},
+            document::{Attribute, Document, InterpretedValue, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -101,7 +101,7 @@ At the end of the value, press kbd:[Enter].
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: Some(Span {
                     data: "Testing",
@@ -190,7 +190,7 @@ That means you don't need to escape special characters such in an HTML tag.
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: Some(Span {
                     data: "Testing",
@@ -283,7 +283,7 @@ Attribute references in the value of an attribute entry are resolved immediately
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
@@ -379,7 +379,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,

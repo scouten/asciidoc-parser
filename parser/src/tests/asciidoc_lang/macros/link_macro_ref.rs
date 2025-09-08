@@ -7,7 +7,7 @@ use crate::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{TDocument, THeader},
+            document::{Document, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -44,7 +44,7 @@ fn id() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
@@ -104,7 +104,7 @@ fn role() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
@@ -164,7 +164,7 @@ fn title() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
@@ -224,7 +224,7 @@ fn window() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
@@ -286,7 +286,7 @@ fn window_shorthand() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
@@ -345,7 +345,7 @@ fn opts() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,

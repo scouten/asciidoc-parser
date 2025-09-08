@@ -51,7 +51,7 @@ mod encode_reserved_characters {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TDocument, THeader},
+                document::{Document, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -103,7 +103,7 @@ Depending on the capabilities of the web application, the space character can be
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -158,7 +158,7 @@ mod hide_uri_scheme {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Attribute, InterpretedValue, TDocument, THeader},
+                document::{Attribute, Document, InterpretedValue, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -209,7 +209,7 @@ The prefix will still be present in the link target.
 
         assert_eq!(
             doc,
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: Some(Span {
                         data: "Document Title",

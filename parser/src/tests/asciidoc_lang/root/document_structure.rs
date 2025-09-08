@@ -25,7 +25,7 @@ mod documents {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Attribute, InterpretedValue, TDocument, THeader},
+                document::{Attribute, Document, InterpretedValue, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -56,7 +56,7 @@ This is a basic AsciiDoc document.
 
         assert_eq!(
             Parser::default().parse("This is a basic AsciiDoc document.\n"),
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -125,7 +125,7 @@ This document contains two paragraphs.
             Parser::default().parse(
                 "This is a basic AsciiDoc document.\n\nThis document contains two paragraphs.\n"
             ),
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: None,
                     title: None,
@@ -217,7 +217,7 @@ It also has a header that specifies the document title.
             Parser::default().parse(
                 "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title."
             ),
-            TDocument {
+            Document {
                 header: THeader {
                     title_source: Some(
                         Span {

@@ -7,7 +7,7 @@ use crate::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{Attribute, InterpretedValue, TDocument, THeader},
+            document::{Attribute, Document, InterpretedValue, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -38,7 +38,7 @@ include::partial$ts-url-format.adoc[tag=sb]
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: Some(Span {
                     data: "Document Title",
@@ -115,7 +115,7 @@ fn pass_macro() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
@@ -166,7 +166,7 @@ fn double_plus_inline_macro() {
 
     assert_eq!(
         doc,
-        TDocument {
+        Document {
             header: THeader {
                 title_source: None,
                 title: None,
