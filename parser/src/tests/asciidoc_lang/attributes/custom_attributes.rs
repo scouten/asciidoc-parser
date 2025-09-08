@@ -6,7 +6,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            document::{TAttribute, TInterpretedValue},
+            document::{InterpretedValue, TAttribute},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -28,11 +28,11 @@ When you find yourself typing the same text repeatedly, or text that often needs
 mod user_defined_names {
     use crate::{
         Parser,
-        document::{Attribute, InterpretedValue},
+        document::Attribute,
         tests::{
             fixtures::{
                 Span,
-                document::{TAttribute, TInterpretedValue},
+                document::{InterpretedValue, TAttribute},
             },
             sdd::verifies,
         },
@@ -76,7 +76,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":a:",
                     line: 1,
@@ -105,7 +105,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":9abc:",
                     line: 1,
@@ -129,7 +129,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":_abc:",
                     line: 1,
@@ -159,7 +159,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":9ab-cdef:",
                     line: 1,
@@ -177,11 +177,11 @@ A best practice is to only use lowercase letters in the name and avoid starting 
         let mut parser = Parser::default();
         parser.parse(":URL: /foo/bar");
 
-        assert_eq!(parser.attribute_value("URL"), TInterpretedValue::Unset);
+        assert_eq!(parser.attribute_value("URL"), InterpretedValue::Unset);
 
         assert_eq!(
             parser.attribute_value("url"),
-            TInterpretedValue::Value("/foo/bar")
+            InterpretedValue::Value("/foo/bar")
         );
     }
 }
@@ -235,7 +235,7 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
                 col: 14,
                 offset: 13,
             }),
-            value: TInterpretedValue::Value(
+            value: InterpretedValue::Value(
                 "Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."
             ),
             source: Span {
@@ -249,7 +249,7 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 
     assert_eq!(
         mi.item.value(),
-        TInterpretedValue::Value(
+        InterpretedValue::Value(
             "Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."
         )
     );
@@ -275,7 +275,7 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
                 col: 12,
                 offset: 11,
             }),
-            value: TInterpretedValue::Value("https://github.com/asciidoctor/asciidoctor"),
+            value: InterpretedValue::Value("https://github.com/asciidoctor/asciidoctor"),
             source: Span {
                 data: ":url-repo: https://github.com/asciidoctor/asciidoctor",
                 line: 1,
@@ -287,6 +287,6 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 
     assert_eq!(
         mi.item.value(),
-        TInterpretedValue::Value("https://github.com/asciidoctor/asciidoctor")
+        InterpretedValue::Value("https://github.com/asciidoctor/asciidoctor")
     );
 }

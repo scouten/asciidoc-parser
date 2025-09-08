@@ -2,11 +2,11 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    document::{Attribute, InterpretedValue},
+    document::Attribute,
     tests::{
         fixtures::{
             Span,
-            document::{TAttribute, TInterpretedValue},
+            document::{InterpretedValue, TAttribute},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -70,7 +70,7 @@ If the line continuation is missing, the processor will assume it has found the 
                 col: 15,
                 offset: 14,
             }),
-            value: TInterpretedValue::Value(
+            value: InterpretedValue::Value(
                 "If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source."
             ),
             source: Span {
@@ -84,7 +84,7 @@ If the line continuation is missing, the processor will assume it has found the 
 
     assert_eq!(
         mi.item.value(),
-        &InterpretedValue::Value(
+        &crate::document::InterpretedValue::Value(
             "If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source.".to_string()
         )
     );
@@ -136,7 +136,7 @@ This syntax ensures that the newlines are preserved in the output as hard line b
                 col: 9,
                 offset: 8,
             }),
-            value: TInterpretedValue::Value(
+            value: InterpretedValue::Value(
                 "Write your docs in text,\nAsciiDoc makes it easy,\nNow get back to work!"
             ),
             source: Span {
@@ -150,7 +150,7 @@ This syntax ensures that the newlines are preserved in the output as hard line b
 
     assert_eq!(
         mi.item.value(),
-        &InterpretedValue::Value(
+        &crate::document::InterpretedValue::Value(
             "Write your docs in text,\nAsciiDoc makes it easy,\nNow get back to work!".to_string()
         ),
     );

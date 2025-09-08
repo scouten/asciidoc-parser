@@ -13,7 +13,7 @@ mod attribute;
 pub(crate) use attribute::TAttribute;
 
 mod attribute_value;
-pub(crate) use attribute_value::TInterpretedValue;
+pub(crate) use attribute_value::InterpretedValue;
 
 mod document;
 pub(crate) use document::TDocument;

@@ -10,7 +10,7 @@ mod inline_link {
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{TAttribute, TDocument, THeader, TInterpretedValue},
+            document::{InterpretedValue, TAttribute, TDocument, THeader},
         },
     };
 
@@ -189,7 +189,7 @@ mod inline_link {
                             offset: 13,
                         },
                         value_source: None,
-                        value: TInterpretedValue::Set,
+                        value: InterpretedValue::Set,
                         source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
@@ -364,7 +364,7 @@ mod inline_link {
                             offset: 8,
                         },
                         value_source: None,
-                        value: TInterpretedValue::Set,
+                        value: InterpretedValue::Set,
                         source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
@@ -421,7 +421,7 @@ mod link_macro {
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{TAttribute, TDocument, THeader, TInterpretedValue},
+            document::{InterpretedValue, TAttribute, TDocument, THeader},
         },
     };
 
@@ -550,7 +550,7 @@ mod link_macro {
                             offset: 17,
                         },
                         value_source: None,
-                        value: TInterpretedValue::Set,
+                        value: InterpretedValue::Set,
                         source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
@@ -621,7 +621,7 @@ mod link_macro {
                             offset: 17,
                         },
                         value_source: None,
-                        value: TInterpretedValue::Set,
+                        value: InterpretedValue::Set,
                         source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,

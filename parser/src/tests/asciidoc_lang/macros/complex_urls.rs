@@ -7,7 +7,7 @@ use crate::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{TAttribute, TDocument, THeader, TInterpretedValue},
+            document::{InterpretedValue, TAttribute, TDocument, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -60,7 +60,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                         col: 25,
                         offset: 41,
                     },),
-                    value: TInterpretedValue::Value(
+                    value: InterpretedValue::Value(
                         "https://asciidoctor.org/now_this__link_works.html",
                     ),
                     source: Span {

@@ -2,13 +2,13 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    document::{Attribute, InterpretedValue},
+    document::Attribute,
     tests::{
         fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{TAttribute, TDocument, THeader, TInterpretedValue},
+            document::{InterpretedValue, TAttribute, TDocument, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -66,7 +66,7 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Set,
+            value: InterpretedValue::Set,
             source: Span {
                 data: ":name-of-an-attribute:",
                 line: 1,
@@ -124,7 +124,7 @@ At the end of the value, press kbd:[Enter].
                         col: 24,
                         offset: 33,
                     }),
-                    value: TInterpretedValue::Value("value of the attribute"),
+                    value: InterpretedValue::Value("value of the attribute"),
                     source: Span {
                         data: ":name-of-an-attribute: value of the attribute",
                         line: 2,
@@ -172,7 +172,7 @@ At the end of the value, press kbd:[Enter].
 
     assert_eq!(
         parser.attribute_value("name-of-an-attribute"),
-        TInterpretedValue::Value("value of the attribute")
+        InterpretedValue::Value("value of the attribute")
     );
 }
 
@@ -213,7 +213,7 @@ That means you don't need to escape special characters such in an HTML tag.
                         col: 16,
                         offset: 25,
                     },),
-                    value: TInterpretedValue::Value("&lt;"),
+                    value: InterpretedValue::Value("&lt;"),
                     source: Span {
                         data: ":lt-attribute: <",
                         line: 2,
@@ -302,7 +302,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                             col: 11,
                             offset: 10,
                         },),
-                        value: TInterpretedValue::Value("https://example.org/projects",),
+                        value: InterpretedValue::Value("https://example.org/projects",),
                         source: Span {
                             data: ":url-org: https://example.org/projects",
                             line: 1,
@@ -323,9 +323,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                             col: 15,
                             offset: 53,
                         },),
-                        value: TInterpretedValue::Value(
-                            "https://example.org/projects/project-name",
-                        ),
+                        value: InterpretedValue::Value("https://example.org/projects/project-name",),
                         source: Span {
                             data: ":url-project: {url-org}/project-name",
                             line: 2,
@@ -354,7 +352,7 @@ Attribute references in the value of an attribute entry are resolved immediately
 
     assert_eq!(
         parser.attribute_value("url-project"),
-        TInterpretedValue::Value("https://example.org/projects/project-name")
+        InterpretedValue::Value("https://example.org/projects/project-name")
     );
 }
 
@@ -394,7 +392,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
                         offset: 1,
                     },
                     value_source: None,
-                    value: TInterpretedValue::Set,
+                    value: InterpretedValue::Set,
                     source: Span {
                         data: ":name-of-an-attribute:",
                         line: 1,
@@ -422,7 +420,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
 
     assert_eq!(
         parser.attribute_value("name-of-an-attribute"),
-        TInterpretedValue::Set
+        InterpretedValue::Set
     );
 }
 

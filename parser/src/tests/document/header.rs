@@ -5,7 +5,7 @@ use crate::{
     document::Header,
     tests::fixtures::{
         Span,
-        document::{TAttribute, THeader, TInterpretedValue},
+        document::{InterpretedValue, TAttribute, THeader},
     },
 };
 
@@ -166,7 +166,7 @@ fn title_and_attribute() {
                     col: 7,
                     offset: 23,
                 }),
-                value: TInterpretedValue::Value("bar"),
+                value: InterpretedValue::Value("bar"),
                 source: Span {
                     data: ":foo: bar",
                     line: 2,
@@ -227,7 +227,7 @@ fn title_applies_header_substitutions() {
                     col: 7,
                     offset: 37,
                 }),
-                value: TInterpretedValue::Value("bar"),
+                value: InterpretedValue::Value("bar"),
                 source: Span {
                     data: ":foo: bar",
                     line: 2,
@@ -279,7 +279,7 @@ fn attribute_without_title() {
                     col: 7,
                     offset: 6,
                 }),
-                value: TInterpretedValue::Value("bar"),
+                value: InterpretedValue::Value("bar"),
                 source: Span {
                     data: ":foo: bar",
                     line: 1,

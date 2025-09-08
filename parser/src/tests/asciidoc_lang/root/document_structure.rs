@@ -25,7 +25,7 @@ mod documents {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{TAttribute, TDocument, THeader, TInterpretedValue},
+                document::{InterpretedValue, TAttribute, TDocument, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -237,7 +237,7 @@ It also has a header that specifies the document title.
                                 offset: 18,
                             },
                             value_source: None,
-                            value: TInterpretedValue::Set,
+                            value: InterpretedValue::Set,
                             source: Span {
                                 data: ":reproducible:",
                                 line: 2,
@@ -326,7 +326,7 @@ mod lines {
         tests::{
             fixtures::{
                 Span,
-                document::{TAttribute, TInterpretedValue},
+                document::{InterpretedValue, TAttribute},
             },
             sdd::verifies,
         },
@@ -409,7 +409,7 @@ The same is true for an attribute entry, a block title, a block attribute list, 
                     col: 8,
                     offset: 7,
                 }),
-                value: TInterpretedValue::Value("value"),
+                value: InterpretedValue::Value("value"),
                 source: Span {
                     data: ":name: value",
                     line: 1,
@@ -465,7 +465,7 @@ more value
                     col: 8,
                     offset: 7,
                 }),
-                value: TInterpretedValue::Value("value more value"),
+                value: InterpretedValue::Value("value more value"),
                 source: Span {
                     data: ":name: value \\\nmore value",
                     line: 1,
@@ -475,10 +475,7 @@ more value
             }
         );
 
-        assert_eq!(
-            mi.item.value(),
-            TInterpretedValue::Value("value more value")
-        );
+        assert_eq!(mi.item.value(), InterpretedValue::Value("value more value"));
 
         assert_eq!(
             mi.after,

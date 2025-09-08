@@ -12,7 +12,7 @@ use crate::{
         Span,
         blocks::{Block, SimpleBlock},
         content::TContent,
-        document::{TAttribute, TInterpretedValue},
+        document::{InterpretedValue, TAttribute},
     },
     warnings::WarningType,
 };
@@ -44,7 +44,7 @@ fn simple_value() {
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar"),
+            value: InterpretedValue::Value("bar"),
             source: Span {
                 data: ":foo: bar",
                 line: 1,
@@ -54,7 +54,7 @@ fn simple_value() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar"));
+    assert_eq!(mi.item.value(), InterpretedValue::Value("bar"));
 
     assert_eq!(
         mi.after,
@@ -81,7 +81,7 @@ fn no_value() {
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Set,
+            value: InterpretedValue::Set,
             source: Span {
                 data: ":foo:",
                 line: 1,
@@ -91,7 +91,7 @@ fn no_value() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Set);
+    assert_eq!(mi.item.value(), InterpretedValue::Set);
 
     assert_eq!(
         mi.after,
@@ -118,7 +118,7 @@ fn name_with_hyphens() {
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Set,
+            value: InterpretedValue::Set,
             source: Span {
                 data: ":name-with-hyphen:",
                 line: 1,
@@ -128,7 +128,7 @@ fn name_with_hyphens() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Set);
+    assert_eq!(mi.item.value(), InterpretedValue::Set);
 
     assert_eq!(
         mi.after,
@@ -155,7 +155,7 @@ fn unset_prefix() {
                 offset: 2,
             },
             value_source: None,
-            value: TInterpretedValue::Unset,
+            value: InterpretedValue::Unset,
             source: Span {
                 data: ":!foo:",
                 line: 1,
@@ -165,7 +165,7 @@ fn unset_prefix() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Unset);
+    assert_eq!(mi.item.value(), InterpretedValue::Unset);
 
     assert_eq!(
         mi.after,
@@ -192,7 +192,7 @@ fn unset_postfix() {
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Unset,
+            value: InterpretedValue::Unset,
             source: Span {
                 data: ":foo!:",
                 line: 1,
@@ -202,7 +202,7 @@ fn unset_postfix() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Unset);
+    assert_eq!(mi.item.value(), InterpretedValue::Unset);
 
     assert_eq!(
         mi.after,
@@ -254,7 +254,7 @@ fn value_with_soft_wrap() {
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar blah"),
+            value: InterpretedValue::Value("bar blah"),
             source: Span {
                 data: ":foo: bar \\\n blah",
                 line: 1,
@@ -264,7 +264,7 @@ fn value_with_soft_wrap() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar blah"));
+    assert_eq!(mi.item.value(), InterpretedValue::Value("bar blah"));
 
     assert_eq!(
         mi.after,
@@ -300,7 +300,7 @@ fn value_with_hard_wrap() {
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar\nblah"),
+            value: InterpretedValue::Value("bar\nblah"),
             source: Span {
                 data: ":foo: bar + \\\n blah",
                 line: 1,
@@ -310,7 +310,7 @@ fn value_with_hard_wrap() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar\nblah"));
+    assert_eq!(mi.item.value(), InterpretedValue::Value("bar\nblah"));
 
     assert_eq!(
         mi.after,
@@ -346,7 +346,7 @@ fn is_block() {
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar"),
+            value: InterpretedValue::Value("bar"),
             source: Span {
                 data: ":foo: bar",
                 line: 1,
@@ -379,7 +379,7 @@ fn is_block() {
         panic!("Wrong type");
     };
 
-    assert_eq!(attr.value(), TInterpretedValue::Value("bar"));
+    assert_eq!(attr.value(), InterpretedValue::Value("bar"));
 
     assert_eq!(
         mi.after,

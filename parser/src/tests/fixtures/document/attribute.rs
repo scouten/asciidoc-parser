@@ -3,14 +3,14 @@ use std::{cmp::PartialEq, fmt};
 use crate::{
     HasSpan,
     document::Attribute,
-    tests::fixtures::{Span, document::TInterpretedValue},
+    tests::fixtures::{Span, document::InterpretedValue},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TAttribute {
     pub name: Span,
     pub value_source: Option<Span>,
-    pub value: TInterpretedValue,
+    pub value: InterpretedValue,
     pub source: Span,
 }
 

@@ -18,11 +18,11 @@ The built-in attribute names are listed in the xref:document-attributes-ref.adoc
 mod valid_user_defined_names {
     use crate::{
         Parser,
-        document::{Attribute, InterpretedValue},
+        document::Attribute,
         tests::{
             fixtures::{
                 Span,
-                document::{TAttribute, TInterpretedValue},
+                document::{InterpretedValue, TAttribute},
             },
             sdd::verifies,
         },
@@ -63,7 +63,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":a:",
                     line: 1,
@@ -92,7 +92,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":9abc:",
                     line: 1,
@@ -116,7 +116,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":_abc:",
                     line: 1,
@@ -146,7 +146,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":9ab-cdef:",
                     line: 1,
@@ -175,7 +175,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":URL-REPO:",
                     line: 1,
@@ -199,7 +199,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
+                value: InterpretedValue::Set,
                 source: Span {
                     data: ":URL-REPO:",
                     line: 1,
