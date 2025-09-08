@@ -1,14 +1,12 @@
 use crate::tests::fixtures::{
-    blocks::{
-        CompoundDelimitedBlock, TMediaBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock,
-    },
+    blocks::{CompoundDelimitedBlock, MediaBlock, TRawDelimitedBlock, TSectionBlock, TSimpleBlock},
     document::TAttribute,
 };
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) enum Block {
     Simple(TSimpleBlock),
-    Media(TMediaBlock),
+    Media(MediaBlock),
     Section(TSectionBlock),
     RawDelimited(TRawDelimitedBlock),
     CompoundDelimited(CompoundDelimitedBlock),

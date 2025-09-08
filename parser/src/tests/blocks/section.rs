@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, TMediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -228,7 +228,7 @@ fn has_macro_block_with_extra_blank_line() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[Block::Media(TMediaBlock {
+            blocks: &[Block::Media(MediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "bar",
@@ -331,7 +331,7 @@ fn has_child_block_with_errors() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[Block::Media(TMediaBlock {
+            blocks: &[Block::Media(MediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "bar",

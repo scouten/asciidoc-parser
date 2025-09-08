@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, TMediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -403,7 +403,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[Block::Media(TMediaBlock {
+            blocks: &[Block::Media(MediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "bar",

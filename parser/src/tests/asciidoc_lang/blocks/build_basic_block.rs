@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, MediaBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -143,7 +143,7 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        Block::Media(TMediaBlock {
+                        Block::Media(MediaBlock {
                             type_: MediaType::Image,
                             target: Span {
                                 data: "name.png",

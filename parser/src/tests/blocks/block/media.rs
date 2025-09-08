@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, TMediaBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -299,7 +299,7 @@ fn has_target() {
 
     assert_eq!(
         mi.item,
-        Block::Media(TMediaBlock {
+        Block::Media(MediaBlock {
             type_: MediaType::Image,
             target: Span {
                 data: "bar",
@@ -369,7 +369,7 @@ fn has_target_and_macro_attrlist() {
 
     assert_eq!(
         mi.item,
-        Block::Media(TMediaBlock {
+        Block::Media(MediaBlock {
             type_: MediaType::Image,
             target: Span {
                 data: "bar",
@@ -437,7 +437,7 @@ fn warn_macro_attrlist_has_extra_comma() {
 
     assert_eq!(
         mi.item,
-        Block::Media(TMediaBlock {
+        Block::Media(MediaBlock {
             type_: MediaType::Image,
             target: Span {
                 data: "bar",
@@ -529,7 +529,7 @@ fn has_title() {
 
     assert_eq!(
         mi.item,
-        Block::Media(TMediaBlock {
+        Block::Media(MediaBlock {
             type_: MediaType::Image,
             target: Span {
                 data: "bar",

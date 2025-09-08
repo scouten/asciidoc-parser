@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, TMediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         document::{TDocument, THeader},
         warnings::TWarning,
@@ -462,7 +462,7 @@ fn err_bad_header_and_bad_macro() {
                     },
                     blocks: &[
                         Block::Media(
-                            TMediaBlock {
+                            MediaBlock {
                                 type_: MediaType::Image,
                                 target: Span {
                                     data: "bar",

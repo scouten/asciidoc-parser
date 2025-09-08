@@ -33,7 +33,7 @@ mod positioning_attributes {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TMediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -86,7 +86,7 @@ include::example$image.adoc[tag=float]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "tiger.png",
@@ -237,7 +237,7 @@ mod positioning_roles {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TMediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -283,7 +283,7 @@ include::example$image.adoc[tag=role]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "tiger.png",

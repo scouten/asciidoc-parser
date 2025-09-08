@@ -50,7 +50,7 @@ mod attrlist {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TMediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, to_do_verifies, verifies},
@@ -295,7 +295,7 @@ name::target[first-positional,second-positional,named="value of named"]
 
         assert_eq!(
             block,
-            Block::Media(TMediaBlock {
+            Block::Media(MediaBlock {
                 type_: MediaType::Image,
                 target: Span {
                     data: "target",

@@ -17,7 +17,7 @@ mod positional_attribute {
 
     use crate::{
         Parser,
-        blocks::{IsBlock, MediaBlock, metadata::BlockMetadata},
+        blocks::{IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::{
             fixtures::{
@@ -73,7 +73,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         let mut parser = Parser::default();
 
-        let m1 = MediaBlock::parse(
+        let m1 = crate::blocks::MediaBlock::parse(
             &BlockMetadata::new("image::sunset.jpg[Sunset,300,400]"),
             &mut parser,
         )
@@ -82,7 +82,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         let mut parser = Parser::default();
 
-        let m2 = MediaBlock::parse(
+        let m2 = crate::blocks::MediaBlock::parse(
             &BlockMetadata::new("image::sunset.jpg[alt=Sunset,width=300,height=400]"),
             &mut parser,
         )

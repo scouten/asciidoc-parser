@@ -83,7 +83,7 @@ mod macros {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TMediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -130,7 +130,7 @@ image::sunset.jpg[Sunset]
                         offset: 0
                     }
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "sunset.jpg",

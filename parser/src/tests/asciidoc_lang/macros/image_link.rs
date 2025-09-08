@@ -21,7 +21,7 @@ mod link_attribute {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TMediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -73,7 +73,7 @@ image::logo.png[Logo]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "logo.png",
@@ -157,7 +157,7 @@ image::logo.png[Logo,link=https://example.org]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "logo.png",
@@ -280,7 +280,7 @@ mod link_controls {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TMediaBlock},
+                blocks::{Block, MediaBlock},
                 document::{TDocument, THeader},
             },
             sdd::{non_normative, verifies},
@@ -334,7 +334,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "logo.png",

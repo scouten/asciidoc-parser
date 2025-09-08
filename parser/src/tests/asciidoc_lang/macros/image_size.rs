@@ -25,7 +25,7 @@ mod width_and_height_attributes {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TMediaBlock},
+                blocks::{Block, MediaBlock},
                 document::{TDocument, THeader},
             },
             sdd::{non_normative, verifies},
@@ -70,7 +70,7 @@ image::flower.jpg[Flower,640,480]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "flower.jpg",
@@ -155,7 +155,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
                     target: Span {
                         data: "flower.jpg",
