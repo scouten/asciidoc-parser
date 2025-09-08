@@ -315,12 +315,12 @@ impl Replacer for InlineLinkReplacer<'_> {
             if tail == ";" || tail == ":" {
                 // Move trailing semicolon or colon and adjacent ) if it exists
                 // out of the URL.
+                target.truncate(target.len() - 1);
+                suffix = tail.to_owned();
+
                 if target.ends_with(')') {
-                    target.truncate(target.len() - 2);
-                    suffix = format!("){tail}");
-                } else {
                     target.truncate(target.len() - 1);
-                    suffix = tail.to_string();
+                    suffix = format!("){suffix}");
                 }
             }
         }

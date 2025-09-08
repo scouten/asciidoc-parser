@@ -235,4 +235,108 @@ mod inline_link {
             }
         );
     }
+
+    #[test]
+    fn link_with_semicolon_suffix() {
+        let doc = Parser::default().parse(
+            "You shouldn't visit https://example.com; it's just there to illustrate examples.",
+        );
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "You shouldn&#8217;t visit <a href=\"https://example.com\" class=\"bare\">https://example.com</a>; it&#8217;s just there to illustrate examples.",
+                    },
+                    source: TSpan {
+                        data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn link_with_paren_and_colon_suffix() {
+        let doc = Parser::default().parse(
+            "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
+        );
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "You shouldn&#8217;t visit that site (<a href=\"https://example.com\" class=\"bare\">https://example.com</a>): it&#8217;s just there to illustrate examples.",
+                    },
+                    source: TSpan {
+                        data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }
