@@ -1,15 +1,13 @@
 use std::{cmp::PartialEq, fmt};
 
-use crate::attributes::ElementAttribute;
-
 #[derive(Eq, PartialEq)]
-pub(crate) struct TElementAttribute {
+pub(crate) struct ElementAttribute {
     pub name: Option<&'static str>,
     pub shorthand_items: &'static [&'static str],
     pub value: &'static str,
 }
 
-impl fmt::Debug for TElementAttribute {
+impl fmt::Debug for ElementAttribute {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("ElementAttribute")
             .field("name", &self.name)
@@ -19,25 +17,28 @@ impl fmt::Debug for TElementAttribute {
     }
 }
 
-impl<'src> PartialEq<ElementAttribute<'src>> for TElementAttribute {
-    fn eq(&self, other: &ElementAttribute<'src>) -> bool {
+impl<'src> PartialEq<crate::attributes::ElementAttribute<'src>> for ElementAttribute {
+    fn eq(&self, other: &crate::attributes::ElementAttribute<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TElementAttribute> for ElementAttribute<'_> {
-    fn eq(&self, other: &TElementAttribute) -> bool {
+impl PartialEq<ElementAttribute> for crate::attributes::ElementAttribute<'_> {
+    fn eq(&self, other: &ElementAttribute) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TElementAttribute> for &ElementAttribute<'_> {
-    fn eq(&self, other: &TElementAttribute) -> bool {
+impl PartialEq<ElementAttribute> for &crate::attributes::ElementAttribute<'_> {
+    fn eq(&self, other: &ElementAttribute) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TElementAttribute, observed: &ElementAttribute) -> bool {
+fn fixture_eq_observed(
+    fixture: &ElementAttribute,
+    observed: &crate::attributes::ElementAttribute,
+) -> bool {
     if fixture.value != observed.value() {
         return false;
     }

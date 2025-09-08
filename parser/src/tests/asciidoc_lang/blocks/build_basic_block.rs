@@ -6,7 +6,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            attributes::{Attrlist, TElementAttribute},
+            attributes::{Attrlist, ElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
@@ -275,7 +275,7 @@ include::example$block.adoc[tag=opt-listing]
             title: None,
             anchor: None,
             attrlist: Some(Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["listing"],
                     value: "listing"
@@ -341,7 +341,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
             title: None,
             anchor: None,
             attrlist: Some(Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["quote"],
                     value: "quote"

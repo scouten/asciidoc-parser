@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{Attrlist, TElementAttribute},
+        attributes::{Attrlist, ElementAttribute},
         blocks::TMediaBlock,
         warnings::TWarning,
     },
@@ -247,7 +247,7 @@ fn has_target_and_attrlist() {
                 offset: 7,
             },
             macro_attrlist: Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["blah"],
                     value: "blah"
@@ -422,12 +422,12 @@ fn err_duplicate_comma() {
             },
             macro_attrlist: Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["blah"],
                         value: "blah"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "blap"

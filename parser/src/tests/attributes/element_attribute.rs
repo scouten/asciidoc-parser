@@ -1,10 +1,8 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser,
-    attributes::{ElementAttribute, element_attribute::ParseShorthand},
-    strings::CowStr,
-    tests::fixtures::attributes::TElementAttribute,
+    Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
+    tests::fixtures::attributes::ElementAttribute,
 };
 
 #[test]
@@ -12,10 +10,15 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let p = Parser::default();
 
-    let b1 = ElementAttribute::parse(&CowStr::from("abc"), 0, &p, ParseShorthand(false))
-        .0
-        .unwrap()
-        .0;
+    let b1 = crate::attributes::ElementAttribute::parse(
+        &CowStr::from("abc"),
+        0,
+        &p,
+        ParseShorthand(false),
+    )
+    .0
+    .unwrap()
+    .0;
 
     let b2 = b1.clone();
 
@@ -26,14 +29,14 @@ fn impl_clone() {
 fn empty_source() {
     let p = Parser::default();
     let (maybe_mi, warning_types) =
-        ElementAttribute::parse(&CowStr::from(""), 0, &p, ParseShorthand(false));
+        crate::attributes::ElementAttribute::parse(&CowStr::from(""), 0, &p, ParseShorthand(false));
 
     let (element_attr, offset) = maybe_mi.unwrap();
     assert!(warning_types.is_empty());
 
     assert_eq!(
         element_attr,
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "",
@@ -52,15 +55,19 @@ fn empty_source() {
 #[test]
 fn only_spaces() {
     let p = Parser::default();
-    let (maybe_mi, warning_types) =
-        ElementAttribute::parse(&CowStr::from("   "), 0, &p, ParseShorthand(false));
+    let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+        &CowStr::from("   "),
+        0,
+        &p,
+        ParseShorthand(false),
+    );
 
     let (element_attr, offset) = maybe_mi.unwrap();
     assert!(warning_types.is_empty());
 
     assert_eq!(
         element_attr,
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "",
@@ -79,15 +86,19 @@ fn only_spaces() {
 #[test]
 fn unquoted_and_unnamed_value() {
     let p = Parser::default();
-    let (maybe_mi, warning_types) =
-        ElementAttribute::parse(&CowStr::from("abc"), 0, &p, ParseShorthand(false));
+    let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+        &CowStr::from("abc"),
+        0,
+        &p,
+        ParseShorthand(false),
+    );
 
     let (element_attr, offset) = maybe_mi.unwrap();
     assert!(warning_types.is_empty());
 
     assert_eq!(
         element_attr,
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "abc",
@@ -106,15 +117,19 @@ fn unquoted_and_unnamed_value() {
 #[test]
 fn unquoted_stops_at_comma() {
     let p = Parser::default();
-    let (maybe_mi, warning_types) =
-        ElementAttribute::parse(&CowStr::from("abc,def"), 0, &p, ParseShorthand(false));
+    let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+        &CowStr::from("abc,def"),
+        0,
+        &p,
+        ParseShorthand(false),
+    );
 
     let (element_attr, offset) = maybe_mi.unwrap();
     assert!(warning_types.is_empty());
 
     assert_eq!(
         element_attr,
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "abc",
@@ -134,18 +149,19 @@ mod quoted_string {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
-        attributes::{ElementAttribute, element_attribute::ParseShorthand},
-        strings::CowStr,
-        tests::fixtures::attributes::TElementAttribute,
-        warnings::WarningType,
+        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
+        tests::fixtures::attributes::ElementAttribute, warnings::WarningType,
     };
 
     #[test]
     fn err_unterminated_double_quote() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("\"xxx"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("\"xxx"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         assert!(maybe_mi.is_none());
 
@@ -158,15 +174,19 @@ mod quoted_string {
     #[test]
     fn double_quoted_string() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("\"abc\"def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("\"abc\"def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "abc"
@@ -185,7 +205,7 @@ mod quoted_string {
     #[test]
     fn double_quoted_with_escape() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
             &CowStr::from("\"a\\\"bc\"def"),
             0,
             &p,
@@ -197,7 +217,7 @@ mod quoted_string {
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "a\\\"bc"
@@ -216,15 +236,19 @@ mod quoted_string {
     #[test]
     fn double_quoted_with_single_quote() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("\"a'bc\"def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("\"a'bc\"def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "a'bc"
@@ -243,8 +267,12 @@ mod quoted_string {
     #[test]
     fn err_unterminated_single_quote() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("\'xxx"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("\'xxx"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         assert!(maybe_mi.is_none());
 
@@ -257,15 +285,19 @@ mod quoted_string {
     #[test]
     fn single_quoted_string() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("'abc'def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("'abc'def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "abc"
@@ -284,15 +316,19 @@ mod quoted_string {
     #[test]
     fn single_quoted_with_escape() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("'a\\'bc'def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("'a\\'bc'def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "a\\'bc"
@@ -311,15 +347,19 @@ mod quoted_string {
     #[test]
     fn single_quoted_with_double_quote() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("'a\"bc'def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("'a\"bc'def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "a\"bc"
@@ -340,24 +380,26 @@ mod named {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
-        attributes::{ElementAttribute, element_attribute::ParseShorthand},
-        strings::CowStr,
-        tests::fixtures::attributes::TElementAttribute,
+        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
+        tests::fixtures::attributes::ElementAttribute,
     };
 
     #[test]
     fn simple_named_value() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc=def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc=def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("abc"),
                 shorthand_items: &[],
                 value: "def"
@@ -376,15 +418,19 @@ mod named {
     #[test]
     fn ignores_spaces_around_equals() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc =  def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc =  def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("abc"),
                 shorthand_items: &[],
                 value: "def"
@@ -399,15 +445,19 @@ mod named {
     #[test]
     fn numeric_name() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("94-x =def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("94-x =def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("94-x"),
                 shorthand_items: &[],
                 value: "def"
@@ -426,15 +476,19 @@ mod named {
     #[test]
     fn quoted_value() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc='def'g"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc='def'g"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("abc"),
                 shorthand_items: &[],
                 value: "def"
@@ -453,15 +507,19 @@ mod named {
     #[test]
     fn fallback_if_no_value() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc="), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc="),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "abc="
@@ -480,15 +538,19 @@ mod named {
     #[test]
     fn fallback_if_immediate_comma() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc=,def"), 0, &p, ParseShorthand(false));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc=,def"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "abc="
@@ -509,25 +571,26 @@ mod parse_with_shorthand {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
-        attributes::{ElementAttribute, element_attribute::ParseShorthand},
-        strings::CowStr,
-        tests::fixtures::attributes::TElementAttribute,
-        warnings::WarningType,
+        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr,
+        tests::fixtures::attributes::ElementAttribute, warnings::WarningType,
     };
 
     #[test]
     fn block_style_only() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc"), 0, &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc"),
+            0,
+            &p,
+            ParseShorthand(true),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["abc"],
                 value: "abc"
@@ -547,7 +610,7 @@ mod parse_with_shorthand {
     #[test]
     fn ignore_if_named_attribute() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
             &CowStr::from("name=block_style#id"),
             0,
             &p,
@@ -559,7 +622,7 @@ mod parse_with_shorthand {
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("name"),
                 shorthand_items: &[],
                 value: "block_style#id"
@@ -579,14 +642,18 @@ mod parse_with_shorthand {
     #[test]
     fn error_empty_id() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc#"), 0, &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc#"),
+            0,
+            &p,
+            ParseShorthand(true),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["abc"],
                 value: "abc#"
@@ -600,14 +667,18 @@ mod parse_with_shorthand {
     #[test]
     fn error_duplicate_delimiter() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("abc##id"), 0, &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("abc##id"),
+            0,
+            &p,
+            ParseShorthand(true),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["abc", "#id"],
                 value: "abc##id"
@@ -621,15 +692,19 @@ mod parse_with_shorthand {
     #[test]
     fn id_only() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("#xyz"), 0, &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("#xyz"),
+            0,
+            &p,
+            ParseShorthand(true),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["#xyz"],
                 value: "#xyz"
@@ -649,15 +724,19 @@ mod parse_with_shorthand {
     #[test]
     fn one_role_only() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from(".role1"), 0, &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from(".role1"),
+            0,
+            &p,
+            ParseShorthand(true),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[".role1",],
                 value: ".role1"
@@ -677,7 +756,7 @@ mod parse_with_shorthand {
     #[test]
     fn multiple_roles() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
             &CowStr::from(".role1.role2.role3"),
             0,
             &p,
@@ -689,7 +768,7 @@ mod parse_with_shorthand {
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[".role1", ".role2", ".role3"],
                 value: ".role1.role2.role3"
@@ -714,15 +793,19 @@ mod parse_with_shorthand {
     #[test]
     fn one_option_only() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) =
-            ElementAttribute::parse(&CowStr::from("%option1"), 0, &p, ParseShorthand(true));
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("%option1"),
+            0,
+            &p,
+            ParseShorthand(true),
+        );
 
         let (element_attr, offset) = maybe_mi.unwrap();
         assert!(warning_types.is_empty());
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["%option1"],
                 value: "%option1"
@@ -742,7 +825,7 @@ mod parse_with_shorthand {
     #[test]
     fn multiple_options() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
             &CowStr::from("%option1%option2%option3"),
             0,
             &p,
@@ -754,7 +837,7 @@ mod parse_with_shorthand {
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["%option1", "%option2", "%option3"],
                 value: "%option1%option2%option3"
@@ -782,7 +865,7 @@ mod parse_with_shorthand {
     #[test]
     fn block_style_and_id() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
             &CowStr::from("appendix#custom-id"),
             0,
             &p,
@@ -794,7 +877,7 @@ mod parse_with_shorthand {
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["appendix", "#custom-id"],
                 value: "appendix#custom-id"
@@ -817,7 +900,7 @@ mod parse_with_shorthand {
     #[test]
     fn id_role_and_option() {
         let p = Parser::default();
-        let (maybe_mi, warning_types) = ElementAttribute::parse(
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
             &CowStr::from("#rules.prominent%incremental"),
             0,
             &p,
@@ -829,7 +912,7 @@ mod parse_with_shorthand {
 
         assert_eq!(
             element_attr,
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["#rules", ".prominent", "%incremental"],
                 value: "#rules.prominent%incremental"

@@ -445,7 +445,7 @@ mod listing {
         content::{SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
             Span,
-            attributes::{Attrlist, TElementAttribute},
+            attributes::{Attrlist, ElementAttribute},
             blocks::TRawDelimitedBlock,
             content::TContent,
         },
@@ -604,7 +604,7 @@ mod listing {
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: Some("subs"),
                         value: "quotes",
                         shorthand_items: &[],
@@ -634,7 +634,7 @@ mod listing {
         assert_eq!(
             mi.item.attrlist().unwrap(),
             Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: Some("subs"),
                     value: "quotes",
                     shorthand_items: &[],

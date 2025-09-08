@@ -547,7 +547,7 @@ mod escaping_urls_and_email_addresses {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -702,7 +702,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                     title: None,
                     anchor: None,
                     attrlist: Some(Attrlist {
-                        attributes: &[TElementAttribute {
+                        attributes: &[ElementAttribute {
                             name: Some("subs",),
                             value: "-macros",
                             shorthand_items: &[],

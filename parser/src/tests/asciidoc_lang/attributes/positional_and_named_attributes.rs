@@ -22,7 +22,7 @@ mod positional_attribute {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TSectionBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -94,7 +94,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         assert_eq!(
             a1.named_or_positional_attribute("alt", 1).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["Sunset"],
                 value: "Sunset"
@@ -103,7 +103,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         assert_eq!(
             a2.named_or_positional_attribute("alt", 1).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("alt"),
                 shorthand_items: &[],
                 value: "Sunset"
@@ -179,7 +179,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["#custom-id"],
                         value: "#custom-id"
@@ -240,7 +240,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["appendix", "#custom-id"],
                         value: "appendix#custom-id"
@@ -309,7 +309,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["#rules", ".prominent", "%incremental"],
                         value: "#rules.prominent%incremental"
@@ -380,7 +380,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["%header", "%footer", "%autowidth",],
                         value: "%header%footer%autowidth"

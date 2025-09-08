@@ -22,7 +22,7 @@ mod block_image_macro {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -214,7 +214,7 @@ include::example$image.adoc[tag=alt]
                         offset: 7,
                     },
                     macro_attrlist: Attrlist {
-                        attributes: &[TElementAttribute {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: "Sunset",
                             shorthand_items: &["Sunset"],
@@ -295,7 +295,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                         offset: 7,
                     },
                     macro_attrlist: Attrlist {
-                        attributes: &[TElementAttribute {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: "Mesa Verde Sunset, by JAVH",
                             shorthand_items: &[],
@@ -387,17 +387,17 @@ include::example$image.adoc[tag=attr]
                     },
                     macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Sunset",
                                 shorthand_items: &["Sunset"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "100",
                                 shorthand_items: &[],
@@ -426,12 +426,12 @@ include::example$image.adoc[tag=attr]
                     anchor: None,
                     attrlist: Some(Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "#img-sunset",
                                 shorthand_items: &["#img-sunset"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("link",),
                                 value: "https://www.flickr.com/photos/javh/5448336655",
                                 shorthand_items: &[],

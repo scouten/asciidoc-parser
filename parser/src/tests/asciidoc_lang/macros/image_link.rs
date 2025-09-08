@@ -20,7 +20,7 @@ mod link_attribute {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -82,7 +82,7 @@ image::logo.png[Logo]
                         offset: 34,
                     },
                     macro_attrlist: Attrlist {
-                        attributes: &[TElementAttribute {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: "Logo",
                             shorthand_items: &["Logo"],
@@ -104,7 +104,7 @@ image::logo.png[Logo]
                     title: None,
                     anchor: None,
                     attrlist: Some(Attrlist {
-                        attributes: &[TElementAttribute {
+                        attributes: &[ElementAttribute {
                             name: Some("link",),
                             value: "https://example.org",
                             shorthand_items: &[],
@@ -167,12 +167,12 @@ image::logo.png[Logo,link=https://example.org]
                     },
                     macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Logo",
                                 shorthand_items: &["Logo"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("link",),
                                 value: "https://example.org",
                                 shorthand_items: &[],
@@ -279,7 +279,7 @@ mod link_controls {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TMediaBlock},
                 document::{TDocument, THeader},
             },
@@ -344,22 +344,22 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     },
                     macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Logo",
                                 shorthand_items: &["Logo"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("link",),
                                 value: "https://example.org",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("window",),
                                 value: "_blank",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("opts",),
                                 value: "nofollow",
                                 shorthand_items: &[],

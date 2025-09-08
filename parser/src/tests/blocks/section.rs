@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{Attrlist, TElementAttribute},
+        attributes::{Attrlist, ElementAttribute},
         blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
@@ -227,17 +227,17 @@ fn has_macro_block_with_extra_blank_line() {
                 },
                 macro_attrlist: Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("alt"),
                             shorthand_items: &[],
                             value: "Sunset"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("width"),
                             shorthand_items: &[],
                             value: "300"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("height"),
                             shorthand_items: &[],
                             value: "400"
@@ -330,17 +330,17 @@ fn has_child_block_with_errors() {
                 },
                 macro_attrlist: Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("alt"),
                             shorthand_items: &[],
                             value: "Sunset"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("width"),
                             shorthand_items: &[],
                             value: "300"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("height"),
                             shorthand_items: &[],
                             value: "400"

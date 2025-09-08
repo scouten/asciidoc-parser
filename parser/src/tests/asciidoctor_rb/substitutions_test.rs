@@ -5790,7 +5790,7 @@ mod post_replacements {
         blocks::Block,
         tests::fixtures::{
             Span,
-            attributes::{Attrlist, TElementAttribute},
+            attributes::{Attrlist, ElementAttribute},
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
         },
@@ -5861,7 +5861,7 @@ mod post_replacements {
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
@@ -5909,7 +5909,7 @@ mod post_replacements {
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
@@ -5954,7 +5954,7 @@ mod post_replacements {
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"

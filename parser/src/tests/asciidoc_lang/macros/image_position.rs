@@ -32,7 +32,7 @@ mod positioning_attributes {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -96,27 +96,27 @@ include::example$image.adoc[tag=float]
                     },
                     macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Tiger",
                                 shorthand_items: &["Tiger"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("float",),
                                 value: "right",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("align",),
                                 value: "center",
                                 shorthand_items: &[],
@@ -236,7 +236,7 @@ mod positioning_roles {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -293,17 +293,17 @@ include::example$image.adoc[tag=role]
                     },
                     macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Tiger",
                                 shorthand_items: &["Tiger",],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
@@ -326,7 +326,7 @@ include::example$image.adoc[tag=role]
                     title: None,
                     anchor: None,
                     attrlist: Some(Attrlist {
-                        attributes: &[TElementAttribute {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: ".right.text-center",
                             shorthand_items: &[".right", ".text-center"],

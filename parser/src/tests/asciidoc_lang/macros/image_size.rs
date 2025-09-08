@@ -24,7 +24,7 @@ mod width_and_height_attributes {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TMediaBlock},
                 document::{TDocument, THeader},
             },
@@ -80,17 +80,17 @@ image::flower.jpg[Flower,640,480]
                     },
                     macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Flower",
                                 shorthand_items: &["Flower"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "640",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "480",
                                 shorthand_items: &[],
@@ -165,17 +165,17 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     },
                     macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("alt",),
                                 value: "Flower",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("width",),
                                 value: "640",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("height",),
                                 value: "480",
                                 shorthand_items: &[],

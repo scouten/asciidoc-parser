@@ -34,7 +34,7 @@ You can assign one or more options to a block using the shorthand or formal synt
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -106,7 +106,7 @@ This is a sidebar with an option assigned to it, named option.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["%option"],
                         value: "%option"
@@ -193,7 +193,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["%option1", "%option2"],
                         value: "%option1%option2"
@@ -278,12 +278,12 @@ For instance, consider a table with the three built-in option values, `header`, 
                 anchor: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &["%header", "%footer", "%autowidth",],
                             value: "%header%footer%autowidth"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("cols"),
                             shorthand_items: &[],
                             value: "2*~"
@@ -379,7 +379,7 @@ This is a sidebar with an option assigned to it, named option.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: Some("opts"),
                         shorthand_items: &[],
                         value: "option"
@@ -465,7 +465,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: Some("opts"),
                         shorthand_items: &[],
                         value: "option1,option2"
@@ -550,12 +550,12 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                 anchor: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("cols"),
                             shorthand_items: &[],
                             value: "2*~"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("opts"),
                             shorthand_items: &[],
                             value: "header,footer,autowidth"
@@ -607,7 +607,7 @@ Let's consider `options` when combined with other attributes.
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -669,7 +669,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["horizontal", ".properties", "%step"],
                         value: "horizontal.properties%step"
@@ -756,17 +756,17 @@ property 2:: does different stuff
                 anchor: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &["horizontal"],
                             value: "horizontal"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("role"),
                             shorthand_items: &[],
                             value: "properties"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("opts"),
                             shorthand_items: &[],
                             value: "step"

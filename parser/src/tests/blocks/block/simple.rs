@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{Attrlist, TElementAttribute},
+        attributes::{Attrlist, ElementAttribute},
         blocks::{TBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
@@ -242,7 +242,7 @@ fn attrlist() {
             title: None,
             anchor: None,
             attrlist: Some(Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
@@ -272,7 +272,7 @@ fn attrlist() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         Attrlist {
-            attributes: &[TElementAttribute {
+            attributes: &[ElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
@@ -335,7 +335,7 @@ fn title_and_attrlist() {
             title: Some("title"),
             anchor: None,
             attrlist: Some(Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
@@ -365,7 +365,7 @@ fn title_and_attrlist() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         Attrlist {
-            attributes: &[TElementAttribute {
+            attributes: &[ElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
@@ -761,7 +761,7 @@ fn unterminated_block_anchor() {
             title: None,
             anchor: None,
             attrlist: Some(Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["[notice",],
                     value: "[notice"
@@ -803,7 +803,7 @@ fn unterminated_block_anchor() {
     assert_eq!(
         mi.item.attrlist().unwrap(),
         Attrlist {
-            attributes: &[TElementAttribute {
+            attributes: &[ElementAttribute {
                 name: None,
                 shorthand_items: &["[notice"],
                 value: "[notice"

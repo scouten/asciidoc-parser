@@ -49,7 +49,7 @@ mod attrlist {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -95,17 +95,17 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             mi.item,
             Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["first-positional"],
                         value: "first-positional",
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "second-positional",
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("named"),
                         shorthand_items: &[],
                         value: "value of named",
@@ -125,7 +125,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.nth_attribute(1).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["first-positional"],
                 value: "first-positional",
@@ -134,7 +134,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.nth_attribute(2).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "second-positional",
@@ -145,7 +145,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.named_attribute("named").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("named"),
                 shorthand_items: &[],
                 value: "value of named",
@@ -224,17 +224,17 @@ If the text cannot be parsed, an error message will be emitted to the log.
                 anchor: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &["style"],
                             value: "style",
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &[],
                             value: "second-positional",
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("named"),
                             shorthand_items: &[],
                             value: "value of named"
@@ -305,17 +305,17 @@ name::target[first-positional,second-positional,named="value of named"]
                 },
                 macro_attrlist: Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &["first-positional"],
                             value: "first-positional"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &[],
                             value: "second-positional"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("named"),
                             shorthand_items: &[],
                             value: "value of named"

@@ -28,7 +28,7 @@ mod error_cases {
         span::HasSpan,
         tests::fixtures::{
             Span,
-            attributes::{Attrlist, TElementAttribute},
+            attributes::{Attrlist, ElementAttribute},
             blocks::{TBlock, TSectionBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
@@ -260,7 +260,7 @@ mod error_cases {
         assert_eq!(
             mi.item.attrlist().unwrap(),
             Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: Some("alt"),
                     shorthand_items: &[],
                     value: "Sunset"
@@ -315,7 +315,7 @@ mod error_cases {
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: Some("alt"),
                         shorthand_items: &[],
                         value: "Sunset"

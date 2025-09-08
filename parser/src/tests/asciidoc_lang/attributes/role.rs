@@ -41,7 +41,7 @@ mod assign_roles_to_blocks {
         tests::{
             fixtures::{
                 Span,
-                attributes::{Attrlist, TElementAttribute},
+                attributes::{Attrlist, ElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -123,7 +123,7 @@ This is a sidebar with a role assigned to it, rolename.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &[".rolename"],
                         value: ".rolename"
@@ -202,7 +202,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &[".role1", ".role2"],
                         value: ".role1.role2"
@@ -282,7 +282,7 @@ This is a sidebar with one role assigned to it, rolename.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
                         value: "rolename"
@@ -367,7 +367,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 title: None,
                 anchor: None,
                 attrlist: Some(Attrlist {
-                    attributes: &[TElementAttribute {
+                    attributes: &[ElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
                         value: "role1 role2"

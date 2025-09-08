@@ -2,12 +2,12 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::{
     HasSpan,
-    tests::fixtures::{Span, attributes::TElementAttribute},
+    tests::fixtures::{Span, attributes::ElementAttribute},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct Attrlist {
-    pub attributes: &'static [TElementAttribute],
+    pub attributes: &'static [ElementAttribute],
     pub source: Span,
 }
 

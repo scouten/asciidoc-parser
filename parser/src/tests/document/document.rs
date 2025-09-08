@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{Attrlist, TElementAttribute},
+        attributes::{Attrlist, ElementAttribute},
         blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         document::{TDocument, THeader},
@@ -472,17 +472,17 @@ fn err_bad_header_and_bad_macro() {
                                 },
                                 macro_attrlist: Attrlist {
                                     attributes: &[
-                                        TElementAttribute {
+                                        ElementAttribute {
                                             name: Some("alt"),
                                             shorthand_items: &[],
                                             value: "Sunset"
                                         },
-                                        TElementAttribute {
+                                        ElementAttribute {
                                             name: Some("width"),
                                             shorthand_items: &[],
                                             value: "300"
                                         },
-                                        TElementAttribute {
+                                        ElementAttribute {
                                             name: Some("height"),
                                             shorthand_items: &[],
                                             value: "400"

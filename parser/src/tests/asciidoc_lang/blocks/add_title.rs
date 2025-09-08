@@ -7,7 +7,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            attributes::{Attrlist, TElementAttribute},
+            attributes::{Attrlist, ElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
@@ -260,12 +260,12 @@ stages: [ init, verify, deploy ]
             anchor: None,
             attrlist: Some(Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["source"],
                         value: "source"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "yaml"
@@ -352,7 +352,7 @@ If you don't plant it in a container, it will take over your garden.
             title: Some("Mint"),
             anchor: None,
             attrlist: Some(Attrlist {
-                attributes: &[TElementAttribute {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
