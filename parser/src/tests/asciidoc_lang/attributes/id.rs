@@ -236,7 +236,7 @@ mod block_assignment {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+                blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -467,7 +467,7 @@ ____
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {

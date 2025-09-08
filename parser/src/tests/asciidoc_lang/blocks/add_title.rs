@@ -8,7 +8,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -60,7 +60,7 @@ This is the content of the sidebar block.
 
     assert_eq!(
         block,
-        Block::CompoundDelimited(TCompoundDelimitedBlock {
+        Block::CompoundDelimited(CompoundDelimitedBlock {
             blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {

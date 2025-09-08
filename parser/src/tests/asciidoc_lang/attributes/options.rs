@@ -35,7 +35,7 @@ You can assign one or more options to a block using the shorthand or formal synt
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+                blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -73,7 +73,7 @@ This is a sidebar with an option assigned to it, named option.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -160,7 +160,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -346,7 +346,7 @@ This is a sidebar with an option assigned to it, named option.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -432,7 +432,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {

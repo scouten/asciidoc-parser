@@ -2,7 +2,7 @@ mod block;
 pub(crate) use block::Block;
 
 mod compound_delimited;
-pub(crate) use compound_delimited::TCompoundDelimitedBlock;
+pub(crate) use compound_delimited::CompoundDelimitedBlock;
 
 mod media;
 pub(crate) use media::TMediaBlock;

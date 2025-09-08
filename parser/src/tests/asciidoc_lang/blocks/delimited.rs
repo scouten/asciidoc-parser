@@ -7,7 +7,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{Block, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -215,7 +215,7 @@ That's so meta.
 
     assert_eq!(
         block,
-        Block::CompoundDelimited(TCompoundDelimitedBlock {
+        Block::CompoundDelimited(CompoundDelimitedBlock {
             blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {
@@ -505,7 +505,7 @@ mod nesting_blocks {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+                blocks::{Block, CompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -563,7 +563,7 @@ The document header is useful, but not required.
 
         assert_eq!(
             block,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -686,7 +686,7 @@ Live within the simulated reality without want or fear.
 
         assert_eq!(
             block,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -709,7 +709,7 @@ Live within the simulated reality without want or fear.
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
@@ -760,7 +760,7 @@ Live within the simulated reality without want or fear.
                             },
                         },),
                     },),
-                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {

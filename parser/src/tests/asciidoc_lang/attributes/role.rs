@@ -42,7 +42,7 @@ mod assign_roles_to_blocks {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+                blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -90,7 +90,7 @@ This is a sidebar with a role assigned to it, rolename.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -169,7 +169,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -249,7 +249,7 @@ This is a sidebar with one role assigned to it, rolename.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -334,7 +334,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {

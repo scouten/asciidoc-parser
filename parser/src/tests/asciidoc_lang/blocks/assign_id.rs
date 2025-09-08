@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -56,7 +56,7 @@ Content of delimited example block
 
     assert_eq!(
         block,
-        Block::CompoundDelimited(TCompoundDelimitedBlock {
+        Block::CompoundDelimited(CompoundDelimitedBlock {
             blocks: &[Block::Simple(TSimpleBlock {
                 content: TContent {
                     original: Span {

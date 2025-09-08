@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -120,7 +120,7 @@ This is more content in the sidebar block.
                     anchor: None,
                     attrlist: None,
                 },),
-                Block::CompoundDelimited(TCompoundDelimitedBlock {
+                Block::CompoundDelimited(CompoundDelimitedBlock {
                     blocks: &[
                         Block::Simple(TSimpleBlock {
                             content: TContent {

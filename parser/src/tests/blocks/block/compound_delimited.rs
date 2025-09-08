@@ -5,7 +5,7 @@ mod parse {
         Parser,
         tests::fixtures::{
             Span,
-            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -149,7 +149,7 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -209,7 +209,7 @@ mod example {
         content::SubstitutionGroup,
         tests::fixtures::{
             Span,
-            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -223,7 +223,7 @@ mod example {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "example",
                 source: Span {
@@ -276,7 +276,7 @@ mod example {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -423,7 +423,7 @@ mod example {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -587,7 +587,7 @@ mod example {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -610,7 +610,7 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
@@ -698,7 +698,7 @@ mod example {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &Block::CompoundDelimited(TCompoundDelimitedBlock {
+            &Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -756,7 +756,7 @@ mod open {
         blocks::{ContentModel, IsBlock},
         tests::fixtures::{
             Span,
-            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -770,7 +770,7 @@ mod open {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "open",
                 source: Span {
@@ -819,7 +819,7 @@ mod open {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -965,7 +965,7 @@ mod open {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -1108,7 +1108,7 @@ mod sidebar {
         blocks::{ContentModel, IsBlock},
         tests::fixtures::{
             Span,
-            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -1122,7 +1122,7 @@ mod sidebar {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "sidebar",
                 source: Span {
@@ -1173,7 +1173,7 @@ mod sidebar {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -1320,7 +1320,7 @@ mod sidebar {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -1343,7 +1343,7 @@ mod sidebar {
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
@@ -1431,7 +1431,7 @@ mod sidebar {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &Block::CompoundDelimited(TCompoundDelimitedBlock {
+            &Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
@@ -1489,7 +1489,7 @@ mod quote {
         blocks::{ContentModel, IsBlock},
         tests::fixtures::{
             Span,
-            blocks::{Block, TCompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
     };
@@ -1503,7 +1503,7 @@ mod quote {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "quote",
                 source: Span {
@@ -1554,7 +1554,7 @@ mod quote {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -1701,7 +1701,7 @@ mod quote {
 
         assert_eq!(
             mi.item,
-            Block::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(TSimpleBlock {
                         content: TContent {
@@ -1724,7 +1724,7 @@ mod quote {
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::CompoundDelimited(TCompoundDelimitedBlock {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(TSimpleBlock {
                             content: TContent {
                                 original: Span {
@@ -1812,7 +1812,7 @@ mod quote {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &Block::CompoundDelimited(TCompoundDelimitedBlock {
+            &Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(TSimpleBlock {
                     content: TContent {
                         original: Span {
