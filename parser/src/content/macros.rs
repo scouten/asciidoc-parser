@@ -510,22 +510,13 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             if let Some(_mailto) = mailto {
                 link_text = mailto_text.map(|s| s.to_owned()).unwrap_or_default();
             } else {
-                if false {
-                    // Skip for the moment?
-                    todo!(
-                        "Port this: {}",
-                        r#"
-                        if doc_attrs.key? 'hide-uri-scheme'
-                            if (link_text = target.sub UriSniffRx, '').empty?
-                                link_text = target
-                            end
-                        else
-                            link_text = target
-                        end
-                        "#
-                    );
-                }
-                link_text = target.clone();
+                link_text = if self.0.is_attribute_set("hide-uri-scheme") {
+                    let lt = URI_SNIFF.replace_all(&target, "").into_owned();
+                    if lt.is_empty() { target.clone() } else { lt }
+                } else {
+                    target.clone()
+                };
+
                 extra_roles.push("bare");
             }
         }
