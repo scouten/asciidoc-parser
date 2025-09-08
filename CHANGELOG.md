@@ -5,8 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
 ## [0.6.0](https://github.com/scouten/asciidoc-parser/compare/v0.5.0...v0.6.0)
 _08 September 2025_
 
@@ -22,14 +20,6 @@ _08 September 2025_
 * Attrlist should not look for shorthand values if first value is entirely quoted ([#334](https://github.com/scouten/asciidoc-parser/pull/334))
 * Allow empty positional attribute when parsing attrlist ([#331](https://github.com/scouten/asciidoc-parser/pull/331))
 * Delimited block should return a delimited block even if end delimiter is not found ([#318](https://github.com/scouten/asciidoc-parser/pull/318))
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-As is typical in the Rust community, the minimum supported Rust version may be increased without a major version increase.
 
 ## [0.5.0](https://github.com/scouten/asciidoc-parser/compare/v0.4.0...v0.5.0)
 _16 August 2025_
