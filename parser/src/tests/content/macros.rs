@@ -1,5 +1,5 @@
 //! This file fills in a few coverage gaps after doing spec-driven development
-//! (SDD) for macro behaviors.
+//! (SDD) for macro parsing.
 
 mod inline_link {
     use pretty_assertions_sorted::assert_eq;
