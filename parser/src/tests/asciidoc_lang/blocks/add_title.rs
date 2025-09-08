@@ -9,7 +9,7 @@ use crate::{
             Span,
             attributes::{Attrlist, ElementAttribute},
             blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -62,7 +62,7 @@ This is the content of the sidebar block.
         block,
         Block::CompoundDelimited(CompoundDelimitedBlock {
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "This is the content of the sidebar block.",
                         line: 3,
@@ -149,7 +149,7 @@ Don't put a space between the dot and the first character of the title.
     assert_eq!(
         block,
         Block::RawDelimited(RawDelimitedBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
                     line: 3,
@@ -233,7 +233,7 @@ stages: [ init, verify, deploy ]
     assert_eq!(
         block,
         Block::RawDelimited(RawDelimitedBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
                     line: 4,
@@ -328,7 +328,7 @@ If you don't plant it in a container, it will take over your garden.
     assert_eq!(
         block,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                     line: 3,

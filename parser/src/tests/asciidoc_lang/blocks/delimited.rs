@@ -8,7 +8,7 @@ use crate::{
         fixtures::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
             warnings::TWarning,
         },
         sdd::{non_normative, to_do_verifies, track_file, verifies},
@@ -61,7 +61,7 @@ This text will be treated as verbatim content.
     assert_eq!(
         block,
         Block::RawDelimited(RawDelimitedBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "This text will be treated as verbatim content.",
                     line: 2,
@@ -112,7 +112,7 @@ The remaining lines define a block's content.
     assert_eq!(
         block,
         Block::RawDelimited(RawDelimitedBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "\n\nThis text will be treated as verbatim content.\n\n",
                     line: 2,
@@ -217,7 +217,7 @@ That's so meta.
         block,
         Block::CompoundDelimited(CompoundDelimitedBlock {
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "This is an example of an example block.\nThat's so meta.",
                         line: 2,
@@ -506,7 +506,7 @@ mod nesting_blocks {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
             },
             sdd::{non_normative, verifies},
         },
@@ -566,7 +566,7 @@ The document header is useful, but not required.
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "Here's a sample AsciiDoc document:",
                                 line: 2,
@@ -587,7 +587,7 @@ The document header is useful, but not required.
                         attrlist: None,
                     },),
                     Block::RawDelimited(RawDelimitedBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "= Document Title\nAuthor Name\n\nContent goes here.",
                                 line: 5,
@@ -611,7 +611,7 @@ The document header is useful, but not required.
                         substitution_group: SubstitutionGroup::Verbatim,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "The document header is useful, but not required.",
                                 line: 11,
@@ -689,7 +689,7 @@ Live within the simulated reality without want or fear.
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "Here are your options:",
                                 line: 2,
@@ -711,7 +711,7 @@ Live within the simulated reality without want or fear.
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(SimpleBlock {
-                            content: TContent {
+                            content: Content {
                                 original: Span {
                                     data: "Escape into the real world.",
                                     line: 7,
@@ -762,7 +762,7 @@ Live within the simulated reality without want or fear.
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(SimpleBlock {
-                            content: TContent {
+                            content: Content {
                                 original: Span {
                                     data: "Live within the simulated reality without want or fear.",
                                     line: 13,

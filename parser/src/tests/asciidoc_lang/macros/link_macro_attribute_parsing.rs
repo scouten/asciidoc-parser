@@ -21,7 +21,7 @@ mod link_text_alongside_named_attributes {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -66,7 +66,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://chat.asciidoc.org[Discuss AsciiDoc]",
                             line: 1,
@@ -141,7 +141,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]",
                             line: 1,
@@ -205,7 +205,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://example.org[\"Google, DuckDuckGo, Ecosia\",role=teal]",
                             line: 1,
@@ -268,7 +268,7 @@ https://example.org["1=2 posits the problem of inequality"]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://example.org[\"1=2 posits the problem of inequality\"]",
                             line: 1,
@@ -332,7 +332,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://example.org[\"href=\\\"#top\\\" attribute\"] creates link to top of page",
                             line: 1,
@@ -405,7 +405,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                             line: 1,
@@ -454,7 +454,7 @@ mod target_separate_window {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -504,7 +504,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=read-later]",
                             line: 1,
@@ -573,7 +573,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                             line: 1,
@@ -650,7 +650,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                             line: 1,
@@ -713,7 +713,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]",
                             line: 1,
@@ -777,7 +777,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]",
                             line: 1,
@@ -841,7 +841,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=\"noopener,nofollow\"]",
                             line: 1,
@@ -903,7 +903,7 @@ link:post.html[My Post,opts=nofollow]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:post.html[My Post,opts=nofollow]",
                             line: 1,
@@ -971,7 +971,7 @@ include::example$url.adoc[tag=linkattrs-s]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Let's view the raw HTML of the link:view-source:asciidoctor.org[Asciidoctor homepage^].",
                             line: 1,
@@ -1042,7 +1042,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://example.org[\"Google, DuckDuckGo, Ecosia^\",role=btn]",
                             line: 1,
@@ -1103,7 +1103,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                             line: 1,

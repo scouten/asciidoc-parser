@@ -34,7 +34,7 @@ mod positioning_attributes {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -186,7 +186,7 @@ include::example$image.adoc[tag=in-float]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
                             line: 1,
@@ -238,7 +238,7 @@ mod positioning_roles {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -381,7 +381,7 @@ include::example$image.adoc[tag=in-role]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
                             line: 1,

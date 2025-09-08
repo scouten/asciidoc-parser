@@ -170,7 +170,7 @@ mod parse {
         tests::fixtures::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
             warnings::TWarning,
         },
         warnings::WarningType,
@@ -232,7 +232,7 @@ mod parse {
             maw.item.unwrap().item,
             CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "blah blah blah",
                             line: 2,
@@ -320,7 +320,7 @@ mod example {
         tests::fixtures::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -385,7 +385,7 @@ mod example {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -406,7 +406,7 @@ mod example {
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block2",
                                 line: 4,
@@ -458,7 +458,7 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -483,7 +483,7 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block2",
                         line: 4,
@@ -525,7 +525,7 @@ mod example {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -547,7 +547,7 @@ mod example {
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(SimpleBlock {
-                            content: TContent {
+                            content: Content {
                                 original: Span {
                                     data: "block2",
                                     line: 5,
@@ -611,7 +611,7 @@ mod example {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -637,7 +637,7 @@ mod example {
             blocks.next().unwrap(),
             &Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "block2",
                             line: 5,
@@ -743,7 +743,7 @@ mod open {
         tests::fixtures::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -808,7 +808,7 @@ mod open {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -829,7 +829,7 @@ mod open {
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block2",
                                 line: 4,
@@ -881,7 +881,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -906,7 +906,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block2",
                         line: 4,
@@ -949,7 +949,7 @@ mod open {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -970,7 +970,7 @@ mod open {
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "---\nblock2\n---",
                                 line: 4,
@@ -1022,7 +1022,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -1047,7 +1047,7 @@ mod open {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "---\nblock2\n---",
                         line: 4,
@@ -1083,7 +1083,7 @@ mod sidebar {
         tests::fixtures::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -1148,7 +1148,7 @@ mod sidebar {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -1169,7 +1169,7 @@ mod sidebar {
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block2",
                                 line: 4,
@@ -1221,7 +1221,7 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -1246,7 +1246,7 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block2",
                         line: 4,
@@ -1288,7 +1288,7 @@ mod sidebar {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -1310,7 +1310,7 @@ mod sidebar {
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(SimpleBlock {
-                            content: TContent {
+                            content: Content {
                                 original: Span {
                                     data: "block2",
                                     line: 5,
@@ -1374,7 +1374,7 @@ mod sidebar {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -1400,7 +1400,7 @@ mod sidebar {
             blocks.next().unwrap(),
             &Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "block2",
                             line: 5,
@@ -1559,7 +1559,7 @@ mod quote {
         tests::fixtures::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -1624,7 +1624,7 @@ mod quote {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -1645,7 +1645,7 @@ mod quote {
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block2",
                                 line: 4,
@@ -1697,7 +1697,7 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -1722,7 +1722,7 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block2",
                         line: 4,
@@ -1764,7 +1764,7 @@ mod quote {
             CompoundDelimitedBlock {
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "block1",
                                 line: 2,
@@ -1786,7 +1786,7 @@ mod quote {
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
                         blocks: &[Block::Simple(SimpleBlock {
-                            content: TContent {
+                            content: Content {
                                 original: Span {
                                     data: "block2",
                                     line: 5,
@@ -1850,7 +1850,7 @@ mod quote {
         assert_eq!(
             blocks.next().unwrap(),
             &Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "block1",
                         line: 2,
@@ -1876,7 +1876,7 @@ mod quote {
             blocks.next().unwrap(),
             &Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "block2",
                             line: 5,

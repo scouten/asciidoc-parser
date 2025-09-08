@@ -9,7 +9,7 @@ mod inline_link {
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
             document::{Attribute, Document, Header, InterpretedValue},
         },
     };
@@ -34,7 +34,7 @@ mod inline_link {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "You'll often see \\<https://example.org> used in examples.",
                             line: 1,
@@ -85,7 +85,7 @@ mod inline_link {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "You'll often see <\\https://example.org> used in examples.",
                             line: 1,
@@ -135,7 +135,7 @@ mod inline_link {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "There's no actual link <https://> in here.",
                             line: 1,
@@ -205,7 +205,7 @@ mod inline_link {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "We don't want you to know that this is HTTP: <https://example.com> just now.",
                             line: 4,
@@ -257,7 +257,7 @@ mod inline_link {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
                             line: 1,
@@ -309,7 +309,7 @@ mod inline_link {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
                             line: 1,
@@ -380,7 +380,7 @@ mod inline_link {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                             line: 4,
@@ -420,7 +420,7 @@ mod link_macro {
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
             document::{Attribute, Document, Header, InterpretedValue},
         },
     };
@@ -445,7 +445,7 @@ mod link_macro {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "A link macro looks like this: \\link:target[link text].",
                             line: 1,
@@ -495,7 +495,7 @@ mod link_macro {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:[,Subscribe me]",
                             line: 1,
@@ -566,7 +566,7 @@ mod link_macro {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:https://example.com[]",
                             line: 4,
@@ -637,7 +637,7 @@ mod link_macro {
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:mailto:fred@example.com[]",
                             line: 4,

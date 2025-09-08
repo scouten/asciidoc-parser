@@ -10,7 +10,7 @@ use crate::{
     tests::fixtures::{
         Span,
         blocks::{Block, SimpleBlock},
-        content::TContent,
+        content::Content,
         document::{Attribute, InterpretedValue},
     },
     warnings::WarningType,
@@ -434,7 +434,7 @@ fn affects_document_state() {
     assert_eq!(
         block1,
         &Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "We are agreed? {agreed}",
                     line: 1,
@@ -463,7 +463,7 @@ fn affects_document_state() {
     assert_eq!(
         block3,
         &Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "Are we still agreed? {agreed}",
                     line: 5,
@@ -504,7 +504,7 @@ fn block_enforces_permission() {
     assert_eq!(
         block3,
         &Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "Are we agreed? {agreed}",
                     line: 5,

@@ -84,7 +84,7 @@ mod macros {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -203,7 +203,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     }
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Click the button with the image:star.png[Star] to favorite the project.",
                             line: 1,

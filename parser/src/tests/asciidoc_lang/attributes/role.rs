@@ -43,7 +43,7 @@ mod assign_roles_to_blocks {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
             },
             sdd::{non_normative, verifies},
         },
@@ -92,7 +92,7 @@ This is a sidebar with a role assigned to it, rolename.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with a role assigned to it, rolename.",
                             line: 3,
@@ -171,7 +171,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                             line: 3,
@@ -251,7 +251,7 @@ This is a sidebar with one role assigned to it, rolename.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with one role assigned to it, rolename.",
                             line: 3,
@@ -336,7 +336,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with two roles assigned to it, role1 and role2.",
                             line: 3,

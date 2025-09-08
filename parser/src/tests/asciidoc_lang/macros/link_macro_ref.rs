@@ -6,7 +6,7 @@ use crate::{
         fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
             document::{Document, Header},
         },
         sdd::{non_normative, track_file, verifies},
@@ -57,7 +57,7 @@ fn id() {
                 },
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "https://asciidoctor.org[Home,id=home]",
                         line: 1,
@@ -117,7 +117,7 @@ fn role() {
                 },
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=teal]",
                         line: 1,
@@ -177,7 +177,7 @@ fn title() {
                 },
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "https://asciidoctor.org[Home,title=Project home page]",
                         line: 1,
@@ -237,7 +237,7 @@ fn window() {
                 },
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc,window=_blank]",
                         line: 1,
@@ -299,7 +299,7 @@ fn window_shorthand() {
                 },
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                         line: 1,
@@ -358,7 +358,7 @@ fn opts() {
                 },
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "https://asciidoctor.org[Home,opts=nofollow]",
                         line: 1,

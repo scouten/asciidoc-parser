@@ -241,7 +241,7 @@ mod comment {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{Span, blocks::RawDelimitedBlock, content::TContent},
+        tests::fixtures::{Span, blocks::RawDelimitedBlock, content::Content},
     };
 
     #[test]
@@ -256,7 +256,7 @@ mod comment {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "",
                         line: 2,
@@ -311,7 +311,7 @@ mod comment {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 2,
@@ -351,7 +351,7 @@ mod comment {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1  \nline2",
                     line: 2,
@@ -378,7 +378,7 @@ mod comment {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \n/////\nline2",
                         line: 2,
@@ -418,7 +418,7 @@ mod comment {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1  \n/////\nline2",
                     line: 2,
@@ -468,7 +468,7 @@ mod listing {
             Span,
             attributes::{Attrlist, ElementAttribute},
             blocks::RawDelimitedBlock,
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -484,7 +484,7 @@ mod listing {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "",
                         line: 2,
@@ -539,7 +539,7 @@ mod listing {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 2,
@@ -579,7 +579,7 @@ mod listing {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1  \nline2",
                     line: 2,
@@ -606,7 +606,7 @@ mod listing {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1 < *line2*",
                         line: 3,
@@ -678,7 +678,7 @@ mod listing {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1 < *line2*",
                     line: 3,
@@ -705,7 +705,7 @@ mod listing {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \n-----\nline2",
                         line: 2,
@@ -745,7 +745,7 @@ mod listing {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1  \n-----\nline2",
                     line: 2,
@@ -758,7 +758,7 @@ mod listing {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1  \n-----\nline2",
                     line: 2,
@@ -873,7 +873,7 @@ mod pass {
         Parser,
         blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{Span, blocks::RawDelimitedBlock, content::TContent},
+        tests::fixtures::{Span, blocks::RawDelimitedBlock, content::Content},
     };
 
     #[test]
@@ -888,7 +888,7 @@ mod pass {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "",
                         line: 2,
@@ -943,7 +943,7 @@ mod pass {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 2,
@@ -983,7 +983,7 @@ mod pass {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1  \nline2",
                     line: 2,
@@ -1010,7 +1010,7 @@ mod pass {
         assert_eq!(
             mi.item,
             RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \n+++++\nline2",
                         line: 2,
@@ -1050,7 +1050,7 @@ mod pass {
 
         assert_eq!(
             mi.item.content(),
-            TContent {
+            Content {
                 original: Span {
                     data: "line1  \n+++++\nline2",
                     line: 2,

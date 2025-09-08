@@ -21,7 +21,7 @@ mod url_schemes_for_autolinks {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -63,7 +63,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "http://example.org",
                             line: 1,
@@ -119,7 +119,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://example.org",
                             line: 1,
@@ -175,7 +175,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "ftp://example.org",
                             line: 1,
@@ -231,7 +231,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "irc://example.org",
                             line: 1,
@@ -288,7 +288,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "join@discuss.example.org",
                             line: 1,
@@ -355,7 +355,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "The homepage for the Asciidoctor Project is https://www.asciidoctor.org.",
                             line: 1,
@@ -423,7 +423,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "You'll often see <https://example.org> used in examples.",
                             line: 1,
@@ -464,7 +464,7 @@ mod email_autolinks {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::verifies,
@@ -507,7 +507,7 @@ For email address which do not conform to these restriction, you can use the xre
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Email us at hello@example.com to say hello.",
                             line: 1,
@@ -549,7 +549,7 @@ mod escaping_urls_and_email_addresses {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::verifies,
@@ -595,7 +595,7 @@ The URL and email address will both be shown in plain text.
                 },
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "Once launched, the site will be available at \\https://example.org.",
                                 line: 1,
@@ -616,7 +616,7 @@ The URL and email address will both be shown in plain text.
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "If you cannot access the site, email \\help@example.org for assistance.",
                                 line: 3,
@@ -683,7 +683,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Once launched, the site will be available at https://example.org.",
                             line: 2,

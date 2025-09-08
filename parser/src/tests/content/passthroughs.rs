@@ -3,14 +3,12 @@ mod passthroughs {
 
     use crate::{
         Parser,
-        content::{
-            Content, Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough,
-        },
+        content::{Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough},
         parser::ModificationContext,
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -24,7 +22,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"abc \[attrs]++text++"#,
                         line: 1,
@@ -49,12 +47,13 @@ mod passthroughs {
 
     #[test]
     fn adds_warning_text_for_unresolved_passthrough_id() {
-        let mut content = Content::from(crate::Span::new("pass:q,a[*<{backend}>*]"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("pass:q,a[*<{backend}>*]"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:q,a[*<{backend}>*]",
                     line: 1,
@@ -92,7 +91,7 @@ mod passthroughs {
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:q,a[*<{backend}>*]",
                     line: 1,

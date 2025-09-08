@@ -26,7 +26,7 @@ mod from_url_to_macro {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -81,7 +81,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org[]",
                             line: 1,
@@ -147,7 +147,7 @@ The more typical reason, however, is to specify custom link text.
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: r#"Type "https://asciidoctor.org[]" into the location bar of your browser."#,
                             line: 1,
@@ -188,7 +188,7 @@ mod custom_link_text {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -237,7 +237,7 @@ include::example$url.adoc[tag=irc]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Chat with other Fedora users in the irc://irc.freenode.org/#fedora[Fedora IRC channel].",
                             line: 1,
@@ -300,7 +300,7 @@ include::example$url.adoc[tag=text]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Ask questions in the https://chat.asciidoc.org[*community chat*].",
                             line: 1,
@@ -341,7 +341,7 @@ mod link_attributes {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -386,7 +386,7 @@ include::example$url.adoc[tag=css]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Chat with other AsciiDoc users in the https://chat.asciidoc.org[*project chat*^,role=green].",
                             line: 1,

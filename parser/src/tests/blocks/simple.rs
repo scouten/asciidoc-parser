@@ -10,7 +10,7 @@ use crate::{
         Span,
         attributes::{Attrlist, ElementAttribute},
         blocks::SimpleBlock,
-        content::TContent,
+        content::Content,
     },
 };
 
@@ -45,7 +45,7 @@ fn single_line() {
     assert_eq!(
         mi.item,
         SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "abc",
                     line: 1,
@@ -100,7 +100,7 @@ fn multiple_lines() {
     assert_eq!(
         mi.item,
         SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "abc\ndef",
                     line: 1,
@@ -142,7 +142,7 @@ fn consumes_blank_lines_after() {
     assert_eq!(
         mi.item,
         SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "abc",
                     line: 1,
@@ -187,7 +187,7 @@ fn overrides_sub_group_via_subs_attribute() {
     assert_eq!(
         mi.item,
         SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "a<b>c *bold*",
                     line: 2,

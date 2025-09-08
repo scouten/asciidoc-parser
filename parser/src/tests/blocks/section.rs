@@ -10,7 +10,7 @@ use crate::{
         Span,
         attributes::{Attrlist, ElementAttribute},
         blocks::{Block, MediaBlock, SectionBlock, SimpleBlock},
-        content::TContent,
+        content::Content,
         warnings::TWarning,
     },
     warnings::WarningType,
@@ -150,7 +150,7 @@ fn has_child_block() {
                 offset: 3,
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "abc",
                         line: 3,
@@ -448,7 +448,7 @@ fn dont_stop_at_child_section() {
             },
             blocks: &[
                 Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "abc",
                             line: 3,
@@ -477,7 +477,7 @@ fn dont_stop_at_child_section() {
                         offset: 27,
                     },
                     blocks: &[Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "def",
                                 line: 7,
@@ -568,7 +568,7 @@ fn stop_at_peer_section() {
                 offset: 3,
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "abc",
                         line: 3,
@@ -647,7 +647,7 @@ fn stop_at_ancestor_section() {
                 offset: 4,
             },
             blocks: &[Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "abc",
                         line: 3,

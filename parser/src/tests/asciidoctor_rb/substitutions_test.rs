@@ -13,7 +13,7 @@ mod dispatcher {
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -37,7 +37,7 @@ mod dispatcher {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
                         line: 1,
@@ -104,19 +104,20 @@ mod quotes {
 
     use crate::{
         Parser,
-        content::{Content, SubstitutionGroup, SubstitutionStep},
+        content::{SubstitutionGroup, SubstitutionStep},
         parser::ModificationContext,
         strings::CowStr,
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
     #[test]
     fn single_line_double_quoted_string() {
-        let mut content = Content::from(crate::Span::new(r#""`a few quoted words`""#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#""`a few quoted words`""#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -128,7 +129,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_double_quoted_string() {
-        let mut content = Content::from(crate::Span::new(r#"\"`a few quoted words`""#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"\"`a few quoted words`""#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -140,7 +142,8 @@ mod quotes {
 
     #[test]
     fn multi_line_double_quoted_string() {
-        let mut content = Content::from(crate::Span::new("\"`a few\nquoted words`\""));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("\"`a few\nquoted words`\""));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -156,7 +159,7 @@ mod quotes {
 
     #[test]
     fn double_quoted_string_with_inline_single_quote() {
-        let mut content = Content::from(crate::Span::new(r#""`Here's Johnny!`""#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#""`Here's Johnny!`""#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -168,7 +171,7 @@ mod quotes {
 
     #[test]
     fn double_quoted_string_with_inline_backquote() {
-        let mut content = Content::from(crate::Span::new(r#""`Here`s Johnny!`""#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#""`Here`s Johnny!`""#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -180,7 +183,8 @@ mod quotes {
 
     #[test]
     fn double_quoted_string_around_almost_monospaced_text() {
-        let mut content = Content::from(crate::Span::new(r#""``E=mc^2^` is the solution!`""#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#""``E=mc^2^` is the solution!`""#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -196,7 +200,8 @@ mod quotes {
 
     #[test]
     fn double_quoted_string_around_monospaced_text() {
-        let mut content = Content::from(crate::Span::new(r#""```E=mc^2^`` is the solution!`""#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#""```E=mc^2^`` is the solution!`""#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -212,7 +217,8 @@ mod quotes {
 
     #[test]
     fn single_line_single_quoted_string() {
-        let mut content = Content::from(crate::Span::new(r#"'`a few quoted words`'"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"'`a few quoted words`'"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -224,7 +230,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_single_quoted_string() {
-        let mut content = Content::from(crate::Span::new(r#"\'`a few quoted words`'"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"\'`a few quoted words`'"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -236,7 +243,8 @@ mod quotes {
 
     #[test]
     fn multi_line_single_quoted_string() {
-        let mut content = Content::from(crate::Span::new("'`a few\nquoted words`'"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("'`a few\nquoted words`'"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -252,7 +260,8 @@ mod quotes {
 
     #[test]
     fn single_quoted_string_with_inline_single_quote() {
-        let mut content = Content::from(crate::Span::new(r#"'`That isn't what I did.`'"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"'`That isn't what I did.`'"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -264,7 +273,7 @@ mod quotes {
 
     #[test]
     fn single_quoted_string_with_inline_backquote() {
-        let mut content = Content::from(crate::Span::new(r#"'`Here`s Johnny!`'"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"'`Here`s Johnny!`'"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -276,7 +285,7 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_marked_string() {
-        let mut content = Content::from(crate::Span::new(r#"#a few words#"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"#a few words#"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -288,7 +297,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_constrained_marked_string() {
-        let mut content = Content::from(crate::Span::new(r#"\#a few words#"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"\#a few words#"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -300,7 +309,7 @@ mod quotes {
 
     #[test]
     fn multi_line_constrained_marked_string() {
-        let mut content = Content::from(crate::Span::new("#a few\nwords#"));
+        let mut content = crate::content::Content::from(crate::Span::new("#a few\nwords#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -312,7 +321,7 @@ mod quotes {
 
     #[test]
     fn constrained_marked_string_should_not_match_entity_references() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r##"111 #mark a# 222 "`quote a`" 333 #mark b# 444"##,
         ));
         let p = Parser::default();
@@ -326,7 +335,8 @@ mod quotes {
 
     #[test]
     fn single_line_unconstrained_marked_string() {
-        let mut content = Content::from(crate::Span::new(r###"##--anything goes ##"###));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r###"##--anything goes ##"###));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -342,7 +352,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_unconstrained_marked_string() {
-        let mut content = Content::from(crate::Span::new(r###"\\##--anything goes ##"###));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r###"\\##--anything goes ##"###));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -354,7 +365,7 @@ mod quotes {
 
     #[test]
     fn multi_line_unconstrained_marked_string() {
-        let mut content = Content::from(crate::Span::new("##--anything\ngoes ##"));
+        let mut content = crate::content::Content::from(crate::Span::new("##--anything\ngoes ##"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -370,7 +381,8 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_marked_string_with_role() {
-        let mut content = Content::from(crate::Span::new(r##"[statement]#a few words#"##));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r##"[statement]#a few words#"##));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -386,7 +398,7 @@ mod quotes {
 
     #[test]
     fn does_not_recognize_attribute_list_with_left_square_bracket_on_formatted_text() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r##"key: [ *before [.redacted]#redacted# after* ]"##,
         ));
         let p = Parser::default();
@@ -413,7 +425,7 @@ mod quotes {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "nums = [1, 2, 3, [.blue]#4#]",
                         line: 1,
@@ -438,7 +450,8 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_strong_string() {
-        let mut content = Content::from(crate::Span::new(r#"*a few strong words*"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"*a few strong words*"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -450,7 +463,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_constrained_strong_string() {
-        let mut content = Content::from(crate::Span::new(r#"\*a few strong words*"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"\*a few strong words*"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -462,7 +476,7 @@ mod quotes {
 
     #[test]
     fn multi_line_constrained_strong_string() {
-        let mut content = Content::from(crate::Span::new("*a few\nstrong words*"));
+        let mut content = crate::content::Content::from(crate::Span::new("*a few\nstrong words*"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -478,7 +492,7 @@ mod quotes {
 
     #[test]
     fn constrained_strong_string_containing_an_asterisk() {
-        let mut content = Content::from(crate::Span::new("*bl*ck*-eye"));
+        let mut content = crate::content::Content::from(crate::Span::new("*bl*ck*-eye"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -490,7 +504,7 @@ mod quotes {
 
     #[test]
     fn constrained_strong_string_containing_an_asterisk_and_multibyte_word_chars() {
-        let mut content = Content::from(crate::Span::new("*黑*眼圈*"));
+        let mut content = crate::content::Content::from(crate::Span::new("*黑*眼圈*"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -502,7 +516,8 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_quote_variation_emphasized_string() {
-        let mut content = Content::from(crate::Span::new("_a few emphasized words_"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("_a few emphasized words_"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -518,7 +533,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_constrained_quote_variation_emphasized_string() {
-        let mut content = Content::from(crate::Span::new("\\_a few emphasized words_"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("\\_a few emphasized words_"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -530,7 +546,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_quoted_string() {
-        let mut content = Content::from(crate::Span::new(r#"\'a few emphasized words'"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"\'a few emphasized words'"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -542,7 +559,8 @@ mod quotes {
 
     #[test]
     fn multi_line_constrained_emphasized_quote_variation_string() {
-        let mut content = Content::from(crate::Span::new("_a few\nemphasized words_"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("_a few\nemphasized words_"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -554,7 +572,8 @@ mod quotes {
 
     #[test]
     fn single_quoted_string_containing_an_emphasized_phrase() {
-        let mut content = Content::from(crate::Span::new(r#"'`I told him, 'Just go for it!'`'"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"'`I told him, 'Just go for it!'`'"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -566,7 +585,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_quotes_inside_emphasized_words_are_restored() {
-        let mut content = Content::from(crate::Span::new(r#"'Here\'s Johnny!'"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"'Here\'s Johnny!'"#));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -575,7 +594,8 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_emphasized_underline_variation_string() {
-        let mut content = Content::from(crate::Span::new(r#"_a few emphasized words_"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"_a few emphasized words_"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -587,7 +607,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_constrained_emphasized_underline_variation_string() {
-        let mut content = Content::from(crate::Span::new(r#"\_a few emphasized words_"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"\_a few emphasized words_"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -599,7 +620,8 @@ mod quotes {
 
     #[test]
     fn multi_line_constrained_emphasized_underline_variation_string() {
-        let mut content = Content::from(crate::Span::new("_a few\nemphasized words_"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("_a few\nemphasized words_"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -619,7 +641,7 @@ mod quotes {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "[foox-]`leave it alone`",
                         line: 1,
@@ -652,7 +674,7 @@ mod quotes {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"[x-]\`leave it alone`"#,
                         line: 1,
@@ -685,7 +707,7 @@ mod quotes {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"\[x-]`just *mono*`"#,
                         line: 1,
@@ -724,7 +746,7 @@ mod quotes {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "`a few\n<{monospaced}> words`",
                         line: 1,
@@ -749,7 +771,7 @@ mod quotes {
 
     #[test]
     fn single_line_unconstrained_strong_chars() {
-        let mut content = Content::from(crate::Span::new(r#"**Git**Hub"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"**Git**Hub"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -761,7 +783,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_unconstrained_strong_chars() {
-        let mut content = Content::from(crate::Span::new(r#"\**Git**Hub"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"\**Git**Hub"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -773,7 +795,7 @@ mod quotes {
 
     #[test]
     fn multi_line_unconstrained_strong_chars() {
-        let mut content = Content::from(crate::Span::new("**G\ni\nt\n**Hub"));
+        let mut content = crate::content::Content::from(crate::Span::new("**G\ni\nt\n**Hub"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -785,7 +807,7 @@ mod quotes {
 
     #[test]
     fn unconstrained_strong_chars_with_inline_asterisk() {
-        let mut content = Content::from(crate::Span::new("**bl*ck**-eye"));
+        let mut content = crate::content::Content::from(crate::Span::new("**bl*ck**-eye"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -797,7 +819,7 @@ mod quotes {
 
     #[test]
     fn unconstrained_strong_chars_with_role() {
-        let mut content = Content::from(crate::Span::new("Git[blue]**Hub**"));
+        let mut content = crate::content::Content::from(crate::Span::new("Git[blue]**Hub**"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -809,7 +831,7 @@ mod quotes {
 
     #[test]
     fn escaped_unconstrained_strong_chars_with_role() {
-        let mut content = Content::from(crate::Span::new(r#"Git\[blue]**Hub**"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"Git\[blue]**Hub**"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -821,7 +843,7 @@ mod quotes {
 
     #[test]
     fn single_line_unconstrained_emphasized_characters() {
-        let mut content = Content::from(crate::Span::new("__Git__Hub"));
+        let mut content = crate::content::Content::from(crate::Span::new("__Git__Hub"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -830,7 +852,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_unconstrained_emphasized_characters() {
-        let mut content = Content::from(crate::Span::new(r#"\__Git__Hub"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"\__Git__Hub"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -839,7 +861,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_unconstrained_emphasized_characters_around_word() {
-        let mut content = Content::from(crate::Span::new(r#"\\__GitHub__"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"\\__GitHub__"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -848,7 +870,7 @@ mod quotes {
 
     #[test]
     fn multi_line_unconstrained_emphasized_chars() {
-        let mut content = Content::from(crate::Span::new("__G\ni\nt\n__Hub"));
+        let mut content = crate::content::Content::from(crate::Span::new("__G\ni\nt\n__Hub"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -857,7 +879,7 @@ mod quotes {
 
     #[test]
     fn unconstrained_emphasis_chars_with_role() {
-        let mut content = Content::from(crate::Span::new("[gray]__Git__Hub"));
+        let mut content = crate::content::Content::from(crate::Span::new("[gray]__Git__Hub"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -869,7 +891,7 @@ mod quotes {
 
     #[test]
     fn escaped_unconstrained_emphasis_chars_with_role() {
-        let mut content = Content::from(crate::Span::new("\\[gray]__Git__Hub"));
+        let mut content = crate::content::Content::from(crate::Span::new("\\[gray]__Git__Hub"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -878,8 +900,9 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_monospaced_chars_1() {
-        let mut content =
-            Content::from(crate::Span::new("call [x-]+save()+ to persist the changes"));
+        let mut content = crate::content::Content::from(crate::Span::new(
+            "call [x-]+save()+ to persist the changes",
+        ));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -891,7 +914,8 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_monospaced_chars_2() {
-        let mut content = Content::from(crate::Span::new("call `save()` to persist the changes"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("call `save()` to persist the changes"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -903,7 +927,7 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_monospaced_chars_with_role_1() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "call [method x-]+save()+ to persist the changes",
         ));
         let p = Parser::default();
@@ -917,7 +941,7 @@ mod quotes {
 
     #[test]
     fn single_line_constrained_monospaced_chars_with_role_2() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "call [method]`save()` to persist the changes",
         ));
         let p = Parser::default();
@@ -931,8 +955,9 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_constrained_monospaced_chars() {
-        let mut content =
-            Content::from(crate::Span::new(r#"call \`save()` to persist the changes"#));
+        let mut content = crate::content::Content::from(crate::Span::new(
+            r#"call \`save()` to persist the changes"#,
+        ));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -944,7 +969,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_constrained_monospaced_chars_with_role() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r#"call [method]\`save()` to persist the changes"#,
         ));
         let p = Parser::default();
@@ -958,7 +983,7 @@ mod quotes {
 
     #[test]
     fn escaped_role_on_single_line_constrained_monospaced_chars() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r#"call \[method]`save()` to persist the changes"#,
         ));
         let p = Parser::default();
@@ -972,7 +997,7 @@ mod quotes {
 
     #[test]
     fn escaped_role_on_escaped_single_line_constrained_monospaced_chars() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r#"call \[method]\`save()` to persist the changes"#,
         ));
         let p = Parser::default();
@@ -986,7 +1011,8 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_constrained_passthrough_string() {
-        let mut content = Content::from(crate::Span::new(r#"[x-]\+leave it alone+"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"[x-]\+leave it alone+"#));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -999,7 +1025,7 @@ mod quotes {
     #[test]
     fn single_line_unconstrained_monospaced_chars_with_old_behavior_and_role() {
         // NOTE: Not in the Ruby test suite.
-        let mut content = Content::from(crate::Span::new("Git[test x-]++Hub++"));
+        let mut content = crate::content::Content::from(crate::Span::new("Git[test x-]++Hub++"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1011,7 +1037,7 @@ mod quotes {
 
     #[test]
     fn single_line_unconstrained_monospaced_chars_1() {
-        let mut content = Content::from(crate::Span::new("Git[x-]++Hub++"));
+        let mut content = crate::content::Content::from(crate::Span::new("Git[x-]++Hub++"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1020,7 +1046,7 @@ mod quotes {
 
     #[test]
     fn single_line_unconstrained_monospaced_chars_2() {
-        let mut content = Content::from(crate::Span::new("Git``Hub``"));
+        let mut content = crate::content::Content::from(crate::Span::new("Git``Hub``"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1029,7 +1055,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_unconstrained_monospaced_chars() {
-        let mut content = Content::from(crate::Span::new(r#"Git\``Hub``"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"Git\``Hub``"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1038,7 +1064,7 @@ mod quotes {
 
     #[test]
     fn multi_line_unconstrained_monospaced_chars_1() {
-        let mut content = Content::from(crate::Span::new("Git[x-]++\nH\nu\nb++"));
+        let mut content = crate::content::Content::from(crate::Span::new("Git[x-]++\nH\nu\nb++"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1050,7 +1076,7 @@ mod quotes {
 
     #[test]
     fn multi_line_unconstrained_monospaced_chars_2() {
-        let mut content = Content::from(crate::Span::new("Git``\nH\nu\nb``"));
+        let mut content = crate::content::Content::from(crate::Span::new("Git``\nH\nu\nb``"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1062,7 +1088,7 @@ mod quotes {
 
     #[test]
     fn single_line_superscript_chars() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "x^2^ = x * x, e = mc^2^, there's a 1^st^ time for everything",
         ));
         let p = Parser::default();
@@ -1078,7 +1104,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_superscript_chars() {
-        let mut content = Content::from(crate::Span::new(r#"x\^2^ = x * x"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"x\^2^ = x * x"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1087,7 +1113,7 @@ mod quotes {
 
     #[test]
     fn does_not_match_superscript_across_whitespace() {
-        let mut content = Content::from(crate::Span::new("x^(n\n-\n1)^"));
+        let mut content = crate::content::Content::from(crate::Span::new("x^(n\n-\n1)^"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1096,7 +1122,7 @@ mod quotes {
 
     #[test]
     fn allow_spaces_in_superscript_if_spaces_are_inserted_using_an_attribute_reference() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^.",
         ));
         let p = Parser::default();
@@ -1111,7 +1137,8 @@ mod quotes {
 
     #[test]
     fn allow_spaces_in_superscript_if_text_is_wrapped_in_a_passthrough() {
-        let mut content = Content::from(crate::Span::new("Night ^+A poem by Jane Kondo+^."));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("Night ^+A poem by Jane Kondo+^."));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1123,7 +1150,7 @@ mod quotes {
 
     #[test]
     fn does_not_match_adjacent_superscript_chars() {
-        let mut content = Content::from(crate::Span::new("a ^^ b"));
+        let mut content = crate::content::Content::from(crate::Span::new("a ^^ b"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1134,7 +1161,7 @@ mod quotes {
     #[test]
     fn does_not_confuse_superscript_and_links_with_blank_window_shorthand() {
         // TO DO: Enable when macro substitution is implemented.
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "http://localhost[Text^] on the 21^st^ and 22^nd^",
         ));
         let p = Parser::default();
@@ -1152,7 +1179,7 @@ mod quotes {
 
     #[test]
     fn single_line_subscript_chars() {
-        let mut content = Content::from(crate::Span::new("H~2~O"));
+        let mut content = crate::content::Content::from(crate::Span::new("H~2~O"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1161,7 +1188,7 @@ mod quotes {
 
     #[test]
     fn escaped_single_line_subscript_chars() {
-        let mut content = Content::from(crate::Span::new(r#"H\~2~O"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"H\~2~O"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1170,7 +1197,8 @@ mod quotes {
 
     #[test]
     fn does_not_match_subscript_across_whitespace() {
-        let mut content = Content::from(crate::Span::new("project~ view\non\nGitHub~"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("project~ view\non\nGitHub~"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1182,7 +1210,7 @@ mod quotes {
 
     #[test]
     fn does_not_match_adjacent_subscript_chars() {
-        let mut content = Content::from(crate::Span::new("a ~~ b"));
+        let mut content = crate::content::Content::from(crate::Span::new("a ~~ b"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1191,7 +1219,7 @@ mod quotes {
 
     #[test]
     fn does_not_match_subscript_across_distinct_urls() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]",
         ));
         let p = Parser::default();
@@ -1205,7 +1233,8 @@ mod quotes {
 
     #[test]
     fn quoted_text_with_role_shorthand() {
-        let mut content = Content::from(crate::Span::new("[.white.red-background]#alert#"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("[.white.red-background]#alert#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1217,7 +1246,7 @@ mod quotes {
 
     #[test]
     fn quoted_text_with_id_shorthand() {
-        let mut content = Content::from(crate::Span::new("[#bond]#007#"));
+        let mut content = crate::content::Content::from(crate::Span::new("[#bond]#007#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1229,7 +1258,8 @@ mod quotes {
 
     #[test]
     fn quoted_text_with_id_and_role_shorthand() {
-        let mut content = Content::from(crate::Span::new("[#bond.white.red-background]#007#"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("[#bond.white.red-background]#007#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1241,7 +1271,8 @@ mod quotes {
 
     #[test]
     fn quoted_text_with_id_and_role_shorthand_with_roles_before_id() {
-        let mut content = Content::from(crate::Span::new("[.white.red-background#bond]#007#"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("[.white.red-background#bond]#007#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1253,7 +1284,8 @@ mod quotes {
 
     #[test]
     fn quoted_text_with_id_and_role_shorthand_with_roles_around_id() {
-        let mut content = Content::from(crate::Span::new("[.white#bond.red-background]#007#"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("[.white#bond.red-background]#007#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1265,7 +1297,7 @@ mod quotes {
 
     #[test]
     fn should_not_assign_role_attribute_if_shorthand_style_has_no_roles() {
-        let mut content = Content::from(crate::Span::new("[#idname]*blah*"));
+        let mut content = crate::content::Content::from(crate::Span::new("[#idname]*blah*"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1277,7 +1309,7 @@ mod quotes {
 
     #[test]
     fn should_remove_trailing_spaces_from_role_defined_using_shorthand() {
-        let mut content = Content::from(crate::Span::new("[.rolename ]*blah*"));
+        let mut content = crate::content::Content::from(crate::Span::new("[.rolename ]*blah*"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1289,7 +1321,7 @@ mod quotes {
 
     #[test]
     fn should_allow_role_to_be_defined_using_attribute_reference() {
-        let mut content = Content::from(crate::Span::new("[{rolename}]#phrase#"));
+        let mut content = crate::content::Content::from(crate::Span::new("[{rolename}]#phrase#"));
         let p = Parser::default().with_intrinsic_attribute(
             "rolename",
             "red",
@@ -1306,7 +1338,7 @@ mod quotes {
 
     #[test]
     fn should_ignore_attributes_after_comma() {
-        let mut content = Content::from(crate::Span::new("[red, foobar]#alert#"));
+        let mut content = crate::content::Content::from(crate::Span::new("[red, foobar]#alert#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1319,7 +1351,7 @@ mod quotes {
     #[test]
     fn should_remove_leading_and_trailing_spaces_around_role_after_ignoring_attributes_after_comma()
     {
-        let mut content = Content::from(crate::Span::new("[ red , foobar]#alert#"));
+        let mut content = crate::content::Content::from(crate::Span::new("[ red , foobar]#alert#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1331,7 +1363,7 @@ mod quotes {
 
     #[test]
     fn should_not_assign_role_if_value_before_comma_is_empty() {
-        let mut content = Content::from(crate::Span::new("[,]#anonymous#"));
+        let mut content = crate::content::Content::from(crate::Span::new("[,]#anonymous#"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1343,7 +1375,8 @@ mod quotes {
 
     #[test]
     fn inline_passthrough_with_id_and_role_set_using_shorthand_1() {
-        let mut content = Content::from(crate::Span::new("[#idname.rolename]+pass+"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("[#idname.rolename]+pass+"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1359,7 +1392,8 @@ mod quotes {
 
     #[test]
     fn inline_passthrough_with_id_and_role_set_using_shorthand_2() {
-        let mut content = Content::from(crate::Span::new("[.rolename#idname]+pass+"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("[.rolename#idname]+pass+"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -1379,13 +1413,13 @@ mod macros {
 
     use crate::{
         Parser,
-        content::{Content, SubstitutionStep},
+        content::SubstitutionStep,
         parser::ModificationContext,
         strings::CowStr,
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -1399,7 +1433,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "link:/home.html[]",
                         line: 1,
@@ -1432,7 +1466,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "link:/home.html[Home]",
                         line: 1,
@@ -1468,7 +1502,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[]",
                         line: 1,
@@ -1504,7 +1538,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer]",
                         line: 1,
@@ -1540,7 +1574,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]",
                         line: 1,
@@ -1578,7 +1612,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]",
                         line: 1,
@@ -1616,7 +1650,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
                         line: 1,
@@ -1652,7 +1686,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[,id=contact,role=icon]",
                         line: 1,
@@ -1725,7 +1759,7 @@ mod macros {
             assert_eq!(
                 block,
                 Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: input,
                             line: 1,
@@ -1760,7 +1794,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "bert&ernie@sesamestreet.com",
                         line: 1,
@@ -1794,7 +1828,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "<doc.writer@asciidoc.org>",
                         line: 1,
@@ -1828,7 +1862,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "\\doc.writer@asciidoc.org",
                         line: 1,
@@ -1861,7 +1895,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "http://google.com",
                         line: 1,
@@ -1895,7 +1929,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "http://google.com[Google]",
                         line: 1,
@@ -1931,7 +1965,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "http://google.com[Google\nHomepage]",
                         line: 1,
@@ -1973,7 +2007,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "http://google.com[{google_homepage}]",
                         line: 1,
@@ -2014,7 +2048,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "http://google.com[\\{google_homepage}]",
                         line: 1,
@@ -2055,7 +2089,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "http://google.com?q=,[\\{google_homepage}]",
                         line: 1,
@@ -2088,7 +2122,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "\\http://google.com",
                         line: 1,
@@ -2124,7 +2158,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "http://foo.com, http://bar.com, http://example.org",
                         line: 1,
@@ -2157,7 +2191,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "image:tiger.png[]",
                         line: 1,
@@ -2193,7 +2227,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "image:tiger-with-family_1.png[]",
                         line: 1,
@@ -2226,7 +2260,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "image:tiger.png[Tiger]",
                         line: 1,
@@ -2262,7 +2296,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger-roar.png[A tiger's "roar" is < a bear's "growl"]"#,
                         line: 1,
@@ -2295,7 +2329,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "image:tiger.svg[Tiger]",
                         line: 1,
@@ -2379,7 +2413,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger.png[[Another\] Tiger]"#,
                         line: 1,
@@ -2412,7 +2446,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"\image:tiger.png[]"#,
                         line: 1,
@@ -2449,7 +2483,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, 200, 100]"#,
                         line: 1,
@@ -2503,7 +2537,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]"#,
                         line: 1,
@@ -2545,7 +2579,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, link=self]"#,
                         line: 1,
@@ -2600,7 +2634,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=_blank]"#,
                         line: 1,
@@ -2640,7 +2674,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=name,opts=noopener]"#,
                         line: 1,
@@ -2679,7 +2713,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]"#,
                         line: 1,
@@ -2717,7 +2751,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "image:tiger.png[Another\nAwesome\nTiger, 200,\n100]",
                         line: 1,
@@ -2754,7 +2788,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#,
                         line: 1,
@@ -2793,7 +2827,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!"#,
                         line: 1,
@@ -2835,7 +2869,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"Beware of the image:tiger.png[tiger]."#,
                         line: 1,
@@ -2877,7 +2911,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"Beware of the image:/tiger.png[tiger]."#,
                         line: 1,
@@ -2918,7 +2952,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#,
                         line: 1,
@@ -2955,7 +2989,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"Beware of the image:big cats.png[] around here."#,
                         line: 1,
@@ -2992,7 +3026,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "Fear not. There are no image:big\ncats.png[] around here.",
                         line: 1,
@@ -3029,7 +3063,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "Fear not. There are no image: big cats.png[] around here.",
                         line: 1,
@@ -3066,7 +3100,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "Fear not. There are no image:big cats.png [] around here.",
                         line: 1,
@@ -3103,7 +3137,7 @@ mod macros {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "Not an inline image macro image::tiger.png[].",
                         line: 1,
@@ -3150,7 +3184,7 @@ mod macros {
 
     #[test]
     fn an_icon_macro_should_be_interpreted_as_an_icon_if_icons_are_enabled() {
-        let mut content = Content::from(crate::Span::new("icon:github[]"));
+        let mut content = crate::content::Content::from(crate::Span::new("icon:github[]"));
 
         let expected =
             r#"<span class="icon"><img src="./images/icons/github.png" alt="github"></span>"#;
@@ -3170,7 +3204,7 @@ mod macros {
 
     #[test]
     fn an_icon_macro_should_be_interpreted_as_alt_text_if_icons_are_disabled() {
-        let mut content = Content::from(crate::Span::new("icon:github[]"));
+        let mut content = crate::content::Content::from(crate::Span::new("icon:github[]"));
 
         let expected = r#"<span class="icon">[github&#93;</span>"#;
 
@@ -3185,7 +3219,8 @@ mod macros {
 
     #[test]
     fn should_not_mangle_icon_with_link_if_icons_are_disabled() {
-        let mut content = Content::from(crate::Span::new("icon:github[link=https://github.com]"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("icon:github[link=https://github.com]"));
 
         let expected = r#"<span class="icon"><a class="image" href="https://github.com">[github&#93;</a></span>"#;
 
@@ -3202,8 +3237,9 @@ mod macros {
     #[test]
     fn should_not_mangle_icon_inside_link_if_icons_are_disabled() {
         // TO DO: Enable this test once http: links are supported.
-        let mut content =
-            Content::from(crate::Span::new("https://github.com[icon:github[] GitHub]"));
+        let mut content = crate::content::Content::from(crate::Span::new(
+            "https://github.com[icon:github[] GitHub]",
+        ));
 
         let expected =
             r#"<a href="https://github.com"><span class="icon">[github&#93;</span> GitHub</a>"#;
@@ -3219,7 +3255,8 @@ mod macros {
 
     #[test]
     fn an_icon_macro_should_output_alt_text_if_icons_are_disabled_and_alt_is_given() {
-        let mut content = Content::from(crate::Span::new(r#"icon:github[alt="GitHub"]"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"icon:github[alt="GitHub"]"#));
 
         let expected = r#"<span class="icon">[GitHub&#93;</span>"#;
 
@@ -3234,7 +3271,7 @@ mod macros {
 
     #[test]
     fn an_icon_macro_should_be_interpreted_as_a_font_based_icon_when_icons_eq_font() {
-        let mut content = Content::from(crate::Span::new(r#"icon:github[]"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"icon:github[]"#));
 
         let expected = r#"<span class="icon"><i class="fa fa-github"></i></span>"#;
 
@@ -3254,7 +3291,7 @@ mod macros {
     #[test]
     fn an_icon_macro_with_a_size_should_be_interpreted_as_a_font_based_icon_with_a_size_when_icons_eq_font()
      {
-        let mut content = Content::from(crate::Span::new(r#"icon:github[4x]"#));
+        let mut content = crate::content::Content::from(crate::Span::new(r#"icon:github[4x]"#));
 
         let expected = r#"<span class="icon"><i class="fa fa-github fa-4x"></i></span>"#;
 
@@ -3274,7 +3311,8 @@ mod macros {
     #[test]
     fn an_icon_macro_with_flip_should_be_interpreted_as_a_flipped_font_based_icon_when_icons_eq_font()
      {
-        let mut content = Content::from(crate::Span::new(r#"icon:shield[fw,flip=horizontal]"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"icon:shield[fw,flip=horizontal]"#));
 
         let expected =
             r#"<span class="icon"><i class="fa fa-shield fa-fw fa-flip-horizontal"></i></span>"#;
@@ -3295,7 +3333,8 @@ mod macros {
     #[test]
     fn an_icon_macro_with_rotate_should_be_interpreted_as_a_rotated_font_based_icon_when_icons_eq_font()
      {
-        let mut content = Content::from(crate::Span::new(r#"icon:shield[fw,rotate=90]"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"icon:shield[fw,rotate=90]"#));
 
         let expected =
             r#"<span class="icon"><i class="fa fa-shield fa-fw fa-rotate-90"></i></span>"#;
@@ -3316,7 +3355,7 @@ mod macros {
     #[test]
     fn an_icon_macro_with_a_role_and_title_should_be_interpreted_as_a_font_based_icon_with_a_class_and_title_when_icons_eq_font()
      {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r#"icon:heart[role="red", title="Heart me"]"#,
         ));
 
@@ -3338,7 +3377,8 @@ mod macros {
 
     #[test]
     fn an_icon_macro_with_width_should_be_interpreted_as_an_icon_with_width_if_icons_are_enabled() {
-        let mut content = Content::from(crate::Span::new(r#"icon:github[width=32]"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"icon:github[width=32]"#));
 
         let expected = r#"<span class="icon"><img src="./images/icons/github.png" alt="github" width="32"></span>"#;
 
@@ -3358,7 +3398,8 @@ mod macros {
     #[test]
     fn an_icon_macro_with_height_should_be_interpreted_as_an_icon_with_height_if_icons_are_enabled()
     {
-        let mut content = Content::from(crate::Span::new(r#"icon:github[height=24]"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"icon:github[height=24]"#));
 
         let expected = r#"<span class="icon"><img src="./images/icons/github.png" alt="github" height="24"></span>"#;
 
@@ -3377,7 +3418,8 @@ mod macros {
 
     #[test]
     fn an_icon_macro_with_title_should_be_interpreted_as_an_icon_with_title_if_icons_are_enabled() {
-        let mut content = Content::from(crate::Span::new(r#"icon:github[title="GitHub Icon"]"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"icon:github[title="GitHub Icon"]"#));
 
         let expected = r#"<span class="icon"><img src="./images/icons/github.png" alt="github" title="GitHub Icon"></span>"#;
 
@@ -4239,25 +4281,24 @@ mod passthroughs {
 
     use crate::{
         Parser,
-        content::{
-            Content, Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough,
-        },
+        content::{Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough},
         parser::{ModificationContext, QuoteType},
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
     #[test]
     fn collect_inline_triple_plus_passthroughs() {
-        let mut content = Content::from(crate::Span::new("+++<code>inline code</code>+++"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("+++<code>inline code</code>+++"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "+++<code>inline code</code>+++",
                     line: 1,
@@ -4282,12 +4323,13 @@ mod passthroughs {
     #[test]
     fn collect_inline_triple_plus_passthroughs_with_attrlist() {
         // NOTE: Not in the Ruby test suite.
-        let mut content = Content::from(crate::Span::new("[role]+++<code>inline code</code>+++"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("[role]+++<code>inline code</code>+++"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "[role]+++<code>inline code</code>+++",
                     line: 1,
@@ -4311,12 +4353,13 @@ mod passthroughs {
 
     #[test]
     fn collect_multiline_inline_triple_plus_passthroughs() {
-        let mut content = Content::from(crate::Span::new("+++<code>inline\ncode</code>+++"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("+++<code>inline\ncode</code>+++"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "+++<code>inline\ncode</code>+++",
                     line: 1,
@@ -4340,12 +4383,13 @@ mod passthroughs {
 
     #[test]
     fn collect_inline_double_dollar_passthroughs() {
-        let mut content = Content::from(crate::Span::new("$$<code>{code}</code>$$"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("$$<code>{code}</code>$$"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "$$<code>{code}</code>$$",
                     line: 1,
@@ -4369,12 +4413,13 @@ mod passthroughs {
 
     #[test]
     fn collect_inline_double_plus_passthroughs() {
-        let mut content = Content::from(crate::Span::new("++<code>{code}</code>++"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("++<code>{code}</code>++"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "++<code>{code}</code>++",
                     line: 1,
@@ -4407,7 +4452,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "['role']\\++This++++++++++++",
                         line: 1,
@@ -4443,7 +4488,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "['role']\\+++++++++This++++++++++++",
                         line: 1,
@@ -4479,7 +4524,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "you need to replace `int a = n\\++;` with `int a = ++n;`!",
                         line: 1,
@@ -4512,7 +4557,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"=[attrs]\\++text++"#,
                         line: 1,
@@ -4537,12 +4582,13 @@ mod passthroughs {
 
     #[test]
     fn collect_multiline_inline_double_dollar_passthroughs() {
-        let mut content = Content::from(crate::Span::new("$$<code>\n{code}\n</code>$$"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("$$<code>\n{code}\n</code>$$"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "$$<code>\n{code}\n</code>$$",
                     line: 1,
@@ -4566,14 +4612,14 @@ mod passthroughs {
 
     #[test]
     fn collect_passthroughs_from_inline_pass_macro() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "pass:specialcharacters,quotes[<code>['code'\\]</code>]",
         ));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:specialcharacters,quotes[<code>['code'\\]</code>]",
                     line: 1,
@@ -4600,14 +4646,14 @@ mod passthroughs {
 
     #[test]
     fn collect_multiline_passthroughs_from_inline_pass_macro() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>]",
         ));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>]",
                     line: 1,
@@ -4650,7 +4696,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
                         line: 1,
@@ -4675,12 +4721,13 @@ mod passthroughs {
 
     #[test]
     fn resolves_sub_shorthands_on_inline_pass_macro() {
-        let mut content = Content::from(crate::Span::new("pass:q,a[*<{backend}>*]"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("pass:q,a[*<{backend}>*]"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:q,a[*<{backend}>*]",
                     line: 1,
@@ -4716,7 +4763,7 @@ mod passthroughs {
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:q,a[*<{backend}>*]",
                     line: 1,
@@ -4732,12 +4779,12 @@ mod passthroughs {
     #[test]
     fn inline_pass_macro_supports_incremental_subs() {
         // TO DO: Restore this test once macro substitutions are implemented.
-        let mut content = Content::from(crate::Span::new("pass:n,-a[<{backend}>]"));
+        let mut content = crate::content::Content::from(crate::Span::new("pass:n,-a[<{backend}>]"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:n,-a[<{backend}>]",
                     line: 1,
@@ -4776,7 +4823,7 @@ mod passthroughs {
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:q,a[*<{backend}>*]",
                     line: 1,
@@ -4790,12 +4837,12 @@ mod passthroughs {
 
     #[test]
     fn should_not_recognize_pass_macro_with_invalid_substitution_list_1() {
-        let mut content = Content::from(crate::Span::new("pass:,[foobar]"));
+        let mut content = crate::content::Content::from(crate::Span::new("pass:,[foobar]"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:,[foobar]",
                     line: 1,
@@ -4811,12 +4858,12 @@ mod passthroughs {
 
     #[test]
     fn should_not_recognize_pass_macro_with_invalid_substitution_list_2() {
-        let mut content = Content::from(crate::Span::new("pass:42[foobar]"));
+        let mut content = crate::content::Content::from(crate::Span::new("pass:42[foobar]"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:42[foobar]",
                     line: 1,
@@ -4832,12 +4879,12 @@ mod passthroughs {
 
     #[test]
     fn should_not_recognize_pass_macro_with_invalid_substitution_list_3() {
-        let mut content = Content::from(crate::Span::new("pass:a,[foobar]"));
+        let mut content = crate::content::Content::from(crate::Span::new("pass:a,[foobar]"));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "pass:a,[foobar]",
                     line: 1,
@@ -4861,7 +4908,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "pass:[]",
                         line: 1,
@@ -4888,7 +4935,8 @@ mod passthroughs {
     fn restore_inline_passthroughs_without_subs() {
         // NOTE: Placeholder is surrounded by text to prevent reader from stripping
         // trailing boundary char (unique to test scenario).
-        let mut content = Content::from(crate::Span::new("some \u{96}0\u{97} to study"));
+        let mut content =
+            crate::content::Content::from(crate::Span::new("some \u{96}0\u{97} to study"));
 
         let pt = Passthroughs(vec![Passthrough {
             text: "<code>inline code</code>".to_owned(),
@@ -4902,7 +4950,7 @@ mod passthroughs {
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "some \u{96}0\u{97} to study",
                     line: 1,
@@ -4918,7 +4966,7 @@ mod passthroughs {
     fn restore_inline_passthroughs_with_subs() {
         // NOTE: Placeholder is surrounded by text to prevent reader from stripping
         // trailing boundary char (unique to test scenario).
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "some \u{96}0\u{97} to study in the \u{96}1\u{97} programming language",
         ));
 
@@ -4942,7 +4990,7 @@ mod passthroughs {
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "some \u{96}0\u{97} to study in the \u{96}1\u{97} programming language",
                     line: 1,
@@ -4967,7 +5015,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.",
                         line: 1,
@@ -5003,7 +5051,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "pass:m[.] pass:[.]",
                         line: 1,
@@ -5040,7 +5088,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "Print the version using [var]$${asciidoctor-version}$$.",
                         line: 1,
@@ -5076,7 +5124,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "Print the version using [var]++{asciidoctor-version}++.",
                         line: 1,
@@ -5101,14 +5149,14 @@ mod passthroughs {
 
     #[test]
     fn complex_inline_passthrough_macro_1() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             "$$[(] <'basic form'> <'logical operator'> <'basic form'> [)]$$",
         ));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "$$[(] <'basic form'> <'logical operator'> <'basic form'> [)]$$",
                     line: 1,
@@ -5132,14 +5180,14 @@ mod passthroughs {
 
     #[test]
     fn complex_inline_passthrough_macro_2() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r#"pass:specialcharacters[[(\] <'basic form'> <'logical operator'> <'basic form'> [)\]]"#,
         ));
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: r#"pass:specialcharacters[[(\] <'basic form'> <'logical operator'> <'basic form'> [)\]]"#,
                     line: 1,
@@ -5172,7 +5220,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "pass:verbatim[<{backend}>]",
                         line: 1,
@@ -5208,7 +5256,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "a `foo +bar+ baz` kind of thing",
                         line: 1,
@@ -5242,7 +5290,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"\[x-]`foo +bar+ baz`"#,
                         line: 1,
@@ -5277,7 +5325,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"\[x-]`*foo* +bar+ baz`"#,
                         line: 1,
@@ -5311,7 +5359,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"\x-]`*foo* +bar+ baz`"#,
                         line: 1,
@@ -5347,7 +5395,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "a [x-]`foo +bar+ baz` kind of thing",
                         line: 1,
@@ -5380,7 +5428,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "[.role]`foo +bar+ baz`",
                         line: 1,
@@ -5413,7 +5461,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "[.baz]`+foo--bar+`",
                         line: 1,
@@ -5447,7 +5495,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"use the `\pass:c[]` macro"#,
                         line: 1,
@@ -5484,7 +5532,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"use the [syntax]`\pass:c[]` macro"#,
                         line: 1,
@@ -5525,7 +5573,7 @@ mod passthroughs {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"use `\+{author}+` to show an attribute reference"#,
                         line: 1,
@@ -5563,12 +5611,12 @@ mod replacements {
 
     use crate::{
         Parser,
-        content::{Content, SubstitutionStep},
+        content::SubstitutionStep,
         strings::CowStr,
         tests::fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -5585,7 +5633,7 @@ mod replacements {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "< &quot; &there4; &#34; &#x22; >",
                         line: 1,
@@ -5619,7 +5667,7 @@ mod replacements {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"<- -> <= => \<- \-> \<= \=>"#,
                         line: 1,
@@ -5644,7 +5692,7 @@ mod replacements {
 
     #[test]
     fn replaces_dashes() {
-        let mut content = Content::from(crate::Span::new(
+        let mut content = crate::content::Content::from(crate::Span::new(
             r#"-- foo foo--bar foo\--bar foo -- bar foo \-- bar
 stuff in between
 -- foo
@@ -5671,7 +5719,7 @@ foo&#8201;&#8212;&#8201;"#;
 
     #[test]
     fn replaces_dashes_between_multibyte_word_characters() {
-        let mut content = Content::from(crate::Span::new("富--巴"));
+        let mut content = crate::content::Content::from(crate::Span::new("富--巴"));
 
         let p = Parser::default();
         SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
@@ -5683,7 +5731,8 @@ foo&#8201;&#8212;&#8201;"#;
 
     #[test]
     fn replaces_marks() {
-        let mut content = Content::from(crate::Span::new(r#"(C) (R) (TM) \(C) \(R) \(TM)"#));
+        let mut content =
+            crate::content::Content::from(crate::Span::new(r#"(C) (R) (TM) \(C) \(R) \(TM)"#));
         let p = Parser::default();
         SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
@@ -5700,7 +5749,7 @@ foo&#8201;&#8212;&#8201;"#;
     fn preserves_entity_references() {
         let input = "&amp; &#169; &#10004; &#128512; &#x2022; &#x1f600;";
 
-        let mut content = Content::from(crate::Span::new(input));
+        let mut content = crate::content::Content::from(crate::Span::new(input));
         let p = Parser::default();
         SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
@@ -5713,7 +5762,7 @@ foo&#8201;&#8212;&#8201;"#;
     fn only_preserves_named_entities_with_two_or_more_letters() {
         let input = "&amp; &a; &gt;";
 
-        let mut content = Content::from(crate::Span::new(input));
+        let mut content = crate::content::Content::from(crate::Span::new(input));
         let p = Parser::default();
         SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
         assert_eq!(
@@ -5735,7 +5784,7 @@ foo&#8201;&#8212;&#8201;"#;
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: r#"John's Hideout is the Whites`' place... foo\'bar"#,
                         line: 1,
@@ -5809,7 +5858,7 @@ mod post_replacements {
             Span,
             attributes::{Attrlist, ElementAttribute},
             blocks::{Block, SimpleBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -5824,7 +5873,7 @@ mod post_replacements {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "First line +\nSecond line",
                         line: 1,
@@ -5860,7 +5909,7 @@ mod post_replacements {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "First line\nSecond line",
                         line: 2,
@@ -5908,7 +5957,7 @@ mod post_replacements {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "First line +\nSecond line",
                         line: 2,
@@ -5954,7 +6003,7 @@ mod post_replacements {
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "First line",
                         line: 2,

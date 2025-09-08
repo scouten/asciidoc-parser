@@ -4,12 +4,12 @@ use crate::{
     HasSpan,
     blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
-    tests::fixtures::{Span, attributes::Attrlist, content::TContent},
+    tests::fixtures::{Span, attributes::Attrlist, content::Content},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct RawDelimitedBlock {
-    pub content: TContent,
+    pub content: Content,
     pub content_model: ContentModel,
     pub context: &'static str,
     pub source: Span,

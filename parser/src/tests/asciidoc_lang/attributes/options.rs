@@ -36,7 +36,7 @@ You can assign one or more options to a block using the shorthand or formal synt
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
             },
             sdd::{non_normative, verifies},
         },
@@ -75,7 +75,7 @@ This is a sidebar with an option assigned to it, named option.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with an option assigned to it, named option.",
                             line: 3,
@@ -162,7 +162,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with two options assigned to it, named option1 and option2.",
                             line: 3,
@@ -258,7 +258,7 @@ For instance, consider a table with the three built-in option values, `header`, 
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "|===\n|Cell A1 |Cell B1",
                         line: 2,
@@ -348,7 +348,7 @@ This is a sidebar with an option assigned to it, named option.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with an option assigned to it, named option.",
                             line: 3,
@@ -434,7 +434,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a sidebar with two options assigned to it, option1 and option2.",
                             line: 3,
@@ -530,7 +530,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "|===\n|Cell A1 |Cell B1",
                         line: 2,
@@ -609,7 +609,7 @@ Let's consider `options` when combined with other attributes.
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
             },
             sdd::{non_normative, verifies},
         },
@@ -650,7 +650,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",
                         line: 2,
@@ -736,7 +736,7 @@ property 2:: does different stuff
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",
                         line: 2,

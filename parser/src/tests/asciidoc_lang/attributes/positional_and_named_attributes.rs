@@ -24,7 +24,7 @@ mod positional_attribute {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, SectionBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
             },
             sdd::{non_normative, verifies},
         },
@@ -290,7 +290,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "* Work hard\n* Play hard\n* Be happy",
                         line: 2,
@@ -361,7 +361,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                         line: 2,

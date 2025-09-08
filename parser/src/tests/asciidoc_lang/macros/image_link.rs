@@ -22,7 +22,7 @@ mod link_attribute {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -238,7 +238,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
                             line: 1,

@@ -51,7 +51,7 @@ mod attrlist {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
             },
             sdd::{non_normative, to_do_verifies, verifies},
         },
@@ -204,7 +204,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
         assert_eq!(
             block,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "Simple block",
                         line: 2,

@@ -21,7 +21,7 @@ mod link_text_and_named_attributes {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -68,7 +68,7 @@ mailto:join@discuss.example.org[Subscribe]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe]",
                             line: 1,
@@ -129,7 +129,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,role=email]",
                             line: 1,
@@ -192,7 +192,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
                             line: 1,
@@ -240,7 +240,7 @@ mod subject_and_body {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -290,7 +290,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
                             line: 1,
@@ -355,7 +355,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
                             line: 1,
@@ -417,7 +417,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
                             line: 1,
@@ -478,7 +478,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me]",
                             line: 1,
@@ -539,7 +539,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",
                             line: 1,

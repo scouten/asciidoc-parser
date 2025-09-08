@@ -10,7 +10,7 @@ use crate::{
         Span,
         attributes::{Attrlist, ElementAttribute},
         blocks::{Block, MediaBlock, SimpleBlock},
-        content::TContent,
+        content::Content,
         warnings::TWarning,
     },
     warnings::WarningType,
@@ -30,7 +30,7 @@ fn err_inline_syntax() {
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "foo:bar[]",
                     line: 1,
@@ -84,7 +84,7 @@ fn err_no_attr_list() {
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "image::bar",
                     line: 1,
@@ -138,7 +138,7 @@ fn err_attr_list_not_closed() {
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "image::bar[blah",
                     line: 1,
@@ -192,7 +192,7 @@ fn err_unexpected_after_attr_list() {
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "image::bar[blah]bonus",
                     line: 1,
@@ -246,7 +246,7 @@ fn rejects_image_with_no_target() {
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "image::[]",
                     line: 1,

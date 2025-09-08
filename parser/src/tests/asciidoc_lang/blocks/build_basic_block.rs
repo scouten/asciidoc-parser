@@ -8,7 +8,7 @@ use crate::{
             Span,
             attributes::{Attrlist, ElementAttribute},
             blocks::{Block, CompoundDelimitedBlock, MediaBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
             document::{Document, Header},
         },
         sdd::{non_normative, track_file, verifies},
@@ -100,7 +100,7 @@ This is more content in the sidebar block.
             },
             blocks: &[
                 Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "Text in your document.",
                             line: 1,
@@ -123,7 +123,7 @@ This is more content in the sidebar block.
                 Block::CompoundDelimited(CompoundDelimitedBlock {
                     blocks: &[
                         Block::Simple(SimpleBlock {
-                            content: TContent {
+                            content: Content {
                                 original: Span {
                                     data: "This is content in a sidebar block.",
                                     line: 4,
@@ -172,7 +172,7 @@ This is more content in the sidebar block.
                             attrlist: None,
                         },),
                         Block::Simple(SimpleBlock {
-                            content: TContent {
+                            content: Content {
                                 original: Span {
                                     data: "This is more content in the sidebar block.",
                                     line: 8,
@@ -256,7 +256,7 @@ include::example$block.adoc[tag=opt-listing]
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "sudo dnf install asciidoc",
                     line: 2,
@@ -322,7 +322,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
-            content: TContent {
+            content: Content {
                 original: Span {
                     data: "Never do today what you can put off `'til tomorrow.",
                     line: 2,

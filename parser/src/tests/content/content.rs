@@ -1,15 +1,13 @@
 mod is_empty {
-    use crate::content::Content;
-
     #[test]
     fn basic_empty_span() {
-        let content = Content::from(crate::Span::new(""));
+        let content = crate::content::Content::from(crate::Span::new(""));
         assert!(content.is_empty());
     }
 
     #[test]
     fn basic_non_empty_span() {
-        let content = Content::from(crate::Span::new("blah"));
+        let content = crate::content::Content::from(crate::Span::new("blah"));
         assert!(!content.is_empty());
     }
 }
@@ -17,19 +15,16 @@ mod is_empty {
 mod replace_str {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        content::Content,
-        tests::fixtures::{Span, content::TContent},
-    };
+    use crate::tests::fixtures::{Span, content::Content};
 
     #[test]
     fn basic_empty_span() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = crate::content::Content::from(crate::Span::new(""));
         content.replace_str("<", "&lt;");
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "",
                     line: 1,
@@ -43,12 +38,12 @@ mod replace_str {
 
     #[test]
     fn no_match() {
-        let mut content = Content::from(crate::Span::new("no matching text"));
+        let mut content = crate::content::Content::from(crate::Span::new("no matching text"));
         content.replace_str("<", "&lt;");
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "no matching text",
                     line: 1,
@@ -62,12 +57,12 @@ mod replace_str {
 
     #[test]
     fn one_match() {
-        let mut content = Content::from(crate::Span::new("some matching < text"));
+        let mut content = crate::content::Content::from(crate::Span::new("some matching < text"));
         content.replace_str("<", "&lt;");
 
         assert_eq!(
             content,
-            TContent {
+            Content {
                 original: Span {
                     data: "some matching < text",
                     line: 1,

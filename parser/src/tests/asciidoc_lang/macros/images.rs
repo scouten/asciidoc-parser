@@ -24,7 +24,7 @@ mod block_image_macro {
                 Span,
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, to_do_verifies, verifies},
@@ -85,7 +85,7 @@ include::example$image.adoc[tag=base]
                 },
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "Content in document.",
                                 line: 1,
@@ -134,7 +134,7 @@ include::example$image.adoc[tag=base]
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "Content in document",
                                 line: 5,

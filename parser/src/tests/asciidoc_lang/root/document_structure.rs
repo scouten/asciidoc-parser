@@ -24,7 +24,7 @@ mod documents {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Attribute, Document, Header, InterpretedValue},
             },
             sdd::{non_normative, verifies},
@@ -75,7 +75,7 @@ This is a basic AsciiDoc document.
                     offset: 0
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "This is a basic AsciiDoc document.",
                             line: 1,
@@ -145,7 +145,7 @@ This document contains two paragraphs.
                 },
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "This is a basic AsciiDoc document.",
                                 line: 1,
@@ -166,7 +166,7 @@ This document contains two paragraphs.
                         attrlist: None,
                     }),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "This document contains two paragraphs.",
                                 line: 3,
@@ -255,7 +255,7 @@ It also has a header that specifies the document title.
                 },
                 blocks: &[
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "This is a basic AsciiDoc document by {author}.",
                                 line: 4,
@@ -276,7 +276,7 @@ It also has a header that specifies the document title.
                         attrlist: None,
                     }),
                     Block::Simple(SimpleBlock {
-                        content: TContent {
+                        content: Content {
                             original: Span {
                                 data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                                 line: 6,

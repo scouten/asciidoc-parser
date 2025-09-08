@@ -22,7 +22,7 @@ mod anatomy {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -70,7 +70,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:target[link text]",
                             line: 1,
@@ -120,7 +120,7 @@ mod link_to_relative_file {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -171,7 +171,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:downloads/report.pdf[Get Report]",
                             line: 1,
@@ -235,7 +235,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:tools.html#editors[]",
                             line: 1,
@@ -276,7 +276,7 @@ mod when_to_use {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -331,7 +331,7 @@ link:report.pdf[Get Report]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:report.pdf[Get Report]",
                             line: 1,
@@ -404,7 +404,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:pass:[My Documents/report.pdf][Get Report]",
                             line: 1,
@@ -465,7 +465,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:My&#32;Documents/report.pdf[Get Report]",
                             line: 1,
@@ -526,7 +526,7 @@ link:My%20Documents/report.pdf[Get Report]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:My%20Documents/report.pdf[Get Report]",
                             line: 1,
@@ -599,7 +599,7 @@ link:Avengers%3A%20Endgame.html[]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:Avengers%3A%20Endgame.html[]",
                             line: 1,
@@ -664,7 +664,7 @@ link:++https://example.org/now_this__link_works.html++[]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:++https://example.org/now_this__link_works.html++[]",
                             line: 1,
@@ -727,7 +727,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "|link:https://asciidoctor.org[]|",
                             line: 1,
@@ -790,7 +790,7 @@ link:file:///home/username[Your files]
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "link:file:///home/username[Your files]",
                             line: 1,

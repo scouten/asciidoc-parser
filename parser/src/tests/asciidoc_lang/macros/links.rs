@@ -50,7 +50,7 @@ mod encode_reserved_characters {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Document, Header},
             },
             sdd::{non_normative, verifies},
@@ -116,7 +116,7 @@ Depending on the capabilities of the web application, the space character can be
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://example.org?q=label:%22Requires%20docs%22",
                             line: 1,
@@ -157,7 +157,7 @@ mod hide_uri_scheme {
             fixtures::{
                 Span,
                 blocks::{Block, SimpleBlock},
-                content::TContent,
+                content::Content,
                 document::{Attribute, Document, Header, InterpretedValue},
             },
             sdd::{non_normative, verifies},
@@ -242,7 +242,7 @@ The prefix will still be present in the link target.
                     },
                 },
                 blocks: &[Block::Simple(SimpleBlock {
-                    content: TContent {
+                    content: Content {
                         original: Span {
                             data: "https://asciidoctor.org",
                             line: 4,

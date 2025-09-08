@@ -8,7 +8,7 @@ mod parse {
         tests::fixtures::{
             Span,
             blocks::{Block, RawDelimitedBlock, SimpleBlock},
-            content::TContent,
+            content::Content,
             warnings::TWarning,
         },
         warnings::WarningType,
@@ -33,7 +33,7 @@ mod parse {
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "...",
                         line: 1,
@@ -64,7 +64,7 @@ mod parse {
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "++++x",
                         line: 1,
@@ -95,7 +95,7 @@ mod parse {
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "____x",
                         line: 1,
@@ -126,7 +126,7 @@ mod parse {
         assert_eq!(
             mi.item,
             Block::Simple(SimpleBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "====x",
                         line: 1,
@@ -160,7 +160,7 @@ mod parse {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "blah blah blah",
                         line: 2,
@@ -210,7 +210,7 @@ mod comment {
         tests::fixtures::{
             Span,
             blocks::{Block, RawDelimitedBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -225,7 +225,7 @@ mod comment {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "",
                         line: 2,
@@ -278,7 +278,7 @@ mod comment {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 3,
@@ -348,7 +348,7 @@ mod comment {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 2,
@@ -401,7 +401,7 @@ mod comment {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \n/////\nline2",
                         line: 2,
@@ -452,7 +452,7 @@ mod listing {
         tests::fixtures::{
             Span,
             blocks::{Block, RawDelimitedBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -467,7 +467,7 @@ mod listing {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "",
                         line: 2,
@@ -520,7 +520,7 @@ mod listing {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 2,
@@ -584,7 +584,7 @@ mod listing {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 3,
@@ -665,7 +665,7 @@ mod listing {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \n----/\nline2",
                         line: 2,
@@ -727,7 +727,7 @@ mod pass {
         tests::fixtures::{
             Span,
             blocks::{Block, RawDelimitedBlock},
-            content::TContent,
+            content::Content,
         },
     };
 
@@ -742,7 +742,7 @@ mod pass {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "",
                         line: 2,
@@ -806,7 +806,7 @@ mod pass {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 2,
@@ -870,7 +870,7 @@ mod pass {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \nline2",
                         line: 3,
@@ -951,7 +951,7 @@ mod pass {
         assert_eq!(
             mi.item,
             Block::RawDelimited(RawDelimitedBlock {
-                content: TContent {
+                content: Content {
                     original: Span {
                         data: "line1  \n++++/\nline2",
                         line: 2,
