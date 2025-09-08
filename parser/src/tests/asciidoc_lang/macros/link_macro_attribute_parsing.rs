@@ -369,7 +369,7 @@ The double quote enclosure is not required in all cases when the link text conta
 Strictly speaking, the enclosure is only required when the text preceding the equals sign matches a valid attribute name.
 However, it's best to use the double quotes just to be safe.
 
-        "#
+"#
     );
 
     #[test]
