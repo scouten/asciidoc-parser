@@ -3,13 +3,13 @@ use std::{cmp::PartialEq, fmt};
 use crate::{
     HasSpan,
     attributes::Attrlist,
-    tests::fixtures::{TSpan, attributes::TElementAttribute},
+    tests::fixtures::{Span, attributes::TElementAttribute},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TAttrlist {
     pub attributes: &'static [TElementAttribute],
-    pub source: TSpan,
+    pub source: Span,
 }
 
 impl fmt::Debug for TAttrlist {

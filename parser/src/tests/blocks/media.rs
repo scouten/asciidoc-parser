@@ -7,7 +7,7 @@ use crate::{
     blocks::{ContentModel, IsBlock, MediaBlock, MediaType, metadata::BlockMetadata},
     content::SubstitutionGroup,
     tests::fixtures::{
-        TSpan,
+        Span,
         attributes::{TAttrlist, TElementAttribute},
         blocks::TMediaBlock,
         warnings::TWarning,
@@ -70,7 +70,7 @@ fn err_missing_double_colon() {
     assert_eq!(
         maw.warnings,
         vec![TWarning {
-            source: TSpan {
+            source: Span {
                 data: ":bar[blah,blap]",
                 line: 1,
                 col: 6,
@@ -91,7 +91,7 @@ fn err_missing_macro_attrlist() {
     assert_eq!(
         maw.warnings,
         vec![TWarning {
-            source: TSpan {
+            source: Span {
                 data: "",
                 line: 1,
                 col: 21,
@@ -157,7 +157,7 @@ fn simplest_block_macro() {
     assert_eq!(
         mi.warnings,
         vec![TWarning {
-            source: TSpan {
+            source: Span {
                 data: "[]",
                 line: 1,
                 col: 8,
@@ -180,7 +180,7 @@ fn has_target() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -188,14 +188,14 @@ fn has_target() {
             },
             macro_attrlist: TAttrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[]",
                 line: 1,
                 col: 1,
@@ -210,7 +210,7 @@ fn has_target() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 13,
@@ -240,7 +240,7 @@ fn has_target_and_attrlist() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -252,14 +252,14 @@ fn has_target_and_attrlist() {
                     shorthand_items: &["blah"],
                     value: "blah"
                 }],
-                source: TSpan {
+                source: Span {
                     data: "blah",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[blah]",
                 line: 1,
                 col: 1,
@@ -274,7 +274,7 @@ fn has_target_and_attrlist() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 17,
@@ -295,7 +295,7 @@ fn audio() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Audio,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -303,14 +303,14 @@ fn audio() {
             },
             macro_attrlist: TAttrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "audio::bar[]",
                 line: 1,
                 col: 1,
@@ -325,7 +325,7 @@ fn audio() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 13,
@@ -355,7 +355,7 @@ fn video() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Video,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -363,14 +363,14 @@ fn video() {
             },
             macro_attrlist: TAttrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "video::bar[]",
                 line: 1,
                 col: 1,
@@ -385,7 +385,7 @@ fn video() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 13,
@@ -414,7 +414,7 @@ fn err_duplicate_comma() {
         mi.item,
         TMediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -433,14 +433,14 @@ fn err_duplicate_comma() {
                         value: "blap"
                     }
                 ],
-                source: TSpan {
+                source: Span {
                     data: "blah,,blap",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[blah,,blap]",
                 line: 1,
                 col: 1,
@@ -455,7 +455,7 @@ fn err_duplicate_comma() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 23,
@@ -466,7 +466,7 @@ fn err_duplicate_comma() {
     assert_eq!(
         maw.warnings,
         vec![TWarning {
-            source: TSpan {
+            source: Span {
                 data: "blah,,blap",
                 line: 1,
                 col: 12,

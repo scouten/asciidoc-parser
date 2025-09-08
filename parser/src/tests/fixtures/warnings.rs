@@ -1,13 +1,13 @@
 use std::{cmp::PartialEq, fmt};
 
 use crate::{
-    tests::fixtures::span::TSpan,
+    tests::fixtures::span::Span,
     warnings::{Warning, WarningType},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TWarning {
-    pub source: TSpan,
+    pub source: Span,
     pub warning: WarningType,
 }
 

@@ -3,18 +3,18 @@ use std::fmt;
 use crate::{
     HasSpan,
     blocks::{IsBlock, MediaBlock, MediaType},
-    tests::fixtures::{TSpan, attributes::TAttrlist},
+    tests::fixtures::{Span, attributes::TAttrlist},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TMediaBlock {
     pub type_: MediaType,
-    pub target: TSpan,
+    pub target: Span,
     pub macro_attrlist: TAttrlist,
-    pub source: TSpan,
-    pub title_source: Option<TSpan>,
+    pub source: Span,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub anchor: Option<TSpan>,
+    pub anchor: Option<Span>,
     pub attrlist: Option<TAttrlist>,
 }
 

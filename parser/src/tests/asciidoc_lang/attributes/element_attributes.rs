@@ -44,12 +44,12 @@ mod attrlist {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        HasSpan, Parser, Span,
+        HasSpan, Parser,
         attributes::Attrlist,
         blocks::{Block, MediaType},
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
@@ -89,7 +89,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             r#"first-positional,second-positional,named="value of named""#;
 
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE), &p).unwrap_if_no_warnings();
+        let mi = Attrlist::parse(crate::Span::new(ATTRLIST_EXAMPLE), &p).unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -111,7 +111,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                         value: "value of named",
                     }
                 ],
-                source: TSpan {
+                source: Span {
                     data: r#"first-positional,second-positional,named="value of named""#,
                     line: 1,
                     col: 1,
@@ -154,7 +154,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: r#"first-positional,second-positional,named="value of named""#,
                 line: 1,
                 col: 1,
@@ -164,7 +164,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 58,
@@ -194,7 +194,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
         let mut parser = Parser::default();
 
         let block = Block::parse(
-            Span::new("[style,second-positional,named=\"value of named\"]\nSimple block\n"),
+            crate::Span::new("[style,second-positional,named=\"value of named\"]\nSimple block\n"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -205,7 +205,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
             block,
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "Simple block",
                         line: 2,
                         col: 1,
@@ -213,7 +213,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                     },
                     rendered: "Simple block",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[style,second-positional,named=\"value of named\"]\nSimple block",
                     line: 1,
                     col: 1,
@@ -240,7 +240,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                             value: "value of named"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "style,second-positional,named=\"value of named\"",
                         line: 1,
                         col: 2,
@@ -284,7 +284,7 @@ name::target[first-positional,second-positional,named="value of named"]
 
         let mut parser = Parser::default();
         let block = Block::parse(
-            Span::new(
+            crate::Span::new(
                 "name::target[first-positional,second-positional,named=\"value of named\"]\n",
             ),
             &mut parser,
@@ -297,7 +297,7 @@ name::target[first-positional,second-positional,named="value of named"]
             block,
             TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
-                target: TSpan {
+                target: Span {
                     data: "target",
                     line: 1,
                     col: 7,
@@ -321,14 +321,14 @@ name::target[first-positional,second-positional,named="value of named"]
                             value: "value of named"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "first-positional,second-positional,named=\"value of named\"",
                         line: 1,
                         col: 14,
                         offset: 13,
                     },
                 },
-                source: TSpan {
+                source: Span {
                     data: "name::target[first-positional,second-positional,named=\"value of named\"]",
                     line: 1,
                     col: 1,

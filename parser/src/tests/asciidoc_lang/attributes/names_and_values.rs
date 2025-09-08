@@ -17,11 +17,11 @@ The built-in attribute names are listed in the xref:document-attributes-ref.adoc
 
 mod valid_user_defined_names {
     use crate::{
-        Parser, Span,
+        Parser,
         document::{Attribute, InterpretedValue},
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 document::{TAttribute, TInterpretedValue},
             },
             sdd::verifies,
@@ -49,14 +49,14 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn at_least_one_character_long() {
-        assert!(Attribute::parse(Span::new("::"), &Parser::default()).is_none());
+        assert!(Attribute::parse(crate::Span::new("::"), &Parser::default()).is_none());
 
-        let mi = Attribute::parse(Span::new(":a:"), &Parser::default()).unwrap();
+        let mi = Attribute::parse(crate::Span::new(":a:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
             TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "a",
                     line: 1,
                     col: 2,
@@ -64,7 +64,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                 },
                 value_source: None,
                 value: TInterpretedValue::Set,
-                source: TSpan {
+                source: Span {
                     data: ":a:",
                     line: 1,
                     col: 1,
@@ -78,14 +78,14 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn begin_with_word_character() {
-        assert!(Attribute::parse(Span::new(":-abc:"), &Parser::default()).is_none());
+        assert!(Attribute::parse(crate::Span::new(":-abc:"), &Parser::default()).is_none());
 
-        let mi = Attribute::parse(Span::new(":9abc:"), &Parser::default()).unwrap();
+        let mi = Attribute::parse(crate::Span::new(":9abc:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
             TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "9abc",
                     line: 1,
                     col: 2,
@@ -93,7 +93,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                 },
                 value_source: None,
                 value: TInterpretedValue::Set,
-                source: TSpan {
+                source: Span {
                     data: ":9abc:",
                     line: 1,
                     col: 1,
@@ -104,12 +104,12 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
         assert_eq!(mi.item.value(), &InterpretedValue::Set);
 
-        let mi = Attribute::parse(Span::new(":_abc:"), &Parser::default()).unwrap();
+        let mi = Attribute::parse(crate::Span::new(":_abc:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
             TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "_abc",
                     line: 1,
                     col: 2,
@@ -117,7 +117,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                 },
                 value_source: None,
                 value: TInterpretedValue::Set,
-                source: TSpan {
+                source: Span {
                     data: ":_abc:",
                     line: 1,
                     col: 1,
@@ -131,15 +131,15 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn only_contain_word_characters_and_hyphens() {
-        assert!(Attribute::parse(Span::new(":abc def:"), &Parser::default()).is_none());
-        assert!(Attribute::parse(Span::new(":abc.def:"), &Parser::default()).is_none());
+        assert!(Attribute::parse(crate::Span::new(":abc def:"), &Parser::default()).is_none());
+        assert!(Attribute::parse(crate::Span::new(":abc.def:"), &Parser::default()).is_none());
 
-        let mi = Attribute::parse(Span::new(":9ab-cdef:"), &Parser::default()).unwrap();
+        let mi = Attribute::parse(crate::Span::new(":9ab-cdef:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
             TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "9ab-cdef",
                     line: 1,
                     col: 2,
@@ -147,7 +147,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                 },
                 value_source: None,
                 value: TInterpretedValue::Set,
-                source: TSpan {
+                source: Span {
                     data: ":9ab-cdef:",
                     line: 1,
                     col: 1,
@@ -163,12 +163,12 @@ A best practice is to only use lowercase letters in the name and avoid starting 
     fn may_contain_uppercase() {
         // IMPORTANT: We've defined the lower-case normalization as out of scope for
         // the parser crate for now.
-        let mi = Attribute::parse(Span::new(":URL-REPO:"), &Parser::default()).unwrap();
+        let mi = Attribute::parse(crate::Span::new(":URL-REPO:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
             TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "URL-REPO",
                     line: 1,
                     col: 2,
@@ -176,7 +176,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                 },
                 value_source: None,
                 value: TInterpretedValue::Set,
-                source: TSpan {
+                source: Span {
                     data: ":URL-REPO:",
                     line: 1,
                     col: 1,
@@ -187,12 +187,12 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
         assert_eq!(mi.item.value(), &InterpretedValue::Set);
 
-        let mi = Attribute::parse(Span::new(":URL-REPO:"), &Parser::default()).unwrap();
+        let mi = Attribute::parse(crate::Span::new(":URL-REPO:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
             TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "URL-REPO",
                     line: 1,
                     col: 2,
@@ -200,7 +200,7 @@ A best practice is to only use lowercase letters in the name and avoid starting 
                 },
                 value_source: None,
                 value: TInterpretedValue::Set,
-                source: TSpan {
+                source: Span {
                     data: ":URL-REPO:",
                     line: 1,
                     col: 1,

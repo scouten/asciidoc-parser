@@ -1,16 +1,14 @@
 use std::{cmp::PartialEq, fmt};
 
-use crate::Span;
-
 #[derive(Eq, PartialEq)]
-pub(crate) struct TSpan {
+pub(crate) struct Span {
     pub data: &'static str,
     pub line: usize,
     pub col: usize,
     pub offset: usize,
 }
 
-impl fmt::Debug for TSpan {
+impl fmt::Debug for Span {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Span")
             .field("data", &self.data)
@@ -21,25 +19,25 @@ impl fmt::Debug for TSpan {
     }
 }
 
-impl<'src> PartialEq<Span<'src>> for TSpan {
-    fn eq(&self, other: &Span<'src>) -> bool {
+impl<'src> PartialEq<crate::Span<'src>> for Span {
+    fn eq(&self, other: &crate::Span<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TSpan> for Span<'_> {
-    fn eq(&self, other: &TSpan) -> bool {
+impl PartialEq<Span> for crate::Span<'_> {
+    fn eq(&self, other: &Span) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TSpan> for &Span<'_> {
-    fn eq(&self, other: &TSpan) -> bool {
+impl PartialEq<Span> for &crate::Span<'_> {
+    fn eq(&self, other: &Span) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TSpan, observed: &Span) -> bool {
+fn fixture_eq_observed(fixture: &Span, observed: &crate::Span) -> bool {
     fixture.data == observed.data()
         && fixture.line == observed.line()
         && fixture.col == observed.col()

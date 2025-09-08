@@ -19,7 +19,7 @@ mod link_attribute {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
@@ -66,7 +66,7 @@ image::logo.png[Logo]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -75,7 +75,7 @@ image::logo.png[Logo]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "logo.png",
                         line: 2,
                         col: 8,
@@ -87,14 +87,14 @@ image::logo.png[Logo]
                             value: "Logo",
                             shorthand_items: &["Logo"],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "Logo",
                             line: 2,
                             col: 17,
                             offset: 43,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "[link=https://example.org]\nimage::logo.png[Logo]",
                         line: 1,
                         col: 1,
@@ -109,7 +109,7 @@ image::logo.png[Logo]
                             value: "https://example.org",
                             shorthand_items: &[],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "link=https://example.org",
                             line: 1,
                             col: 2,
@@ -117,7 +117,7 @@ image::logo.png[Logo]
                         },
                     },),
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "[link=https://example.org]\nimage::logo.png[Logo]",
                     line: 1,
                     col: 1,
@@ -150,7 +150,7 @@ image::logo.png[Logo,link=https://example.org]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -159,7 +159,7 @@ image::logo.png[Logo,link=https://example.org]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "logo.png",
                         line: 1,
                         col: 8,
@@ -178,14 +178,14 @@ image::logo.png[Logo,link=https://example.org]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Logo,link=https://example.org",
                             line: 1,
                             col: 17,
                             offset: 16,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::logo.png[Logo,link=https://example.org]",
                         line: 1,
                         col: 1,
@@ -196,7 +196,7 @@ image::logo.png[Logo,link=https://example.org]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::logo.png[Logo,link=https://example.org]",
                     line: 1,
                     col: 1,
@@ -230,7 +230,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -239,7 +239,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
                             line: 1,
                             col: 1,
@@ -247,7 +247,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                         },
                         rendered: "<span class=\"image\"><a class=\"image\" href=\"https://apply.example.org\"><img src=\"apply.jpg\" alt=\"Apply\"></a></span> today!",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
                         line: 1,
                         col: 1,
@@ -258,7 +258,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
                     line: 1,
                     col: 1,
@@ -278,7 +278,7 @@ mod link_controls {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock},
                 document::{TDocument, THeader},
@@ -327,7 +327,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -336,7 +336,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "logo.png",
                         line: 1,
                         col: 8,
@@ -365,14 +365,14 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Logo,link=https://example.org,window=_blank,opts=nofollow",
                             line: 1,
                             col: 17,
                             offset: 16,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]",
                         line: 1,
                         col: 1,
@@ -383,7 +383,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]",
                     line: 1,
                     col: 1,

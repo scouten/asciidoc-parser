@@ -1,10 +1,10 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
+    Parser,
     document::Header,
     tests::fixtures::{
-        TSpan,
+        Span,
         document::{TAttribute, THeader, TInterpretedValue},
     },
 };
@@ -14,7 +14,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let h1 = Header::parse(Span::new("= Title"), &mut parser).unwrap_if_no_warnings();
+    let h1 = Header::parse(crate::Span::new("= Title"), &mut parser).unwrap_if_no_warnings();
     let h2 = h1.clone();
 
     assert_eq!(h1, h2);
@@ -23,12 +23,13 @@ fn impl_clone() {
 #[test]
 fn only_title() {
     let mut parser = Parser::default();
-    let mi = Header::parse(Span::new("= Just the Title"), &mut parser).unwrap_if_no_warnings();
+    let mi =
+        Header::parse(crate::Span::new("= Just the Title"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
         THeader {
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
                 col: 3,
@@ -36,7 +37,7 @@ fn only_title() {
             }),
             title: Some("Just the Title"),
             attributes: &[],
-            source: TSpan {
+            source: Span {
                 data: "= Just the Title",
                 line: 1,
                 col: 1,
@@ -47,7 +48,7 @@ fn only_title() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 17,
@@ -61,12 +62,13 @@ fn trims_leading_spaces_in_title() {
     // This is totally a judgement call on my part. As far as I can tell,
     // the language doesn't describe behavior here.
     let mut parser = Parser::default();
-    let mi = Header::parse(Span::new("=    Just the Title"), &mut parser).unwrap_if_no_warnings();
+    let mi =
+        Header::parse(crate::Span::new("=    Just the Title"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
         THeader {
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
                 col: 6,
@@ -74,7 +76,7 @@ fn trims_leading_spaces_in_title() {
             }),
             title: Some("Just the Title"),
             attributes: &[],
-            source: TSpan {
+            source: Span {
                 data: "=    Just the Title",
                 line: 1,
                 col: 1,
@@ -85,7 +87,7 @@ fn trims_leading_spaces_in_title() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 20,
@@ -97,12 +99,13 @@ fn trims_leading_spaces_in_title() {
 #[test]
 fn trims_trailing_spaces_in_title() {
     let mut parser = Parser::default();
-    let mi = Header::parse(Span::new("= Just the Title   "), &mut parser).unwrap_if_no_warnings();
+    let mi =
+        Header::parse(crate::Span::new("= Just the Title   "), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
         THeader {
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
                 col: 3,
@@ -110,7 +113,7 @@ fn trims_trailing_spaces_in_title() {
             }),
             title: Some("Just the Title"),
             attributes: &[],
-            source: TSpan {
+            source: Span {
                 data: "= Just the Title",
                 line: 1,
                 col: 1,
@@ -121,7 +124,7 @@ fn trims_trailing_spaces_in_title() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 20,
@@ -135,7 +138,7 @@ fn title_and_attribute() {
     let mut parser = Parser::default();
 
     let mi = Header::parse(
-        Span::new("= Just the Title\n:foo: bar\n\nblah"),
+        crate::Span::new("= Just the Title\n:foo: bar\n\nblah"),
         &mut parser,
     )
     .unwrap_if_no_warnings();
@@ -143,7 +146,7 @@ fn title_and_attribute() {
     assert_eq!(
         mi.item,
         THeader {
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
                 col: 3,
@@ -151,27 +154,27 @@ fn title_and_attribute() {
             }),
             title: Some("Just the Title"),
             attributes: &[TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "foo",
                     line: 2,
                     col: 2,
                     offset: 18,
                 },
-                value_source: Some(TSpan {
+                value_source: Some(Span {
                     data: "bar",
                     line: 2,
                     col: 7,
                     offset: 23,
                 }),
                 value: TInterpretedValue::Value("bar"),
-                source: TSpan {
+                source: Span {
                     data: ":foo: bar",
                     line: 2,
                     col: 1,
                     offset: 17,
                 }
             }],
-            source: TSpan {
+            source: Span {
                 data: "= Just the Title\n:foo: bar",
                 line: 1,
                 col: 1,
@@ -182,7 +185,7 @@ fn title_and_attribute() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 4,
             col: 1,
@@ -196,7 +199,7 @@ fn title_applies_header_substitutions() {
     let mut parser = Parser::default();
 
     let mi = Header::parse(
-        Span::new("= The Title & Some{sp}Nonsense\n:foo: bar\n\nblah"),
+        crate::Span::new("= The Title & Some{sp}Nonsense\n:foo: bar\n\nblah"),
         &mut parser,
     )
     .unwrap_if_no_warnings();
@@ -204,7 +207,7 @@ fn title_applies_header_substitutions() {
     assert_eq!(
         mi.item,
         THeader {
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "The Title & Some{sp}Nonsense",
                 line: 1,
                 col: 3,
@@ -212,27 +215,27 @@ fn title_applies_header_substitutions() {
             }),
             title: Some("The Title &amp; Some Nonsense"),
             attributes: &[TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "foo",
                     line: 2,
                     col: 2,
                     offset: 32,
                 },
-                value_source: Some(TSpan {
+                value_source: Some(Span {
                     data: "bar",
                     line: 2,
                     col: 7,
                     offset: 37,
                 }),
                 value: TInterpretedValue::Value("bar"),
-                source: TSpan {
+                source: Span {
                     data: ":foo: bar",
                     line: 2,
                     col: 1,
                     offset: 31,
                 }
             }],
-            source: TSpan {
+            source: Span {
                 data: "= The Title & Some{sp}Nonsense\n:foo: bar",
                 line: 1,
                 col: 1,
@@ -243,7 +246,7 @@ fn title_applies_header_substitutions() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 4,
             col: 1,
@@ -255,7 +258,8 @@ fn title_applies_header_substitutions() {
 #[test]
 fn attribute_without_title() {
     let mut parser = Parser::default();
-    let mi = Header::parse(Span::new(":foo: bar\n\nblah"), &mut parser).unwrap_if_no_warnings();
+    let mi =
+        Header::parse(crate::Span::new(":foo: bar\n\nblah"), &mut parser).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -263,27 +267,27 @@ fn attribute_without_title() {
             title_source: None,
             title: None,
             attributes: &[TAttribute {
-                name: TSpan {
+                name: Span {
                     data: "foo",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },
-                value_source: Some(TSpan {
+                value_source: Some(Span {
                     data: "bar",
                     line: 1,
                     col: 7,
                     offset: 6,
                 }),
                 value: TInterpretedValue::Value("bar"),
-                source: TSpan {
+                source: Span {
                     data: ":foo: bar",
                     line: 1,
                     col: 1,
                     offset: 0,
                 }
             }],
-            source: TSpan {
+            source: Span {
                 data: ":foo: bar",
                 line: 1,
                 col: 1,
@@ -294,7 +298,7 @@ fn attribute_without_title() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 3,
             col: 1,

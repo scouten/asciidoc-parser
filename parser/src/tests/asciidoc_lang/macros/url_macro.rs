@@ -24,7 +24,7 @@ mod from_url_to_macro {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -73,7 +73,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -82,7 +82,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "https://asciidoctor.org[]",
                             line: 1,
                             col: 1,
@@ -90,7 +90,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                         },
                         rendered: r#"<a href="https://asciidoctor.org" class="bare">https://asciidoctor.org</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org[]",
                         line: 1,
                         col: 1,
@@ -101,7 +101,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[]",
                     line: 1,
                     col: 1,
@@ -139,7 +139,7 @@ The more typical reason, however, is to specify custom link text.
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -148,7 +148,7 @@ The more typical reason, however, is to specify custom link text.
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: r#"Type "https://asciidoctor.org[]" into the location bar of your browser."#,
                             line: 1,
                             col: 1,
@@ -156,7 +156,7 @@ The more typical reason, however, is to specify custom link text.
                         },
                         rendered: r#"Type "<a href="https://asciidoctor.org" class="bare">https://asciidoctor.org</a>" into the location bar of your browser."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: r#"Type "https://asciidoctor.org[]" into the location bar of your browser."#,
                         line: 1,
                         col: 1,
@@ -167,7 +167,7 @@ The more typical reason, however, is to specify custom link text.
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: r#"Type "https://asciidoctor.org[]" into the location bar of your browser."#,
                     line: 1,
                     col: 1,
@@ -186,7 +186,7 @@ mod custom_link_text {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -229,7 +229,7 @@ include::example$url.adoc[tag=irc]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -238,7 +238,7 @@ include::example$url.adoc[tag=irc]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "Chat with other Fedora users in the irc://irc.freenode.org/#fedora[Fedora IRC channel].",
                             line: 1,
                             col: 1,
@@ -246,7 +246,7 @@ include::example$url.adoc[tag=irc]
                         },
                         rendered: r#"Chat with other Fedora users in the <a href="irc://irc.freenode.org/#fedora">Fedora IRC channel</a>."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Chat with other Fedora users in the irc://irc.freenode.org/#fedora[Fedora IRC channel].",
                         line: 1,
                         col: 1,
@@ -257,7 +257,7 @@ include::example$url.adoc[tag=irc]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "Chat with other Fedora users in the irc://irc.freenode.org/#fedora[Fedora IRC channel].",
                     line: 1,
                     col: 1,
@@ -292,7 +292,7 @@ include::example$url.adoc[tag=text]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -301,7 +301,7 @@ include::example$url.adoc[tag=text]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "Ask questions in the https://chat.asciidoc.org[*community chat*].",
                             line: 1,
                             col: 1,
@@ -309,7 +309,7 @@ include::example$url.adoc[tag=text]
                         },
                         rendered: r#"Ask questions in the <a href="https://chat.asciidoc.org"><strong>community chat</strong></a>."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Ask questions in the https://chat.asciidoc.org[*community chat*].",
                         line: 1,
                         col: 1,
@@ -320,7 +320,7 @@ include::example$url.adoc[tag=text]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "Ask questions in the https://chat.asciidoc.org[*community chat*].",
                     line: 1,
                     col: 1,
@@ -339,7 +339,7 @@ mod link_attributes {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -378,7 +378,7 @@ include::example$url.adoc[tag=css]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -387,7 +387,7 @@ include::example$url.adoc[tag=css]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "Chat with other AsciiDoc users in the https://chat.asciidoc.org[*project chat*^,role=green].",
                             line: 1,
                             col: 1,
@@ -395,7 +395,7 @@ include::example$url.adoc[tag=css]
                         },
                         rendered: r#"Chat with other AsciiDoc users in the <a href="https://chat.asciidoc.org" class="green" target="_blank" rel="noopener"><strong>project chat</strong></a>."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Chat with other AsciiDoc users in the https://chat.asciidoc.org[*project chat*^,role=green].",
                         line: 1,
                         col: 1,
@@ -406,7 +406,7 @@ include::example$url.adoc[tag=css]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "Chat with other AsciiDoc users in the https://chat.asciidoc.org[*project chat*^,role=green].",
                     line: 1,
                     col: 1,

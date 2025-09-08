@@ -81,7 +81,7 @@ mod macros {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
@@ -123,7 +123,7 @@ image::sunset.jpg[Sunset]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -132,7 +132,7 @@ image::sunset.jpg[Sunset]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
@@ -144,14 +144,14 @@ image::sunset.jpg[Sunset]
                             shorthand_items: &["Sunset"],
                             value: "Sunset"
                         }],
-                        source: TSpan {
+                        source: Span {
                             data: "Sunset",
                             line: 1,
                             col: 19,
                             offset: 18,
                         }
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::sunset.jpg[Sunset]",
                         line: 1,
                         col: 1,
@@ -162,7 +162,7 @@ image::sunset.jpg[Sunset]
                     anchor: None,
                     attrlist: None,
                 })],
-                source: TSpan {
+                source: Span {
                     data: "image::sunset.jpg[Sunset]",
                     line: 1,
                     col: 1,
@@ -195,7 +195,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -204,7 +204,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "Click the button with the image:star.png[Star] to favorite the project.",
                             line: 1,
                             col: 1,
@@ -212,7 +212,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                         },
                         rendered: r#"Click the button with the <span class="image"><img src="star.png" alt="Star"></span> to favorite the project."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Click the button with the image:star.png[Star] to favorite the project.",
                         line: 1,
                         col: 1,
@@ -223,7 +223,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     anchor: None,
                     attrlist: None,
                 })],
-                source: TSpan {
+                source: Span {
                     data: "Click the button with the image:star.png[Star] to favorite the project.",
                     line: 1,
                     col: 1,

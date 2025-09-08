@@ -21,7 +21,7 @@ mod block_image_macro {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
@@ -76,7 +76,7 @@ include::example$image.adoc[tag=base]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -86,7 +86,7 @@ include::example$image.adoc[tag=base]
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "Content in document.",
                                 line: 1,
                                 col: 1,
@@ -94,7 +94,7 @@ include::example$image.adoc[tag=base]
                             },
                             rendered: "Content in document.",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "Content in document.",
                             line: 1,
                             col: 1,
@@ -107,7 +107,7 @@ include::example$image.adoc[tag=base]
                     },),
                     TBlock::Media(TMediaBlock {
                         type_: MediaType::Image,
-                        target: TSpan {
+                        target: Span {
                             data: "sunset.jpg",
                             line: 3,
                             col: 8,
@@ -115,14 +115,14 @@ include::example$image.adoc[tag=base]
                         },
                         macro_attrlist: TAttrlist {
                             attributes: &[],
-                            source: TSpan {
+                            source: Span {
                                 data: "",
                                 line: 3,
                                 col: 19,
                                 offset: 40,
                             },
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "image::sunset.jpg[]",
                             line: 3,
                             col: 1,
@@ -135,7 +135,7 @@ include::example$image.adoc[tag=base]
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "Content in document",
                                 line: 5,
                                 col: 1,
@@ -143,7 +143,7 @@ include::example$image.adoc[tag=base]
                             },
                             rendered: "Content in document",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "Content in document",
                             line: 5,
                             col: 1,
@@ -155,7 +155,7 @@ include::example$image.adoc[tag=base]
                         attrlist: None,
                     },),
                 ],
-                source: TSpan {
+                source: Span {
                     data: "Content in document.\n\nimage::sunset.jpg[]\n\nContent in document",
                     line: 1,
                     col: 1,
@@ -198,7 +198,7 @@ include::example$image.adoc[tag=alt]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -207,7 +207,7 @@ include::example$image.adoc[tag=alt]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
@@ -219,14 +219,14 @@ include::example$image.adoc[tag=alt]
                             value: "Sunset",
                             shorthand_items: &["Sunset"],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "Sunset",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::sunset.jpg[Sunset]",
                         line: 1,
                         col: 1,
@@ -237,7 +237,7 @@ include::example$image.adoc[tag=alt]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::sunset.jpg[Sunset]",
                     line: 1,
                     col: 1,
@@ -279,7 +279,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -288,7 +288,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
@@ -300,14 +300,14 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                             value: "Mesa Verde Sunset, by JAVH",
                             shorthand_items: &[],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "\"Mesa Verde Sunset, by JAVH\"",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::sunset.jpg[\"Mesa Verde Sunset, by JAVH\"]",
                         line: 1,
                         col: 1,
@@ -318,7 +318,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::sunset.jpg[\"Mesa Verde Sunset, by JAVH\"]",
                     line: 1,
                     col: 1,
@@ -370,7 +370,7 @@ include::example$image.adoc[tag=attr]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -379,7 +379,7 @@ include::example$image.adoc[tag=attr]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 3,
                         col: 8,
@@ -403,20 +403,20 @@ include::example$image.adoc[tag=attr]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Sunset,200,100",
                             line: 3,
                             col: 19,
                             offset: 102,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: ".A mountain sunset\n[#img-sunset,link=https://www.flickr.com/photos/javh/5448336655]\nimage::sunset.jpg[Sunset,200,100]",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
-                    title_source: Some(TSpan {
+                    title_source: Some(Span {
                         data: "A mountain sunset",
                         line: 1,
                         col: 2,
@@ -437,7 +437,7 @@ include::example$image.adoc[tag=attr]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "#img-sunset,link=https://www.flickr.com/photos/javh/5448336655",
                             line: 2,
                             col: 2,
@@ -445,7 +445,7 @@ include::example$image.adoc[tag=attr]
                         },
                     },),
                 },),],
-                source: TSpan {
+                source: Span {
                     data: ".A mountain sunset\n[#img-sunset,link=https://www.flickr.com/photos/javh/5448336655]\nimage::sunset.jpg[Sunset,200,100]",
                     line: 1,
                     col: 1,

@@ -7,7 +7,7 @@ use crate::{
     blocks::{ContentModel, IsBlock, MediaType},
     content::SubstitutionGroup,
     tests::fixtures::{
-        TSpan,
+        Span,
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
@@ -48,14 +48,14 @@ fn empty_source() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
                     offset: 0
                 },
             },
-            source: TSpan {
+            source: Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -76,14 +76,14 @@ fn only_spaces() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
                     offset: 0
                 },
             },
-            source: TSpan {
+            source: Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -105,14 +105,14 @@ fn one_simple_block() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
                     offset: 0
                 },
             },
-            source: TSpan {
+            source: Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -120,7 +120,7 @@ fn one_simple_block() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "abc",
                         line: 1,
                         col: 1,
@@ -128,7 +128,7 @@ fn one_simple_block() {
                     },
                     rendered: "abc",
                 },
-                source: TSpan {
+                source: Span {
                     data: "abc",
                     line: 1,
                     col: 1,
@@ -155,14 +155,14 @@ fn two_simple_blocks() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
                     offset: 0
                 },
             },
-            source: TSpan {
+            source: Span {
                 data: "abc\n\ndef",
                 line: 1,
                 col: 1,
@@ -171,7 +171,7 @@ fn two_simple_blocks() {
             blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "abc",
                             line: 1,
                             col: 1,
@@ -179,7 +179,7 @@ fn two_simple_blocks() {
                         },
                         rendered: "abc",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "abc",
                         line: 1,
                         col: 1,
@@ -192,7 +192,7 @@ fn two_simple_blocks() {
                 }),
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "def",
                             line: 3,
                             col: 1,
@@ -200,7 +200,7 @@ fn two_simple_blocks() {
                         },
                         rendered: "def",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "def",
                         line: 3,
                         col: 1,
@@ -223,7 +223,7 @@ fn two_blocks_and_title() {
         Parser::default().parse("= Example Title\n\nabc\n\ndef"),
         TDocument {
             header: THeader {
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "Example Title",
                     line: 1,
                     col: 3,
@@ -231,7 +231,7 @@ fn two_blocks_and_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "= Example Title",
                     line: 1,
                     col: 1,
@@ -241,7 +241,7 @@ fn two_blocks_and_title() {
             blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "abc",
                             line: 3,
                             col: 1,
@@ -249,7 +249,7 @@ fn two_blocks_and_title() {
                         },
                         rendered: "abc",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "abc",
                         line: 3,
                         col: 1,
@@ -262,7 +262,7 @@ fn two_blocks_and_title() {
                 }),
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "def",
                             line: 5,
                             col: 1,
@@ -270,7 +270,7 @@ fn two_blocks_and_title() {
                         },
                         rendered: "def",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "def",
                         line: 5,
                         col: 1,
@@ -282,7 +282,7 @@ fn two_blocks_and_title() {
                     attrlist: None,
                 })
             ],
-            source: TSpan {
+            source: Span {
                 data: "= Example Title\n\nabc\n\ndef",
                 line: 1,
                 col: 1,
@@ -299,7 +299,7 @@ fn extra_space_before_title() {
         Parser::default().parse("=   Example Title\n\nabc"),
         TDocument {
             header: THeader {
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "Example Title",
                     line: 1,
                     col: 5,
@@ -307,7 +307,7 @@ fn extra_space_before_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "=   Example Title",
                     line: 1,
                     col: 1,
@@ -316,7 +316,7 @@ fn extra_space_before_title() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "abc",
                         line: 3,
                         col: 1,
@@ -324,7 +324,7 @@ fn extra_space_before_title() {
                     },
                     rendered: "abc",
                 },
-                source: TSpan {
+                source: Span {
                     data: "abc",
                     line: 3,
                     col: 1,
@@ -335,7 +335,7 @@ fn extra_space_before_title() {
                 anchor: None,
                 attrlist: None,
             })],
-            source: TSpan {
+            source: Span {
                 data: "=   Example Title\n\nabc",
                 line: 1,
                 col: 1,
@@ -352,7 +352,7 @@ fn err_bad_header() {
         Parser::default().parse("= Title\nnot an attribute\n"),
         TDocument {
             header: THeader {
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "Title",
                     line: 1,
                     col: 3,
@@ -360,7 +360,7 @@ fn err_bad_header() {
                 }),
                 title: Some("Title"),
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "= Title",
                     line: 1,
                     col: 1,
@@ -369,7 +369,7 @@ fn err_bad_header() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "not an attribute",
                         line: 2,
                         col: 1,
@@ -377,7 +377,7 @@ fn err_bad_header() {
                     },
                     rendered: "not an attribute",
                 },
-                source: TSpan {
+                source: Span {
                     data: "not an attribute",
                     line: 2,
                     col: 1,
@@ -388,14 +388,14 @@ fn err_bad_header() {
                 anchor: None,
                 attrlist: None,
             })],
-            source: TSpan {
+            source: Span {
                 data: "= Title\nnot an attribute",
                 line: 1,
                 col: 1,
                 offset: 0
             },
             warnings: &[TWarning {
-                source: TSpan {
+                source: Span {
                     data: "not an attribute",
                     line: 2,
                     col: 1,
@@ -413,7 +413,7 @@ fn err_bad_header_and_bad_macro() {
         Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         TDocument {
             header: THeader {
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "Title",
                     line: 1,
                     col: 3,
@@ -421,7 +421,7 @@ fn err_bad_header_and_bad_macro() {
                 }),
                 title: Some("Title"),
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "= Title",
                     line: 1,
                     col: 1,
@@ -431,7 +431,7 @@ fn err_bad_header_and_bad_macro() {
             blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "not an attribute",
                             line: 2,
                             col: 1,
@@ -439,7 +439,7 @@ fn err_bad_header_and_bad_macro() {
                         },
                         rendered: "not an attribute",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "not an attribute",
                         line: 2,
                         col: 1,
@@ -454,7 +454,7 @@ fn err_bad_header_and_bad_macro() {
             TBlock::Section(
                 TSectionBlock {
                     level: 1,
-                    section_title: TSpan {
+                    section_title: Span {
                         data: "Section Title",
                         line: 4,
                         col: 4,
@@ -464,7 +464,7 @@ fn err_bad_header_and_bad_macro() {
                         TBlock::Media(
                             TMediaBlock {
                                 type_: MediaType::Image,
-                                target: TSpan {
+                                target: Span {
                                     data: "bar",
                                     line: 6,
                                     col: 8,
@@ -488,14 +488,14 @@ fn err_bad_header_and_bad_macro() {
                                             value: "400"
                                         },
                                     ],
-                                    source: TSpan {
+                                    source: Span {
                                         data: "alt=Sunset,width=300,,height=400",
                                         line: 6,
                                         col: 12,
                                         offset: 55,
                                     },
                                 },
-                                source: TSpan {
+                                source: Span {
                                     data: "image::bar[alt=Sunset,width=300,,height=400]",
                                     line: 6,
                                     col: 1,
@@ -508,7 +508,7 @@ fn err_bad_header_and_bad_macro() {
                             },
                         ),
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                         line: 4,
                         col: 1,
@@ -520,14 +520,14 @@ fn err_bad_header_and_bad_macro() {
                     attrlist: None,
                 },
             )],
-            source: TSpan {
+            source: Span {
                 data: "= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                 line: 1,
                 col: 1,
                 offset: 0
             },
             warnings: &[TWarning {
-                source: TSpan {
+                source: Span {
                     data: "not an attribute",
                     line: 2,
                     col: 1,
@@ -536,7 +536,7 @@ fn err_bad_header_and_bad_macro() {
                 warning: WarningType::DocumentHeaderNotTerminated,
             },
             TWarning {
-                source: TSpan {
+                source: Span {
                     data: "alt=Sunset,width=300,,height=400",
                     line: 6,
                     col: 12,

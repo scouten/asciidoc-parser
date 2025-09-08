@@ -2,7 +2,7 @@ mod from_custom_string {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionGroup, SubstitutionStep},
         strings::CowStr,
     };
@@ -330,7 +330,7 @@ mod from_custom_string {
     fn custom_group_with_macros_preserves_passthroughs() {
         let custom_group = SubstitutionGroup::from_custom_string(None, "q,m").unwrap();
 
-        let mut content = Content::from(Span::new(
+        let mut content = Content::from(crate::Span::new(
             "Text with +++pass<through>+++ icon:github[] content.",
         ));
         let p = Parser::default();
@@ -350,14 +350,14 @@ mod from_custom_string {
 
 mod normal {
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionGroup},
         strings::CowStr,
     };
 
     #[test]
     fn empty() {
-        let mut content = Content::from(Span::new(""));
+        let mut content = Content::from(crate::Span::new(""));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -366,7 +366,7 @@ mod normal {
 
     #[test]
     fn basic_non_empty_span() {
-        let mut content = Content::from(Span::new("blah"));
+        let mut content = Content::from(crate::Span::new("blah"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -375,7 +375,7 @@ mod normal {
 
     #[test]
     fn match_lt_and_gt() {
-        let mut content = Content::from(Span::new("bl<ah>"));
+        let mut content = Content::from(crate::Span::new("bl<ah>"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -387,7 +387,7 @@ mod normal {
 
     #[test]
     fn match_amp() {
-        let mut content = Content::from(Span::new("bl<a&h>"));
+        let mut content = Content::from(crate::Span::new("bl<a&h>"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -399,7 +399,7 @@ mod normal {
 
     #[test]
     fn strong_word() {
-        let mut content = Content::from(Span::new("One *word* is strong."));
+        let mut content = Content::from(crate::Span::new("One *word* is strong."));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -415,7 +415,7 @@ mod normal {
 
     #[test]
     fn strong_word_with_special_chars() {
-        let mut content = Content::from(Span::new("One *wo<r>d* is strong."));
+        let mut content = Content::from(crate::Span::new("One *wo<r>d* is strong."));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -431,7 +431,7 @@ mod normal {
 
     #[test]
     fn marked_string_with_id() {
-        let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
+        let mut content = Content::from(crate::Span::new(r#"[#id]#a few words#"#));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -444,7 +444,7 @@ mod normal {
 
 mod attribute_entry_value {
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionGroup},
         parser::ModificationContext,
         strings::CowStr,
@@ -452,7 +452,7 @@ mod attribute_entry_value {
 
     #[test]
     fn empty() {
-        let mut content = Content::from(Span::new(""));
+        let mut content = Content::from(crate::Span::new(""));
         let p = Parser::default();
         SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -461,7 +461,7 @@ mod attribute_entry_value {
 
     #[test]
     fn basic_non_empty_span() {
-        let mut content = Content::from(Span::new("blah"));
+        let mut content = Content::from(crate::Span::new("blah"));
         let p = Parser::default();
         SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -470,7 +470,7 @@ mod attribute_entry_value {
 
     #[test]
     fn match_lt_and_gt() {
-        let mut content = Content::from(Span::new("bl<ah>"));
+        let mut content = Content::from(crate::Span::new("bl<ah>"));
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -482,7 +482,7 @@ mod attribute_entry_value {
 
     #[test]
     fn match_amp() {
-        let mut content = Content::from(Span::new("bl<a&h>"));
+        let mut content = Content::from(crate::Span::new("bl<a&h>"));
         let p = Parser::default();
         SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -494,7 +494,7 @@ mod attribute_entry_value {
 
     #[test]
     fn ignores_strong_word() {
-        let mut content = Content::from(Span::new("One *word* is strong."));
+        let mut content = Content::from(crate::Span::new("One *word* is strong."));
         let p = Parser::default();
         SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -506,7 +506,7 @@ mod attribute_entry_value {
 
     #[test]
     fn special_chars_and_attributes() {
-        let mut content = Content::from(Span::new("bl<ah> {color}"));
+        let mut content = Content::from(crate::Span::new("bl<ah> {color}"));
 
         let p = Parser::default().with_intrinsic_attribute(
             "color",
@@ -525,14 +525,14 @@ mod attribute_entry_value {
 
 mod header {
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionGroup},
         strings::CowStr,
     };
 
     #[test]
     fn empty() {
-        let mut content = Content::from(Span::new(""));
+        let mut content = Content::from(crate::Span::new(""));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -541,7 +541,7 @@ mod header {
 
     #[test]
     fn basic_non_empty_span() {
-        let mut content = Content::from(Span::new("blah"));
+        let mut content = Content::from(crate::Span::new("blah"));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -550,7 +550,7 @@ mod header {
 
     #[test]
     fn match_lt_and_gt() {
-        let mut content = Content::from(Span::new("bl<ah>"));
+        let mut content = Content::from(crate::Span::new("bl<ah>"));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -562,7 +562,7 @@ mod header {
 
     #[test]
     fn match_amp() {
-        let mut content = Content::from(Span::new("bl<a&h>"));
+        let mut content = Content::from(crate::Span::new("bl<a&h>"));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -574,7 +574,7 @@ mod header {
 
     #[test]
     fn ignores_strong_word() {
-        let mut content = Content::from(Span::new("One *word* is strong."));
+        let mut content = Content::from(crate::Span::new("One *word* is strong."));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -583,7 +583,7 @@ mod header {
 
     #[test]
     fn ignores_strong_word_with_special_chars() {
-        let mut content = Content::from(Span::new("One *wo<r>d* is strong."));
+        let mut content = Content::from(crate::Span::new("One *wo<r>d* is strong."));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -595,7 +595,7 @@ mod header {
 
     #[test]
     fn ignores_marked_string_with_id() {
-        let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
+        let mut content = Content::from(crate::Span::new(r#"[#id]#a few words#"#));
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(!content.is_empty());

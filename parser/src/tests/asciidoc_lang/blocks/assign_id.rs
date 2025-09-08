@@ -1,11 +1,11 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
+    Parser,
     blocks::{Block, IsBlock},
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
@@ -47,7 +47,7 @@ Content of delimited example block
     let mut parser = Parser::default();
 
     let block = Block::parse(
-        Span::new("[#the-id-of-this-block]\n====\nContent of delimited example block\n===="),
+        crate::Span::new("[#the-id-of-this-block]\n====\nContent of delimited example block\n===="),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -59,7 +59,7 @@ Content of delimited example block
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "Content of delimited example block",
                         line: 3,
                         col: 1,
@@ -67,7 +67,7 @@ Content of delimited example block
                     },
                     rendered: "Content of delimited example block",
                 },
-                source: TSpan {
+                source: Span {
                     data: "Content of delimited example block",
                     line: 3,
                     col: 1,
@@ -79,7 +79,7 @@ Content of delimited example block
                 attrlist: None,
             },),],
             context: "example",
-            source: TSpan {
+            source: Span {
                 data: "[#the-id-of-this-block]\n====\nContent of delimited example block\n====",
                 line: 1,
                 col: 1,
@@ -94,7 +94,7 @@ Content of delimited example block
                     shorthand_items: &["#the-id-of-this-block",],
                     value: "#the-id-of-this-block"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "#the-id-of-this-block",
                     line: 1,
                     col: 2,
@@ -144,7 +144,7 @@ Roads? Where we're going, we don't need roads.
     let mut parser = Parser::default();
 
     let block = Block::parse(
-        Span::new("[quote#roads]\nRoads? Where we're going, we don't need roads."),
+        crate::Span::new("[quote#roads]\nRoads? Where we're going, we don't need roads."),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -155,7 +155,7 @@ Roads? Where we're going, we don't need roads.
         block,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "Roads? Where we're going, we don't need roads.",
                     line: 2,
                     col: 1,
@@ -163,7 +163,7 @@ Roads? Where we're going, we don't need roads.
                 },
                 rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[quote#roads]\nRoads? Where we're going, we don't need roads.",
                 line: 1,
                 col: 1,
@@ -178,7 +178,7 @@ Roads? Where we're going, we don't need roads.
                     shorthand_items: &["quote", "#roads"],
                     value: "quote#roads"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "quote#roads",
                     line: 1,
                     col: 2,
@@ -210,7 +210,7 @@ Roads? Where we're going, we don't need roads.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(Span::new(
+    let block = Block::parse(crate::Span::new(
         "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -221,7 +221,7 @@ Roads? Where we're going, we don't need roads.
         block,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "Roads? Where we're going, we don't need roads.",
                     line: 2,
                     col: 1,
@@ -229,7 +229,7 @@ Roads? Where we're going, we don't need roads.
                 },
                 rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
                 line: 1,
                 col: 1,
@@ -256,7 +256,7 @@ Roads? Where we're going, we don't need roads.
                         value: "Back to the Future"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "quote#roads,Dr. Emmett Brown,Back to the Future",
                     line: 1,
                     col: 2,

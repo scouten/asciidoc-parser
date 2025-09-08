@@ -3,17 +3,17 @@ use std::fmt;
 use crate::{
     HasSpan,
     blocks::{CompoundDelimitedBlock, IsBlock},
-    tests::fixtures::{TSpan, attributes::TAttrlist, blocks::TBlock},
+    tests::fixtures::{Span, attributes::TAttrlist, blocks::TBlock},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TCompoundDelimitedBlock {
     pub blocks: &'static [TBlock],
     pub context: &'static str,
-    pub source: TSpan,
-    pub title_source: Option<TSpan>,
+    pub source: Span,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub anchor: Option<TSpan>,
+    pub anchor: Option<Span>,
     pub attrlist: Option<TAttrlist>,
 }
 

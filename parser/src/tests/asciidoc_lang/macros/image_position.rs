@@ -31,7 +31,7 @@ mod positioning_attributes {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
@@ -79,7 +79,7 @@ include::example$image.adoc[tag=float]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -88,7 +88,7 @@ include::example$image.adoc[tag=float]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "tiger.png",
                         line: 1,
                         col: 8,
@@ -122,14 +122,14 @@ include::example$image.adoc[tag=float]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Tiger,200,200,float=\"right\",align=\"center\"",
                             line: 1,
                             col: 18,
                             offset: 17,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::tiger.png[Tiger,200,200,float=\"right\",align=\"center\"]",
                         line: 1,
                         col: 1,
@@ -140,7 +140,7 @@ include::example$image.adoc[tag=float]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::tiger.png[Tiger,200,200,float=\"right\",align=\"center\"]",
                     line: 1,
                     col: 1,
@@ -178,7 +178,7 @@ include::example$image.adoc[tag=in-float]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -187,7 +187,7 @@ include::example$image.adoc[tag=in-float]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
                             line: 1,
                             col: 1,
@@ -195,7 +195,7 @@ include::example$image.adoc[tag=in-float]
                         },
                         rendered: "<span class=\"image right\"><img src=\"linux.png\" alt=\"Linux\" width=\"150\" height=\"150\"></span>\nYou can find Linux everywhere these days!",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
                         line: 1,
                         col: 1,
@@ -206,7 +206,7 @@ include::example$image.adoc[tag=in-float]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
                     line: 1,
                     col: 1,
@@ -235,7 +235,7 @@ mod positioning_roles {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
@@ -276,7 +276,7 @@ include::example$image.adoc[tag=role]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -285,7 +285,7 @@ include::example$image.adoc[tag=role]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "tiger.png",
                         line: 2,
                         col: 8,
@@ -309,14 +309,14 @@ include::example$image.adoc[tag=role]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Tiger,200,200",
                             line: 2,
                             col: 18,
                             offset: 38,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "[.right.text-center]\nimage::tiger.png[Tiger,200,200]",
                         line: 1,
                         col: 1,
@@ -331,7 +331,7 @@ include::example$image.adoc[tag=role]
                             value: ".right.text-center",
                             shorthand_items: &[".right", ".text-center"],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: ".right.text-center",
                             line: 1,
                             col: 2,
@@ -339,7 +339,7 @@ include::example$image.adoc[tag=role]
                         },
                     },),
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "[.right.text-center]\nimage::tiger.png[Tiger,200,200]",
                     line: 1,
                     col: 1,
@@ -373,7 +373,7 @@ include::example$image.adoc[tag=in-role]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -382,7 +382,7 @@ include::example$image.adoc[tag=in-role]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
                             line: 1,
                             col: 1,
@@ -390,7 +390,7 @@ include::example$image.adoc[tag=in-role]
                         },
                         rendered: "<span class=\"image right\"><img src=\"sunset.jpg\" alt=\"Sunset\" width=\"150\" height=\"150\"></span> What a beautiful sunset!",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
                         line: 1,
                         col: 1,
@@ -401,7 +401,7 @@ include::example$image.adoc[tag=in-role]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
                     line: 1,
                     col: 1,

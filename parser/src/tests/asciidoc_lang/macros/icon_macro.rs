@@ -19,7 +19,7 @@ mod anatomy {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -69,7 +69,7 @@ icon:heart[2x,role=red]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -78,7 +78,7 @@ icon:heart[2x,role=red]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "icon:heart[2x,role=red]",
                             line: 1,
                             col: 1,
@@ -86,7 +86,7 @@ icon:heart[2x,role=red]
                         },
                         rendered: "<span class=\"icon red\">[heart&#93;</span>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "icon:heart[2x,role=red]",
                         line: 1,
                         col: 1,
@@ -97,7 +97,7 @@ icon:heart[2x,role=red]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "icon:heart[2x,role=red]",
                     line: 1,
                     col: 1,

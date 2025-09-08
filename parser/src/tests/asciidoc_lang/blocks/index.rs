@@ -59,7 +59,7 @@ mod context {
     use std::ops::Deref;
 
     use crate::{
-        Parser, Span,
+        Parser,
         blocks::{Block, ContentModel, IsBlock, is_built_in_context},
         content::SubstitutionGroup,
         tests::sdd::{non_normative, to_do_verifies, verifies},
@@ -102,7 +102,7 @@ You can think of the context as the block's type.
         let mut parser = Parser::default();
 
         let mi = Block::parse(
-            Span::new("== Section Title\n\nContent of section."),
+            crate::Span::new("== Section Title\n\nContent of section."),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -159,7 +159,7 @@ For example, all sections implicitly have the compound content model because a s
         let mut parser = Parser::default();
 
         let mi = Block::parse(
-            Span::new("== Section Title\n\nContent of section."),
+            crate::Span::new("== Section Title\n\nContent of section."),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -180,7 +180,7 @@ All literal blocks implicitly have the verbatim content model because the purpos
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("....\nliteral text\n...."), &mut parser)
+        let mi = Block::parse(crate::Span::new("....\nliteral text\n...."), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
@@ -521,7 +521,7 @@ In the converter, these blocks must be accessed from their parent block.
 
 mod block_style {
     use crate::{
-        Parser, Span,
+        Parser,
         blocks::{Block, ContentModel, IsBlock},
         content::SubstitutionGroup,
         tests::sdd::{non_normative, verifies},
@@ -572,7 +572,7 @@ The context of the block is still the same, but it has additional metadata to in
         let mut parser = Parser::default();
 
         let mi = Block::parse(
-            Span::new("[source,ruby]\n----\nputs \"Hello, World!\"\n----"),
+            crate::Span::new("[source,ruby]\n----\nputs \"Hello, World!\"\n----"),
             &mut parser,
         )
         .unwrap_if_no_warnings()

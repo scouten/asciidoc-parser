@@ -5,7 +5,7 @@ use crate::{
     blocks::IsBlock,
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
@@ -70,7 +70,7 @@ mod change_subs_when_assigning {
         content::{SubstitutionGroup, SubstitutionStep},
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TRawDelimitedBlock},
                 content::TContent,
@@ -162,7 +162,7 @@ You can inspect the value stored in an attribute using this trick:
             block1,
             &TBlock::RawDelimited(TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "{app-name}",
                         line: 5,
                         col: 1,
@@ -172,7 +172,7 @@ You can inspect the value stored in an attribute using this trick:
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "[subs=attributes+]\n------\n{app-name}\n------",
                     line: 3,
                     col: 1,
@@ -187,7 +187,7 @@ You can inspect the value stored in an attribute using this trick:
                         value: "attributes+",
                         shorthand_items: &[],
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "subs=attributes+",
                         line: 3,
                         col: 2,
@@ -242,7 +242,7 @@ If the macro is absent, the value is processed with the header substitution grou
             block1,
             &TBlock::RawDelimited(TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "{app-name}",
                         line: 5,
                         col: 1,
@@ -252,7 +252,7 @@ If the macro is absent, the value is processed with the header substitution grou
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "[subs=attributes+]\n------\n{app-name}\n------",
                     line: 3,
                     col: 1,
@@ -267,7 +267,7 @@ If the macro is absent, the value is processed with the header substitution grou
                         value: "attributes+",
                         shorthand_items: &[],
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "subs=attributes+",
                         line: 3,
                         col: 2,
@@ -291,7 +291,7 @@ mod attributes_defined_outside_document {
         blocks::IsBlock,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -350,7 +350,7 @@ To play, you'll need {equipment}.
             block1,
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "To play, you'll need {equipment}.",
                         line: 1,
                         col: 1,
@@ -358,7 +358,7 @@ To play, you'll need {equipment}.
                     },
                     rendered: "To play, you&#8217;ll need a bat &amp; ball.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "To play, you'll need {equipment}.",
                     line: 1,
                     col: 1,
@@ -403,7 +403,7 @@ That's because, in contrast, substitutions are applied to the value of an attrib
             block1,
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "To play, you'll need {equipment}.",
                         line: 4,
                         col: 1,
@@ -411,7 +411,7 @@ That's because, in contrast, substitutions are applied to the value of an attrib
                     },
                     rendered: "To play, you&#8217;ll need a bat &amp; ball.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "To play, you'll need {equipment}.",
                     line: 4,
                     col: 1,
@@ -466,7 +466,7 @@ This strategy is akin to post-processing the attribute value.
         block1,
         &TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "The application is called {app-name}.",
                     line: 4,
                     col: 1,
@@ -474,7 +474,7 @@ This strategy is akin to post-processing the attribute value.
                 },
                 rendered: "The application is called MyApp<sup>2</sup>.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"]\nThe application is called {app-name}.",
                 line: 3,
                 col: 1,
@@ -489,7 +489,7 @@ This strategy is akin to post-processing the attribute value.
                     value: "specialchars,attributes,quotes,replacements,macros,post_replacements",
                     shorthand_items: &[],
                 },],
-                source: TSpan {
+                source: Span {
                     data: "subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"",
                     line: 3,
                     col: 2,

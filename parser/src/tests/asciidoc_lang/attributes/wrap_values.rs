@@ -1,11 +1,11 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
+    Parser,
     document::{Attribute, InterpretedValue},
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             document::{TAttribute, TInterpretedValue},
         },
         sdd::{non_normative, track_file, verifies},
@@ -53,18 +53,18 @@ If the line continuation is missing, the processor will assume it has found the 
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source."), &Parser::default()).unwrap();
+    let mi = Attribute::parse(crate::Span::new(":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source."), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
         TAttribute {
-            name: TSpan {
+            name: Span {
                 data: "description",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.",
                 line: 1,
                 col: 15,
@@ -73,7 +73,7 @@ If the line continuation is missing, the processor will assume it has found the 
             value: TInterpretedValue::Value(
                 "If you have a very long line of text that you need to substitute regularly in a document, you may find it easier to split the value neatly in the header so it remains readable to folks looking at the AsciiDoc source."
             ),
-            source: TSpan {
+            source: Span {
                 data: ":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source.",
                 line: 1,
                 col: 1,
@@ -119,18 +119,18 @@ This syntax ensures that the newlines are preserved in the output as hard line b
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!"), &Parser::default()).unwrap();
+    let mi = Attribute::parse(crate::Span::new(":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
         TAttribute {
-            name: TSpan {
+            name: Span {
                 data: "haiku",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!",
                 line: 1,
                 col: 9,
@@ -139,7 +139,7 @@ This syntax ensures that the newlines are preserved in the output as hard line b
             value: TInterpretedValue::Value(
                 "Write your docs in text,\nAsciiDoc makes it easy,\nNow get back to work!"
             ),
-            source: TSpan {
+            source: Span {
                 data: ":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!",
                 line: 1,
                 col: 1,

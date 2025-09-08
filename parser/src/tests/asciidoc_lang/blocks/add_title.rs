@@ -1,12 +1,12 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
+    Parser,
     blocks::{Block, ContentModel},
     content::SubstitutionGroup,
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             attributes::{TAttrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
@@ -51,7 +51,7 @@ This is the content of the sidebar block.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(Span::new(
+    let block = Block::parse(crate::Span::new(
         ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****\n",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -63,7 +63,7 @@ This is the content of the sidebar block.
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "This is the content of the sidebar block.",
                         line: 3,
                         col: 1,
@@ -71,7 +71,7 @@ This is the content of the sidebar block.
                     },
                     rendered: "This is the content of the sidebar block.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "This is the content of the sidebar block.",
                     line: 3,
                     col: 1,
@@ -83,13 +83,13 @@ This is the content of the sidebar block.
                 attrlist: None,
             },),],
             context: "sidebar",
-            source: TSpan {
+            source: Span {
                 data: ".This is the title of a sidebar block\n****\nThis is the content of the sidebar block.\n****",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "This is the title of a sidebar block",
                 line: 1,
                 col: 2,
@@ -139,7 +139,7 @@ Don't put a space between the dot and the first character of the title.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(Span::new(
+    let block = Block::parse(crate::Span::new(
         ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....\n",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -150,7 +150,7 @@ Don't put a space between the dot and the first character of the title.
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
                     line: 3,
                     col: 1,
@@ -160,13 +160,13 @@ Don't put a space between the dot and the first character of the title.
             },
             content_model: ContentModel::Verbatim,
             context: "literal",
-            source: TSpan {
+            source: Span {
                 data: ".Terminal Output\n....\nFrom github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.\n....",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "Terminal Output",
                 line: 1,
                 col: 2,
@@ -223,7 +223,7 @@ stages: [ init, verify, deploy ]
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(Span::new(
+    let block = Block::parse(crate::Span::new(
         ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -234,7 +234,7 @@ stages: [ init, verify, deploy ]
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "image: node:16-buster\nstages: [ init, verify, deploy ]",
                     line: 4,
                     col: 1,
@@ -244,13 +244,13 @@ stages: [ init, verify, deploy ]
             },
             content_model: ContentModel::Verbatim,
             context: "listing",
-            source: TSpan {
+            source: Span {
                 data: ".Specify GitLab CI stages\n[source,yaml]\n----\nimage: node:16-buster\nstages: [ init, verify, deploy ]\n----",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "Specify GitLab CI stages",
                 line: 1,
                 col: 2,
@@ -271,7 +271,7 @@ stages: [ init, verify, deploy ]
                         value: "yaml"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "source,yaml",
                     line: 2,
                     col: 2,
@@ -318,7 +318,7 @@ If you don't plant it in a container, it will take over your garden.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(Span::new(
+    let block = Block::parse(crate::Span::new(
         ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.\n",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -329,7 +329,7 @@ If you don't plant it in a container, it will take over your garden.
         block,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                     line: 3,
                     col: 1,
@@ -337,13 +337,13 @@ If you don't plant it in a container, it will take over your garden.
                 },
                 rendered: "Mint has visions of global conquest.\nIf you don&#8217;t plant it in a container, it will take over your garden.",
             },
-            source: TSpan {
+            source: Span {
                 data: ".Mint\n[sidebar]\nMint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "Mint",
                 line: 1,
                 col: 2,
@@ -357,7 +357,7 @@ If you don't plant it in a container, it will take over your garden.
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "sidebar",
                     line: 2,
                     col: 2,

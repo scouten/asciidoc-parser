@@ -1,163 +1,163 @@
 mod is_valid_delimiter {
-    use crate::{Span, blocks::CompoundDelimitedBlock};
+    use crate::blocks::CompoundDelimitedBlock;
 
     #[test]
     fn comment() {
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "////"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "/////"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "/////////"
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("////")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("/////")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("/////////")
+        ));
 
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "///"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "//-/"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "////-"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "//////////x"
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("///")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("//-/")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("////-")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("//////////x")
+        ));
     }
 
     #[test]
     fn example() {
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "===="
-        )));
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "====="
-        )));
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "======="
-        )));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("====")
+        ));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("=====")
+        ));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("=======")
+        ));
 
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "==="
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "==-="
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "====-"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "==========x"
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("===")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("==-=")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("====-")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("==========x")
+        ));
     }
 
     #[test]
     fn listing() {
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "----"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "-----"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "---------"
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("----")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("-----")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("---------")
+        ));
     }
 
     #[test]
     fn literal() {
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "...."
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "....."
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "........."
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("....")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new(".....")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new(".........")
+        ));
     }
 
     #[test]
     fn sidebar() {
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "****"
-        )));
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "*****"
-        )));
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "*********"
-        )));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("****")
+        ));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("*****")
+        ));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("*********")
+        ));
 
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "***"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "**-*"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "****-"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "**********x"
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("***")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("**-*")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("****-")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("**********x")
+        ));
     }
 
     #[test]
     fn table() {
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "|==="
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            ",==="
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            ":==="
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "!==="
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("|===")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new(",===")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new(":===")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("!===")
+        ));
     }
 
     #[test]
     fn pass() {
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "++++"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "+++++"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "+++++++++"
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("++++")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("+++++")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("+++++++++")
+        ));
     }
 
     #[test]
     fn quote() {
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "____"
-        )));
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "_____"
-        )));
-        assert!(CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "_________"
-        )));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("____")
+        ));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("_____")
+        ));
+        assert!(CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("_________")
+        ));
 
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "___"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "__-_"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "____-"
-        )));
-        assert!(!CompoundDelimitedBlock::is_valid_delimiter(&Span::new(
-            "_________x"
-        )));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("___")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("__-_")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("____-")
+        ));
+        assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+            &crate::Span::new("_________x")
+        ));
     }
 }
 
@@ -168,7 +168,7 @@ mod parse {
         Parser,
         blocks::{CompoundDelimitedBlock, metadata::BlockMetadata},
         tests::fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
@@ -212,7 +212,7 @@ mod parse {
             TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "blah blah blah",
                             line: 2,
                             col: 1,
@@ -220,7 +220,7 @@ mod parse {
                         },
                         rendered: "blah blah blah",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "blah blah blah",
                         line: 2,
                         col: 1,
@@ -232,7 +232,7 @@ mod parse {
                     attrlist: None,
                 },),],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nblah blah blah",
                     line: 1,
                     col: 1,
@@ -248,7 +248,7 @@ mod parse {
         assert_eq!(
             maw.warnings,
             vec![TWarning {
-                source: TSpan {
+                source: Span {
                     data: "====",
                     line: 1,
                     col: 1,
@@ -296,7 +296,7 @@ mod example {
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
@@ -315,7 +315,7 @@ mod example {
             TCompoundDelimitedBlock {
                 blocks: &[],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\n====",
                     line: 1,
                     col: 1,
@@ -361,7 +361,7 @@ mod example {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -369,7 +369,7 @@ mod example {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -382,7 +382,7 @@ mod example {
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -390,7 +390,7 @@ mod example {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -403,7 +403,7 @@ mod example {
                     },),
                 ],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nblock1\n\nblock2\n====",
                     line: 1,
                     col: 1,
@@ -434,7 +434,7 @@ mod example {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -442,7 +442,7 @@ mod example {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -459,7 +459,7 @@ mod example {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -467,7 +467,7 @@ mod example {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -501,7 +501,7 @@ mod example {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -509,7 +509,7 @@ mod example {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -523,7 +523,7 @@ mod example {
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
-                                original: TSpan {
+                                original: Span {
                                     data: "block2",
                                     line: 5,
                                     col: 1,
@@ -531,7 +531,7 @@ mod example {
                                 },
                                 rendered: "block2",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -543,7 +543,7 @@ mod example {
                             attrlist: None,
                         },),],
                         context: "example",
-                        source: TSpan {
+                        source: Span {
                             data: "=====\nblock2\n=====",
                             line: 4,
                             col: 1,
@@ -556,7 +556,7 @@ mod example {
                     })
                 ],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nblock1\n\n=====\nblock2\n=====\n====",
                     line: 1,
                     col: 1,
@@ -587,7 +587,7 @@ mod example {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -595,7 +595,7 @@ mod example {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -613,7 +613,7 @@ mod example {
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "block2",
                             line: 5,
                             col: 1,
@@ -621,7 +621,7 @@ mod example {
                         },
                         rendered: "block2",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -633,7 +633,7 @@ mod example {
                     attrlist: None,
                 },),],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "=====\nblock2\n=====",
                     line: 4,
                     col: 1,
@@ -714,7 +714,7 @@ mod open {
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
@@ -733,7 +733,7 @@ mod open {
             TCompoundDelimitedBlock {
                 blocks: &[],
                 context: "open",
-                source: TSpan {
+                source: Span {
                     data: "--\n--",
                     line: 1,
                     col: 1,
@@ -779,7 +779,7 @@ mod open {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -787,7 +787,7 @@ mod open {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -800,7 +800,7 @@ mod open {
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -808,7 +808,7 @@ mod open {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -821,7 +821,7 @@ mod open {
                     },),
                 ],
                 context: "open",
-                source: TSpan {
+                source: Span {
                     data: "--\nblock1\n\nblock2\n--",
                     line: 1,
                     col: 1,
@@ -852,7 +852,7 @@ mod open {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -860,7 +860,7 @@ mod open {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -877,7 +877,7 @@ mod open {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -885,7 +885,7 @@ mod open {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -920,7 +920,7 @@ mod open {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -928,7 +928,7 @@ mod open {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -941,7 +941,7 @@ mod open {
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "---\nblock2\n---",
                                 line: 4,
                                 col: 1,
@@ -949,7 +949,7 @@ mod open {
                             },
                             rendered: "---\nblock2\n---",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "---\nblock2\n---",
                             line: 4,
                             col: 1,
@@ -962,7 +962,7 @@ mod open {
                     })
                 ],
                 context: "open",
-                source: TSpan {
+                source: Span {
                     data: "--\nblock1\n\n---\nblock2\n---\n--",
                     line: 1,
                     col: 1,
@@ -993,7 +993,7 @@ mod open {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1001,7 +1001,7 @@ mod open {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1018,7 +1018,7 @@ mod open {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "---\nblock2\n---",
                         line: 4,
                         col: 1,
@@ -1026,7 +1026,7 @@ mod open {
                     },
                     rendered: "---\nblock2\n---",
                 },
-                source: TSpan {
+                source: Span {
                     data: "---\nblock2\n---",
                     line: 4,
                     col: 1,
@@ -1051,7 +1051,7 @@ mod sidebar {
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
@@ -1070,7 +1070,7 @@ mod sidebar {
             TCompoundDelimitedBlock {
                 blocks: &[],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "****\n****",
                     line: 1,
                     col: 1,
@@ -1116,7 +1116,7 @@ mod sidebar {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1124,7 +1124,7 @@ mod sidebar {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1137,7 +1137,7 @@ mod sidebar {
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -1145,7 +1145,7 @@ mod sidebar {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -1158,7 +1158,7 @@ mod sidebar {
                     },),
                 ],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "****\nblock1\n\nblock2\n****",
                     line: 1,
                     col: 1,
@@ -1189,7 +1189,7 @@ mod sidebar {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1197,7 +1197,7 @@ mod sidebar {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1214,7 +1214,7 @@ mod sidebar {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -1222,7 +1222,7 @@ mod sidebar {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -1256,7 +1256,7 @@ mod sidebar {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1264,7 +1264,7 @@ mod sidebar {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1278,7 +1278,7 @@ mod sidebar {
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
-                                original: TSpan {
+                                original: Span {
                                     data: "block2",
                                     line: 5,
                                     col: 1,
@@ -1286,7 +1286,7 @@ mod sidebar {
                                 },
                                 rendered: "block2",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -1298,7 +1298,7 @@ mod sidebar {
                             attrlist: None,
                         },),],
                         context: "sidebar",
-                        source: TSpan {
+                        source: Span {
                             data: "*****\nblock2\n*****",
                             line: 4,
                             col: 1,
@@ -1311,7 +1311,7 @@ mod sidebar {
                     })
                 ],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "****\nblock1\n\n*****\nblock2\n*****\n****",
                     line: 1,
                     col: 1,
@@ -1342,7 +1342,7 @@ mod sidebar {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1350,7 +1350,7 @@ mod sidebar {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1368,7 +1368,7 @@ mod sidebar {
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "block2",
                             line: 5,
                             col: 1,
@@ -1376,7 +1376,7 @@ mod sidebar {
                         },
                         rendered: "block2",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -1388,7 +1388,7 @@ mod sidebar {
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "*****\nblock2\n*****",
                     line: 4,
                     col: 1,
@@ -1510,7 +1510,7 @@ mod quote {
         blocks::{CompoundDelimitedBlock, ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
@@ -1529,7 +1529,7 @@ mod quote {
             TCompoundDelimitedBlock {
                 blocks: &[],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "____\n____",
                     line: 1,
                     col: 1,
@@ -1575,7 +1575,7 @@ mod quote {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1583,7 +1583,7 @@ mod quote {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1596,7 +1596,7 @@ mod quote {
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -1604,7 +1604,7 @@ mod quote {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -1617,7 +1617,7 @@ mod quote {
                     },),
                 ],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "____\nblock1\n\nblock2\n____",
                     line: 1,
                     col: 1,
@@ -1648,7 +1648,7 @@ mod quote {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1656,7 +1656,7 @@ mod quote {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1673,7 +1673,7 @@ mod quote {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -1681,7 +1681,7 @@ mod quote {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -1715,7 +1715,7 @@ mod quote {
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1723,7 +1723,7 @@ mod quote {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1737,7 +1737,7 @@ mod quote {
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
-                                original: TSpan {
+                                original: Span {
                                     data: "block2",
                                     line: 5,
                                     col: 1,
@@ -1745,7 +1745,7 @@ mod quote {
                                 },
                                 rendered: "block2",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -1757,7 +1757,7 @@ mod quote {
                             attrlist: None,
                         },),],
                         context: "quote",
-                        source: TSpan {
+                        source: Span {
                             data: "_____\nblock2\n_____",
                             line: 4,
                             col: 1,
@@ -1770,7 +1770,7 @@ mod quote {
                     })
                 ],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "____\nblock1\n\n_____\nblock2\n_____\n____",
                     line: 1,
                     col: 1,
@@ -1801,7 +1801,7 @@ mod quote {
             blocks.next().unwrap(),
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1809,7 +1809,7 @@ mod quote {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1827,7 +1827,7 @@ mod quote {
             &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "block2",
                             line: 5,
                             col: 1,
@@ -1835,7 +1835,7 @@ mod quote {
                         },
                         rendered: "block2",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -1847,7 +1847,7 @@ mod quote {
                     attrlist: None,
                 },),],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "_____\nblock2\n_____",
                     line: 4,
                     col: 1,

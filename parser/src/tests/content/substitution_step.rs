@@ -1,13 +1,13 @@
 mod special_characters {
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionStep},
         strings::CowStr,
     };
 
     #[test]
     fn empty() {
-        let mut content = Content::from(Span::new(""));
+        let mut content = Content::from(crate::Span::new(""));
         let p = Parser::default();
         SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -16,7 +16,7 @@ mod special_characters {
 
     #[test]
     fn basic_non_empty_span() {
-        let mut content = Content::from(Span::new("blah"));
+        let mut content = Content::from(crate::Span::new("blah"));
         let p = Parser::default();
         SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -25,7 +25,7 @@ mod special_characters {
 
     #[test]
     fn match_lt_and_gt() {
-        let mut content = Content::from(Span::new("bl<ah>"));
+        let mut content = Content::from(crate::Span::new("bl<ah>"));
         let p = Parser::default();
         SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -37,7 +37,7 @@ mod special_characters {
 
     #[test]
     fn match_amp() {
-        let mut content = Content::from(Span::new("bl<a&h>"));
+        let mut content = Content::from(crate::Span::new("bl<a&h>"));
         let p = Parser::default();
         SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -50,14 +50,14 @@ mod special_characters {
 
 mod quotes {
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionStep},
         strings::CowStr,
     };
 
     #[test]
     fn empty() {
-        let mut content = Content::from(Span::new(""));
+        let mut content = Content::from(crate::Span::new(""));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -66,7 +66,7 @@ mod quotes {
 
     #[test]
     fn basic_non_empty_span() {
-        let mut content = Content::from(Span::new("blah"));
+        let mut content = Content::from(crate::Span::new("blah"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -75,7 +75,7 @@ mod quotes {
 
     #[test]
     fn ignore_lt_and_gt() {
-        let mut content = Content::from(Span::new("bl<ah>"));
+        let mut content = Content::from(crate::Span::new("bl<ah>"));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -87,7 +87,7 @@ mod quotes {
 
     #[test]
     fn strong_word() {
-        let mut content = Content::from(Span::new("One *word* is strong."));
+        let mut content = Content::from(crate::Span::new("One *word* is strong."));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -103,7 +103,7 @@ mod quotes {
 
     #[test]
     fn marked_string_with_id() {
-        let mut content = Content::from(Span::new(r#"[#id]#a few words#"#));
+        let mut content = Content::from(crate::Span::new(r#"[#id]#a few words#"#));
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -116,14 +116,14 @@ mod quotes {
 
 mod attribute_references {
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionStep},
         strings::CowStr,
     };
 
     #[test]
     fn empty() {
-        let mut content = Content::from(Span::new(""));
+        let mut content = Content::from(crate::Span::new(""));
         let p = Parser::default();
         SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -132,7 +132,7 @@ mod attribute_references {
 
     #[test]
     fn basic_non_empty_span() {
-        let mut content = Content::from(Span::new("blah"));
+        let mut content = Content::from(crate::Span::new("blah"));
         let p = Parser::default();
         SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -141,7 +141,7 @@ mod attribute_references {
 
     #[test]
     fn ignore_non_match() {
-        let mut content = Content::from(Span::new("bl{ah}"));
+        let mut content = Content::from(crate::Span::new("bl{ah}"));
         let p = Parser::default();
         SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -153,7 +153,7 @@ mod attribute_references {
 
     #[test]
     fn ignore_escaped_non_match() {
-        let mut content = Content::from(Span::new("bl\\{ah}"));
+        let mut content = Content::from(crate::Span::new("bl\\{ah}"));
         let p = Parser::default();
         SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -165,7 +165,7 @@ mod attribute_references {
 
     #[test]
     fn replace_sp_match() {
-        let mut content = Content::from(Span::new("bl{sp}ah"));
+        let mut content = Content::from(crate::Span::new("bl{sp}ah"));
         let p = Parser::default();
         SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -177,7 +177,7 @@ mod attribute_references {
 
     #[test]
     fn ignore_escaped_sp_match() {
-        let mut content = Content::from(Span::new("bl\\{sp}ah"));
+        let mut content = Content::from(crate::Span::new("bl\\{sp}ah"));
         let p = Parser::default();
         SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -190,7 +190,7 @@ mod attribute_references {
 
 mod callouts {
     use crate::{
-        Parser, Span,
+        Parser,
         content::{Content, SubstitutionStep},
         strings::CowStr,
     };
@@ -198,7 +198,7 @@ mod callouts {
     #[test]
     #[should_panic]
     fn not_yet_implemented() {
-        let mut content = Content::from(Span::new(""));
+        let mut content = Content::from(crate::Span::new(""));
         let p = Parser::default();
         SubstitutionStep::Callouts.apply(&mut content, &p, None);
         assert!(content.is_empty());

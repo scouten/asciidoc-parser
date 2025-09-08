@@ -3,11 +3,11 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    HasSpan, Parser, Span,
+    HasSpan, Parser,
     blocks::{Block, ContentModel, IsBlock, MediaType},
     content::SubstitutionGroup,
     tests::fixtures::{
-        TSpan,
+        Span,
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMediaBlock, TSimpleBlock},
         content::TContent,
@@ -23,7 +23,7 @@ use crate::{
 fn err_inline_syntax() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("foo:bar[]"), &mut parser)
+    let mi = Block::parse(crate::Span::new("foo:bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -31,7 +31,7 @@ fn err_inline_syntax() {
         mi.item,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "foo:bar[]",
                     line: 1,
                     col: 1,
@@ -39,7 +39,7 @@ fn err_inline_syntax() {
                 },
                 rendered: "foo:bar[]",
             },
-            source: TSpan {
+            source: Span {
                 data: "foo:bar[]",
                 line: 1,
                 col: 1,
@@ -54,7 +54,7 @@ fn err_inline_syntax() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "foo:bar[]",
             line: 1,
             col: 1,
@@ -64,7 +64,7 @@ fn err_inline_syntax() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 10,
@@ -77,7 +77,7 @@ fn err_inline_syntax() {
 fn err_no_attr_list() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("image::bar"), &mut parser)
+    let mi = Block::parse(crate::Span::new("image::bar"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -85,7 +85,7 @@ fn err_no_attr_list() {
         mi.item,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "image::bar",
                     line: 1,
                     col: 1,
@@ -93,7 +93,7 @@ fn err_no_attr_list() {
                 },
                 rendered: "image::bar",
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar",
                 line: 1,
                 col: 1,
@@ -108,7 +108,7 @@ fn err_no_attr_list() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "image::bar",
             line: 1,
             col: 1,
@@ -118,7 +118,7 @@ fn err_no_attr_list() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 11,
@@ -131,7 +131,7 @@ fn err_no_attr_list() {
 fn err_attr_list_not_closed() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("image::bar[blah"), &mut parser)
+    let mi = Block::parse(crate::Span::new("image::bar[blah"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -139,7 +139,7 @@ fn err_attr_list_not_closed() {
         mi.item,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "image::bar[blah",
                     line: 1,
                     col: 1,
@@ -147,7 +147,7 @@ fn err_attr_list_not_closed() {
                 },
                 rendered: "image::bar[blah",
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[blah",
                 line: 1,
                 col: 1,
@@ -162,7 +162,7 @@ fn err_attr_list_not_closed() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "image::bar[blah",
             line: 1,
             col: 1,
@@ -172,7 +172,7 @@ fn err_attr_list_not_closed() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 16,
@@ -185,7 +185,7 @@ fn err_attr_list_not_closed() {
 fn err_unexpected_after_attr_list() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("image::bar[blah]bonus"), &mut parser)
+    let mi = Block::parse(crate::Span::new("image::bar[blah]bonus"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -193,7 +193,7 @@ fn err_unexpected_after_attr_list() {
         mi.item,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "image::bar[blah]bonus",
                     line: 1,
                     col: 1,
@@ -201,7 +201,7 @@ fn err_unexpected_after_attr_list() {
                 },
                 rendered: "image::bar[blah]bonus",
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[blah]bonus",
                 line: 1,
                 col: 1,
@@ -216,7 +216,7 @@ fn err_unexpected_after_attr_list() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "image::bar[blah]bonus",
             line: 1,
             col: 1,
@@ -226,7 +226,7 @@ fn err_unexpected_after_attr_list() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 22,
@@ -239,7 +239,7 @@ fn err_unexpected_after_attr_list() {
 fn rejects_image_with_no_target() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("image::[]"), &mut parser)
+    let mi = Block::parse(crate::Span::new("image::[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -247,7 +247,7 @@ fn rejects_image_with_no_target() {
         mi.item,
         TBlock::Simple(TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "image::[]",
                     line: 1,
                     col: 1,
@@ -255,7 +255,7 @@ fn rejects_image_with_no_target() {
                 },
                 rendered: "image::[]",
             },
-            source: TSpan {
+            source: Span {
                 data: "image::[]",
                 line: 1,
                 col: 1,
@@ -270,7 +270,7 @@ fn rejects_image_with_no_target() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "image::[]",
             line: 1,
             col: 1,
@@ -280,7 +280,7 @@ fn rejects_image_with_no_target() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 10,
@@ -293,7 +293,7 @@ fn rejects_image_with_no_target() {
 fn has_target() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("image::bar[]"), &mut parser)
+    let mi = Block::parse(crate::Span::new("image::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -301,7 +301,7 @@ fn has_target() {
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -309,14 +309,14 @@ fn has_target() {
             },
             macro_attrlist: TAttrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[]",
                 line: 1,
                 col: 1,
@@ -340,7 +340,7 @@ fn has_target() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "image::bar[]",
             line: 1,
             col: 1,
@@ -350,7 +350,7 @@ fn has_target() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 13,
@@ -363,7 +363,7 @@ fn has_target() {
 fn has_target_and_macro_attrlist() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("image::bar[blah]"), &mut parser)
+    let mi = Block::parse(crate::Span::new("image::bar[blah]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -371,7 +371,7 @@ fn has_target_and_macro_attrlist() {
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -383,14 +383,14 @@ fn has_target_and_macro_attrlist() {
                     shorthand_items: &["blah"],
                     value: "blah"
                 }],
-                source: TSpan {
+                source: Span {
                     data: "blah",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[blah]",
                 line: 1,
                 col: 1,
@@ -405,7 +405,7 @@ fn has_target_and_macro_attrlist() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "image::bar[blah]",
             line: 1,
             col: 1,
@@ -415,7 +415,7 @@ fn has_target_and_macro_attrlist() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 17,
@@ -429,7 +429,7 @@ fn warn_macro_attrlist_has_extra_comma() {
     let mut parser = Parser::default();
 
     let maw = Block::parse(
-        Span::new("image::bar[alt=Sunset,width=300,,height=400]"),
+        crate::Span::new("image::bar[alt=Sunset,width=300,,height=400]"),
         &mut parser,
     );
 
@@ -439,7 +439,7 @@ fn warn_macro_attrlist_has_extra_comma() {
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
@@ -463,14 +463,14 @@ fn warn_macro_attrlist_has_extra_comma() {
                         value: "400"
                     }
                 ],
-                source: TSpan {
+                source: Span {
                     data: "alt=Sunset,width=300,,height=400",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[alt=Sunset,width=300,,height=400]",
                 line: 1,
                 col: 1,
@@ -485,7 +485,7 @@ fn warn_macro_attrlist_has_extra_comma() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "image::bar[alt=Sunset,width=300,,height=400]",
             line: 1,
             col: 1,
@@ -495,7 +495,7 @@ fn warn_macro_attrlist_has_extra_comma() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 45,
@@ -505,7 +505,7 @@ fn warn_macro_attrlist_has_extra_comma() {
     assert_eq!(
         maw.warnings,
         vec![TWarning {
-            source: TSpan {
+            source: Span {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 1,
                 col: 12,
@@ -520,15 +520,18 @@ fn warn_macro_attrlist_has_extra_comma() {
 fn has_title() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new(".macro title\nimage::bar[]\n"), &mut parser)
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi = Block::parse(
+        crate::Span::new(".macro title\nimage::bar[]\n"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings()
+    .unwrap();
 
     assert_eq!(
         mi.item,
         TBlock::Media(TMediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 2,
                 col: 8,
@@ -536,20 +539,20 @@ fn has_title() {
             },
             macro_attrlist: TAttrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 2,
                     col: 12,
                     offset: 24,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: ".macro title\nimage::bar[]",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "macro title",
                 line: 1,
                 col: 2,
@@ -563,7 +566,7 @@ fn has_title() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: ".macro title\nimage::bar[]",
             line: 1,
             col: 1,
@@ -573,7 +576,7 @@ fn has_title() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 3,
             col: 1,

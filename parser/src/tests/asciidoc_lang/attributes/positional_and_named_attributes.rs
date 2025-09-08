@@ -16,12 +16,12 @@ mod positional_attribute {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
+        Parser,
         blocks::{Block, IsBlock, MediaBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSectionBlock, TSimpleBlock},
                 content::TContent,
@@ -151,7 +151,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
         let mut parser = Parser::default();
 
         let block = Block::parse(
-            Span::new("[#custom-id]\n== Section with Custom ID\n"),
+            crate::Span::new("[#custom-id]\n== Section with Custom ID\n"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -162,14 +162,14 @@ Here's an example that shows how to set an ID on a section using this shorthand 
             block,
             TBlock::Section(TSectionBlock {
                 level: 1,
-                section_title: TSpan {
+                section_title: Span {
                     data: "Section with Custom ID",
                     line: 2,
                     col: 4,
                     offset: 16,
                 },
                 blocks: &[],
-                source: TSpan {
+                source: Span {
                     data: "[#custom-id]\n== Section with Custom ID",
                     line: 1,
                     col: 1,
@@ -184,7 +184,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                         shorthand_items: &["#custom-id"],
                         value: "#custom-id"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "#custom-id",
                         line: 1,
                         col: 2,
@@ -212,7 +212,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
         let mut parser = Parser::default();
 
         let block = Block::parse(
-            Span::new("[appendix#custom-id]\n== Appendix with Custom ID\n"),
+            crate::Span::new("[appendix#custom-id]\n== Appendix with Custom ID\n"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -223,14 +223,14 @@ Here's an example that shows how to set an ID on an appendix section using this 
             block,
             TBlock::Section(TSectionBlock {
                 level: 1,
-                section_title: TSpan {
+                section_title: Span {
                     data: "Appendix with Custom ID",
                     line: 2,
                     col: 4,
                     offset: 24,
                 },
                 blocks: &[],
-                source: TSpan {
+                source: Span {
                     data: "[appendix#custom-id]\n== Appendix with Custom ID",
                     line: 1,
                     col: 1,
@@ -245,7 +245,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                         shorthand_items: &["appendix", "#custom-id"],
                         value: "appendix#custom-id"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "appendix#custom-id",
                         line: 1,
                         col: 2,
@@ -277,7 +277,9 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         let mut parser = Parser::default();
 
         let block = Block::parse(
-            Span::new("[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n"),
+            crate::Span::new(
+                "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n",
+            ),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -289,7 +291,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
             block,
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "* Work hard\n* Play hard\n* Be happy",
                         line: 2,
                         col: 1,
@@ -297,7 +299,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     },
                     rendered: "* Work hard\n* Play hard\n* Be happy",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy",
                     line: 1,
                     col: 1,
@@ -312,7 +314,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                         shorthand_items: &["#rules", ".prominent", "%incremental"],
                         value: "#rules.prominent%incremental"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "#rules.prominent%incremental",
                         line: 1,
                         col: 2,
@@ -349,7 +351,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(Span::new(
+        let block = Block::parse(crate::Span::new(
             "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -360,7 +362,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
             block,
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                         line: 2,
                         col: 1,
@@ -368,7 +370,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                     },
                     rendered: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                     line: 1,
                     col: 1,
@@ -383,7 +385,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                         shorthand_items: &["%header", "%footer", "%autowidth",],
                         value: "%header%footer%autowidth"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "%header%footer%autowidth",
                         line: 1,
                         col: 2,

@@ -1,10 +1,10 @@
 use std::cmp::PartialEq;
 
-use crate::{content::Content, tests::fixtures::TSpan};
+use crate::{content::Content, tests::fixtures::Span};
 
 #[derive(Debug, Eq, PartialEq)]
 pub(crate) struct TContent {
-    pub original: TSpan,
+    pub original: Span,
     pub rendered: &'static str,
 }
 

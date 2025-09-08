@@ -29,11 +29,11 @@ You can assign one or more options to a block using the shorthand or formal synt
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
+        Parser,
         blocks::{Block, IsBlock},
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
@@ -65,7 +65,7 @@ This is a sidebar with an option assigned to it, named option.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[%option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -76,7 +76,7 @@ This is a sidebar with an option assigned to it, named option.
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "This is a sidebar with an option assigned to it, named option.",
                             line: 3,
                             col: 1,
@@ -84,7 +84,7 @@ This is a sidebar with an option assigned to it, named option.
                         },
                         rendered: "This is a sidebar with an option assigned to it, named option.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "This is a sidebar with an option assigned to it, named option.",
                         line: 3,
                         col: 1,
@@ -96,7 +96,7 @@ This is a sidebar with an option assigned to it, named option.
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "[%option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
                     line: 1,
                     col: 1,
@@ -111,7 +111,7 @@ This is a sidebar with an option assigned to it, named option.
                         shorthand_items: &["%option"],
                         value: "%option"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "%option",
                         line: 1,
                         col: 2,
@@ -152,7 +152,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[%option1%option2]\n****\nThis is a sidebar with two options assigned to it, named option1 and option2.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -163,7 +163,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "This is a sidebar with two options assigned to it, named option1 and option2.",
                             line: 3,
                             col: 1,
@@ -171,7 +171,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                         },
                         rendered: "This is a sidebar with two options assigned to it, named option1 and option2.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "This is a sidebar with two options assigned to it, named option1 and option2.",
                         line: 3,
                         col: 1,
@@ -183,7 +183,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "[%option1%option2]\n****\nThis is a sidebar with two options assigned to it, named option1 and option2.\n****",
                     line: 1,
                     col: 1,
@@ -198,7 +198,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                         shorthand_items: &["%option1", "%option2"],
                         value: "%option1%option2"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "%option1%option2",
                         line: 1,
                         col: 2,
@@ -247,7 +247,7 @@ For instance, consider a table with the three built-in option values, `header`, 
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[%header%footer%autowidth,cols=2*~]\n|===\n|Cell A1 |Cell B1\n\n|Cell A2 |Cell B2\n\n|Cell A3 |Cell B3\n|===",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -259,7 +259,7 @@ For instance, consider a table with the three built-in option values, `header`, 
             mi.item,
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "|===\n|Cell A1 |Cell B1",
                         line: 2,
                         col: 1,
@@ -267,7 +267,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                     },
                     rendered: "|===\n|Cell A1 |Cell B1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[%header%footer%autowidth,cols=2*~]\n|===\n|Cell A1 |Cell B1",
                     line: 1,
                     col: 1,
@@ -289,7 +289,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                             value: "2*~"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "%header%footer%autowidth,cols=2*~",
                         line: 1,
                         col: 2,
@@ -338,7 +338,7 @@ This is a sidebar with an option assigned to it, named option.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[opts=option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -349,7 +349,7 @@ This is a sidebar with an option assigned to it, named option.
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "This is a sidebar with an option assigned to it, named option.",
                             line: 3,
                             col: 1,
@@ -357,7 +357,7 @@ This is a sidebar with an option assigned to it, named option.
                         },
                         rendered: "This is a sidebar with an option assigned to it, named option.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "This is a sidebar with an option assigned to it, named option.",
                         line: 3,
                         col: 1,
@@ -369,7 +369,7 @@ This is a sidebar with an option assigned to it, named option.
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "[opts=option]\n****\nThis is a sidebar with an option assigned to it, named option.\n****",
                     line: 1,
                     col: 1,
@@ -384,7 +384,7 @@ This is a sidebar with an option assigned to it, named option.
                         shorthand_items: &[],
                         value: "option"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "opts=option",
                         line: 1,
                         col: 2,
@@ -424,7 +424,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[opts=\"option1,option2\"]\n****\nThis is a sidebar with two options assigned to it, option1 and option2.\n****",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -435,7 +435,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
             TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "This is a sidebar with two options assigned to it, option1 and option2.",
                             line: 3,
                             col: 1,
@@ -443,7 +443,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                         },
                         rendered: "This is a sidebar with two options assigned to it, option1 and option2.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "This is a sidebar with two options assigned to it, option1 and option2.",
                         line: 3,
                         col: 1,
@@ -455,7 +455,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "[opts=\"option1,option2\"]\n****\nThis is a sidebar with two options assigned to it, option1 and option2.\n****",
                     line: 1,
                     col: 1,
@@ -470,7 +470,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                         shorthand_items: &[],
                         value: "option1,option2"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "opts=\"option1,option2\"",
                         line: 1,
                         col: 2,
@@ -519,7 +519,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[cols=2*~,opts=\"header,footer,autowidth\"]\n|===\n|Cell A1 |Cell B1\n\n|Cell A2 |Cell B2\n\n|Cell A3 |Cell B3\n|===",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -531,7 +531,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
             mi.item,
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "|===\n|Cell A1 |Cell B1",
                         line: 2,
                         col: 1,
@@ -539,7 +539,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                     },
                     rendered: "|===\n|Cell A1 |Cell B1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[cols=2*~,opts=\"header,footer,autowidth\"]\n|===\n|Cell A1 |Cell B1",
                     line: 1,
                     col: 1,
@@ -561,7 +561,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                             value: "header,footer,autowidth"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "cols=2*~,opts=\"header,footer,autowidth\"",
                         line: 1,
                         col: 2,
@@ -601,12 +601,12 @@ Let's consider `options` when combined with other attributes.
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
+        Parser,
         blocks::{Block, IsBlock},
         content::SubstitutionGroup,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
@@ -639,7 +639,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -651,7 +651,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
             mi.item,
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",
                         line: 2,
                         col: 1,
@@ -659,7 +659,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                     },
                     rendered: "property 1:: does stuff\nproperty 2:: does different stuff",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[horizontal.properties%step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
                     line: 1,
                     col: 1,
@@ -674,7 +674,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                         shorthand_items: &["horizontal", ".properties", "%step"],
                         value: "horizontal.properties%step"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "horizontal.properties%step",
                         line: 1,
                         col: 2,
@@ -725,7 +725,7 @@ property 2:: does different stuff
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(
+        let mi = Block::parse(crate::Span::new(
             "[horizontal,role=properties,opts=step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -737,7 +737,7 @@ property 2:: does different stuff
             mi.item,
             TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "property 1:: does stuff\nproperty 2:: does different stuff",
                         line: 2,
                         col: 1,
@@ -745,7 +745,7 @@ property 2:: does different stuff
                     },
                     rendered: "property 1:: does stuff\nproperty 2:: does different stuff",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[horizontal,role=properties,opts=step]\nproperty 1:: does stuff\nproperty 2:: does different stuff",
                     line: 1,
                     col: 1,
@@ -772,7 +772,7 @@ property 2:: does different stuff
                             value: "step"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "horizontal,role=properties,opts=step",
                         line: 1,
                         col: 2,

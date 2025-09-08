@@ -1,12 +1,12 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
+    Parser,
     blocks::{Block, ContentModel, IsBlock},
     content::SubstitutionGroup,
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
@@ -51,7 +51,7 @@ This text will be treated as verbatim content.
     let mut parser = Parser::default();
 
     let block = Block::parse(
-        Span::new("....\nThis text will be treated as verbatim content.\n...."),
+        crate::Span::new("....\nThis text will be treated as verbatim content.\n...."),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -62,7 +62,7 @@ This text will be treated as verbatim content.
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "This text will be treated as verbatim content.",
                     line: 2,
                     col: 1,
@@ -72,7 +72,7 @@ This text will be treated as verbatim content.
             },
             content_model: ContentModel::Verbatim,
             context: "literal",
-            source: TSpan {
+            source: Span {
                 data: "....\nThis text will be treated as verbatim content.\n....",
                 line: 1,
                 col: 1,
@@ -102,7 +102,7 @@ The remaining lines define a block's content.
     let mut parser = Parser::default();
 
     let block = Block::parse(
-        Span::new("....\n\n\nThis text will be treated as verbatim content.\n\n\n...."),
+        crate::Span::new("....\n\n\nThis text will be treated as verbatim content.\n\n\n...."),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -113,7 +113,7 @@ The remaining lines define a block's content.
         block,
         TBlock::RawDelimited(TRawDelimitedBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "\n\nThis text will be treated as verbatim content.\n\n",
                     line: 2,
                     col: 1,
@@ -123,7 +123,7 @@ The remaining lines define a block's content.
             },
             content_model: ContentModel::Verbatim,
             context: "literal",
-            source: TSpan {
+            source: Span {
                 data: "....\n\n\nThis text will be treated as verbatim content.\n\n\n....",
                 line: 1,
                 col: 1,
@@ -169,14 +169,14 @@ The block metadata (block attribute and anchor lines) goes above the opening del
     let mut parser = Parser::default();
 
     let maw_block = Block::parse(
-        Span::new("....\nThis text will be treated as verbatim content.\n....."),
+        crate::Span::new("....\nThis text will be treated as verbatim content.\n....."),
         &mut parser,
     );
 
     assert_eq!(
         maw_block.warnings,
         vec![TWarning {
-            source: TSpan {
+            source: Span {
                 data: "....",
                 line: 1,
                 col: 1,
@@ -206,7 +206,7 @@ That's so meta.
     let mut parser = Parser::default();
 
     let block = Block::parse(
-        Span::new("====\nThis is an example of an example block.\nThat's so meta.\n===="),
+        crate::Span::new("====\nThis is an example of an example block.\nThat's so meta.\n===="),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -218,7 +218,7 @@ That's so meta.
         TBlock::CompoundDelimited(TCompoundDelimitedBlock {
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "This is an example of an example block.\nThat's so meta.",
                         line: 2,
                         col: 1,
@@ -226,7 +226,7 @@ That's so meta.
                     },
                     rendered: "This is an example of an example block.\nThat&#8217;s so meta.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "This is an example of an example block.\nThat's so meta.",
                     line: 2,
                     col: 1,
@@ -238,7 +238,7 @@ That's so meta.
                 attrlist: None,
             },),],
             context: "example",
-            source: TSpan {
+            source: Span {
                 data: "====\nThis is an example of an example block.\nThat's so meta.\n====",
                 line: 1,
                 col: 1,
@@ -304,7 +304,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("////\n////"), &mut parser)
+    let mi = Block::parse(crate::Span::new("////\n////"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -324,7 +324,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("====\n===="), &mut parser)
+    let mi = Block::parse(crate::Span::new("====\n===="), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -344,7 +344,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("----\n----"), &mut parser)
+    let mi = Block::parse(crate::Span::new("----\n----"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -364,7 +364,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("....\n...."), &mut parser)
+    let mi = Block::parse(crate::Span::new("....\n...."), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -384,7 +384,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("--\n--"), &mut parser)
+    let mi = Block::parse(crate::Span::new("--\n--"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -404,7 +404,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("****\n****"), &mut parser)
+    let mi = Block::parse(crate::Span::new("****\n****"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -441,7 +441,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("++++\n++++"), &mut parser)
+    let mi = Block::parse(crate::Span::new("++++\n++++"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -462,7 +462,7 @@ The table below lists the structural containers, documenting the name, default c
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("____\n____"), &mut parser)
+    let mi = Block::parse(crate::Span::new("____\n____"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -498,12 +498,12 @@ mod nesting_blocks {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
+        Parser,
         blocks::{Block, ContentModel},
         content::SubstitutionGroup,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
                 content::TContent,
@@ -554,7 +554,7 @@ The document header is useful, but not required.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(Span::new(
+        let block = Block::parse(crate::Span::new(
             "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====\n",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -567,7 +567,7 @@ The document header is useful, but not required.
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "Here's a sample AsciiDoc document:",
                                 line: 2,
                                 col: 1,
@@ -575,7 +575,7 @@ The document header is useful, but not required.
                             },
                             rendered: "Here&#8217;s a sample AsciiDoc document:",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "Here's a sample AsciiDoc document:",
                             line: 2,
                             col: 1,
@@ -588,7 +588,7 @@ The document header is useful, but not required.
                     },),
                     TBlock::RawDelimited(TRawDelimitedBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "= Document Title\nAuthor Name\n\nContent goes here.",
                                 line: 5,
                                 col: 1,
@@ -598,7 +598,7 @@ The document header is useful, but not required.
                         },
                         content_model: ContentModel::Verbatim,
                         context: "listing",
-                        source: TSpan {
+                        source: Span {
                             data: "----\n= Document Title\nAuthor Name\n\nContent goes here.\n----",
                             line: 4,
                             col: 1,
@@ -612,7 +612,7 @@ The document header is useful, but not required.
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "The document header is useful, but not required.",
                                 line: 11,
                                 col: 1,
@@ -620,7 +620,7 @@ The document header is useful, but not required.
                             },
                             rendered: "The document header is useful, but not required.",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "The document header is useful, but not required.",
                             line: 11,
                             col: 1,
@@ -633,7 +633,7 @@ The document header is useful, but not required.
                     },),
                 ],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nHere's a sample AsciiDoc document:\n\n----\n= Document Title\nAuthor Name\n\nContent goes here.\n----\n\nThe document header is useful, but not required.\n====",
                     line: 1,
                     col: 1,
@@ -677,7 +677,7 @@ Live within the simulated reality without want or fear.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(Span::new(
+        let block = Block::parse(crate::Span::new(
             "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -690,7 +690,7 @@ Live within the simulated reality without want or fear.
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "Here are your options:",
                                 line: 2,
                                 col: 1,
@@ -698,7 +698,7 @@ Live within the simulated reality without want or fear.
                             },
                             rendered: "Here are your options:",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "Here are your options:",
                             line: 2,
                             col: 1,
@@ -712,7 +712,7 @@ Live within the simulated reality without want or fear.
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
-                                original: TSpan {
+                                original: Span {
                                     data: "Escape into the real world.",
                                     line: 7,
                                     col: 1,
@@ -720,7 +720,7 @@ Live within the simulated reality without want or fear.
                                 },
                                 rendered: "Escape into the real world.",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "Escape into the real world.",
                                 line: 7,
                                 col: 1,
@@ -732,13 +732,13 @@ Live within the simulated reality without want or fear.
                             attrlist: None,
                         },),],
                         context: "example",
-                        source: TSpan {
+                        source: Span {
                             data: ".Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======",
                             line: 4,
                             col: 1,
                             offset: 29,
                         },
-                        title_source: Some(TSpan {
+                        title_source: Some(Span {
                             data: "Red Pill",
                             line: 4,
                             col: 2,
@@ -752,7 +752,7 @@ Live within the simulated reality without want or fear.
                                 shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
-                            source: TSpan {
+                            source: Span {
                                 data: "%collapsible",
                                 line: 5,
                                 col: 2,
@@ -763,7 +763,7 @@ Live within the simulated reality without want or fear.
                     TBlock::CompoundDelimited(TCompoundDelimitedBlock {
                         blocks: &[TBlock::Simple(TSimpleBlock {
                             content: TContent {
-                                original: TSpan {
+                                original: Span {
                                     data: "Live within the simulated reality without want or fear.",
                                     line: 13,
                                     col: 1,
@@ -771,7 +771,7 @@ Live within the simulated reality without want or fear.
                                 },
                                 rendered: "Live within the simulated reality without want or fear.",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "Live within the simulated reality without want or fear.",
                                 line: 13,
                                 col: 1,
@@ -783,13 +783,13 @@ Live within the simulated reality without want or fear.
                             attrlist: None,
                         },),],
                         context: "example",
-                        source: TSpan {
+                        source: Span {
                             data: ".Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======",
                             line: 10,
                             col: 1,
                             offset: 97,
                         },
-                        title_source: Some(TSpan {
+                        title_source: Some(Span {
                             data: "Blue Pill",
                             line: 10,
                             col: 2,
@@ -803,7 +803,7 @@ Live within the simulated reality without want or fear.
                                 shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
-                            source: TSpan {
+                            source: Span {
                                 data: "%collapsible",
                                 line: 11,
                                 col: 2,
@@ -813,7 +813,7 @@ Live within the simulated reality without want or fear.
                     },),
                 ],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nHere are your options:\n\n.Red Pill\n[%collapsible]\n======\nEscape into the real world.\n======\n\n.Blue Pill\n[%collapsible]\n======\nLive within the simulated reality without want or fear.\n======\n====",
                     line: 1,
                     col: 1,

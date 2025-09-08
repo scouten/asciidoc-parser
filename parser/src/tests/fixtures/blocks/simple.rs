@@ -3,16 +3,16 @@ use std::fmt;
 use crate::{
     blocks::{IsBlock, SimpleBlock},
     span::HasSpan,
-    tests::fixtures::{TSpan, attributes::TAttrlist, content::TContent},
+    tests::fixtures::{Span, attributes::TAttrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TSimpleBlock {
     pub content: TContent,
-    pub source: TSpan,
-    pub title_source: Option<TSpan>,
+    pub source: Span,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub anchor: Option<TSpan>,
+    pub anchor: Option<Span>,
     pub attrlist: Option<TAttrlist>,
 }
 

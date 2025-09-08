@@ -4,7 +4,7 @@ use crate::{
     Parser,
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
@@ -40,7 +40,7 @@ include::partial$ts-url-format.adoc[tag=sb]
         doc,
         TDocument {
             header: THeader {
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "Document Title",
                     line: 1,
                     col: 3,
@@ -48,13 +48,13 @@ include::partial$ts-url-format.adoc[tag=sb]
                 },),
                 title: Some("Document Title",),
                 attributes: &[TAttribute {
-                    name: TSpan {
+                    name: Span {
                         data: "link-with-underscores",
                         line: 2,
                         col: 2,
                         offset: 18,
                     },
-                    value_source: Some(TSpan {
+                    value_source: Some(Span {
                         data: "https://asciidoctor.org/now_this__link_works.html",
                         line: 2,
                         col: 25,
@@ -63,14 +63,14 @@ include::partial$ts-url-format.adoc[tag=sb]
                     value: TInterpretedValue::Value(
                         "https://asciidoctor.org/now_this__link_works.html",
                     ),
-                    source: TSpan {
+                    source: Span {
                         data: ":link-with-underscores: https://asciidoctor.org/now_this__link_works.html",
                         line: 2,
                         col: 1,
                         offset: 17,
                     },
                 },],
-                source: TSpan {
+                source: Span {
                     data: "= Document Title\n:link-with-underscores: https://asciidoctor.org/now_this__link_works.html",
                     line: 1,
                     col: 1,
@@ -79,7 +79,7 @@ include::partial$ts-url-format.adoc[tag=sb]
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "This URL has repeating underscores {link-with-underscores}.",
                         line: 4,
                         col: 1,
@@ -87,7 +87,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                     },
                     rendered: "This URL has repeating underscores <a href=\"https://asciidoctor.org/now_this__link_works.html\" class=\"bare\">https://asciidoctor.org/now_this__link_works.html</a>.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "This URL has repeating underscores {link-with-underscores}.",
                     line: 4,
                     col: 1,
@@ -98,7 +98,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "= Document Title\n:link-with-underscores: https://asciidoctor.org/now_this__link_works.html\n\nThis URL has repeating underscores {link-with-underscores}.",
                 line: 1,
                 col: 1,
@@ -120,7 +120,7 @@ fn pass_macro() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -129,7 +129,7 @@ fn pass_macro() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].",
                         line: 1,
                         col: 1,
@@ -137,7 +137,7 @@ fn pass_macro() {
                     },
                     rendered: "This URL has repeating underscores <a href=\"https://asciidoctor.org/now_this__link_works.html\" class=\"bare\">https://asciidoctor.org/now_this__link_works.html</a>.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].",
                     line: 1,
                     col: 1,
@@ -148,7 +148,7 @@ fn pass_macro() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].",
                 line: 1,
                 col: 1,
@@ -171,7 +171,7 @@ fn double_plus_inline_macro() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -180,7 +180,7 @@ fn double_plus_inline_macro() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].",
                         line: 1,
                         col: 1,
@@ -188,7 +188,7 @@ fn double_plus_inline_macro() {
                     },
                     rendered: "This URL has repeating underscores <a href=\"https://asciidoctor.org/now_this__link_works.html\" class=\"bare\">https://asciidoctor.org/now_this__link_works.html</a>.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].",
                     line: 1,
                     col: 1,
@@ -199,7 +199,7 @@ fn double_plus_inline_macro() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].",
                 line: 1,
                 col: 1,

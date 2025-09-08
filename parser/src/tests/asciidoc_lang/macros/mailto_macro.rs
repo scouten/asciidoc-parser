@@ -19,7 +19,7 @@ mod link_text_and_named_attributes {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -60,7 +60,7 @@ mailto:join@discuss.example.org[Subscribe]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -69,7 +69,7 @@ mailto:join@discuss.example.org[Subscribe]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe]",
                             line: 1,
                             col: 1,
@@ -77,7 +77,7 @@ mailto:join@discuss.example.org[Subscribe]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe]",
                         line: 1,
                         col: 1,
@@ -88,7 +88,7 @@ mailto:join@discuss.example.org[Subscribe]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe]",
                     line: 1,
                     col: 1,
@@ -121,7 +121,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -130,7 +130,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,role=email]",
                             line: 1,
                             col: 1,
@@ -138,7 +138,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org\" class=\"email\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,role=email]",
                         line: 1,
                         col: 1,
@@ -149,7 +149,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,role=email]",
                     line: 1,
                     col: 1,
@@ -184,7 +184,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -193,7 +193,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
                             line: 1,
                             col: 1,
@@ -201,7 +201,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org\">Click, subscribe, and participate!</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
                         line: 1,
                         col: 1,
@@ -212,7 +212,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
                     line: 1,
                     col: 1,
@@ -238,7 +238,7 @@ mod subject_and_body {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -282,7 +282,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -291,7 +291,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
                             line: 1,
                             col: 1,
@@ -299,7 +299,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
                         line: 1,
                         col: 1,
@@ -310,7 +310,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
                     line: 1,
                     col: 1,
@@ -347,7 +347,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -356,7 +356,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
                             line: 1,
                             col: 1,
@@ -364,7 +364,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me&amp;body=I%20want%20to%20participate.\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
                         line: 1,
                         col: 1,
@@ -375,7 +375,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
                     line: 1,
                     col: 1,
@@ -409,7 +409,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -418,7 +418,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
                             line: 1,
                             col: 1,
@@ -426,7 +426,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me&amp;body=I%20want%20to%20participate.\">join@discuss.example.org</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
                         line: 1,
                         col: 1,
@@ -437,7 +437,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
                     line: 1,
                     col: 1,
@@ -470,7 +470,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -479,7 +479,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me]",
                             line: 1,
                             col: 1,
@@ -487,7 +487,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me\">join@discuss.example.org</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[,Subscribe me]",
                         line: 1,
                         col: 1,
@@ -498,7 +498,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[,Subscribe me]",
                     line: 1,
                     col: 1,
@@ -531,7 +531,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -540,7 +540,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",
                             line: 1,
                             col: 1,
@@ -548,7 +548,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=I%20want%20to%20participate%2C%20so%20please%20subscribe%20me\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",
                         line: 1,
                         col: 1,
@@ -559,7 +559,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",
                     line: 1,
                     col: 1,

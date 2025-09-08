@@ -1,11 +1,11 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
+    Parser,
     document::{Attribute, InterpretedValue},
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
@@ -50,12 +50,16 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":name-of-an-attribute:"), &Parser::default()).unwrap();
+    let mi = Attribute::parse(
+        crate::Span::new(":name-of-an-attribute:"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
         TAttribute {
-            name: TSpan {
+            name: Span {
                 data: "name-of-an-attribute",
                 line: 1,
                 col: 2,
@@ -63,7 +67,7 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
             },
             value_source: None,
             value: TInterpretedValue::Set,
-            source: TSpan {
+            source: Span {
                 data: ":name-of-an-attribute:",
                 line: 1,
                 col: 1,
@@ -100,7 +104,7 @@ At the end of the value, press kbd:[Enter].
         doc,
         TDocument {
             header: THeader {
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "Testing",
                     line: 1,
                     col: 3,
@@ -108,27 +112,27 @@ At the end of the value, press kbd:[Enter].
                 },),
                 title: Some("Testing"),
                 attributes: &[TAttribute {
-                    name: TSpan {
+                    name: Span {
                         data: "name-of-an-attribute",
                         line: 2,
                         col: 2,
                         offset: 11,
                     },
-                    value_source: Some(TSpan {
+                    value_source: Some(Span {
                         data: "value of the attribute",
                         line: 2,
                         col: 24,
                         offset: 33,
                     }),
                     value: TInterpretedValue::Value("value of the attribute"),
-                    source: TSpan {
+                    source: Span {
                         data: ":name-of-an-attribute: value of the attribute",
                         line: 2,
                         col: 1,
                         offset: 10,
                     },
                 },],
-                source: TSpan {
+                source: Span {
                     data: "= Testing\n:name-of-an-attribute: value of the attribute",
                     line: 1,
                     col: 1,
@@ -137,7 +141,7 @@ At the end of the value, press kbd:[Enter].
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "The value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
                         line: 4,
                         col: 1,
@@ -145,7 +149,7 @@ At the end of the value, press kbd:[Enter].
                     },
                     rendered: "The value of the attribute named <code>name-of-an-attribute</code> is: value of the attribute",
                 },
-                source: TSpan {
+                source: Span {
                     data: "The value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
                     line: 4,
                     col: 1,
@@ -156,7 +160,7 @@ At the end of the value, press kbd:[Enter].
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "= Testing\n:name-of-an-attribute: value of the attribute\n\nThe value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
                 line: 1,
                 col: 1,
@@ -189,7 +193,7 @@ That means you don't need to escape special characters such in an HTML tag.
         doc,
         TDocument {
             header: THeader {
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "Testing",
                     line: 1,
                     col: 3,
@@ -197,27 +201,27 @@ That means you don't need to escape special characters such in an HTML tag.
                 },),
                 title: Some("Testing"),
                 attributes: &[TAttribute {
-                    name: TSpan {
+                    name: Span {
                         data: "lt-attribute",
                         line: 2,
                         col: 2,
                         offset: 11,
                     },
-                    value_source: Some(TSpan {
+                    value_source: Some(Span {
                         data: "<",
                         line: 2,
                         col: 16,
                         offset: 25,
                     },),
                     value: TInterpretedValue::Value("&lt;"),
-                    source: TSpan {
+                    source: Span {
                         data: ":lt-attribute: <",
                         line: 2,
                         col: 1,
                         offset: 10,
                     },
                 },],
-                source: TSpan {
+                source: Span {
                     data: "= Testing\n:lt-attribute: <",
                     line: 1,
                     col: 1,
@@ -226,7 +230,7 @@ That means you don't need to escape special characters such in an HTML tag.
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "The value of the attribute named `lt-attribute` is: {lt-attribute}",
                         line: 4,
                         col: 1,
@@ -234,7 +238,7 @@ That means you don't need to escape special characters such in an HTML tag.
                     },
                     rendered: "The value of the attribute named <code>lt-attribute</code> is: &lt;",
                 },
-                source: TSpan {
+                source: Span {
                     data: "The value of the attribute named `lt-attribute` is: {lt-attribute}",
                     line: 4,
                     col: 1,
@@ -245,7 +249,7 @@ That means you don't need to escape special characters such in an HTML tag.
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "= Testing\n:lt-attribute: <\n\nThe value of the attribute named `lt-attribute` is: {lt-attribute}",
                 line: 1,
                 col: 1,
@@ -286,20 +290,20 @@ Attribute references in the value of an attribute entry are resolved immediately
                 title: None,
                 attributes: &[
                     TAttribute {
-                        name: TSpan {
+                        name: Span {
                             data: "url-org",
                             line: 1,
                             col: 2,
                             offset: 1,
                         },
-                        value_source: Some(TSpan {
+                        value_source: Some(Span {
                             data: "https://example.org/projects",
                             line: 1,
                             col: 11,
                             offset: 10,
                         },),
                         value: TInterpretedValue::Value("https://example.org/projects",),
-                        source: TSpan {
+                        source: Span {
                             data: ":url-org: https://example.org/projects",
                             line: 1,
                             col: 1,
@@ -307,13 +311,13 @@ Attribute references in the value of an attribute entry are resolved immediately
                         },
                     },
                     TAttribute {
-                        name: TSpan {
+                        name: Span {
                             data: "url-project",
                             line: 2,
                             col: 2,
                             offset: 40,
                         },
-                        value_source: Some(TSpan {
+                        value_source: Some(Span {
                             data: "{url-org}/project-name",
                             line: 2,
                             col: 15,
@@ -322,7 +326,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                         value: TInterpretedValue::Value(
                             "https://example.org/projects/project-name",
                         ),
-                        source: TSpan {
+                        source: Span {
                             data: ":url-project: {url-org}/project-name",
                             line: 2,
                             col: 1,
@@ -330,7 +334,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                         },
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: ":url-org: https://example.org/projects\n:url-project: {url-org}/project-name",
                     line: 1,
                     col: 1,
@@ -338,7 +342,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                 },
             },
             blocks: &[],
-            source: TSpan {
+            source: Span {
                 data: ":url-org: https://example.org/projects\n:url-project: {url-org}/project-name",
                 line: 1,
                 col: 1,
@@ -383,7 +387,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
                 title_source: None,
                 title: None,
                 attributes: &[TAttribute {
-                    name: TSpan {
+                    name: Span {
                         data: "name-of-an-attribute",
                         line: 1,
                         col: 2,
@@ -391,14 +395,14 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
                     },
                     value_source: None,
                     value: TInterpretedValue::Set,
-                    source: TSpan {
+                    source: Span {
                         data: ":name-of-an-attribute:",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },],
-                source: TSpan {
+                source: Span {
                     data: ":name-of-an-attribute:",
                     line: 1,
                     col: 1,
@@ -406,7 +410,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
                 },
             },
             blocks: &[],
-            source: TSpan {
+            source: Span {
                 data: ":name-of-an-attribute:",
                 line: 1,
                 col: 1,
@@ -429,7 +433,7 @@ mod where_declared {
         parser::ModificationContext,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -470,7 +474,7 @@ For attributes that allow it (which includes general purpose attributes), the at
             block1,
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "We are agreed? {agreed}",
                         line: 1,
                         col: 1,
@@ -478,7 +482,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                     },
                     rendered: "We are agreed? yes",
                 },
-                source: TSpan {
+                source: Span {
                     data: "We are agreed? {agreed}",
                     line: 1,
                     col: 1,
@@ -499,7 +503,7 @@ For attributes that allow it (which includes general purpose attributes), the at
             block3,
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "Are we still agreed? {agreed}",
                         line: 5,
                         col: 1,
@@ -507,7 +511,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                     },
                     rendered: "Are we still agreed? no",
                 },
-                source: TSpan {
+                source: Span {
                     data: "Are we still agreed? {agreed}",
                     line: 5,
                     col: 1,
@@ -552,7 +556,7 @@ mod defining_without_attribute_entry {
         parser::ModificationContext,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -609,7 +613,7 @@ pass:a,q[{attribute-with-formatted-text}]
             block1,
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
                         line: 1,
                         col: 1,
@@ -617,7 +621,7 @@ pass:a,q[{attribute-with-formatted-text}]
                     },
                     rendered: "formatting applied: attribute with <strong>formatted</strong> <em>text</em>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
                     line: 1,
                     col: 1,
@@ -636,7 +640,7 @@ pass:a,q[{attribute-with-formatted-text}]
             block2,
             &TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "formatting suppressed: {attribute-with-formatted-text}",
                         line: 3,
                         col: 1,
@@ -644,7 +648,7 @@ pass:a,q[{attribute-with-formatted-text}]
                     },
                     rendered: "formatting suppressed: attribute with *formatted* _text_",
                 },
-                source: TSpan {
+                source: Span {
                     data: "formatting suppressed: {attribute-with-formatted-text}",
                     line: 3,
                     col: 1,

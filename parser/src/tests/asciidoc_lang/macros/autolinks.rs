@@ -19,7 +19,7 @@ mod url_schemes_for_autolinks {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -55,7 +55,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -64,7 +64,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "http://example.org",
                             line: 1,
                             col: 1,
@@ -72,7 +72,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         },
                         rendered: r#"<a href="http://example.org" class="bare">http://example.org</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "http://example.org",
                         line: 1,
                         col: 1,
@@ -83,7 +83,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "http://example.org",
                     line: 1,
                     col: 1,
@@ -111,7 +111,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -120,7 +120,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "https://example.org",
                             line: 1,
                             col: 1,
@@ -128,7 +128,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         },
                         rendered: r#"<a href="https://example.org" class="bare">https://example.org</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://example.org",
                         line: 1,
                         col: 1,
@@ -139,7 +139,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://example.org",
                     line: 1,
                     col: 1,
@@ -167,7 +167,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -176,7 +176,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "ftp://example.org",
                             line: 1,
                             col: 1,
@@ -184,7 +184,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         },
                         rendered: r#"<a href="ftp://example.org" class="bare">ftp://example.org</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "ftp://example.org",
                         line: 1,
                         col: 1,
@@ -195,7 +195,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "ftp://example.org",
                     line: 1,
                     col: 1,
@@ -223,7 +223,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -232,7 +232,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "irc://example.org",
                             line: 1,
                             col: 1,
@@ -240,7 +240,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         },
                         rendered: r#"<a href="irc://example.org" class="bare">irc://example.org</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "irc://example.org",
                         line: 1,
                         col: 1,
@@ -251,7 +251,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "irc://example.org",
                     line: 1,
                     col: 1,
@@ -280,7 +280,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -289,7 +289,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "join@discuss.example.org",
                             line: 1,
                             col: 1,
@@ -297,7 +297,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         },
                         rendered: r#"<a href="mailto:join@discuss.example.org">join@discuss.example.org</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "join@discuss.example.org",
                         line: 1,
                         col: 1,
@@ -308,7 +308,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "join@discuss.example.org",
                     line: 1,
                     col: 1,
@@ -347,7 +347,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -356,7 +356,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "The homepage for the Asciidoctor Project is https://www.asciidoctor.org.",
                             line: 1,
                             col: 1,
@@ -364,7 +364,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                         },
                         rendered: r#"The homepage for the Asciidoctor Project is <a href="https://www.asciidoctor.org" class="bare">https://www.asciidoctor.org</a>."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "The homepage for the Asciidoctor Project is https://www.asciidoctor.org.",
                         line: 1,
                         col: 1,
@@ -375,7 +375,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "The homepage for the Asciidoctor Project is https://www.asciidoctor.org.",
                     line: 1,
                     col: 1,
@@ -415,7 +415,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -424,7 +424,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "You'll often see <https://example.org> used in examples.",
                             line: 1,
                             col: 1,
@@ -432,7 +432,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                         },
                         rendered: r#"You&#8217;ll often see <a href="https://example.org" class="bare">https://example.org</a> used in examples."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "You'll often see <https://example.org> used in examples.",
                         line: 1,
                         col: 1,
@@ -443,7 +443,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "You'll often see <https://example.org> used in examples.",
                     line: 1,
                     col: 1,
@@ -462,7 +462,7 @@ mod email_autolinks {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -499,7 +499,7 @@ For email address which do not conform to these restriction, you can use the xre
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -508,7 +508,7 @@ For email address which do not conform to these restriction, you can use the xre
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "Email us at hello@example.com to say hello.",
                             line: 1,
                             col: 1,
@@ -516,7 +516,7 @@ For email address which do not conform to these restriction, you can use the xre
                         },
                         rendered: r#"Email us at <a href="mailto:hello@example.com">hello@example.com</a> to say hello."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Email us at hello@example.com to say hello.",
                         line: 1,
                         col: 1,
@@ -527,7 +527,7 @@ For email address which do not conform to these restriction, you can use the xre
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "Email us at hello@example.com to say hello.",
                     line: 1,
                     col: 1,
@@ -546,7 +546,7 @@ mod escaping_urls_and_email_addresses {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
@@ -586,7 +586,7 @@ The URL and email address will both be shown in plain text.
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -596,7 +596,7 @@ The URL and email address will both be shown in plain text.
                 blocks: &[
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "Once launched, the site will be available at \\https://example.org.",
                                 line: 1,
                                 col: 1,
@@ -604,7 +604,7 @@ The URL and email address will both be shown in plain text.
                             },
                             rendered: r#"Once launched, the site will be available at https://example.org."#,
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "Once launched, the site will be available at \\https://example.org.",
                             line: 1,
                             col: 1,
@@ -617,7 +617,7 @@ The URL and email address will both be shown in plain text.
                     },),
                     TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "If you cannot access the site, email \\help@example.org for assistance.",
                                 line: 3,
                                 col: 1,
@@ -625,7 +625,7 @@ The URL and email address will both be shown in plain text.
                             },
                             rendered: r#"If you cannot access the site, email help@example.org for assistance."#,
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "If you cannot access the site, email \\help@example.org for assistance.",
                             line: 3,
                             col: 1,
@@ -637,7 +637,7 @@ The URL and email address will both be shown in plain text.
                         attrlist: None,
                     },)
                 ],
-                source: TSpan {
+                source: Span {
                     data: "Once launched, the site will be available at \\https://example.org.\n\nIf you cannot access the site, email \\help@example.org for assistance.",
                     line: 1,
                     col: 1,
@@ -675,7 +675,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -684,7 +684,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "Once launched, the site will be available at https://example.org.",
                             line: 2,
                             col: 1,
@@ -692,7 +692,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                         },
                         rendered: r#"Once launched, the site will be available at https://example.org."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "[subs=-macros]\nOnce launched, the site will be available at https://example.org.",
                         line: 1,
                         col: 1,
@@ -707,7 +707,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                             value: "-macros",
                             shorthand_items: &[],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "subs=-macros",
                             line: 1,
                             col: 2,
@@ -715,7 +715,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                         },
                     },),
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "[subs=-macros]\nOnce launched, the site will be available at https://example.org.",
                     line: 1,
                     col: 1,

@@ -7,7 +7,7 @@ use crate::{
     blocks::{ContentModel, IsBlock, SimpleBlock, metadata::BlockMetadata},
     content::SubstitutionGroup,
     tests::fixtures::{
-        TSpan,
+        Span,
         attributes::{TAttrlist, TElementAttribute},
         blocks::TSimpleBlock,
         content::TContent,
@@ -46,7 +46,7 @@ fn single_line() {
         mi.item,
         TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "abc",
                     line: 1,
                     col: 1,
@@ -54,7 +54,7 @@ fn single_line() {
                 },
                 rendered: "abc",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -82,7 +82,7 @@ fn single_line() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 4,
@@ -100,7 +100,7 @@ fn multiple_lines() {
         mi.item,
         TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "abc\ndef",
                     line: 1,
                     col: 1,
@@ -108,7 +108,7 @@ fn multiple_lines() {
                 },
                 rendered: "abc\ndef",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc\ndef",
                 line: 1,
                 col: 1,
@@ -123,7 +123,7 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 2,
             col: 4,
@@ -141,7 +141,7 @@ fn consumes_blank_lines_after() {
         mi.item,
         TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "abc",
                     line: 1,
                     col: 1,
@@ -149,7 +149,7 @@ fn consumes_blank_lines_after() {
                 },
                 rendered: "abc",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -164,7 +164,7 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "def",
             line: 3,
             col: 1,
@@ -186,7 +186,7 @@ fn overrides_sub_group_via_subs_attribute() {
         mi.item,
         TSimpleBlock {
             content: TContent {
-                original: TSpan {
+                original: Span {
                     data: "a<b>c *bold*",
                     line: 2,
                     col: 1,
@@ -194,7 +194,7 @@ fn overrides_sub_group_via_subs_attribute() {
                 },
                 rendered: "a<b>c <strong>bold</strong>",
             },
-            source: TSpan {
+            source: Span {
                 data: "[subs=quotes]\na<b>c *bold*",
                 line: 1,
                 col: 1,
@@ -209,7 +209,7 @@ fn overrides_sub_group_via_subs_attribute() {
                     value: "quotes",
                     shorthand_items: &[],
                 },],
-                source: TSpan {
+                source: Span {
                     data: "subs=quotes",
                     line: 1,
                     col: 2,
@@ -221,7 +221,7 @@ fn overrides_sub_group_via_subs_attribute() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "def",
             line: 4,
             col: 1,

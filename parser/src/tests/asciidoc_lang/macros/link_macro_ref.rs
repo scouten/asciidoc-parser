@@ -4,7 +4,7 @@ use crate::{
     Parser,
     tests::{
         fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
@@ -49,7 +49,7 @@ fn id() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -58,7 +58,7 @@ fn id() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "https://asciidoctor.org[Home,id=home]",
                         line: 1,
                         col: 1,
@@ -66,7 +66,7 @@ fn id() {
                     },
                     rendered: "<a href=\"https://asciidoctor.org\" id=\"home\">Home</a>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Home,id=home]",
                     line: 1,
                     col: 1,
@@ -77,7 +77,7 @@ fn id() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "https://asciidoctor.org[Home,id=home]",
                 line: 1,
                 col: 1,
@@ -109,7 +109,7 @@ fn role() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -118,7 +118,7 @@ fn role() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=teal]",
                         line: 1,
                         col: 1,
@@ -126,7 +126,7 @@ fn role() {
                     },
                     rendered: "<a href=\"https://chat.asciidoc.org\" class=\"teal\">Discuss AsciiDoc</a>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=teal]",
                     line: 1,
                     col: 1,
@@ -137,7 +137,7 @@ fn role() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=teal]",
                 line: 1,
                 col: 1,
@@ -169,7 +169,7 @@ fn title() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -178,7 +178,7 @@ fn title() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "https://asciidoctor.org[Home,title=Project home page]",
                         line: 1,
                         col: 1,
@@ -186,7 +186,7 @@ fn title() {
                     },
                     rendered: "<a href=\"https://asciidoctor.org\">Home</a>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Home,title=Project home page]",
                     line: 1,
                     col: 1,
@@ -197,7 +197,7 @@ fn title() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "https://asciidoctor.org[Home,title=Project home page]",
                 line: 1,
                 col: 1,
@@ -229,7 +229,7 @@ fn window() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -238,7 +238,7 @@ fn window() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc,window=_blank]",
                         line: 1,
                         col: 1,
@@ -246,7 +246,7 @@ fn window() {
                     },
                     rendered: "<a href=\"https://chat.asciidoc.org\" target=\"_blank\" rel=\"noopener\">Discuss AsciiDoc</a>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "https://chat.asciidoc.org[Discuss AsciiDoc,window=_blank]",
                     line: 1,
                     col: 1,
@@ -257,7 +257,7 @@ fn window() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "https://chat.asciidoc.org[Discuss AsciiDoc,window=_blank]",
                 line: 1,
                 col: 1,
@@ -291,7 +291,7 @@ fn window_shorthand() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -300,7 +300,7 @@ fn window_shorthand() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                         line: 1,
                         col: 1,
@@ -308,7 +308,7 @@ fn window_shorthand() {
                     },
                     rendered: "<a href=\"https://example.org\" target=\"_blank\" rel=\"noopener\">Google, DuckDuckGo, Ecosia</a>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                     line: 1,
                     col: 1,
@@ -319,7 +319,7 @@ fn window_shorthand() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                 line: 1,
                 col: 1,
@@ -350,7 +350,7 @@ fn opts() {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -359,7 +359,7 @@ fn opts() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "https://asciidoctor.org[Home,opts=nofollow]",
                         line: 1,
                         col: 1,
@@ -367,7 +367,7 @@ fn opts() {
                     },
                     rendered: "<a href=\"https://asciidoctor.org\" rel=\"nofollow\">Home</a>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Home,opts=nofollow]",
                     line: 1,
                     col: 1,
@@ -378,7 +378,7 @@ fn opts() {
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "https://asciidoctor.org[Home,opts=nofollow]",
                 line: 1,
                 col: 1,

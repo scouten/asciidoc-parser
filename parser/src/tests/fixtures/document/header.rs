@@ -3,15 +3,15 @@ use std::{cmp::PartialEq, fmt};
 use crate::{
     HasSpan,
     document::Header,
-    tests::fixtures::{TSpan, document::TAttribute},
+    tests::fixtures::{Span, document::TAttribute},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct THeader {
-    pub title_source: Option<TSpan>,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub attributes: &'static [TAttribute],
-    pub source: TSpan,
+    pub source: Span,
 }
 
 impl fmt::Debug for THeader {

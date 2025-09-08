@@ -7,7 +7,7 @@ mod inline_link {
     use crate::{
         Parser,
         tests::fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
@@ -26,7 +26,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -35,7 +35,7 @@ mod inline_link {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "You'll often see \\<https://example.org> used in examples.",
                             line: 1,
                             col: 1,
@@ -43,7 +43,7 @@ mod inline_link {
                         },
                         rendered: "You&#8217;ll often see &lt;https://example.org&gt; used in examples.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "You'll often see \\<https://example.org> used in examples.",
                         line: 1,
                         col: 1,
@@ -54,7 +54,7 @@ mod inline_link {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "You'll often see \\<https://example.org> used in examples.",
                     line: 1,
                     col: 1,
@@ -77,7 +77,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -86,7 +86,7 @@ mod inline_link {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "You'll often see <\\https://example.org> used in examples.",
                             line: 1,
                             col: 1,
@@ -94,7 +94,7 @@ mod inline_link {
                         },
                         rendered: "You&#8217;ll often see &lt;https://example.org&gt; used in examples.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "You'll often see <\\https://example.org> used in examples.",
                         line: 1,
                         col: 1,
@@ -105,7 +105,7 @@ mod inline_link {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "You'll often see <\\https://example.org> used in examples.",
                     line: 1,
                     col: 1,
@@ -127,7 +127,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -136,7 +136,7 @@ mod inline_link {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "There's no actual link <https://> in here.",
                             line: 1,
                             col: 1,
@@ -144,7 +144,7 @@ mod inline_link {
                         },
                         rendered: "There&#8217;s no actual link &lt;https://&gt; in here.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "There's no actual link <https://> in here.",
                         line: 1,
                         col: 1,
@@ -155,7 +155,7 @@ mod inline_link {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "There's no actual link <https://> in here.",
                     line: 1,
                     col: 1,
@@ -174,7 +174,7 @@ mod inline_link {
             doc,
             TDocument {
                 header: THeader {
-                    title_source: Some(TSpan {
+                    title_source: Some(Span {
                         data: "Test Page",
                         line: 1,
                         col: 3,
@@ -182,7 +182,7 @@ mod inline_link {
                     },),
                     title: Some("Test Page",),
                     attributes: &[TAttribute {
-                        name: TSpan {
+                        name: Span {
                             data: "hide-uri-scheme",
                             line: 2,
                             col: 2,
@@ -190,14 +190,14 @@ mod inline_link {
                         },
                         value_source: None,
                         value: TInterpretedValue::Set,
-                        source: TSpan {
+                        source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
                             col: 1,
                             offset: 12,
                         },
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "= Test Page\n:hide-uri-scheme:",
                         line: 1,
                         col: 1,
@@ -206,7 +206,7 @@ mod inline_link {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "We don't want you to know that this is HTTP: <https://example.com> just now.",
                             line: 4,
                             col: 1,
@@ -214,7 +214,7 @@ mod inline_link {
                         },
                         rendered: "We don&#8217;t want you to know that this is HTTP: <a href=\"https://example.com\" class=\"bare\">example.com</a> just now.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "We don't want you to know that this is HTTP: <https://example.com> just now.",
                         line: 4,
                         col: 1,
@@ -225,7 +225,7 @@ mod inline_link {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "= Test Page\n:hide-uri-scheme:\n\nWe don't want you to know that this is HTTP: <https://example.com> just now.",
                     line: 1,
                     col: 1,
@@ -249,7 +249,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -258,7 +258,7 @@ mod inline_link {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
                             line: 1,
                             col: 1,
@@ -266,7 +266,7 @@ mod inline_link {
                         },
                         rendered: "You shouldn&#8217;t visit <a href=\"https://example.com\" class=\"bare\">https://example.com</a>; it&#8217;s just there to illustrate examples.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
                         line: 1,
                         col: 1,
@@ -277,7 +277,7 @@ mod inline_link {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
                     line: 1,
                     col: 1,
@@ -301,7 +301,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -310,7 +310,7 @@ mod inline_link {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
                             line: 1,
                             col: 1,
@@ -318,7 +318,7 @@ mod inline_link {
                         },
                         rendered: "You shouldn&#8217;t visit that site (<a href=\"https://example.com\" class=\"bare\">https://example.com</a>): it&#8217;s just there to illustrate examples.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
                         line: 1,
                         col: 1,
@@ -329,7 +329,7 @@ mod inline_link {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
                     line: 1,
                     col: 1,
@@ -349,7 +349,7 @@ mod inline_link {
             doc,
             TDocument {
                 header: THeader {
-                    title_source: Some(TSpan {
+                    title_source: Some(Span {
                         data: "Test",
                         line: 1,
                         col: 3,
@@ -357,7 +357,7 @@ mod inline_link {
                     },),
                     title: Some("Test",),
                     attributes: &[TAttribute {
-                        name: TSpan {
+                        name: Span {
                             data: "hide-uri-scheme",
                             line: 2,
                             col: 2,
@@ -365,14 +365,14 @@ mod inline_link {
                         },
                         value_source: None,
                         value: TInterpretedValue::Set,
-                        source: TSpan {
+                        source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
                             col: 1,
                             offset: 7,
                         },
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "= Test\n:hide-uri-scheme:",
                         line: 1,
                         col: 1,
@@ -381,7 +381,7 @@ mod inline_link {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                             line: 4,
                             col: 1,
@@ -389,7 +389,7 @@ mod inline_link {
                         },
                         rendered: "<a href=\"https://chat.asciidoc.org\" class=\"bare button\" target=\"_blank\" rel=\"nofollow\" noopener>chat.asciidoc.org</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                         line: 4,
                         col: 1,
@@ -400,7 +400,7 @@ mod inline_link {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "= Test\n:hide-uri-scheme:\n\nhttps://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                     line: 1,
                     col: 1,
@@ -418,7 +418,7 @@ mod link_macro {
     use crate::{
         Parser,
         tests::fixtures::{
-            TSpan,
+            Span,
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
@@ -437,7 +437,7 @@ mod link_macro {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -446,7 +446,7 @@ mod link_macro {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "A link macro looks like this: \\link:target[link text].",
                             line: 1,
                             col: 1,
@@ -454,7 +454,7 @@ mod link_macro {
                         },
                         rendered: "A link macro looks like this: link:target[link text].",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "A link macro looks like this: \\link:target[link text].",
                         line: 1,
                         col: 1,
@@ -465,7 +465,7 @@ mod link_macro {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "A link macro looks like this: \\link:target[link text].",
                     line: 1,
                     col: 1,
@@ -487,7 +487,7 @@ mod link_macro {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -496,7 +496,7 @@ mod link_macro {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "mailto:[,Subscribe me]",
                             line: 1,
                             col: 1,
@@ -504,7 +504,7 @@ mod link_macro {
                         },
                         rendered: "mailto:[,Subscribe me]",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:[,Subscribe me]",
                         line: 1,
                         col: 1,
@@ -515,7 +515,7 @@ mod link_macro {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:[,Subscribe me]",
                     line: 1,
                     col: 1,
@@ -535,7 +535,7 @@ mod link_macro {
             doc,
             TDocument {
                 header: THeader {
-                    title_source: Some(TSpan {
+                    title_source: Some(Span {
                         data: "Test Document",
                         line: 1,
                         col: 3,
@@ -543,7 +543,7 @@ mod link_macro {
                     },),
                     title: Some("Test Document",),
                     attributes: &[TAttribute {
-                        name: TSpan {
+                        name: Span {
                             data: "hide-uri-scheme",
                             line: 2,
                             col: 2,
@@ -551,14 +551,14 @@ mod link_macro {
                         },
                         value_source: None,
                         value: TInterpretedValue::Set,
-                        source: TSpan {
+                        source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
                             col: 1,
                             offset: 16,
                         },
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "= Test Document\n:hide-uri-scheme:",
                         line: 1,
                         col: 1,
@@ -567,7 +567,7 @@ mod link_macro {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:https://example.com[]",
                             line: 4,
                             col: 1,
@@ -575,7 +575,7 @@ mod link_macro {
                         },
                         rendered: "<a href=\"https://example.com\" class=\"bare\">example.com</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:https://example.com[]",
                         line: 4,
                         col: 1,
@@ -586,7 +586,7 @@ mod link_macro {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "= Test Document\n:hide-uri-scheme:\n\nlink:https://example.com[]",
                     line: 1,
                     col: 1,
@@ -606,7 +606,7 @@ mod link_macro {
             doc,
             TDocument {
                 header: THeader {
-                    title_source: Some(TSpan {
+                    title_source: Some(Span {
                         data: "Test Document",
                         line: 1,
                         col: 3,
@@ -614,7 +614,7 @@ mod link_macro {
                     },),
                     title: Some("Test Document",),
                     attributes: &[TAttribute {
-                        name: TSpan {
+                        name: Span {
                             data: "hide-uri-scheme",
                             line: 2,
                             col: 2,
@@ -622,14 +622,14 @@ mod link_macro {
                         },
                         value_source: None,
                         value: TInterpretedValue::Set,
-                        source: TSpan {
+                        source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
                             col: 1,
                             offset: 16,
                         },
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "= Test Document\n:hide-uri-scheme:",
                         line: 1,
                         col: 1,
@@ -638,7 +638,7 @@ mod link_macro {
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:mailto:fred@example.com[]",
                             line: 4,
                             col: 1,
@@ -646,7 +646,7 @@ mod link_macro {
                         },
                         rendered: "<a href=\"mailto:fred@example.com\" class=\"bare\">fred@example.com</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:mailto:fred@example.com[]",
                         line: 4,
                         col: 1,
@@ -657,7 +657,7 @@ mod link_macro {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "= Test Document\n:hide-uri-scheme:\n\nlink:mailto:fred@example.com[]",
                     line: 1,
                     col: 1,

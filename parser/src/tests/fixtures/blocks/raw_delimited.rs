@@ -4,7 +4,7 @@ use crate::{
     HasSpan,
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
     content::SubstitutionGroup,
-    tests::fixtures::{TSpan, attributes::TAttrlist, content::TContent},
+    tests::fixtures::{Span, attributes::TAttrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
@@ -12,10 +12,10 @@ pub(crate) struct TRawDelimitedBlock {
     pub content: TContent,
     pub content_model: ContentModel,
     pub context: &'static str,
-    pub source: TSpan,
-    pub title_source: Option<TSpan>,
+    pub source: Span,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub anchor: Option<TSpan>,
+    pub anchor: Option<Span>,
     pub attrlist: Option<TAttrlist>,
     pub substitution_group: SubstitutionGroup,
 }

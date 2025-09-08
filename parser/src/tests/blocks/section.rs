@@ -7,7 +7,7 @@ use crate::{
     blocks::{ContentModel, IsBlock, MediaType, SectionBlock, metadata::BlockMetadata},
     content::SubstitutionGroup,
     tests::fixtures::{
-        TSpan,
+        Span,
         attributes::{TAttrlist, TElementAttribute},
         blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
@@ -76,14 +76,14 @@ fn simplest_section_block() {
         mi.item,
         TSectionBlock {
             level: 1,
-            section_title: TSpan {
+            section_title: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
                 offset: 3,
             },
             blocks: &[],
-            source: TSpan {
+            source: Span {
                 data: "== Section Title",
                 line: 1,
                 col: 1,
@@ -98,7 +98,7 @@ fn simplest_section_block() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 17,
@@ -132,7 +132,7 @@ fn has_child_block() {
         mi.item,
         TSectionBlock {
             level: 1,
-            section_title: TSpan {
+            section_title: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -140,7 +140,7 @@ fn has_child_block() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "abc",
                         line: 3,
                         col: 1,
@@ -148,7 +148,7 @@ fn has_child_block() {
                     },
                     rendered: "abc",
                 },
-                source: TSpan {
+                source: Span {
                     data: "abc",
                     line: 3,
                     col: 1,
@@ -159,7 +159,7 @@ fn has_child_block() {
                 anchor: None,
                 attrlist: None,
             })],
-            source: TSpan {
+            source: Span {
                 data: "== Section Title\n\nabc",
                 line: 1,
                 col: 1,
@@ -174,7 +174,7 @@ fn has_child_block() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 3,
             col: 4,
@@ -211,7 +211,7 @@ fn has_macro_block_with_extra_blank_line() {
         mi.item,
         TSectionBlock {
             level: 1,
-            section_title: TSpan {
+            section_title: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -219,7 +219,7 @@ fn has_macro_block_with_extra_blank_line() {
             },
             blocks: &[TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
-                target: TSpan {
+                target: Span {
                     data: "bar",
                     line: 3,
                     col: 8,
@@ -243,14 +243,14 @@ fn has_macro_block_with_extra_blank_line() {
                             value: "400"
                         }
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "alt=Sunset,width=300,height=400",
                         line: 3,
                         col: 12,
                         offset: 29,
                     }
                 },
-                source: TSpan {
+                source: Span {
                     data: "image::bar[alt=Sunset,width=300,height=400]",
                     line: 3,
                     col: 1,
@@ -261,7 +261,7 @@ fn has_macro_block_with_extra_blank_line() {
                 anchor: None,
                 attrlist: None,
             })],
-            source: TSpan {
+            source: Span {
                 data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,height=400]",
                 line: 1,
                 col: 1,
@@ -276,7 +276,7 @@ fn has_macro_block_with_extra_blank_line() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 5,
             col: 1,
@@ -314,7 +314,7 @@ fn has_child_block_with_errors() {
         mi.item,
         TSectionBlock {
             level: 1,
-            section_title: TSpan {
+            section_title: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -322,7 +322,7 @@ fn has_child_block_with_errors() {
             },
             blocks: &[TBlock::Media(TMediaBlock {
                 type_: MediaType::Image,
-                target: TSpan {
+                target: Span {
                     data: "bar",
                     line: 3,
                     col: 8,
@@ -346,14 +346,14 @@ fn has_child_block_with_errors() {
                             value: "400"
                         }
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,
                         col: 12,
                         offset: 29,
                     }
                 },
-                source: TSpan {
+                source: Span {
                     data: "image::bar[alt=Sunset,width=300,,height=400]",
                     line: 3,
                     col: 1,
@@ -364,7 +364,7 @@ fn has_child_block_with_errors() {
                 anchor: None,
                 attrlist: None,
             })],
-            source: TSpan {
+            source: Span {
                 data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                 line: 1,
                 col: 1,
@@ -379,7 +379,7 @@ fn has_child_block_with_errors() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 3,
             col: 45,
@@ -390,7 +390,7 @@ fn has_child_block_with_errors() {
     assert_eq!(
         maw.warnings,
         vec![TWarning {
-            source: TSpan {
+            source: Span {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 3,
                 col: 12,
@@ -429,7 +429,7 @@ fn dont_stop_at_child_section() {
         mi.item,
         TSectionBlock {
             level: 1,
-            section_title: TSpan {
+            section_title: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -438,7 +438,7 @@ fn dont_stop_at_child_section() {
             blocks: &[
                 TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "abc",
                             line: 3,
                             col: 1,
@@ -446,7 +446,7 @@ fn dont_stop_at_child_section() {
                         },
                         rendered: "abc",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "abc",
                         line: 3,
                         col: 1,
@@ -459,7 +459,7 @@ fn dont_stop_at_child_section() {
                 }),
                 TBlock::Section(TSectionBlock {
                     level: 2,
-                    section_title: TSpan {
+                    section_title: Span {
                         data: "Section 2",
                         line: 5,
                         col: 5,
@@ -467,7 +467,7 @@ fn dont_stop_at_child_section() {
                     },
                     blocks: &[TBlock::Simple(TSimpleBlock {
                         content: TContent {
-                            original: TSpan {
+                            original: Span {
                                 data: "def",
                                 line: 7,
                                 col: 1,
@@ -475,7 +475,7 @@ fn dont_stop_at_child_section() {
                             },
                             rendered: "def",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "def",
                             line: 7,
                             col: 1,
@@ -486,7 +486,7 @@ fn dont_stop_at_child_section() {
                         anchor: None,
                         attrlist: None,
                     })],
-                    source: TSpan {
+                    source: Span {
                         data: "=== Section 2\n\ndef",
                         line: 5,
                         col: 1,
@@ -498,7 +498,7 @@ fn dont_stop_at_child_section() {
                     attrlist: None,
                 })
             ],
-            source: TSpan {
+            source: Span {
                 data: "== Section Title\n\nabc\n\n=== Section 2\n\ndef",
                 line: 1,
                 col: 1,
@@ -513,7 +513,7 @@ fn dont_stop_at_child_section() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 7,
             col: 4,
@@ -550,7 +550,7 @@ fn stop_at_peer_section() {
         mi.item,
         TSectionBlock {
             level: 1,
-            section_title: TSpan {
+            section_title: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -558,7 +558,7 @@ fn stop_at_peer_section() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "abc",
                         line: 3,
                         col: 1,
@@ -566,7 +566,7 @@ fn stop_at_peer_section() {
                     },
                     rendered: "abc",
                 },
-                source: TSpan {
+                source: Span {
                     data: "abc",
                     line: 3,
                     col: 1,
@@ -577,7 +577,7 @@ fn stop_at_peer_section() {
                 anchor: None,
                 attrlist: None,
             })],
-            source: TSpan {
+            source: Span {
                 data: "== Section Title\n\nabc",
                 line: 1,
                 col: 1,
@@ -592,7 +592,7 @@ fn stop_at_peer_section() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "== Section 2\n\ndef",
             line: 5,
             col: 1,
@@ -629,7 +629,7 @@ fn stop_at_ancestor_section() {
         mi.item,
         TSectionBlock {
             level: 2,
-            section_title: TSpan {
+            section_title: Span {
                 data: "Section Title",
                 line: 1,
                 col: 5,
@@ -637,7 +637,7 @@ fn stop_at_ancestor_section() {
             },
             blocks: &[TBlock::Simple(TSimpleBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "abc",
                         line: 3,
                         col: 1,
@@ -645,7 +645,7 @@ fn stop_at_ancestor_section() {
                     },
                     rendered: "abc",
                 },
-                source: TSpan {
+                source: Span {
                     data: "abc",
                     line: 3,
                     col: 1,
@@ -656,7 +656,7 @@ fn stop_at_ancestor_section() {
                 anchor: None,
                 attrlist: None,
             })],
-            source: TSpan {
+            source: Span {
                 data: "=== Section Title\n\nabc",
                 line: 1,
                 col: 1,
@@ -671,7 +671,7 @@ fn stop_at_ancestor_section() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "== Section 2\n\ndef",
             line: 5,
             col: 1,

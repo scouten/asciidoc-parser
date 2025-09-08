@@ -1,97 +1,163 @@
 mod is_valid_delimiter {
-    use crate::{Span, blocks::RawDelimitedBlock};
+    use crate::blocks::RawDelimitedBlock;
 
     #[test]
     fn comment() {
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new("////")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new("/////")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "////"
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "/////"
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "/////////"
         )));
 
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("///")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("//-/")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("////-")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "///"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "//-/"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "////-"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "//////////x"
         )));
     }
 
     #[test]
     fn example() {
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("====")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("=====")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("===")));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "===="
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "====="
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "==="
+        )));
     }
 
     #[test]
     fn listing() {
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new("----")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new("-----")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "----"
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "-----"
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "---------"
         )));
 
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("---")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("--/-")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("----/")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "---"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "--/-"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "----/"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "----------x"
         )));
     }
 
     #[test]
     fn literal() {
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new("....")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new(".....")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "...."
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "....."
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "........."
         )));
 
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("...")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("../.")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("..../")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "..."
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "../."
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "..../"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "..........x"
         )));
     }
 
     #[test]
     fn sidebar() {
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("****")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("*****")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("***")));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "****"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "*****"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "***"
+        )));
     }
 
     #[test]
     fn table() {
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("|===")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new(",===")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new(":===")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("!===")));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "|==="
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            ",==="
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            ":==="
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "!==="
+        )));
     }
 
     #[test]
     fn pass() {
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new("++++")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new("+++++")));
-        assert!(RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "++++"
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "+++++"
+        )));
+        assert!(RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "+++++++++"
         )));
 
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("+++")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("++/+")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("++++/")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new(
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "+++"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "++/+"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "++++/"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
             "++++++++++x"
         )));
     }
 
     #[test]
     fn quote() {
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("____")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("_____")));
-        assert!(!RawDelimitedBlock::is_valid_delimiter(&Span::new("___")));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "____"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "_____"
+        )));
+        assert!(!RawDelimitedBlock::is_valid_delimiter(&crate::Span::new(
+            "___"
+        )));
     }
 }
 
@@ -101,7 +167,7 @@ mod parse {
     use crate::{
         Parser,
         blocks::{RawDelimitedBlock, metadata::BlockMetadata},
-        tests::fixtures::{TSpan, warnings::TWarning},
+        tests::fixtures::{Span, warnings::TWarning},
         warnings::WarningType,
     };
 
@@ -137,7 +203,7 @@ mod parse {
         assert_eq!(
             maw.warnings,
             vec![TWarning {
-                source: TSpan {
+                source: Span {
                     data: "....",
                     line: 1,
                     col: 1,
@@ -156,7 +222,7 @@ mod comment {
         Parser,
         blocks::{ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{TSpan, blocks::TRawDelimitedBlock, content::TContent},
+        tests::fixtures::{Span, blocks::TRawDelimitedBlock, content::TContent},
     };
 
     #[test]
@@ -170,7 +236,7 @@ mod comment {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "",
                         line: 2,
                         col: 1,
@@ -180,7 +246,7 @@ mod comment {
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
-                source: TSpan {
+                source: Span {
                     data: "////\n////",
                     line: 1,
                     col: 1,
@@ -225,7 +291,7 @@ mod comment {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 2,
                         col: 1,
@@ -235,7 +301,7 @@ mod comment {
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
-                source: TSpan {
+                source: Span {
                     data: "////\nline1  \nline2\n////",
                     line: 1,
                     col: 1,
@@ -265,7 +331,7 @@ mod comment {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1  \nline2",
                     line: 2,
                     col: 1,
@@ -292,7 +358,7 @@ mod comment {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "line1  \n/////\nline2",
                         line: 2,
                         col: 1,
@@ -302,7 +368,7 @@ mod comment {
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
-                source: TSpan {
+                source: Span {
                     data: "////\nline1  \n/////\nline2\n////",
                     line: 1,
                     col: 1,
@@ -332,7 +398,7 @@ mod comment {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1  \n/////\nline2",
                     line: 2,
                     col: 1,
@@ -378,7 +444,7 @@ mod listing {
         blocks::{ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata},
         content::{SubstitutionGroup, SubstitutionStep},
         tests::fixtures::{
-            TSpan,
+            Span,
             attributes::{TAttrlist, TElementAttribute},
             blocks::TRawDelimitedBlock,
             content::TContent,
@@ -396,7 +462,7 @@ mod listing {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "",
                         line: 2,
                         col: 1,
@@ -406,7 +472,7 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "----\n----",
                     line: 1,
                     col: 1,
@@ -451,7 +517,7 @@ mod listing {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 2,
                         col: 1,
@@ -461,7 +527,7 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "----\nline1  \nline2\n----",
                     line: 1,
                     col: 1,
@@ -491,7 +557,7 @@ mod listing {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1  \nline2",
                     line: 2,
                     col: 1,
@@ -518,7 +584,7 @@ mod listing {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "line1 < *line2*",
                         line: 3,
                         col: 1,
@@ -528,7 +594,7 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "[subs=quotes]\n----\nline1 < *line2*\n----",
                     line: 1,
                     col: 1,
@@ -543,7 +609,7 @@ mod listing {
                         value: "quotes",
                         shorthand_items: &[],
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "subs=quotes",
                         line: 1,
                         col: 2,
@@ -573,7 +639,7 @@ mod listing {
                     value: "quotes",
                     shorthand_items: &[],
                 },],
-                source: TSpan {
+                source: Span {
                     data: "subs=quotes",
                     line: 1,
                     col: 2,
@@ -590,7 +656,7 @@ mod listing {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1 < *line2*",
                     line: 3,
                     col: 1,
@@ -617,7 +683,7 @@ mod listing {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "line1  \n-----\nline2",
                         line: 2,
                         col: 1,
@@ -627,7 +693,7 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "----\nline1  \n-----\nline2\n----",
                     line: 1,
                     col: 1,
@@ -657,7 +723,7 @@ mod listing {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1  \n-----\nline2",
                     line: 2,
                     col: 1,
@@ -670,7 +736,7 @@ mod listing {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1  \n-----\nline2",
                     line: 2,
                     col: 1,
@@ -775,7 +841,7 @@ mod pass {
         Parser,
         blocks::{ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::fixtures::{TSpan, blocks::TRawDelimitedBlock, content::TContent},
+        tests::fixtures::{Span, blocks::TRawDelimitedBlock, content::TContent},
     };
 
     #[test]
@@ -789,7 +855,7 @@ mod pass {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "",
                         line: 2,
                         col: 1,
@@ -799,7 +865,7 @@ mod pass {
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
-                source: TSpan {
+                source: Span {
                     data: "++++\n++++",
                     line: 1,
                     col: 1,
@@ -844,7 +910,7 @@ mod pass {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 2,
                         col: 1,
@@ -854,7 +920,7 @@ mod pass {
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
-                source: TSpan {
+                source: Span {
                     data: "++++\nline1  \nline2\n++++",
                     line: 1,
                     col: 1,
@@ -884,7 +950,7 @@ mod pass {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1  \nline2",
                     line: 2,
                     col: 1,
@@ -911,7 +977,7 @@ mod pass {
             mi.item,
             TRawDelimitedBlock {
                 content: TContent {
-                    original: TSpan {
+                    original: Span {
                         data: "line1  \n+++++\nline2",
                         line: 2,
                         col: 1,
@@ -921,7 +987,7 @@ mod pass {
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
-                source: TSpan {
+                source: Span {
                     data: "++++\nline1  \n+++++\nline2\n++++",
                     line: 1,
                     col: 1,
@@ -951,7 +1017,7 @@ mod pass {
         assert_eq!(
             mi.item.content(),
             TContent {
-                original: TSpan {
+                original: Span {
                     data: "line1  \n+++++\nline2",
                     line: 2,
                     col: 1,

@@ -4,14 +4,14 @@ use crate::{
     HasSpan,
     blocks::IsBlock,
     document::Document,
-    tests::fixtures::{TSpan, blocks::TBlock, document::THeader, warnings::TWarning},
+    tests::fixtures::{Span, blocks::TBlock, document::THeader, warnings::TWarning},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct TDocument {
     pub header: THeader,
     pub blocks: &'static [TBlock],
-    pub source: TSpan,
+    pub source: Span,
     pub warnings: &'static [TWarning],
 }
 

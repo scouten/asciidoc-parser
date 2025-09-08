@@ -20,7 +20,7 @@ mod image_url_targets {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
@@ -65,7 +65,7 @@ include::example$image.adoc[tag=url]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -74,7 +74,7 @@ include::example$image.adoc[tag=url]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
                         line: 1,
                         col: 8,
@@ -98,14 +98,14 @@ include::example$image.adoc[tag=url]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Tux,250,350",
                             line: 1,
                             col: 68,
                             offset: 67,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Tux,250,350]",
                         line: 1,
                         col: 1,
@@ -116,7 +116,7 @@ include::example$image.adoc[tag=url]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Tux,250,350]",
                     line: 1,
                     col: 1,
@@ -158,7 +158,7 @@ include::example$image.adoc[tag=in-url]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -167,7 +167,7 @@ include::example$image.adoc[tag=in-url]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",
                             line: 1,
                             col: 1,
@@ -175,7 +175,7 @@ include::example$image.adoc[tag=in-url]
                         },
                         rendered: "You can find <span class=\"image\"><img src=\"https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg\" alt=\"Linux\" width=\"25\" height=\"35\"></span> everywhere these days.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",
                         line: 1,
                         col: 1,
@@ -186,7 +186,7 @@ include::example$image.adoc[tag=in-url]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",
                     line: 1,
                     col: 1,

@@ -20,7 +20,7 @@ mod anatomy {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -62,7 +62,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -71,7 +71,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:target[link text]",
                             line: 1,
                             col: 1,
@@ -79,7 +79,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                         },
                         rendered: r#"<a href="target">link text</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:target[link text]",
                         line: 1,
                         col: 1,
@@ -90,7 +90,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:target[link text]",
                     line: 1,
                     col: 1,
@@ -118,7 +118,7 @@ mod link_to_relative_file {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -163,7 +163,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -172,7 +172,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:downloads/report.pdf[Get Report]",
                             line: 1,
                             col: 1,
@@ -180,7 +180,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                         },
                         rendered: r#"<a href="downloads/report.pdf">Get Report</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:downloads/report.pdf[Get Report]",
                         line: 1,
                         col: 1,
@@ -191,7 +191,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:downloads/report.pdf[Get Report]",
                     line: 1,
                     col: 1,
@@ -227,7 +227,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -236,7 +236,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:tools.html#editors[]",
                             line: 1,
                             col: 1,
@@ -244,7 +244,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                         },
                         rendered: r#"<a href="tools.html#editors" class="bare">tools.html#editors</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:tools.html#editors[]",
                         line: 1,
                         col: 1,
@@ -255,7 +255,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:tools.html#editors[]",
                     line: 1,
                     col: 1,
@@ -274,7 +274,7 @@ mod when_to_use {
         Parser,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -323,7 +323,7 @@ link:report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -332,7 +332,7 @@ link:report.pdf[Get Report]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:report.pdf[Get Report]",
                             line: 1,
                             col: 1,
@@ -340,7 +340,7 @@ link:report.pdf[Get Report]
                         },
                         rendered: r#"<a href="report.pdf">Get Report</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:report.pdf[Get Report]",
                         line: 1,
                         col: 1,
@@ -351,7 +351,7 @@ link:report.pdf[Get Report]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:report.pdf[Get Report]",
                     line: 1,
                     col: 1,
@@ -396,7 +396,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -405,7 +405,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:pass:[My Documents/report.pdf][Get Report]",
                             line: 1,
                             col: 1,
@@ -413,7 +413,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                         },
                         rendered: r#"<a href="My Documents/report.pdf">Get Report</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:pass:[My Documents/report.pdf][Get Report]",
                         line: 1,
                         col: 1,
@@ -424,7 +424,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:pass:[My Documents/report.pdf][Get Report]",
                     line: 1,
                     col: 1,
@@ -457,7 +457,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -466,7 +466,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:My&#32;Documents/report.pdf[Get Report]",
                             line: 1,
                             col: 1,
@@ -474,7 +474,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                         },
                         rendered: r#"<a href="My&#32;Documents/report.pdf">Get Report</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:My&#32;Documents/report.pdf[Get Report]",
                         line: 1,
                         col: 1,
@@ -485,7 +485,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:My&#32;Documents/report.pdf[Get Report]",
                     line: 1,
                     col: 1,
@@ -518,7 +518,7 @@ link:My%20Documents/report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -527,7 +527,7 @@ link:My%20Documents/report.pdf[Get Report]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:My%20Documents/report.pdf[Get Report]",
                             line: 1,
                             col: 1,
@@ -535,7 +535,7 @@ link:My%20Documents/report.pdf[Get Report]
                         },
                         rendered: r#"<a href="My%20Documents/report.pdf">Get Report</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:My%20Documents/report.pdf[Get Report]",
                         line: 1,
                         col: 1,
@@ -546,7 +546,7 @@ link:My%20Documents/report.pdf[Get Report]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:My%20Documents/report.pdf[Get Report]",
                     line: 1,
                     col: 1,
@@ -591,7 +591,7 @@ link:Avengers%3A%20Endgame.html[]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -600,7 +600,7 @@ link:Avengers%3A%20Endgame.html[]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:Avengers%3A%20Endgame.html[]",
                             line: 1,
                             col: 1,
@@ -608,7 +608,7 @@ link:Avengers%3A%20Endgame.html[]
                         },
                         rendered: r#"<a href="Avengers%3A%20Endgame.html" class="bare">Avengers%3A%20Endgame.html</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:Avengers%3A%20Endgame.html[]",
                         line: 1,
                         col: 1,
@@ -619,7 +619,7 @@ link:Avengers%3A%20Endgame.html[]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:Avengers%3A%20Endgame.html[]",
                     line: 1,
                     col: 1,
@@ -656,7 +656,7 @@ link:++https://example.org/now_this__link_works.html++[]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -665,7 +665,7 @@ link:++https://example.org/now_this__link_works.html++[]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:++https://example.org/now_this__link_works.html++[]",
                             line: 1,
                             col: 1,
@@ -673,7 +673,7 @@ link:++https://example.org/now_this__link_works.html++[]
                         },
                         rendered: r#"<a href="https://example.org/now_this__link_works.html" class="bare">https://example.org/now_this__link_works.html</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:++https://example.org/now_this__link_works.html++[]",
                         line: 1,
                         col: 1,
@@ -684,7 +684,7 @@ link:++https://example.org/now_this__link_works.html++[]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:++https://example.org/now_this__link_works.html++[]",
                     line: 1,
                     col: 1,
@@ -719,7 +719,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -728,7 +728,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "|link:https://asciidoctor.org[]|",
                             line: 1,
                             col: 1,
@@ -736,7 +736,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                         },
                         rendered: r#"|<a href="https://asciidoctor.org" class="bare">https://asciidoctor.org</a>|"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "|link:https://asciidoctor.org[]|",
                         line: 1,
                         col: 1,
@@ -747,7 +747,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "|link:https://asciidoctor.org[]|",
                     line: 1,
                     col: 1,
@@ -782,7 +782,7 @@ link:file:///home/username[Your files]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -791,7 +791,7 @@ link:file:///home/username[Your files]
                 },
                 blocks: &[TBlock::Simple(TSimpleBlock {
                     content: TContent {
-                        original: TSpan {
+                        original: Span {
                             data: "link:file:///home/username[Your files]",
                             line: 1,
                             col: 1,
@@ -799,7 +799,7 @@ link:file:///home/username[Your files]
                         },
                         rendered: r#"<a href="file:///home/username">Your files</a>"#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:file:///home/username[Your files]",
                         line: 1,
                         col: 1,
@@ -810,7 +810,7 @@ link:file:///home/username[Your files]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:file:///home/username[Your files]",
                     line: 1,
                     col: 1,

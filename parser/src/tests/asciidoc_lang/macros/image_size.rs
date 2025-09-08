@@ -23,7 +23,7 @@ mod width_and_height_attributes {
         blocks::MediaType,
         tests::{
             fixtures::{
-                TSpan,
+                Span,
                 attributes::{TAttrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock},
                 document::{TDocument, THeader},
@@ -63,7 +63,7 @@ image::flower.jpg[Flower,640,480]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -72,7 +72,7 @@ image::flower.jpg[Flower,640,480]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "flower.jpg",
                         line: 1,
                         col: 8,
@@ -96,14 +96,14 @@ image::flower.jpg[Flower,640,480]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Flower,640,480",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::flower.jpg[Flower,640,480]",
                         line: 1,
                         col: 1,
@@ -114,7 +114,7 @@ image::flower.jpg[Flower,640,480]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::flower.jpg[Flower,640,480]",
                     line: 1,
                     col: 1,
@@ -148,7 +148,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -157,7 +157,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                 },
                 blocks: &[TBlock::Media(TMediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "flower.jpg",
                         line: 1,
                         col: 8,
@@ -181,14 +181,14 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "alt=Flower,width=640,height=480",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::flower.jpg[alt=Flower,width=640,height=480]",
                         line: 1,
                         col: 1,
@@ -199,7 +199,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::flower.jpg[alt=Flower,width=640,height=480]",
                     line: 1,
                     col: 1,
