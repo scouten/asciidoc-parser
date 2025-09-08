@@ -2,13 +2,13 @@ use std::fmt;
 
 use crate::{
     HasSpan,
-    blocks::{ContentModel, IsBlock, RawDelimitedBlock},
+    blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
     tests::fixtures::{Span, attributes::Attrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TRawDelimitedBlock {
+pub(crate) struct RawDelimitedBlock {
     pub content: TContent,
     pub content_model: ContentModel,
     pub context: &'static str,
@@ -20,7 +20,7 @@ pub(crate) struct TRawDelimitedBlock {
     pub substitution_group: SubstitutionGroup,
 }
 
-impl fmt::Debug for TRawDelimitedBlock {
+impl fmt::Debug for RawDelimitedBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("RawDelimitedBlock")
             .field("content", &self.content)
@@ -36,19 +36,22 @@ impl fmt::Debug for TRawDelimitedBlock {
     }
 }
 
-impl<'src> PartialEq<RawDelimitedBlock<'src>> for TRawDelimitedBlock {
-    fn eq(&self, other: &RawDelimitedBlock<'src>) -> bool {
+impl<'src> PartialEq<crate::blocks::RawDelimitedBlock<'src>> for RawDelimitedBlock {
+    fn eq(&self, other: &crate::blocks::RawDelimitedBlock<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TRawDelimitedBlock> for RawDelimitedBlock<'_> {
-    fn eq(&self, other: &TRawDelimitedBlock) -> bool {
+impl PartialEq<RawDelimitedBlock> for crate::blocks::RawDelimitedBlock<'_> {
+    fn eq(&self, other: &RawDelimitedBlock) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TRawDelimitedBlock, observed: &RawDelimitedBlock) -> bool {
+fn fixture_eq_observed(
+    fixture: &RawDelimitedBlock,
+    observed: &crate::blocks::RawDelimitedBlock,
+) -> bool {
     if &fixture.content != observed.content() {
         return false;
     }

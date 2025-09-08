@@ -8,7 +8,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -148,7 +148,7 @@ Don't put a space between the dot and the first character of the title.
 
     assert_eq!(
         block,
-        Block::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(RawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "From github.com:asciidoctor/asciidoctor\n* branch        main   -> FETCH_HEAD\nAlready up to date.",
@@ -232,7 +232,7 @@ stages: [ init, verify, deploy ]
 
     assert_eq!(
         block,
-        Block::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(RawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "image: node:16-buster\nstages: [ init, verify, deploy ]",

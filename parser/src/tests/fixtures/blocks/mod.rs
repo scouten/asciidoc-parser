@@ -8,7 +8,7 @@ mod media;
 pub(crate) use media::MediaBlock;
 
 mod raw_delimited;
-pub(crate) use raw_delimited::TRawDelimitedBlock;
+pub(crate) use raw_delimited::RawDelimitedBlock;
 
 mod section;
 pub(crate) use section::TSectionBlock;

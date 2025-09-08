@@ -72,7 +72,7 @@ mod change_subs_when_assigning {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TRawDelimitedBlock},
+                blocks::{Block, RawDelimitedBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -160,7 +160,7 @@ You can inspect the value stored in an attribute using this trick:
 
         assert_eq!(
             block1,
-            &Block::RawDelimited(TRawDelimitedBlock {
+            &Block::RawDelimited(RawDelimitedBlock {
                 content: TContent {
                     original: Span {
                         data: "{app-name}",
@@ -240,7 +240,7 @@ If the macro is absent, the value is processed with the header substitution grou
 
         assert_eq!(
             block1,
-            &Block::RawDelimited(TRawDelimitedBlock {
+            &Block::RawDelimited(RawDelimitedBlock {
                 content: TContent {
                     original: Span {
                         data: "{app-name}",

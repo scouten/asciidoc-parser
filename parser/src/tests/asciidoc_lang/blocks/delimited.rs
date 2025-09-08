@@ -7,7 +7,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{Block, CompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -60,7 +60,7 @@ This text will be treated as verbatim content.
 
     assert_eq!(
         block,
-        Block::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(RawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "This text will be treated as verbatim content.",
@@ -111,7 +111,7 @@ The remaining lines define a block's content.
 
     assert_eq!(
         block,
-        Block::RawDelimited(TRawDelimitedBlock {
+        Block::RawDelimited(RawDelimitedBlock {
             content: TContent {
                 original: Span {
                     data: "\n\nThis text will be treated as verbatim content.\n\n",
@@ -505,7 +505,7 @@ mod nesting_blocks {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, CompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
+                blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -586,7 +586,7 @@ The document header is useful, but not required.
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::RawDelimited(TRawDelimitedBlock {
+                    Block::RawDelimited(RawDelimitedBlock {
                         content: TContent {
                             original: Span {
                                 data: "= Document Title\nAuthor Name\n\nContent goes here.",
