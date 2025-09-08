@@ -2,11 +2,10 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    document::Attribute,
     tests::{
         fixtures::{
             Span,
-            document::{InterpretedValue, TAttribute},
+            document::{Attribute, InterpretedValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -53,11 +52,11 @@ If the line continuation is missing, the processor will assume it has found the 
 "#
     );
 
-    let mi = Attribute::parse(crate::Span::new(":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source."), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(crate::Span::new(":description: If you have a very long line of text \\\nthat you need to substitute regularly in a document, \\\nyou may find it easier to split the value neatly in the header \\\nso it remains readable to folks looking at the AsciiDoc source."), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "description",
                 line: 1,
@@ -119,11 +118,11 @@ This syntax ensures that the newlines are preserved in the output as hard line b
 "#
     );
 
-    let mi = Attribute::parse(crate::Span::new(":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(crate::Span::new(":haiku: Write your docs in text, + \\\nAsciiDoc makes it easy, + \\\nNow get back to work!"), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "haiku",
                 line: 1,

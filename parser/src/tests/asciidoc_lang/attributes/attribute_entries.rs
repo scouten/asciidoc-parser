@@ -2,13 +2,12 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    document::Attribute,
     tests::{
         fixtures::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{InterpretedValue, TAttribute, TDocument, THeader},
+            document::{Attribute, InterpretedValue, TDocument, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -50,7 +49,7 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
 "#
     );
 
-    let mi = Attribute::parse(
+    let mi = crate::document::Attribute::parse(
         crate::Span::new(":name-of-an-attribute:"),
         &Parser::default(),
     )
@@ -58,7 +57,7 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "name-of-an-attribute",
                 line: 1,
@@ -111,7 +110,7 @@ At the end of the value, press kbd:[Enter].
                     offset: 2,
                 },),
                 title: Some("Testing"),
-                attributes: &[TAttribute {
+                attributes: &[Attribute {
                     name: Span {
                         data: "name-of-an-attribute",
                         line: 2,
@@ -200,7 +199,7 @@ That means you don't need to escape special characters such in an HTML tag.
                     offset: 2,
                 },),
                 title: Some("Testing"),
-                attributes: &[TAttribute {
+                attributes: &[Attribute {
                     name: Span {
                         data: "lt-attribute",
                         line: 2,
@@ -289,7 +288,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                 title_source: None,
                 title: None,
                 attributes: &[
-                    TAttribute {
+                    Attribute {
                         name: Span {
                             data: "url-org",
                             line: 1,
@@ -310,7 +309,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                             offset: 0,
                         },
                     },
-                    TAttribute {
+                    Attribute {
                         name: Span {
                             data: "url-project",
                             line: 2,
@@ -384,7 +383,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
             header: THeader {
                 title_source: None,
                 title: None,
-                attributes: &[TAttribute {
+                attributes: &[Attribute {
                     name: Span {
                         data: "name-of-an-attribute",
                         line: 1,

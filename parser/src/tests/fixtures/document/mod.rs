@@ -10,7 +10,7 @@
 ///     concept in the public API surface so that debug output is
 ///     easier to comprehend.
 mod attribute;
-pub(crate) use attribute::TAttribute;
+pub(crate) use attribute::Attribute;
 
 mod attribute_value;
 pub(crate) use attribute_value::InterpretedValue;

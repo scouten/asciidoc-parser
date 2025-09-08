@@ -2,11 +2,10 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    document::Attribute,
     tests::{
         fixtures::{
             Span,
-            document::{InterpretedValue, TAttribute},
+            document::{Attribute, InterpretedValue},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -28,11 +27,10 @@ When you find yourself typing the same text repeatedly, or text that often needs
 mod user_defined_names {
     use crate::{
         Parser,
-        document::Attribute,
         tests::{
             fixtures::{
                 Span,
-                document::{InterpretedValue, TAttribute},
+                document::{Attribute, InterpretedValue},
             },
             sdd::verifies,
         },
@@ -62,13 +60,16 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn at_least_one_character_long() {
-        assert!(Attribute::parse(crate::Span::new("::"), &Parser::default()).is_none());
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new("::"), &Parser::default()).is_none()
+        );
 
-        let mi = Attribute::parse(crate::Span::new(":a:"), &Parser::default()).unwrap();
+        let mi =
+            crate::document::Attribute::parse(crate::Span::new(":a:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
+            Attribute {
                 name: Span {
                     data: "a",
                     line: 1,
@@ -91,13 +92,17 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn begin_with_word_character() {
-        assert!(Attribute::parse(crate::Span::new(":-abc:"), &Parser::default()).is_none());
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new(":-abc:"), &Parser::default())
+                .is_none()
+        );
 
-        let mi = Attribute::parse(crate::Span::new(":9abc:"), &Parser::default()).unwrap();
+        let mi = crate::document::Attribute::parse(crate::Span::new(":9abc:"), &Parser::default())
+            .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
+            Attribute {
                 name: Span {
                     data: "9abc",
                     line: 1,
@@ -117,11 +122,12 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
         assert_eq!(mi.item.value(), &InterpretedValue::Set);
 
-        let mi = Attribute::parse(crate::Span::new(":_abc:"), &Parser::default()).unwrap();
+        let mi = crate::document::Attribute::parse(crate::Span::new(":_abc:"), &Parser::default())
+            .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
+            Attribute {
                 name: Span {
                     data: "_abc",
                     line: 1,
@@ -144,14 +150,22 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn only_contain_word_characters_and_hyphens() {
-        assert!(Attribute::parse(crate::Span::new(":abc def:"), &Parser::default()).is_none());
-        assert!(Attribute::parse(crate::Span::new(":abc.def:"), &Parser::default()).is_none());
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new(":abc def:"), &Parser::default())
+                .is_none()
+        );
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new(":abc.def:"), &Parser::default())
+                .is_none()
+        );
 
-        let mi = Attribute::parse(crate::Span::new(":9ab-cdef:"), &Parser::default()).unwrap();
+        let mi =
+            crate::document::Attribute::parse(crate::Span::new(":9ab-cdef:"), &Parser::default())
+                .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
+            Attribute {
                 name: Span {
                     data: "9ab-cdef",
                     line: 1,
@@ -218,11 +232,11 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 "#
     );
 
-    let mi = Attribute::parse(crate::Span::new(":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks."), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(crate::Span::new(":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks."), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "disclaimer",
                 line: 1,
@@ -254,7 +268,7 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
         )
     );
 
-    let mi = Attribute::parse(
+    let mi = crate::document::Attribute::parse(
         crate::Span::new(":url-repo: https://github.com/asciidoctor/asciidoctor"),
         &Parser::default(),
     )
@@ -262,7 +276,7 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "url-repo",
                 line: 1,

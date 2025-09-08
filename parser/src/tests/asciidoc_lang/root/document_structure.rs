@@ -25,7 +25,7 @@ mod documents {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{InterpretedValue, TAttribute, TDocument, THeader},
+                document::{Attribute, InterpretedValue, TDocument, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -229,7 +229,7 @@ It also has a header that specifies the document title.
                     ),
                     title: Some("Document Title"),
                     attributes: &[
-                        TAttribute {
+                        Attribute {
                             name: Span {
                                 data: "reproducible",
                                 line: 2,
@@ -322,11 +322,10 @@ mod lines {
 
     use crate::{
         Parser,
-        document::Attribute,
         tests::{
             fixtures::{
                 Span,
-                document::{InterpretedValue, TAttribute},
+                document::{Attribute, InterpretedValue},
             },
             sdd::verifies,
         },
@@ -392,11 +391,15 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 "#
         );
 
-        let mi = Attribute::parse(crate::Span::new(":name: value\n"), &Parser::default()).unwrap();
+        let mi = crate::document::Attribute::parse(
+            crate::Span::new(":name: value\n"),
+            &Parser::default(),
+        )
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
+            Attribute {
                 name: Span {
                     data: "name",
                     line: 1,
@@ -444,7 +447,7 @@ more value
 "#
         );
 
-        let mi = Attribute::parse(
+        let mi = crate::document::Attribute::parse(
             crate::Span::new(":name: value \\\nmore value\n"),
             &Parser::default(),
         )
@@ -452,7 +455,7 @@ more value
 
         assert_eq!(
             mi.item,
-            TAttribute {
+            Attribute {
                 name: Span {
                     data: "name",
                     line: 1,

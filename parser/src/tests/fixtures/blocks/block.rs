@@ -1,6 +1,6 @@
 use crate::tests::fixtures::{
     blocks::{CompoundDelimitedBlock, MediaBlock, RawDelimitedBlock, SectionBlock, SimpleBlock},
-    document::TAttribute,
+    document::Attribute,
 };
 
 #[derive(Debug, Eq, PartialEq)]
@@ -10,7 +10,7 @@ pub(crate) enum Block {
     Section(SectionBlock),
     RawDelimited(RawDelimitedBlock),
     CompoundDelimited(CompoundDelimitedBlock),
-    DocumentAttribute(TAttribute),
+    DocumentAttribute(Attribute),
 }
 
 impl<'src> PartialEq<crate::blocks::Block<'src>> for Block {

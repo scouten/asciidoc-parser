@@ -6,13 +6,12 @@ use crate::{
     HasSpan, Parser,
     blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
-    document::Attribute,
     parser::ModificationContext,
     tests::fixtures::{
         Span,
         blocks::{Block, SimpleBlock},
         content::TContent,
-        document::{InterpretedValue, TAttribute},
+        document::{Attribute, InterpretedValue},
     },
     warnings::WarningType,
 };
@@ -20,18 +19,21 @@ use crate::{
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Attribute::parse(crate::Span::new(":foo: bar"), &Parser::default()).unwrap();
+    let h1 = crate::document::Attribute::parse(crate::Span::new(":foo: bar"), &Parser::default())
+        .unwrap();
     let h2 = h1.clone();
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn simple_value() {
-    let mi = Attribute::parse(crate::Span::new(":foo: bar\nblah"), &Parser::default()).unwrap();
+    let mi =
+        crate::document::Attribute::parse(crate::Span::new(":foo: bar\nblah"), &Parser::default())
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "foo",
                 line: 1,
@@ -69,11 +71,12 @@ fn simple_value() {
 
 #[test]
 fn no_value() {
-    let mi = Attribute::parse(crate::Span::new(":foo:\nblah"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(crate::Span::new(":foo:\nblah"), &Parser::default())
+        .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "foo",
                 line: 1,
@@ -106,11 +109,15 @@ fn no_value() {
 
 #[test]
 fn name_with_hyphens() {
-    let mi = Attribute::parse(crate::Span::new(":name-with-hyphen:"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(
+        crate::Span::new(":name-with-hyphen:"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "name-with-hyphen",
                 line: 1,
@@ -143,11 +150,13 @@ fn name_with_hyphens() {
 
 #[test]
 fn unset_prefix() {
-    let mi = Attribute::parse(crate::Span::new(":!foo:\nblah"), &Parser::default()).unwrap();
+    let mi =
+        crate::document::Attribute::parse(crate::Span::new(":!foo:\nblah"), &Parser::default())
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "foo",
                 line: 1,
@@ -180,11 +189,13 @@ fn unset_prefix() {
 
 #[test]
 fn unset_postfix() {
-    let mi = Attribute::parse(crate::Span::new(":foo!:\nblah"), &Parser::default()).unwrap();
+    let mi =
+        crate::document::Attribute::parse(crate::Span::new(":foo!:\nblah"), &Parser::default())
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "foo",
                 line: 1,
@@ -217,31 +228,47 @@ fn unset_postfix() {
 
 #[test]
 fn err_unset_prefix_and_postfix() {
-    assert!(Attribute::parse(crate::Span::new(":!foo!:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":!foo!:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn err_invalid_ident1() {
-    assert!(Attribute::parse(crate::Span::new(":@invalid:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":@invalid:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn err_invalid_ident2() {
-    assert!(Attribute::parse(crate::Span::new(":invalid@:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":invalid@:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn err_invalid_ident3() {
-    assert!(Attribute::parse(crate::Span::new(":-invalid:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":-invalid:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn value_with_soft_wrap() {
-    let mi = Attribute::parse(crate::Span::new(":foo: bar \\\n blah"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(
+        crate::Span::new(":foo: bar \\\n blah"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "foo",
                 line: 1,
@@ -279,7 +306,7 @@ fn value_with_soft_wrap() {
 
 #[test]
 fn value_with_hard_wrap() {
-    let mi = Attribute::parse(
+    let mi = crate::document::Attribute::parse(
         crate::Span::new(":foo: bar + \\\n blah"),
         &Parser::default(),
     )
@@ -287,7 +314,7 @@ fn value_with_hard_wrap() {
 
     assert_eq!(
         mi.item,
-        TAttribute {
+        Attribute {
             name: Span {
                 data: "foo",
                 line: 1,
@@ -333,7 +360,7 @@ fn is_block() {
 
     assert_eq!(
         block,
-        Block::DocumentAttribute(TAttribute {
+        Block::DocumentAttribute(Attribute {
             name: Span {
                 data: "foo",
                 line: 1,

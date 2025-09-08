@@ -7,7 +7,7 @@ use crate::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{InterpretedValue, TAttribute, TDocument, THeader},
+            document::{Attribute, InterpretedValue, TDocument, THeader},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -47,7 +47,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                     offset: 2,
                 },),
                 title: Some("Document Title",),
-                attributes: &[TAttribute {
+                attributes: &[Attribute {
                     name: Span {
                         data: "link-with-underscores",
                         line: 2,

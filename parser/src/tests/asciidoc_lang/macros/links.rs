@@ -158,7 +158,7 @@ mod hide_uri_scheme {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{InterpretedValue, TAttribute, TDocument, THeader},
+                document::{Attribute, InterpretedValue, TDocument, THeader},
             },
             sdd::{non_normative, verifies},
         },
@@ -218,7 +218,7 @@ The prefix will still be present in the link target.
                         offset: 2,
                     },),
                     title: Some("Document Title",),
-                    attributes: &[TAttribute {
+                    attributes: &[Attribute {
                         name: Span {
                             data: "hide-uri-scheme",
                             line: 2,
