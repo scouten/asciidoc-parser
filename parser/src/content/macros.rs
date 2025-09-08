@@ -145,6 +145,8 @@ impl Replacer for InlineImageMacroReplacer<'_> {
             // TO DO: Register image with parser?
             // IMPORTANT: May require interior mutability on Parser because it looks like we
             // can't pass mutable references to Parser in a recursive Regex replacement.
+
+            // TO DO (https://github.com/scouten/asciidoc-parser/issues/335):
             // todo!("Port this: {}", "doc.register :images, target");
 
             let params = ImageRenderParams {
@@ -245,6 +247,7 @@ impl Replacer for InlineLinkReplacer<'_> {
                 link_suffix = link_suffix.as_str()
             );
 
+            // TO DO (https://github.com/scouten/asciidoc-parser/issues/335):
             // doc.register :links, target
 
             let link_text = if self.0.is_attribute_set("hide-uri-scheme") {
@@ -368,14 +371,8 @@ impl Replacer for InlineLinkReplacer<'_> {
 
         let extra_roles = if bare { vec!["bare"] } else { vec![] };
 
-        if false {
-            todo!(
-                "Port this: {}",
-                r#"
-            doc.register :links, (link_opts[:target] = target)
-            "#
-            );
-        }
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/335):
+        // doc.register :links, (link_opts[:target] = target)
 
         dest.push_str(&prefix);
 
@@ -536,10 +533,8 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             }
         }
 
-        if false {
-            // Skipping for now.
-            todo!("doc.register :links, (link_opts[:target] = target)");
-        }
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/335):
+        // doc.register :links, (link_opts[:target] = target)
 
         let params = LinkRenderParams {
             target,
