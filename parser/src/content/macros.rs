@@ -555,14 +555,17 @@ fn extract_attributes_from_text<'src>(
 
     if let Some(resolved_text) = attrs.nth_attribute(1) {
         // NOTE: If resolved text remains unchanged, return an empty attribute list and
-        // return unparsed text.
-        if resolved_text.value() == text.data() {
+        // return unparsed text. Commented out because I haven't seen an example of this
+        // happening in practice. Each of the call sites for this function introduces a
+        // constraint that should make this impossible.
+
+        /* if resolved_text.value() == text.data() {
             const EMPTY_SPAN: &Span = &Span::new("");
             let empty_attrs = Attrlist::parse(*EMPTY_SPAN, parser).item.item;
             (text.data().to_owned(), empty_attrs)
-        } else {
-            (resolved_text.value().to_owned(), attrs)
-        }
+        } else { */
+        (resolved_text.value().to_owned(), attrs)
+        /* } */
     } else {
         let default_text = default_text.map(|s| s.to_string());
         (default_text.unwrap_or_default(), attrs)
