@@ -339,4 +339,75 @@ mod inline_link {
             }
         );
     }
+
+    #[test]
+    fn named_attributes_without_link_text_and_hide_uri_scheme() {
+        let doc = Parser::default()
+            .parse("= Test\n:hide-uri-scheme:\n\nhttps://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]");
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: Some(TSpan {
+                        data: "Test",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },),
+                    title: Some("Test",),
+                    attributes: &[TAttribute {
+                        name: TSpan {
+                            data: "hide-uri-scheme",
+                            line: 2,
+                            col: 2,
+                            offset: 8,
+                        },
+                        value_source: None,
+                        value: TInterpretedValue::Set,
+                        source: TSpan {
+                            data: ":hide-uri-scheme:",
+                            line: 2,
+                            col: 1,
+                            offset: 7,
+                        },
+                    },],
+                    source: TSpan {
+                        data: "= Test\n:hide-uri-scheme:",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
+                            line: 4,
+                            col: 1,
+                            offset: 26,
+                        },
+                        rendered: "<a href=\"https://chat.asciidoc.org\" class=\"bare button\" target=\"_blank\" rel=\"nofollow\" noopener>chat.asciidoc.org</a>",
+                    },
+                    source: TSpan {
+                        data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
+                        line: 4,
+                        col: 1,
+                        offset: 26,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "= Test\n:hide-uri-scheme:\n\nhttps://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }

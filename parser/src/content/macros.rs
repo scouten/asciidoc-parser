@@ -347,14 +347,14 @@ impl Replacer for InlineLinkReplacer<'_> {
             }
 
             if link_text.is_empty() {
-                // NOTE: The modified target will not be a bare URI scheme (e.g., http://) in this case.
-                if false {
-                    todo!(
-                        "link_text = (doc_attrs.key? 'hide-uri-scheme') ? (target.sub UriSniffRx, '') : target"
-                    );
-                }
                 bare = true;
-                target.clone()
+
+                if self.0.is_attribute_set("hide-uri-scheme") {
+                    // NOTE: The modified target will not be a bare URI scheme (e.g., http://) in this case.
+                    URI_SNIFF.replace_all(&target, "").into_owned()
+                } else {
+                    target.clone()
+                }
             } else {
                 link_text
             }
