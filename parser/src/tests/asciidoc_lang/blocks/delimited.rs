@@ -7,7 +7,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -216,7 +216,7 @@ That's so meta.
     assert_eq!(
         block,
         Block::CompoundDelimited(CompoundDelimitedBlock {
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This is an example of an example block.\nThat's so meta.",
@@ -505,7 +505,7 @@ mod nesting_blocks {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, TSimpleBlock},
+                blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -565,7 +565,7 @@ The document header is useful, but not required.
             block,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Here's a sample AsciiDoc document:",
@@ -610,7 +610,7 @@ The document header is useful, but not required.
                         attrlist: None,
                         substitution_group: SubstitutionGroup::Verbatim,
                     },),
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "The document header is useful, but not required.",
@@ -688,7 +688,7 @@ Live within the simulated reality without want or fear.
             block,
             Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Here are your options:",
@@ -710,7 +710,7 @@ Live within the simulated reality without want or fear.
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
-                        blocks: &[Block::Simple(TSimpleBlock {
+                        blocks: &[Block::Simple(SimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "Escape into the real world.",
@@ -761,7 +761,7 @@ Live within the simulated reality without want or fear.
                         },),
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
-                        blocks: &[Block::Simple(TSimpleBlock {
+                        blocks: &[Block::Simple(SimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "Live within the simulated reality without want or fear.",

@@ -29,7 +29,7 @@ mod error_cases {
         tests::fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, SectionBlock, TSimpleBlock},
+            blocks::{Block, SectionBlock, SimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -70,7 +70,7 @@ mod error_cases {
                     offset: 4,
                 },
                 blocks: &[
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "abc",
@@ -91,7 +91,7 @@ mod error_cases {
                         anchor: None,
                         attrlist: None,
                     }),
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: ".ancestor section== Section 2",
@@ -112,7 +112,7 @@ mod error_cases {
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "def",
@@ -198,7 +198,7 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[incomplete attrlist\n=== Section Title (except it isn't)",
@@ -284,7 +284,7 @@ mod error_cases {
                     col: 5,
                     offset: 28,
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -366,7 +366,7 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: ". abc\ndef",

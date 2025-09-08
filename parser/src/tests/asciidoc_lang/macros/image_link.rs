@@ -21,7 +21,7 @@ mod link_attribute {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -237,7 +237,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",

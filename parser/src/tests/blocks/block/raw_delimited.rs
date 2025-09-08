@@ -7,7 +7,7 @@ mod parse {
         content::SubstitutionGroup,
         tests::fixtures::{
             Span,
-            blocks::{Block, RawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, RawDelimitedBlock, SimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -32,7 +32,7 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "...",
@@ -63,7 +63,7 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "++++x",
@@ -94,7 +94,7 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "____x",
@@ -125,7 +125,7 @@ mod parse {
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "====x",

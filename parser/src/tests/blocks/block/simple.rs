@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, TSimpleBlock},
+        blocks::{Block, SimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -61,7 +61,7 @@ fn single_line() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -129,7 +129,7 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -184,7 +184,7 @@ fn title() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -223,7 +223,7 @@ fn attrlist() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -311,7 +311,7 @@ fn title_and_attrlist() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -401,7 +401,7 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -458,7 +458,7 @@ fn with_block_anchor() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",
@@ -557,7 +557,7 @@ fn err_empty_block_anchor() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",
@@ -656,7 +656,7 @@ fn err_invalid_block_anchor() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",
@@ -742,7 +742,7 @@ fn unterminated_block_anchor() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "This paragraph gets a lot of attention.",

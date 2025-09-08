@@ -12,7 +12,7 @@ mod dispatcher {
         parser::ModificationContext,
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
     };
@@ -36,7 +36,7 @@ mod dispatcher {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
@@ -109,7 +109,7 @@ mod quotes {
         strings::CowStr,
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
     };
@@ -412,7 +412,7 @@ mod quotes {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "nums = [1, 2, 3, [.blue]#4#]",
@@ -618,7 +618,7 @@ mod quotes {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[foox-]`leave it alone`",
@@ -651,7 +651,7 @@ mod quotes {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"[x-]\`leave it alone`"#,
@@ -684,7 +684,7 @@ mod quotes {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\[x-]`just *mono*`"#,
@@ -723,7 +723,7 @@ mod quotes {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "`a few\n<{monospaced}> words`",
@@ -1384,7 +1384,7 @@ mod macros {
         strings::CowStr,
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
     };
@@ -1398,7 +1398,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "link:/home.html[]",
@@ -1431,7 +1431,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "link:/home.html[Home]",
@@ -1467,7 +1467,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[]",
@@ -1503,7 +1503,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer]",
@@ -1539,7 +1539,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]",
@@ -1577,7 +1577,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]",
@@ -1615,7 +1615,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
@@ -1651,7 +1651,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "mailto:doc.writer@asciidoc.org[,id=contact,role=icon]",
@@ -1724,7 +1724,7 @@ mod macros {
 
             assert_eq!(
                 block,
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: input,
@@ -1759,7 +1759,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "bert&ernie@sesamestreet.com",
@@ -1793,7 +1793,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "<doc.writer@asciidoc.org>",
@@ -1827,7 +1827,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "\\doc.writer@asciidoc.org",
@@ -1860,7 +1860,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com",
@@ -1894,7 +1894,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[Google]",
@@ -1930,7 +1930,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[Google\nHomepage]",
@@ -1972,7 +1972,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[{google_homepage}]",
@@ -2013,7 +2013,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com[\\{google_homepage}]",
@@ -2054,7 +2054,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://google.com?q=,[\\{google_homepage}]",
@@ -2087,7 +2087,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "\\http://google.com",
@@ -2123,7 +2123,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "http://foo.com, http://bar.com, http://example.org",
@@ -2156,7 +2156,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.png[]",
@@ -2192,7 +2192,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger-with-family_1.png[]",
@@ -2225,7 +2225,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.png[Tiger]",
@@ -2261,7 +2261,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger-roar.png[A tiger's "roar" is < a bear's "growl"]"#,
@@ -2294,7 +2294,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.svg[Tiger]",
@@ -2378,7 +2378,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[[Another\] Tiger]"#,
@@ -2411,7 +2411,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\image:tiger.png[]"#,
@@ -2448,7 +2448,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, 200, 100]"#,
@@ -2502,7 +2502,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, link="http://en.wikipedia.org/wiki/Tiger"]"#,
@@ -2544,7 +2544,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger, link=self]"#,
@@ -2599,7 +2599,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=_blank]"#,
@@ -2639,7 +2639,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,window=name,opts=noopener]"#,
@@ -2678,7 +2678,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:tiger.png[Tiger,link=http://en.wikipedia.org/wiki/Tiger,opts=nofollow]"#,
@@ -2716,7 +2716,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "image:tiger.png[Another\nAwesome\nTiger, 200,\n100]",
@@ -2753,7 +2753,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#,
@@ -2792,7 +2792,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"image:http://example.com/images/tiger.png[tiger, float="right"] Beware of the tigers!"#,
@@ -2834,7 +2834,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:tiger.png[tiger]."#,
@@ -2876,7 +2876,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:/tiger.png[tiger]."#,
@@ -2917,7 +2917,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:http://example.com/images/tiger.png[tiger]."#,
@@ -2954,7 +2954,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"Beware of the image:big cats.png[] around here."#,
@@ -2991,7 +2991,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Fear not. There are no image:big\ncats.png[] around here.",
@@ -3028,7 +3028,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Fear not. There are no image: big cats.png[] around here.",
@@ -3065,7 +3065,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Fear not. There are no image:big cats.png [] around here.",
@@ -3102,7 +3102,7 @@ mod macros {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Not an inline image macro image::tiger.png[].",
@@ -4245,7 +4245,7 @@ mod passthroughs {
         parser::{ModificationContext, QuoteType},
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
     };
@@ -4406,7 +4406,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "['role']\\++This++++++++++++",
@@ -4442,7 +4442,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "['role']\\+++++++++This++++++++++++",
@@ -4478,7 +4478,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "you need to replace `int a = n\\++;` with `int a = ++n;`!",
@@ -4511,7 +4511,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"=[attrs]\\++text++"#,
@@ -4649,7 +4649,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "+first passthrough+ followed by link:$$http://example.com/__u_no_format_me__$$[] with passthrough",
@@ -4860,7 +4860,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "pass:[]",
@@ -4966,7 +4966,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "+Sometimes you feel pass:q[`mono`].+ Sometimes you +$$don't$$+.",
@@ -5002,7 +5002,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "pass:m[.] pass:[.]",
@@ -5039,7 +5039,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Print the version using [var]$${asciidoctor-version}$$.",
@@ -5075,7 +5075,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Print the version using [var]++{asciidoctor-version}++.",
@@ -5171,7 +5171,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "pass:verbatim[<{backend}>]",
@@ -5207,7 +5207,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "a `foo +bar+ baz` kind of thing",
@@ -5241,7 +5241,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\[x-]`foo +bar+ baz`"#,
@@ -5276,7 +5276,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\[x-]`*foo* +bar+ baz`"#,
@@ -5310,7 +5310,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"\x-]`*foo* +bar+ baz`"#,
@@ -5346,7 +5346,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "a [x-]`foo +bar+ baz` kind of thing",
@@ -5379,7 +5379,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[.role]`foo +bar+ baz`",
@@ -5412,7 +5412,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "[.baz]`+foo--bar+`",
@@ -5446,7 +5446,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"use the `\pass:c[]` macro"#,
@@ -5483,7 +5483,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"use the [syntax]`\pass:c[]` macro"#,
@@ -5524,7 +5524,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"use `\+{author}+` to show an attribute reference"#,
@@ -5567,7 +5567,7 @@ mod replacements {
         strings::CowStr,
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
     };
@@ -5584,7 +5584,7 @@ mod replacements {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "< &quot; &there4; &#34; &#x22; >",
@@ -5618,7 +5618,7 @@ mod replacements {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"<- -> <= => \<- \-> \<= \=>"#,
@@ -5734,7 +5734,7 @@ foo&#8201;&#8212;&#8201;"#;
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"John's Hideout is the Whites`' place... foo\'bar"#,
@@ -5808,7 +5808,7 @@ mod post_replacements {
         tests::fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
     };
@@ -5823,7 +5823,7 @@ mod post_replacements {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line +\nSecond line",
@@ -5859,7 +5859,7 @@ mod post_replacements {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line\nSecond line",
@@ -5907,7 +5907,7 @@ mod post_replacements {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line +\nSecond line",
@@ -5953,7 +5953,7 @@ mod post_replacements {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "First line",

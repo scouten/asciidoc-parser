@@ -33,7 +33,7 @@ mod positioning_attributes {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -185,7 +185,7 @@ include::example$image.adoc[tag=in-float]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
@@ -237,7 +237,7 @@ mod positioning_roles {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -380,7 +380,7 @@ include::example$image.adoc[tag=in-role]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",

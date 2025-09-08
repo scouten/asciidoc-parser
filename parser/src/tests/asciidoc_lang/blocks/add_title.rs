@@ -8,7 +8,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -61,7 +61,7 @@ This is the content of the sidebar block.
     assert_eq!(
         block,
         Block::CompoundDelimited(CompoundDelimitedBlock {
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This is the content of the sidebar block.",
@@ -327,7 +327,7 @@ If you don't plant it in a container, it will take over your garden.
 
     assert_eq!(
         block,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Mint has visions of global conquest.\nIf you don't plant it in a container, it will take over your garden.",

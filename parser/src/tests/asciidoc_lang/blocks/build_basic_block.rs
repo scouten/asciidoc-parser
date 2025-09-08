@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, MediaBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, MediaBlock, SimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
         },
@@ -99,7 +99,7 @@ This is more content in the sidebar block.
                 },
             },
             blocks: &[
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Text in your document.",
@@ -122,7 +122,7 @@ This is more content in the sidebar block.
                 },),
                 Block::CompoundDelimited(CompoundDelimitedBlock {
                     blocks: &[
-                        Block::Simple(TSimpleBlock {
+                        Block::Simple(SimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "This is content in a sidebar block.",
@@ -171,7 +171,7 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        Block::Simple(TSimpleBlock {
+                        Block::Simple(SimpleBlock {
                             content: TContent {
                                 original: Span {
                                     data: "This is more content in the sidebar block.",
@@ -255,7 +255,7 @@ include::example$block.adoc[tag=opt-listing]
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "sudo dnf install asciidoc",
@@ -321,7 +321,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Never do today what you can put off `'til tomorrow.",

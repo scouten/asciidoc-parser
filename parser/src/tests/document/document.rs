@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, MediaBlock, SectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, SectionBlock, SimpleBlock},
         content::TContent,
         document::{TDocument, THeader},
         warnings::TWarning,
@@ -118,7 +118,7 @@ fn one_simple_block() {
                 col: 1,
                 offset: 0
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -169,7 +169,7 @@ fn two_simple_blocks() {
                 offset: 0
             },
             blocks: &[
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -190,7 +190,7 @@ fn two_simple_blocks() {
                     anchor: None,
                     attrlist: None,
                 }),
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "def",
@@ -239,7 +239,7 @@ fn two_blocks_and_title() {
                 }
             },
             blocks: &[
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -260,7 +260,7 @@ fn two_blocks_and_title() {
                     anchor: None,
                     attrlist: None,
                 }),
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "def",
@@ -314,7 +314,7 @@ fn extra_space_before_title() {
                     offset: 0,
                 }
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -367,7 +367,7 @@ fn err_bad_header() {
                     offset: 0,
                 }
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "not an attribute",
@@ -429,7 +429,7 @@ fn err_bad_header_and_bad_macro() {
                 }
             },
             blocks: &[
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "not an attribute",

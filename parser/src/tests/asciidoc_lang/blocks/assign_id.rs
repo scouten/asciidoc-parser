@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
+            blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -57,7 +57,7 @@ Content of delimited example block
     assert_eq!(
         block,
         Block::CompoundDelimited(CompoundDelimitedBlock {
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "Content of delimited example block",
@@ -153,7 +153,7 @@ Roads? Where we're going, we don't need roads.
 
     assert_eq!(
         block,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Roads? Where we're going, we don't need roads.",
@@ -219,7 +219,7 @@ Roads? Where we're going, we don't need roads.
 
     assert_eq!(
         block,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Roads? Where we're going, we don't need roads.",

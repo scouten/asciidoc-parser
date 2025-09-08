@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::TSimpleBlock,
+        blocks::SimpleBlock,
         content::TContent,
     },
 };
@@ -44,7 +44,7 @@ fn single_line() {
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
+        SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -99,7 +99,7 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
+        SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc\ndef",
@@ -141,7 +141,7 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
+        SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -186,7 +186,7 @@ fn overrides_sub_group_via_subs_attribute() {
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
+        SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "a<b>c *bold*",

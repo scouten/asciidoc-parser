@@ -5,7 +5,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
         },
@@ -77,7 +77,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                     offset: 0,
                 },
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This URL has repeating underscores {link-with-underscores}.",
@@ -127,7 +127,7 @@ fn pass_macro() {
                     offset: 0,
                 },
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This URL has repeating underscores pass:macros[https://asciidoctor.org/now_this__link_works.html].",
@@ -178,7 +178,7 @@ fn double_plus_inline_macro() {
                     offset: 0,
                 },
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This URL has repeating underscores link:++https://asciidoctor.org/now_this__link_works.html++[].",

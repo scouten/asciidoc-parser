@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, MediaBlock, SectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, SectionBlock, SimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -149,7 +149,7 @@ fn has_child_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -447,7 +447,7 @@ fn dont_stop_at_child_section() {
                 offset: 3,
             },
             blocks: &[
-                Block::Simple(TSimpleBlock {
+                Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "abc",
@@ -476,7 +476,7 @@ fn dont_stop_at_child_section() {
                         col: 5,
                         offset: 27,
                     },
-                    blocks: &[Block::Simple(TSimpleBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "def",
@@ -567,7 +567,7 @@ fn stop_at_peer_section() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -646,7 +646,7 @@ fn stop_at_ancestor_section() {
                 col: 5,
                 offset: 4,
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",

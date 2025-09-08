@@ -34,7 +34,7 @@ mod valid_id_characters {
         tests::{
             fixtures::{
                 Span,
-                blocks::{Block, TSimpleBlock},
+                blocks::{Block, SimpleBlock},
                 content::TContent,
                 warnings::TWarning,
             },
@@ -83,7 +83,7 @@ All the language requires in this case is that the value be non-empty.
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This paragraph gets a lot of attention.",
@@ -182,7 +182,7 @@ install the gem
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "This paragraph gets a lot of attention.",
@@ -236,7 +236,7 @@ mod block_assignment {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, CompoundDelimitedBlock, TSimpleBlock},
+                blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -282,7 +282,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "* Goal 1\n* Goal 2",
@@ -347,7 +347,7 @@ In the longhand syntax, you use a standard named attribute.
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "* Goal 1\n* Goal 2",
@@ -412,7 +412,7 @@ In the block anchor syntax, you surround the name with double square brackets:
 
         assert_eq!(
             mi.item,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "* Goal 1\n* Goal 2",
@@ -468,7 +468,7 @@ ____
         assert_eq!(
             mi.item,
             Block::CompoundDelimited(CompoundDelimitedBlock {
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Roads? Where we're going, we don't need roads.",

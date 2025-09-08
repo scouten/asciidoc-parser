@@ -8,7 +8,7 @@ mod inline_link {
         Parser,
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
         },
@@ -33,7 +33,7 @@ mod inline_link {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "You'll often see \\<https://example.org> used in examples.",
@@ -84,7 +84,7 @@ mod inline_link {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "You'll often see <\\https://example.org> used in examples.",
@@ -134,7 +134,7 @@ mod inline_link {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "There's no actual link <https://> in here.",
@@ -204,7 +204,7 @@ mod inline_link {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "We don't want you to know that this is HTTP: <https://example.com> just now.",
@@ -256,7 +256,7 @@ mod inline_link {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "You shouldn't visit https://example.com; it's just there to illustrate examples.",
@@ -308,7 +308,7 @@ mod inline_link {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "You shouldn't visit that site (https://example.com): it's just there to illustrate examples.",
@@ -379,7 +379,7 @@ mod inline_link {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
@@ -419,7 +419,7 @@ mod link_macro {
         Parser,
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
             document::{TAttribute, TDocument, THeader, TInterpretedValue},
         },
@@ -444,7 +444,7 @@ mod link_macro {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "A link macro looks like this: \\link:target[link text].",
@@ -494,7 +494,7 @@ mod link_macro {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "mailto:[,Subscribe me]",
@@ -565,7 +565,7 @@ mod link_macro {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:https://example.com[]",
@@ -636,7 +636,7 @@ mod link_macro {
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "link:mailto:fred@example.com[]",

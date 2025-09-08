@@ -23,7 +23,7 @@ mod block_image_macro {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -84,7 +84,7 @@ include::example$image.adoc[tag=base]
                     },
                 },
                 blocks: &[
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Content in document.",
@@ -133,7 +133,7 @@ include::example$image.adoc[tag=base]
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Content in document",

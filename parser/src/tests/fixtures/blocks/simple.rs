@@ -1,13 +1,13 @@
 use std::fmt;
 
 use crate::{
-    blocks::{IsBlock, SimpleBlock},
+    blocks::IsBlock,
     span::HasSpan,
     tests::fixtures::{Span, attributes::Attrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TSimpleBlock {
+pub(crate) struct SimpleBlock {
     pub content: TContent,
     pub source: Span,
     pub title_source: Option<Span>,
@@ -16,7 +16,7 @@ pub(crate) struct TSimpleBlock {
     pub attrlist: Option<Attrlist>,
 }
 
-impl fmt::Debug for TSimpleBlock {
+impl fmt::Debug for SimpleBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SimpleBlock")
             .field("content", &self.content)
@@ -29,19 +29,19 @@ impl fmt::Debug for TSimpleBlock {
     }
 }
 
-impl<'src> PartialEq<SimpleBlock<'src>> for TSimpleBlock {
-    fn eq(&self, other: &SimpleBlock<'src>) -> bool {
+impl<'src> PartialEq<crate::blocks::SimpleBlock<'src>> for SimpleBlock {
+    fn eq(&self, other: &crate::blocks::SimpleBlock<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TSimpleBlock> for SimpleBlock<'_> {
-    fn eq(&self, other: &TSimpleBlock) -> bool {
+impl PartialEq<SimpleBlock> for crate::blocks::SimpleBlock<'_> {
+    fn eq(&self, other: &SimpleBlock) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TSimpleBlock, observed: &SimpleBlock) -> bool {
+fn fixture_eq_observed(fixture: &SimpleBlock, observed: &crate::blocks::SimpleBlock) -> bool {
     if fixture.title_source.is_some() != observed.title_source().is_some() {
         return false;
     }

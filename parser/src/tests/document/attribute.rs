@@ -10,7 +10,7 @@ use crate::{
     parser::ModificationContext,
     tests::fixtures::{
         Span,
-        blocks::{Block, TSimpleBlock},
+        blocks::{Block, SimpleBlock},
         content::TContent,
         document::{TAttribute, TInterpretedValue},
     },
@@ -406,7 +406,7 @@ fn affects_document_state() {
 
     assert_eq!(
         block1,
-        &Block::Simple(TSimpleBlock {
+        &Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "We are agreed? {agreed}",
@@ -435,7 +435,7 @@ fn affects_document_state() {
 
     assert_eq!(
         block3,
-        &Block::Simple(TSimpleBlock {
+        &Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Are we still agreed? {agreed}",
@@ -476,7 +476,7 @@ fn block_enforces_permission() {
 
     assert_eq!(
         block3,
-        &Block::Simple(TSimpleBlock {
+        &Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "Are we agreed? {agreed}",

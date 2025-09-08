@@ -20,7 +20,7 @@ mod url_schemes_for_autolinks {
         tests::{
             fixtures::{
                 Span,
-                blocks::{Block, TSimpleBlock},
+                blocks::{Block, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -62,7 +62,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "http://example.org",
@@ -118,7 +118,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "https://example.org",
@@ -174,7 +174,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "ftp://example.org",
@@ -230,7 +230,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "irc://example.org",
@@ -287,7 +287,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "join@discuss.example.org",
@@ -354,7 +354,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "The homepage for the Asciidoctor Project is https://www.asciidoctor.org.",
@@ -422,7 +422,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "You'll often see <https://example.org> used in examples.",
@@ -463,7 +463,7 @@ mod email_autolinks {
         tests::{
             fixtures::{
                 Span,
-                blocks::{Block, TSimpleBlock},
+                blocks::{Block, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -506,7 +506,7 @@ For email address which do not conform to these restriction, you can use the xre
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Email us at hello@example.com to say hello.",
@@ -548,7 +548,7 @@ mod escaping_urls_and_email_addresses {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TSimpleBlock},
+                blocks::{Block, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -594,7 +594,7 @@ The URL and email address will both be shown in plain text.
                     },
                 },
                 blocks: &[
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "Once launched, the site will be available at \\https://example.org.",
@@ -615,7 +615,7 @@ The URL and email address will both be shown in plain text.
                         anchor: None,
                         attrlist: None,
                     },),
-                    Block::Simple(TSimpleBlock {
+                    Block::Simple(SimpleBlock {
                         content: TContent {
                             original: Span {
                                 data: "If you cannot access the site, email \\help@example.org for assistance.",
@@ -682,7 +682,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Once launched, the site will be available at https://example.org.",

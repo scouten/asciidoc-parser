@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, MediaBlock, SectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, SectionBlock, SimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -26,7 +26,7 @@ fn err_missing_space_before_title() {
 
     assert_eq!(
         mi.item,
-        Block::Simple(TSimpleBlock {
+        Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "=blah blah",
@@ -159,7 +159,7 @@ fn has_child_block() {
                 col: 4,
                 offset: 3,
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -197,7 +197,7 @@ fn has_child_block() {
 
     assert_eq!(
         nested_blocks.next().unwrap(),
-        &Block::Simple(TSimpleBlock {
+        &Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",
@@ -270,7 +270,7 @@ fn title() {
                 col: 4,
                 offset: 24,
             },
-            blocks: &[Block::Simple(TSimpleBlock {
+            blocks: &[Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "abc",
@@ -336,7 +336,7 @@ fn title() {
 
     assert_eq!(
         nested_blocks.next().unwrap(),
-        &Block::Simple(TSimpleBlock {
+        &Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "abc",

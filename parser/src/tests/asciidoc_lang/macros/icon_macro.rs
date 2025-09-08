@@ -20,7 +20,7 @@ mod anatomy {
         tests::{
             fixtures::{
                 Span,
-                blocks::{Block, TSimpleBlock},
+                blocks::{Block, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -76,7 +76,7 @@ icon:heart[2x,role=red]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "icon:heart[2x,role=red]",

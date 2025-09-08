@@ -22,7 +22,7 @@ mod image_url_targets {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -165,7 +165,7 @@ include::example$image.adoc[tag=in-url]
                         offset: 0,
                     },
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",

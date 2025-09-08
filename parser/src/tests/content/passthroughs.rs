@@ -9,7 +9,7 @@ mod passthroughs {
         parser::ModificationContext,
         tests::fixtures::{
             Span,
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
     };
@@ -23,7 +23,7 @@ mod passthroughs {
 
         assert_eq!(
             block,
-            Block::Simple(TSimpleBlock {
+            Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: r#"abc \[attrs]++text++"#,

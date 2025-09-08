@@ -83,7 +83,7 @@ mod macros {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, MediaBlock, TSimpleBlock},
+                blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
             },
@@ -202,7 +202,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                         offset: 0
                     }
                 },
-                blocks: &[Block::Simple(TSimpleBlock {
+                blocks: &[Block::Simple(SimpleBlock {
                     content: TContent {
                         original: Span {
                             data: "Click the button with the image:star.png[Star] to favorite the project.",

@@ -7,7 +7,7 @@ use crate::{
         fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, TSimpleBlock},
+            blocks::{Block, SimpleBlock},
             content::TContent,
         },
         sdd::{non_normative, track_file, verifies},
@@ -292,7 +292,7 @@ mod attributes_defined_outside_document {
         tests::{
             fixtures::{
                 Span,
-                blocks::{Block, TSimpleBlock},
+                blocks::{Block, SimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -348,7 +348,7 @@ To play, you'll need {equipment}.
 
         assert_eq!(
             block1,
-            &Block::Simple(TSimpleBlock {
+            &Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "To play, you'll need {equipment}.",
@@ -401,7 +401,7 @@ That's because, in contrast, substitutions are applied to the value of an attrib
 
         assert_eq!(
             block1,
-            &Block::Simple(TSimpleBlock {
+            &Block::Simple(SimpleBlock {
                 content: TContent {
                     original: Span {
                         data: "To play, you'll need {equipment}.",
@@ -464,7 +464,7 @@ This strategy is akin to post-processing the attribute value.
 
     assert_eq!(
         block1,
-        &Block::Simple(TSimpleBlock {
+        &Block::Simple(SimpleBlock {
             content: TContent {
                 original: Span {
                     data: "The application is called {app-name}.",

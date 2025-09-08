@@ -14,4 +14,4 @@ mod section;
 pub(crate) use section::SectionBlock;
 
 mod simple;
-pub(crate) use simple::TSimpleBlock;
+pub(crate) use simple::SimpleBlock;
