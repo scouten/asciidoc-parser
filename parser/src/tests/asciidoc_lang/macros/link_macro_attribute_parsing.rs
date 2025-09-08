@@ -375,7 +375,7 @@ However, it's best to use the double quotes just to be safe.
     #[test]
     fn named_attributes_without_link_text() {
         verifies!(
-            r##"
+            r#"
 Finally, to use named attributes without specifying link text, you simply specify the named attributes.
 (In other words, you leave the first positional attribute empty, in which case the target will be used as the link text).
 
@@ -384,7 +384,7 @@ Finally, to use named attributes without specifying link text, you simply specif
 https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
 ----
 
-"##
+"#
         );
 
         let doc = Parser::default()
