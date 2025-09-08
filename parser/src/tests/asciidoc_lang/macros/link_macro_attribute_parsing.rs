@@ -609,7 +609,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
 CAUTION: The underscore at the start of the value `_blank` can unexpectedly form a constrained formatting pair when another underscore appears somewhere else in the line or paragraph, thus causing the macro to break.
 You can avoid this problem either by escaping the underscore at the start of the value (i.e., `+window=\_blank+`) or by using the <<Blank window shorthand>> instead.
 
-        "#
+"#
     );
 
     #[test]
