@@ -411,3 +411,68 @@ mod inline_link {
         );
     }
 }
+
+mod link_macro {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        tests::fixtures::{
+            TSpan,
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+            document::{TDocument, THeader},
+        },
+    };
+
+    #[test]
+    fn escape_link_macro() {
+        let doc =
+            Parser::default().parse("A link macro looks like this: \\link:target[link text].");
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "A link macro looks like this: \\link:target[link text].",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "A link macro looks like this: link:target[link text].",
+                    },
+                    source: TSpan {
+                        data: "A link macro looks like this: \\link:target[link text].",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "A link macro looks like this: \\link:target[link text].",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
