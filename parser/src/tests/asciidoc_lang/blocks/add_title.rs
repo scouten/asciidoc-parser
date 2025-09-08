@@ -7,7 +7,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            attributes::{TAttrlist, TElementAttribute},
+            attributes::{Attrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
@@ -258,7 +258,7 @@ stages: [ init, verify, deploy ]
             },),
             title: Some("Specify GitLab CI stages"),
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[
                     TElementAttribute {
                         name: None,
@@ -351,7 +351,7 @@ If you don't plant it in a container, it will take over your garden.
             },),
             title: Some("Mint"),
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],

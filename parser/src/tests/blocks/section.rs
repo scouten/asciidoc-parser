@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{TAttrlist, TElementAttribute},
+        attributes::{Attrlist, TElementAttribute},
         blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
@@ -225,7 +225,7 @@ fn has_macro_block_with_extra_blank_line() {
                     col: 8,
                     offset: 25,
                 },
-                macro_attrlist: TAttrlist {
+                macro_attrlist: Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: Some("alt"),
@@ -328,7 +328,7 @@ fn has_child_block_with_errors() {
                     col: 8,
                     offset: 25,
                 },
-                macro_attrlist: TAttrlist {
+                macro_attrlist: Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: Some("alt"),

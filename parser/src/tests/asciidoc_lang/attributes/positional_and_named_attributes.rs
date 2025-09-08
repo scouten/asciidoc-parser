@@ -22,7 +22,7 @@ mod positional_attribute {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TSectionBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -178,7 +178,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["#custom-id"],
@@ -239,7 +239,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["appendix", "#custom-id"],
@@ -308,7 +308,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["#rules", ".prominent", "%incremental"],
@@ -379,7 +379,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%header", "%footer", "%autowidth",],

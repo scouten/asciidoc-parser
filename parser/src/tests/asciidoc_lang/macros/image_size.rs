@@ -24,7 +24,7 @@ mod width_and_height_attributes {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock},
                 document::{TDocument, THeader},
             },
@@ -78,7 +78,7 @@ image::flower.jpg[Flower,640,480]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,
@@ -163,7 +163,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: Some("alt",),

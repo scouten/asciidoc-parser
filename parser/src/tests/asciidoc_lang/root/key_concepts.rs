@@ -82,7 +82,7 @@ mod macros {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -138,7 +138,7 @@ image::sunset.jpg[Sunset]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[TElementAttribute {
                             name: None,
                             shorthand_items: &["Sunset"],

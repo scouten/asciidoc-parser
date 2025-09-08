@@ -237,7 +237,7 @@ mod block_assignment {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -303,7 +303,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["#goals"],
@@ -368,7 +368,7 @@ In the longhand syntax, you use a standard named attribute.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: Some("id"),
                         shorthand_items: &[],
@@ -501,7 +501,7 @@ ____
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: None,

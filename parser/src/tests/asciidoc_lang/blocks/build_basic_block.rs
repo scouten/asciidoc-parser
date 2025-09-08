@@ -6,7 +6,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            attributes::{TAttrlist, TElementAttribute},
+            attributes::{Attrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
             content::TContent,
             document::{TDocument, THeader},
@@ -151,7 +151,7 @@ This is more content in the sidebar block.
                                 col: 8,
                                 offset: 73,
                             },
-                            macro_attrlist: TAttrlist {
+                            macro_attrlist: Attrlist {
                                 attributes: &[],
                                 source: Span {
                                     data: "",
@@ -274,7 +274,7 @@ include::example$block.adoc[tag=opt-listing]
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["listing"],
@@ -340,7 +340,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["quote"],

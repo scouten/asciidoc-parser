@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{TAttrlist, TElementAttribute},
+        attributes::{Attrlist, TElementAttribute},
         blocks::TMediaBlock,
         warnings::TWarning,
     },
@@ -186,7 +186,7 @@ fn has_target() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
                 source: Span {
                     data: "",
@@ -246,7 +246,7 @@ fn has_target_and_attrlist() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["blah"],
@@ -301,7 +301,7 @@ fn audio() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
                 source: Span {
                     data: "",
@@ -361,7 +361,7 @@ fn video() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
                 source: Span {
                     data: "",
@@ -420,7 +420,7 @@ fn err_duplicate_comma() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[
                     TElementAttribute {
                         name: None,

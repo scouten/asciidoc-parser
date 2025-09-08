@@ -21,7 +21,7 @@ mod image_url_targets {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -80,7 +80,7 @@ include::example$image.adoc[tag=url]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,

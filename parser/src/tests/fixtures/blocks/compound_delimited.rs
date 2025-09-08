@@ -3,7 +3,7 @@ use std::fmt;
 use crate::{
     HasSpan,
     blocks::{CompoundDelimitedBlock, IsBlock},
-    tests::fixtures::{Span, attributes::TAttrlist, blocks::TBlock},
+    tests::fixtures::{Span, attributes::Attrlist, blocks::TBlock},
 };
 
 #[derive(Eq, PartialEq)]
@@ -14,7 +14,7 @@ pub(crate) struct TCompoundDelimitedBlock {
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub anchor: Option<Span>,
-    pub attrlist: Option<TAttrlist>,
+    pub attrlist: Option<Attrlist>,
 }
 
 impl fmt::Debug for TCompoundDelimitedBlock {

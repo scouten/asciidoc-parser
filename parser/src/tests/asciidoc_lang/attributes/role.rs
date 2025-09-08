@@ -41,7 +41,7 @@ mod assign_roles_to_blocks {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -122,7 +122,7 @@ This is a sidebar with a role assigned to it, rolename.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &[".rolename"],
@@ -201,7 +201,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &[".role1", ".role2"],
@@ -281,7 +281,7 @@ This is a sidebar with one role assigned to it, rolename.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
@@ -366,7 +366,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],

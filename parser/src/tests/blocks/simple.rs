@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{TAttrlist, TElementAttribute},
+        attributes::{Attrlist, TElementAttribute},
         blocks::TSimpleBlock,
         content::TContent,
     },
@@ -203,7 +203,7 @@ fn overrides_sub_group_via_subs_attribute() {
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: Some("subs"),
                     value: "quotes",

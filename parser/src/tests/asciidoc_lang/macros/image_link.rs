@@ -20,7 +20,7 @@ mod link_attribute {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -81,7 +81,7 @@ image::logo.png[Logo]
                         col: 8,
                         offset: 34,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[TElementAttribute {
                             name: None,
                             value: "Logo",
@@ -103,7 +103,7 @@ image::logo.png[Logo]
                     title_source: None,
                     title: None,
                     anchor: None,
-                    attrlist: Some(TAttrlist {
+                    attrlist: Some(Attrlist {
                         attributes: &[TElementAttribute {
                             name: Some("link",),
                             value: "https://example.org",
@@ -165,7 +165,7 @@ image::logo.png[Logo,link=https://example.org]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,
@@ -279,7 +279,7 @@ mod link_controls {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock},
                 document::{TDocument, THeader},
             },
@@ -342,7 +342,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,

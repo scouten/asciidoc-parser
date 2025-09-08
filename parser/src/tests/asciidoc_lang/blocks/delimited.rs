@@ -504,7 +504,7 @@ mod nesting_blocks {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TRawDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -746,7 +746,7 @@ Live within the simulated reality without want or fear.
                         },),
                         title: Some("Red Pill"),
                         anchor: None,
-                        attrlist: Some(TAttrlist {
+                        attrlist: Some(Attrlist {
                             attributes: &[TElementAttribute {
                                 name: None,
                                 shorthand_items: &["%collapsible"],
@@ -797,7 +797,7 @@ Live within the simulated reality without want or fear.
                         },),
                         title: Some("Blue Pill"),
                         anchor: None,
-                        attrlist: Some(TAttrlist {
+                        attrlist: Some(Attrlist {
                             attributes: &[TElementAttribute {
                                 name: None,
                                 shorthand_items: &["%collapsible"],

@@ -4,7 +4,7 @@ use crate::{
     HasSpan,
     blocks::{ContentModel, IsBlock, RawDelimitedBlock},
     content::SubstitutionGroup,
-    tests::fixtures::{Span, attributes::TAttrlist, content::TContent},
+    tests::fixtures::{Span, attributes::Attrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
@@ -16,7 +16,7 @@ pub(crate) struct TRawDelimitedBlock {
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub anchor: Option<Span>,
-    pub attrlist: Option<TAttrlist>,
+    pub attrlist: Option<Attrlist>,
     pub substitution_group: SubstitutionGroup,
 }
 

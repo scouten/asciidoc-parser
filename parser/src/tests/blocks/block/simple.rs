@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{TAttrlist, TElementAttribute},
+        attributes::{Attrlist, TElementAttribute},
         blocks::{TBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
@@ -241,7 +241,7 @@ fn attrlist() {
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
@@ -271,7 +271,7 @@ fn attrlist() {
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
-        TAttrlist {
+        Attrlist {
             attributes: &[TElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
@@ -334,7 +334,7 @@ fn title_and_attrlist() {
             },),
             title: Some("title"),
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
@@ -364,7 +364,7 @@ fn title_and_attrlist() {
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
-        TAttrlist {
+        Attrlist {
             attributes: &[TElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
@@ -760,7 +760,7 @@ fn unterminated_block_anchor() {
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["[notice",],
@@ -802,7 +802,7 @@ fn unterminated_block_anchor() {
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
-        TAttrlist {
+        Attrlist {
             attributes: &[TElementAttribute {
                 name: None,
                 shorthand_items: &["[notice"],

@@ -6,7 +6,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            attributes::{TAttrlist, TElementAttribute},
+            attributes::{Attrlist, TElementAttribute},
             blocks::{TBlock, TSimpleBlock},
             content::TContent,
         },
@@ -71,7 +71,7 @@ mod change_subs_when_assigning {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TRawDelimitedBlock},
                 content::TContent,
             },
@@ -181,7 +181,7 @@ You can inspect the value stored in an attribute using this trick:
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: Some("subs"),
                         value: "attributes+",
@@ -261,7 +261,7 @@ If the macro is absent, the value is processed with the header substitution grou
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: Some("subs"),
                         value: "attributes+",
@@ -483,7 +483,7 @@ This strategy is akin to post-processing the attribute value.
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: Some("subs"),
                     value: "specialchars,attributes,quotes,replacements,macros,post_replacements",

@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{TAttrlist, TElementAttribute},
+        attributes::{Attrlist, TElementAttribute},
         blocks::{TBlock, TMediaBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
@@ -307,7 +307,7 @@ fn has_target() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
                 source: Span {
                     data: "",
@@ -377,7 +377,7 @@ fn has_target_and_macro_attrlist() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["blah"],
@@ -445,7 +445,7 @@ fn warn_macro_attrlist_has_extra_comma() {
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[
                     TElementAttribute {
                         name: Some("alt"),
@@ -537,7 +537,7 @@ fn has_title() {
                 col: 8,
                 offset: 20,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
                 source: Span {
                     data: "",

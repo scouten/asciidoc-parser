@@ -3,7 +3,7 @@ use std::fmt;
 use crate::{
     blocks::{IsBlock, SimpleBlock},
     span::HasSpan,
-    tests::fixtures::{Span, attributes::TAttrlist, content::TContent},
+    tests::fixtures::{Span, attributes::Attrlist, content::TContent},
 };
 
 #[derive(Eq, PartialEq)]
@@ -13,7 +13,7 @@ pub(crate) struct TSimpleBlock {
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub anchor: Option<Span>,
-    pub attrlist: Option<TAttrlist>,
+    pub attrlist: Option<Attrlist>,
 }
 
 impl fmt::Debug for TSimpleBlock {

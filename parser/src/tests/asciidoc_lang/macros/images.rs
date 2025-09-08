@@ -22,7 +22,7 @@ mod block_image_macro {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -113,7 +113,7 @@ include::example$image.adoc[tag=base]
                             col: 8,
                             offset: 29,
                         },
-                        macro_attrlist: TAttrlist {
+                        macro_attrlist: Attrlist {
                             attributes: &[],
                             source: Span {
                                 data: "",
@@ -213,7 +213,7 @@ include::example$image.adoc[tag=alt]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[TElementAttribute {
                             name: None,
                             value: "Sunset",
@@ -294,7 +294,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[TElementAttribute {
                             name: None,
                             value: "Mesa Verde Sunset, by JAVH",
@@ -385,7 +385,7 @@ include::example$image.adoc[tag=attr]
                         col: 8,
                         offset: 91,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,
@@ -424,7 +424,7 @@ include::example$image.adoc[tag=attr]
                     },),
                     title: Some("A mountain sunset"),
                     anchor: None,
-                    attrlist: Some(TAttrlist {
+                    attrlist: Some(Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,

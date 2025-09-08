@@ -6,7 +6,7 @@ use crate::{
     tests::{
         fixtures::{
             Span,
-            attributes::{TAttrlist, TElementAttribute},
+            attributes::{Attrlist, TElementAttribute},
             blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
             content::TContent,
         },
@@ -88,7 +88,7 @@ Content of delimited example block
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["#the-id-of-this-block",],
@@ -172,7 +172,7 @@ Roads? Where we're going, we don't need roads.
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[TElementAttribute {
                     name: None,
                     shorthand_items: &["quote", "#roads"],
@@ -238,7 +238,7 @@ Roads? Where we're going, we don't need roads.
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[
                     TElementAttribute {
                         name: None,

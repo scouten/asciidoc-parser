@@ -34,7 +34,7 @@ You can assign one or more options to a block using the shorthand or formal synt
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -105,7 +105,7 @@ This is a sidebar with an option assigned to it, named option.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%option"],
@@ -192,7 +192,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["%option1", "%option2"],
@@ -276,7 +276,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: None,
@@ -378,7 +378,7 @@ This is a sidebar with an option assigned to it, named option.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: Some("opts"),
                         shorthand_items: &[],
@@ -464,7 +464,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: Some("opts"),
                         shorthand_items: &[],
@@ -548,7 +548,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: Some("cols"),
@@ -607,7 +607,7 @@ Let's consider `options` when combined with other attributes.
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -668,7 +668,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[TElementAttribute {
                         name: None,
                         shorthand_items: &["horizontal", ".properties", "%step"],
@@ -754,7 +754,7 @@ property 2:: does different stuff
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: None,

@@ -32,7 +32,7 @@ mod positioning_attributes {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -94,7 +94,7 @@ include::example$image.adoc[tag=float]
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,
@@ -236,7 +236,7 @@ mod positioning_roles {
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
                 document::{TDocument, THeader},
@@ -291,7 +291,7 @@ include::example$image.adoc[tag=role]
                         col: 8,
                         offset: 28,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
                             TElementAttribute {
                                 name: None,
@@ -325,7 +325,7 @@ include::example$image.adoc[tag=role]
                     title_source: None,
                     title: None,
                     anchor: None,
-                    attrlist: Some(TAttrlist {
+                    attrlist: Some(Attrlist {
                         attributes: &[TElementAttribute {
                             name: None,
                             value: ".right.text-center",

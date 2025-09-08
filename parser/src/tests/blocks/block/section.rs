@@ -8,7 +8,7 @@ use crate::{
     content::SubstitutionGroup,
     tests::fixtures::{
         Span,
-        attributes::{TAttrlist, TElementAttribute},
+        attributes::{Attrlist, TElementAttribute},
         blocks::{TBlock, TMediaBlock, TSectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
@@ -411,7 +411,7 @@ fn warn_child_attrlist_has_extra_comma() {
                     col: 8,
                     offset: 25,
                 },
-                macro_attrlist: TAttrlist {
+                macro_attrlist: Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: Some("alt"),

@@ -45,12 +45,11 @@ mod attrlist {
 
     use crate::{
         HasSpan, Parser,
-        attributes::Attrlist,
         blocks::{Block, MediaType},
         tests::{
             fixtures::{
                 Span,
-                attributes::{TAttrlist, TElementAttribute},
+                attributes::{Attrlist, TElementAttribute},
                 blocks::{TBlock, TMediaBlock, TSimpleBlock},
                 content::TContent,
             },
@@ -89,11 +88,12 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             r#"first-positional,second-positional,named="value of named""#;
 
         let p = Parser::default();
-        let mi = Attrlist::parse(crate::Span::new(ATTRLIST_EXAMPLE), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new(ATTRLIST_EXAMPLE), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
                     TElementAttribute {
                         name: None,
@@ -222,7 +222,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: None,
@@ -303,7 +303,7 @@ name::target[first-positional,second-positional,named="value of named"]
                     col: 7,
                     offset: 6,
                 },
-                macro_attrlist: TAttrlist {
+                macro_attrlist: Attrlist {
                     attributes: &[
                         TElementAttribute {
                             name: None,
