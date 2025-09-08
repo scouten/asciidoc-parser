@@ -8,7 +8,8 @@ pub use attribute_value::{AllowableValue, ModificationContext};
 mod inline_substitution_renderer;
 pub use inline_substitution_renderer::{
     CharacterReplacementType, HtmlSubstitutionRenderer, IconRenderParams, ImageRenderParams,
-    InlineSubstitutionRenderer, QuoteScope, QuoteType, SpecialCharacter,
+    InlineSubstitutionRenderer, LinkRenderParams, LinkRenderType, QuoteScope, QuoteType,
+    SpecialCharacter,
 };
 
 mod parser;

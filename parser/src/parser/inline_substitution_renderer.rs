@@ -137,6 +137,12 @@ pub trait InlineSubstitutionRenderer: Debug {
 
         self.image_uri(&icon, parser, Some("iconsdir"))
     }
+
+    /// Renders a link.
+    ///
+    /// The renderer should write an appropriate rendering of the specified
+    /// link, to `dest`.
+    fn render_link(&self, params: &LinkRenderParams, dest: &mut String);
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -279,6 +285,39 @@ pub struct IconRenderParams<'a> {
     /// Parser. The rendered may find document settings (such as an image
     /// directory) in the parser's document attributes.
     pub parser: &'a Parser<'a>,
+}
+
+/// Provides parsed parameters for an icon to be rendered.
+#[derive(Clone, Debug)]
+pub struct LinkRenderParams<'a> {
+    /// Target (the target of this link).
+    pub target: String,
+
+    /// Link text.
+    pub link_text: String,
+
+    /// Roles (CSS classes) for this link not specified in the attrlist.
+    pub extra_roles: Vec<&'a str>,
+
+    /// Target window selection (passed through to `window` function in HTML).
+    pub window: Option<&'static str>,
+
+    /// What type of link is being rendered?
+    pub type_: LinkRenderType,
+
+    /// Attribute list.
+    pub attrlist: &'a Attrlist<'a>,
+
+    /// Parser. The rendered may find document settings (such as an image
+    /// directory) in the parser's document attributes.
+    pub parser: &'a Parser<'a>,
+}
+
+/// What type of link is being rendered?
+#[derive(Clone, Debug)]
+pub enum LinkRenderType {
+    /// TEMPORARY: I don't know the different types of links yet.
+    Link,
 }
 
 /// Implementation of [`InlineSubstitutionRenderer`] that renders substitutions
@@ -612,6 +651,35 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
 
         render_icon_or_image(params.attrlist, &img, &src, "icon", dest);
     }
+
+    fn render_link(&self, params: &LinkRenderParams, dest: &mut String) {
+        let id = params.attrlist.id();
+
+        let mut roles = params.extra_roles.clone();
+        let mut attrlist_roles = params.attrlist.roles().clone();
+        roles.append(&mut attrlist_roles);
+
+        let link = format!(
+            r##"<a href="{target}"{id}{class}{link_constraint_attrs}>{link_text}</a>"##,
+            target = params.target,
+            id = if let Some(id) = id {
+                format!(r#" id="{id}""#)
+            } else {
+                "".to_owned()
+            },
+            class = if roles.is_empty() {
+                "".to_owned()
+            } else {
+                format!(r#" class="{roles}""#, roles = roles.join(" "))
+            },
+            // title = %( title="#{node.attr 'title'}") if node.attr? 'title'
+            // Haven't seen this in the wild yet.
+            link_constraint_attrs = link_constraint_attrs(params.attrlist, params.window),
+            link_text = params.link_text,
+        );
+
+        dest.push_str(&link);
+    }
 }
 
 fn wrap_body_in_html_tag(
@@ -662,7 +730,7 @@ fn render_icon_or_image(
 
         img = format!(
             r#"<a class="image" href="{link}"{link_constraint_attrs}>{img}</a>"#,
-            link_constraint_attrs = link_constraint_attrs(attrlist)
+            link_constraint_attrs = link_constraint_attrs(attrlist, None)
         );
     }
 
@@ -733,15 +801,19 @@ static URI_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-fn link_constraint_attrs(attrlist: &Attrlist<'_>) -> String {
+fn link_constraint_attrs(attrlist: &Attrlist<'_>, window: Option<&'static str>) -> String {
     let rel = if attrlist.has_option("nofollow") {
         Some("nofollow")
     } else {
         None
     };
 
-    if let Some(window) = attrlist.named_attribute("window") {
-        let rel_noopener = if window.value() == "_blank" || attrlist.has_option("noopener") {
+    if let Some(window) = attrlist
+        .named_attribute("window")
+        .map(|a| a.value())
+        .or(window)
+    {
+        let rel_noopener = if window == "_blank" || attrlist.has_option("noopener") {
             if let Some(rel) = rel {
                 format!(r#" rel="{rel}" noopener"#)
             } else {
@@ -751,10 +823,7 @@ fn link_constraint_attrs(attrlist: &Attrlist<'_>) -> String {
             "".to_string()
         };
 
-        format!(
-            r#" target="{window}"{rel_noopener}"#,
-            window = window.value()
-        )
+        format!(r#" target="{window}"{rel_noopener}"#)
     } else if let Some(rel) = rel {
         format!(r#" rel="{rel}""#)
     } else {

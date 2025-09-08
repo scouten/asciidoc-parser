@@ -5,6 +5,62 @@
 // limitation of `asciidoc-parser` crate) and alternate (non-HTML) back ends.
 
 mod dispatcher {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser, Span,
+        blocks::Block,
+        parser::ModificationContext,
+        tests::fixtures::{
+            TSpan,
+            blocks::{TBlock, TSimpleBlock},
+            content::TContent,
+        },
+    };
+
+    #[test]
+    fn apply_normal_substitutions() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "inception_year",
+            "2012",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(
+            Span::new(
+                "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
+            ),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<em class=\"blue\"><a href=\"http://asciidoc.org\">AsciiDoc</a></em> &amp; <strong class=\"red\">Ruby</strong>\n&#167; Making <u>documentation</u> together<br>\nsince &#169; 2012.",
+                },
+                source: TSpan {
+                    data: "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
     #[ignore]
     #[test]
     fn todo_migrate_from_ruby() {
@@ -14,22 +70,6 @@ mod dispatcher {
         # TODO
         # - test negatives
         # - test role on every quote type
-
-        test 'apply normal substitutions' do
-          para = block_from_string "[blue]_http://asciidoc.org[AsciiDoc]_ & [red]*Ruby*\n&#167; Making +++<u>documentation</u>+++ together +\nsince (C) {inception_year}."
-          para.document.attributes['inception_year'] = '2012'
-          result = para.apply_subs para.source
-          assert_equal %(<em class="blue"><a href="http://asciidoc.org">AsciiDoc</a></em> &amp; <strong class="red">Ruby</strong>\n&#167; Making <u>documentation</u> together<br>\nsince &#169; 2012.), result
-        end
-
-        test 'apply_subs should not modify string directly' do
-          input = '<html> -- the root of all web'
-          para = block_from_string input
-          para_source = para.source
-          result = para.apply_subs para_source
-          assert_equal '&lt;html&gt;&#8201;&#8212;&#8201;the root of all web', result
-          assert_equal input, para_source
-        end
 
         test 'should not drop trailing blank lines when performing substitutions' do
           para = block_from_string %([%hardbreaks]\nthis\nis\n-> {program})
@@ -1343,127 +1383,745 @@ mod macros {
         },
     };
 
-    #[ignore]
     #[test]
-    fn todo_migrate_from_ruby() {
-        todo!(
-            "{}",
-            r###"
-        context 'Macros' do
-        test 'a single-line link macro should be interpreted as a link' do
-            para = block_from_string 'link:/home.html[]'
-            assert_equal '<a href="/home.html" class="bare">/home.html</a>', para.sub_macros(para.source)
-        end
+    fn a_single_line_link_macro_should_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("link:/home.html[]"), &mut p);
 
-        test 'a single-line link macro with text should be interpreted as a link' do
-            para = block_from_string 'link:/home.html[Home]'
-            assert_equal '<a href="/home.html">Home</a>', para.sub_macros(para.source)
-        end
+        let block = maw.item.unwrap().item;
 
-        test 'a mailto macro should be interpreted as a mailto link' do
-            para = block_from_string 'mailto:doc.writer@asciidoc.org[]'
-            assert_equal '<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>', para.sub_macros(para.source)
-        end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "link:/home.html[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="/home.html" class="bare">/home.html</a>"#,
+                },
+                source: TSpan {
+                    data: "link:/home.html[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
-        test 'a mailto macro with text should be interpreted as a mailto link' do
-            para = block_from_string 'mailto:doc.writer@asciidoc.org[Doc Writer]'
-            assert_equal '<a href="mailto:doc.writer@asciidoc.org">Doc Writer</a>', para.sub_macros(para.source)
-        end
+    #[test]
+    fn a_single_line_link_macro_with_text_should_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("link:/home.html[Home]"), &mut p);
 
-        test 'a mailto macro with text and subject should be interpreted as a mailto link' do
-            para = block_from_string 'mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]'
-            assert_equal '<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request">Doc Writer</a>', para.sub_macros(para.source)
-        end
+        let block = maw.item.unwrap().item;
 
-        test 'a mailto macro with text, subject and body should be interpreted as a mailto link' do
-            para = block_from_string 'mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]'
-            assert_equal '<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request&amp;body=Please%20accept%20my%20pull%20request">Doc Writer</a>', para.sub_macros(para.source)
-        end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "link:/home.html[Home]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="/home.html">Home</a>"#,
+                },
+                source: TSpan {
+                    data: "link:/home.html[Home]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
-        test 'a mailto macro with subject and body only should use e-mail as text' do
-            para = block_from_string 'mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]'
-            assert_equal '<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request&amp;body=Please%20accept%20my%20pull%20request">doc.writer@asciidoc.org</a>', para.sub_macros(para.source)
-        end
+    #[test]
+    fn a_mailto_macro_should_be_interpreted_as_a_mailto_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("mailto:doc.writer@asciidoc.org[]"), &mut p);
 
-        test 'a mailto macro supports id and role attributes' do
-            para = block_from_string 'mailto:doc.writer@asciidoc.org[,id=contact,role=icon]'
-            assert_equal '<a href="mailto:doc.writer@asciidoc.org" id="contact" class="icon">doc.writer@asciidoc.org</a>', para.sub_macros(para.source)
-        end
+        let block = maw.item.unwrap().item;
 
-        test 'should recognize inline email addresses' do
-            %w(
-            doc.writer@asciidoc.org
-            author+website@4fs.no
-            john@domain.uk.co
-            name@somewhere.else.com
-            joe_bloggs@mail_server.com
-            joe-bloggs@mail-server.com
-            joe.bloggs@mail.server.com
-            FOO@BAR.COM
-            docs@writing.ninja
-            ).each do |input|
-            para = block_from_string input
-            assert_equal %(<a href="mailto:#{input}">#{input}</a>), (para.sub_macros para.source)
-            end
-        end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "mailto:doc.writer@asciidoc.org[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>"#,
+                },
+                source: TSpan {
+                    data: "mailto:doc.writer@asciidoc.org[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
-        test 'should recognize inline email address containing an ampersand' do
-            para = block_from_string 'bert&ernie@sesamestreet.com'
-            assert_equal '<a href="mailto:bert&amp;ernie@sesamestreet.com">bert&amp;ernie@sesamestreet.com</a>', para.apply_subs(para.source)
-        end
+    #[test]
+    fn a_mailto_macro_with_text_should_be_interpreted_as_a_mailto_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("mailto:doc.writer@asciidoc.org[Doc Writer]"),
+            &mut p,
+        );
 
-        test 'should recognize inline email address surrounded by angle brackets' do
-            para = block_from_string '<doc.writer@asciidoc.org>'
-            assert_equal '&lt;<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>&gt;', para.apply_subs(para.source)
-        end
+        let block = maw.item.unwrap().item;
 
-        test 'should ignore escaped inline email address' do
-            para = block_from_string %(#{BACKSLASH}doc.writer@asciidoc.org)
-            assert_equal 'doc.writer@asciidoc.org', para.sub_macros(para.source)
-        end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "mailto:doc.writer@asciidoc.org[Doc Writer]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:doc.writer@asciidoc.org">Doc Writer</a>"#,
+                },
+                source: TSpan {
+                    data: "mailto:doc.writer@asciidoc.org[Doc Writer]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
-        test 'a single-line raw url should be interpreted as a link' do
-            para = block_from_string 'http://google.com'
-            assert_equal '<a href="http://google.com" class="bare">http://google.com</a>', para.sub_macros(para.source)
-        end
+    #[test]
+    fn a_mailto_macro_with_text_and_subject_should_be_interpreted_as_a_mailto_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]"),
+            &mut p,
+        );
 
-        test 'a single-line raw url with text should be interpreted as a link' do
-            para = block_from_string 'http://google.com[Google]'
-            assert_equal '<a href="http://google.com">Google</a>', para.sub_macros(para.source)
-        end
+        let block = maw.item.unwrap().item;
 
-        test 'a multi-line raw url with text should be interpreted as a link' do
-            para = block_from_string %(http://google.com[Google\nHomepage])
-            assert_equal %(<a href="http://google.com">Google\nHomepage</a>), para.sub_macros(para.source)
-        end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request">Doc Writer</a>"#,
+                },
+                source: TSpan {
+                    data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
-        test 'a single-line raw url with attribute as text should be interpreted as a link with resolved attribute' do
-            para = block_from_string 'http://google.com[{google_homepage}]'
-            para.document.attributes['google_homepage'] = 'Google Homepage'
-            assert_equal '<a href="http://google.com">Google Homepage</a>', para.sub_macros(para.sub_attributes(para.source))
-        end
+    #[test]
+    fn a_mailto_macro_with_text_subject_and_body_should_be_interpreted_as_a_mailto_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new(
+                "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]",
+            ),
+            &mut p,
+        );
 
-        test 'should not resolve an escaped attribute in link text' do
-            {
-            'http://google.com' => "http://google.com[#{BACKSLASH}{google_homepage}]",
-            'http://google.com?q=,' => "link:http://google.com?q=,[#{BACKSLASH}{google_homepage}]",
-            }.each do |uri, macro|
-            para = block_from_string macro
-            para.document.attributes['google_homepage'] = 'Google Homepage'
-            assert_equal %(<a href="#{uri}">{google_homepage}</a>), para.sub_macros(para.sub_attributes(para.source))
-            end
-        end
+        let block = maw.item.unwrap().item;
 
-        test 'a single-line escaped raw url should not be interpreted as a link' do
-            para = block_from_string %(#{BACKSLASH}http://google.com)
-            assert_equal 'http://google.com', para.sub_macros(para.source)
-        end
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request&amp;body=Please%20accept%20my%20pull%20request">Doc Writer</a>"#,
+                },
+                source: TSpan {
+                    data: "mailto:doc.writer@asciidoc.org[Doc Writer, Pull request, Please accept my pull request]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
 
-        test 'a comma separated list of links should not include commas in links' do
-            para = block_from_string 'http://foo.com, http://bar.com, http://example.org'
-            assert_equal '<a href="http://foo.com" class="bare">http://foo.com</a>, <a href="http://bar.com" class="bare">http://bar.com</a>, <a href="http://example.org" class="bare">http://example.org</a>', para.sub_macros(para.source)
-        end
-        "###
+    #[test]
+    fn a_mailto_macro_with_subject_and_body_only_should_use_e_mail_as_text() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new(
+                "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
+            ),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:doc.writer@asciidoc.org?subject=Pull%20request&amp;body=Please%20accept%20my%20pull%20request">doc.writer@asciidoc.org</a>"#,
+                },
+                source: TSpan {
+                    data: "mailto:doc.writer@asciidoc.org[,Pull request,Please accept my pull request]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn a_mailto_macro_supports_id_and_role_attributes() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("mailto:doc.writer@asciidoc.org[,id=contact,role=icon]"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "mailto:doc.writer@asciidoc.org[,id=contact,role=icon]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:doc.writer@asciidoc.org" id="contact" class="icon">doc.writer@asciidoc.org</a>"#,
+                },
+                source: TSpan {
+                    data: "mailto:doc.writer@asciidoc.org[,id=contact,role=icon]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    const EMAIL_ADDRESSES: &[(&str, &str)] = &[
+        (
+            "doc.writer@asciidoc.org",
+            r#"<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>"#,
+        ),
+        (
+            "author+website@4fs.no",
+            r#"<a href="mailto:author+website@4fs.no">author+website@4fs.no</a>"#,
+        ),
+        (
+            "john@domain.uk.co",
+            r#"<a href="mailto:john@domain.uk.co">john@domain.uk.co</a>"#,
+        ),
+        (
+            "name@somewhere.else.com",
+            r#"<a href="mailto:name@somewhere.else.com">name@somewhere.else.com</a>"#,
+        ),
+        (
+            "joe_bloggs@mail_server.com",
+            r#"<a href="mailto:joe_bloggs@mail_server.com">joe_bloggs@mail_server.com</a>"#,
+        ),
+        (
+            "joe-bloggs@mail-server.com",
+            r#"<a href="mailto:joe-bloggs@mail-server.com">joe-bloggs@mail-server.com</a>"#,
+        ),
+        (
+            "joe.bloggs@mail.server.com",
+            r#"<a href="mailto:joe.bloggs@mail.server.com">joe.bloggs@mail.server.com</a>"#,
+        ),
+        (
+            "FOO@BAR.COM",
+            r#"<a href="mailto:FOO@BAR.COM">FOO@BAR.COM</a>"#,
+        ),
+        (
+            "docs@writing.ninja",
+            r#"<a href="mailto:docs@writing.ninja">docs@writing.ninja</a>"#,
+        ),
+    ];
+
+    #[test]
+    fn should_recognize_inline_email_addresses() {
+        for (input, expected) in EMAIL_ADDRESSES {
+            let mut p = Parser::default();
+            let maw = Block::parse(Span::new(input), &mut p);
+
+            let block = maw.item.unwrap().item;
+
+            assert_eq!(
+                block,
+                TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: input,
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: expected,
+                    },
+                    source: TSpan {
+                        data: input,
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+        }
+    }
+
+    #[test]
+    fn should_recognize_inline_email_address_containing_an_ampersand() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("bert&ernie@sesamestreet.com"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "bert&ernie@sesamestreet.com",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="mailto:bert&amp;ernie@sesamestreet.com">bert&amp;ernie@sesamestreet.com</a>"#,
+                },
+                source: TSpan {
+                    data: "bert&ernie@sesamestreet.com",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_recognize_inline_email_address_surrounded_by_angle_brackets() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("<doc.writer@asciidoc.org>"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "<doc.writer@asciidoc.org>",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"&lt;<a href="mailto:doc.writer@asciidoc.org">doc.writer@asciidoc.org</a>&gt;"#,
+                },
+                source: TSpan {
+                    data: "<doc.writer@asciidoc.org>",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_ignore_escaped_inline_email_address() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("\\doc.writer@asciidoc.org"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "\\doc.writer@asciidoc.org",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"doc.writer@asciidoc.org"#,
+                },
+                source: TSpan {
+                    data: "\\doc.writer@asciidoc.org",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn a_single_line_raw_url_should_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("http://google.com"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com" class="bare">http://google.com</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn a_single_line_raw_url_with_text_should_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("http://google.com[Google]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com[Google]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com">Google</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com[Google]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn a_multi_line_raw_url_with_text_should_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("http://google.com[Google\nHomepage]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com[Google\nHomepage]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: "<a href=\"http://google.com\">Google\nHomepage</a>",
+                },
+                source: TSpan {
+                    data: "http://google.com[Google\nHomepage]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn a_single_line_raw_url_with_attribute_as_text_should_be_interpreted_as_a_link_with_resolved_attribute()
+     {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "google_homepage",
+            "Google Homepage",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(Span::new("http://google.com[{google_homepage}]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com[{google_homepage}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com">Google Homepage</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com[{google_homepage}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_not_resolve_an_escaped_attribute_in_link_text_1() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "google_homepage",
+            "Google Homepage",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(Span::new("http://google.com[\\{google_homepage}]"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com[\\{google_homepage}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com">{google_homepage}</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com[\\{google_homepage}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn should_not_resolve_an_escaped_attribute_in_link_text_2() {
+        let mut p = Parser::default().with_intrinsic_attribute(
+            "google_homepage",
+            "Google Homepage",
+            ModificationContext::Anywhere,
+        );
+
+        let maw = Block::parse(
+            Span::new("http://google.com?q=,[\\{google_homepage}]"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://google.com?q=,[\\{google_homepage}]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://google.com?q=,">{google_homepage}</a>"#,
+                },
+                source: TSpan {
+                    data: "http://google.com?q=,[\\{google_homepage}]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn a_single_line_escaped_raw_url_should_not_be_interpreted_as_a_link() {
+        let mut p = Parser::default();
+        let maw = Block::parse(Span::new("\\http://google.com"), &mut p);
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "\\http://google.com",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"http://google.com"#,
+                },
+                source: TSpan {
+                    data: "\\http://google.com",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
+        );
+    }
+
+    #[test]
+    fn a_comma_separated_list_of_links_should_not_include_commas_in_links() {
+        let mut p = Parser::default();
+        let maw = Block::parse(
+            Span::new("http://foo.com, http://bar.com, http://example.org"),
+            &mut p,
+        );
+
+        let block = maw.item.unwrap().item;
+
+        assert_eq!(
+            block,
+            TBlock::Simple(TSimpleBlock {
+                content: TContent {
+                    original: TSpan {
+                        data: "http://foo.com, http://bar.com, http://example.org",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    rendered: r#"<a href="http://foo.com" class="bare">http://foo.com</a>, <a href="http://bar.com" class="bare">http://bar.com</a>, <a href="http://example.org" class="bare">http://example.org</a>"#,
+                },
+                source: TSpan {
+                    data: "http://foo.com, http://bar.com, http://example.org",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },)
         );
     }
 

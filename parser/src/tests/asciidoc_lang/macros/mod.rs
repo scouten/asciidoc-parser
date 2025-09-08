@@ -1,3 +1,5 @@
+mod autolinks;
+mod complex_urls;
 mod icon_macro;
 mod icons;
 mod image_link;
@@ -6,3 +8,9 @@ mod image_size;
 mod image_url;
 mod images;
 mod images_directory;
+mod link_macro;
+mod link_macro_attribute_parsing;
+mod link_macro_ref;
+mod links;
+mod mailto_macro;
+mod url_macro;
