@@ -23,7 +23,7 @@ mod positional_attribute {
             fixtures::{
                 Span,
                 attributes::{Attrlist, ElementAttribute},
-                blocks::{Block, TSectionBlock, TSimpleBlock},
+                blocks::{Block, SectionBlock, TSimpleBlock},
                 content::TContent,
             },
             sdd::{non_normative, verifies},
@@ -160,7 +160,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
 
         assert_eq!(
             block,
-            Block::Section(TSectionBlock {
+            Block::Section(SectionBlock {
                 level: 1,
                 section_title: Span {
                     data: "Section with Custom ID",
@@ -221,7 +221,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
 
         assert_eq!(
             block,
-            Block::Section(TSectionBlock {
+            Block::Section(SectionBlock {
                 level: 1,
                 section_title: Span {
                     data: "Appendix with Custom ID",

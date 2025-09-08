@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, MediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, SectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -93,7 +93,7 @@ fn simplest_section_block() {
 
     assert_eq!(
         mi.item,
-        Block::Section(TSectionBlock {
+        Block::Section(SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -151,7 +151,7 @@ fn has_child_block() {
 
     assert_eq!(
         mi.item,
-        Block::Section(TSectionBlock {
+        Block::Section(SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -262,7 +262,7 @@ fn title() {
 
     assert_eq!(
         mi.item,
-        Block::Section(TSectionBlock {
+        Block::Section(SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -395,7 +395,7 @@ fn warn_child_attrlist_has_extra_comma() {
 
     assert_eq!(
         mi.item,
-        Block::Section(TSectionBlock {
+        Block::Section(SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",

@@ -23,13 +23,13 @@ mod error_cases {
 
     use crate::{
         Parser,
-        blocks::{ContentModel, IsBlock, SectionBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         span::HasSpan,
         tests::fixtures::{
             Span,
             attributes::{Attrlist, ElementAttribute},
-            blocks::{Block, TSectionBlock, TSimpleBlock},
+            blocks::{Block, SectionBlock, TSimpleBlock},
             content::TContent,
             warnings::TWarning,
         },
@@ -40,7 +40,7 @@ mod error_cases {
     fn missing_block_after_title_line() {
         let mut parser = Parser::default();
 
-        let MatchAndWarnings { item: mi, warnings } = SectionBlock::parse(
+        let MatchAndWarnings { item: mi, warnings } = crate::blocks::SectionBlock::parse(
             &BlockMetadata::new("=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef"),
             &mut parser,
         )
@@ -61,7 +61,7 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            TSectionBlock {
+            SectionBlock {
                 level: 2,
                 section_title: Span {
                     data: "Section Title",
@@ -276,7 +276,7 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            Block::Section(TSectionBlock {
+            Block::Section(SectionBlock {
                 level: 2,
                 section_title: Span {
                     data: "Section Title (except it isn't)",

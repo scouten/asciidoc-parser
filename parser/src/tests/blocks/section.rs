@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, MediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, SectionBlock, TSimpleBlock},
         content::TContent,
         warnings::TWarning,
     },
@@ -82,7 +82,7 @@ fn simplest_section_block() {
 
     assert_eq!(
         mi.item,
-        TSectionBlock {
+        SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -141,7 +141,7 @@ fn has_child_block() {
 
     assert_eq!(
         mi.item,
-        TSectionBlock {
+        SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -220,7 +220,7 @@ fn has_macro_block_with_extra_blank_line() {
 
     assert_eq!(
         mi.item,
-        TSectionBlock {
+        SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -323,7 +323,7 @@ fn has_child_block_with_errors() {
 
     assert_eq!(
         mi.item,
-        TSectionBlock {
+        SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -438,7 +438,7 @@ fn dont_stop_at_child_section() {
 
     assert_eq!(
         mi.item,
-        TSectionBlock {
+        SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -468,7 +468,7 @@ fn dont_stop_at_child_section() {
                     anchor: None,
                     attrlist: None,
                 }),
-                Block::Section(TSectionBlock {
+                Block::Section(SectionBlock {
                     level: 2,
                     section_title: Span {
                         data: "Section 2",
@@ -559,7 +559,7 @@ fn stop_at_peer_section() {
 
     assert_eq!(
         mi.item,
-        TSectionBlock {
+        SectionBlock {
             level: 1,
             section_title: Span {
                 data: "Section Title",
@@ -638,7 +638,7 @@ fn stop_at_ancestor_section() {
 
     assert_eq!(
         mi.item,
-        TSectionBlock {
+        SectionBlock {
             level: 2,
             section_title: Span {
                 data: "Section Title",

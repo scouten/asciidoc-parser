@@ -9,7 +9,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        blocks::{Block, MediaBlock, TSectionBlock, TSimpleBlock},
+        blocks::{Block, MediaBlock, SectionBlock, TSimpleBlock},
         content::TContent,
         document::{TDocument, THeader},
         warnings::TWarning,
@@ -452,7 +452,7 @@ fn err_bad_header_and_bad_macro() {
                 }
             ),
             Block::Section(
-                TSectionBlock {
+                SectionBlock {
                     level: 1,
                     section_title: Span {
                         data: "Section Title",
