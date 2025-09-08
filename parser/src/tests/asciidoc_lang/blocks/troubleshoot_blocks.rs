@@ -7,7 +7,7 @@ use crate::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
             content::TContent,
-            document::{Document, THeader},
+            document::{Document, Header},
             warnings::TWarning,
         },
         sdd::{non_normative, track_file, verifies},
@@ -54,7 +54,7 @@ It will be styled as a sidebar.
     assert_eq!(
         doc,
         Document {
-            header: THeader {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
@@ -137,7 +137,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
     assert_eq!(
         doc,
         Document {
-            header: THeader {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],

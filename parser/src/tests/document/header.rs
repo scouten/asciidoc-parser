@@ -2,10 +2,9 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    document::Header,
     tests::fixtures::{
         Span,
-        document::{Attribute, InterpretedValue, THeader},
+        document::{Attribute, Header, InterpretedValue},
     },
 };
 
@@ -14,7 +13,8 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let h1 = Header::parse(crate::Span::new("= Title"), &mut parser).unwrap_if_no_warnings();
+    let h1 = crate::document::Header::parse(crate::Span::new("= Title"), &mut parser)
+        .unwrap_if_no_warnings();
     let h2 = h1.clone();
 
     assert_eq!(h1, h2);
@@ -23,12 +23,12 @@ fn impl_clone() {
 #[test]
 fn only_title() {
     let mut parser = Parser::default();
-    let mi =
-        Header::parse(crate::Span::new("= Just the Title"), &mut parser).unwrap_if_no_warnings();
+    let mi = crate::document::Header::parse(crate::Span::new("= Just the Title"), &mut parser)
+        .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        THeader {
+        Header {
             title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
@@ -62,12 +62,12 @@ fn trims_leading_spaces_in_title() {
     // This is totally a judgement call on my part. As far as I can tell,
     // the language doesn't describe behavior here.
     let mut parser = Parser::default();
-    let mi =
-        Header::parse(crate::Span::new("=    Just the Title"), &mut parser).unwrap_if_no_warnings();
+    let mi = crate::document::Header::parse(crate::Span::new("=    Just the Title"), &mut parser)
+        .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        THeader {
+        Header {
             title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
@@ -99,12 +99,12 @@ fn trims_leading_spaces_in_title() {
 #[test]
 fn trims_trailing_spaces_in_title() {
     let mut parser = Parser::default();
-    let mi =
-        Header::parse(crate::Span::new("= Just the Title   "), &mut parser).unwrap_if_no_warnings();
+    let mi = crate::document::Header::parse(crate::Span::new("= Just the Title   "), &mut parser)
+        .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        THeader {
+        Header {
             title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
@@ -137,7 +137,7 @@ fn trims_trailing_spaces_in_title() {
 fn title_and_attribute() {
     let mut parser = Parser::default();
 
-    let mi = Header::parse(
+    let mi = crate::document::Header::parse(
         crate::Span::new("= Just the Title\n:foo: bar\n\nblah"),
         &mut parser,
     )
@@ -145,7 +145,7 @@ fn title_and_attribute() {
 
     assert_eq!(
         mi.item,
-        THeader {
+        Header {
             title_source: Some(Span {
                 data: "Just the Title",
                 line: 1,
@@ -198,7 +198,7 @@ fn title_and_attribute() {
 fn title_applies_header_substitutions() {
     let mut parser = Parser::default();
 
-    let mi = Header::parse(
+    let mi = crate::document::Header::parse(
         crate::Span::new("= The Title & Some{sp}Nonsense\n:foo: bar\n\nblah"),
         &mut parser,
     )
@@ -206,7 +206,7 @@ fn title_applies_header_substitutions() {
 
     assert_eq!(
         mi.item,
-        THeader {
+        Header {
             title_source: Some(Span {
                 data: "The Title & Some{sp}Nonsense",
                 line: 1,
@@ -258,12 +258,12 @@ fn title_applies_header_substitutions() {
 #[test]
 fn attribute_without_title() {
     let mut parser = Parser::default();
-    let mi =
-        Header::parse(crate::Span::new(":foo: bar\n\nblah"), &mut parser).unwrap_if_no_warnings();
+    let mi = crate::document::Header::parse(crate::Span::new(":foo: bar\n\nblah"), &mut parser)
+        .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        THeader {
+        Header {
             title_source: None,
             title: None,
             attributes: &[Attribute {

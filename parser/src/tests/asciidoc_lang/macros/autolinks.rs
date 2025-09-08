@@ -22,7 +22,7 @@ mod url_schemes_for_autolinks {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, verifies},
         },
@@ -51,7 +51,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -107,7 +107,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -163,7 +163,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -219,7 +219,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -276,7 +276,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -343,7 +343,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -411,7 +411,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -465,7 +465,7 @@ mod email_autolinks {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::verifies,
         },
@@ -495,7 +495,7 @@ For email address which do not conform to these restriction, you can use the xre
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -550,7 +550,7 @@ mod escaping_urls_and_email_addresses {
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::verifies,
         },
@@ -582,7 +582,7 @@ The URL and email address will both be shown in plain text.
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -671,7 +671,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],

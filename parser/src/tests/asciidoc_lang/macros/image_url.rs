@@ -24,7 +24,7 @@ mod image_url_targets {
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, to_do_verifies, verifies},
         },
@@ -61,7 +61,7 @@ include::example$image.adoc[tag=url]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -154,7 +154,7 @@ include::example$image.adoc[tag=in-url]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],

@@ -11,7 +11,7 @@ use crate::{
         attributes::{Attrlist, ElementAttribute},
         blocks::{Block, MediaBlock, SectionBlock, SimpleBlock},
         content::TContent,
-        document::{Document, THeader},
+        document::{Document, Header},
         warnings::TWarning,
     },
     warnings::WarningType,
@@ -44,7 +44,7 @@ fn empty_source() {
     assert_eq!(
         doc,
         Document {
-            header: THeader {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
@@ -72,7 +72,7 @@ fn only_spaces() {
     assert_eq!(
         Parser::default().parse("    "),
         Document {
-            header: THeader {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
@@ -101,7 +101,7 @@ fn one_simple_block() {
     assert_eq!(
         doc,
         Document {
-            header: THeader {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
@@ -151,7 +151,7 @@ fn two_simple_blocks() {
     assert_eq!(
         Parser::default().parse("abc\n\ndef"),
         Document {
-            header: THeader {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
@@ -222,7 +222,7 @@ fn two_blocks_and_title() {
     assert_eq!(
         Parser::default().parse("= Example Title\n\nabc\n\ndef"),
         Document {
-            header: THeader {
+            header: Header {
                 title_source: Some(Span {
                     data: "Example Title",
                     line: 1,
@@ -298,7 +298,7 @@ fn extra_space_before_title() {
     assert_eq!(
         Parser::default().parse("=   Example Title\n\nabc"),
         Document {
-            header: THeader {
+            header: Header {
                 title_source: Some(Span {
                     data: "Example Title",
                     line: 1,
@@ -351,7 +351,7 @@ fn err_bad_header() {
     assert_eq!(
         Parser::default().parse("= Title\nnot an attribute\n"),
         Document {
-            header: THeader {
+            header: Header {
                 title_source: Some(Span {
                     data: "Title",
                     line: 1,
@@ -412,7 +412,7 @@ fn err_bad_header_and_bad_macro() {
     assert_eq!(
         Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         Document {
-            header: THeader {
+            header: Header {
                 title_source: Some(Span {
                     data: "Title",
                     line: 1,

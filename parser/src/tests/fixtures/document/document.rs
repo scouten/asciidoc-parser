@@ -3,12 +3,12 @@ use std::{cmp::PartialEq, fmt};
 use crate::{
     HasSpan,
     blocks::IsBlock,
-    tests::fixtures::{Span, blocks::Block, document::THeader, warnings::TWarning},
+    tests::fixtures::{Span, blocks::Block, document::Header, warnings::TWarning},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct Document {
-    pub header: THeader,
+    pub header: Header,
     pub blocks: &'static [Block],
     pub source: Span,
     pub warnings: &'static [TWarning],

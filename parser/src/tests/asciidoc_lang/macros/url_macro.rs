@@ -27,7 +27,7 @@ mod from_url_to_macro {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, verifies},
         },
@@ -69,7 +69,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -135,7 +135,7 @@ The more typical reason, however, is to specify custom link text.
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -189,7 +189,7 @@ mod custom_link_text {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, verifies},
         },
@@ -225,7 +225,7 @@ include::example$url.adoc[tag=irc]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -288,7 +288,7 @@ include::example$url.adoc[tag=text]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -342,7 +342,7 @@ mod link_attributes {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, verifies},
         },
@@ -374,7 +374,7 @@ include::example$url.adoc[tag=css]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],

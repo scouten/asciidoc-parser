@@ -7,7 +7,7 @@ use crate::{
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{Document, THeader},
+            document::{Document, Header},
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -58,7 +58,7 @@ include::example$paragraph.adoc[tag=para]
     assert_eq!(
         doc,
         Document {
-            header: THeader {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],

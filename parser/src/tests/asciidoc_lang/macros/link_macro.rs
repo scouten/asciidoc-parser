@@ -23,7 +23,7 @@ mod anatomy {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, verifies},
         },
@@ -58,7 +58,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -121,7 +121,7 @@ mod link_to_relative_file {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, verifies},
         },
@@ -159,7 +159,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -223,7 +223,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -277,7 +277,7 @@ mod when_to_use {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, verifies},
         },
@@ -319,7 +319,7 @@ link:report.pdf[Get Report]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -392,7 +392,7 @@ link:pass:[My Documents/report.pdf][Get Report]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -453,7 +453,7 @@ link:My&#32;Documents/report.pdf[Get Report]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -514,7 +514,7 @@ link:My%20Documents/report.pdf[Get Report]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -587,7 +587,7 @@ link:Avengers%3A%20Endgame.html[]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -652,7 +652,7 @@ link:++https://example.org/now_this__link_works.html++[]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -715,7 +715,7 @@ In this case, the link macro prefix is required to increase the precedence so th
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -778,7 +778,7 @@ link:file:///home/username[Your files]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],

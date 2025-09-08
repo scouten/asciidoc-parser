@@ -10,7 +10,7 @@ mod inline_link {
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{Attribute, Document, InterpretedValue, THeader},
+            document::{Attribute, Document, Header, InterpretedValue},
         },
     };
 
@@ -22,7 +22,7 @@ mod inline_link {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -73,7 +73,7 @@ mod inline_link {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -123,7 +123,7 @@ mod inline_link {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -173,7 +173,7 @@ mod inline_link {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: Some(Span {
                         data: "Test Page",
                         line: 1,
@@ -245,7 +245,7 @@ mod inline_link {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -297,7 +297,7 @@ mod inline_link {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -348,7 +348,7 @@ mod inline_link {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: Some(Span {
                         data: "Test",
                         line: 1,
@@ -421,7 +421,7 @@ mod link_macro {
             Span,
             blocks::{Block, SimpleBlock},
             content::TContent,
-            document::{Attribute, Document, InterpretedValue, THeader},
+            document::{Attribute, Document, Header, InterpretedValue},
         },
     };
 
@@ -433,7 +433,7 @@ mod link_macro {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -483,7 +483,7 @@ mod link_macro {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -534,7 +534,7 @@ mod link_macro {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: Some(Span {
                         data: "Test Document",
                         line: 1,
@@ -605,7 +605,7 @@ mod link_macro {
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: Some(Span {
                         data: "Test Document",
                         line: 1,

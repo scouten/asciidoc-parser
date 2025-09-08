@@ -25,7 +25,7 @@ mod block_image_macro {
                 attributes::{Attrlist, ElementAttribute},
                 blocks::{Block, MediaBlock, SimpleBlock},
                 content::TContent,
-                document::{Document, THeader},
+                document::{Document, Header},
             },
             sdd::{non_normative, to_do_verifies, verifies},
         },
@@ -72,7 +72,7 @@ include::example$image.adoc[tag=base]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -194,7 +194,7 @@ include::example$image.adoc[tag=alt]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -275,7 +275,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
@@ -366,7 +366,7 @@ include::example$image.adoc[tag=attr]
         assert_eq!(
             doc,
             Document {
-                header: THeader {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
