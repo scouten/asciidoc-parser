@@ -508,10 +508,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
         if link_text.is_empty() {
             // mailto is a special case; already processed.
             if let Some(_mailto) = mailto {
-                link_text = match mailto_text {
-                    Some(txt) => txt.to_owned(),
-                    None => "".to_owned(),
-                };
+                link_text = mailto_text.map(|s| s.to_owned()).unwrap_or_default();
             } else {
                 if false {
                     // Skip for the moment?

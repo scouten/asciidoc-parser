@@ -475,4 +475,54 @@ mod link_macro {
             }
         );
     }
+
+    #[test]
+    fn empty_mailto_link() {
+        let doc = Parser::default().parse("mailto:[,Subscribe me]");
+
+        assert_eq!(
+            doc,
+            TDocument {
+                header: THeader {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: TSpan {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[TBlock::Simple(TSimpleBlock {
+                    content: TContent {
+                        original: TSpan {
+                            data: "mailto:[,Subscribe me]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "mailto:[,Subscribe me]",
+                    },
+                    source: TSpan {
+                        data: "mailto:[,Subscribe me]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: TSpan {
+                    data: "mailto:[,Subscribe me]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }
