@@ -10,7 +10,7 @@ use crate::{
         Span,
         attributes::{Attrlist, ElementAttribute},
         blocks::MediaBlock,
-        warnings::TWarning,
+        warnings::Warning,
     },
     warnings::WarningType,
 };
@@ -71,7 +71,7 @@ fn err_missing_double_colon() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: ":bar[blah,blap]",
                 line: 1,
@@ -93,7 +93,7 @@ fn err_missing_macro_attrlist() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "",
                 line: 1,
@@ -159,7 +159,7 @@ fn simplest_block_macro() {
 
     assert_eq!(
         mi.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "[]",
                 line: 1,
@@ -471,7 +471,7 @@ fn err_duplicate_comma() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "blah,,blap",
                 line: 1,

@@ -9,7 +9,7 @@ use crate::{
             Span,
             blocks::{Block, CompoundDelimitedBlock, RawDelimitedBlock, SimpleBlock},
             content::Content,
-            warnings::TWarning,
+            warnings::Warning,
         },
         sdd::{non_normative, to_do_verifies, track_file, verifies},
     },
@@ -175,7 +175,7 @@ The block metadata (block attribute and anchor lines) goes above the opening del
 
     assert_eq!(
         maw_block.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "....",
                 line: 1,

@@ -9,7 +9,7 @@ mod parse {
             Span,
             blocks::{Block, RawDelimitedBlock, SimpleBlock},
             content::Content,
-            warnings::TWarning,
+            warnings::Warning,
         },
         warnings::WarningType,
     };
@@ -187,7 +187,7 @@ mod parse {
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
+            vec![Warning {
                 source: Span {
                     data: "....",
                     line: 1,

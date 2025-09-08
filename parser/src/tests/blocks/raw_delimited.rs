@@ -167,7 +167,7 @@ mod parse {
     use crate::{
         Parser,
         blocks::metadata::BlockMetadata,
-        tests::fixtures::{Span, warnings::TWarning},
+        tests::fixtures::{Span, warnings::Warning},
         warnings::WarningType,
     };
 
@@ -221,7 +221,7 @@ mod parse {
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
+            vec![Warning {
                 source: Span {
                     data: "....",
                     line: 1,

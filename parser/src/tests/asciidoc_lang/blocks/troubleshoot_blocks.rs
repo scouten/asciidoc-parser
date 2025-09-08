@@ -8,7 +8,7 @@ use crate::{
             blocks::{Block, CompoundDelimitedBlock, SimpleBlock},
             content::Content,
             document::{Document, Header},
-            warnings::TWarning,
+            warnings::Warning,
         },
         sdd::{non_normative, track_file, verifies},
     },
@@ -188,7 +188,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 col: 1,
                 offset: 0,
             },
-            warnings: &[TWarning {
+            warnings: &[Warning {
                 source: Span {
                     data: "********",
                     line: 1,

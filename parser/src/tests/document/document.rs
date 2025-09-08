@@ -12,7 +12,7 @@ use crate::{
         blocks::{Block, MediaBlock, SectionBlock, SimpleBlock},
         content::Content,
         document::{Document, Header},
-        warnings::TWarning,
+        warnings::Warning,
     },
     warnings::WarningType,
 };
@@ -394,7 +394,7 @@ fn err_bad_header() {
                 col: 1,
                 offset: 0
             },
-            warnings: &[TWarning {
+            warnings: &[Warning {
                 source: Span {
                     data: "not an attribute",
                     line: 2,
@@ -526,7 +526,7 @@ fn err_bad_header_and_bad_macro() {
                 col: 1,
                 offset: 0
             },
-            warnings: &[TWarning {
+            warnings: &[Warning {
                 source: Span {
                     data: "not an attribute",
                     line: 2,
@@ -535,7 +535,7 @@ fn err_bad_header_and_bad_macro() {
                 },
                 warning: WarningType::DocumentHeaderNotTerminated,
             },
-            TWarning {
+            Warning {
                 source: Span {
                     data: "alt=Sunset,width=300,,height=400",
                     line: 6,

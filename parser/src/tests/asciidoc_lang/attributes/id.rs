@@ -36,7 +36,7 @@ mod valid_id_characters {
                 Span,
                 blocks::{Block, SimpleBlock},
                 content::Content,
-                warnings::TWarning,
+                warnings::Warning,
             },
             sdd::{non_normative, verifies},
         },
@@ -68,7 +68,7 @@ All the language requires in this case is that the value be non-empty.
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
+            vec![Warning {
                 source: Span {
                     data: "",
                     line: 1,
@@ -167,7 +167,7 @@ install the gem
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
+            vec![Warning {
                 source: Span {
                     data: "3 blind mice",
                     line: 1,

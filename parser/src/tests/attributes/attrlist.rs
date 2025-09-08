@@ -6,7 +6,7 @@ use crate::{
     tests::fixtures::{
         Span,
         attributes::{Attrlist, ElementAttribute},
-        warnings::TWarning,
+        warnings::Warning,
     },
     warnings::WarningType,
 };
@@ -475,7 +475,7 @@ fn err_unparsed_remainder_after_value() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "alt=\"Sunset\"width=300",
                 line: 1,
@@ -523,7 +523,7 @@ fn propagates_error_from_element_attribute() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "foo%#id",
                 line: 1,
@@ -1708,7 +1708,7 @@ fn err_double_comma() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 1,

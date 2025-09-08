@@ -11,7 +11,7 @@ use crate::{
         attributes::{Attrlist, ElementAttribute},
         blocks::{Block, MediaBlock, SectionBlock, SimpleBlock},
         content::Content,
-        warnings::TWarning,
+        warnings::Warning,
     },
     warnings::WarningType,
 };
@@ -482,7 +482,7 @@ fn warn_child_attrlist_has_extra_comma() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 3,

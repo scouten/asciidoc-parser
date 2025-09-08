@@ -11,7 +11,7 @@ use crate::{
         attributes::{Attrlist, ElementAttribute},
         blocks::{Block, SimpleBlock},
         content::Content,
-        warnings::TWarning,
+        warnings::Warning,
     },
     warnings::WarningType,
 };
@@ -542,7 +542,7 @@ fn err_empty_block_anchor() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "",
                 line: 1,
@@ -641,7 +641,7 @@ fn err_invalid_block_anchor() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
+        vec![Warning {
             source: Span {
                 data: "3 blind mice",
                 line: 1,

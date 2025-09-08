@@ -31,7 +31,7 @@ mod error_cases {
             attributes::{Attrlist, ElementAttribute},
             blocks::{Block, SectionBlock, SimpleBlock},
             content::Content,
-            warnings::TWarning,
+            warnings::Warning,
         },
         warnings::{MatchAndWarnings, WarningType},
     };
@@ -160,7 +160,7 @@ mod error_cases {
 
         assert_eq!(
             warnings,
-            vec![TWarning {
+            vec![Warning {
                 source: Span {
                     data: ".ancestor section== Section 2\n\ndef",
                     line: 5,
@@ -342,7 +342,7 @@ mod error_cases {
 
         assert_eq!(
             warnings,
-            vec![TWarning {
+            vec![Warning {
                 source: Span {
                     data: "alt=\"Sunset\"width=300",
                     line: 1,
