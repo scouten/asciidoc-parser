@@ -36,7 +36,7 @@ Element attributes are commonly used for the following purposes:
 
 Unlike document attributes, element attributes are defined directly on the element to which they apply using an <<attribute-list,attribute list>>.
 
-    "#
+"#
 );
 
 mod attrlist {
