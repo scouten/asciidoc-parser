@@ -1,7 +1,6 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/ROOT/pages/document-processing.adoc");
-// Tracking commit c45aa60, current as of 2024-10-26.
 
 non_normative!(
     r#"

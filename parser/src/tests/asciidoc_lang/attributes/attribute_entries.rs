@@ -1,18 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser, Span,
-    document::{Attribute, InterpretedValue},
-    tests::{
-        fixtures::{
-            TSpan,
-            blocks::{TBlock, TSimpleBlock},
-            content::TContent,
-            document::{TAttribute, TDocument, THeader, TInterpretedValue},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/attribute-entries.adoc");
 
@@ -50,20 +38,24 @@ This [.term]*sets* -- that is, turns on -- the document attribute so you can use
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":name-of-an-attribute:"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(
+        crate::Span::new(":name-of-an-attribute:"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "name-of-an-attribute",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Set,
-            source: TSpan {
+            value: InterpretedValue::Set,
+            source: Span {
                 data: ":name-of-an-attribute:",
                 line: 1,
                 col: 1,
@@ -98,46 +90,46 @@ At the end of the value, press kbd:[Enter].
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
-                title_source: Some(TSpan {
+        Document {
+            header: Header {
+                title_source: Some(Span {
                     data: "Testing",
                     line: 1,
                     col: 3,
                     offset: 2,
                 },),
                 title: Some("Testing"),
-                attributes: &[TAttribute {
-                    name: TSpan {
+                attributes: &[Attribute {
+                    name: Span {
                         data: "name-of-an-attribute",
                         line: 2,
                         col: 2,
                         offset: 11,
                     },
-                    value_source: Some(TSpan {
+                    value_source: Some(Span {
                         data: "value of the attribute",
                         line: 2,
                         col: 24,
                         offset: 33,
                     }),
-                    value: TInterpretedValue::Value("value of the attribute"),
-                    source: TSpan {
+                    value: InterpretedValue::Value("value of the attribute"),
+                    source: Span {
                         data: ":name-of-an-attribute: value of the attribute",
                         line: 2,
                         col: 1,
                         offset: 10,
                     },
                 },],
-                source: TSpan {
+                source: Span {
                     data: "= Testing\n:name-of-an-attribute: value of the attribute",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            blocks: &[Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "The value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
                         line: 4,
                         col: 1,
@@ -145,7 +137,7 @@ At the end of the value, press kbd:[Enter].
                     },
                     rendered: "The value of the attribute named <code>name-of-an-attribute</code> is: value of the attribute",
                 },
-                source: TSpan {
+                source: Span {
                     data: "The value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
                     line: 4,
                     col: 1,
@@ -156,7 +148,7 @@ At the end of the value, press kbd:[Enter].
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "= Testing\n:name-of-an-attribute: value of the attribute\n\nThe value of the attribute named `name-of-an-attribute` is: {name-of-an-attribute}",
                 line: 1,
                 col: 1,
@@ -168,7 +160,7 @@ At the end of the value, press kbd:[Enter].
 
     assert_eq!(
         parser.attribute_value("name-of-an-attribute"),
-        TInterpretedValue::Value("value of the attribute")
+        InterpretedValue::Value("value of the attribute")
     );
 }
 
@@ -187,46 +179,46 @@ That means you don't need to escape special characters such in an HTML tag.
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
-                title_source: Some(TSpan {
+        Document {
+            header: Header {
+                title_source: Some(Span {
                     data: "Testing",
                     line: 1,
                     col: 3,
                     offset: 2,
                 },),
                 title: Some("Testing"),
-                attributes: &[TAttribute {
-                    name: TSpan {
+                attributes: &[Attribute {
+                    name: Span {
                         data: "lt-attribute",
                         line: 2,
                         col: 2,
                         offset: 11,
                     },
-                    value_source: Some(TSpan {
+                    value_source: Some(Span {
                         data: "<",
                         line: 2,
                         col: 16,
                         offset: 25,
                     },),
-                    value: TInterpretedValue::Value("&lt;"),
-                    source: TSpan {
+                    value: InterpretedValue::Value("&lt;"),
+                    source: Span {
                         data: ":lt-attribute: <",
                         line: 2,
                         col: 1,
                         offset: 10,
                     },
                 },],
-                source: TSpan {
+                source: Span {
                     data: "= Testing\n:lt-attribute: <",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            blocks: &[Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "The value of the attribute named `lt-attribute` is: {lt-attribute}",
                         line: 4,
                         col: 1,
@@ -234,7 +226,7 @@ That means you don't need to escape special characters such in an HTML tag.
                     },
                     rendered: "The value of the attribute named <code>lt-attribute</code> is: &lt;",
                 },
-                source: TSpan {
+                source: Span {
                     data: "The value of the attribute named `lt-attribute` is: {lt-attribute}",
                     line: 4,
                     col: 1,
@@ -245,7 +237,7 @@ That means you don't need to escape special characters such in an HTML tag.
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "= Testing\n:lt-attribute: <\n\nThe value of the attribute named `lt-attribute` is: {lt-attribute}",
                 line: 1,
                 col: 1,
@@ -280,49 +272,47 @@ Attribute references in the value of an attribute entry are resolved immediately
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
+        Document {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[
-                    TAttribute {
-                        name: TSpan {
+                    Attribute {
+                        name: Span {
                             data: "url-org",
                             line: 1,
                             col: 2,
                             offset: 1,
                         },
-                        value_source: Some(TSpan {
+                        value_source: Some(Span {
                             data: "https://example.org/projects",
                             line: 1,
                             col: 11,
                             offset: 10,
                         },),
-                        value: TInterpretedValue::Value("https://example.org/projects",),
-                        source: TSpan {
+                        value: InterpretedValue::Value("https://example.org/projects",),
+                        source: Span {
                             data: ":url-org: https://example.org/projects",
                             line: 1,
                             col: 1,
                             offset: 0,
                         },
                     },
-                    TAttribute {
-                        name: TSpan {
+                    Attribute {
+                        name: Span {
                             data: "url-project",
                             line: 2,
                             col: 2,
                             offset: 40,
                         },
-                        value_source: Some(TSpan {
+                        value_source: Some(Span {
                             data: "{url-org}/project-name",
                             line: 2,
                             col: 15,
                             offset: 53,
                         },),
-                        value: TInterpretedValue::Value(
-                            "https://example.org/projects/project-name",
-                        ),
-                        source: TSpan {
+                        value: InterpretedValue::Value("https://example.org/projects/project-name",),
+                        source: Span {
                             data: ":url-project: {url-org}/project-name",
                             line: 2,
                             col: 1,
@@ -330,7 +320,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                         },
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: ":url-org: https://example.org/projects\n:url-project: {url-org}/project-name",
                     line: 1,
                     col: 1,
@@ -338,7 +328,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                 },
             },
             blocks: &[],
-            source: TSpan {
+            source: Span {
                 data: ":url-org: https://example.org/projects\n:url-project: {url-org}/project-name",
                 line: 1,
                 col: 1,
@@ -350,7 +340,7 @@ Attribute references in the value of an attribute entry are resolved immediately
 
     assert_eq!(
         parser.attribute_value("url-project"),
-        TInterpretedValue::Value("https://example.org/projects/project-name")
+        InterpretedValue::Value("https://example.org/projects/project-name")
     );
 }
 
@@ -378,27 +368,27 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
+        Document {
+            header: Header {
                 title_source: None,
                 title: None,
-                attributes: &[TAttribute {
-                    name: TSpan {
+                attributes: &[Attribute {
+                    name: Span {
                         data: "name-of-an-attribute",
                         line: 1,
                         col: 2,
                         offset: 1,
                     },
                     value_source: None,
-                    value: TInterpretedValue::Set,
-                    source: TSpan {
+                    value: InterpretedValue::Set,
+                    source: Span {
                         data: ":name-of-an-attribute:",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },],
-                source: TSpan {
+                source: Span {
                     data: ":name-of-an-attribute:",
                     line: 1,
                     col: 1,
@@ -406,7 +396,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
                 },
             },
             blocks: &[],
-            source: TSpan {
+            source: Span {
                 data: ":name-of-an-attribute:",
                 line: 1,
                 col: 1,
@@ -418,24 +408,14 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
 
     assert_eq!(
         parser.attribute_value("name-of-an-attribute"),
-        TInterpretedValue::Set
+        InterpretedValue::Set
     );
 }
 
 mod where_declared {
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        parser::ModificationContext,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -468,9 +448,9 @@ For attributes that allow it (which includes general purpose attributes), the at
 
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "We are agreed? {agreed}",
                         line: 1,
                         col: 1,
@@ -478,7 +458,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                     },
                     rendered: "We are agreed? yes",
                 },
-                source: TSpan {
+                source: Span {
                     data: "We are agreed? {agreed}",
                     line: 1,
                     col: 1,
@@ -497,9 +477,9 @@ For attributes that allow it (which includes general purpose attributes), the at
 
         assert_eq!(
             block3,
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "Are we still agreed? {agreed}",
                         line: 5,
                         col: 1,
@@ -507,7 +487,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                     },
                     rendered: "Are we still agreed? no",
                 },
-                source: TSpan {
+                source: Span {
                     data: "Are we still agreed? {agreed}",
                     line: 5,
                     col: 1,
@@ -546,19 +526,9 @@ See the xref:document-attributes-ref.adoc[] for where in a document each attribu
 }
 
 mod defining_without_attribute_entry {
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        parser::ModificationContext,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -607,9 +577,9 @@ pass:a,q[{attribute-with-formatted-text}]
 
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
                         line: 1,
                         col: 1,
@@ -617,7 +587,7 @@ pass:a,q[{attribute-with-formatted-text}]
                     },
                     rendered: "formatting applied: attribute with <strong>formatted</strong> <em>text</em>",
                 },
-                source: TSpan {
+                source: Span {
                     data: "formatting applied: pass:a,q[{attribute-with-formatted-text}]",
                     line: 1,
                     col: 1,
@@ -634,9 +604,9 @@ pass:a,q[{attribute-with-formatted-text}]
 
         assert_eq!(
             block2,
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "formatting suppressed: {attribute-with-formatted-text}",
                         line: 3,
                         col: 1,
@@ -644,7 +614,7 @@ pass:a,q[{attribute-with-formatted-text}]
                     },
                     rendered: "formatting suppressed: attribute with *formatted* _text_",
                 },
-                source: TSpan {
+                source: Span {
                     data: "formatting suppressed: {attribute-with-formatted-text}",
                     line: 3,
                     col: 1,

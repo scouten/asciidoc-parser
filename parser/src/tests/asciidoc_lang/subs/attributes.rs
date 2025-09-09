@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/subs/pages/attributes.adoc");
 
@@ -23,7 +23,7 @@ mod default_attributes_substitution {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -356,7 +356,7 @@ mod attributes_substitution_value {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(

@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/subs/pages/macros.adoc");
 
@@ -24,7 +24,7 @@ mod default_macros_substitution {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -359,7 +359,7 @@ mod macros_substitution_value {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(

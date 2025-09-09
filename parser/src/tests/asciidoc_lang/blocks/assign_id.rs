@@ -1,18 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser, Span,
-    blocks::{Block, IsBlock},
-    tests::{
-        fixtures::{
-            TSpan,
-            attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            content::TContent,
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
 track_file!("docs/modules/blocks/pages/assign-id.adoc");
 
@@ -46,8 +34,8 @@ Content of delimited example block
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(
-        Span::new("[#the-id-of-this-block]\n====\nContent of delimited example block\n===="),
+    let block = crate::blocks::Block::parse(
+        crate::Span::new("[#the-id-of-this-block]\n====\nContent of delimited example block\n===="),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -56,10 +44,10 @@ Content of delimited example block
 
     assert_eq!(
         block,
-        TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-            blocks: &[TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+        Block::CompoundDelimited(CompoundDelimitedBlock {
+            blocks: &[Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "Content of delimited example block",
                         line: 3,
                         col: 1,
@@ -67,7 +55,7 @@ Content of delimited example block
                     },
                     rendered: "Content of delimited example block",
                 },
-                source: TSpan {
+                source: Span {
                     data: "Content of delimited example block",
                     line: 3,
                     col: 1,
@@ -79,7 +67,7 @@ Content of delimited example block
                 attrlist: None,
             },),],
             context: "example",
-            source: TSpan {
+            source: Span {
                 data: "[#the-id-of-this-block]\n====\nContent of delimited example block\n====",
                 line: 1,
                 col: 1,
@@ -88,13 +76,13 @@ Content of delimited example block
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["#the-id-of-this-block",],
                     value: "#the-id-of-this-block"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "#the-id-of-this-block",
                     line: 1,
                     col: 2,
@@ -143,8 +131,8 @@ Roads? Where we're going, we don't need roads.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(
-        Span::new("[quote#roads]\nRoads? Where we're going, we don't need roads."),
+    let block = crate::blocks::Block::parse(
+        crate::Span::new("[quote#roads]\nRoads? Where we're going, we don't need roads."),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -153,9 +141,9 @@ Roads? Where we're going, we don't need roads.
 
     assert_eq!(
         block,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "Roads? Where we're going, we don't need roads.",
                     line: 2,
                     col: 1,
@@ -163,7 +151,7 @@ Roads? Where we're going, we don't need roads.
                 },
                 rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[quote#roads]\nRoads? Where we're going, we don't need roads.",
                 line: 1,
                 col: 1,
@@ -172,13 +160,13 @@ Roads? Where we're going, we don't need roads.
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["quote", "#roads"],
                     value: "quote#roads"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "quote#roads",
                     line: 1,
                     col: 2,
@@ -210,7 +198,7 @@ Roads? Where we're going, we don't need roads.
 
     let mut parser = Parser::default();
 
-    let block = Block::parse(Span::new(
+    let block = crate::blocks::Block::parse(crate::Span::new(
         "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
     ), &mut parser)
     .unwrap_if_no_warnings()
@@ -219,9 +207,9 @@ Roads? Where we're going, we don't need roads.
 
     assert_eq!(
         block,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "Roads? Where we're going, we don't need roads.",
                     line: 2,
                     col: 1,
@@ -229,7 +217,7 @@ Roads? Where we're going, we don't need roads.
                 },
                 rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[quote#roads,Dr. Emmett Brown,Back to the Future]\nRoads? Where we're going, we don't need roads.",
                 line: 1,
                 col: 1,
@@ -238,25 +226,25 @@ Roads? Where we're going, we don't need roads.
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
+            attrlist: Some(Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["quote", "#roads"],
                         value: "quote#roads"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "Dr. Emmett Brown"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "Back to the Future"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "quote#roads,Dr. Emmett Brown,Back to the Future",
                     line: 1,
                     col: 2,

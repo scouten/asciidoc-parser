@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/text/pages/quotation-marks-and-apostrophes.adoc");
 
@@ -13,10 +13,12 @@ It covers the shorthand syntax, the limitations of that syntax, and when it's ne
 );
 
 mod single_and_double_quotation_mark_syntax {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     #[test]
@@ -123,10 +125,12 @@ In that case, it's necessary to input the curved quotation marks directly using 
 }
 
 mod apostrophe_syntax {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(

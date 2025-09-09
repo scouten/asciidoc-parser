@@ -14,6 +14,7 @@ mod document;
 pub(crate) mod fixtures;
 mod internal;
 mod parser;
+pub(crate) mod prelude;
 pub(crate) mod sdd;
 mod span;
 mod strings;

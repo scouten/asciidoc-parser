@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/links.adoc");
 
@@ -44,18 +44,7 @@ When linking to an email address, you can use the specialized xref:mailto-macro.
 mod encode_reserved_characters {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -103,21 +92,21 @@ Depending on the capabilities of the web application, the space character can be
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://example.org?q=label:%22Requires%20docs%22",
                             line: 1,
                             col: 1,
@@ -125,7 +114,7 @@ Depending on the capabilities of the web application, the space character can be
                         },
                         rendered: "<a href=\"https://example.org?q=label:%22Requires%20docs%22\" class=\"bare\">https://example.org?q=label:%22Requires%20docs%22</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://example.org?q=label:%22Requires%20docs%22",
                         line: 1,
                         col: 1,
@@ -136,7 +125,7 @@ Depending on the capabilities of the web application, the space character can be
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://example.org?q=label:%22Requires%20docs%22",
                     line: 1,
                     col: 1,
@@ -151,18 +140,7 @@ Depending on the capabilities of the web application, the space character can be
 mod hide_uri_scheme {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TAttribute, TDocument, THeader, TInterpretedValue},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -209,41 +187,41 @@ The prefix will still be present in the link target.
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
-                    title_source: Some(TSpan {
+            Document {
+                header: Header {
+                    title_source: Some(Span {
                         data: "Document Title",
                         line: 1,
                         col: 3,
                         offset: 2,
                     },),
                     title: Some("Document Title",),
-                    attributes: &[TAttribute {
-                        name: TSpan {
+                    attributes: &[Attribute {
+                        name: Span {
                             data: "hide-uri-scheme",
                             line: 2,
                             col: 2,
                             offset: 18,
                         },
                         value_source: None,
-                        value: TInterpretedValue::Set,
-                        source: TSpan {
+                        value: InterpretedValue::Set,
+                        source: Span {
                             data: ":hide-uri-scheme:",
                             line: 2,
                             col: 1,
                             offset: 17,
                         },
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "= Document Title\n:hide-uri-scheme:",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://asciidoctor.org",
                             line: 4,
                             col: 1,
@@ -252,7 +230,7 @@ The prefix will still be present in the link target.
                         rendered: r#"<a href="https://asciidoctor.org" class="bare">asciidoctor.org</a>"#,
                         // Expected output verified by running Asciidoc locally.
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org",
                         line: 4,
                         col: 1,
@@ -263,7 +241,7 @@ The prefix will still be present in the link target.
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "= Document Title\n:hide-uri-scheme:\n\nhttps://asciidoctor.org",
                     line: 1,
                     col: 1,

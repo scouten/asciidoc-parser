@@ -1,22 +1,15 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    HasSpan, Parser, Span,
-    attributes::Attrlist,
-    parser::ModificationContext,
-    tests::fixtures::{
-        TSpan,
-        attributes::{TAttrlist, TElementAttribute},
-        warnings::TWarning,
-    },
-    warnings::WarningType,
+    HasSpan, Parser, parser::ModificationContext, tests::prelude::*, warnings::WarningType,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let p = Parser::default();
-    let b1 = Attrlist::parse(Span::new("abc"), &p).unwrap_if_no_warnings();
+    let b1 =
+        crate::attributes::Attrlist::parse(crate::Span::new("abc"), &p).unwrap_if_no_warnings();
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
@@ -24,13 +17,13 @@ fn impl_clone() {
 #[test]
 fn empty_source() {
     let p = Parser::default();
-    let mi = Attrlist::parse(Span::new(""), &p).unwrap_if_no_warnings();
+    let mi = crate::attributes::Attrlist::parse(crate::Span::new(""), &p).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
+        Attrlist {
             attributes: &[],
-            source: TSpan {
+            source: Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -54,7 +47,7 @@ fn empty_source() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 1,
@@ -64,7 +57,7 @@ fn empty_source() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 1,
@@ -76,29 +69,30 @@ fn empty_source() {
 #[test]
 fn empty_positional_attributes() {
     let p = Parser::default();
-    let mi = Attrlist::parse(Span::new(",300,400"), &p).unwrap_if_no_warnings();
+    let mi = crate::attributes::Attrlist::parse(crate::Span::new(",300,400"), &p)
+        .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
+        Attrlist {
             attributes: &[
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: ""
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: "300"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: "400"
                 }
             ],
-            source: TSpan {
+            source: Span {
                 data: ",300,400",
                 line: 1,
                 col: 1,
@@ -116,7 +110,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.item.nth_attribute(1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: ""
@@ -125,7 +119,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: ""
@@ -134,7 +128,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.item.nth_attribute(2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "300"
@@ -143,7 +137,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "300"
@@ -152,7 +146,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.item.nth_attribute(3).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "400"
@@ -161,7 +155,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "400"
@@ -174,7 +168,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: ",300,400",
             line: 1,
             col: 1,
@@ -184,7 +178,7 @@ fn empty_positional_attributes() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 9,
@@ -196,29 +190,30 @@ fn empty_positional_attributes() {
 #[test]
 fn only_positional_attributes() {
     let p = Parser::default();
-    let mi = Attrlist::parse(Span::new("Sunset,300,400"), &p).unwrap_if_no_warnings();
+    let mi = crate::attributes::Attrlist::parse(crate::Span::new("Sunset,300,400"), &p)
+        .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
+        Attrlist {
             attributes: &[
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &["Sunset"],
                     value: "Sunset"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: "300"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: "400"
                 }
             ],
-            source: TSpan {
+            source: Span {
                 data: "Sunset,300,400",
                 line: 1,
                 col: 1,
@@ -236,7 +231,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.item.nth_attribute(1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &["Sunset"],
             value: "Sunset"
@@ -245,7 +240,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &["Sunset"],
             value: "Sunset"
@@ -254,7 +249,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.item.nth_attribute(2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "300"
@@ -263,7 +258,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "300"
@@ -272,7 +267,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.item.nth_attribute(3).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "400"
@@ -281,7 +276,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "400"
@@ -294,7 +289,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "Sunset,300,400",
             line: 1,
             col: 1,
@@ -304,7 +299,7 @@ fn only_positional_attributes() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 15,
@@ -317,29 +312,30 @@ fn only_positional_attributes() {
 fn only_named_attributes() {
     let p = Parser::default();
     let mi =
-        Attrlist::parse(Span::new("alt=Sunset,width=300,height=400"), &p).unwrap_if_no_warnings();
+        crate::attributes::Attrlist::parse(crate::Span::new("alt=Sunset,width=300,height=400"), &p)
+            .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
+        Attrlist {
             attributes: &[
-                TElementAttribute {
+                ElementAttribute {
                     name: Some("alt"),
                     shorthand_items: &[],
                     value: "Sunset"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: Some("width"),
                     shorthand_items: &[],
                     value: "300"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: Some("height"),
                     shorthand_items: &[],
                     value: "400"
                 }
             ],
-            source: TSpan {
+            source: Span {
                 data: "alt=Sunset,width=300,height=400",
                 line: 1,
                 col: 1,
@@ -353,7 +349,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.item.named_attribute("alt").unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: Some("alt"),
             shorthand_items: &[],
             value: "Sunset"
@@ -362,7 +358,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: Some("alt"),
             shorthand_items: &[],
             value: "Sunset"
@@ -371,7 +367,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.item.named_attribute("width").unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: Some("width"),
             shorthand_items: &[],
             value: "300"
@@ -380,7 +376,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: Some("width"),
             shorthand_items: &[],
             value: "300"
@@ -389,7 +385,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.item.named_attribute("height").unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: Some("height"),
             shorthand_items: &[],
             value: "400"
@@ -398,7 +394,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: Some("height"),
             shorthand_items: &[],
             value: "400"
@@ -417,7 +413,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "alt=Sunset,width=300,height=400",
             line: 1,
             col: 1,
@@ -427,7 +423,7 @@ fn only_named_attributes() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 32,
@@ -439,19 +435,19 @@ fn only_named_attributes() {
 #[test]
 fn err_unparsed_remainder_after_value() {
     let p = Parser::default();
-    let maw = Attrlist::parse(Span::new("alt=\"Sunset\"width=300"), &p);
+    let maw = crate::attributes::Attrlist::parse(crate::Span::new("alt=\"Sunset\"width=300"), &p);
 
     let mi = maw.item.clone();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
-            attributes: &[TElementAttribute {
+        Attrlist {
+            attributes: &[ElementAttribute {
                 name: Some("alt"),
                 shorthand_items: &[],
                 value: "Sunset"
             }],
-            source: TSpan {
+            source: Span {
                 data: "alt=\"Sunset\"width=300",
                 line: 1,
                 col: 1,
@@ -462,7 +458,7 @@ fn err_unparsed_remainder_after_value() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 22,
@@ -472,8 +468,8 @@ fn err_unparsed_remainder_after_value() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "alt=\"Sunset\"width=300",
                 line: 1,
                 col: 1,
@@ -487,19 +483,19 @@ fn err_unparsed_remainder_after_value() {
 #[test]
 fn propagates_error_from_element_attribute() {
     let p = Parser::default();
-    let maw = Attrlist::parse(Span::new("foo%#id"), &p);
+    let maw = crate::attributes::Attrlist::parse(crate::Span::new("foo%#id"), &p);
 
     let mi = maw.item.clone();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
-            attributes: &[TElementAttribute {
+        Attrlist {
+            attributes: &[ElementAttribute {
                 name: None,
                 shorthand_items: &["foo", "#id"],
                 value: "foo%#id"
             }],
-            source: TSpan {
+            source: Span {
                 data: "foo%#id",
                 line: 1,
                 col: 1,
@@ -510,7 +506,7 @@ fn propagates_error_from_element_attribute() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 8,
@@ -520,8 +516,8 @@ fn propagates_error_from_element_attribute() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "foo%#id",
                 line: 1,
                 col: 1,
@@ -535,29 +531,23 @@ fn propagates_error_from_element_attribute() {
 mod id {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser, Span,
-        attributes::Attrlist,
-        tests::fixtures::{
-            TSpan,
-            attributes::{TAttrlist, TElementAttribute},
-        },
-    };
+    use crate::{HasSpan, Parser, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("#goals"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("#goals"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["#goals"],
                     value: "#goals"
                 }],
-                source: TSpan {
+                source: Span {
                     data: "#goals",
                     line: 1,
                     col: 1,
@@ -575,7 +565,7 @@ mod id {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "#goals",
                 line: 1,
                 col: 1,
@@ -585,7 +575,7 @@ mod id {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 7,
@@ -597,24 +587,25 @@ mod id {
     #[test]
     fn via_named_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo=bar,id=goals"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,id=goals"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
                         value: "bar"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("id"),
                         shorthand_items: &[],
                         value: "goals"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo=bar,id=goals",
                     line: 1,
                     col: 1,
@@ -625,7 +616,7 @@ mod id {
 
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("foo"),
                 shorthand_items: &[],
                 value: "bar"
@@ -634,7 +625,7 @@ mod id {
 
         assert_eq!(
             mi.item.named_attribute("id").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("id"),
                 shorthand_items: &[],
                 value: "goals"
@@ -647,7 +638,7 @@ mod id {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 17,
@@ -660,7 +651,8 @@ mod id {
     #[should_panic]
     fn via_block_anchor_syntax() {
         let p = Parser::default();
-        let _pr = Attrlist::parse(Span::new("[goals]"), &p).unwrap_if_no_warnings();
+        let _pr = crate::attributes::Attrlist::parse(crate::Span::new("[goals]"), &p)
+            .unwrap_if_no_warnings();
 
         // TO DO (#122): Parse block anchor syntax
     }
@@ -668,24 +660,25 @@ mod id {
     #[test]
     fn shorthand_only_first_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo,blah#goals"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo,blah#goals"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["foo"],
                         value: "foo"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "blah#goals"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo,blah#goals",
                     line: 1,
                     col: 1,
@@ -700,7 +693,7 @@ mod id {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 15,
@@ -713,29 +706,23 @@ mod id {
 mod roles {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser, Span,
-        attributes::Attrlist,
-        tests::fixtures::{
-            TSpan,
-            attributes::{TAttrlist, TElementAttribute},
-        },
-    };
+    use crate::{HasSpan, Parser, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new(".rolename"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".rolename"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &[".rolename"],
                     value: ".rolename"
                 }],
-                source: TSpan {
+                source: Span {
                     data: ".rolename",
                     line: 1,
                     col: 1,
@@ -756,7 +743,7 @@ mod roles {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ".rolename",
                 line: 1,
                 col: 1,
@@ -766,7 +753,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 10,
@@ -778,17 +765,18 @@ mod roles {
     #[test]
     fn via_shorthand_syntax_trim_trailing_whitespace() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new(".rolename "), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".rolename "), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &[".rolename"],
                     value: ".rolename "
                 }],
-                source: TSpan {
+                source: Span {
                     data: ".rolename ",
                     line: 1,
                     col: 1,
@@ -809,7 +797,7 @@ mod roles {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ".rolename ",
                 line: 1,
                 col: 1,
@@ -819,7 +807,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 11,
@@ -831,17 +819,18 @@ mod roles {
     #[test]
     fn multiple_roles_via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new(".role1.role2.role3"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".role1.role2.role3"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1.role2.role3"
                 }],
-                source: TSpan {
+                source: Span {
                     data: ".role1.role2.role3",
                     line: 1,
                     col: 1,
@@ -866,7 +855,7 @@ mod roles {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ".role1.role2.role3",
                 line: 1,
                 col: 1,
@@ -876,7 +865,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 19,
@@ -888,17 +877,18 @@ mod roles {
     #[test]
     fn multiple_roles_via_shorthand_syntax_trim_whitespace() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new(".role1 .role2 .role3 "), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".role1 .role2 .role3 "), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1 .role2 .role3 "
                 }],
-                source: TSpan {
+                source: Span {
                     data: ".role1 .role2 .role3 ",
                     line: 1,
                     col: 1,
@@ -923,7 +913,7 @@ mod roles {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ".role1 .role2 .role3 ",
                 line: 1,
                 col: 1,
@@ -933,7 +923,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 22,
@@ -945,24 +935,25 @@ mod roles {
     #[test]
     fn via_named_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo=bar,role=role1"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,role=role1"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
                         value: "bar"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
                         value: "role1"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo=bar,role=role1",
                     line: 1,
                     col: 1,
@@ -973,7 +964,7 @@ mod roles {
 
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("foo"),
                 shorthand_items: &[],
                 value: "bar"
@@ -982,7 +973,7 @@ mod roles {
 
         assert_eq!(
             mi.item.named_attribute("role").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("role"),
                 shorthand_items: &[],
                 value: "role1"
@@ -996,7 +987,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 19,
@@ -1008,25 +999,28 @@ mod roles {
     #[test]
     fn multiple_roles_via_named_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo=bar,role=role1 role2   role3 "), &p)
-            .unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo=bar,role=role1 role2   role3 "),
+            &p,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
                         value: "bar"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
                         value: "role1 role2   role3 "
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo=bar,role=role1 role2   role3 ",
                     line: 1,
                     col: 1,
@@ -1037,7 +1031,7 @@ mod roles {
 
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("foo"),
                 shorthand_items: &[],
                 value: "bar"
@@ -1046,7 +1040,7 @@ mod roles {
 
         assert_eq!(
             mi.item.named_attribute("role").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("role"),
                 shorthand_items: &[],
                 value: "role1 role2   role3 "
@@ -1063,7 +1057,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 34,
@@ -1075,25 +1069,28 @@ mod roles {
     #[test]
     fn shorthand_role_and_named_attribute_role() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("#foo.sh1.sh2,role=na1 na2   na3 "), &p)
-            .unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("#foo.sh1.sh2,role=na1 na2   na3 "),
+            &p,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["#foo", ".sh1", ".sh2"],
                         value: "#foo.sh1.sh2"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
                         value: "na1 na2   na3 "
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "#foo.sh1.sh2,role=na1 na2   na3 ",
                     line: 1,
                     col: 1,
@@ -1106,7 +1103,7 @@ mod roles {
 
         assert_eq!(
             mi.item.named_attribute("role").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("role"),
                 shorthand_items: &[],
                 value: "na1 na2   na3 "
@@ -1125,7 +1122,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 33,
@@ -1137,24 +1134,25 @@ mod roles {
     #[test]
     fn shorthand_only_first_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo,blah.rolename"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo,blah.rolename"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["foo"],
                         value: "foo"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "blah.rolename"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo,blah.rolename",
                     line: 1,
                     col: 1,
@@ -1168,7 +1166,7 @@ mod roles {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 18,
@@ -1181,29 +1179,23 @@ mod roles {
 mod options {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser, Span,
-        attributes::Attrlist,
-        tests::fixtures::{
-            TSpan,
-            attributes::{TAttrlist, TElementAttribute},
-        },
-    };
+    use crate::{HasSpan, Parser, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("%option"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("%option"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["%option"],
                     value: "%option"
                 }],
-                source: TSpan {
+                source: Span {
                     data: "%option",
                     line: 1,
                     col: 1,
@@ -1227,7 +1219,7 @@ mod options {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "%option",
                 line: 1,
                 col: 1,
@@ -1237,7 +1229,7 @@ mod options {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 8,
@@ -1249,17 +1241,19 @@ mod options {
     #[test]
     fn multiple_options_via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("%option1%option2%option3"), &p).unwrap_if_no_warnings();
+        let mi =
+            crate::attributes::Attrlist::parse(crate::Span::new("%option1%option2%option3"), &p)
+                .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["%option1", "%option2", "%option3",],
                     value: "%option1%option2%option3"
                 }],
-                source: TSpan {
+                source: Span {
                     data: "%option1%option2%option3",
                     line: 1,
                     col: 1,
@@ -1286,7 +1280,7 @@ mod options {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "%option1%option2%option3",
                 line: 1,
                 col: 1,
@@ -1296,7 +1290,7 @@ mod options {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 25,
@@ -1308,24 +1302,26 @@ mod options {
     #[test]
     fn via_options_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo=bar,options=option1"), &p).unwrap_if_no_warnings();
+        let mi =
+            crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,options=option1"), &p)
+                .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
                         value: "bar"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("options"),
                         shorthand_items: &[],
                         value: "option1"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo=bar,options=option1",
                     line: 1,
                     col: 1,
@@ -1336,7 +1332,7 @@ mod options {
 
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("foo"),
                 shorthand_items: &[],
                 value: "bar"
@@ -1345,7 +1341,7 @@ mod options {
 
         assert_eq!(
             mi.item.named_attribute("options").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("options"),
                 shorthand_items: &[],
                 value: "option1"
@@ -1363,7 +1359,7 @@ mod options {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 24,
@@ -1375,24 +1371,25 @@ mod options {
     #[test]
     fn via_opts_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo=bar,opts=option1"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,opts=option1"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
                         value: "bar"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("opts"),
                         shorthand_items: &[],
                         value: "option1"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo=bar,opts=option1",
                     line: 1,
                     col: 1,
@@ -1403,7 +1400,7 @@ mod options {
 
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("foo"),
                 shorthand_items: &[],
                 value: "bar"
@@ -1412,7 +1409,7 @@ mod options {
 
         assert_eq!(
             mi.item.named_attribute("opts").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("opts"),
                 shorthand_items: &[],
                 value: "option1"
@@ -1431,7 +1428,7 @@ mod options {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 21,
@@ -1443,25 +1440,28 @@ mod options {
     #[test]
     fn multiple_options_via_named_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo=bar,options=\"option1,option2,option3\""), &p)
-            .unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo=bar,options=\"option1,option2,option3\""),
+            &p,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("foo"),
                         shorthand_items: &[],
                         value: "bar"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("options"),
                         shorthand_items: &[],
                         value: "option1,option2,option3"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo=bar,options=\"option1,option2,option3\"",
                     line: 1,
                     col: 1,
@@ -1472,7 +1472,7 @@ mod options {
 
         assert_eq!(
             mi.item.named_attribute("foo").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("foo"),
                 shorthand_items: &[],
                 value: "bar"
@@ -1481,7 +1481,7 @@ mod options {
 
         assert_eq!(
             mi.item.named_attribute("options").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("options"),
                 shorthand_items: &[],
                 value: "option1,option2,option3"
@@ -1503,7 +1503,7 @@ mod options {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 42,
@@ -1515,25 +1515,28 @@ mod options {
     #[test]
     fn shorthand_option_and_named_attribute_option() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("#foo%sh1%sh2,options=\"na1,na2,na3\""), &p)
-            .unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("#foo%sh1%sh2,options=\"na1,na2,na3\""),
+            &p,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["#foo", "%sh1", "%sh2"],
                         value: "#foo%sh1%sh2"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("options"),
                         shorthand_items: &[],
                         value: "na1,na2,na3"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "#foo%sh1%sh2,options=\"na1,na2,na3\"",
                     line: 1,
                     col: 1,
@@ -1546,7 +1549,7 @@ mod options {
 
         assert_eq!(
             mi.item.named_attribute("options").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("options"),
                 shorthand_items: &[],
                 value: "na1,na2,na3"
@@ -1573,7 +1576,7 @@ mod options {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 35,
@@ -1585,24 +1588,25 @@ mod options {
     #[test]
     fn shorthand_only_first_attribute() {
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new("foo,blah%option"), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo,blah%option"), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["foo"],
                         value: "foo"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "blah%option"
                     },
                 ],
-                source: TSpan {
+                source: Span {
                     data: "foo,blah%option",
                     line: 1,
                     col: 1,
@@ -1618,7 +1622,7 @@ mod options {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 16,
@@ -1631,31 +1635,34 @@ mod options {
 #[test]
 fn err_double_comma() {
     let p = Parser::default();
-    let maw = Attrlist::parse(Span::new("alt=Sunset,width=300,,height=400"), &p);
+    let maw = crate::attributes::Attrlist::parse(
+        crate::Span::new("alt=Sunset,width=300,,height=400"),
+        &p,
+    );
 
     let mi = maw.item.clone();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
+        Attrlist {
             attributes: &[
-                TElementAttribute {
+                ElementAttribute {
                     name: Some("alt"),
                     shorthand_items: &[],
                     value: "Sunset"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: Some("width"),
                     shorthand_items: &[],
                     value: "300"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: Some("height"),
                     shorthand_items: &[],
                     value: "400"
                 },
             ],
-            source: TSpan {
+            source: Span {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 1,
                 col: 1,
@@ -1666,7 +1673,7 @@ fn err_double_comma() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 33,
@@ -1676,8 +1683,8 @@ fn err_double_comma() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 1,
                 col: 1,
@@ -1696,29 +1703,30 @@ fn applies_attribute_substitution_before_parsing() {
         ModificationContext::Anywhere,
     );
 
-    let mi = Attrlist::parse(Span::new("Sunset,{sunset_dimensions}"), &p).unwrap_if_no_warnings();
+    let mi = crate::attributes::Attrlist::parse(crate::Span::new("Sunset,{sunset_dimensions}"), &p)
+        .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
+        Attrlist {
             attributes: &[
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &["Sunset"],
                     value: "Sunset"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: "300"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: "400"
                 }
             ],
-            source: TSpan {
+            source: Span {
                 data: "Sunset,{sunset_dimensions}",
                 line: 1,
                 col: 1,
@@ -1736,7 +1744,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.item.nth_attribute(1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &["Sunset"],
             value: "Sunset"
@@ -1745,7 +1753,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &["Sunset"],
             value: "Sunset"
@@ -1754,7 +1762,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.item.nth_attribute(2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "300"
@@ -1763,7 +1771,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "300"
@@ -1772,7 +1780,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.item.nth_attribute(3).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "400"
@@ -1781,7 +1789,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("height", 3).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "400"
@@ -1794,7 +1802,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "Sunset,{sunset_dimensions}",
             line: 1,
             col: 1,
@@ -1804,7 +1812,7 @@ fn applies_attribute_substitution_before_parsing() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 27,
@@ -1822,24 +1830,25 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
     );
 
     let mi =
-        Attrlist::parse(Span::new("Sunset,{not_sunset_dimensions}"), &p).unwrap_if_no_warnings();
+        crate::attributes::Attrlist::parse(crate::Span::new("Sunset,{not_sunset_dimensions}"), &p)
+            .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
-        TAttrlist {
+        Attrlist {
             attributes: &[
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &["Sunset"],
                     value: "Sunset"
                 },
-                TElementAttribute {
+                ElementAttribute {
                     name: None,
                     shorthand_items: &[],
                     value: "{not_sunset_dimensions}"
                 },
             ],
-            source: TSpan {
+            source: Span {
                 data: "Sunset,{not_sunset_dimensions}",
                 line: 1,
                 col: 1,
@@ -1857,7 +1866,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
 
     assert_eq!(
         mi.item.nth_attribute(1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &["Sunset"],
             value: "Sunset"
@@ -1866,7 +1875,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("alt", 1).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &["Sunset"],
             value: "Sunset"
@@ -1875,7 +1884,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
 
     assert_eq!(
         mi.item.nth_attribute(2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "{not_sunset_dimensions}"
@@ -1884,7 +1893,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
 
     assert_eq!(
         mi.item.named_or_positional_attribute("width", 2).unwrap(),
-        TElementAttribute {
+        ElementAttribute {
             name: None,
             shorthand_items: &[],
             value: "{not_sunset_dimensions}"
@@ -1897,7 +1906,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "Sunset,{not_sunset_dimensions}",
             line: 1,
             col: 1,
@@ -1907,7 +1916,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 31,

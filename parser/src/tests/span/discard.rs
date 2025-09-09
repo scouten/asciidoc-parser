@@ -1,12 +1,14 @@
 mod discard {
-    use crate::{Span, tests::fixtures::TSpan};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::new("");
         assert_eq!(
             span.discard(4),
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -17,10 +19,10 @@ mod discard {
 
     #[test]
     fn n_gt_len() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         assert_eq!(
             span.discard(6),
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,
@@ -31,10 +33,10 @@ mod discard {
 
     #[test]
     fn n_eq_len() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         assert_eq!(
             span.discard(3),
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,
@@ -45,10 +47,10 @@ mod discard {
 
     #[test]
     fn n_lt_len() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         assert_eq!(
             span.discard(2),
-            TSpan {
+            Span {
                 data: "c",
                 line: 1,
                 col: 3,
@@ -59,10 +61,10 @@ mod discard {
 
     #[test]
     fn zero() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         assert_eq!(
             span.discard(0),
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -73,14 +75,16 @@ mod discard {
 }
 
 mod discard_whitespace {
-    use crate::{Span, tests::fixtures::TSpan};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::new("");
         assert_eq!(
             span.discard_whitespace(),
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -91,10 +95,10 @@ mod discard_whitespace {
 
     #[test]
     fn all_whitespace() {
-        let span = Span::new("   \t  ");
+        let span = crate::Span::new("   \t  ");
         assert_eq!(
             span.discard_whitespace(),
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 7,
@@ -105,10 +109,10 @@ mod discard_whitespace {
 
     #[test]
     fn doesnt_consume_newline() {
-        let span = Span::new("   \nabc");
+        let span = crate::Span::new("   \nabc");
         assert_eq!(
             span.discard_whitespace(),
-            TSpan {
+            Span {
                 data: "\nabc",
                 line: 1,
                 col: 4,
@@ -119,10 +123,10 @@ mod discard_whitespace {
 
     #[test]
     fn some_whitespace() {
-        let span = Span::new("   abc");
+        let span = crate::Span::new("   abc");
         assert_eq!(
             span.discard_whitespace(),
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 4,
@@ -133,10 +137,10 @@ mod discard_whitespace {
 
     #[test]
     fn no_whitespace() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         assert_eq!(
             span.discard_whitespace(),
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -147,14 +151,16 @@ mod discard_whitespace {
 }
 
 mod discard_all {
-    use crate::{Span, tests::fixtures::TSpan};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::new("");
         assert_eq!(
             span.discard_all(),
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -165,10 +171,10 @@ mod discard_all {
 
     #[test]
     fn non_empty() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         assert_eq!(
             span.discard(3),
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,

@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/image-size.adoc");
 
@@ -18,19 +18,7 @@ In most output formats, the specified width is obeyed unless the image would exc
 mod width_and_height_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock},
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -58,52 +46,52 @@ image::flower.jpg[Flower,640,480]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "flower.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Flower",
                                 shorthand_items: &["Flower"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "640",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "480",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Flower,640,480",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::flower.jpg[Flower,640,480]",
                         line: 1,
                         col: 1,
@@ -114,7 +102,7 @@ image::flower.jpg[Flower,640,480]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::flower.jpg[Flower,640,480]",
                     line: 1,
                     col: 1,
@@ -143,52 +131,52 @@ image::flower.jpg[alt=Flower,width=640,height=480]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "flower.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("alt",),
                                 value: "Flower",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("width",),
                                 value: "640",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("height",),
                                 value: "480",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "alt=Flower,width=640,height=480",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::flower.jpg[alt=Flower,width=640,height=480]",
                         line: 1,
                         col: 1,
@@ -199,7 +187,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::flower.jpg[alt=Flower,width=640,height=480]",
                     line: 1,
                     col: 1,

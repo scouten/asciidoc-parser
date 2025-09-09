@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/image-url.adoc");
 
@@ -15,20 +15,7 @@ You can reference images served from any URL (e.g., your blog, an image hosting 
 mod image_url_targets {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, to_do_verifies, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -60,52 +47,52 @@ include::example$image.adoc[tag=url]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Tux",
                                 shorthand_items: &["Tux"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "250",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "350",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Tux,250,350",
                             line: 1,
                             col: 68,
                             offset: 67,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Tux,250,350]",
                         line: 1,
                         col: 1,
@@ -116,7 +103,7 @@ include::example$image.adoc[tag=url]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Tux,250,350]",
                     line: 1,
                     col: 1,
@@ -153,21 +140,21 @@ include::example$image.adoc[tag=in-url]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",
                             line: 1,
                             col: 1,
@@ -175,7 +162,7 @@ include::example$image.adoc[tag=in-url]
                         },
                         rendered: "You can find <span class=\"image\"><img src=\"https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg\" alt=\"Linux\" width=\"25\" height=\"35\"></span> everywhere these days.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",
                         line: 1,
                         col: 1,
@@ -186,7 +173,7 @@ include::example$image.adoc[tag=in-url]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "You can find image:https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg[Linux,25,35] everywhere these days.",
                     line: 1,
                     col: 1,

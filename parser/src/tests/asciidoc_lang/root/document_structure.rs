@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/ROOT/pages/document-structure.adoc");
 
@@ -18,18 +18,7 @@ Right now, we're just aiming to get a sense of what makes up an AsciiDoc documen
 mod documents {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TAttribute, TDocument, THeader, TInterpretedValue},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -56,27 +45,27 @@ This is a basic AsciiDoc document.
 
         assert_eq!(
             Parser::default().parse("This is a basic AsciiDoc document.\n"),
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0
                     }
                 },
-                source: TSpan {
+                source: Span {
                     data: "This is a basic AsciiDoc document.",
                     line: 1,
                     col: 1,
                     offset: 0
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "This is a basic AsciiDoc document.",
                             line: 1,
                             col: 1,
@@ -84,7 +73,7 @@ This is a basic AsciiDoc document.
                         },
                         rendered: "This is a basic AsciiDoc document.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "This is a basic AsciiDoc document.",
                         line: 1,
                         col: 1,
@@ -125,28 +114,28 @@ This document contains two paragraphs.
             Parser::default().parse(
                 "This is a basic AsciiDoc document.\n\nThis document contains two paragraphs.\n"
             ),
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0
                     }
                 },
-                source: TSpan {
+                source: Span {
                     data: "This is a basic AsciiDoc document.\n\nThis document contains two paragraphs.",
                     line: 1,
                     col: 1,
                     offset: 0
                 },
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "This is a basic AsciiDoc document.",
                                 line: 1,
                                 col: 1,
@@ -154,7 +143,7 @@ This document contains two paragraphs.
                             },
                             rendered: "This is a basic AsciiDoc document.",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "This is a basic AsciiDoc document.",
                             line: 1,
                             col: 1,
@@ -165,9 +154,9 @@ This document contains two paragraphs.
                         anchor: None,
                         attrlist: None,
                     }),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "This document contains two paragraphs.",
                                 line: 3,
                                 col: 1,
@@ -175,7 +164,7 @@ This document contains two paragraphs.
                             },
                             rendered: "This document contains two paragraphs.",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "This document contains two paragraphs.",
                             line: 3,
                             col: 1,
@@ -217,10 +206,10 @@ It also has a header that specifies the document title.
             Parser::default().parse(
                 "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title."
             ),
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: Some(
-                        TSpan {
+                        Span {
                             data: "Document Title",
                             line: 1,
                             col: 3,
@@ -229,16 +218,16 @@ It also has a header that specifies the document title.
                     ),
                     title: Some("Document Title"),
                     attributes: &[
-                        TAttribute {
-                            name: TSpan {
+                        Attribute {
+                            name: Span {
                                 data: "reproducible",
                                 line: 2,
                                 col: 2,
                                 offset: 18,
                             },
                             value_source: None,
-                            value: TInterpretedValue::Set,
-                            source: TSpan {
+                            value: InterpretedValue::Set,
+                            source: Span {
                                 data: ":reproducible:",
                                 line: 2,
                                 col: 1,
@@ -246,7 +235,7 @@ It also has a header that specifies the document title.
                             },
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "= Document Title\n:reproducible:",
                         line: 1,
                         col: 1,
@@ -254,9 +243,9 @@ It also has a header that specifies the document title.
                     },
                 },
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "This is a basic AsciiDoc document by {author}.",
                                 line: 4,
                                 col: 1,
@@ -264,7 +253,7 @@ It also has a header that specifies the document title.
                             },
                             rendered: "This is a basic AsciiDoc document by {author}.",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "This is a basic AsciiDoc document by {author}.",
                             line: 4,
                             col: 1,
@@ -275,9 +264,9 @@ It also has a header that specifies the document title.
                         anchor: None,
                         attrlist: None,
                     }),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                                 line: 6,
                                 col: 1,
@@ -285,7 +274,7 @@ It also has a header that specifies the document title.
                             },
                             rendered: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                             line: 6,
                             col: 1,
@@ -297,7 +286,7 @@ It also has a header that specifies the document title.
                         attrlist: None,
                     })
                 ],
-                source: TSpan {
+                source: Span {
                     data: "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title.",
                     line: 1,
                     col: 1,
@@ -320,17 +309,7 @@ Documents can range from a single sentence to a multi-part book.
 mod lines {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser, Span,
-        document::Attribute,
-        tests::{
-            fixtures::{
-                TSpan,
-                document::{TAttribute, TInterpretedValue},
-            },
-            sdd::verifies,
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     #[test]
     fn section_title() {
@@ -355,12 +334,12 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 "#
         );
 
-        let span = Span::new("== Section Title\n");
+        let span = crate::Span::new("== Section Title\n");
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 2,
                 col: 1,
@@ -370,7 +349,7 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "== Section Title",
                 line: 1,
                 col: 1,
@@ -392,25 +371,29 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 "#
         );
 
-        let mi = Attribute::parse(Span::new(":name: value\n"), &Parser::default()).unwrap();
+        let mi = crate::document::Attribute::parse(
+            crate::Span::new(":name: value\n"),
+            &Parser::default(),
+        )
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
-                name: TSpan {
+            Attribute {
+                name: Span {
                     data: "name",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },
-                value_source: Some(TSpan {
+                value_source: Some(Span {
                     data: "value",
                     line: 1,
                     col: 8,
                     offset: 7,
                 }),
-                value: TInterpretedValue::Value("value"),
-                source: TSpan {
+                value: InterpretedValue::Value("value"),
+                source: Span {
                     data: ":name: value",
                     line: 1,
                     col: 1,
@@ -421,7 +404,7 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 2,
                 col: 1,
@@ -444,29 +427,29 @@ more value
 "#
         );
 
-        let mi = Attribute::parse(
-            Span::new(":name: value \\\nmore value\n"),
+        let mi = crate::document::Attribute::parse(
+            crate::Span::new(":name: value \\\nmore value\n"),
             &Parser::default(),
         )
         .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
-                name: TSpan {
+            Attribute {
+                name: Span {
                     data: "name",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },
-                value_source: Some(TSpan {
+                value_source: Some(Span {
                     data: "value \\\nmore value",
                     line: 1,
                     col: 8,
                     offset: 7,
                 }),
-                value: TInterpretedValue::Value("value more value"),
-                source: TSpan {
+                value: InterpretedValue::Value("value more value"),
+                source: Span {
                     data: ":name: value \\\nmore value",
                     line: 1,
                     col: 1,
@@ -475,14 +458,11 @@ more value
             }
         );
 
-        assert_eq!(
-            mi.item.value(),
-            TInterpretedValue::Value("value more value")
-        );
+        assert_eq!(mi.item.value(), InterpretedValue::Value("value more value"));
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 3,
                 col: 1,

@@ -2,15 +2,7 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
-        blocks::{Block, ContentModel},
-        content::SubstitutionGroup,
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TRawDelimitedBlock, TSimpleBlock},
-            content::TContent,
-            warnings::TWarning,
-        },
+        Parser, blocks::ContentModel, content::SubstitutionGroup, tests::prelude::*,
         warnings::WarningType,
     };
 
@@ -19,22 +11,22 @@ mod parse {
         let mut parser = Parser::default();
 
         assert!(
-            Block::parse(Span::new(""), &mut parser)
+            crate::blocks::Block::parse(crate::Span::new(""), &mut parser)
                 .unwrap_if_no_warnings()
                 .is_none()
         );
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("..."), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("..."), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "...",
                         line: 1,
                         col: 1,
@@ -42,7 +34,7 @@ mod parse {
                     },
                     rendered: "&#8230;&#8203;",
                 },
-                source: TSpan {
+                source: Span {
                     data: "...",
                     line: 1,
                     col: 1,
@@ -57,15 +49,15 @@ mod parse {
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("++++x"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("++++x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "++++x",
                         line: 1,
                         col: 1,
@@ -73,7 +65,7 @@ mod parse {
                     },
                     rendered: "x",
                 },
-                source: TSpan {
+                source: Span {
                     data: "++++x",
                     line: 1,
                     col: 1,
@@ -88,15 +80,15 @@ mod parse {
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("____x"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("____x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "____x",
                         line: 1,
                         col: 1,
@@ -104,7 +96,7 @@ mod parse {
                     },
                     rendered: "____x",
                 },
-                source: TSpan {
+                source: Span {
                     data: "____x",
                     line: 1,
                     col: 1,
@@ -119,15 +111,15 @@ mod parse {
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("====x"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("====x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "====x",
                         line: 1,
                         col: 1,
@@ -135,7 +127,7 @@ mod parse {
                     },
                     rendered: "====x",
                 },
-                source: TSpan {
+                source: Span {
                     data: "====x",
                     line: 1,
                     col: 1,
@@ -152,15 +144,16 @@ mod parse {
     #[test]
     fn err_unterminated() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("....\nblah blah blah"), &mut parser);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("....\nblah blah blah"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "blah blah blah",
                         line: 2,
                         col: 1,
@@ -170,7 +163,7 @@ mod parse {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "literal",
-                source: TSpan {
+                source: Span {
                     data: "....\nblah blah blah",
                     line: 1,
                     col: 1,
@@ -186,8 +179,8 @@ mod parse {
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
-                source: TSpan {
+            vec![Warning {
+                source: Span {
                     data: "....",
                     line: 1,
                     col: 1,
@@ -203,29 +196,25 @@ mod comment {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
+        Parser,
+        blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TRawDelimitedBlock},
-            content::TContent,
-        },
+        tests::prelude::*,
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("////\n////"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("////\n////"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "",
                         line: 2,
                         col: 1,
@@ -235,7 +224,7 @@ mod comment {
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
-                source: TSpan {
+                source: Span {
                     data: "////\n////",
                     line: 1,
                     col: 1,
@@ -267,8 +256,8 @@ mod comment {
     fn title() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
-            Span::new(".comment\n////\nline1  \nline2\n////"),
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new(".comment\n////\nline1  \nline2\n////"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -276,9 +265,9 @@ mod comment {
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 3,
                         col: 1,
@@ -288,13 +277,13 @@ mod comment {
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
-                source: TSpan {
+                source: Span {
                     data: ".comment\n////\nline1  \nline2\n////",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "comment",
                     line: 1,
                     col: 2,
@@ -318,7 +307,7 @@ mod comment {
 
         assert_eq!(
             mi.item.title_source().unwrap(),
-            TSpan {
+            Span {
                 data: "comment",
                 line: 1,
                 col: 2,
@@ -337,15 +326,18 @@ mod comment {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("////\nline1  \nline2\n////"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("////\nline1  \nline2\n////"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 2,
                         col: 1,
@@ -355,7 +347,7 @@ mod comment {
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
-                source: TSpan {
+                source: Span {
                     data: "////\nline1  \nline2\n////",
                     line: 1,
                     col: 1,
@@ -387,15 +379,18 @@ mod comment {
     fn ignores_delimiter_prefix() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("////\nline1  \n/////\nline2\n////"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("////\nline1  \n/////\nline2\n////"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \n/////\nline2",
                         line: 2,
                         col: 1,
@@ -405,7 +400,7 @@ mod comment {
                 },
                 content_model: ContentModel::Raw,
                 context: "comment",
-                source: TSpan {
+                source: Span {
                     data: "////\nline1  \n/////\nline2\n////",
                     line: 1,
                     col: 1,
@@ -438,30 +433,26 @@ mod listing {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
+        Parser,
+        blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
         span::HasSpan,
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TRawDelimitedBlock},
-            content::TContent,
-        },
+        tests::prelude::*,
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("----\n----"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("----\n----"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "",
                         line: 2,
                         col: 1,
@@ -471,7 +462,7 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "----\n----",
                     line: 1,
                     col: 1,
@@ -503,15 +494,18 @@ mod listing {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("----\nline1  \nline2\n----"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("----\nline1  \nline2\n----"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 2,
                         col: 1,
@@ -521,7 +515,7 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "----\nline1  \nline2\n----",
                     line: 1,
                     col: 1,
@@ -551,7 +545,7 @@ mod listing {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "----\nline1  \nline2\n----",
                 line: 1,
                 col: 1,
@@ -564,8 +558,8 @@ mod listing {
     fn title() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
-            Span::new(".listing title\n----\nline1  \nline2\n----"),
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new(".listing title\n----\nline1  \nline2\n----"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -573,9 +567,9 @@ mod listing {
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 3,
                         col: 1,
@@ -585,13 +579,13 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: ".listing title\n----\nline1  \nline2\n----",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "listing title",
                     line: 1,
                     col: 2,
@@ -616,7 +610,7 @@ mod listing {
 
         assert_eq!(
             mi.item.title_source().unwrap(),
-            TSpan {
+            Span {
                 data: "listing title",
                 line: 1,
                 col: 2,
@@ -632,7 +626,7 @@ mod listing {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ".listing title\n----\nline1  \nline2\n----",
                 line: 1,
                 col: 1,
@@ -645,15 +639,18 @@ mod listing {
     fn ignores_delimiter_prefix() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("----\nline1  \n----/\nline2\n----"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("----\nline1  \n----/\nline2\n----"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \n----/\nline2",
                         line: 2,
                         col: 1,
@@ -663,7 +660,7 @@ mod listing {
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "----\nline1  \n----/\nline2\n----",
                     line: 1,
                     col: 1,
@@ -693,7 +690,7 @@ mod listing {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "----\nline1  \n----/\nline2\n----",
                 line: 1,
                 col: 1,
@@ -707,30 +704,26 @@ mod pass {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
+        Parser,
+        blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
         span::HasSpan,
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TRawDelimitedBlock},
-            content::TContent,
-        },
+        tests::prelude::*,
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("++++\n++++"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("++++\n++++"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "",
                         line: 2,
                         col: 1,
@@ -740,7 +733,7 @@ mod pass {
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
-                source: TSpan {
+                source: Span {
                     data: "++++\n++++",
                     line: 1,
                     col: 1,
@@ -770,7 +763,7 @@ mod pass {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "++++\n++++",
                 line: 1,
                 col: 1,
@@ -783,15 +776,18 @@ mod pass {
     fn multiple_lines() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("++++\nline1  \nline2\n++++"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("++++\nline1  \nline2\n++++"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 2,
                         col: 1,
@@ -801,7 +797,7 @@ mod pass {
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
-                source: TSpan {
+                source: Span {
                     data: "++++\nline1  \nline2\n++++",
                     line: 1,
                     col: 1,
@@ -831,7 +827,7 @@ mod pass {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "++++\nline1  \nline2\n++++",
                 line: 1,
                 col: 1,
@@ -844,8 +840,8 @@ mod pass {
     fn title() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
-            Span::new(".pass title\n++++\nline1  \nline2\n++++"),
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new(".pass title\n++++\nline1  \nline2\n++++"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -853,9 +849,9 @@ mod pass {
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \nline2",
                         line: 3,
                         col: 1,
@@ -865,13 +861,13 @@ mod pass {
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
-                source: TSpan {
+                source: Span {
                     data: ".pass title\n++++\nline1  \nline2\n++++",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "pass title",
                     line: 1,
                     col: 2,
@@ -896,7 +892,7 @@ mod pass {
 
         assert_eq!(
             mi.item.title_source().unwrap(),
-            TSpan {
+            Span {
                 data: "pass title",
                 line: 1,
                 col: 2,
@@ -912,7 +908,7 @@ mod pass {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ".pass title\n++++\nline1  \nline2\n++++",
                 line: 1,
                 col: 1,
@@ -925,15 +921,18 @@ mod pass {
     fn ignores_delimiter_prefix() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("++++\nline1  \n++++/\nline2\n++++"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("++++\nline1  \n++++/\nline2\n++++"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "line1  \n++++/\nline2",
                         line: 2,
                         col: 1,
@@ -943,7 +942,7 @@ mod pass {
                 },
                 content_model: ContentModel::Raw,
                 context: "pass",
-                source: TSpan {
+                source: Span {
                     data: "++++\nline1  \n++++/\nline2\n++++",
                     line: 1,
                     col: 1,
@@ -973,7 +972,7 @@ mod pass {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "++++\nline1  \n++++/\nline2\n++++",
                 line: 1,
                 col: 1,

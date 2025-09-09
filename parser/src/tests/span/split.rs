@@ -1,14 +1,16 @@
 mod into_parse_result {
-    use crate::{Span, tests::fixtures::TSpan};
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::tests::prelude::*;
 
     #[test]
     fn base_case() {
-        let s = Span::new("abc");
+        let s = crate::Span::new("abc");
         let mi = s.into_parse_result(1);
 
         assert_eq!(
             mi.item,
-            TSpan {
+            Span {
                 data: "a",
                 line: 1,
                 col: 1,
@@ -18,7 +20,7 @@ mod into_parse_result {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "bc",
                 line: 1,
                 col: 2,
@@ -29,12 +31,12 @@ mod into_parse_result {
 
     #[test]
     fn index_out_of_range() {
-        let s = Span::new("abc");
+        let s = crate::Span::new("abc");
         let mi = s.into_parse_result(4);
 
         assert_eq!(
             mi.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -44,7 +46,7 @@ mod into_parse_result {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,
@@ -55,23 +57,23 @@ mod into_parse_result {
 }
 
 mod split_at_match_non_empty {
-    use crate::Span;
+    use pretty_assertions_sorted::assert_eq;
 
     #[test]
     fn empty_source() {
-        let s = Span::new("");
+        let s = crate::Span::new("");
         assert!(s.split_at_match_non_empty(|c| c == ':').is_none());
     }
 
     #[test]
     fn empty_subspan() {
-        let s = Span::new(":abc");
+        let s = crate::Span::new(":abc");
         assert!(s.split_at_match_non_empty(|c| c == ':').is_none());
     }
 
     #[test]
     fn match_after_first() {
-        let s = Span::new("ab:cd");
+        let s = crate::Span::new("ab:cd");
         let mi = s.split_at_match_non_empty(|c| c == ':').unwrap();
 
         assert_eq!(mi.item.data(), "ab");
@@ -87,7 +89,7 @@ mod split_at_match_non_empty {
 
     #[test]
     fn non_empty_no_match() {
-        let s = Span::new("abcd");
+        let s = crate::Span::new("abcd");
         let mi = s.split_at_match_non_empty(|c| c == ':').unwrap();
 
         assert_eq!(mi.item.data(), "abcd");

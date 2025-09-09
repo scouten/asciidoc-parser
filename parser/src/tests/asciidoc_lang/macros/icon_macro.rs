@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/icon-macro.adoc");
 
@@ -15,18 +15,7 @@ This page covers the anatomy of the icon macro, how the target is resolved, and 
 mod anatomy {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -64,21 +53,21 @@ icon:heart[2x,role=red]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "icon:heart[2x,role=red]",
                             line: 1,
                             col: 1,
@@ -86,7 +75,7 @@ icon:heart[2x,role=red]
                         },
                         rendered: "<span class=\"icon red\">[heart&#93;</span>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "icon:heart[2x,role=red]",
                         line: 1,
                         col: 1,
@@ -97,7 +86,7 @@ icon:heart[2x,role=red]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "icon:heart[2x,role=red]",
                     line: 1,
                     col: 1,

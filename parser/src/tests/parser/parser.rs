@@ -1,7 +1,6 @@
-use crate::{
-    Parser, document::InterpretedValue, parser::ModificationContext,
-    tests::fixtures::document::TInterpretedValue, warnings::WarningType,
-};
+use pretty_assertions_sorted::assert_eq;
+
+use crate::{Parser, parser::ModificationContext, tests::prelude::*, warnings::WarningType};
 
 #[test]
 fn default_is_unset() {
@@ -13,11 +12,7 @@ fn default_is_unset() {
 fn with_intrinsic_attribute() {
     let p = Parser::default().with_intrinsic_attribute("foo", "bar", ModificationContext::Anywhere);
 
-    assert_eq!(
-        p.attribute_value("foo"),
-        InterpretedValue::Value("bar".to_owned())
-    );
-
+    assert_eq!(p.attribute_value("foo"), InterpretedValue::Value("bar"));
     assert_eq!(p.attribute_value("foo2"), InterpretedValue::Unset);
 
     assert!(p.is_attribute_set("foo"));
@@ -65,5 +60,5 @@ fn can_not_override_locked_default_value() {
         WarningType::AttributeValueIsLocked("sp".to_owned())
     );
 
-    assert_eq!(parser.attribute_value("sp"), TInterpretedValue::Value(" "));
+    assert_eq!(parser.attribute_value("sp"), InterpretedValue::Value(" "));
 }

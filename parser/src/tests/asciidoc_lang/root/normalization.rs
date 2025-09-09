@@ -1,15 +1,8 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Span,
-    tests::{
-        fixtures::TSpan,
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/ROOT/pages/normalization.adoc");
-// Tracking commit 08289a9f, current as of 2024-10-26.
 
 // See additional test cases with more edge-case coverage in
 // `tests/primitives/line.rs`.
@@ -41,12 +34,12 @@ It doesn't matter if the line is part of a literal block or a regular paragraph.
     // NOTE: The UTF-8 normalization is implicit as the asciidoc-parser crate
     // requires a Rust string slice as input, which is guaranteed to be UTF-8.
 
-    let span = Span::new("abc   ");
+    let span = crate::Span::new("abc   ");
     let line = span.take_normalized_line();
 
     assert_eq!(
         line.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 7,
@@ -56,7 +49,7 @@ It doesn't matter if the line is part of a literal block or a regular paragraph.
 
     assert_eq!(
         line.item,
-        TSpan {
+        Span {
             data: "abc",
             line: 1,
             col: 1,
@@ -69,12 +62,12 @@ It doesn't matter if the line is part of a literal block or a regular paragraph.
 fn strips_trailing_lf() {
     // Should consume but not return \n.
 
-    let span = Span::new("abc  \ndef");
+    let span = crate::Span::new("abc  \ndef");
     let line = span.take_normalized_line();
 
     assert_eq!(
         line.after,
-        TSpan {
+        Span {
             data: "def",
             line: 2,
             col: 1,
@@ -84,7 +77,7 @@ fn strips_trailing_lf() {
 
     assert_eq!(
         line.item,
-        TSpan {
+        Span {
             data: "abc",
             line: 1,
             col: 1,
@@ -97,12 +90,12 @@ fn strips_trailing_lf() {
 fn strips_trailing_crlf() {
     // Should consume but not return \r\n.
 
-    let span = Span::new("abc  \r\ndef");
+    let span = crate::Span::new("abc  \r\ndef");
     let line = span.take_normalized_line();
 
     assert_eq!(
         line.after,
-        TSpan {
+        Span {
             data: "def",
             line: 2,
             col: 1,
@@ -112,7 +105,7 @@ fn strips_trailing_crlf() {
 
     assert_eq!(
         line.item,
-        TSpan {
+        Span {
             data: "abc",
             line: 1,
             col: 1,

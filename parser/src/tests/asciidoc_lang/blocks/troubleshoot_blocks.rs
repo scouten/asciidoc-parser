@@ -1,19 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    tests::{
-        fixtures::{
-            TSpan,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            content::TContent,
-            document::{TDocument, THeader},
-            warnings::TWarning,
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-    warnings::WarningType,
-};
+use crate::{Parser, tests::prelude::*, warnings::WarningType};
 
 track_file!("docs/modules/blocks/pages/troubleshoot-blocks.adoc");
 
@@ -53,22 +40,22 @@ It will be styled as a sidebar.
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
+        Document {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+            blocks: &[Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "This is a valid delimited block.\nIt will be styled as a sidebar.",
                             line: 2,
                             col: 1,
@@ -76,7 +63,7 @@ It will be styled as a sidebar.
                         },
                         rendered: "This is a valid delimited block.\nIt will be styled as a sidebar.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "This is a valid delimited block.\nIt will be styled as a sidebar.",
                         line: 2,
                         col: 1,
@@ -88,7 +75,7 @@ It will be styled as a sidebar.
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "****\nThis is a valid delimited block.\nIt will be styled as a sidebar.\n****",
                     line: 1,
                     col: 1,
@@ -99,7 +86,7 @@ It will be styled as a sidebar.
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "****\nThis is a valid delimited block.\nIt will be styled as a sidebar.\n****",
                 line: 1,
                 col: 1,
@@ -136,22 +123,22 @@ If you want the processor to recognize a closing delimiter, it must be the same 
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
+        Document {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
             },
-            blocks: &[TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+            blocks: &[Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "This is an invalid sidebar block because the delimiter lines are different lengths.\n****",
                             line: 2,
                             col: 1,
@@ -159,7 +146,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                         },
                         rendered: "This is an invalid sidebar block because the delimiter lines are different lengths.\n<strong>*</strong>*",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "This is an invalid sidebar block because the delimiter lines are different lengths.\n****",
                         line: 2,
                         col: 1,
@@ -171,7 +158,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "********\nThis is an invalid sidebar block because the delimiter lines are different lengths.\n****",
                     line: 1,
                     col: 1,
@@ -182,14 +169,14 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 anchor: None,
                 attrlist: None,
             },),],
-            source: TSpan {
+            source: Span {
                 data: "********\nThis is an invalid sidebar block because the delimiter lines are different lengths.\n****",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            warnings: &[TWarning {
-                source: TSpan {
+            warnings: &[Warning {
+                source: Span {
                     data: "********",
                     line: 1,
                     col: 1,

@@ -5,6 +5,8 @@ mod section;
 mod simple;
 
 mod content_model {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::blocks::ContentModel;
 
     #[test]
@@ -22,17 +24,11 @@ mod error_cases {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
-        blocks::{Block, ContentModel, IsBlock, SectionBlock, metadata::BlockMetadata},
+        Parser,
+        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
         span::HasSpan,
-        tests::fixtures::{
-            TSpan,
-            attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TSectionBlock, TSimpleBlock},
-            content::TContent,
-            warnings::TWarning,
-        },
+        tests::prelude::*,
         warnings::{MatchAndWarnings, WarningType},
     };
 
@@ -40,7 +36,7 @@ mod error_cases {
     fn missing_block_after_title_line() {
         let mut parser = Parser::default();
 
-        let MatchAndWarnings { item: mi, warnings } = SectionBlock::parse(
+        let MatchAndWarnings { item: mi, warnings } = crate::blocks::SectionBlock::parse(
             &BlockMetadata::new("=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef"),
             &mut parser,
         )
@@ -61,18 +57,18 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            TSectionBlock {
+            SectionBlock {
                 level: 2,
-                section_title: TSpan {
+                section_title: Span {
                     data: "Section Title",
                     line: 1,
                     col: 5,
                     offset: 4,
                 },
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "abc",
                                 line: 3,
                                 col: 1,
@@ -80,7 +76,7 @@ mod error_cases {
                             },
                             rendered: "abc",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "abc",
                             line: 3,
                             col: 1,
@@ -91,9 +87,9 @@ mod error_cases {
                         anchor: None,
                         attrlist: None,
                     }),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: ".ancestor section== Section 2",
                                 line: 5,
                                 col: 1,
@@ -101,7 +97,7 @@ mod error_cases {
                             },
                             rendered: ".ancestor section== Section 2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: ".ancestor section== Section 2",
                             line: 5,
                             col: 1,
@@ -112,9 +108,9 @@ mod error_cases {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "def",
                                 line: 7,
                                 col: 1,
@@ -122,7 +118,7 @@ mod error_cases {
                             },
                             rendered: "def",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "def",
                             line: 7,
                             col: 1,
@@ -134,7 +130,7 @@ mod error_cases {
                         attrlist: None,
                     },),
                 ],
-                source: TSpan {
+                source: Span {
                     // TO DO: Fix bug that includes blank lines.
                     data: "=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef",
                     line: 1,
@@ -150,7 +146,7 @@ mod error_cases {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 7,
                 col: 4,
@@ -160,8 +156,8 @@ mod error_cases {
 
         assert_eq!(
             warnings,
-            vec![TWarning {
-                source: TSpan {
+            vec![Warning {
+                source: Span {
                     data: ".ancestor section== Section 2\n\ndef",
                     line: 5,
                     col: 1,
@@ -176,8 +172,8 @@ mod error_cases {
     fn missing_close_brace_on_attrlist() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
-            Span::new("[incomplete attrlist\n=== Section Title (except it isn't)\n\nabc\n"),
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("[incomplete attrlist\n=== Section Title (except it isn't)\n\nabc\n"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -198,9 +194,9 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "[incomplete attrlist\n=== Section Title (except it isn't)",
                         line: 1,
                         col: 1,
@@ -208,7 +204,7 @@ mod error_cases {
                     },
                     rendered: "[incomplete attrlist\n=== Section Title (except it isn&#8217;t)",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[incomplete attrlist\n=== Section Title (except it isn't)",
                     line: 1,
                     col: 1,
@@ -223,7 +219,7 @@ mod error_cases {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "abc\n",
                 line: 4,
                 col: 1,
@@ -236,8 +232,10 @@ mod error_cases {
     fn attrlist_warning_carried_forward() {
         let mut parser = Parser::default();
 
-        let MatchAndWarnings { item: mi, warnings } = Block::parse(
-            Span::new("[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n"),
+        let MatchAndWarnings { item: mi, warnings } = crate::blocks::Block::parse(
+            crate::Span::new(
+                "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc\n",
+            ),
             &mut parser,
         );
 
@@ -257,13 +255,13 @@ mod error_cases {
 
         assert_eq!(
             mi.item.attrlist().unwrap(),
-            TAttrlist {
-                attributes: &[TElementAttribute {
+            Attrlist {
+                attributes: &[ElementAttribute {
                     name: Some("alt"),
                     shorthand_items: &[],
                     value: "Sunset"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "alt=\"Sunset\"width=300",
                     line: 1,
                     col: 2,
@@ -274,17 +272,17 @@ mod error_cases {
 
         assert_eq!(
             mi.item,
-            TBlock::Section(TSectionBlock {
+            Block::Section(SectionBlock {
                 level: 2,
-                section_title: TSpan {
+                section_title: Span {
                     data: "Section Title (except it isn't)",
                     line: 2,
                     col: 5,
                     offset: 28,
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "abc",
                             line: 4,
                             col: 1,
@@ -292,7 +290,7 @@ mod error_cases {
                         },
                         rendered: "abc",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "abc",
                         line: 4,
                         col: 1,
@@ -303,7 +301,7 @@ mod error_cases {
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "[alt=\"Sunset\"width=300]\n=== Section Title (except it isn't)\n\nabc",
                     line: 1,
                     col: 1,
@@ -312,13 +310,13 @@ mod error_cases {
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: Some("alt"),
                         shorthand_items: &[],
                         value: "Sunset"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "alt=\"Sunset\"width=300",
                         line: 1,
                         col: 2,
@@ -330,7 +328,7 @@ mod error_cases {
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 5,
                 col: 1,
@@ -340,8 +338,8 @@ mod error_cases {
 
         assert_eq!(
             warnings,
-            vec![TWarning {
-                source: TSpan {
+            vec![Warning {
+                source: Span {
                     data: "alt=\"Sunset\"width=300",
                     line: 1,
                     col: 2,
@@ -358,15 +356,15 @@ mod error_cases {
         // IMPORTANT: This test will fail once we implement support for list items.
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new(". abc\ndef"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new(". abc\ndef"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: ". abc\ndef",
                         line: 1,
                         col: 1,
@@ -374,7 +372,7 @@ mod error_cases {
                     },
                     rendered: ". abc\ndef",
                 },
-                source: TSpan {
+                source: Span {
                     data: ". abc\ndef",
                     line: 1,
                     col: 1,
@@ -389,7 +387,7 @@ mod error_cases {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ". abc\ndef",
                 line: 1,
                 col: 1,

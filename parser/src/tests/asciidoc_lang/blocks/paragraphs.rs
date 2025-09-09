@@ -1,17 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    tests::{
-        fixtures::{
-            TSpan,
-            blocks::{TBlock, TSimpleBlock},
-            content::TContent,
-            document::{TDocument, THeader},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, tests::prelude::*};
 
 track_file!("docs/modules/blocks/pages/paragraphs.adoc");
 
@@ -57,12 +46,12 @@ include::example$paragraph.adoc[tag=para]
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
+        Document {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -70,9 +59,9 @@ include::example$paragraph.adoc[tag=para]
                 },
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "Paragraphs don't require any special markup in AsciiDoc.\nA paragraph is just one or more lines of consecutive text.",
                             line: 1,
                             col: 1,
@@ -80,7 +69,7 @@ include::example$paragraph.adoc[tag=para]
                         },
                         rendered: "Paragraphs don&#8217;t require any special markup in AsciiDoc.\nA paragraph is just one or more lines of consecutive text.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Paragraphs don't require any special markup in AsciiDoc.\nA paragraph is just one or more lines of consecutive text.",
                         line: 1,
                         col: 1,
@@ -91,9 +80,9 @@ include::example$paragraph.adoc[tag=para]
                     anchor: None,
                     attrlist: None,
                 },),
-                TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "To begin a new paragraph, separate it by at least one empty line from the previous paragraph or block.",
                             line: 4,
                             col: 1,
@@ -101,7 +90,7 @@ include::example$paragraph.adoc[tag=para]
                         },
                         rendered: "To begin a new paragraph, separate it by at least one empty line from the previous paragraph or block.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "To begin a new paragraph, separate it by at least one empty line from the previous paragraph or block.",
                         line: 4,
                         col: 1,
@@ -113,7 +102,7 @@ include::example$paragraph.adoc[tag=para]
                     attrlist: None,
                 },),
             ],
-            source: TSpan {
+            source: Span {
                 data: "Paragraphs don't require any special markup in AsciiDoc.\nA paragraph is just one or more lines of consecutive text.\n\nTo begin a new paragraph, separate it by at least one empty line from the previous paragraph or block.",
                 line: 1,
                 col: 1,

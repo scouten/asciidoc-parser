@@ -2,22 +2,22 @@ use std::fmt;
 
 use crate::{
     HasSpan,
-    blocks::{CompoundDelimitedBlock, IsBlock},
-    tests::fixtures::{TSpan, attributes::TAttrlist, blocks::TBlock},
+    blocks::IsBlock,
+    tests::fixtures::{Span, attributes::Attrlist, blocks::Block},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TCompoundDelimitedBlock {
-    pub blocks: &'static [TBlock],
+pub(crate) struct CompoundDelimitedBlock {
+    pub blocks: &'static [Block],
     pub context: &'static str,
-    pub source: TSpan,
-    pub title_source: Option<TSpan>,
+    pub source: Span,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub anchor: Option<TSpan>,
-    pub attrlist: Option<TAttrlist>,
+    pub anchor: Option<Span>,
+    pub attrlist: Option<Attrlist>,
 }
 
-impl fmt::Debug for TCompoundDelimitedBlock {
+impl fmt::Debug for CompoundDelimitedBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("CompoundDelimitedBlock")
             .field("blocks", &self.blocks)
@@ -31,21 +31,21 @@ impl fmt::Debug for TCompoundDelimitedBlock {
     }
 }
 
-impl<'src> PartialEq<CompoundDelimitedBlock<'src>> for TCompoundDelimitedBlock {
-    fn eq(&self, other: &CompoundDelimitedBlock<'src>) -> bool {
+impl<'src> PartialEq<crate::blocks::CompoundDelimitedBlock<'src>> for CompoundDelimitedBlock {
+    fn eq(&self, other: &crate::blocks::CompoundDelimitedBlock<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TCompoundDelimitedBlock> for CompoundDelimitedBlock<'_> {
-    fn eq(&self, other: &TCompoundDelimitedBlock) -> bool {
+impl PartialEq<CompoundDelimitedBlock> for crate::blocks::CompoundDelimitedBlock<'_> {
+    fn eq(&self, other: &CompoundDelimitedBlock) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
 fn fixture_eq_observed(
-    fixture: &TCompoundDelimitedBlock,
-    observed: &CompoundDelimitedBlock,
+    fixture: &CompoundDelimitedBlock,
+    observed: &crate::blocks::CompoundDelimitedBlock,
 ) -> bool {
     if fixture.blocks.len() != observed.nested_blocks().len() {
         return false;

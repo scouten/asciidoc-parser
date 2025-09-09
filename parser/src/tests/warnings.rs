@@ -1,14 +1,13 @@
 mod warning {
-    use crate::{
-        Span,
-        warnings::{Warning, WarningType},
-    };
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::warnings::{Warning, WarningType};
 
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
         let w1 = Warning {
-            source: Span::new("abc"),
+            source: crate::Span::new("abc"),
             warning: WarningType::EmptyAttributeValue,
         };
 
@@ -18,10 +17,9 @@ mod warning {
 }
 
 mod match_and_warnings {
-    use crate::{
-        Span,
-        warnings::{MatchAndWarnings, Warning, WarningType},
-    };
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::warnings::{MatchAndWarnings, Warning, WarningType};
 
     #[test]
     fn impl_clone() {
@@ -29,7 +27,7 @@ mod match_and_warnings {
         let maw1 = MatchAndWarnings {
             item: "xyz",
             warnings: vec![Warning {
-                source: Span::new("abc"),
+                source: crate::Span::new("abc"),
                 warning: WarningType::EmptyAttributeValue,
             }],
         };
@@ -55,7 +53,7 @@ mod match_and_warnings {
         let maw = MatchAndWarnings {
             item: "xyz",
             warnings: vec![Warning {
-                source: Span::new("abc"),
+                source: crate::Span::new("abc"),
                 warning: WarningType::EmptyAttributeValue,
             }],
         };

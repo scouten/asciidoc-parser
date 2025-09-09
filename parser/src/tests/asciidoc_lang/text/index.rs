@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/text/pages/index.adoc");
 
@@ -15,10 +15,12 @@ This page covers the formatting marks that AsciiDoc provides and the rules for a
 );
 
 mod formatting_terms_and_concepts {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(

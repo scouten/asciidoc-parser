@@ -1,7 +1,6 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/positional-and-named-attributes.adoc");
-// Tracking commit 3474df92, current as of 2024-10-26.
 
 non_normative!(
     r#"
@@ -16,18 +15,10 @@ mod positional_attribute {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, Span,
-        blocks::{Block, IsBlock, MediaBlock, metadata::BlockMetadata},
+        Parser,
+        blocks::{IsBlock, metadata::BlockMetadata},
         content::SubstitutionGroup,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TSectionBlock, TSimpleBlock},
-                content::TContent,
-            },
-            sdd::{non_normative, verifies},
-        },
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -73,7 +64,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         let mut parser = Parser::default();
 
-        let m1 = MediaBlock::parse(
+        let m1 = crate::blocks::MediaBlock::parse(
             &BlockMetadata::new("image::sunset.jpg[Sunset,300,400]"),
             &mut parser,
         )
@@ -82,7 +73,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         let mut parser = Parser::default();
 
-        let m2 = MediaBlock::parse(
+        let m2 = crate::blocks::MediaBlock::parse(
             &BlockMetadata::new("image::sunset.jpg[alt=Sunset,width=300,height=400]"),
             &mut parser,
         )
@@ -94,7 +85,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         assert_eq!(
             a1.named_or_positional_attribute("alt", 1).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["Sunset"],
                 value: "Sunset"
@@ -103,7 +94,7 @@ The second macro is the same as the first, but written out in longhand form.
 
         assert_eq!(
             a2.named_or_positional_attribute("alt", 1).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("alt"),
                 shorthand_items: &[],
                 value: "Sunset"
@@ -150,8 +141,8 @@ Here's an example that shows how to set an ID on a section using this shorthand 
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
-            Span::new("[#custom-id]\n== Section with Custom ID\n"),
+        let block = crate::blocks::Block::parse(
+            crate::Span::new("[#custom-id]\n== Section with Custom ID\n"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -160,16 +151,16 @@ Here's an example that shows how to set an ID on a section using this shorthand 
 
         assert_eq!(
             block,
-            TBlock::Section(TSectionBlock {
+            Block::Section(SectionBlock {
                 level: 1,
-                section_title: TSpan {
+                section_title: Span {
                     data: "Section with Custom ID",
                     line: 2,
                     col: 4,
                     offset: 16,
                 },
                 blocks: &[],
-                source: TSpan {
+                source: Span {
                     data: "[#custom-id]\n== Section with Custom ID",
                     line: 1,
                     col: 1,
@@ -178,13 +169,13 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["#custom-id"],
                         value: "#custom-id"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "#custom-id",
                         line: 1,
                         col: 2,
@@ -211,8 +202,8 @@ Here's an example that shows how to set an ID on an appendix section using this 
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
-            Span::new("[appendix#custom-id]\n== Appendix with Custom ID\n"),
+        let block = crate::blocks::Block::parse(
+            crate::Span::new("[appendix#custom-id]\n== Appendix with Custom ID\n"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -221,16 +212,16 @@ Here's an example that shows how to set an ID on an appendix section using this 
 
         assert_eq!(
             block,
-            TBlock::Section(TSectionBlock {
+            Block::Section(SectionBlock {
                 level: 1,
-                section_title: TSpan {
+                section_title: Span {
                     data: "Appendix with Custom ID",
                     line: 2,
                     col: 4,
                     offset: 24,
                 },
                 blocks: &[],
-                source: TSpan {
+                source: Span {
                     data: "[appendix#custom-id]\n== Appendix with Custom ID",
                     line: 1,
                     col: 1,
@@ -239,13 +230,13 @@ Here's an example that shows how to set an ID on an appendix section using this 
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["appendix", "#custom-id"],
                         value: "appendix#custom-id"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "appendix#custom-id",
                         line: 1,
                         col: 2,
@@ -276,8 +267,10 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
-            Span::new("[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n"),
+        let block = crate::blocks::Block::parse(
+            crate::Span::new(
+                "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy\n",
+            ),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -287,9 +280,9 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         // TO DO: This will change when we understand lists.
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "* Work hard\n* Play hard\n* Be happy",
                         line: 2,
                         col: 1,
@@ -297,7 +290,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     },
                     rendered: "* Work hard\n* Play hard\n* Be happy",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy",
                     line: 1,
                     col: 1,
@@ -306,13 +299,13 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["#rules", ".prominent", "%incremental"],
                         value: "#rules.prominent%incremental"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "#rules.prominent%incremental",
                         line: 1,
                         col: 2,
@@ -349,7 +342,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(Span::new(
+        let block = crate::blocks::Block::parse(crate::Span::new(
             "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===\n",
         ), &mut parser)
         .unwrap_if_no_warnings()
@@ -358,9 +351,9 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                         line: 2,
                         col: 1,
@@ -368,7 +361,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                     },
                     rendered: "|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[%header%footer%autowidth]\n|===\n|Header A |Header B\n|Footer A |Footer B\n|===",
                     line: 1,
                     col: 1,
@@ -377,13 +370,13 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["%header", "%footer", "%autowidth",],
                         value: "%header%footer%autowidth"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "%header%footer%autowidth",
                         line: 1,
                         col: 2,

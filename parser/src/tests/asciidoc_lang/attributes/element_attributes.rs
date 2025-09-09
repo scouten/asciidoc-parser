@@ -1,7 +1,6 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/element-attributes.adoc");
-// Tracking commit 76c9fe63, current as of 2024-10-26.
 
 non_normative!(
     r#"
@@ -37,26 +36,13 @@ Element attributes are commonly used for the following purposes:
 
 Unlike document attributes, element attributes are defined directly on the element to which they apply using an <<attribute-list,attribute list>>.
 
-    "#
+"#
 );
 
 mod attrlist {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        HasSpan, Parser, Span,
-        attributes::Attrlist,
-        blocks::{Block, MediaType},
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
-                content::TContent,
-            },
-            sdd::{non_normative, to_do_verifies, verifies},
-        },
-    };
+    use crate::{HasSpan, Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -89,29 +75,30 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             r#"first-positional,second-positional,named="value of named""#;
 
         let p = Parser::default();
-        let mi = Attrlist::parse(Span::new(ATTRLIST_EXAMPLE), &p).unwrap_if_no_warnings();
+        let mi = crate::attributes::Attrlist::parse(crate::Span::new(ATTRLIST_EXAMPLE), &p)
+            .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
-            TAttrlist {
+            Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["first-positional"],
                         value: "first-positional",
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "second-positional",
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: Some("named"),
                         shorthand_items: &[],
                         value: "value of named",
                     }
                 ],
-                source: TSpan {
+                source: Span {
                     data: r#"first-positional,second-positional,named="value of named""#,
                     line: 1,
                     col: 1,
@@ -125,7 +112,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.nth_attribute(1).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &["first-positional"],
                 value: "first-positional",
@@ -134,7 +121,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.nth_attribute(2).unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: None,
                 shorthand_items: &[],
                 value: "second-positional",
@@ -145,7 +132,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.named_attribute("named").unwrap(),
-            TElementAttribute {
+            ElementAttribute {
                 name: Some("named"),
                 shorthand_items: &[],
                 value: "value of named",
@@ -154,7 +141,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: r#"first-positional,second-positional,named="value of named""#,
                 line: 1,
                 col: 1,
@@ -164,7 +151,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         assert_eq!(
             mi.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 58,
@@ -193,8 +180,8 @@ If the text cannot be parsed, an error message will be emitted to the log.
 
         let mut parser = Parser::default();
 
-        let block = Block::parse(
-            Span::new("[style,second-positional,named=\"value of named\"]\nSimple block\n"),
+        let block = crate::blocks::Block::parse(
+            crate::Span::new("[style,second-positional,named=\"value of named\"]\nSimple block\n"),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -203,9 +190,9 @@ If the text cannot be parsed, an error message will be emitted to the log.
 
         assert_eq!(
             block,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "Simple block",
                         line: 2,
                         col: 1,
@@ -213,7 +200,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                     },
                     rendered: "Simple block",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[style,second-positional,named=\"value of named\"]\nSimple block",
                     line: 1,
                     col: 1,
@@ -222,25 +209,25 @@ If the text cannot be parsed, an error message will be emitted to the log.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &["style"],
                             value: "style",
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &[],
                             value: "second-positional",
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("named"),
                             shorthand_items: &[],
                             value: "value of named"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "style,second-positional,named=\"value of named\"",
                         line: 1,
                         col: 2,
@@ -283,8 +270,8 @@ name::target[first-positional,second-positional,named="value of named"]
         );
 
         let mut parser = Parser::default();
-        let block = Block::parse(
-            Span::new(
+        let block = crate::blocks::Block::parse(
+            crate::Span::new(
                 "name::target[first-positional,second-positional,named=\"value of named\"]\n",
             ),
             &mut parser,
@@ -295,40 +282,40 @@ name::target[first-positional,second-positional,named="value of named"]
 
         assert_eq!(
             block,
-            TBlock::Media(TMediaBlock {
+            Block::Media(MediaBlock {
                 type_: MediaType::Image,
-                target: TSpan {
+                target: Span {
                     data: "target",
                     line: 1,
                     col: 7,
                     offset: 6,
                 },
-                macro_attrlist: TAttrlist {
+                macro_attrlist: Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &["first-positional"],
                             value: "first-positional"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &[],
                             value: "second-positional"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: Some("named"),
                             shorthand_items: &[],
                             value: "value of named"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "first-positional,second-positional,named=\"value of named\"",
                         line: 1,
                         col: 14,
                         offset: 13,
                     },
                 },
-                source: TSpan {
+                source: Span {
                     data: "name::target[first-positional,second-positional,named=\"value of named\"]",
                     line: 1,
                     col: 1,

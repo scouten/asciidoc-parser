@@ -1,7 +1,6 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/blocks/pages/index.adoc");
-// Tracking commit 447cfd22, current as of 2024-10-26.
 
 non_normative!(
     r#"
@@ -58,11 +57,13 @@ The circumstance is determined by the context and style, and in the case of a de
 mod context {
     use std::ops::Deref;
 
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
-        Parser, Span,
-        blocks::{Block, ContentModel, IsBlock, is_built_in_context},
+        Parser,
+        blocks::{ContentModel, IsBlock, is_built_in_context},
         content::SubstitutionGroup,
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -101,8 +102,8 @@ You can think of the context as the block's type.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
-            Span::new("== Section Title\n\nContent of section."),
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("== Section Title\n\nContent of section."),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -158,8 +159,8 @@ For example, all sections implicitly have the compound content model because a s
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
-            Span::new("== Section Title\n\nContent of section."),
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("== Section Title\n\nContent of section."),
             &mut parser,
         )
         .unwrap_if_no_warnings()
@@ -180,9 +181,10 @@ All literal blocks implicitly have the verbatim content model because the purpos
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("....\nliteral text\n...."), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi =
+            crate::blocks::Block::parse(crate::Span::new("....\nliteral text\n...."), &mut parser)
+                .unwrap_if_no_warnings()
+                .unwrap();
 
         assert_eq!(mi.item.content_model(), ContentModel::Verbatim);
     }
@@ -520,11 +522,13 @@ In the converter, these blocks must be accessed from their parent block.
 }
 
 mod block_style {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
-        Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
+        Parser,
+        blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -571,8 +575,8 @@ The context of the block is still the same, but it has additional metadata to in
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(
-            Span::new("[source,ruby]\n----\nputs \"Hello, World!\"\n----"),
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("[source,ruby]\n----\nputs \"Hello, World!\"\n----"),
             &mut parser,
         )
         .unwrap_if_no_warnings()

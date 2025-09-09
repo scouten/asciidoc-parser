@@ -4,14 +4,9 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, SimpleBlock, metadata::BlockMetadata},
+    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
     content::SubstitutionGroup,
-    tests::fixtures::{
-        TSpan,
-        attributes::{TAttrlist, TElementAttribute},
-        blocks::TSimpleBlock,
-        content::TContent,
-    },
+    tests::prelude::*,
 };
 
 #[test]
@@ -19,7 +14,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = SimpleBlock::parse(&BlockMetadata::new("abc"), &mut parser).unwrap();
+    let b1 = crate::blocks::SimpleBlock::parse(&BlockMetadata::new("abc"), &mut parser).unwrap();
 
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
@@ -28,25 +23,25 @@ fn impl_clone() {
 #[test]
 fn empty_source() {
     let mut parser = Parser::default();
-    assert!(SimpleBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
+    assert!(crate::blocks::SimpleBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
 }
 
 #[test]
 fn only_spaces() {
     let mut parser = Parser::default();
-    assert!(SimpleBlock::parse(&BlockMetadata::new("    "), &mut parser).is_none());
+    assert!(crate::blocks::SimpleBlock::parse(&BlockMetadata::new("    "), &mut parser).is_none());
 }
 
 #[test]
 fn single_line() {
     let mut parser = Parser::default();
-    let mi = SimpleBlock::parse(&BlockMetadata::new("abc"), &mut parser).unwrap();
+    let mi = crate::blocks::SimpleBlock::parse(&BlockMetadata::new("abc"), &mut parser).unwrap();
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc",
                     line: 1,
                     col: 1,
@@ -54,7 +49,7 @@ fn single_line() {
                 },
                 rendered: "abc",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -82,7 +77,7 @@ fn single_line() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 4,
@@ -94,13 +89,14 @@ fn single_line() {
 #[test]
 fn multiple_lines() {
     let mut parser = Parser::default();
-    let mi = SimpleBlock::parse(&BlockMetadata::new("abc\ndef"), &mut parser).unwrap();
+    let mi =
+        crate::blocks::SimpleBlock::parse(&BlockMetadata::new("abc\ndef"), &mut parser).unwrap();
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc\ndef",
                     line: 1,
                     col: 1,
@@ -108,7 +104,7 @@ fn multiple_lines() {
                 },
                 rendered: "abc\ndef",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc\ndef",
                 line: 1,
                 col: 1,
@@ -123,7 +119,7 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 2,
             col: 4,
@@ -135,13 +131,14 @@ fn multiple_lines() {
 #[test]
 fn consumes_blank_lines_after() {
     let mut parser = Parser::default();
-    let mi = SimpleBlock::parse(&BlockMetadata::new("abc\n\ndef"), &mut parser).unwrap();
+    let mi =
+        crate::blocks::SimpleBlock::parse(&BlockMetadata::new("abc\n\ndef"), &mut parser).unwrap();
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc",
                     line: 1,
                     col: 1,
@@ -149,7 +146,7 @@ fn consumes_blank_lines_after() {
                 },
                 rendered: "abc",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -164,7 +161,7 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "def",
             line: 3,
             col: 1,
@@ -176,7 +173,7 @@ fn consumes_blank_lines_after() {
 #[test]
 fn overrides_sub_group_via_subs_attribute() {
     let mut parser = Parser::default();
-    let mi = SimpleBlock::parse(
+    let mi = crate::blocks::SimpleBlock::parse(
         &BlockMetadata::new("[subs=quotes]\na<b>c *bold*\n\ndef"),
         &mut parser,
     )
@@ -184,9 +181,9 @@ fn overrides_sub_group_via_subs_attribute() {
 
     assert_eq!(
         mi.item,
-        TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "a<b>c *bold*",
                     line: 2,
                     col: 1,
@@ -194,7 +191,7 @@ fn overrides_sub_group_via_subs_attribute() {
                 },
                 rendered: "a<b>c <strong>bold</strong>",
             },
-            source: TSpan {
+            source: Span {
                 data: "[subs=quotes]\na<b>c *bold*",
                 line: 1,
                 col: 1,
@@ -203,13 +200,13 @@ fn overrides_sub_group_via_subs_attribute() {
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: Some("subs"),
                     value: "quotes",
                     shorthand_items: &[],
                 },],
-                source: TSpan {
+                source: Span {
                     data: "subs=quotes",
                     line: 1,
                     col: 2,
@@ -221,7 +218,7 @@ fn overrides_sub_group_via_subs_attribute() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "def",
             line: 4,
             col: 1,

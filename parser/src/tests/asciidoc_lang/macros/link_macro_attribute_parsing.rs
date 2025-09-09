@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/link-macro-attribute-parsing.adoc");
 
@@ -15,18 +15,7 @@ This page explains the conditions when this occurs and how to write the link tex
 mod link_text_alongside_named_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -53,21 +42,21 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://chat.asciidoc.org[Discuss AsciiDoc]",
                             line: 1,
                             col: 1,
@@ -75,7 +64,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
                         },
                         rendered: "<a href=\"https://chat.asciidoc.org\">Discuss AsciiDoc</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc]",
                         line: 1,
                         col: 1,
@@ -86,7 +75,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://chat.asciidoc.org[Discuss AsciiDoc]",
                     line: 1,
                     col: 1,
@@ -128,21 +117,21 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]",
                             line: 1,
                             col: 1,
@@ -150,7 +139,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
                         },
                         rendered: "<a href=\"https://chat.asciidoc.org\" class=\"resource\" target=\"_blank\" rel=\"noopener\">Discuss AsciiDoc</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]",
                         line: 1,
                         col: 1,
@@ -161,7 +150,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]",
                     line: 1,
                     col: 1,
@@ -192,21 +181,21 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://example.org[\"Google, DuckDuckGo, Ecosia\",role=teal]",
                             line: 1,
                             col: 1,
@@ -214,7 +203,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
                         },
                         rendered: "<a href=\"https://example.org\" class=\"teal\">Google, DuckDuckGo, Ecosia</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://example.org[\"Google, DuckDuckGo, Ecosia\",role=teal]",
                         line: 1,
                         col: 1,
@@ -225,7 +214,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://example.org[\"Google, DuckDuckGo, Ecosia\",role=teal]",
                     line: 1,
                     col: 1,
@@ -255,21 +244,21 @@ https://example.org["1=2 posits the problem of inequality"]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://example.org[\"1=2 posits the problem of inequality\"]",
                             line: 1,
                             col: 1,
@@ -277,7 +266,7 @@ https://example.org["1=2 posits the problem of inequality"]
                         },
                         rendered: "<a href=\"https://example.org\">1=2 posits the problem of inequality</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://example.org[\"1=2 posits the problem of inequality\"]",
                         line: 1,
                         col: 1,
@@ -288,7 +277,7 @@ https://example.org["1=2 posits the problem of inequality"]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://example.org[\"1=2 posits the problem of inequality\"]",
                     line: 1,
                     col: 1,
@@ -319,21 +308,21 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://example.org[\"href=\\\"#top\\\" attribute\"] creates link to top of page",
                             line: 1,
                             col: 1,
@@ -341,7 +330,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
                         },
                         rendered: "<a href=\"https://example.org\">href=\"#top\" attribute</a> creates link to top of page",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://example.org[\"href=\\\"#top\\\" attribute\"] creates link to top of page",
                         line: 1,
                         col: 1,
@@ -352,7 +341,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://example.org[\"href=\\\"#top\\\" attribute\"] creates link to top of page",
                     line: 1,
                     col: 1,
@@ -392,21 +381,21 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                             line: 1,
                             col: 1,
@@ -414,7 +403,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
                         },
                         rendered: "<a href=\"https://chat.asciidoc.org\" class=\"bare button\" target=\"_blank\" rel=\"nofollow\" noopener>https://chat.asciidoc.org</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                         line: 1,
                         col: 1,
@@ -425,7 +414,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]",
                     line: 1,
                     col: 1,
@@ -448,18 +437,7 @@ It also recognizes a handful of attributes that are specific to the link macro.
 mod target_separate_window {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -491,21 +469,21 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=read-later]",
                             line: 1,
                             col: 1,
@@ -513,7 +491,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
                         },
                         rendered: "<a href=\"https://asciidoctor.org\" target=\"read-later\">Asciidoctor</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org[Asciidoctor,window=read-later]",
                         line: 1,
                         col: 1,
@@ -524,7 +502,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Asciidoctor,window=read-later]",
                     line: 1,
                     col: 1,
@@ -560,21 +538,21 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                             line: 1,
                             col: 1,
@@ -582,7 +560,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
                         },
                         rendered: "<a href=\"https://asciidoctor.org\" target=\"_blank\" rel=\"noopener\">Asciidoctor</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                         line: 1,
                         col: 1,
@@ -593,7 +571,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                     line: 1,
                     col: 1,
@@ -637,21 +615,21 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                             line: 1,
                             col: 1,
@@ -659,7 +637,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
                         },
                         rendered: "<a href=\"https://asciidoctor.org\" target=\"_blank\" rel=\"noopener\">Asciidoctor</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                         line: 1,
                         col: 1,
@@ -670,7 +648,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Asciidoctor,window=_blank]",
                     line: 1,
                     col: 1,
@@ -700,21 +678,21 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]",
                             line: 1,
                             col: 1,
@@ -722,7 +700,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
                         },
                         rendered: "<a href=\"https://asciidoctor.org\" target=\"read-later\" rel=\"noopener\">Asciidoctor</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]",
                         line: 1,
                         col: 1,
@@ -733,7 +711,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]",
                     line: 1,
                     col: 1,
@@ -764,21 +742,21 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]",
                             line: 1,
                             col: 1,
@@ -786,7 +764,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
                         },
                         rendered: "<a href=\"https://asciidoctor.org\" target=\"_blank\" rel=\"nofollow\" noopener>Asciidoctor</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]",
                         line: 1,
                         col: 1,
@@ -797,7 +775,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]",
                     line: 1,
                     col: 1,
@@ -828,21 +806,21 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=\"noopener,nofollow\"]",
                             line: 1,
                             col: 1,
@@ -850,7 +828,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
                         },
                         rendered: "<a href=\"https://asciidoctor.org\" target=\"read-later\" rel=\"nofollow\" noopener>Asciidoctor</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=\"noopener,nofollow\"]",
                         line: 1,
                         col: 1,
@@ -861,7 +839,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://asciidoctor.org[Asciidoctor,window=read-later,opts=\"noopener,nofollow\"]",
                     line: 1,
                     col: 1,
@@ -890,21 +868,21 @@ link:post.html[My Post,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "link:post.html[My Post,opts=nofollow]",
                             line: 1,
                             col: 1,
@@ -912,7 +890,7 @@ link:post.html[My Post,opts=nofollow]
                         },
                         rendered: "<a href=\"post.html\" rel=\"nofollow\">My Post</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "link:post.html[My Post,opts=nofollow]",
                         line: 1,
                         col: 1,
@@ -923,7 +901,7 @@ link:post.html[My Post,opts=nofollow]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "link:post.html[My Post,opts=nofollow]",
                     line: 1,
                     col: 1,
@@ -958,21 +936,21 @@ include::example$url.adoc[tag=linkattrs-s]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "Let's view the raw HTML of the link:view-source:asciidoctor.org[Asciidoctor homepage^].",
                             line: 1,
                             col: 1,
@@ -980,7 +958,7 @@ include::example$url.adoc[tag=linkattrs-s]
                         },
                         rendered: "Let&#8217;s view the raw HTML of the <a href=\"view-source:asciidoctor.org\" target=\"_blank\" rel=\"noopener\">Asciidoctor homepage</a>.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Let's view the raw HTML of the link:view-source:asciidoctor.org[Asciidoctor homepage^].",
                         line: 1,
                         col: 1,
@@ -991,7 +969,7 @@ include::example$url.adoc[tag=linkattrs-s]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "Let's view the raw HTML of the link:view-source:asciidoctor.org[Asciidoctor homepage^].",
                     line: 1,
                     col: 1,
@@ -1029,21 +1007,21 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://example.org[\"Google, DuckDuckGo, Ecosia^\",role=btn]",
                             line: 1,
                             col: 1,
@@ -1051,7 +1029,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
                         },
                         rendered: "<a href=\"https://example.org\" class=\"btn\" target=\"_blank\" rel=\"noopener\">Google, DuckDuckGo, Ecosia</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://example.org[\"Google, DuckDuckGo, Ecosia^\",role=btn]",
                         line: 1,
                         col: 1,
@@ -1062,7 +1040,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://example.org[\"Google, DuckDuckGo, Ecosia^\",role=btn]",
                     line: 1,
                     col: 1,
@@ -1090,21 +1068,21 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                             line: 1,
                             col: 1,
@@ -1112,7 +1090,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
                         },
                         rendered: "<a href=\"https://example.org\" target=\"_blank\" rel=\"noopener\">Google, DuckDuckGo, Ecosia</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                         line: 1,
                         col: 1,
@@ -1123,7 +1101,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "https://example.org[Google, DuckDuckGo, Ecosia^]",
                     line: 1,
                     col: 1,

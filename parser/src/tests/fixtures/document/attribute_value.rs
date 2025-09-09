@@ -1,43 +1,44 @@
 use std::cmp::PartialEq;
 
-use crate::document::InterpretedValue;
-
 #[derive(Debug, Eq, PartialEq)]
-pub(crate) enum TInterpretedValue {
+pub(crate) enum InterpretedValue {
     Value(&'static str),
     Set,
     Unset,
 }
 
-impl PartialEq<InterpretedValue> for TInterpretedValue {
-    fn eq(&self, other: &InterpretedValue) -> bool {
+impl PartialEq<crate::document::InterpretedValue> for InterpretedValue {
+    fn eq(&self, other: &crate::document::InterpretedValue) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TInterpretedValue> for InterpretedValue {
-    fn eq(&self, other: &TInterpretedValue) -> bool {
+impl PartialEq<InterpretedValue> for crate::document::InterpretedValue {
+    fn eq(&self, other: &InterpretedValue) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TInterpretedValue> for &InterpretedValue {
-    fn eq(&self, other: &TInterpretedValue) -> bool {
+impl PartialEq<InterpretedValue> for &crate::document::InterpretedValue {
+    fn eq(&self, other: &InterpretedValue) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TInterpretedValue, observed: &InterpretedValue) -> bool {
+fn fixture_eq_observed(
+    fixture: &InterpretedValue,
+    observed: &crate::document::InterpretedValue,
+) -> bool {
     match fixture {
-        TInterpretedValue::Value(fixture_value) => {
-            if let InterpretedValue::Value(observed_value) = observed {
+        InterpretedValue::Value(fixture_value) => {
+            if let crate::document::InterpretedValue::Value(observed_value) = observed {
                 fixture_value == observed_value
             } else {
                 false
             }
         }
 
-        TInterpretedValue::Set => observed == &InterpretedValue::Set,
-        TInterpretedValue::Unset => observed == &InterpretedValue::Unset,
+        InterpretedValue::Set => observed == &crate::document::InterpretedValue::Set,
+        InterpretedValue::Unset => observed == &crate::document::InterpretedValue::Unset,
     }
 }

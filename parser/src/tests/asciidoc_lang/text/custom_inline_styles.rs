@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/text/pages/custom-inline-styles.adoc");
 
@@ -10,10 +10,12 @@ non_normative!(
 );
 
 mod custom_style_syntax {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     #[test]

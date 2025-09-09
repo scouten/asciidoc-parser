@@ -1,7 +1,6 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/id.adoc");
-// Tracking commit 493cbec4, current as of 2025-04-10.
 
 non_normative!(
     r#"
@@ -29,20 +28,7 @@ Likewise, you can assign an ID to a list item by using an anchor (`[[]]`) at the
 mod valid_id_characters {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser, Span,
-        blocks::Block,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                warnings::TWarning,
-            },
-            sdd::{non_normative, verifies},
-        },
-        warnings::WarningType,
-    };
+    use crate::{Parser, tests::prelude::*, warnings::WarningType};
 
     non_normative!(
         r#"
@@ -62,15 +48,15 @@ All the language requires in this case is that the value be non-empty.
 
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
-            Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
             &mut parser,
         );
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
-                source: TSpan {
+            vec![Warning {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 3,
@@ -84,9 +70,9 @@ All the language requires in this case is that the value be non-empty.
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "This paragraph gets a lot of attention.",
                         line: 2,
                         col: 1,
@@ -94,7 +80,7 @@ All the language requires in this case is that the value be non-empty.
                     },
                     rendered: "This paragraph gets a lot of attention.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[[]]\nThis paragraph gets a lot of attention.",
                     line: 1,
                     col: 1,
@@ -102,7 +88,7 @@ All the language requires in this case is that the value be non-empty.
                 },
                 title_source: None,
                 title: None,
-                anchor: Some(TSpan {
+                anchor: Some(Span {
                     data: "",
                     line: 1,
                     col: 3,
@@ -161,15 +147,15 @@ install the gem
 
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
-            Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
             &mut parser,
         );
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
-                source: TSpan {
+            vec![Warning {
+                source: Span {
                     data: "3 blind mice",
                     line: 1,
                     col: 3,
@@ -183,9 +169,9 @@ install the gem
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "This paragraph gets a lot of attention.",
                         line: 2,
                         col: 1,
@@ -193,7 +179,7 @@ install the gem
                     },
                     rendered: "This paragraph gets a lot of attention.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
                     line: 1,
                     col: 1,
@@ -201,7 +187,7 @@ install the gem
                 },
                 title_source: None,
                 title: None,
-                anchor: Some(TSpan {
+                anchor: Some(Span {
                     data: "3 blind mice",
                     line: 1,
                     col: 3,
@@ -231,19 +217,7 @@ NOTE: Section pending
 mod block_assignment {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser, Span,
-        blocks::Block,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-                content::TContent,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -273,17 +247,20 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("[#goals]\n* Goal 1\n* Goal 2"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("[#goals]\n* Goal 1\n* Goal 2"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         // NOTE: This test will have to be revised when we support lists.
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "* Goal 1\n* Goal 2",
                         line: 2,
                         col: 1,
@@ -291,7 +268,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                     },
                     rendered: "* Goal 1\n* Goal 2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[#goals]\n* Goal 1\n* Goal 2",
                     line: 1,
                     col: 1,
@@ -300,13 +277,13 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: None,
                         shorthand_items: &["#goals"],
                         value: "#goals"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "#goals",
                         line: 1,
                         col: 2,
@@ -335,17 +312,20 @@ In the longhand syntax, you use a standard named attribute.
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("[id=goals]\n* Goal 1\n* Goal 2"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("[id=goals]\n* Goal 1\n* Goal 2"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         // NOTE: This test will have to be revised when we support lists.
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "* Goal 1\n* Goal 2",
                         line: 2,
                         col: 1,
@@ -353,7 +333,7 @@ In the longhand syntax, you use a standard named attribute.
                     },
                     rendered: "* Goal 1\n* Goal 2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[id=goals]\n* Goal 1\n* Goal 2",
                     line: 1,
                     col: 1,
@@ -362,13 +342,13 @@ In the longhand syntax, you use a standard named attribute.
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: Some("id"),
                         shorthand_items: &[],
                         value: "goals"
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "id=goals",
                         line: 1,
                         col: 2,
@@ -397,17 +377,20 @@ In the block anchor syntax, you surround the name with double square brackets:
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("[[goals]]\n* Goal 1\n* Goal 2"), &mut parser)
-            .unwrap_if_no_warnings()
-            .unwrap();
+        let mi = crate::blocks::Block::parse(
+            crate::Span::new("[[goals]]\n* Goal 1\n* Goal 2"),
+            &mut parser,
+        )
+        .unwrap_if_no_warnings()
+        .unwrap();
 
         // NOTE: This test will have to be revised when we support lists.
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "* Goal 1\n* Goal 2",
                         line: 2,
                         col: 1,
@@ -415,7 +398,7 @@ In the block anchor syntax, you surround the name with double square brackets:
                     },
                     rendered: "* Goal 1\n* Goal 2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "[[goals]]\n* Goal 1\n* Goal 2",
                     line: 1,
                     col: 1,
@@ -423,7 +406,7 @@ In the block anchor syntax, you surround the name with double square brackets:
                 },
                 title_source: None,
                 title: None,
-                anchor: Some(TSpan {
+                anchor: Some(Span {
                     data: "goals",
                     line: 1,
                     col: 3,
@@ -454,16 +437,16 @@ ____
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "Roads? Where we're going, we don't need roads.",
                             line: 3,
                             col: 1,
@@ -471,7 +454,7 @@ ____
                         },
                         rendered: "Roads? Where we&#8217;re going, we don&#8217;t need roads.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Roads? Where we're going, we don't need roads.",
                         line: 3,
                         col: 1,
@@ -483,7 +466,7 @@ ____
                     attrlist: None,
                 },),],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "[quote.movie#roads,Dr. Emmett Brown]\n____\nRoads? Where we're going, we don't need roads.\n____",
                     line: 1,
                     col: 1,
@@ -492,20 +475,20 @@ ____
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
+                attrlist: Some(Attrlist {
                     attributes: &[
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &["quote", ".movie", "#roads",],
                             value: "quote.movie#roads"
                         },
-                        TElementAttribute {
+                        ElementAttribute {
                             name: None,
                             shorthand_items: &[],
                             value: "Dr. Emmett Brown"
                         },
                     ],
-                    source: TSpan {
+                    source: Span {
                         data: "quote.movie#roads,Dr. Emmett Brown",
                         line: 1,
                         col: 2,

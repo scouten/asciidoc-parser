@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/images.adoc");
 
@@ -16,20 +16,7 @@ The block form uses two colons (`::`), whereas the inline form only uses one (`:
 mod block_image_macro {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, to_do_verifies, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -71,12 +58,12 @@ include::example$image.adoc[tag=base]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
@@ -84,9 +71,9 @@ include::example$image.adoc[tag=base]
                     },
                 },
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "Content in document.",
                                 line: 1,
                                 col: 1,
@@ -94,7 +81,7 @@ include::example$image.adoc[tag=base]
                             },
                             rendered: "Content in document.",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "Content in document.",
                             line: 1,
                             col: 1,
@@ -105,24 +92,24 @@ include::example$image.adoc[tag=base]
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Media(TMediaBlock {
+                    Block::Media(MediaBlock {
                         type_: MediaType::Image,
-                        target: TSpan {
+                        target: Span {
                             data: "sunset.jpg",
                             line: 3,
                             col: 8,
                             offset: 29,
                         },
-                        macro_attrlist: TAttrlist {
+                        macro_attrlist: Attrlist {
                             attributes: &[],
-                            source: TSpan {
+                            source: Span {
                                 data: "",
                                 line: 3,
                                 col: 19,
                                 offset: 40,
                             },
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "image::sunset.jpg[]",
                             line: 3,
                             col: 1,
@@ -133,9 +120,9 @@ include::example$image.adoc[tag=base]
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "Content in document",
                                 line: 5,
                                 col: 1,
@@ -143,7 +130,7 @@ include::example$image.adoc[tag=base]
                             },
                             rendered: "Content in document",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "Content in document",
                             line: 5,
                             col: 1,
@@ -155,7 +142,7 @@ include::example$image.adoc[tag=base]
                         attrlist: None,
                     },),
                 ],
-                source: TSpan {
+                source: Span {
                     data: "Content in document.\n\nimage::sunset.jpg[]\n\nContent in document",
                     line: 1,
                     col: 1,
@@ -193,40 +180,40 @@ include::example$image.adoc[tag=alt]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
-                        attributes: &[TElementAttribute {
+                    macro_attrlist: Attrlist {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: "Sunset",
                             shorthand_items: &["Sunset"],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "Sunset",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::sunset.jpg[Sunset]",
                         line: 1,
                         col: 1,
@@ -237,7 +224,7 @@ include::example$image.adoc[tag=alt]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::sunset.jpg[Sunset]",
                     line: 1,
                     col: 1,
@@ -274,40 +261,40 @@ You can also give the image an ID, title, set its dimensions and make it a link.
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
-                        attributes: &[TElementAttribute {
+                    macro_attrlist: Attrlist {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: "Mesa Verde Sunset, by JAVH",
                             shorthand_items: &[],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "\"Mesa Verde Sunset, by JAVH\"",
                             line: 1,
                             col: 19,
                             offset: 18,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::sunset.jpg[\"Mesa Verde Sunset, by JAVH\"]",
                         line: 1,
                         col: 1,
@@ -318,7 +305,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::sunset.jpg[\"Mesa Verde Sunset, by JAVH\"]",
                     line: 1,
                     col: 1,
@@ -365,58 +352,58 @@ include::example$image.adoc[tag=attr]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 3,
                         col: 8,
                         offset: 91,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Sunset",
                                 shorthand_items: &["Sunset"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "100",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Sunset,200,100",
                             line: 3,
                             col: 19,
                             offset: 102,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: ".A mountain sunset\n[#img-sunset,link=https://www.flickr.com/photos/javh/5448336655]\nimage::sunset.jpg[Sunset,200,100]",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
-                    title_source: Some(TSpan {
+                    title_source: Some(Span {
                         data: "A mountain sunset",
                         line: 1,
                         col: 2,
@@ -424,20 +411,20 @@ include::example$image.adoc[tag=attr]
                     },),
                     title: Some("A mountain sunset"),
                     anchor: None,
-                    attrlist: Some(TAttrlist {
+                    attrlist: Some(Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "#img-sunset",
                                 shorthand_items: &["#img-sunset"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("link",),
                                 value: "https://www.flickr.com/photos/javh/5448336655",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "#img-sunset,link=https://www.flickr.com/photos/javh/5448336655",
                             line: 2,
                             col: 2,
@@ -445,7 +432,7 @@ include::example$image.adoc[tag=attr]
                         },
                     },),
                 },),],
-                source: TSpan {
+                source: Span {
                     data: ".A mountain sunset\n[#img-sunset,link=https://www.flickr.com/photos/javh/5448336655]\nimage::sunset.jpg[Sunset,200,100]",
                     line: 1,
                     col: 1,
@@ -483,7 +470,7 @@ mod inline_image_macro {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
