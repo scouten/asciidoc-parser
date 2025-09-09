@@ -1,4 +1,6 @@
 mod warning {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::warnings::{Warning, WarningType};
 
     #[test]
@@ -15,6 +17,8 @@ mod warning {
 }
 
 mod match_and_warnings {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::warnings::{MatchAndWarnings, Warning, WarningType};
 
     #[test]

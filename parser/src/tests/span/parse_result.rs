@@ -1,3 +1,5 @@
+use pretty_assertions_sorted::assert_eq;
+
 #[test]
 fn impl_clone_eq() {
     let span = crate::Span::new("abc");

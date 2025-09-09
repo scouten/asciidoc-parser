@@ -5,6 +5,8 @@ mod section;
 mod simple;
 
 mod content_model {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::blocks::ContentModel;
 
     #[test]

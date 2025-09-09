@@ -1,4 +1,6 @@
 mod discard {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -73,6 +75,8 @@ mod discard {
 }
 
 mod discard_whitespace {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -147,6 +151,8 @@ mod discard_whitespace {
 }
 
 mod discard_all {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]

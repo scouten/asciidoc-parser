@@ -1,3 +1,5 @@
+use pretty_assertions_sorted::assert_eq;
+
 use crate::{Parser, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/attribute-entries.adoc");
@@ -411,6 +413,8 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
 }
 
 mod where_declared {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
 
     non_normative!(
@@ -522,6 +526,8 @@ See the xref:document-attributes-ref.adoc[] for where in a document each attribu
 }
 
 mod defining_without_attribute_entry {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
 
     non_normative!(

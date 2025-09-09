@@ -1,4 +1,6 @@
 mod special_characters {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         content::{Content, SubstitutionStep},
@@ -49,6 +51,8 @@ mod special_characters {
 }
 
 mod quotes {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         content::{Content, SubstitutionStep},
@@ -115,6 +119,8 @@ mod quotes {
 }
 
 mod attribute_references {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         content::{Content, SubstitutionStep},
@@ -189,6 +195,8 @@ mod attribute_references {
 }
 
 mod callouts {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         content::{Content, SubstitutionStep},

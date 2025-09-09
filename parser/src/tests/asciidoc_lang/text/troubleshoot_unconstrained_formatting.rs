@@ -61,6 +61,8 @@ To help you determine whether a particular syntax pattern requires an unconstrai
 );
 
 mod unconstrained_pair_edge_cases {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
@@ -284,6 +286,8 @@ For details, follow https://github.com/asciidoctor/asciidoctor/issues/61[Asciido
 }
 
 mod escape_unconstrained_formatting_marks {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},

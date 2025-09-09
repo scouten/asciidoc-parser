@@ -10,6 +10,8 @@ non_normative!(
 );
 
 mod custom_style_syntax {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},

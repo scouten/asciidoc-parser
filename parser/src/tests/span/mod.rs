@@ -1,3 +1,5 @@
+use pretty_assertions_sorted::assert_eq;
+
 #[test]
 fn test_happy_case() {
     let span = crate::Span::new(r#"{"hello": "world 🙌"}"#);
@@ -30,6 +32,8 @@ fn into_parse_result() {
 }
 
 mod split_at_match_non_empty {
+    use pretty_assertions_sorted::assert_eq;
+
     #[test]
     fn empty_source() {
         let s = crate::Span::new("");

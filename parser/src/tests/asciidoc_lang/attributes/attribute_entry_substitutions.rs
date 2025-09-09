@@ -264,6 +264,8 @@ If the macro is absent, the value is processed with the header substitution grou
 }
 
 mod attributes_defined_outside_document {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
     non_normative!(
@@ -310,8 +312,6 @@ To play, you'll need {equipment}.
         let mut blocks = doc.nested_blocks();
 
         let block1 = blocks.next().unwrap();
-
-        dbg!(&block1);
 
         assert_eq!(
             block1,

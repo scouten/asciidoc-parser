@@ -15,6 +15,8 @@ This page covers the formatting marks that AsciiDoc provides and the rules for a
 );
 
 mod formatting_terms_and_concepts {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},

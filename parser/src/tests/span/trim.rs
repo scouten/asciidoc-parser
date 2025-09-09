@@ -1,4 +1,6 @@
 mod trim_trailing_whitespace {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -78,6 +80,8 @@ mod trim_trailing_whitespace {
 }
 
 mod trim_trailing_line_end {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]

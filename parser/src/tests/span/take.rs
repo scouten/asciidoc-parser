@@ -1,4 +1,6 @@
 mod take_prefix {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -73,6 +75,8 @@ mod take_prefix {
 }
 
 mod take_whitespace {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -207,6 +211,8 @@ mod take_whitespace {
 }
 
 mod take_whitespace_with_newline {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -341,6 +347,8 @@ mod take_whitespace_with_newline {
 }
 
 mod take_required_whitespace {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -409,6 +417,8 @@ mod take_required_whitespace {
 }
 
 mod take_while {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
@@ -517,6 +527,8 @@ mod take_while {
 }
 
 mod take_non_empty_lines {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::tests::prelude::*;
 
     #[test]
