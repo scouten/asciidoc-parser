@@ -1,7 +1,6 @@
 use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/id.adoc");
-// Tracking commit 493cbec4, current as of 2025-04-10.
 
 non_normative!(
     r#"

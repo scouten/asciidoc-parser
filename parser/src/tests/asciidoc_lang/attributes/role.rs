@@ -1,7 +1,6 @@
 use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/role.adoc");
-// Tracking commit c7d2b3e4, current as of 2025-04-10.
 
 non_normative!(
     r#"

@@ -9,7 +9,6 @@ use crate::{
 };
 
 track_file!("docs/modules/blocks/pages/delimited.adoc");
-// Tracking commit aa906159, current as of 2024-10-26.
 
 non_normative!(
     r#"

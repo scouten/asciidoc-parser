@@ -1,7 +1,6 @@
 use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/positional-and-named-attributes.adoc");
-// Tracking commit 3474df92, current as of 2024-10-26.
 
 non_normative!(
     r#"
