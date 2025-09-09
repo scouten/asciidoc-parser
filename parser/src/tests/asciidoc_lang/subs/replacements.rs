@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/subs/pages/replacements.adoc");
 
@@ -23,7 +23,7 @@ mod replacements {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -282,7 +282,7 @@ mod blocks_and_inline_elements_subject_to_the_replacements_substitution {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -611,7 +611,7 @@ mod replacements_substitution_value {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(

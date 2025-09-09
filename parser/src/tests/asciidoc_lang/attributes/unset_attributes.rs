@@ -16,10 +16,7 @@ mod unset_in_header {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
-        document::InterpretedValue,
-        parser::ModificationContext,
-        tests::sdd::{non_normative, verifies},
+        Parser, document::InterpretedValue, parser::ModificationContext, tests::prelude::*,
     };
 
     non_normative!(
@@ -127,11 +124,7 @@ This is an attribute that is set and assigned a default value of `Example` autom
 mod unset_in_body {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        document::InterpretedValue,
-        tests::sdd::{non_normative, to_do_verifies},
-    };
+    use crate::{Parser, document::InterpretedValue, tests::prelude::*};
 
     non_normative!(
         r#"

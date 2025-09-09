@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/blocks/pages/index.adoc");
 // Tracking commit 447cfd22, current as of 2024-10-26.
@@ -62,7 +62,7 @@ mod context {
         Parser,
         blocks::{ContentModel, IsBlock, is_built_in_context},
         content::SubstitutionGroup,
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -525,7 +525,7 @@ mod block_style {
         Parser,
         blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(

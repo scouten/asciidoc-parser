@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     Parser,
     blocks::{Block, IsBlock},
-    tests::sdd::{non_normative, track_file, verifies},
+    tests::prelude::*,
 };
 
 track_file!("docs/modules/subs/pages/post-replacements.adoc");
@@ -47,7 +47,7 @@ mod default_post_replacements_substitution {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -382,7 +382,7 @@ mod post_replacements_substitution_value {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
