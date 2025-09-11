@@ -234,21 +234,21 @@ A block macro is always parsed, whereas an inline macro is only parsed where the
     }
 }
 
-// NOT COVERED YET:
-// == Preprocessor directives
+non_normative!(
+    r#"
+== Preprocessor directives
 
-// There's another syntax in AsciiDoc that looks a lot like block macros, only
-// they aren't. These are the preprocessor directives.
+There's another syntax in AsciiDoc that looks a lot like block macros, only they aren't.
+These are the preprocessor directives.
 
-// A preprocessor directive is a function that controls lines that are fed into
-// the parser. A conditional preprocessor directive can configure lines to be
-// included or excluded based on the presence of an attribute (ifdef, ifndef) or
-// another arbitrary condition (ifeval). An include directive can add additional
-// lines to the document taken from another document.
+A preprocessor directive is a function that controls lines that are fed into the parser.
+A conditional preprocessor directive can configure lines to be included or excluded based on the presence of an attribute (ifdef, ifndef) or another arbitrary condition (ifeval).
+An include directive can add additional lines to the document taken from another document.
 
-// Preprocessor directives share common traits with a block macro.
-// Like a block macro, a preprocessor directive must be on a line by itself.
-// While the preprocessor directive can access document attributes, it's not
-// otherwise aware of the context around it. It's only a line processor.
-// Like a block macro, the include directive can have element attributes, though
-// they only apply to the preprocessing operation itself.
+Preprocessor directives share common traits with a block macro.
+Like a block macro, a preprocessor directive must be on a line by itself.
+While the preprocessor directive can access document attributes, it's not otherwise aware of the context around it.
+It's only a line processor.
+Like a block macro, the include directive can have element attributes, though they only apply to the preprocessing operation itself.
+"#
+);
