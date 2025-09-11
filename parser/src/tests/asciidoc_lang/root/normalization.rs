@@ -114,19 +114,17 @@ fn strips_trailing_crlf() {
     );
 }
 
-// No test cases as yet:
-//
-// This normalization is performed independent of any structured context.
-// It doesn't matter if the line is part of a literal block or a regular
-// paragraph. All lines get normalized.
-//
-// Normalization is only applied in certain cases to the lines of an include
-// file. Only include files that have a recognized AsciiDoc extension are
-// normalized as described above. For all other files, only the trailing end of
-// line character is removed. Include files can also have a different encoding,
-// which is specified using the encoding attribute. If the encoding attribute is
-// not specified, UTF-8 is assumed.
-//
-// When the AsciiDoc processor brings the lines back together to produce the
-// rendered document (HTML, DocBook, etc), it joins the lines on the line feed
-// character (`\n`).
+// Treating the following as non-normative because there is more detailed
+// coverage of this topic in the includes module.
+
+non_normative!(
+    r#"
+Normalization is only applied in certain cases to the lines of an include file.
+Only include files that have a recognized AsciiDoc extension are normalized as described above.
+For all other files, only the trailing end of line character is removed.
+Include files can also have a different encoding, which is specified using the encoding attribute.
+If the encoding attribute is not specified, UTF-8 is assumed.
+
+When the AsciiDoc processor brings the lines back together to produce the rendered document (HTML, DocBook, etc), it joins the lines on the line feed character (`\n`).
+"#
+);
