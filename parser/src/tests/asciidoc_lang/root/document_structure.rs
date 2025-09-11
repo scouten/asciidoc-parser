@@ -471,83 +471,141 @@ more value
         );
     }
 
-    // No test cases:
+    #[test]
+    fn blank_line_between_header_and_body() {
+        verifies!(
+            r#"
+Empty lines can also be significant.
+A single empty line separates the header from the body.
+"#
+        );
 
-    // Empty lines can also be significant.
-    // A single empty line separates the header from the body.
-    // Many blocks are also separated by an empty line, as you saw in the two
-    // paragraph example earlier.
+        let mut parser = Parser::default();
+        let doc = parser.parse("= Title\n:name: value\n\nBody text goes here.");
 
-    // In contrast, lines within paragraph content are insignificant.
-    // Keep these points in mind as you're learning about the AsciiDoc syntax.
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: Some(Span {
+                        data: "Title",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },),
+                    title: Some("Title",),
+                    attributes: &[Attribute {
+                        name: Span {
+                            data: "name",
+                            line: 2,
+                            col: 2,
+                            offset: 9,
+                        },
+                        value_source: Some(Span {
+                            data: "value",
+                            line: 2,
+                            col: 8,
+                            offset: 15,
+                        },),
+                        value: InterpretedValue::Value("value",),
+                        source: Span {
+                            data: ":name: value",
+                            line: 2,
+                            col: 1,
+                            offset: 8,
+                        },
+                    },],
+                    source: Span {
+                        data: "= Title\n:name: value",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Body text goes here.",
+                            line: 4,
+                            col: 1,
+                            offset: 22,
+                        },
+                        rendered: "Body text goes here.",
+                    },
+                    source: Span {
+                        data: "Body text goes here.",
+                        line: 4,
+                        col: 1,
+                        offset: 22,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "= Title\n:name: value\n\nBody text goes here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    non_normative!(
+        r#"
+Many blocks are also separated by an empty line, as you saw in the two paragraph example earlier.
+
+In contrast, lines within paragraph content are insignificant.
+Keep these points in mind as you're learning about the AsciiDoc syntax.
+
+"#
+    );
 }
 
-mod blocks {
-    // No test cases:
+non_normative!(
+    r#"
+== Blocks
 
-    // == Blocks
+Blocks in an AsciiDoc document lay down the document structure.
+Some blocks may contain other blocks, so the document structure is inherently hierarchical (i.e., a tree structure).
+You can preview this section structure, for example, by enabling the automatic table of contents.
+Examples of blocks include paragraphs, sections, lists, delimited blocks, tables, and block macros.
 
-    // Blocks in an AsciiDoc document lay down the document structure.
-    // Some blocks may contain other blocks, so the document structure is
-    // inherently hierarchical (i.e., a tree structure). You can preview
-    // this section structure, for example, by enabling the automatic table
-    // of contents. Examples of blocks include paragraphs, sections, lists,
-    // delimited blocks, tables, and block macros.
+Blocks are easy to identify because they're usually offset from other blocks by an empty line (though not always required).
+Blocks always start on a new line, terminate at the end of a line, and are aligned to the left margin.
 
-    // Blocks are easy to identify because they're usually offset from other
-    // blocks by an empty line (though not always required). Blocks always
-    // start on a new line, terminate at the end of a line, and are aligned
-    // to the left margin.
+Every block can have one or more lines of block metadata.
+This metadata can be in the form of block attributes, a block anchor, or a block title.
+These metadata lines must be above and directly adjacent to the block itself.
 
-    // Every block can have one or more lines of block metadata.
-    // This metadata can be in the form of block attributes, a block anchor, or
-    // a block title. These metadata lines must be above and directly
-    // adjacent to the block itself.
+Sections, non-verbatim delimited blocks, and AsciiDoc table cells may contain other blocks.
+Despite the fact that blocks form a hierarchy, even nested blocks start at the left margin.
+By requiring blocks to start at the left margin, it avoids the tedium of having to track and maintain levels of indentation and makes the content more reusable.
 
-    // Sections, non-verbatim delimited blocks, and AsciiDoc table cells may
-    // contain other blocks. Despite the fact that blocks form a hierarchy,
-    // even nested blocks start at the left margin. By requiring blocks to
-    // start at the left margin, it avoids the tedium of having to track and
-    // maintain levels of indentation and makes the content more reusable.
-}
+== Text and inline elements
 
-mod text_and_inline_elements {
-    // No test cases:
+Surrounded by the markers, delimiters, and metadata lines is the text.
+The text is the main focus of a document and the reason the AsciiDoc syntax gives it so much room to breathe.
+Text is most often found in the lines of a block (e.g., paragraph), the block title (e.g., section title), and in list items, though there are other places where it can exist.
 
-    // == Text and inline elements
+Text is subject to substitutions.
+Substitutions interpret markup as text formatting, replace macros with text or non-text elements, expand attribute references, and perform other sorts of text replacement.
 
-    // Surrounded by the markers, delimiters, and metadata lines is the text.
-    // The text is the main focus of a document and the reason the AsciiDoc
-    // syntax gives it so much room to breathe. Text is most often found in
-    // the lines of a block (e.g., paragraph), the block title (e.g.,
-    // section title), and in list items, though there are other places
-    // where it can exist.
+Normal text is subject to all substitutions, unless specified otherwise.
+Verbatim text is subject to a minimal set of substitutions to allow it to be displayed in the output as it appears in the source.
+It's also possible to disable all substitutions in order to pass the text through to the output unmodified (i.e., raw).
+The parsing of text ends up being a mix of inline elements and other forms of transformations.
 
-    // Text is subject to substitutions.
-    // Substitutions interpret markup as text formatting, replace macros with
-    // text or non-text elements, expand attribute references, and perform
-    // other sorts of text replacement.
+== Encodings and AsciiDoc files
 
-    // Normal text is subject to all substitutions, unless specified otherwise.
-    // Verbatim text is subject to a minimal set of substitutions to allow it to
-    // be displayed in the output as it appears in the source. It's also
-    // possible to disable all substitutions in order to pass the text
-    // through to the output unmodified (i.e., raw). The parsing of text
-    // ends up being a mix of inline elements and other forms of
-    // transformations.
-}
+An AsciiDoc file is a text file that has the _.adoc_ file extension (e.g., [.path]_document.adoc_).
+Most AsciiDoc processors assume the text in the file uses UTF-8 encoding.
+UTF-16 encodings are supported only if the file starts with a BOM.
 
-mod encodings_and_asciidoc_files {
-    // == Encodings and AsciiDoc files
-
-    // An AsciiDoc file is a text file that has the _.adoc_ file extension
-    // (e.g., [.path]_document.adoc_). Most AsciiDoc processors assume the
-    // text in the file uses UTF-8 encoding. .[line-through]#UTF-16
-    // encodings are supported only if the file starts with a BOM.#
-    // *UNSUPPORTED: The UTF-16 encoding is not directly supported by the
-    // `asciidoc-parser` crate.*
-
-    // An AsciiDoc processor can process AsciiDoc from a string (i.e., character
-    // sequence). However, most of the time you'll save your AsciiDoc documents
-    // to a file.
-}
+An AsciiDoc processor can process AsciiDoc from a string (i.e., character sequence).
+However, most of the time you'll save your AsciiDoc documents to a file.
+"#
+);
