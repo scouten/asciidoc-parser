@@ -325,11 +325,20 @@ fn built_in_attrs() -> HashMap<String, AttributeValue> {
     );
 
     attrs.insert(
+        "deg".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value("&#176;".into()),
+        },
+    );
+
+    attrs.insert(
         "plus".to_owned(),
         AttributeValue {
             allowable_value: AllowableValue::Any,
             modification_context: ModificationContext::ApiOnly,
-            value: InterpretedValue::Value("+".into()),
+            value: InterpretedValue::Value("&#43;".into()),
         },
     );
 
