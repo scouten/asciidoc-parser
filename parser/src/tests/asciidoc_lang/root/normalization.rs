@@ -13,6 +13,7 @@ non_normative!(
 
 When an AsciiDoc processor reads the AsciiDoc source, the first thing it does is normalize the lines.
 (This operation can be performed up front or as each line is visited).
+
 "#
 );
 
