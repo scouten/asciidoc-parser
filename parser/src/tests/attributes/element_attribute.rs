@@ -219,7 +219,7 @@ mod quoted_string {
             ElementAttribute {
                 name: None,
                 shorthand_items: &[],
-                value: "a\\\"bc"
+                value: "a\"bc"
             }
         );
 
@@ -330,7 +330,7 @@ mod quoted_string {
             ElementAttribute {
                 name: None,
                 shorthand_items: &[],
-                value: "a\\'bc"
+                value: "a'bc"
             }
         );
 
