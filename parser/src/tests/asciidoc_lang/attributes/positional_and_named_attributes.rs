@@ -451,3 +451,232 @@ Formatted text does not support a style, so the first and only positional attrib
         );
     }
 }
+
+mod named_attribute {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, tests::prelude::*};
+
+    non_normative!(
+        r#"
+[#named]
+== Named attribute
+
+// tag::name[]
+"#
+    );
+
+    #[test]
+    fn basic_syntax() {
+        verifies!(
+            r#"
+A named attribute consists of a name and a value separated by an `=` character (e.g., `name=value`).
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo=bar]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 10,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("foo"),
+                            value: "bar",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "foo=bar",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn enclose_value_in_quotes() {
+        verifies!(
+            r#"
+If the value contains a space, comma, or quote character, it must be enclosed in double or single quotes (e.g., `name="value with space"`).
+In all other cases, the surrounding quotes are optional.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[name=\"value with space\"]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 26,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[name=\"value with space\"]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("name",),
+                            value: "value with space",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "name=\"value with space\"",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[name=\"value with space\"]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn escape_same_quote_with_backslash() {
+        verifies!(
+            r#"
+If the value contains the *same* quote character used to enclose the value, the quote character in the value must be escaped by prefixing it with a backslash (e.g., `value="the song \"Dark Horse\""`).
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[value=\"the song \\\"Dark Horse\\\"\"]\nSome text here.");
+
+        assert_eq!(
+            &doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 34,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[value=\"the song \\\"Dark Horse\\\"\"]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("value",),
+                            value: "the song \"Dark Horse\"",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "value=\"the song \\\"Dark Horse\\\"\"",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[value=\"the song \\\"Dark Horse\\\"\"]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
