@@ -241,13 +241,37 @@ mod cow_str {
     }
 
     #[test]
-    fn impl_debug() {
+    fn impl_debug_for_inline() {
+        let c = '藏';
+        let s: CowStr = c.into();
+
+        assert_eq!(format!("{s:?}"), r#""藏""#);
+    }
+
+    #[test]
+    fn impl_debug_for_boxed() {
+        let s = "blah blah blah".to_string();
+        let s: CowStr = s.into();
+
+        assert_eq!(format!("{s:?}"), r#""blah blah blah""#);
+    }
+
+    #[test]
+    fn impl_debug_for_borrowed() {
+        let s: &'static str = "0123456789abcdefghijklm";
+        let s: CowStr = s.into();
+
+        assert_eq!(format!("{s:?}"), r#""0123456789abcdefghijklm""#);
+    }
+
+    #[test]
+    fn impl_debug_alt_for_inline() {
         let c = '藏';
         let s: CowStr = c.into();
 
         assert_eq!(
             format!("{s:#?}"),
-            r#"Inlined(
+            r#"CowStr::Inlined(
     InlineStr {
         inner: [
             232,
@@ -276,6 +300,28 @@ mod cow_str {
         len: 3,
     },
 )"#
+        );
+    }
+
+    #[test]
+    fn impl_debug_alt_for_boxed() {
+        let s = "blah blah blah".to_string();
+        let s: CowStr = s.into();
+
+        assert_eq!(
+            format!("{s:#?}"),
+            "CowStr::Boxed(\n    \"blah blah blah\",\n)"
+        );
+    }
+
+    #[test]
+    fn impl_debug_alt_for_borrowed() {
+        let s: &'static str = "0123456789abcdefghijklm";
+        let s: CowStr = s.into();
+
+        assert_eq!(
+            format!("{s:#?}"),
+            "CowStr::Borrowed(\n    \"0123456789abcdefghijklm\",\n)"
         );
     }
 
