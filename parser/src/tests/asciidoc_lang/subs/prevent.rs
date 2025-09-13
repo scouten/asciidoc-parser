@@ -188,7 +188,7 @@ First, you can escape it using the `\{plus}` attribute reference:
 
         assert_eq!(
             block1.content().rendered(),
-            "<code>+</code> and <code>+</code>"
+            "<code>&#43;</code> and <code>&#43;</code>"
         );
     }
 
