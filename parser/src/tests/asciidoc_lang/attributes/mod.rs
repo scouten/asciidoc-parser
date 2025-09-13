@@ -1,3 +1,4 @@
+mod assignment_precedence;
 mod attribute_entries;
 mod attribute_entry_substitutions;
 mod boolean_attributes;
