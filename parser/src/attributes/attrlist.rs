@@ -87,7 +87,9 @@ impl<'src> Attrlist<'src> {
                 break index;
             }
 
-            attributes.push(attr);
+            if attr.name().is_none() || attr.value() != "None" {
+                attributes.push(attr);
+            }
 
             after = after.take_whitespace().after;
 

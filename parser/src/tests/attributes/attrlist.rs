@@ -433,6 +433,112 @@ fn only_named_attributes() {
 }
 
 #[test]
+fn ignore_named_attribute_with_none_value() {
+    let p = Parser::default();
+    let mi = crate::attributes::Attrlist::parse(
+        crate::Span::new("alt=Sunset,width=None,height=400"),
+        &p,
+    )
+    .unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item,
+        Attrlist {
+            attributes: &[
+                ElementAttribute {
+                    name: Some("alt"),
+                    shorthand_items: &[],
+                    value: "Sunset"
+                },
+                ElementAttribute {
+                    name: Some("height"),
+                    shorthand_items: &[],
+                    value: "400"
+                }
+            ],
+            source: Span {
+                data: "alt=Sunset,width=None,height=400",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(mi.item.named_attribute("foo").is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+    assert_eq!(
+        mi.item.named_attribute("alt").unwrap(),
+        ElementAttribute {
+            name: Some("alt"),
+            shorthand_items: &[],
+            value: "Sunset"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("alt", 1).unwrap(),
+        ElementAttribute {
+            name: Some("alt"),
+            shorthand_items: &[],
+            value: "Sunset"
+        }
+    );
+
+    assert!(mi.item.named_attribute("width").is_none());
+    assert!(mi.item.named_or_positional_attribute("width", 2).is_none());
+
+    assert_eq!(
+        mi.item.named_attribute("height").unwrap(),
+        ElementAttribute {
+            name: Some("height"),
+            shorthand_items: &[],
+            value: "400"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("height", 2).unwrap(),
+        ElementAttribute {
+            name: Some("height"),
+            shorthand_items: &[],
+            value: "400"
+        }
+    );
+
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.nth_attribute(1).is_none());
+    assert!(mi.item.nth_attribute(2).is_none());
+    assert!(mi.item.nth_attribute(3).is_none());
+    assert!(mi.item.nth_attribute(4).is_none());
+    assert!(mi.item.nth_attribute(42).is_none());
+
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+
+    assert_eq!(
+        mi.item.span(),
+        Span {
+            data: "alt=Sunset,width=None,height=400",
+            line: 1,
+            col: 1,
+            offset: 0
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        Span {
+            data: "",
+            line: 1,
+            col: 33,
+            offset: 32
+        }
+    );
+}
+
+#[test]
 fn err_unparsed_remainder_after_value() {
     let p = Parser::default();
     let maw = crate::attributes::Attrlist::parse(crate::Span::new("alt=\"Sunset\"width=300"), &p);
