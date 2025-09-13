@@ -316,6 +316,15 @@ fn built_in_attrs() -> HashMap<String, AttributeValue> {
     let mut attrs: HashMap<String, AttributeValue> = HashMap::new();
 
     attrs.insert(
+        "empty".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value("".into()),
+        },
+    );
+
+    attrs.insert(
         "sp".to_owned(),
         AttributeValue {
             allowable_value: AllowableValue::Any,
