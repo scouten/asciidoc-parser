@@ -239,14 +239,62 @@ If the text cannot be parsed, an error message will be emitted to the log.
     }
 
     #[test]
-    #[ignore]
     fn avoid_attrlist_with_empty() {
-        to_do_verifies!(
+        verifies!(
             r#"
 WARNING: The opening line of a paragraph may inadvertently match the syntax of a block attribute line.
 If this happens, append `+{empty}+` to the end of the line to disrupt the syntax match.
 
 "#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("{empty}[blah, blah blah]\nSome text goes here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "{empty}[blah, blah blah]\nSome text goes here.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "[blah, blah blah]\nSome text goes here.",
+                    },
+                    source: Span {
+                        data: "{empty}[blah, blah blah]\nSome text goes here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "{empty}[blah, blah blah]\nSome text goes here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
         );
     }
 
@@ -330,7 +378,6 @@ name::target[first-positional,second-positional,named="value of named"]
     }
 
     #[test]
-    #[ignore]
     fn inline_attrlist() {
         verifies!(
             r#"
@@ -346,22 +393,68 @@ Specifically, it does not support named attributes, only the attribute shorthand
 "#
         );
 
-        todo!("Describe inline attrlists");
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[#idname.rolename]*text with id and role*");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[#idname.rolename]*text with id and role*",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<strong id=\"idname\" class=\"rolename\">text with id and role</strong>",
+                    },
+                    source: Span {
+                        data: "[#idname.rolename]*text with id and role*",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[#idname.rolename]*text with id and role*",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
     }
 
-    // No coverage as yet ...
+    // Treated as non-normative because these requirements are covered elsewhere.
+    non_normative!(
+        r#"
+Attribute lists:
 
-    // Attribute lists:
+* apply to blocks, macros, and inline elements,
+* can contain xref:positional-and-named-attributes.adoc[positional and named attributes], and
+* take precedence over xref:document-attributes.adoc[document attributes] if the element supports the override.
 
-    // * apply to blocks, macros, and inline elements,
-    // * can contain xref:positional-and-named-attributes.adoc[positional and
-    //   named attributes], and
-    // * take precedence over xref:document-attributes.adoc[document attributes]
-    //   if the element supports the override.
-
-    // As mentioned in the previous section, the schema for element attributes
-    // is open-ended. Any positional or named attributes that are not
-    // recognized will be stored on the element, but will not have an impact
-    // on the behavior or output. Extensions may use this auxiliary
-    // information to influence their behavior and/or customize the output.
+As mentioned in the previous section, the schema for element attributes is open-ended.
+Any positional or named attributes that are not recognized will be stored on the element, but will not have an impact on the behavior or output.
+Extensions may use this auxiliary information to influence their behavior and/or customize the output.
+"#
+    );
 }
