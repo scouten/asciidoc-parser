@@ -109,8 +109,9 @@ impl fmt::Display for InlineStr {
 /// It is three words long.
 ///
 /// NOTE: The [`Debug`] implementation for this struct elides the storage
-/// mechanism that is chosen. To obtain that information, use the alternate
-/// debug formatting as shown below:
+/// mechanism that is chosen when pretty printing (as occurs when using the
+/// `dbg!()` macro. To obtain that information, use the “normal” debug
+/// formatting as shown below:
 ///
 /// ```
 /// # use asciidoc_parser::strings::CowStr;
@@ -118,8 +119,8 @@ impl fmt::Display for InlineStr {
 /// let s: &'static str = "0123456789abcdefghijklm";
 /// let s: CowStr = s.into();
 /// assert_eq!(
-///     format!("{s:#?}"),
-///     "CowStr::Borrowed(\n    \"0123456789abcdefghijklm\",\n)"
+///     format!("{s:?}"),
+///     "CowStr::Borrowed(\"0123456789abcdefghijklm\")"
 /// );
 /// ```
 #[derive(Eq)]
@@ -244,13 +245,13 @@ impl fmt::Display for CowStr<'_> {
 impl fmt::Debug for CowStr<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if f.alternate() {
+            write!(f, "{:?}", self.as_ref())
+        } else {
             match self {
                 Self::Boxed(b) => f.debug_tuple("CowStr::Boxed").field(b).finish(),
                 Self::Borrowed(b) => f.debug_tuple("CowStr::Borrowed").field(b).finish(),
                 Self::Inlined(s) => f.debug_tuple("CowStr::Inlined").field(s).finish(),
             }
-        } else {
-            write!(f, "{:?}", self.as_ref())
         }
     }
 }
