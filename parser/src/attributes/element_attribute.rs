@@ -72,7 +72,7 @@ impl<'src> ElementAttribute<'src> {
             {
                 let escaped_quote = format!("\\{first}");
                 let new_value = value.replace(&escaped_quote, &first.to_string());
-                if &new_value != &*value {
+                if new_value != *value {
                     value = CowStr::from(new_value);
                 }
             }
