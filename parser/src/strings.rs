@@ -103,11 +103,26 @@ impl fmt::Display for InlineStr {
     }
 }
 
-/// A copy-on-write string that can be owned, borrowed
+/// A copy-on-write string that can be owned, borrowed,
 /// or inlined.
 ///
 /// It is three words long.
-#[derive(Debug, Eq)]
+///
+/// NOTE: The [`Debug`] implementation for this struct elides the storage
+/// mechanism that is chosen. To obtain that information, use the alternate
+/// debug formatting as shown below:
+///
+/// ```
+/// # use asciidoc_parser::strings::CowStr;
+///
+/// let s: &'static str = "0123456789abcdefghijklm";
+/// let s: CowStr = s.into();
+/// assert_eq!(
+///     format!("{s:#?}"),
+///     "CowStr::Borrowed(\n    \"0123456789abcdefghijklm\",\n)"
+/// );
+/// ```
+#[derive(Eq)]
 pub enum CowStr<'a> {
     /// An owned, immutable string.
     Boxed(Box<str>),
@@ -223,5 +238,19 @@ impl CowStr<'_> {
 impl fmt::Display for CowStr<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.as_ref())
+    }
+}
+
+impl fmt::Debug for CowStr<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if f.alternate() {
+            match self {
+                Self::Boxed(b) => f.debug_tuple("CowStr::Boxed").field(b).finish(),
+                Self::Borrowed(b) => f.debug_tuple("CowStr::Borrowed").field(b).finish(),
+                Self::Inlined(s) => f.debug_tuple("CowStr::Inlined").field(s).finish(),
+            }
+        } else {
+            write!(f, "{:?}", self.as_ref())
+        }
     }
 }
