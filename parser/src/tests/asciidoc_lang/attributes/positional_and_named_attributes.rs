@@ -615,6 +615,8 @@ In all other cases, the surrounding quotes are optional.
             r#"
 If the value contains the *same* quote character used to enclose the value, the quote character in the value must be escaped by prefixing it with a backslash (e.g., `value="the song \"Dark Horse\""`).
 
+If enclosing quotes are used, they are dropped from the parsed value and the preceding backslash is dropped from any escaped quotes.
+
 "#
         );
 
