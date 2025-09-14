@@ -61,4 +61,26 @@ mod match_and_warnings {
         let _ = maw.unwrap_if_no_warnings();
         // There are warnings so this should panic.
     }
+
+    #[test]
+    fn unwrap_item_or_default() {
+        let maw = MatchAndWarnings {
+            item: Some("xyz".to_owned()),
+            warnings: vec![],
+        };
+
+        let item = maw.unwrap_item_or_default();
+        assert_eq!(item, "xyz");
+    }
+
+    #[test]
+    fn unwrap_item_or_default_none() {
+        let maw: MatchAndWarnings<'_, Option<String>> = MatchAndWarnings {
+            item: None,
+            warnings: vec![],
+        };
+
+        let item = maw.unwrap_item_or_default();
+        assert_eq!(item, "");
+    }
 }

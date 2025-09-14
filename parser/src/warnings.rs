@@ -77,6 +77,20 @@ pub(crate) struct MatchAndWarnings<'src, T> {
     pub(crate) warnings: Vec<Warning<'src>>,
 }
 
+impl<U> MatchAndWarnings<'_, Option<U>>
+where
+    U: Default,
+{
+    /// Unwrap the item if it's `Some(value)`, otherwise return `U::default()`.
+    ///
+    /// This method is only available when `T` is `Option<impl Default>`.
+    #[inline(always)]
+    #[allow(unused)] // TEMPORARY while building
+    pub(crate) fn unwrap_item_or_default(self) -> U {
+        self.item.unwrap_or_default()
+    }
+}
+
 impl<T> MatchAndWarnings<'_, T> {
     #[cfg(test)]
     #[inline(always)]
