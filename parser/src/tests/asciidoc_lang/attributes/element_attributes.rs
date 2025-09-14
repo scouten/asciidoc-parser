@@ -76,7 +76,8 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
 
         let p = Parser::default();
         let mi = crate::attributes::Attrlist::parse(crate::Span::new(ATTRLIST_EXAMPLE), &p)
-            .unwrap_if_no_warnings();
+            .unwrap_if_no_warnings()
+            .unwrap();
 
         assert_eq!(
             mi.item,

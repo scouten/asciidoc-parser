@@ -134,7 +134,7 @@ impl Replacer for InlineImageMacroReplacer<'_> {
 
         let target = &caps[1];
         let span = Span::new(&caps[2]);
-        let attrlist = Attrlist::parse(span, self.0).item.item;
+        let attrlist = Attrlist::parse(span, self.0).unwrap_item_or_default().item;
 
         let default_alt = basename(&target.replace(['_', '-'], " "));
         // IMPORTANT: Implementations of `render_icon` and `render_image` need to
@@ -221,7 +221,7 @@ struct InlineLinkReplacer<'p>(&'p Parser<'p>);
 
 impl Replacer for InlineLinkReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        let mut attrlist = Attrlist::parse(Span::default(), self.0).item.item;
+        let mut attrlist = Attrlist::default();
 
         if caps.get(2).is_some() && caps.get(5).is_none() {
             // Honor the escapes.
@@ -497,12 +497,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
             }
         }
 
-        let attrlist = if let Some(attrlist) = attrlist {
-            attrlist
-        } else {
-            Attrlist::parse(Span::default(), self.0).item.item
-        };
-
+        let attrlist = attrlist.unwrap_or_default();
         let mut extra_roles: Vec<&str> = vec![];
 
         if link_text.is_empty() {
@@ -551,7 +546,15 @@ fn extract_attributes_from_text<'src>(
     default_text: Option<&str>,
 ) -> (String, Attrlist<'src>) {
     let attrlist_maw = Attrlist::parse(*text, parser);
-    let attrs = attrlist_maw.item.item;
+
+    let Some(attrlist_mi) = attrlist_maw.item else {
+        return (
+            default_text.map(|s| s.to_string()).unwrap_or_default(),
+            Attrlist::default(),
+        );
+    };
+
+    let attrs = attrlist_mi.item;
 
     if let Some(resolved_text) = attrs.nth_attribute(1) {
         // NOTE: If resolved text remains unchanged, return an empty attribute list and
@@ -661,7 +664,6 @@ impl Replacer for InlineEmailReplacer<'_> {
         }
 
         let target = format!("mailto:{mailto}", mailto = &caps[2]);
-        let attrlist = Attrlist::parse(Span::default(), self.0).item.item;
 
         let params = LinkRenderParams {
             target: target.clone(),
@@ -669,7 +671,7 @@ impl Replacer for InlineEmailReplacer<'_> {
             extra_roles: vec![],
             window: None,
             type_: LinkRenderType::Link,
-            attrlist: &attrlist,
+            attrlist: &Attrlist::default(),
             parser: self.0,
         };
 

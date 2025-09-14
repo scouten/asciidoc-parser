@@ -197,19 +197,17 @@ fn parse_maybe_attrlist_line<'src>(
     // Drop opening and closing braces now that we know they are there.
     let attrlist_src = line.slice(1..line.len() - 1);
 
-    let MatchAndWarnings {
-        item: MatchedItem {
-            item: attrlist,
-            after: _,
-        },
-        warnings,
-    } = Attrlist::parse(attrlist_src, parser);
+    let attrlist_maw = Attrlist::parse(attrlist_src, parser);
+
+    let Some(attrlist_mi) = attrlist_maw.item else {
+        return None;
+    };
 
     Some(MatchAndWarnings {
         item: MatchedItem {
-            item: attrlist,
+            item: attrlist_mi.item,
             after: block_start,
         },
-        warnings,
+        warnings: attrlist_maw.warnings,
     })
 }

@@ -351,7 +351,7 @@ impl LookaheadReplacer for QuoteReplacer<'_> {
                                         crate::Span::new(attrlist.as_str()),
                                         self.parser,
                                     )
-                                    .item
+                                    .unwrap_item_or_default()
                                     .item,
                                 ),
                                 type_,
@@ -386,7 +386,7 @@ impl LookaheadReplacer for QuoteReplacer<'_> {
                         (
                             Some(
                                 Attrlist::parse(crate::Span::new(attrlist.as_str()), self.parser)
-                                    .item
+                                    .unwrap_item_or_default()
                                     .item,
                             ),
                             type_,

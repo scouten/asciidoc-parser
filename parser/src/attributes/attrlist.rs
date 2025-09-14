@@ -30,7 +30,7 @@ impl<'src> Attrlist<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
         parser: &Parser,
-    ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
         let mut warnings: Vec<Warning<'src>> = vec![];
@@ -123,10 +123,10 @@ impl<'src> Attrlist<'src> {
         }
 
         MatchAndWarnings {
-            item: MatchedItem {
+            item: Some(MatchedItem {
                 item: Self { attributes, source },
                 after: source.discard_all(),
-            },
+            }),
             warnings,
         }
     }

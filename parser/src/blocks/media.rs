@@ -104,6 +104,14 @@ impl<'src> MediaBlock<'src> {
         // Note that we already checked that this line ends with a close brace.
 
         let macro_attrlist = Attrlist::parse(attrlist, parser);
+        let warnings = macro_attrlist.warnings;
+
+        let Some(macro_attrlist) = macro_attrlist.item else {
+            return MatchAndWarnings {
+                item: None,
+                warnings,
+            };
+        };
 
         let source: Span = metadata.source.trim_remainder(line.after);
         let source = source.slice(0..source.trim().len());
@@ -113,7 +121,7 @@ impl<'src> MediaBlock<'src> {
                 item: Self {
                     type_,
                     target: target.item,
-                    macro_attrlist: macro_attrlist.item.item,
+                    macro_attrlist: macro_attrlist.item,
                     source,
                     title_source: metadata.title_source,
                     title: metadata.title.clone(),
@@ -123,7 +131,7 @@ impl<'src> MediaBlock<'src> {
 
                 after: line.after.discard_empty_lines(),
             }),
-            warnings: macro_attrlist.warnings,
+            warnings,
         }
     }
 
