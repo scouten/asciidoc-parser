@@ -378,6 +378,15 @@ impl<'src> Attrlist<'src> {
     }
 }
 
+const EMPTY_SPAN: &Span = &Span::new("");
+
+impl<'src> Default for Attrlist<'src> {
+    fn default() -> Self {
+        let parser = Parser::default();
+        Attrlist::parse(*EMPTY_SPAN, &parser).item.item
+    }
+}
+
 impl<'src> HasSpan<'src> for Attrlist<'src> {
     fn span(&self) -> Span<'src> {
         self.source
