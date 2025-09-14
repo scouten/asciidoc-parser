@@ -682,3 +682,198 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
         );
     }
 }
+
+mod attribute_list_parsing {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, tests::prelude::*};
+
+    non_normative!(
+        r#"
+== Attribute list parsing
+
+The source text that's used to define attributes for an element is referred to as an [.term]*attrlist*.
+An attrlist is always enclosed in a pair of square brackets.
+This applies for block attributes as well as attributes on a block or inline macro.
+The processor splits the attrlist into individual attribute entries, determines whether each entry is a positional or named attribute, parses the entry accordingly, and assigns the result as an attribute on the node.
+
+The rules for what defines the boundaries of an individual attribute, and whether the attribute is positional or named, are defined below.
+"#
+    );
+
+    #[test]
+    fn definition_of_name() {
+        verifies!(
+            r#"
+In these rules, `name` consists of a word character (letter or numeral) followed by any number of word or `-` characters (e.g., `see-also`).
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo=bar,94-pages=94]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 22,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar,94-pages=94]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo"),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("94-pages",),
+                                value: "94",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo=bar,94-pages=94",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar,94-pages=94]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn attribute_substitution_before_parsing() {
+        verifies!(
+            r#"
+* Attribute references are expanded before the attrlist is parsed (i.e., the attributes substitution is applied).
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc =
+            parser.parse(":url: https://example.com\n\n[foo=bar,target={url}]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[Attribute {
+                        name: Span {
+                            data: "url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        value_source: Some(Span {
+                            data: "https://example.com",
+                            line: 1,
+                            col: 7,
+                            offset: 6,
+                        },),
+                        value: InterpretedValue::Value("https://example.com",),
+                        source: Span {
+                            data: ":url: https://example.com",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },],
+                    source: Span {
+                        data: ":url: https://example.com",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 4,
+                            col: 1,
+                            offset: 50,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar,target={url}]\nSome text here.",
+                        line: 3,
+                        col: 1,
+                        offset: 27,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "https://example.com",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo=bar,target={url}",
+                            line: 3,
+                            col: 2,
+                            offset: 28,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: ":url: https://example.com\n\n[foo=bar,target={url}]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
