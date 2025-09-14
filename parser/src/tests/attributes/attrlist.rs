@@ -15,6 +15,47 @@ fn impl_clone() {
 }
 
 #[test]
+fn impl_default() {
+    let attrlist = crate::attributes::Attrlist::default();
+
+    assert_eq!(
+        attrlist,
+        Attrlist {
+            attributes: &[],
+            source: Span {
+                data: "",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(attrlist.named_attribute("foo").is_none());
+
+    assert!(attrlist.nth_attribute(0).is_none());
+    assert!(attrlist.nth_attribute(1).is_none());
+    assert!(attrlist.nth_attribute(42).is_none());
+
+    assert!(attrlist.named_or_positional_attribute("foo", 0).is_none());
+    assert!(attrlist.named_or_positional_attribute("foo", 1).is_none());
+    assert!(attrlist.named_or_positional_attribute("foo", 42).is_none());
+
+    assert!(attrlist.id().is_none());
+    assert!(attrlist.roles().is_empty());
+
+    assert_eq!(
+        attrlist.span(),
+        Span {
+            data: "",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+}
+
+#[test]
 fn empty_source() {
     let p = Parser::default();
     let mi = crate::attributes::Attrlist::parse(crate::Span::new(""), &p).unwrap_if_no_warnings();
