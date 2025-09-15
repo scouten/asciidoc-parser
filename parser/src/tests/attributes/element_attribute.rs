@@ -160,6 +160,7 @@ mod quoted_string {
     use crate::{
         Parser,
         attributes::{AttrlistContext, element_attribute::ParseShorthand},
+        parser::ModificationContext,
         strings::CowStr,
         tests::prelude::*,
         warnings::WarningType,
@@ -493,6 +494,39 @@ mod quoted_string {
         assert!(element_attr.options().is_empty());
 
         assert_eq!(offset, 6);
+    }
+
+    #[test]
+    fn single_quoted_gets_substitions() {
+        let p =
+            Parser::default().with_intrinsic_attribute("foo", "bar", ModificationContext::Anywhere);
+
+        let (element_attr, offset, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("'*abc* def {foo}'"),
+            0,
+            &p,
+            ParseShorthand(false),
+            AttrlistContext::Block,
+        );
+
+        assert!(warning_types.is_empty());
+
+        assert_eq!(
+            element_attr,
+            ElementAttribute {
+                name: None,
+                shorthand_items: &[],
+                value: "<strong>abc</strong> def bar"
+            }
+        );
+
+        assert!(element_attr.name().is_none());
+        assert!(element_attr.block_style().is_none());
+        assert!(element_attr.id().is_none());
+        assert!(element_attr.roles().is_empty());
+        assert!(element_attr.options().is_empty());
+
+        assert_eq!(offset, 17);
     }
 }
 
