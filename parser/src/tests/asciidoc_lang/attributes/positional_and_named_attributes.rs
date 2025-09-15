@@ -876,4 +876,64 @@ In these rules, `name` consists of a word character (letter or numeral) followed
             }
         );
     }
+
+    #[test]
+    fn attrlist_cant_start_with_space() {
+        // NOTE: The requirement about parsing an attribute is covered elsewhere.
+        verifies!(
+            r#"
+* Parsing an attribute proceeds from the beginning of the attribute list string or after a previously identified delimiter (`,`).
+** The first character of an attribute list cannot be a tab or space.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[ foo=bar,target={url}]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[ foo=bar,target={url}]\nSome text here.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "[ foo=bar,target={url}]\nSome text here.",
+                    },
+                    source: Span {
+                        data: "[ foo=bar,target={url}]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[ foo=bar,target={url}]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }
