@@ -85,7 +85,7 @@ impl<'src> ElementAttribute<'src> {
                     let mut content = Content::from(span);
                     SubstitutionGroup::Normal.apply(&mut content, parser, None);
 
-                    if content.rendered.as_ref() != &new_value {
+                    if content.rendered.as_ref() != new_value {
                         new_value = content.rendered.to_string();
                     }
                 }
