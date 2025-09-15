@@ -1505,4 +1505,267 @@ If there is a closing double quote, the enclosing double quote characters are re
             }
         );
     }
+
+    #[test]
+    fn parse_value_single_quote_unclosed() {
+        verifies!(
+            r#"
+** If the next character is a single quote (i.e., `'`), then the string is read until the next unescaped single quote or, if there is no closing single quote, the next delimiter.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \'bar, zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 31,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = 'bar, zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "'bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = 'bar, zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = 'bar, zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[Warning {
+                    source: Span {
+                        data: "foo = 'bar, zip , target=url",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    warning: WarningType::AttributeValueMissingTerminatingQuote,
+                },],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_single_quote_closed() {
+        verifies!(
+            r#"
+If there is a closing single quote, the enclosing single quote characters are removed and escaped single quote characters are unescaped; if not, the initial single quote is retained.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \'bar\\\'boop\', zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 38,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = 'bar\\'boop', zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar&#8217;boop",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = 'bar\\'boop', zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = 'bar\\'boop', zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn single_quoted_gets_substititions() {
+        verifies!(
+            r#"
+If there is a closing single quote, and the first character is not an escaped single quote, substitutions are performed on the value as described in <<Substitutions>>.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[quote, author='*Strong* and _emphasis_']\n____\nThis shows formatting substitutions in single-quoted values\n____");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::CompoundDelimited(CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "This shows formatting substitutions in single-quoted values",
+                                line: 3,
+                                col: 1,
+                                offset: 47,
+                            },
+                            rendered: "This shows formatting substitutions in single-quoted values",
+                        },
+                        source: Span {
+                            data: "This shows formatting substitutions in single-quoted values",
+                            line: 3,
+                            col: 1,
+                            offset: 47,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "quote",
+                    source: Span {
+                        data: "[quote, author='*Strong* and _emphasis_']\n____\nThis shows formatting substitutions in single-quoted values\n____",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: None,
+                                value: "quote",
+                                shorthand_items: &["quote"],
+                            },
+                            ElementAttribute {
+                                name: Some("author",),
+                                value: "<strong>Strong</strong> and <em>emphasis</em>",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "quote, author='*Strong* and _emphasis_'",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[quote, author='*Strong* and _emphasis_']\n____\nThis shows formatting substitutions in single-quoted values\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }
