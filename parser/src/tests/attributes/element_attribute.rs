@@ -1,7 +1,10 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
+    Parser,
+    attributes::{AttrlistContext, element_attribute::ParseShorthand},
+    strings::CowStr,
+    tests::prelude::*,
 };
 
 #[test]
@@ -14,6 +17,7 @@ fn impl_clone() {
         0,
         &p,
         ParseShorthand(false),
+        AttrlistContext::Inline,
     )
     .0;
 
@@ -26,8 +30,13 @@ fn impl_clone() {
 fn empty_source() {
     let p = Parser::default();
 
-    let (element_attr, offset, warning_types) =
-        crate::attributes::ElementAttribute::parse(&CowStr::from(""), 0, &p, ParseShorthand(false));
+    let (element_attr, offset, warning_types) = crate::attributes::ElementAttribute::parse(
+        &CowStr::from(""),
+        0,
+        &p,
+        ParseShorthand(false),
+        AttrlistContext::Inline,
+    );
 
     assert!(warning_types.is_empty());
 
@@ -58,6 +67,7 @@ fn only_spaces() {
         0,
         &p,
         ParseShorthand(false),
+        AttrlistContext::Inline,
     );
 
     assert!(warning_types.is_empty());
@@ -89,6 +99,7 @@ fn unquoted_and_unnamed_value() {
         0,
         &p,
         ParseShorthand(false),
+        AttrlistContext::Inline,
     );
 
     assert!(warning_types.is_empty());
@@ -120,6 +131,7 @@ fn unquoted_stops_at_comma() {
         0,
         &p,
         ParseShorthand(false),
+        AttrlistContext::Inline,
     );
 
     assert!(warning_types.is_empty());
@@ -146,7 +158,10 @@ mod quoted_string {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
+        Parser,
+        attributes::{AttrlistContext, element_attribute::ParseShorthand},
+        strings::CowStr,
+        tests::prelude::*,
         warnings::WarningType,
     };
 
@@ -159,6 +174,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert_eq!(
@@ -193,6 +209,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert_eq!(
@@ -226,6 +243,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -257,6 +275,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -288,6 +307,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -319,6 +339,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert_eq!(
@@ -353,6 +374,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert_eq!(
@@ -386,6 +408,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -417,6 +440,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -448,6 +472,7 @@ mod quoted_string {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -475,7 +500,10 @@ mod named {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
+        Parser,
+        attributes::{AttrlistContext, element_attribute::ParseShorthand},
+        strings::CowStr,
+        tests::prelude::*,
     };
 
     #[test]
@@ -487,6 +515,7 @@ mod named {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -518,6 +547,7 @@ mod named {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -545,6 +575,7 @@ mod named {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -576,6 +607,7 @@ mod named {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -607,6 +639,7 @@ mod named {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -638,6 +671,7 @@ mod named {
             0,
             &p,
             ParseShorthand(false),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -665,7 +699,10 @@ mod parse_with_shorthand {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, attributes::element_attribute::ParseShorthand, strings::CowStr, tests::prelude::*,
+        Parser,
+        attributes::{AttrlistContext, element_attribute::ParseShorthand},
+        strings::CowStr,
+        tests::prelude::*,
         warnings::WarningType,
     };
 
@@ -678,6 +715,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -710,6 +748,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -742,6 +781,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert_eq!(
@@ -766,6 +806,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert_eq!(
@@ -790,6 +831,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -822,6 +864,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -854,6 +897,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -891,6 +935,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -923,6 +968,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -963,6 +1009,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());
@@ -998,6 +1045,7 @@ mod parse_with_shorthand {
             0,
             &p,
             ParseShorthand(true),
+            AttrlistContext::Inline,
         );
 
         assert!(warning_types.is_empty());

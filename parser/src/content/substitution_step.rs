@@ -4,7 +4,7 @@ use regex::{Captures, Regex, RegexBuilder, Replacer};
 
 use crate::{
     Parser,
-    attributes::Attrlist,
+    attributes::{Attrlist, AttrlistContext},
     content::Content,
     document::InterpretedValue,
     internal::{LookaheadReplacer, LookaheadResult, replace_with_lookahead},
@@ -350,6 +350,7 @@ impl LookaheadReplacer for QuoteReplacer<'_> {
                                     Attrlist::parse(
                                         crate::Span::new(attrlist.as_str()),
                                         self.parser,
+                                        AttrlistContext::Inline,
                                     )
                                     .item
                                     .item,
@@ -385,9 +386,13 @@ impl LookaheadReplacer for QuoteReplacer<'_> {
 
                         (
                             Some(
-                                Attrlist::parse(crate::Span::new(attrlist.as_str()), self.parser)
-                                    .item
-                                    .item,
+                                Attrlist::parse(
+                                    crate::Span::new(attrlist.as_str()),
+                                    self.parser,
+                                    AttrlistContext::Inline,
+                                )
+                                .item
+                                .item,
                             ),
                             type_,
                         )
