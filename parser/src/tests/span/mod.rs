@@ -75,6 +75,7 @@ mod split_at_match_non_empty {
 
 mod discard;
 mod line;
+mod matched_item;
 mod parse_result;
 mod primitives;
 mod split;
