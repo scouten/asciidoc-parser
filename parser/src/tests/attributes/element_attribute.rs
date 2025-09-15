@@ -156,14 +156,65 @@ mod quoted_string {
     fn err_unterminated_double_quote() {
         let p = Parser::default();
         let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
-            &CowStr::from("\"xxx"),
+            &CowStr::from("\"xyz"),
             0,
             &p,
             ParseShorthand(false),
         );
 
-        assert!(maybe_mi.is_none());
+        let (element_attr, offset) = maybe_mi.unwrap();
 
+        assert_eq!(
+            element_attr,
+            ElementAttribute {
+                name: None,
+                shorthand_items: &[],
+                value: "\"xyz"
+            }
+        );
+
+        assert!(element_attr.name().is_none());
+        assert!(element_attr.block_style().is_none());
+        assert!(element_attr.id().is_none());
+        assert!(element_attr.roles().is_empty());
+        assert!(element_attr.options().is_empty());
+
+        assert_eq!(offset, 4);
+
+        assert_eq!(
+            warning_types,
+            vec![WarningType::AttributeValueMissingTerminatingQuote]
+        );
+    }
+
+    #[test]
+    fn err_unterminated_double_quote_ends_at_comma() {
+        let p = Parser::default();
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("\"xyz,abc"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
+
+        let (element_attr, offset) = maybe_mi.unwrap();
+
+        assert_eq!(
+            element_attr,
+            ElementAttribute {
+                name: None,
+                shorthand_items: &[],
+                value: "\"xyz"
+            }
+        );
+
+        assert!(element_attr.name().is_none());
+        assert!(element_attr.block_style().is_none());
+        assert!(element_attr.id().is_none());
+        assert!(element_attr.roles().is_empty());
+        assert!(element_attr.options().is_empty());
+
+        assert_eq!(offset, 4);
         assert_eq!(
             warning_types,
             vec![WarningType::AttributeValueMissingTerminatingQuote]
@@ -267,14 +318,65 @@ mod quoted_string {
     fn err_unterminated_single_quote() {
         let p = Parser::default();
         let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
-            &CowStr::from("\'xxx"),
+            &CowStr::from("\'xyz"),
             0,
             &p,
             ParseShorthand(false),
         );
 
-        assert!(maybe_mi.is_none());
+        let (element_attr, offset) = maybe_mi.unwrap();
 
+        assert_eq!(
+            element_attr,
+            ElementAttribute {
+                name: None,
+                shorthand_items: &[],
+                value: "\'xyz"
+            }
+        );
+
+        assert!(element_attr.name().is_none());
+        assert!(element_attr.block_style().is_none());
+        assert!(element_attr.id().is_none());
+        assert!(element_attr.roles().is_empty());
+        assert!(element_attr.options().is_empty());
+
+        assert_eq!(offset, 4);
+
+        assert_eq!(
+            warning_types,
+            vec![WarningType::AttributeValueMissingTerminatingQuote]
+        );
+    }
+
+    #[test]
+    fn err_unterminated_single_quote_ends_at_comma() {
+        let p = Parser::default();
+        let (maybe_mi, warning_types) = crate::attributes::ElementAttribute::parse(
+            &CowStr::from("\'xyz,abc"),
+            0,
+            &p,
+            ParseShorthand(false),
+        );
+
+        let (element_attr, offset) = maybe_mi.unwrap();
+
+        assert_eq!(
+            element_attr,
+            ElementAttribute {
+                name: None,
+                shorthand_items: &[],
+                value: "\'xyz"
+            }
+        );
+
+        assert!(element_attr.name().is_none());
+        assert!(element_attr.block_style().is_none());
+        assert!(element_attr.id().is_none());
+        assert!(element_attr.roles().is_empty());
+        assert!(element_attr.options().is_empty());
+
+        assert_eq!(offset, 4);
         assert_eq!(
             warning_types,
             vec![WarningType::AttributeValueMissingTerminatingQuote]

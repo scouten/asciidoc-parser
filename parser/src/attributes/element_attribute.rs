@@ -58,7 +58,7 @@ impl<'src> ElementAttribute<'src> {
                     }
                     None => {
                         warnings.push(WarningType::AttributeValueMissingTerminatingQuote);
-                        return (None, warnings);
+                        after.take_while(|c| c != ',').trim_item_trailing_spaces()
                     }
                 },
                 _ => after.take_while(|c| c != ',').trim_item_trailing_spaces(),
