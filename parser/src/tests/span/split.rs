@@ -61,7 +61,7 @@ mod split_at_match_non_empty {
 
     #[test]
     fn empty_source() {
-        let s = crate::Span::new("");
+        let s = crate::Span::default();
         assert!(s.split_at_match_non_empty(|c| c == ':').is_none());
     }
 

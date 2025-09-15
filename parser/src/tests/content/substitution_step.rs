@@ -9,7 +9,7 @@ mod special_characters {
 
     #[test]
     fn empty() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = Content::from(crate::Span::default());
         let p = Parser::default();
         SubstitutionStep::SpecialCharacters.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -61,7 +61,7 @@ mod quotes {
 
     #[test]
     fn empty() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = Content::from(crate::Span::default());
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -129,7 +129,7 @@ mod attribute_references {
 
     #[test]
     fn empty() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = Content::from(crate::Span::default());
         let p = Parser::default();
         SubstitutionStep::AttributeReferences.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -206,7 +206,7 @@ mod callouts {
     #[test]
     #[should_panic]
     fn not_yet_implemented() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = Content::from(crate::Span::default());
         let p = Parser::default();
         SubstitutionStep::Callouts.apply(&mut content, &p, None);
         assert!(content.is_empty());

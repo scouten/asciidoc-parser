@@ -5,7 +5,7 @@ mod take_prefix {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_prefix("foo").is_none());
     }
 
@@ -81,7 +81,7 @@ mod take_whitespace {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         let mi = span.take_whitespace();
 
         assert_eq!(
@@ -217,7 +217,7 @@ mod take_whitespace_with_newline {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         let mi = span.take_whitespace_with_newline();
 
         assert_eq!(
@@ -353,7 +353,7 @@ mod take_required_whitespace {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_required_whitespace().is_none());
     }
 
@@ -423,7 +423,7 @@ mod take_while {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         let mi = span.take_while(|c| c != ':');
 
         assert_eq!(
@@ -533,7 +533,7 @@ mod take_non_empty_lines {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_non_empty_lines().is_none());
     }
 
