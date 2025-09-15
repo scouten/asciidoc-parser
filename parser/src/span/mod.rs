@@ -95,6 +95,19 @@ impl AsRef<str> for Span<'_> {
     }
 }
 
+const EMPTY_STR: &str = "";
+
+impl Default for Span<'_> {
+    fn default() -> Self {
+        Self {
+            data: EMPTY_STR,
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    }
+}
+
 impl<'src> Deref for Span<'src> {
     type Target = &'src str;
 

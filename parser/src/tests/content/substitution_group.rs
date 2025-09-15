@@ -357,7 +357,7 @@ mod normal {
 
     #[test]
     fn empty() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = Content::from(crate::Span::default());
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -452,7 +452,7 @@ mod attribute_entry_value {
 
     #[test]
     fn empty() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = Content::from(crate::Span::default());
         let p = Parser::default();
         SubstitutionGroup::AttributeEntryValue.apply(&mut content, &p, None);
         assert!(content.is_empty());
@@ -532,7 +532,7 @@ mod header {
 
     #[test]
     fn empty() {
-        let mut content = Content::from(crate::Span::new(""));
+        let mut content = Content::from(crate::Span::default());
         let p = Parser::default();
         SubstitutionGroup::Header.apply(&mut content, &p, None);
         assert!(content.is_empty());

@@ -106,9 +106,11 @@ mod quotes {
     fn single_line_double_quoted_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#""`a few quoted words`""#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"&#8220;a few quoted words&#8221;"#.to_string().into_boxed_str())
@@ -119,9 +121,11 @@ mod quotes {
     fn escaped_single_line_double_quoted_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"\"`a few quoted words`""#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#""`a few quoted words`""#.to_string().into_boxed_str())
@@ -132,9 +136,11 @@ mod quotes {
     fn multi_line_double_quoted_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new("\"`a few\nquoted words`\""));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -151,6 +157,7 @@ mod quotes {
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"&#8220;Here's Johnny!&#8221;"#.to_string().into_boxed_str())
@@ -163,6 +170,7 @@ mod quotes {
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"&#8220;Here`s Johnny!&#8221;"#.to_string().into_boxed_str())
@@ -173,9 +181,11 @@ mod quotes {
     fn double_quoted_string_around_almost_monospaced_text() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#""``E=mc^2^` is the solution!`""#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -190,9 +200,11 @@ mod quotes {
     fn double_quoted_string_around_monospaced_text() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#""```E=mc^2^`` is the solution!`""#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -207,9 +219,11 @@ mod quotes {
     fn single_line_single_quoted_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"'`a few quoted words`'"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"&#8216;a few quoted words&#8217;"#.to_string().into_boxed_str())
@@ -220,9 +234,11 @@ mod quotes {
     fn escaped_single_line_single_quoted_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"\'`a few quoted words`'"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"'`a few quoted words`'"#.to_string().into_boxed_str())
@@ -233,9 +249,11 @@ mod quotes {
     fn multi_line_single_quoted_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new("'`a few\nquoted words`'"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -250,9 +268,11 @@ mod quotes {
     fn single_quoted_string_with_inline_single_quote() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"'`That isn't what I did.`'"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"&#8216;That isn't what I did.&#8217;"#.to_string().into_boxed_str())
@@ -262,9 +282,11 @@ mod quotes {
     #[test]
     fn single_quoted_string_with_inline_backquote() {
         let mut content = crate::content::Content::from(crate::Span::new(r#"'`Here`s Johnny!`'"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"&#8216;Here`s Johnny!&#8217;"#.to_string().into_boxed_str())
@@ -274,9 +296,11 @@ mod quotes {
     #[test]
     fn single_line_constrained_marked_string() {
         let mut content = crate::content::Content::from(crate::Span::new(r#"#a few words#"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"<mark>a few words</mark>"#.to_string().into_boxed_str())
@@ -286,9 +310,11 @@ mod quotes {
     #[test]
     fn escaped_single_line_constrained_marked_string() {
         let mut content = crate::content::Content::from(crate::Span::new(r#"\#a few words#"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"#a few words#"#.to_string().into_boxed_str())
@@ -298,9 +324,11 @@ mod quotes {
     #[test]
     fn multi_line_constrained_marked_string() {
         let mut content = crate::content::Content::from(crate::Span::new("#a few\nwords#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed("<mark>a few\nwords</mark>".to_string().into_boxed_str())
@@ -312,9 +340,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             r##"111 #mark a# 222 "`quote a`" 333 #mark b# 444"##,
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r##"111 <mark>mark a</mark> 222 &#8220;quote a&#8221; 333 <mark>mark b</mark> 444"##.to_string().into_boxed_str())
@@ -325,9 +355,11 @@ mod quotes {
     fn single_line_unconstrained_marked_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r###"##--anything goes ##"###));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -342,9 +374,11 @@ mod quotes {
     fn escaped_single_line_unconstrained_marked_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r###"\\##--anything goes ##"###));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r###"##--anything goes ##"###.to_string().into_boxed_str())
@@ -354,9 +388,11 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_marked_string() {
         let mut content = crate::content::Content::from(crate::Span::new("##--anything\ngoes ##"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -371,9 +407,11 @@ mod quotes {
     fn single_line_constrained_marked_string_with_role() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r##"[statement]#a few words#"##));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -389,9 +427,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             r##"key: [ *before [.redacted]#redacted# after* ]"##,
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -440,9 +480,11 @@ mod quotes {
     fn single_line_constrained_strong_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"*a few strong words*"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"<strong>a few strong words</strong>"#.to_string().into_boxed_str())
@@ -453,9 +495,11 @@ mod quotes {
     fn escaped_single_line_constrained_strong_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"\*a few strong words*"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"*a few strong words*"#.to_string().into_boxed_str())
@@ -468,6 +512,7 @@ mod quotes {
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -481,6 +526,7 @@ mod quotes {
     #[test]
     fn constrained_strong_string_containing_an_asterisk() {
         let mut content = crate::content::Content::from(crate::Span::new("*bl*ck*-eye"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
@@ -493,9 +539,11 @@ mod quotes {
     #[test]
     fn constrained_strong_string_containing_an_asterisk_and_multibyte_word_chars() {
         let mut content = crate::content::Content::from(crate::Span::new("*黑*眼圈*"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed("<strong>黑*眼圈</strong>".to_string().into_boxed_str())
@@ -506,9 +554,11 @@ mod quotes {
     fn single_line_constrained_quote_variation_emphasized_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new("_a few emphasized words_"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -523,9 +573,11 @@ mod quotes {
     fn escaped_single_line_constrained_quote_variation_emphasized_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new("\\_a few emphasized words_"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed("_a few emphasized words_".to_string().into_boxed_str())
@@ -536,9 +588,11 @@ mod quotes {
     fn escaped_single_quoted_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"\'a few emphasized words'"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"\'a few emphasized words'"#)
@@ -549,9 +603,11 @@ mod quotes {
     fn multi_line_constrained_emphasized_quote_variation_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new("_a few\nemphasized words_"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("<em>a few\nemphasized words</em>")
@@ -562,9 +618,11 @@ mod quotes {
     fn single_quoted_string_containing_an_emphasized_phrase() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"'`I told him, 'Just go for it!'`'"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"&#8216;I told him, 'Just go for it!'&#8217;"#)
@@ -584,9 +642,11 @@ mod quotes {
     fn single_line_constrained_emphasized_underline_variation_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"_a few emphasized words_"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<em>a few emphasized words</em>"#)
@@ -597,9 +657,11 @@ mod quotes {
     fn escaped_single_line_constrained_emphasized_underline_variation_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"\_a few emphasized words_"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"_a few emphasized words_"#)
@@ -610,9 +672,11 @@ mod quotes {
     fn multi_line_constrained_emphasized_underline_variation_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new("_a few\nemphasized words_"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("<em>a few\nemphasized words</em>")
@@ -760,9 +824,11 @@ mod quotes {
     #[test]
     fn single_line_unconstrained_strong_chars() {
         let mut content = crate::content::Content::from(crate::Span::new(r#"**Git**Hub"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("<strong>Git</strong>Hub")
@@ -772,9 +838,11 @@ mod quotes {
     #[test]
     fn escaped_single_line_unconstrained_strong_chars() {
         let mut content = crate::content::Content::from(crate::Span::new(r#"\**Git**Hub"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("<strong>*Git</strong>*Hub")
@@ -784,9 +852,11 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_strong_chars() {
         let mut content = crate::content::Content::from(crate::Span::new("**G\ni\nt\n**Hub"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("<strong>G\ni\nt\n</strong>Hub")
@@ -796,9 +866,11 @@ mod quotes {
     #[test]
     fn unconstrained_strong_chars_with_inline_asterisk() {
         let mut content = crate::content::Content::from(crate::Span::new("**bl*ck**-eye"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("<strong>bl*ck</strong>-eye")
@@ -808,9 +880,11 @@ mod quotes {
     #[test]
     fn unconstrained_strong_chars_with_role() {
         let mut content = crate::content::Content::from(crate::Span::new("Git[blue]**Hub**"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"Git<strong class="blue">Hub</strong>"#)
@@ -820,9 +894,11 @@ mod quotes {
     #[test]
     fn escaped_unconstrained_strong_chars_with_role() {
         let mut content = crate::content::Content::from(crate::Span::new(r#"Git\[blue]**Hub**"#));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"Git[blue]<strong>*Hub</strong>*"#)
@@ -868,9 +944,11 @@ mod quotes {
     #[test]
     fn unconstrained_emphasis_chars_with_role() {
         let mut content = crate::content::Content::from(crate::Span::new("[gray]__Git__Hub"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<em class="gray">Git</em>Hub"#)
@@ -891,9 +969,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             "call [x-]+save()+ to persist the changes",
         ));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call <code>save()</code> to persist the changes"#)
@@ -904,9 +984,11 @@ mod quotes {
     fn single_line_constrained_monospaced_chars_2() {
         let mut content =
             crate::content::Content::from(crate::Span::new("call `save()` to persist the changes"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call <code>save()</code> to persist the changes"#)
@@ -918,9 +1000,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             "call [method x-]+save()+ to persist the changes",
         ));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call <code class="method">save()</code> to persist the changes"#)
@@ -932,9 +1016,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             "call [method]`save()` to persist the changes",
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call <code class="method">save()</code> to persist the changes"#)
@@ -946,9 +1032,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             r#"call \`save()` to persist the changes"#,
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call `save()` to persist the changes"#)
@@ -960,9 +1048,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             r#"call [method]\`save()` to persist the changes"#,
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call [method]`save()` to persist the changes"#)
@@ -974,9 +1064,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             r#"call \[method]`save()` to persist the changes"#,
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call [method]<code>save()</code> to persist the changes"#)
@@ -988,9 +1080,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             r#"call \[method]\`save()` to persist the changes"#,
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"call \[method]`save()` to persist the changes"#)
@@ -1001,9 +1095,11 @@ mod quotes {
     fn escaped_single_line_constrained_passthrough_string() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"[x-]\+leave it alone+"#));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"[x-]+leave it alone+"#)
@@ -1014,9 +1110,11 @@ mod quotes {
     fn single_line_unconstrained_monospaced_chars_with_old_behavior_and_role() {
         // NOTE: Not in the Ruby test suite.
         let mut content = crate::content::Content::from(crate::Span::new("Git[test x-]++Hub++"));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"Git<code class="test">Hub</code>"#)
@@ -1053,9 +1151,11 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_monospaced_chars_1() {
         let mut content = crate::content::Content::from(crate::Span::new("Git[x-]++\nH\nu\nb++"));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("Git<code>\nH\nu\nb</code>")
@@ -1065,9 +1165,11 @@ mod quotes {
     #[test]
     fn multi_line_unconstrained_monospaced_chars_2() {
         let mut content = crate::content::Content::from(crate::Span::new("Git``\nH\nu\nb``"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("Git<code>\nH\nu\nb</code>")
@@ -1079,9 +1181,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             "x^2^ = x * x, e = mc^2^, there's a 1^st^ time for everything",
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(
@@ -1113,6 +1217,7 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             "Night ^A{sp}poem{sp}by{sp}Jane{sp}Kondo^.",
         ));
+
         let p = Parser::default();
 
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
@@ -1127,9 +1232,11 @@ mod quotes {
     fn allow_spaces_in_superscript_if_text_is_wrapped_in_a_passthrough() {
         let mut content =
             crate::content::Content::from(crate::Span::new("Night ^+A poem by Jane Kondo+^."));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("Night <sup>A poem by Jane Kondo</sup>.")
@@ -1152,11 +1259,14 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             "http://localhost[Text^] on the 21^st^ and 22^nd^",
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         // ^^^ TO DO: This needs to be the full substitution group, not just the Quotes
         // substition.
+
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(
@@ -1187,9 +1297,11 @@ mod quotes {
     fn does_not_match_subscript_across_whitespace() {
         let mut content =
             crate::content::Content::from(crate::Span::new("project~ view\non\nGitHub~"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("project~ view\non\nGitHub~")
@@ -1210,9 +1322,11 @@ mod quotes {
         let mut content = crate::content::Content::from(crate::Span::new(
             "http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]",
         ));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed("http://www.abc.com/~def[DEF] and http://www.abc.com/~ghi[GHI]")
@@ -1223,9 +1337,11 @@ mod quotes {
     fn quoted_text_with_role_shorthand() {
         let mut content =
             crate::content::Content::from(crate::Span::new("[.white.red-background]#alert#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<span class="white red-background">alert</span>"#)
@@ -1235,9 +1351,11 @@ mod quotes {
     #[test]
     fn quoted_text_with_id_shorthand() {
         let mut content = crate::content::Content::from(crate::Span::new("[#bond]#007#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<span id="bond">007</span>"#)
@@ -1248,9 +1366,11 @@ mod quotes {
     fn quoted_text_with_id_and_role_shorthand() {
         let mut content =
             crate::content::Content::from(crate::Span::new("[#bond.white.red-background]#007#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<span id="bond" class="white red-background">007</span>"#)
@@ -1261,9 +1381,11 @@ mod quotes {
     fn quoted_text_with_id_and_role_shorthand_with_roles_before_id() {
         let mut content =
             crate::content::Content::from(crate::Span::new("[.white.red-background#bond]#007#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<span id="bond" class="white red-background">007</span>"#)
@@ -1274,9 +1396,11 @@ mod quotes {
     fn quoted_text_with_id_and_role_shorthand_with_roles_around_id() {
         let mut content =
             crate::content::Content::from(crate::Span::new("[.white#bond.red-background]#007#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<span id="bond" class="white red-background">007</span>"#)
@@ -1286,9 +1410,11 @@ mod quotes {
     #[test]
     fn should_not_assign_role_attribute_if_shorthand_style_has_no_roles() {
         let mut content = crate::content::Content::from(crate::Span::new("[#idname]*blah*"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Borrowed(r#"<strong id="idname">blah</strong>"#)
@@ -1298,9 +1424,11 @@ mod quotes {
     #[test]
     fn should_remove_trailing_spaces_from_role_defined_using_shorthand() {
         let mut content = crate::content::Content::from(crate::Span::new("[.rolename ]*blah*"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"<strong class="rolename">blah</strong>"#.to_string().into_boxed_str())
@@ -1310,6 +1438,7 @@ mod quotes {
     #[test]
     fn should_allow_role_to_be_defined_using_attribute_reference() {
         let mut content = crate::content::Content::from(crate::Span::new("[{rolename}]#phrase#"));
+
         let p = Parser::default().with_intrinsic_attribute(
             "rolename",
             "red",
@@ -1327,9 +1456,11 @@ mod quotes {
     #[test]
     fn should_ignore_attributes_after_comma() {
         let mut content = crate::content::Content::from(crate::Span::new("[red, foobar]#alert#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"<span class="red">alert</span>"#.to_string().into_boxed_str())
@@ -1340,9 +1471,11 @@ mod quotes {
     fn should_remove_leading_and_trailing_spaces_around_role_after_ignoring_attributes_after_comma()
     {
         let mut content = crate::content::Content::from(crate::Span::new("[ red , foobar]#alert#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(r#"<span class="red">alert</span>"#.to_string().into_boxed_str())
@@ -1352,9 +1485,11 @@ mod quotes {
     #[test]
     fn should_not_assign_role_if_value_before_comma_is_empty() {
         let mut content = crate::content::Content::from(crate::Span::new("[,]#anonymous#"));
+
         let p = Parser::default();
         SubstitutionStep::Quotes.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed("anonymous".to_string().into_boxed_str())
@@ -1365,9 +1500,11 @@ mod quotes {
     fn inline_passthrough_with_id_and_role_set_using_shorthand_1() {
         let mut content =
             crate::content::Content::from(crate::Span::new("[#idname.rolename]+pass+"));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -1382,9 +1519,11 @@ mod quotes {
     fn inline_passthrough_with_id_and_role_set_using_shorthand_2() {
         let mut content =
             crate::content::Content::from(crate::Span::new("[.rolename#idname]+pass+"));
+
         let p = Parser::default();
         SubstitutionGroup::Normal.apply(&mut content, &p, None);
         assert!(!content.is_empty());
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -4271,6 +4410,7 @@ mod passthroughs {
     fn collect_inline_triple_plus_passthroughs() {
         let mut content =
             crate::content::Content::from(crate::Span::new("+++<code>inline code</code>+++"));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4302,6 +4442,7 @@ mod passthroughs {
         // NOTE: Not in the Ruby test suite.
         let mut content =
             crate::content::Content::from(crate::Span::new("[role]+++<code>inline code</code>+++"));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4332,6 +4473,7 @@ mod passthroughs {
     fn collect_multiline_inline_triple_plus_passthroughs() {
         let mut content =
             crate::content::Content::from(crate::Span::new("+++<code>inline\ncode</code>+++"));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4362,6 +4504,7 @@ mod passthroughs {
     fn collect_inline_double_dollar_passthroughs() {
         let mut content =
             crate::content::Content::from(crate::Span::new("$$<code>{code}</code>$$"));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4392,6 +4535,7 @@ mod passthroughs {
     fn collect_inline_double_plus_passthroughs() {
         let mut content =
             crate::content::Content::from(crate::Span::new("++<code>{code}</code>++"));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4561,6 +4705,7 @@ mod passthroughs {
     fn collect_multiline_inline_double_dollar_passthroughs() {
         let mut content =
             crate::content::Content::from(crate::Span::new("$$<code>\n{code}\n</code>$$"));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4592,6 +4737,7 @@ mod passthroughs {
         let mut content = crate::content::Content::from(crate::Span::new(
             "pass:specialcharacters,quotes[<code>['code'\\]</code>]",
         ));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4626,6 +4772,7 @@ mod passthroughs {
         let mut content = crate::content::Content::from(crate::Span::new(
             "pass:specialcharacters,quotes[<code>['more\ncode'\\]</code>]",
         ));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -4700,6 +4847,7 @@ mod passthroughs {
     fn resolves_sub_shorthands_on_inline_pass_macro() {
         let mut content =
             crate::content::Content::from(crate::Span::new("pass:q,a[*<{backend}>*]"));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -5129,6 +5277,7 @@ mod passthroughs {
         let mut content = crate::content::Content::from(crate::Span::new(
             "$$[(] <'basic form'> <'logical operator'> <'basic form'> [)]$$",
         ));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -5160,6 +5309,7 @@ mod passthroughs {
         let mut content = crate::content::Content::from(crate::Span::new(
             r#"pass:specialcharacters[[(\] <'basic form'> <'logical operator'> <'basic form'> [)\]]"#,
         ));
+
         let pt = Passthroughs::extract_from(&mut content);
 
         assert_eq!(
@@ -5701,8 +5851,10 @@ foo&#8201;&#8212;&#8201;"#;
     fn replaces_marks() {
         let mut content =
             crate::content::Content::from(crate::Span::new(r#"(C) (R) (TM) \(C) \(R) \(TM)"#));
+
         let p = Parser::default();
         SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(
@@ -5733,6 +5885,7 @@ foo&#8201;&#8212;&#8201;"#;
         let mut content = crate::content::Content::from(crate::Span::new(input));
         let p = Parser::default();
         SubstitutionStep::CharacterReplacements.apply(&mut content, &p, None);
+
         assert_eq!(
             content.rendered,
             CowStr::Boxed(input.to_string().into_boxed_str())

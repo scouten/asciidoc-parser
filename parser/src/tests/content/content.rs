@@ -1,7 +1,7 @@
 mod is_empty {
     #[test]
     fn basic_empty_span() {
-        let content = crate::content::Content::from(crate::Span::new(""));
+        let content = crate::content::Content::from(crate::Span::default());
         assert!(content.is_empty());
     }
 
@@ -19,7 +19,7 @@ mod replace_str {
 
     #[test]
     fn basic_empty_span() {
-        let mut content = crate::content::Content::from(crate::Span::new(""));
+        let mut content = crate::content::Content::from(crate::Span::default());
         content.replace_str("<", "&lt;");
 
         assert_eq!(

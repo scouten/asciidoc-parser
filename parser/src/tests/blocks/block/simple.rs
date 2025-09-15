@@ -28,7 +28,7 @@ fn err_empty_source() {
     let mut parser = Parser::default();
 
     assert!(
-        crate::blocks::Block::parse(crate::Span::new(""), &mut parser)
+        crate::blocks::Block::parse(crate::Span::default(), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );

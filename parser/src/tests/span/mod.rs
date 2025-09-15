@@ -1,9 +1,19 @@
 use pretty_assertions_sorted::assert_eq;
 
 #[test]
-fn test_happy_case() {
+fn simple_case() {
     let span = crate::Span::new(r#"{"hello": "world 🙌"}"#);
 
+    assert_eq!(span.line(), 1);
+    assert_eq!(span.col(), 1);
+    assert_eq!(span.byte_offset(), 0);
+}
+
+#[test]
+fn impl_default() {
+    let span = crate::Span::default();
+
+    assert_eq!(span.data(), "");
     assert_eq!(span.line(), 1);
     assert_eq!(span.col(), 1);
     assert_eq!(span.byte_offset(), 0);
@@ -36,7 +46,7 @@ mod split_at_match_non_empty {
 
     #[test]
     fn empty_source() {
-        let s = crate::Span::new("");
+        let s = crate::Span::default();
         assert!(s.split_at_match_non_empty(|c| c == ':').is_none());
     }
 
@@ -65,6 +75,7 @@ mod split_at_match_non_empty {
 
 mod discard;
 mod line;
+mod matched_item;
 mod parse_result;
 mod primitives;
 mod split;

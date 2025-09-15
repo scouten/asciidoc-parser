@@ -51,3 +51,29 @@ impl<'src> MatchedItem<'src, Span<'src>> {
         }
     }
 }
+
+impl<'src, U> Default for MatchedItem<'src, U>
+where
+    U: Default,
+{
+    fn default() -> Self {
+        Self {
+            item: U::default(),
+            after: Span::default(),
+        }
+    }
+}
+
+impl<U> MatchedItem<'_, Option<U>>
+where
+    U: Default,
+{
+    /// Unwrap the item if it's `Some(value)`, otherwise return `U::default()`.
+    ///
+    /// This method is only available when `T` is `Option<impl Default>`.
+    #[inline(always)]
+    #[allow(unused)] // TEMPORARY while building
+    pub(crate) fn unwrap_item_or_default(self) -> U {
+        self.item.unwrap_or_default()
+    }
+}

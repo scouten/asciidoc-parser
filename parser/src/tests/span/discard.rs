@@ -5,7 +5,7 @@ mod discard {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert_eq!(
             span.discard(4),
             Span {
@@ -81,7 +81,7 @@ mod discard_whitespace {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert_eq!(
             span.discard_whitespace(),
             Span {
@@ -157,7 +157,7 @@ mod discard_all {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert_eq!(
             span.discard_all(),
             Span {
