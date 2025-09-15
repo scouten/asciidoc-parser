@@ -61,7 +61,7 @@ impl<'src> ElementAttribute<'src> {
                         return (None, warnings);
                     }
                 },
-                _ => after.take_while(|c| c != ','),
+                _ => after.take_while(|c| c != ',').trim_item_trailing_spaces(),
             };
 
             let after = value.after;

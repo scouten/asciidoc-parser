@@ -351,6 +351,127 @@ fn only_positional_attributes() {
 }
 
 #[test]
+fn trim_trailing_space() {
+    let p = Parser::default();
+    let mi = crate::attributes::Attrlist::parse(crate::Span::new("Sunset ,300 , 400"), &p)
+        .unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item,
+        Attrlist {
+            attributes: &[
+                ElementAttribute {
+                    name: None,
+                    shorthand_items: &["Sunset"],
+                    value: "Sunset"
+                },
+                ElementAttribute {
+                    name: None,
+                    shorthand_items: &[],
+                    value: "300"
+                },
+                ElementAttribute {
+                    name: None,
+                    shorthand_items: &[],
+                    value: "400"
+                }
+            ],
+            source: Span {
+                data: "Sunset ,300 , 400",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert!(mi.item.named_attribute("foo").is_none());
+    assert!(mi.item.nth_attribute(0).is_none());
+    assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
+
+    assert!(mi.item.id().is_none());
+    assert!(mi.item.roles().is_empty());
+
+    assert_eq!(
+        mi.item.nth_attribute(1).unwrap(),
+        ElementAttribute {
+            name: None,
+            shorthand_items: &["Sunset"],
+            value: "Sunset"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("alt", 1).unwrap(),
+        ElementAttribute {
+            name: None,
+            shorthand_items: &["Sunset"],
+            value: "Sunset"
+        }
+    );
+
+    assert_eq!(
+        mi.item.nth_attribute(2).unwrap(),
+        ElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "300"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("width", 2).unwrap(),
+        ElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "300"
+        }
+    );
+
+    assert_eq!(
+        mi.item.nth_attribute(3).unwrap(),
+        ElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "400"
+        }
+    );
+
+    assert_eq!(
+        mi.item.named_or_positional_attribute("height", 3).unwrap(),
+        ElementAttribute {
+            name: None,
+            shorthand_items: &[],
+            value: "400"
+        }
+    );
+
+    assert!(mi.item.nth_attribute(4).is_none());
+    assert!(mi.item.named_or_positional_attribute("height", 4).is_none());
+    assert!(mi.item.nth_attribute(42).is_none());
+
+    assert_eq!(
+        mi.item.span(),
+        Span {
+            data: "Sunset ,300 , 400",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        Span {
+            data: "",
+            line: 1,
+            col: 18,
+            offset: 17
+        }
+    );
+}
+
+#[test]
 fn only_named_attributes() {
     let p = Parser::default();
     let mi =
@@ -922,7 +1043,7 @@ mod roles {
                 attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &[".rolename"],
-                    value: ".rolename "
+                    value: ".rolename"
                 }],
                 source: Span {
                     data: ".rolename ",
@@ -1034,7 +1155,7 @@ mod roles {
                 attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &[".role1", ".role2", ".role3"],
-                    value: ".role1 .role2 .role3 "
+                    value: ".role1 .role2 .role3"
                 }],
                 source: Span {
                     data: ".role1 .role2 .role3 ",
@@ -1165,7 +1286,7 @@ mod roles {
                     ElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
-                        value: "role1 role2   role3 "
+                        value: "role1 role2   role3"
                     },
                 ],
                 source: Span {
@@ -1191,7 +1312,7 @@ mod roles {
             ElementAttribute {
                 name: Some("role"),
                 shorthand_items: &[],
-                value: "role1 role2   role3 "
+                value: "role1 role2   role3"
             }
         );
 
@@ -1235,7 +1356,7 @@ mod roles {
                     ElementAttribute {
                         name: Some("role"),
                         shorthand_items: &[],
-                        value: "na1 na2   na3 "
+                        value: "na1 na2   na3"
                     },
                 ],
                 source: Span {
@@ -1254,7 +1375,7 @@ mod roles {
             ElementAttribute {
                 name: Some("role"),
                 shorthand_items: &[],
-                value: "na1 na2   na3 "
+                value: "na1 na2   na3"
             }
         );
 
