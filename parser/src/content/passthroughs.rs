@@ -4,7 +4,7 @@ use regex::{Captures, Regex, Replacer};
 
 use crate::{
     Parser, Span,
-    attributes::Attrlist,
+    attributes::{Attrlist, AttrlistContext},
     content::{Content, SubstitutionGroup},
     parser::{QuoteScope, QuoteType},
 };
@@ -452,7 +452,7 @@ impl Replacer for PassthroughRestoreReplacer<'_> {
         if let Some(type_) = pass.type_ {
             let attrlist = pass.attrlist.as_ref().map(|attrlist_body| {
                 let span = Span::new(attrlist_body);
-                let maw = Attrlist::parse(span, self.1);
+                let maw = Attrlist::parse(span, self.1, AttrlistContext::Inline);
                 maw.item.item
             });
 

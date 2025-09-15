@@ -1,7 +1,8 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    HasSpan, Parser, parser::ModificationContext, tests::prelude::*, warnings::WarningType,
+    HasSpan, Parser, attributes::AttrlistContext, parser::ModificationContext, tests::prelude::*,
+    warnings::WarningType,
 };
 
 #[test]
@@ -9,7 +10,8 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let p = Parser::default();
     let b1 =
-        crate::attributes::Attrlist::parse(crate::Span::new("abc"), &p).unwrap_if_no_warnings();
+        crate::attributes::Attrlist::parse(crate::Span::new("abc"), &p, AttrlistContext::Inline)
+            .unwrap_if_no_warnings();
 
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
@@ -59,7 +61,10 @@ fn impl_default() {
 #[test]
 fn empty_source() {
     let p = Parser::default();
-    let mi = crate::attributes::Attrlist::parse(crate::Span::default(), &p).unwrap_if_no_warnings();
+
+    let mi =
+        crate::attributes::Attrlist::parse(crate::Span::default(), &p, AttrlistContext::Inline)
+            .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -111,8 +116,13 @@ fn empty_source() {
 #[test]
 fn empty_positional_attributes() {
     let p = Parser::default();
-    let mi = crate::attributes::Attrlist::parse(crate::Span::new(",300,400"), &p)
-        .unwrap_if_no_warnings();
+
+    let mi = crate::attributes::Attrlist::parse(
+        crate::Span::new(",300,400"),
+        &p,
+        AttrlistContext::Inline,
+    )
+    .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -232,8 +242,13 @@ fn empty_positional_attributes() {
 #[test]
 fn only_positional_attributes() {
     let p = Parser::default();
-    let mi = crate::attributes::Attrlist::parse(crate::Span::new("Sunset,300,400"), &p)
-        .unwrap_if_no_warnings();
+
+    let mi = crate::attributes::Attrlist::parse(
+        crate::Span::new("Sunset,300,400"),
+        &p,
+        AttrlistContext::Inline,
+    )
+    .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -353,8 +368,13 @@ fn only_positional_attributes() {
 #[test]
 fn trim_trailing_space() {
     let p = Parser::default();
-    let mi = crate::attributes::Attrlist::parse(crate::Span::new("Sunset ,300 , 400"), &p)
-        .unwrap_if_no_warnings();
+
+    let mi = crate::attributes::Attrlist::parse(
+        crate::Span::new("Sunset ,300 , 400"),
+        &p,
+        AttrlistContext::Inline,
+    )
+    .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -474,9 +494,13 @@ fn trim_trailing_space() {
 #[test]
 fn only_named_attributes() {
     let p = Parser::default();
-    let mi =
-        crate::attributes::Attrlist::parse(crate::Span::new("alt=Sunset,width=300,height=400"), &p)
-            .unwrap_if_no_warnings();
+
+    let mi = crate::attributes::Attrlist::parse(
+        crate::Span::new("alt=Sunset,width=300,height=400"),
+        &p,
+        AttrlistContext::Inline,
+    )
+    .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -601,6 +625,7 @@ fn ignore_named_attribute_with_none_value() {
     let mi = crate::attributes::Attrlist::parse(
         crate::Span::new("alt=Sunset,width=None,height=400"),
         &p,
+        AttrlistContext::Inline,
     )
     .unwrap_if_no_warnings();
 
@@ -704,7 +729,12 @@ fn ignore_named_attribute_with_none_value() {
 #[test]
 fn err_unparsed_remainder_after_value() {
     let p = Parser::default();
-    let maw = crate::attributes::Attrlist::parse(crate::Span::new("alt=\"Sunset\"width=300"), &p);
+
+    let maw = crate::attributes::Attrlist::parse(
+        crate::Span::new("alt=\"Sunset\"width=300"),
+        &p,
+        AttrlistContext::Inline,
+    );
 
     let mi = maw.item.clone();
 
@@ -752,7 +782,12 @@ fn err_unparsed_remainder_after_value() {
 #[test]
 fn propagates_error_from_element_attribute() {
     let p = Parser::default();
-    let maw = crate::attributes::Attrlist::parse(crate::Span::new("foo%#id"), &p);
+
+    let maw = crate::attributes::Attrlist::parse(
+        crate::Span::new("foo%#id"),
+        &p,
+        AttrlistContext::Inline,
+    );
 
     let mi = maw.item.clone();
 
@@ -800,13 +835,18 @@ fn propagates_error_from_element_attribute() {
 mod id {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{HasSpan, Parser, tests::prelude::*};
+    use crate::{HasSpan, Parser, attributes::AttrlistContext, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("#goals"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("#goals"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -856,8 +896,13 @@ mod id {
     #[test]
     fn via_named_attribute() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,id=goals"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo=bar,id=goals"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -920,8 +965,13 @@ mod id {
     #[should_panic]
     fn via_block_anchor_syntax() {
         let p = Parser::default();
-        let _pr = crate::attributes::Attrlist::parse(crate::Span::new("[goals]"), &p)
-            .unwrap_if_no_warnings();
+
+        let _pr = crate::attributes::Attrlist::parse(
+            crate::Span::new("[goals]"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         // TO DO (#122): Parse block anchor syntax
     }
@@ -929,8 +979,13 @@ mod id {
     #[test]
     fn shorthand_only_first_attribute() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo,blah#goals"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo,blah#goals"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -975,13 +1030,18 @@ mod id {
 mod roles {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{HasSpan, Parser, tests::prelude::*};
+    use crate::{HasSpan, Parser, attributes::AttrlistContext, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".rolename"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new(".rolename"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1034,8 +1094,13 @@ mod roles {
     #[test]
     fn via_shorthand_syntax_trim_trailing_whitespace() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".rolename "), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new(".rolename "),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1061,8 +1126,7 @@ mod roles {
         let mut roles = roles.iter();
 
         assert_eq!(roles.next().unwrap(), &"rolename");
-
-        assert!(roles.next().is_none(),);
+        assert!(roles.next().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -1088,8 +1152,13 @@ mod roles {
     #[test]
     fn multiple_roles_via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".role1.role2.role3"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new(".role1.role2.role3"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1146,8 +1215,13 @@ mod roles {
     #[test]
     fn multiple_roles_via_shorthand_syntax_trim_whitespace() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new(".role1 .role2 .role3 "), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new(".role1 .role2 .role3 "),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1204,8 +1278,13 @@ mod roles {
     #[test]
     fn via_named_attribute() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,role=role1"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo=bar,role=role1"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1268,9 +1347,11 @@ mod roles {
     #[test]
     fn multiple_roles_via_named_attribute() {
         let p = Parser::default();
+
         let mi = crate::attributes::Attrlist::parse(
             crate::Span::new("foo=bar,role=role1 role2   role3 "),
             &p,
+            AttrlistContext::Inline,
         )
         .unwrap_if_no_warnings();
 
@@ -1338,9 +1419,11 @@ mod roles {
     #[test]
     fn shorthand_role_and_named_attribute_role() {
         let p = Parser::default();
+
         let mi = crate::attributes::Attrlist::parse(
             crate::Span::new("#foo.sh1.sh2,role=na1 na2   na3 "),
             &p,
+            AttrlistContext::Inline,
         )
         .unwrap_if_no_warnings();
 
@@ -1403,8 +1486,13 @@ mod roles {
     #[test]
     fn shorthand_only_first_attribute() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo,blah.rolename"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo,blah.rolename"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1448,13 +1536,18 @@ mod roles {
 mod options {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{HasSpan, Parser, tests::prelude::*};
+    use crate::{HasSpan, Parser, attributes::AttrlistContext, tests::prelude::*};
 
     #[test]
     fn via_shorthand_syntax() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("%option"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("%option"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1510,9 +1603,13 @@ mod options {
     #[test]
     fn multiple_options_via_shorthand_syntax() {
         let p = Parser::default();
-        let mi =
-            crate::attributes::Attrlist::parse(crate::Span::new("%option1%option2%option3"), &p)
-                .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("%option1%option2%option3"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1571,9 +1668,13 @@ mod options {
     #[test]
     fn via_options_attribute() {
         let p = Parser::default();
-        let mi =
-            crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,options=option1"), &p)
-                .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo=bar,options=option1"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1640,8 +1741,13 @@ mod options {
     #[test]
     fn via_opts_attribute() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo=bar,opts=option1"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo=bar,opts=option1"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1709,9 +1815,11 @@ mod options {
     #[test]
     fn multiple_options_via_named_attribute() {
         let p = Parser::default();
+
         let mi = crate::attributes::Attrlist::parse(
             crate::Span::new("foo=bar,options=\"option1,option2,option3\""),
             &p,
+            AttrlistContext::Inline,
         )
         .unwrap_if_no_warnings();
 
@@ -1784,9 +1892,11 @@ mod options {
     #[test]
     fn shorthand_option_and_named_attribute_option() {
         let p = Parser::default();
+
         let mi = crate::attributes::Attrlist::parse(
             crate::Span::new("#foo%sh1%sh2,options=\"na1,na2,na3\""),
             &p,
+            AttrlistContext::Inline,
         )
         .unwrap_if_no_warnings();
 
@@ -1857,8 +1967,13 @@ mod options {
     #[test]
     fn shorthand_only_first_attribute() {
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new("foo,blah%option"), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("foo,blah%option"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,
@@ -1904,9 +2019,11 @@ mod options {
 #[test]
 fn err_double_comma() {
     let p = Parser::default();
+
     let maw = crate::attributes::Attrlist::parse(
         crate::Span::new("alt=Sunset,width=300,,height=400"),
         &p,
+        AttrlistContext::Inline,
     );
 
     let mi = maw.item.clone();
@@ -1972,8 +2089,12 @@ fn applies_attribute_substitution_before_parsing() {
         ModificationContext::Anywhere,
     );
 
-    let mi = crate::attributes::Attrlist::parse(crate::Span::new("Sunset,{sunset_dimensions}"), &p)
-        .unwrap_if_no_warnings();
+    let mi = crate::attributes::Attrlist::parse(
+        crate::Span::new("Sunset,{sunset_dimensions}"),
+        &p,
+        AttrlistContext::Inline,
+    )
+    .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,
@@ -2098,9 +2219,12 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
         ModificationContext::Anywhere,
     );
 
-    let mi =
-        crate::attributes::Attrlist::parse(crate::Span::new("Sunset,{not_sunset_dimensions}"), &p)
-            .unwrap_if_no_warnings();
+    let mi = crate::attributes::Attrlist::parse(
+        crate::Span::new("Sunset,{not_sunset_dimensions}"),
+        &p,
+        AttrlistContext::Inline,
+    )
+    .unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,

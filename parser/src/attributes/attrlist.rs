@@ -30,6 +30,7 @@ impl<'src> Attrlist<'src> {
     pub(crate) fn parse(
         source: Span<'src>,
         parser: &Parser,
+        attrlist_context: AttrlistContext,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let mut attributes: Vec<ElementAttribute> = vec![];
         let mut parse_shorthand_items = true;
@@ -56,6 +57,7 @@ impl<'src> Attrlist<'src> {
                 index,
                 parser,
                 ParseShorthand(parse_shorthand_items),
+                attrlist_context,
             );
 
             // Because we do attribute value substitution early on in parsing, we can't
@@ -378,4 +380,11 @@ impl<'src> HasSpan<'src> for Attrlist<'src> {
     fn span(&self) -> Span<'src> {
         self.source
     }
+}
+
+/// Context for attribute list parsing.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum AttrlistContext {
+    Block,
+    Inline,
 }

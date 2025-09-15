@@ -5,7 +5,7 @@ use regex::{Captures, Regex, Replacer};
 
 use crate::{
     Parser, Span,
-    attributes::Attrlist,
+    attributes::{Attrlist, AttrlistContext},
     content::Content,
     parser::{IconRenderParams, ImageRenderParams, LinkRenderParams, LinkRenderType},
 };
@@ -134,7 +134,9 @@ impl Replacer for InlineImageMacroReplacer<'_> {
 
         let target = &caps[1];
         let span = Span::new(&caps[2]);
-        let attrlist = Attrlist::parse(span, self.0).item.item;
+        let attrlist = Attrlist::parse(span, self.0, AttrlistContext::Inline)
+            .item
+            .item;
 
         let default_alt = basename(&target.replace(['_', '-'], " "));
         // IMPORTANT: Implementations of `render_icon` and `render_image` need to
@@ -221,7 +223,9 @@ struct InlineLinkReplacer<'p>(&'p Parser<'p>);
 
 impl Replacer for InlineLinkReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        let mut attrlist = Attrlist::parse(Span::default(), self.0).item.item;
+        let mut attrlist = Attrlist::parse(Span::default(), self.0, AttrlistContext::Inline)
+            .item
+            .item;
 
         if caps.get(2).is_some() && caps.get(5).is_none() {
             // Honor the escapes.
@@ -500,7 +504,9 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
         let attrlist = if let Some(attrlist) = attrlist {
             attrlist
         } else {
-            Attrlist::parse(Span::default(), self.0).item.item
+            Attrlist::parse(Span::default(), self.0, AttrlistContext::Inline)
+                .item
+                .item
         };
 
         let mut extra_roles: Vec<&str> = vec![];
@@ -550,7 +556,7 @@ fn extract_attributes_from_text<'src>(
     parser: &Parser,
     default_text: Option<&str>,
 ) -> (String, Attrlist<'src>) {
-    let attrlist_maw = Attrlist::parse(*text, parser);
+    let attrlist_maw = Attrlist::parse(*text, parser, AttrlistContext::Inline);
     let attrs = attrlist_maw.item.item;
 
     if let Some(resolved_text) = attrs.nth_attribute(1) {
@@ -560,7 +566,7 @@ fn extract_attributes_from_text<'src>(
         // constraint that should make this impossible.
 
         /* if resolved_text.value() == text.data() {
-            let empty_attrs = Attrlist::parse(Span::default(), parser).item.item;
+            let empty_attrs = Attrlist::parse(Span::default(), parser, AttrlistContext::Inline).item.item;
             (text.data().to_owned(), empty_attrs)
         } else { */
         (resolved_text.value().to_owned(), attrs)
@@ -661,7 +667,10 @@ impl Replacer for InlineEmailReplacer<'_> {
         }
 
         let target = format!("mailto:{mailto}", mailto = &caps[2]);
-        let attrlist = Attrlist::parse(Span::default(), self.0).item.item;
+
+        let attrlist = Attrlist::parse(Span::default(), self.0, AttrlistContext::Inline)
+            .item
+            .item;
 
         let params = LinkRenderParams {
             target: target.clone(),

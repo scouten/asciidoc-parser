@@ -1,4 +1,11 @@
-use crate::{Parser, Span, span::MatchedItem, strings::CowStr, warnings::WarningType};
+use crate::{
+    Parser, Span,
+    attributes::AttrlistContext,
+    content::{Content, SubstitutionGroup},
+    span::MatchedItem,
+    strings::CowStr,
+    warnings::WarningType,
+};
 
 /// This struct represents a single element attribute.
 ///
@@ -18,8 +25,9 @@ impl<'src> ElementAttribute<'src> {
     pub(crate) fn parse(
         source_text: &CowStr<'src>,
         start_index: usize,
-        _parser: &Parser,
+        parser: &Parser,
         mut parse_shorthand: ParseShorthand,
+        attrlist_context: AttrlistContext,
     ) -> (Self, usize, Vec<WarningType>) {
         let mut warnings: Vec<WarningType> = vec![];
 
@@ -70,21 +78,22 @@ impl<'src> ElementAttribute<'src> {
                 && (first == '\'' || first == '\"')
             {
                 let escaped_quote = format!("\\{first}");
-                let new_value = value.replace(&escaped_quote, &first.to_string());
+                let mut new_value = value.replace(&escaped_quote, &first.to_string());
+
+                if first == '\'' && attrlist_context == AttrlistContext::Block {
+                    let span = Span::new(&new_value);
+                    let mut content = Content::from(span);
+                    SubstitutionGroup::Normal.apply(&mut content, parser, None);
+
+                    if content.rendered.as_ref() != new_value {
+                        new_value = content.rendered.to_string();
+                    }
+                }
+
                 if new_value != *value {
                     value = CowStr::from(new_value);
                 }
             }
-
-            // TO DO: Redo this to support substitutions but only in correct circumstances.
-            // It doesn't apply in all cases.
-            // let value: CowStr<'_> = if value.item.data().contains(['<', '>', '&', '{']) {
-            //     let mut content = Content::from(value.item);
-            //     SubstitutionGroup::AttributeEntryValue.apply(&mut content, parser, None);
-            //     CowStr::from(content.rendered().to_string())
-            // } else {
-            //     cowstr_from_source_and_span(source_text, &value.item)
-            // };
 
             let shorthand_item_indices = if name.is_none() && parse_shorthand.0 {
                 parse_shorthand_items(&value, &mut warnings)
