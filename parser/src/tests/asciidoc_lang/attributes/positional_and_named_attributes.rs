@@ -681,6 +681,81 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
             }
         );
     }
+
+    #[test]
+    fn unset() {
+        verifies!(
+            r#"
+ [#unset]
+ === Unset a named attribute
+ 
+ To undefine a named attribute, set the value to `None` (case sensitive).
+ // end::name[]
+ 
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo=bar,value=None]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 21,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar,value=None]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("foo",),
+                            value: "bar",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "foo=bar,value=None",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar,value=None]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }
 
 mod attribute_list_parsing {
