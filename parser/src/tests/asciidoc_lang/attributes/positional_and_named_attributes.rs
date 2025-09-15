@@ -936,4 +936,243 @@ In these rules, `name` consists of a word character (letter or numeral) followed
             }
         );
     }
+
+    #[test]
+    fn subsequent_attrs_ignore_leading_space_or_tab() {
+        verifies!(
+            r#"
+For subsequent attributes, any leading space or tab characters are skipped.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo=bar, target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 22,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar, target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo=bar, target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar, target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn named_attributes() {
+        verifies!(
+            r#"
+* If a valid attribute name is found, and it is followed by an equals sign (=), then the parser recognizes this as a named attribute.
+The text after the equals sign (=) and up to the next comma or end of list is taken as the attribute value.
+Space and tab characters around the equals sign (=) and at the end of the value are ignored.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = bar, target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 24,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = bar, target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = bar, target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = bar, target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn otherwise_positional() {
+        verifies!(
+            r#"
+* Otherwise, this is a positional attribute with a value that ends at the next delimiter or end of list.
+Any space or tab characters at the boundaries of the value are ignored.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[_foo = bar , zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 32,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[_foo = bar , zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: None,
+                                value: "_foo = bar",
+                                shorthand_items: &["_foo = bar"]
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "_foo = bar , zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[_foo = bar , zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }
