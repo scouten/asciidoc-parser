@@ -5,7 +5,7 @@ mod take_ident {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_ident().is_none());
     }
 
@@ -191,7 +191,7 @@ mod take_attr_name {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_attr_name().is_none());
     }
 
@@ -319,7 +319,7 @@ mod take_user_attr_name {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_user_attr_name().is_none());
     }
 
@@ -442,7 +442,7 @@ mod take_user_attr_name {
 
 #[test]
 fn is_xml_name() {
-    assert!(!crate::Span::new("").is_xml_name());
+    assert!(!crate::Span::default().is_xml_name());
     assert!(crate::Span::new("a").is_xml_name());
     assert!(crate::Span::new("a9").is_xml_name());
 
@@ -468,7 +468,7 @@ mod take_quoted_string {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_quoted_string().is_none());
     }
 
@@ -654,7 +654,7 @@ mod trim_remainder {
     #[test]
     fn empty_spans() {
         let source = advanced_span("abcdef", 6);
-        let after = crate::Span::new("");
+        let after = crate::Span::default();
 
         assert_eq!(
             source.trim_remainder(after),
