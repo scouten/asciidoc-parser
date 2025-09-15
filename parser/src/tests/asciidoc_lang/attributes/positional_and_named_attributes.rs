@@ -761,7 +761,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
 mod attribute_list_parsing {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, tests::prelude::*, warnings::WarningType};
 
     non_normative!(
         r#"
@@ -1242,6 +1242,261 @@ Any space or tab characters at the boundaries of the value are ignored.
                 },),],
                 source: Span {
                     data: "[_foo = bar , zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_unquoted() {
+        verifies!(
+            r#"
+* To parse the attribute value:
+** If the first character is not a quote, the string is read until the next delimiter or end of string.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = bar, zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 30,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = bar, zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = bar, zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = bar, zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_double_quote_unclosed() {
+        verifies!(
+            r#"
+** If the first character is a double quote (i.e., `"`), then the string is read until the next unescaped double quote or, if there is no closing double quote, the next delimiter.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \"bar, zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 31,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = \"bar, zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "\"bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = \"bar, zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = \"bar, zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[Warning {
+                    source: Span {
+                        data: "foo = \"bar, zip , target=url",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    warning: WarningType::AttributeValueMissingTerminatingQuote,
+                },],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_double_quote_closed() {
+        verifies!(
+            r#"
+If there is a closing double quote, the enclosing double quote characters are removed and escaped double quote characters are unescaped; if not, the initial double quote is retained.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \"bar\\\"boop\", zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 38,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = \"bar\\\"boop\", zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar\"boop",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = \"bar\\\"boop\", zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = \"bar\\\"boop\", zip , target=url]\nSome text here.",
                     line: 1,
                     col: 1,
                     offset: 0,
