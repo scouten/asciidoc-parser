@@ -5,7 +5,7 @@ mod trim_trailing_whitespace {
 
     #[test]
     fn empty_source() {
-        let s = crate::Span::new("").trim_trailing_whitespace();
+        let s = crate::Span::default().trim_trailing_whitespace();
 
         assert_eq!(
             s,
@@ -86,7 +86,7 @@ mod trim_trailing_line_end {
 
     #[test]
     fn empty_source() {
-        let s = crate::Span::new("").trim_trailing_line_end();
+        let s = crate::Span::default().trim_trailing_line_end();
 
         assert_eq!(
             s,

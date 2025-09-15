@@ -10,6 +10,7 @@ fn impl_clone() {
     let p = Parser::default();
     let b1 =
         crate::attributes::Attrlist::parse(crate::Span::new("abc"), &p).unwrap_if_no_warnings();
+
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
 }
@@ -58,7 +59,7 @@ fn impl_default() {
 #[test]
 fn empty_source() {
     let p = Parser::default();
-    let mi = crate::attributes::Attrlist::parse(crate::Span::new(""), &p).unwrap_if_no_warnings();
+    let mi = crate::attributes::Attrlist::parse(crate::Span::default(), &p).unwrap_if_no_warnings();
 
     assert_eq!(
         mi.item,

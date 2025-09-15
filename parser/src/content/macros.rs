@@ -221,7 +221,7 @@ struct InlineLinkReplacer<'p>(&'p Parser<'p>);
 
 impl Replacer for InlineLinkReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        let mut attrlist = Attrlist::parse(Span::new(""), self.0).item.item;
+        let mut attrlist = Attrlist::parse(Span::default(), self.0).item.item;
 
         if caps.get(2).is_some() && caps.get(5).is_none() {
             // Honor the escapes.
@@ -500,7 +500,7 @@ impl Replacer for InlineLinkMacroReplacer<'_> {
         let attrlist = if let Some(attrlist) = attrlist {
             attrlist
         } else {
-            Attrlist::parse(Span::new(""), self.0).item.item
+            Attrlist::parse(Span::default(), self.0).item.item
         };
 
         let mut extra_roles: Vec<&str> = vec![];
@@ -560,8 +560,7 @@ fn extract_attributes_from_text<'src>(
         // constraint that should make this impossible.
 
         /* if resolved_text.value() == text.data() {
-            const EMPTY_SPAN: &Span = &Span::new("");
-            let empty_attrs = Attrlist::parse(*EMPTY_SPAN, parser).item.item;
+            let empty_attrs = Attrlist::parse(Span::default(), parser).item.item;
             (text.data().to_owned(), empty_attrs)
         } else { */
         (resolved_text.value().to_owned(), attrs)
@@ -662,7 +661,7 @@ impl Replacer for InlineEmailReplacer<'_> {
         }
 
         let target = format!("mailto:{mailto}", mailto = &caps[2]);
-        let attrlist = Attrlist::parse(Span::new(""), self.0).item.item;
+        let attrlist = Attrlist::parse(Span::default(), self.0).item.item;
 
         let params = LinkRenderParams {
             target: target.clone(),

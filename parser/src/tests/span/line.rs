@@ -5,7 +5,7 @@ mod take_line {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         let l = span.take_line();
 
         assert_eq!(
@@ -201,7 +201,7 @@ mod take_normalized_line {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         let line = span.take_normalized_line();
 
         assert_eq!(
@@ -423,7 +423,7 @@ mod take_non_empty_line {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_non_empty_line().is_none());
     }
 
@@ -605,7 +605,7 @@ mod take_empty_line {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
@@ -797,7 +797,7 @@ mod discard_empty_lines {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         let after = span.discard_empty_lines();
         assert_eq!(after, crate::Span::new("",));
     }
@@ -960,7 +960,7 @@ mod take_line_with_continuation {
 
     #[test]
     fn empty_source() {
-        let span = crate::Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_line_with_continuation().is_none());
     }
 
