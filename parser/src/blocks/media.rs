@@ -1,6 +1,6 @@
 use crate::{
     HasSpan, Parser, Span,
-    attributes::Attrlist,
+    attributes::{Attrlist, AttrlistContext},
     blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
     span::MatchedItem,
     strings::CowStr,
@@ -103,7 +103,7 @@ impl<'src> MediaBlock<'src> {
         let attrlist = open_brace.after.slice(0..open_brace.after.len() - 1);
         // Note that we already checked that this line ends with a close brace.
 
-        let macro_attrlist = Attrlist::parse(attrlist, parser);
+        let macro_attrlist = Attrlist::parse(attrlist, parser, AttrlistContext::Inline);
 
         let source: Span = metadata.source.trim_remainder(line.after);
         let source = source.slice(0..source.trim().len());

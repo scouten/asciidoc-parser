@@ -42,7 +42,9 @@ Unlike document attributes, element attributes are defined directly on the eleme
 mod attrlist {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{HasSpan, Parser, blocks::MediaType, tests::prelude::*};
+    use crate::{
+        HasSpan, Parser, attributes::AttrlistContext, blocks::MediaType, tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -75,8 +77,13 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
             r#"first-positional,second-positional,named="value of named""#;
 
         let p = Parser::default();
-        let mi = crate::attributes::Attrlist::parse(crate::Span::new(ATTRLIST_EXAMPLE), &p)
-            .unwrap_if_no_warnings();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new(ATTRLIST_EXAMPLE),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
 
         assert_eq!(
             mi.item,

@@ -1,6 +1,6 @@
 use crate::{
     Parser, Span,
-    attributes::Attrlist,
+    attributes::{Attrlist, AttrlistContext},
     content::{Content, SubstitutionGroup},
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -207,7 +207,7 @@ fn parse_maybe_attrlist_line<'src>(
             after: _,
         },
         warnings,
-    } = Attrlist::parse(attrlist_src, parser);
+    } = Attrlist::parse(attrlist_src, parser, AttrlistContext::Block);
 
     Some(MatchAndWarnings {
         item: MatchedItem {
