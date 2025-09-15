@@ -1,17 +1,17 @@
 mod block;
-pub(crate) use block::TBlock;
+pub(crate) use block::Block;
 
 mod compound_delimited;
-pub(crate) use compound_delimited::TCompoundDelimitedBlock;
+pub(crate) use compound_delimited::CompoundDelimitedBlock;
 
 mod media;
-pub(crate) use media::TMediaBlock;
+pub(crate) use media::MediaBlock;
 
 mod raw_delimited;
-pub(crate) use raw_delimited::TRawDelimitedBlock;
+pub(crate) use raw_delimited::RawDelimitedBlock;
 
 mod section;
-pub(crate) use section::TSectionBlock;
+pub(crate) use section::SectionBlock;
 
 mod simple;
-pub(crate) use simple::TSimpleBlock;
+pub(crate) use simple::SimpleBlock;

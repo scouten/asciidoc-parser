@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/text/pages/subscript-and-superscript.adoc");
 
@@ -15,10 +15,12 @@ The size and precise placement of the text depends on the font and other stylesh
 );
 
 mod subscript_and_superscript_syntax {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     #[test]

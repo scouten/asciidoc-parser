@@ -1,31 +1,21 @@
 mod parse {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser, Span,
-        blocks::Block,
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            content::TContent,
-            warnings::TWarning,
-        },
-        warnings::WarningType,
-    };
+    use crate::{Parser, tests::prelude::*, warnings::WarningType};
 
     #[test]
     fn err_invalid_delimiter() {
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("==="), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("==="), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "===",
                         line: 1,
                         col: 1,
@@ -33,7 +23,7 @@ mod parse {
                     },
                     rendered: "===",
                 },
-                source: TSpan {
+                source: Span {
                     data: "===",
                     line: 1,
                     col: 1,
@@ -48,15 +38,15 @@ mod parse {
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("====x"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("====x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "====x",
                         line: 1,
                         col: 1,
@@ -64,7 +54,7 @@ mod parse {
                     },
                     rendered: "====x",
                 },
-                source: TSpan {
+                source: Span {
                     data: "====x",
                     line: 1,
                     col: 1,
@@ -79,15 +69,15 @@ mod parse {
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("****x"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("****x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "****x",
                         line: 1,
                         col: 1,
@@ -95,7 +85,7 @@ mod parse {
                     },
                     rendered: "<strong>*</strong>*x",
                 },
-                source: TSpan {
+                source: Span {
                     data: "****x",
                     line: 1,
                     col: 1,
@@ -110,15 +100,15 @@ mod parse {
 
         let mut parser = Parser::default();
 
-        let mi = Block::parse(Span::new("____x"), &mut parser)
+        let mi = crate::blocks::Block::parse(crate::Span::new("____x"), &mut parser)
             .unwrap_if_no_warnings()
             .unwrap();
 
         assert_eq!(
             mi.item,
-            TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "____x",
                         line: 1,
                         col: 1,
@@ -126,7 +116,7 @@ mod parse {
                     },
                     rendered: "____x",
                 },
-                source: TSpan {
+                source: Span {
                     data: "____x",
                     line: 1,
                     col: 1,
@@ -143,16 +133,17 @@ mod parse {
     #[test]
     fn err_unterminated() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("====\nblah blah blah"), &mut parser);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("====\nblah blah blah"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "blah blah blah",
                             line: 2,
                             col: 1,
@@ -160,7 +151,7 @@ mod parse {
                         },
                         rendered: "blah blah blah",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "blah blah blah",
                         line: 2,
                         col: 1,
@@ -172,7 +163,7 @@ mod parse {
                     attrlist: None,
                 },),],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nblah blah blah",
                     line: 1,
                     col: 1,
@@ -187,8 +178,8 @@ mod parse {
 
         assert_eq!(
             maw.warnings,
-            vec![TWarning {
-                source: TSpan {
+            vec![Warning {
+                source: Span {
                     data: "====",
                     line: 1,
                     col: 1,
@@ -204,29 +195,25 @@ mod example {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        HasSpan, Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
+        HasSpan, Parser,
+        blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            content::TContent,
-        },
+        tests::prelude::*,
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("====\n===="), &mut parser);
+        let maw = crate::blocks::Block::parse(crate::Span::new("====\n===="), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\n====",
                     line: 1,
                     col: 1,
@@ -255,7 +242,7 @@ mod example {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "====\n====",
                 line: 1,
                 col: 1,
@@ -267,17 +254,20 @@ mod example {
     #[test]
     fn multiple_blocks() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("====\nblock1\n\nblock2\n===="), &mut parser);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("====\nblock1\n\nblock2\n===="),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -285,7 +275,7 @@ mod example {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -296,9 +286,9 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -306,7 +296,7 @@ mod example {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -319,7 +309,7 @@ mod example {
                     },),
                 ],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nblock1\n\nblock2\n====",
                     line: 1,
                     col: 1,
@@ -346,9 +336,9 @@ mod example {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -356,7 +346,7 @@ mod example {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -371,9 +361,9 @@ mod example {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -381,7 +371,7 @@ mod example {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -398,7 +388,7 @@ mod example {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "====\nblock1\n\nblock2\n====",
                 line: 1,
                 col: 1,
@@ -411,8 +401,8 @@ mod example {
     fn title() {
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
-            Span::new(".block title \n====\nblock1\n\nblock2\n===="),
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new(".block title \n====\nblock1\n\nblock2\n===="),
             &mut parser,
         );
 
@@ -420,11 +410,11 @@ mod example {
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 3,
                                 col: 1,
@@ -432,7 +422,7 @@ mod example {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 3,
                             col: 1,
@@ -443,9 +433,9 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -453,7 +443,7 @@ mod example {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 5,
                             col: 1,
@@ -466,13 +456,13 @@ mod example {
                     },),
                 ],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: ".block title \n====\nblock1\n\nblock2\n====",
                     line: 1,
                     col: 1,
                     offset: 0,
                 },
-                title_source: Some(TSpan {
+                title_source: Some(Span {
                     data: "block title",
                     line: 1,
                     col: 2,
@@ -493,7 +483,7 @@ mod example {
 
         assert_eq!(
             mi.item.title_source().unwrap(),
-            TSpan {
+            Span {
                 data: "block title",
                 line: 1,
                 col: 2,
@@ -510,9 +500,9 @@ mod example {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 3,
                         col: 1,
@@ -520,7 +510,7 @@ mod example {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 3,
                     col: 1,
@@ -535,9 +525,9 @@ mod example {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -545,7 +535,7 @@ mod example {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 5,
                     col: 1,
@@ -562,7 +552,7 @@ mod example {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: ".block title \n====\nblock1\n\nblock2\n====",
                 line: 1,
                 col: 1,
@@ -575,8 +565,8 @@ mod example {
     fn nested_blocks() {
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
-            Span::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
             &mut parser,
         );
 
@@ -584,11 +574,11 @@ mod example {
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -596,7 +586,7 @@ mod example {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -607,10 +597,10 @@ mod example {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
                                     data: "block2",
                                     line: 5,
                                     col: 1,
@@ -618,7 +608,7 @@ mod example {
                                 },
                                 rendered: "block2",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -630,7 +620,7 @@ mod example {
                             attrlist: None,
                         },)],
                         context: "example",
-                        source: TSpan {
+                        source: Span {
                             data: "=====\nblock2\n=====",
                             line: 4,
                             col: 1,
@@ -643,7 +633,7 @@ mod example {
                     },)
                 ],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "====\nblock1\n\n=====\nblock2\n=====\n====",
                     line: 1,
                     col: 1,
@@ -670,9 +660,9 @@ mod example {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -680,7 +670,7 @@ mod example {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -695,10 +685,10 @@ mod example {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+            &Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "block2",
                             line: 5,
                             col: 1,
@@ -706,7 +696,7 @@ mod example {
                         },
                         rendered: "block2",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -718,7 +708,7 @@ mod example {
                     attrlist: None,
                 },),],
                 context: "example",
-                source: TSpan {
+                source: Span {
                     data: "=====\nblock2\n=====",
                     line: 4,
                     col: 1,
@@ -735,7 +725,7 @@ mod example {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "====\nblock1\n\n=====\nblock2\n=====\n====",
                 line: 1,
                 col: 1,
@@ -749,28 +739,24 @@ mod open {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        HasSpan, Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            content::TContent,
-        },
+        HasSpan, Parser,
+        blocks::{ContentModel, IsBlock},
+        tests::prelude::*,
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("--\n--"), &mut parser);
+        let maw = crate::blocks::Block::parse(crate::Span::new("--\n--"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "open",
-                source: TSpan {
+                source: Span {
                     data: "--\n--",
                     line: 1,
                     col: 1,
@@ -797,7 +783,7 @@ mod open {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "--\n--",
                 line: 1,
                 col: 1,
@@ -809,17 +795,18 @@ mod open {
     #[test]
     fn multiple_blocks() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("--\nblock1\n\nblock2\n--"), &mut parser);
+        let maw =
+            crate::blocks::Block::parse(crate::Span::new("--\nblock1\n\nblock2\n--"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -827,7 +814,7 @@ mod open {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -838,9 +825,9 @@ mod open {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -848,7 +835,7 @@ mod open {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -861,7 +848,7 @@ mod open {
                     },),
                 ],
                 context: "open",
-                source: TSpan {
+                source: Span {
                     data: "--\nblock1\n\nblock2\n--",
                     line: 1,
                     col: 1,
@@ -888,9 +875,9 @@ mod open {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -898,7 +885,7 @@ mod open {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -913,9 +900,9 @@ mod open {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -923,7 +910,7 @@ mod open {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -940,7 +927,7 @@ mod open {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "--\nblock1\n\nblock2\n--",
                 line: 1,
                 col: 1,
@@ -952,17 +939,20 @@ mod open {
     #[test]
     fn nested_blocks() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("--\nblock1\n\n---\nblock2\n---\n--"), &mut parser);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("--\nblock1\n\n---\nblock2\n---\n--"),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -970,7 +960,7 @@ mod open {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -981,9 +971,9 @@ mod open {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "---\nblock2\n---",
                                 line: 4,
                                 col: 1,
@@ -991,7 +981,7 @@ mod open {
                             },
                             rendered: "---\nblock2\n---",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "---\nblock2\n---",
                             line: 4,
                             col: 1,
@@ -1004,7 +994,7 @@ mod open {
                     },)
                 ],
                 context: "open",
-                source: TSpan {
+                source: Span {
                     data: "--\nblock1\n\n---\nblock2\n---\n--",
                     line: 1,
                     col: 1,
@@ -1031,9 +1021,9 @@ mod open {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1041,7 +1031,7 @@ mod open {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1056,9 +1046,9 @@ mod open {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "---\nblock2\n---",
                         line: 4,
                         col: 1,
@@ -1066,7 +1056,7 @@ mod open {
                     },
                     rendered: "---\nblock2\n---",
                 },
-                source: TSpan {
+                source: Span {
                     data: "---\nblock2\n---",
                     line: 4,
                     col: 1,
@@ -1083,7 +1073,7 @@ mod open {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "--\nblock1\n\n---\nblock2\n---\n--",
                 line: 1,
                 col: 1,
@@ -1097,28 +1087,24 @@ mod sidebar {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        HasSpan, Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            content::TContent,
-        },
+        HasSpan, Parser,
+        blocks::{ContentModel, IsBlock},
+        tests::prelude::*,
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("****\n****"), &mut parser);
+        let maw = crate::blocks::Block::parse(crate::Span::new("****\n****"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "****\n****",
                     line: 1,
                     col: 1,
@@ -1145,7 +1131,7 @@ mod sidebar {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "****\n****",
                 line: 1,
                 col: 1,
@@ -1157,17 +1143,20 @@ mod sidebar {
     #[test]
     fn multiple_blocks() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("****\nblock1\n\nblock2\n****"), &mut parser);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("****\nblock1\n\nblock2\n****"),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1175,7 +1164,7 @@ mod sidebar {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1186,9 +1175,9 @@ mod sidebar {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -1196,7 +1185,7 @@ mod sidebar {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -1209,7 +1198,7 @@ mod sidebar {
                     },),
                 ],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "****\nblock1\n\nblock2\n****",
                     line: 1,
                     col: 1,
@@ -1236,9 +1225,9 @@ mod sidebar {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1246,7 +1235,7 @@ mod sidebar {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1261,9 +1250,9 @@ mod sidebar {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -1271,7 +1260,7 @@ mod sidebar {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -1288,7 +1277,7 @@ mod sidebar {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "****\nblock1\n\nblock2\n****",
                 line: 1,
                 col: 1,
@@ -1301,8 +1290,8 @@ mod sidebar {
     fn nested_blocks() {
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
-            Span::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
             &mut parser,
         );
 
@@ -1310,11 +1299,11 @@ mod sidebar {
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1322,7 +1311,7 @@ mod sidebar {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1333,10 +1322,10 @@ mod sidebar {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
                                     data: "block2",
                                     line: 5,
                                     col: 1,
@@ -1344,7 +1333,7 @@ mod sidebar {
                                 },
                                 rendered: "block2",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -1356,7 +1345,7 @@ mod sidebar {
                             attrlist: None,
                         },)],
                         context: "sidebar",
-                        source: TSpan {
+                        source: Span {
                             data: "*****\nblock2\n*****",
                             line: 4,
                             col: 1,
@@ -1369,7 +1358,7 @@ mod sidebar {
                     })
                 ],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "****\nblock1\n\n*****\nblock2\n*****\n****",
                     line: 1,
                     col: 1,
@@ -1396,9 +1385,9 @@ mod sidebar {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1406,7 +1395,7 @@ mod sidebar {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1421,10 +1410,10 @@ mod sidebar {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+            &Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "block2",
                             line: 5,
                             col: 1,
@@ -1432,7 +1421,7 @@ mod sidebar {
                         },
                         rendered: "block2",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -1444,7 +1433,7 @@ mod sidebar {
                     attrlist: None,
                 },),],
                 context: "sidebar",
-                source: TSpan {
+                source: Span {
                     data: "*****\nblock2\n*****",
                     line: 4,
                     col: 1,
@@ -1461,7 +1450,7 @@ mod sidebar {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "****\nblock1\n\n*****\nblock2\n*****\n****",
                 line: 1,
                 col: 1,
@@ -1475,28 +1464,24 @@ mod quote {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        HasSpan, Parser, Span,
-        blocks::{Block, ContentModel, IsBlock},
-        tests::fixtures::{
-            TSpan,
-            blocks::{TBlock, TCompoundDelimitedBlock, TSimpleBlock},
-            content::TContent,
-        },
+        HasSpan, Parser,
+        blocks::{ContentModel, IsBlock},
+        tests::prelude::*,
     };
 
     #[test]
     fn empty() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("____\n____"), &mut parser);
+        let maw = crate::blocks::Block::parse(crate::Span::new("____\n____"), &mut parser);
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "____\n____",
                     line: 1,
                     col: 1,
@@ -1523,7 +1508,7 @@ mod quote {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "____\n____",
                 line: 1,
                 col: 1,
@@ -1535,17 +1520,20 @@ mod quote {
     #[test]
     fn multiple_blocks() {
         let mut parser = Parser::default();
-        let maw = Block::parse(Span::new("____\nblock1\n\nblock2\n____"), &mut parser);
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("____\nblock1\n\nblock2\n____"),
+            &mut parser,
+        );
 
         let mi = maw.item.unwrap().clone();
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1553,7 +1541,7 @@ mod quote {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1564,9 +1552,9 @@ mod quote {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block2",
                                 line: 4,
                                 col: 1,
@@ -1574,7 +1562,7 @@ mod quote {
                             },
                             rendered: "block2",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block2",
                             line: 4,
                             col: 1,
@@ -1587,7 +1575,7 @@ mod quote {
                     },),
                 ],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "____\nblock1\n\nblock2\n____",
                     line: 1,
                     col: 1,
@@ -1614,9 +1602,9 @@ mod quote {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1624,7 +1612,7 @@ mod quote {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1639,9 +1627,9 @@ mod quote {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block2",
                         line: 4,
                         col: 1,
@@ -1649,7 +1637,7 @@ mod quote {
                     },
                     rendered: "block2",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block2",
                     line: 4,
                     col: 1,
@@ -1666,7 +1654,7 @@ mod quote {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "____\nblock1\n\nblock2\n____",
                 line: 1,
                 col: 1,
@@ -1679,8 +1667,8 @@ mod quote {
     fn nested_blocks() {
         let mut parser = Parser::default();
 
-        let maw = Block::parse(
-            Span::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
             &mut parser,
         );
 
@@ -1688,11 +1676,11 @@ mod quote {
 
         assert_eq!(
             mi.item,
-            TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+            Block::CompoundDelimited(CompoundDelimitedBlock {
                 blocks: &[
-                    TBlock::Simple(TSimpleBlock {
-                        content: TContent {
-                            original: TSpan {
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
                                 data: "block1",
                                 line: 2,
                                 col: 1,
@@ -1700,7 +1688,7 @@ mod quote {
                             },
                             rendered: "block1",
                         },
-                        source: TSpan {
+                        source: Span {
                             data: "block1",
                             line: 2,
                             col: 1,
@@ -1711,10 +1699,10 @@ mod quote {
                         anchor: None,
                         attrlist: None,
                     },),
-                    TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                        blocks: &[TBlock::Simple(TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
                                     data: "block2",
                                     line: 5,
                                     col: 1,
@@ -1722,7 +1710,7 @@ mod quote {
                                 },
                                 rendered: "block2",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "block2",
                                 line: 5,
                                 col: 1,
@@ -1734,7 +1722,7 @@ mod quote {
                             attrlist: None,
                         },),],
                         context: "quote",
-                        source: TSpan {
+                        source: Span {
                             data: "_____\nblock2\n_____",
                             line: 4,
                             col: 1,
@@ -1747,7 +1735,7 @@ mod quote {
                     })
                 ],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "____\nblock1\n\n_____\nblock2\n_____\n____",
                     line: 1,
                     col: 1,
@@ -1774,9 +1762,9 @@ mod quote {
         let mut blocks = mi.item.nested_blocks();
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "block1",
                         line: 2,
                         col: 1,
@@ -1784,7 +1772,7 @@ mod quote {
                     },
                     rendered: "block1",
                 },
-                source: TSpan {
+                source: Span {
                     data: "block1",
                     line: 2,
                     col: 1,
@@ -1799,10 +1787,10 @@ mod quote {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &TBlock::CompoundDelimited(TCompoundDelimitedBlock {
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+            &Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "block2",
                             line: 5,
                             col: 1,
@@ -1810,7 +1798,7 @@ mod quote {
                         },
                         rendered: "block2",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "block2",
                         line: 5,
                         col: 1,
@@ -1822,7 +1810,7 @@ mod quote {
                     attrlist: None,
                 },),],
                 context: "quote",
-                source: TSpan {
+                source: Span {
                     data: "_____\nblock2\n_____",
                     line: 4,
                     col: 1,
@@ -1839,7 +1827,7 @@ mod quote {
 
         assert_eq!(
             mi.item.span(),
-            TSpan {
+            Span {
                 data: "____\nblock1\n\n_____\nblock2\n_____\n____",
                 line: 1,
                 col: 1,

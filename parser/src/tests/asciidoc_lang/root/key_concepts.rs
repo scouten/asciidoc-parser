@@ -1,7 +1,6 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/ROOT/pages/key-concepts.adoc");
-// Tracking commit 1767ee1e, current as of 2024-10-26.
 
 non_normative!(
     r#"
@@ -76,20 +75,7 @@ An element attribute is defined using an attribute list on an element, or an ava
 mod macros {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -118,40 +104,40 @@ image::sunset.jpg[Sunset]
 
         assert_eq!(
             Parser::default().parse("image::sunset.jpg[Sunset]\n"),
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0
                     }
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "sunset.jpg",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
-                        attributes: &[TElementAttribute {
+                    macro_attrlist: Attrlist {
+                        attributes: &[ElementAttribute {
                             name: None,
                             shorthand_items: &["Sunset"],
                             value: "Sunset"
                         }],
-                        source: TSpan {
+                        source: Span {
                             data: "Sunset",
                             line: 1,
                             col: 19,
                             offset: 18,
                         }
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::sunset.jpg[Sunset]",
                         line: 1,
                         col: 1,
@@ -162,7 +148,7 @@ image::sunset.jpg[Sunset]
                     anchor: None,
                     attrlist: None,
                 })],
-                source: TSpan {
+                source: Span {
                     data: "image::sunset.jpg[Sunset]",
                     line: 1,
                     col: 1,
@@ -190,21 +176,21 @@ Click the button with the image:star.png[Star] to favorite the project.
         assert_eq!(
             Parser::default()
                 .parse("Click the button with the image:star.png[Star] to favorite the project.\n"),
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0
                     }
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "Click the button with the image:star.png[Star] to favorite the project.",
                             line: 1,
                             col: 1,
@@ -212,7 +198,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                         },
                         rendered: r#"Click the button with the <span class="image"><img src="star.png" alt="Star"></span> to favorite the project."#,
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Click the button with the image:star.png[Star] to favorite the project.",
                         line: 1,
                         col: 1,
@@ -223,7 +209,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     anchor: None,
                     attrlist: None,
                 })],
-                source: TSpan {
+                source: Span {
                     data: "Click the button with the image:star.png[Star] to favorite the project.",
                     line: 1,
                     col: 1,
@@ -248,21 +234,21 @@ A block macro is always parsed, whereas an inline macro is only parsed where the
     }
 }
 
-// NOT COVERED YET:
-// == Preprocessor directives
+non_normative!(
+    r#"
+== Preprocessor directives
 
-// There's another syntax in AsciiDoc that looks a lot like block macros, only
-// they aren't. These are the preprocessor directives.
+There's another syntax in AsciiDoc that looks a lot like block macros, only they aren't.
+These are the preprocessor directives.
 
-// A preprocessor directive is a function that controls lines that are fed into
-// the parser. A conditional preprocessor directive can configure lines to be
-// included or excluded based on the presence of an attribute (ifdef, ifndef) or
-// another arbitrary condition (ifeval). An include directive can add additional
-// lines to the document taken from another document.
+A preprocessor directive is a function that controls lines that are fed into the parser.
+A conditional preprocessor directive can configure lines to be included or excluded based on the presence of an attribute (ifdef, ifndef) or another arbitrary condition (ifeval).
+An include directive can add additional lines to the document taken from another document.
 
-// Preprocessor directives share common traits with a block macro.
-// Like a block macro, a preprocessor directive must be on a line by itself.
-// While the preprocessor directive can access document attributes, it's not
-// otherwise aware of the context around it. It's only a line processor.
-// Like a block macro, the include directive can have element attributes, though
-// they only apply to the preprocessing operation itself.
+Preprocessor directives share common traits with a block macro.
+Like a block macro, a preprocessor directive must be on a line by itself.
+While the preprocessor directive can access document attributes, it's not otherwise aware of the context around it.
+It's only a line processor.
+Like a block macro, the include directive can have element attributes, though they only apply to the preprocessing operation itself.
+"#
+);

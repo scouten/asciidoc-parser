@@ -1,18 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser,
-    blocks::IsBlock,
-    tests::{
-        fixtures::{
-            TSpan,
-            attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TSimpleBlock},
-            content::TContent,
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/attribute-entry-substitutions.adoc");
 
@@ -68,15 +56,7 @@ mod change_subs_when_assigning {
         Parser,
         blocks::{ContentModel, IsBlock},
         content::{SubstitutionGroup, SubstitutionStep},
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TRawDelimitedBlock},
-                content::TContent,
-            },
-            sdd::{non_normative, verifies},
-        },
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -160,9 +140,9 @@ You can inspect the value stored in an attribute using this trick:
 
         assert_eq!(
             block1,
-            &TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "{app-name}",
                         line: 5,
                         col: 1,
@@ -172,7 +152,7 @@ You can inspect the value stored in an attribute using this trick:
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "[subs=attributes+]\n------\n{app-name}\n------",
                     line: 3,
                     col: 1,
@@ -181,13 +161,13 @@ You can inspect the value stored in an attribute using this trick:
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: Some("subs"),
                         value: "attributes+",
                         shorthand_items: &[],
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "subs=attributes+",
                         line: 3,
                         col: 2,
@@ -240,9 +220,9 @@ If the macro is absent, the value is processed with the header substitution grou
 
         assert_eq!(
             block1,
-            &TBlock::RawDelimited(TRawDelimitedBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::RawDelimited(RawDelimitedBlock {
+                content: Content {
+                    original: Span {
                         data: "{app-name}",
                         line: 5,
                         col: 1,
@@ -252,7 +232,7 @@ If the macro is absent, the value is processed with the header substitution grou
                 },
                 content_model: ContentModel::Verbatim,
                 context: "listing",
-                source: TSpan {
+                source: Span {
                     data: "[subs=attributes+]\n------\n{app-name}\n------",
                     line: 3,
                     col: 1,
@@ -261,13 +241,13 @@ If the macro is absent, the value is processed with the header substitution grou
                 title_source: None,
                 title: None,
                 anchor: None,
-                attrlist: Some(TAttrlist {
-                    attributes: &[TElementAttribute {
+                attrlist: Some(Attrlist {
+                    attributes: &[ElementAttribute {
                         name: Some("subs"),
                         value: "attributes+",
                         shorthand_items: &[],
                     },],
-                    source: TSpan {
+                    source: Span {
                         data: "subs=attributes+",
                         line: 3,
                         col: 2,
@@ -286,18 +266,7 @@ If the macro is absent, the value is processed with the header substitution grou
 mod attributes_defined_outside_document {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::IsBlock,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -344,13 +313,11 @@ To play, you'll need {equipment}.
 
         let block1 = blocks.next().unwrap();
 
-        dbg!(&block1);
-
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "To play, you'll need {equipment}.",
                         line: 1,
                         col: 1,
@@ -358,7 +325,7 @@ To play, you'll need {equipment}.
                     },
                     rendered: "To play, you&#8217;ll need a bat &amp; ball.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "To play, you'll need {equipment}.",
                     line: 1,
                     col: 1,
@@ -401,9 +368,9 @@ That's because, in contrast, substitutions are applied to the value of an attrib
 
         assert_eq!(
             block1,
-            &TBlock::Simple(TSimpleBlock {
-                content: TContent {
-                    original: TSpan {
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
                         data: "To play, you'll need {equipment}.",
                         line: 4,
                         col: 1,
@@ -411,7 +378,7 @@ That's because, in contrast, substitutions are applied to the value of an attrib
                     },
                     rendered: "To play, you&#8217;ll need a bat &amp; ball.",
                 },
-                source: TSpan {
+                source: Span {
                     data: "To play, you'll need {equipment}.",
                     line: 4,
                     col: 1,
@@ -464,9 +431,9 @@ This strategy is akin to post-processing the attribute value.
 
     assert_eq!(
         block1,
-        &TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        &Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "The application is called {app-name}.",
                     line: 4,
                     col: 1,
@@ -474,7 +441,7 @@ This strategy is akin to post-processing the attribute value.
                 },
                 rendered: "The application is called MyApp<sup>2</sup>.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"]\nThe application is called {app-name}.",
                 line: 3,
                 col: 1,
@@ -483,13 +450,13 @@ This strategy is akin to post-processing the attribute value.
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: Some("subs"),
                     value: "specialchars,attributes,quotes,replacements,macros,post_replacements",
                     shorthand_items: &[],
                 },],
-                source: TSpan {
+                source: Span {
                     data: "subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"",
                     line: 3,
                     col: 2,

@@ -3,7 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     Parser,
     blocks::{Block, IsBlock},
-    tests::sdd::{non_normative, track_file, verifies},
+    tests::prelude::*,
 };
 track_file!("docs/modules/pass/pages/pass-block.adoc");
 

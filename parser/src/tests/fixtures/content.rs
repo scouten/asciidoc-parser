@@ -1,31 +1,31 @@
 use std::cmp::PartialEq;
 
-use crate::{content::Content, tests::fixtures::TSpan};
+use crate::tests::fixtures::Span;
 
 #[derive(Debug, Eq, PartialEq)]
-pub(crate) struct TContent {
-    pub original: TSpan,
+pub(crate) struct Content {
+    pub original: Span,
     pub rendered: &'static str,
 }
 
-impl<'src> PartialEq<Content<'src>> for TContent {
-    fn eq(&self, other: &Content<'src>) -> bool {
+impl<'src> PartialEq<crate::content::Content<'src>> for Content {
+    fn eq(&self, other: &crate::content::Content<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TContent> for Content<'_> {
-    fn eq(&self, other: &TContent) -> bool {
+impl PartialEq<Content> for crate::content::Content<'_> {
+    fn eq(&self, other: &Content) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TContent> for &Content<'_> {
-    fn eq(&self, other: &TContent) -> bool {
+impl PartialEq<Content> for &crate::content::Content<'_> {
+    fn eq(&self, other: &Content) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TContent, observed: &Content) -> bool {
+fn fixture_eq_observed(fixture: &Content, observed: &crate::content::Content) -> bool {
     fixture.original == observed.original() && fixture.rendered == observed.rendered()
 }

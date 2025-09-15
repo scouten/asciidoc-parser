@@ -1,16 +1,16 @@
 mod take_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Span, tests::fixtures::TSpan};
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::default();
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -20,7 +20,7 @@ mod take_line {
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -31,12 +31,12 @@ mod take_line {
 
     #[test]
     fn simple_line() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,
@@ -46,7 +46,7 @@ mod take_line {
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -57,12 +57,12 @@ mod take_line {
 
     #[test]
     fn trailing_space() {
-        let span = Span::new("abc ");
+        let span = crate::Span::new("abc ");
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 5,
@@ -72,7 +72,7 @@ mod take_line {
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "abc ",
                 line: 1,
                 col: 1,
@@ -85,12 +85,12 @@ mod take_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let span = Span::new("abc\ndef");
+        let span = crate::Span::new("abc\ndef");
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -100,7 +100,7 @@ mod take_line {
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -113,12 +113,12 @@ mod take_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let span = Span::new("abc\r\ndef");
+        let span = crate::Span::new("abc\r\ndef");
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -128,7 +128,7 @@ mod take_line {
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -141,12 +141,12 @@ mod take_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let span = Span::new("abc\n\rdef");
+        let span = crate::Span::new("abc\n\rdef");
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "\rdef",
                 line: 2,
                 col: 1,
@@ -156,7 +156,7 @@ mod take_line {
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -169,12 +169,12 @@ mod take_line {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate line at \r without \n.
 
-        let span = Span::new("abc\rdef");
+        let span = crate::Span::new("abc\rdef");
         let l = span.take_line();
 
         assert_eq!(
             l.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 8,
@@ -184,7 +184,7 @@ mod take_line {
 
         assert_eq!(
             l.item,
-            TSpan {
+            Span {
                 data: "abc\rdef",
                 line: 1,
                 col: 1,
@@ -197,16 +197,16 @@ mod take_line {
 mod take_normalized_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Span, tests::fixtures::TSpan};
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::default();
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -216,7 +216,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -227,12 +227,12 @@ mod take_normalized_line {
 
     #[test]
     fn simple_line() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,
@@ -242,7 +242,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -253,12 +253,12 @@ mod take_normalized_line {
 
     #[test]
     fn discards_trailing_space() {
-        let span = Span::new("abc ");
+        let span = crate::Span::new("abc ");
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 5,
@@ -268,7 +268,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -279,12 +279,12 @@ mod take_normalized_line {
 
     #[test]
     fn discards_multiple_trailing_spaces() {
-        let span = Span::new("abc   ");
+        let span = crate::Span::new("abc   ");
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 7,
@@ -294,7 +294,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -307,12 +307,12 @@ mod take_normalized_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let span = Span::new("abc  \ndef");
+        let span = crate::Span::new("abc  \ndef");
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -322,7 +322,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -335,12 +335,12 @@ mod take_normalized_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let span = Span::new("abc  \r\ndef");
+        let span = crate::Span::new("abc  \r\ndef");
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -350,7 +350,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -363,12 +363,12 @@ mod take_normalized_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let span = Span::new("abc  \n\rdef");
+        let span = crate::Span::new("abc  \n\rdef");
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "\rdef",
                 line: 2,
                 col: 1,
@@ -378,7 +378,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -391,12 +391,12 @@ mod take_normalized_line {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate normalized line at \r without \n.
 
-        let span = Span::new("abc   \rdef");
+        let span = crate::Span::new("abc   \rdef");
         let line = span.take_normalized_line();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 11,
@@ -406,7 +406,7 @@ mod take_normalized_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc   \rdef",
                 line: 1,
                 col: 1,
@@ -419,28 +419,28 @@ mod take_normalized_line {
 mod take_non_empty_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Span, tests::fixtures::TSpan};
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_non_empty_line().is_none());
     }
 
     #[test]
     fn only_spaces() {
-        let span = Span::new("   ");
+        let span = crate::Span::new("   ");
         assert!(span.take_non_empty_line().is_none());
     }
 
     #[test]
     fn simple_line() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,
@@ -450,7 +450,7 @@ mod take_non_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -461,12 +461,12 @@ mod take_non_empty_line {
 
     #[test]
     fn discards_trailing_space() {
-        let span = Span::new("abc ");
+        let span = crate::Span::new("abc ");
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 5,
@@ -476,7 +476,7 @@ mod take_non_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -489,12 +489,12 @@ mod take_non_empty_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let span = Span::new("abc  \ndef");
+        let span = crate::Span::new("abc  \ndef");
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -504,7 +504,7 @@ mod take_non_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -517,12 +517,12 @@ mod take_non_empty_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let span = Span::new("abc  \r\ndef");
+        let span = crate::Span::new("abc  \r\ndef");
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -532,7 +532,7 @@ mod take_non_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -545,12 +545,12 @@ mod take_non_empty_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let span = Span::new("abc  \n\rdef");
+        let span = crate::Span::new("abc  \n\rdef");
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "\rdef",
                 line: 2,
                 col: 1,
@@ -560,7 +560,7 @@ mod take_non_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -573,12 +573,12 @@ mod take_non_empty_line {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate line at \r without \n.
 
-        let span = Span::new("abc   \rdef");
+        let span = crate::Span::new("abc   \rdef");
         let line = span.take_non_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 11,
@@ -588,7 +588,7 @@ mod take_non_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc   \rdef",
                 line: 1,
                 col: 1,
@@ -601,16 +601,16 @@ mod take_non_empty_line {
 mod take_empty_line {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Span, tests::fixtures::TSpan};
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::default();
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -620,7 +620,7 @@ mod take_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 1,
@@ -631,13 +631,13 @@ mod take_empty_line {
 
     #[test]
     fn simple_line() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         assert!(span.take_empty_line().is_none());
     }
 
     #[test]
     fn leading_space() {
-        let span = Span::new("  abc");
+        let span = crate::Span::new("  abc");
         assert!(span.take_empty_line().is_none());
     }
 
@@ -645,12 +645,12 @@ mod take_empty_line {
     fn consumes_spaces() {
         // Should consume a source containing only spaces.
 
-        let span = Span::new("     ");
+        let span = crate::Span::new("     ");
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 6,
@@ -660,7 +660,7 @@ mod take_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "     ",
                 line: 1,
                 col: 1,
@@ -673,12 +673,12 @@ mod take_empty_line {
     fn consumes_spaces_and_tabs() {
         // Should consume a source containing spaces and tabs.
 
-        let span = Span::new("  \t  ");
+        let span = crate::Span::new("  \t  ");
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 6,
@@ -688,7 +688,7 @@ mod take_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "  \t  ",
                 line: 1,
                 col: 1,
@@ -701,12 +701,12 @@ mod take_empty_line {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let span = Span::new("   \ndef");
+        let span = crate::Span::new("   \ndef");
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -716,7 +716,7 @@ mod take_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "   ",
                 line: 1,
                 col: 1,
@@ -729,12 +729,12 @@ mod take_empty_line {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let span = Span::new("   \r\ndef");
+        let span = crate::Span::new("   \r\ndef");
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -744,7 +744,7 @@ mod take_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "   ",
                 line: 1,
                 col: 1,
@@ -757,12 +757,12 @@ mod take_empty_line {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let span = Span::new("   \n\rdef");
+        let span = crate::Span::new("   \n\rdef");
         let line = span.take_empty_line().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "\rdef",
                 line: 2,
                 col: 1,
@@ -772,7 +772,7 @@ mod take_empty_line {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "   ",
                 line: 1,
                 col: 1,
@@ -785,7 +785,7 @@ mod take_empty_line {
     fn standalone_cr_doesnt_end_line() {
         // A "line" with \r and no immediate \n is not considered empty.
 
-        let span = Span::new("   \rdef");
+        let span = crate::Span::new("   \rdef");
         assert!(span.take_empty_line().is_none());
     }
 }
@@ -793,23 +793,23 @@ mod take_empty_line {
 mod discard_empty_lines {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Span, tests::fixtures::TSpan};
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::default();
         let after = span.discard_empty_lines();
-        assert_eq!(after, Span::new("",));
+        assert_eq!(after, crate::Span::new("",));
     }
 
     #[test]
     fn consumes_empty_line() {
-        let span = Span::new("\nabc");
+        let span = crate::Span::new("\nabc");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 2,
                 col: 1,
@@ -820,12 +820,12 @@ mod discard_empty_lines {
 
     #[test]
     fn doesnt_consume_non_empty_line() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -836,12 +836,12 @@ mod discard_empty_lines {
 
     #[test]
     fn doesnt_consume_leading_space() {
-        let span = Span::new("   abc");
+        let span = crate::Span::new("   abc");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "   abc",
                 line: 1,
                 col: 1,
@@ -852,12 +852,12 @@ mod discard_empty_lines {
 
     #[test]
     fn consumes_line_with_only_spaces() {
-        let span = Span::new("   \nabc");
+        let span = crate::Span::new("   \nabc");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 2,
                 col: 1,
@@ -868,12 +868,12 @@ mod discard_empty_lines {
 
     #[test]
     fn consumes_spaces_and_tabs() {
-        let span = Span::new(" \t \nabc");
+        let span = crate::Span::new(" \t \nabc");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 2,
                 col: 1,
@@ -884,12 +884,12 @@ mod discard_empty_lines {
 
     #[test]
     fn consumes_multiple_lines() {
-        let span = Span::new("\n  \t \n\nabc");
+        let span = crate::Span::new("\n  \t \n\nabc");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 4,
                 col: 1,
@@ -902,12 +902,12 @@ mod discard_empty_lines {
     fn consumes_crlf() {
         // Should consume \r\n sequence.
 
-        let span = Span::new("  \r\ndef");
+        let span = crate::Span::new("  \r\ndef");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -920,12 +920,12 @@ mod discard_empty_lines {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let span = Span::new("   \n\rdef");
+        let span = crate::Span::new("   \n\rdef");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "\rdef",
                 line: 2,
                 col: 1,
@@ -938,12 +938,12 @@ mod discard_empty_lines {
     fn standalone_cr_doesnt_end_line() {
         // A "line" with \r and no immediate \n is not considered empty.
 
-        let span = Span::new("   \rdef");
+        let span = crate::Span::new("   \rdef");
         let after = span.discard_empty_lines();
 
         assert_eq!(
             after,
-            TSpan {
+            Span {
                 data: "   \rdef",
                 line: 1,
                 col: 1,
@@ -956,28 +956,28 @@ mod discard_empty_lines {
 mod take_line_with_continuation {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Span, tests::fixtures::TSpan};
+    use crate::tests::prelude::*;
 
     #[test]
     fn empty_source() {
-        let span = Span::new("");
+        let span = crate::Span::default();
         assert!(span.take_line_with_continuation().is_none());
     }
 
     #[test]
     fn only_spaces() {
-        let span = Span::new("   ");
+        let span = crate::Span::new("   ");
         assert!(span.take_line_with_continuation().is_none());
     }
 
     #[test]
     fn simple_line() {
-        let span = Span::new("abc");
+        let span = crate::Span::new("abc");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 4,
@@ -987,7 +987,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -998,12 +998,12 @@ mod take_line_with_continuation {
 
     #[test]
     fn discards_trailing_space() {
-        let span = Span::new("abc ");
+        let span = crate::Span::new("abc ");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 5,
@@ -1013,7 +1013,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -1026,12 +1026,12 @@ mod take_line_with_continuation {
     fn consumes_lf() {
         // Should consume but not return \n.
 
-        let span = Span::new("abc  \ndef");
+        let span = crate::Span::new("abc  \ndef");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -1041,7 +1041,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -1054,12 +1054,12 @@ mod take_line_with_continuation {
     fn consumes_crlf() {
         // Should consume but not return \r\n.
 
-        let span = Span::new("abc  \r\ndef");
+        let span = crate::Span::new("abc  \r\ndef");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "def",
                 line: 2,
                 col: 1,
@@ -1069,7 +1069,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -1082,12 +1082,12 @@ mod take_line_with_continuation {
     fn doesnt_consume_lfcr() {
         // Should consume \n but not a subsequent \r.
 
-        let span = Span::new("abc  \n\rdef");
+        let span = crate::Span::new("abc  \n\rdef");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "\rdef",
                 line: 2,
                 col: 1,
@@ -1097,7 +1097,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -1110,12 +1110,12 @@ mod take_line_with_continuation {
     fn standalone_cr_doesnt_end_line() {
         // Shouldn't terminate line at \r without \n.
 
-        let span = Span::new("abc   \rdef");
+        let span = crate::Span::new("abc   \rdef");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 1,
                 col: 11,
@@ -1125,7 +1125,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc   \rdef",
                 line: 1,
                 col: 1,
@@ -1136,12 +1136,12 @@ mod take_line_with_continuation {
 
     #[test]
     fn simple_continuation() {
-        let span = Span::new("abc \\\ndef");
+        let span = crate::Span::new("abc \\\ndef");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 2,
                 col: 4,
@@ -1151,7 +1151,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc \\\ndef",
                 line: 1,
                 col: 1,
@@ -1162,12 +1162,12 @@ mod take_line_with_continuation {
 
     #[test]
     fn simple_continuation_with_crlf() {
-        let span = Span::new("abc \\\r\ndef");
+        let span = crate::Span::new("abc \\\r\ndef");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 2,
                 col: 4,
@@ -1177,7 +1177,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc \\\r\ndef",
                 line: 1,
                 col: 1,
@@ -1188,12 +1188,12 @@ mod take_line_with_continuation {
 
     #[test]
     fn continuation_with_trailing_space() {
-        let span = Span::new("abc \\   \ndef");
+        let span = crate::Span::new("abc \\   \ndef");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 2,
                 col: 4,
@@ -1203,7 +1203,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc \\   \ndef",
                 line: 1,
                 col: 1,
@@ -1214,12 +1214,12 @@ mod take_line_with_continuation {
 
     #[test]
     fn multiple_continuations() {
-        let span = Span::new("abc \\\ndef\\\nghi");
+        let span = crate::Span::new("abc \\\ndef\\\nghi");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "",
                 line: 3,
                 col: 4,
@@ -1229,7 +1229,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc \\\ndef\\\nghi",
                 line: 1,
                 col: 1,
@@ -1240,12 +1240,12 @@ mod take_line_with_continuation {
 
     #[test]
     fn terminates_on_line_without_trailing_slash() {
-        let span = Span::new("abc \\\ndef  \nghi");
+        let span = crate::Span::new("abc \\\ndef  \nghi");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "ghi",
                 line: 3,
                 col: 1,
@@ -1255,7 +1255,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc \\\ndef",
                 line: 1,
                 col: 1,
@@ -1266,12 +1266,12 @@ mod take_line_with_continuation {
 
     #[test]
     fn doesnt_consume_empty_line() {
-        let span = Span::new("abc \\\ndef\n\nghi");
+        let span = crate::Span::new("abc \\\ndef\n\nghi");
         let line = span.take_line_with_continuation().unwrap();
 
         assert_eq!(
             line.after,
-            TSpan {
+            Span {
                 data: "\nghi",
                 line: 3,
                 col: 1,
@@ -1281,7 +1281,7 @@ mod take_line_with_continuation {
 
         assert_eq!(
             line.item,
-            TSpan {
+            Span {
                 data: "abc \\\ndef",
                 line: 1,
                 col: 1,

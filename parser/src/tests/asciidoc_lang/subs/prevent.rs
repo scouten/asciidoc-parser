@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/subs/pages/prevent.adoc");
 
@@ -17,7 +17,7 @@ mod escape_with_backslashes {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, to_do_verifies, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -145,7 +145,7 @@ mod passthrough {
     use crate::{
         Parser,
         blocks::{Block, IsBlock},
-        tests::sdd::{non_normative, verifies},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -188,7 +188,7 @@ First, you can escape it using the `\{plus}` attribute reference:
 
         assert_eq!(
             block1.content().rendered(),
-            "<code>+</code> and <code>+</code>"
+            "<code>&#43;</code> and <code>&#43;</code>"
         );
     }
 

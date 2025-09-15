@@ -4,14 +4,9 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MediaBlock, MediaType, metadata::BlockMetadata},
+    blocks::{ContentModel, IsBlock, MediaType, metadata::BlockMetadata},
     content::SubstitutionGroup,
-    tests::fixtures::{
-        TSpan,
-        attributes::{TAttrlist, TElementAttribute},
-        blocks::TMediaBlock,
-        warnings::TWarning,
-    },
+    tests::prelude::*,
     warnings::WarningType,
 };
 
@@ -20,7 +15,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = MediaBlock::parse(&BlockMetadata::new("image::foo.jpg[]"), &mut parser)
+    let b1 = crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::foo.jpg[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap()
         .item;
@@ -34,7 +29,7 @@ fn err_empty_source() {
     let mut parser = Parser::default();
 
     assert!(
-        MediaBlock::parse(&BlockMetadata::new(""), &mut parser)
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new(""), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -45,7 +40,7 @@ fn err_only_spaces() {
     let mut parser = Parser::default();
 
     assert!(
-        MediaBlock::parse(&BlockMetadata::new("    "), &mut parser)
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("    "), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -54,7 +49,8 @@ fn err_only_spaces() {
 #[test]
 fn err_macro_name_not_ident() {
     let mut parser = Parser::default();
-    let maw = MediaBlock::parse(&BlockMetadata::new("98xyz::bar[blah,blap]"), &mut parser);
+    let maw =
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("98xyz::bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
     assert!(maw.warnings.is_empty());
@@ -63,14 +59,15 @@ fn err_macro_name_not_ident() {
 #[test]
 fn err_missing_double_colon() {
     let mut parser = Parser::default();
-    let maw = MediaBlock::parse(&BlockMetadata::new("image:bar[blah,blap]"), &mut parser);
+    let maw =
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("image:bar[blah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: ":bar[blah,blap]",
                 line: 1,
                 col: 6,
@@ -84,14 +81,15 @@ fn err_missing_double_colon() {
 #[test]
 fn err_missing_macro_attrlist() {
     let mut parser = Parser::default();
-    let maw = MediaBlock::parse(&BlockMetadata::new("image::barblah,blap]"), &mut parser);
+    let maw =
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::barblah,blap]"), &mut parser);
 
     assert!(maw.item.is_none());
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "",
                 line: 1,
                 col: 21,
@@ -107,7 +105,7 @@ fn err_unknown_type() {
     let mut parser = Parser::default();
 
     assert!(
-        MediaBlock::parse(&BlockMetadata::new("imagex::bar[]"), &mut parser)
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("imagex::bar[]"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -118,7 +116,7 @@ fn err_no_attr_list() {
     let mut parser = Parser::default();
 
     assert!(
-        MediaBlock::parse(&BlockMetadata::new("image::bar"), &mut parser)
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::bar"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -129,7 +127,7 @@ fn err_attr_list_not_closed() {
     let mut parser = Parser::default();
 
     assert!(
-        MediaBlock::parse(&BlockMetadata::new("image::bar[blah"), &mut parser)
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::bar[blah"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -140,7 +138,7 @@ fn err_unexpected_after_attr_list() {
     let mut parser = Parser::default();
 
     assert!(
-        MediaBlock::parse(&BlockMetadata::new("image::bar[blah]bonus"), &mut parser)
+        crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::bar[blah]bonus"), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -150,14 +148,14 @@ fn err_unexpected_after_attr_list() {
 fn simplest_block_macro() {
     let mut parser = Parser::default();
 
-    let mi = MediaBlock::parse(&BlockMetadata::new("image::[]"), &mut parser);
+    let mi = crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::[]"), &mut parser);
 
     assert!(mi.item.is_none());
 
     assert_eq!(
         mi.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "[]",
                 line: 1,
                 col: 8,
@@ -172,30 +170,30 @@ fn simplest_block_macro() {
 fn has_target() {
     let mut parser = Parser::default();
 
-    let mi = MediaBlock::parse(&BlockMetadata::new("image::bar[]"), &mut parser)
+    let mi = crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMediaBlock {
+        MediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[]",
                 line: 1,
                 col: 1,
@@ -210,7 +208,7 @@ fn has_target() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 13,
@@ -232,34 +230,34 @@ fn has_target() {
 fn has_target_and_attrlist() {
     let mut parser = Parser::default();
 
-    let mi = MediaBlock::parse(&BlockMetadata::new("image::bar[blah]"), &mut parser)
+    let mi = crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::bar[blah]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMediaBlock {
+        MediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
-                attributes: &[TElementAttribute {
+            macro_attrlist: Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["blah"],
                     value: "blah"
                 }],
-                source: TSpan {
+                source: Span {
                     data: "blah",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[blah]",
                 line: 1,
                 col: 1,
@@ -274,7 +272,7 @@ fn has_target_and_attrlist() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 17,
@@ -287,30 +285,30 @@ fn has_target_and_attrlist() {
 fn audio() {
     let mut parser = Parser::default();
 
-    let mi = MediaBlock::parse(&BlockMetadata::new("audio::bar[]"), &mut parser)
+    let mi = crate::blocks::MediaBlock::parse(&BlockMetadata::new("audio::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMediaBlock {
+        MediaBlock {
             type_: MediaType::Audio,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "audio::bar[]",
                 line: 1,
                 col: 1,
@@ -325,7 +323,7 @@ fn audio() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 13,
@@ -347,30 +345,30 @@ fn audio() {
 fn video() {
     let mut parser = Parser::default();
 
-    let mi = MediaBlock::parse(&BlockMetadata::new("video::bar[]"), &mut parser)
+    let mi = crate::blocks::MediaBlock::parse(&BlockMetadata::new("video::bar[]"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TMediaBlock {
+        MediaBlock {
             type_: MediaType::Video,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "video::bar[]",
                 line: 1,
                 col: 1,
@@ -385,7 +383,7 @@ fn video() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 13,
@@ -406,41 +404,44 @@ fn video() {
 #[test]
 fn err_duplicate_comma() {
     let mut parser = Parser::default();
-    let maw = MediaBlock::parse(&BlockMetadata::new("image::bar[blah,,blap]"), &mut parser);
+    let maw = crate::blocks::MediaBlock::parse(
+        &BlockMetadata::new("image::bar[blah,,blap]"),
+        &mut parser,
+    );
 
     let mi = maw.item.unwrap().clone();
 
     assert_eq!(
         mi.item,
-        TMediaBlock {
+        MediaBlock {
             type_: MediaType::Image,
-            target: TSpan {
+            target: Span {
                 data: "bar",
                 line: 1,
                 col: 8,
                 offset: 7,
             },
-            macro_attrlist: TAttrlist {
+            macro_attrlist: Attrlist {
                 attributes: &[
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &["blah"],
                         value: "blah"
                     },
-                    TElementAttribute {
+                    ElementAttribute {
                         name: None,
                         shorthand_items: &[],
                         value: "blap"
                     }
                 ],
-                source: TSpan {
+                source: Span {
                     data: "blah,,blap",
                     line: 1,
                     col: 12,
                     offset: 11,
                 }
             },
-            source: TSpan {
+            source: Span {
                 data: "image::bar[blah,,blap]",
                 line: 1,
                 col: 1,
@@ -455,7 +456,7 @@ fn err_duplicate_comma() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 23,
@@ -465,8 +466,8 @@ fn err_duplicate_comma() {
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "blah,,blap",
                 line: 1,
                 col: 12,

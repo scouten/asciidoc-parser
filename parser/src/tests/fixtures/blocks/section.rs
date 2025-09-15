@@ -2,23 +2,23 @@ use std::fmt;
 
 use crate::{
     HasSpan,
-    blocks::{IsBlock, SectionBlock},
-    tests::fixtures::{TSpan, attributes::TAttrlist, blocks::TBlock},
+    blocks::IsBlock,
+    tests::fixtures::{Span, attributes::Attrlist, blocks::Block},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TSectionBlock {
+pub(crate) struct SectionBlock {
     pub level: usize,
-    pub section_title: TSpan,
-    pub blocks: &'static [TBlock],
-    pub source: TSpan,
-    pub title_source: Option<TSpan>,
+    pub section_title: Span,
+    pub blocks: &'static [Block],
+    pub source: Span,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub anchor: Option<TSpan>,
-    pub attrlist: Option<TAttrlist>,
+    pub anchor: Option<Span>,
+    pub attrlist: Option<Attrlist>,
 }
 
-impl fmt::Debug for TSectionBlock {
+impl fmt::Debug for SectionBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SectionBlock")
             .field("level", &self.level)
@@ -33,19 +33,19 @@ impl fmt::Debug for TSectionBlock {
     }
 }
 
-impl<'src> PartialEq<SectionBlock<'src>> for TSectionBlock {
-    fn eq(&self, other: &SectionBlock<'src>) -> bool {
+impl<'src> PartialEq<crate::blocks::SectionBlock<'src>> for SectionBlock {
+    fn eq(&self, other: &crate::blocks::SectionBlock<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TSectionBlock> for SectionBlock<'_> {
-    fn eq(&self, other: &TSectionBlock) -> bool {
+impl PartialEq<SectionBlock> for crate::blocks::SectionBlock<'_> {
+    fn eq(&self, other: &SectionBlock) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TSectionBlock, observed: &SectionBlock) -> bool {
+fn fixture_eq_observed(fixture: &SectionBlock, observed: &crate::blocks::SectionBlock) -> bool {
     if fixture.level != observed.level() {
         return false;
     }

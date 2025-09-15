@@ -1,3 +1,4 @@
+mod assignment_precedence;
 mod attribute_entries;
 mod attribute_entry_substitutions;
 mod boolean_attributes;
@@ -10,6 +11,7 @@ mod inline_attribute_entries;
 mod names_and_values;
 mod options;
 mod positional_and_named_attributes;
+mod reference_attributes;
 mod role;
 mod unset_attributes;
 mod wrap_values;

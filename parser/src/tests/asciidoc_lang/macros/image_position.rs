@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/image-position.adoc");
 
@@ -26,20 +26,7 @@ There are two approaches you can take when positioning your images:
 mod positioning_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -74,62 +61,62 @@ include::example$image.adoc[tag=float]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "tiger.png",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Tiger",
                                 shorthand_items: &["Tiger"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("float",),
                                 value: "right",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("align",),
                                 value: "center",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Tiger,200,200,float=\"right\",align=\"center\"",
                             line: 1,
                             col: 18,
                             offset: 17,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::tiger.png[Tiger,200,200,float=\"right\",align=\"center\"]",
                         line: 1,
                         col: 1,
@@ -140,7 +127,7 @@ include::example$image.adoc[tag=float]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::tiger.png[Tiger,200,200,float=\"right\",align=\"center\"]",
                     line: 1,
                     col: 1,
@@ -173,21 +160,21 @@ include::example$image.adoc[tag=in-float]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
                             line: 1,
                             col: 1,
@@ -195,7 +182,7 @@ include::example$image.adoc[tag=in-float]
                         },
                         rendered: "<span class=\"image right\"><img src=\"linux.png\" alt=\"Linux\" width=\"150\" height=\"150\"></span>\nYou can find Linux everywhere these days!",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
                         line: 1,
                         col: 1,
@@ -206,7 +193,7 @@ include::example$image.adoc[tag=in-float]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image:linux.png[Linux,150,150,float=\"right\"]\nYou can find Linux everywhere these days!",
                     line: 1,
                     col: 1,
@@ -230,20 +217,7 @@ It's far better to use CSS classes for these sorts of things, which map to roles
 mod positioning_roles {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -271,52 +245,52 @@ include::example$image.adoc[tag=role]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "tiger.png",
                         line: 2,
                         col: 8,
                         offset: 28,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Tiger",
                                 shorthand_items: &["Tiger",],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "200",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Tiger,200,200",
                             line: 2,
                             col: 18,
                             offset: 38,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "[.right.text-center]\nimage::tiger.png[Tiger,200,200]",
                         line: 1,
                         col: 1,
@@ -325,13 +299,13 @@ include::example$image.adoc[tag=role]
                     title_source: None,
                     title: None,
                     anchor: None,
-                    attrlist: Some(TAttrlist {
-                        attributes: &[TElementAttribute {
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: ".right.text-center",
                             shorthand_items: &[".right", ".text-center"],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: ".right.text-center",
                             line: 1,
                             col: 2,
@@ -339,7 +313,7 @@ include::example$image.adoc[tag=role]
                         },
                     },),
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "[.right.text-center]\nimage::tiger.png[Tiger,200,200]",
                     line: 1,
                     col: 1,
@@ -368,21 +342,21 @@ include::example$image.adoc[tag=in-role]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
                             line: 1,
                             col: 1,
@@ -390,7 +364,7 @@ include::example$image.adoc[tag=in-role]
                         },
                         rendered: "<span class=\"image right\"><img src=\"sunset.jpg\" alt=\"Sunset\" width=\"150\" height=\"150\"></span> What a beautiful sunset!",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
                         line: 1,
                         col: 1,
@@ -401,7 +375,7 @@ include::example$image.adoc[tag=in-role]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image:sunset.jpg[Sunset,150,150,role=right] What a beautiful sunset!",
                     line: 1,
                     col: 1,

@@ -2,17 +2,16 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::{
     HasSpan,
-    attributes::Attrlist,
-    tests::fixtures::{TSpan, attributes::TElementAttribute},
+    tests::fixtures::{Span, attributes::ElementAttribute},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TAttrlist {
-    pub attributes: &'static [TElementAttribute],
-    pub source: TSpan,
+pub(crate) struct Attrlist {
+    pub attributes: &'static [ElementAttribute],
+    pub source: Span,
 }
 
-impl fmt::Debug for TAttrlist {
+impl fmt::Debug for Attrlist {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Attrlist")
             .field("attributes", &self.attributes)
@@ -21,25 +20,25 @@ impl fmt::Debug for TAttrlist {
     }
 }
 
-impl<'src> PartialEq<Attrlist<'src>> for TAttrlist {
-    fn eq(&self, other: &Attrlist<'src>) -> bool {
+impl<'src> PartialEq<crate::attributes::Attrlist<'src>> for Attrlist {
+    fn eq(&self, other: &crate::attributes::Attrlist<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TAttrlist> for Attrlist<'_> {
-    fn eq(&self, other: &TAttrlist) -> bool {
+impl PartialEq<Attrlist> for crate::attributes::Attrlist<'_> {
+    fn eq(&self, other: &Attrlist) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<TAttrlist> for &Attrlist<'_> {
-    fn eq(&self, other: &TAttrlist) -> bool {
+impl PartialEq<Attrlist> for &crate::attributes::Attrlist<'_> {
+    fn eq(&self, other: &Attrlist) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TAttrlist, observed: &Attrlist) -> bool {
+fn fixture_eq_observed(fixture: &Attrlist, observed: &crate::attributes::Attrlist) -> bool {
     if fixture.source != observed.span() {
         return false;
     }

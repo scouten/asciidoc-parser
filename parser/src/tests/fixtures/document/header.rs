@@ -2,19 +2,18 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::{
     HasSpan,
-    document::Header,
-    tests::fixtures::{TSpan, document::TAttribute},
+    tests::fixtures::{Span, document::Attribute},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct THeader {
-    pub title_source: Option<TSpan>,
+pub(crate) struct Header {
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub attributes: &'static [TAttribute],
-    pub source: TSpan,
+    pub attributes: &'static [Attribute],
+    pub source: Span,
 }
 
-impl fmt::Debug for THeader {
+impl fmt::Debug for Header {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Header")
             .field("title_source", &self.title_source)
@@ -25,25 +24,25 @@ impl fmt::Debug for THeader {
     }
 }
 
-impl<'src> PartialEq<Header<'src>> for THeader {
-    fn eq(&self, other: &Header<'src>) -> bool {
+impl<'src> PartialEq<crate::document::Header<'src>> for Header {
+    fn eq(&self, other: &crate::document::Header<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<THeader> for Header<'_> {
-    fn eq(&self, other: &THeader) -> bool {
+impl PartialEq<Header> for crate::document::Header<'_> {
+    fn eq(&self, other: &Header) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-impl PartialEq<THeader> for &Header<'_> {
-    fn eq(&self, other: &THeader) -> bool {
+impl PartialEq<Header> for &crate::document::Header<'_> {
+    fn eq(&self, other: &Header) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &THeader, observed: &Header) -> bool {
+fn fixture_eq_observed(fixture: &Header, observed: &crate::document::Header) -> bool {
     if fixture.source != observed.span() {
         return false;
     }

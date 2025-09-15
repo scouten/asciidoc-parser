@@ -3,16 +3,10 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    HasSpan, Parser, Span,
-    blocks::{Block, ContentModel, IsBlock},
+    HasSpan, Parser,
+    blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
-    tests::fixtures::{
-        TSpan,
-        attributes::{TAttrlist, TElementAttribute},
-        blocks::{TBlock, TSimpleBlock},
-        content::TContent,
-        warnings::TWarning,
-    },
+    tests::prelude::*,
     warnings::WarningType,
 };
 
@@ -21,7 +15,7 @@ fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
 
-    let b1 = Block::parse(Span::new("abc"), &mut parser)
+    let b1 = crate::blocks::Block::parse(crate::Span::new("abc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
@@ -34,7 +28,7 @@ fn err_empty_source() {
     let mut parser = Parser::default();
 
     assert!(
-        Block::parse(Span::new(""), &mut parser)
+        crate::blocks::Block::parse(crate::Span::default(), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -45,7 +39,7 @@ fn err_only_spaces() {
     let mut parser = Parser::default();
 
     assert!(
-        Block::parse(Span::new("    "), &mut parser)
+        crate::blocks::Block::parse(crate::Span::new("    "), &mut parser)
             .unwrap_if_no_warnings()
             .is_none()
     );
@@ -55,15 +49,15 @@ fn err_only_spaces() {
 fn single_line() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("abc"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("abc"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc",
                     line: 1,
                     col: 1,
@@ -71,7 +65,7 @@ fn single_line() {
                 },
                 rendered: "abc",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -86,7 +80,7 @@ fn single_line() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "abc",
             line: 1,
             col: 1,
@@ -110,7 +104,7 @@ fn single_line() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 4,
@@ -123,15 +117,15 @@ fn single_line() {
 fn multiple_lines() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("abc\ndef"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("abc\ndef"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc\ndef",
                     line: 1,
                     col: 1,
@@ -139,7 +133,7 @@ fn multiple_lines() {
                 },
                 rendered: "abc\ndef",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc\ndef",
                 line: 1,
                 col: 1,
@@ -154,7 +148,7 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "abc\ndef",
             line: 1,
             col: 1,
@@ -164,7 +158,7 @@ fn multiple_lines() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 2,
             col: 4,
@@ -177,15 +171,16 @@ fn multiple_lines() {
 fn title() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new(".simple block\nabc\ndef\n"), &mut parser)
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi =
+        crate::blocks::Block::parse(crate::Span::new(".simple block\nabc\ndef\n"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc\ndef",
                     line: 2,
                     col: 1,
@@ -193,13 +188,13 @@ fn title() {
                 },
                 rendered: "abc\ndef",
             },
-            source: TSpan {
+            source: Span {
                 data: ".simple block\nabc\ndef",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "simple block",
                 line: 1,
                 col: 2,
@@ -216,15 +211,15 @@ fn title() {
 fn attrlist() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("[sidebar]\nabc\ndef\n"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("[sidebar]\nabc\ndef\n"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc\ndef",
                     line: 2,
                     col: 1,
@@ -232,7 +227,7 @@ fn attrlist() {
                 },
                 rendered: "abc\ndef",
             },
-            source: TSpan {
+            source: Span {
                 data: "[sidebar]\nabc\ndef",
                 line: 1,
                 col: 1,
@@ -241,13 +236,13 @@ fn attrlist() {
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "sidebar",
                     line: 1,
                     col: 2,
@@ -259,7 +254,7 @@ fn attrlist() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "[sidebar]\nabc\ndef",
             line: 1,
             col: 1,
@@ -271,13 +266,13 @@ fn attrlist() {
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
-        TAttrlist {
-            attributes: &[TElementAttribute {
+        Attrlist {
+            attributes: &[ElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
             },],
-            source: TSpan {
+            source: Span {
                 data: "sidebar",
                 line: 1,
                 col: 2,
@@ -288,7 +283,7 @@ fn attrlist() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 4,
             col: 1,
@@ -301,15 +296,18 @@ fn attrlist() {
 fn title_and_attrlist() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new(".title\n[sidebar]\nabc\ndef\n"), &mut parser)
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let mi = crate::blocks::Block::parse(
+        crate::Span::new(".title\n[sidebar]\nabc\ndef\n"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings()
+    .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc\ndef",
                     line: 3,
                     col: 1,
@@ -317,13 +315,13 @@ fn title_and_attrlist() {
                 },
                 rendered: "abc\ndef",
             },
-            source: TSpan {
+            source: Span {
                 data: ".title\n[sidebar]\nabc\ndef",
                 line: 1,
                 col: 1,
                 offset: 0,
             },
-            title_source: Some(TSpan {
+            title_source: Some(Span {
                 data: "title",
                 line: 1,
                 col: 2,
@@ -331,13 +329,13 @@ fn title_and_attrlist() {
             },),
             title: Some("title"),
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "sidebar",
                     line: 2,
                     col: 2,
@@ -349,7 +347,7 @@ fn title_and_attrlist() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: ".title\n[sidebar]\nabc\ndef",
             line: 1,
             col: 1,
@@ -361,13 +359,13 @@ fn title_and_attrlist() {
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
-        TAttrlist {
-            attributes: &[TElementAttribute {
+        Attrlist {
+            attributes: &[ElementAttribute {
                 name: None,
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
             },],
-            source: TSpan {
+            source: Span {
                 data: "sidebar",
                 line: 2,
                 col: 2,
@@ -378,7 +376,7 @@ fn title_and_attrlist() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 5,
             col: 1,
@@ -391,15 +389,15 @@ fn title_and_attrlist() {
 fn consumes_blank_lines_after() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(Span::new("abc\n\ndef"), &mut parser)
+    let mi = crate::blocks::Block::parse(crate::Span::new("abc\n\ndef"), &mut parser)
         .unwrap_if_no_warnings()
         .unwrap();
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "abc",
                     line: 1,
                     col: 1,
@@ -407,7 +405,7 @@ fn consumes_blank_lines_after() {
                 },
                 rendered: "abc",
             },
-            source: TSpan {
+            source: Span {
                 data: "abc",
                 line: 1,
                 col: 1,
@@ -422,7 +420,7 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "abc",
             line: 1,
             col: 1,
@@ -432,7 +430,7 @@ fn consumes_blank_lines_after() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "def",
             line: 3,
             col: 1,
@@ -445,8 +443,8 @@ fn consumes_blank_lines_after() {
 fn with_block_anchor() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
-        Span::new("[[notice]]\nThis paragraph gets a lot of attention.\n"),
+    let mi = crate::blocks::Block::parse(
+        crate::Span::new("[[notice]]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -454,9 +452,9 @@ fn with_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
@@ -464,7 +462,7 @@ fn with_block_anchor() {
                 },
                 rendered: "This paragraph gets a lot of attention.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[[notice]]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
@@ -472,7 +470,7 @@ fn with_block_anchor() {
             },
             title_source: None,
             title: None,
-            anchor: Some(TSpan {
+            anchor: Some(Span {
                 data: "notice",
                 line: 1,
                 col: 3,
@@ -484,7 +482,7 @@ fn with_block_anchor() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "[[notice]]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
@@ -506,7 +504,7 @@ fn with_block_anchor() {
 
     assert_eq!(
         mi.item.anchor().unwrap(),
-        TSpan {
+        Span {
             data: "notice",
             line: 1,
             col: 3,
@@ -518,7 +516,7 @@ fn with_block_anchor() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 3,
             col: 1,
@@ -531,15 +529,15 @@ fn with_block_anchor() {
 fn err_empty_block_anchor() {
     let mut parser = Parser::default();
 
-    let maw = Block::parse(
-        Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
+    let maw = crate::blocks::Block::parse(
+        crate::Span::new("[[]]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     );
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "",
                 line: 1,
                 col: 3,
@@ -553,9 +551,9 @@ fn err_empty_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
@@ -563,7 +561,7 @@ fn err_empty_block_anchor() {
                 },
                 rendered: "This paragraph gets a lot of attention.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[[]]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
@@ -571,7 +569,7 @@ fn err_empty_block_anchor() {
             },
             title_source: None,
             title: None,
-            anchor: Some(TSpan {
+            anchor: Some(Span {
                 data: "",
                 line: 1,
                 col: 3,
@@ -583,7 +581,7 @@ fn err_empty_block_anchor() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "[[]]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
@@ -605,7 +603,7 @@ fn err_empty_block_anchor() {
 
     assert_eq!(
         mi.item.anchor().unwrap(),
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 3,
@@ -617,7 +615,7 @@ fn err_empty_block_anchor() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 3,
             col: 1,
@@ -630,15 +628,15 @@ fn err_empty_block_anchor() {
 fn err_invalid_block_anchor() {
     let mut parser = Parser::default();
 
-    let maw = Block::parse(
-        Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
+    let maw = crate::blocks::Block::parse(
+        crate::Span::new("[[3 blind mice]]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     );
 
     assert_eq!(
         maw.warnings,
-        vec![TWarning {
-            source: TSpan {
+        vec![Warning {
+            source: Span {
                 data: "3 blind mice",
                 line: 1,
                 col: 3,
@@ -652,9 +650,9 @@ fn err_invalid_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
@@ -662,7 +660,7 @@ fn err_invalid_block_anchor() {
                 },
                 rendered: "This paragraph gets a lot of attention.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
@@ -670,7 +668,7 @@ fn err_invalid_block_anchor() {
             },
             title_source: None,
             title: None,
-            anchor: Some(TSpan {
+            anchor: Some(Span {
                 data: "3 blind mice",
                 line: 1,
                 col: 3,
@@ -682,7 +680,7 @@ fn err_invalid_block_anchor() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
@@ -704,7 +702,7 @@ fn err_invalid_block_anchor() {
 
     assert_eq!(
         mi.item.anchor().unwrap(),
-        TSpan {
+        Span {
             data: "3 blind mice",
             line: 1,
             col: 3,
@@ -716,7 +714,7 @@ fn err_invalid_block_anchor() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 3,
             col: 1,
@@ -729,8 +727,8 @@ fn err_invalid_block_anchor() {
 fn unterminated_block_anchor() {
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
-        Span::new("[[notice]\nThis paragraph gets a lot of attention.\n"),
+    let mi = crate::blocks::Block::parse(
+        crate::Span::new("[[notice]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -738,9 +736,9 @@ fn unterminated_block_anchor() {
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "This paragraph gets a lot of attention.",
                     line: 2,
                     col: 1,
@@ -748,7 +746,7 @@ fn unterminated_block_anchor() {
                 },
                 rendered: "This paragraph gets a lot of attention.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[[notice]\nThis paragraph gets a lot of attention.",
                 line: 1,
                 col: 1,
@@ -757,13 +755,13 @@ fn unterminated_block_anchor() {
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["[notice",],
                     value: "[notice"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "[notice",
                     line: 1,
                     col: 2,
@@ -775,7 +773,7 @@ fn unterminated_block_anchor() {
 
     assert_eq!(
         mi.item.span(),
-        TSpan {
+        Span {
             data: "[[notice]\nThis paragraph gets a lot of attention.",
             line: 1,
             col: 1,
@@ -799,13 +797,13 @@ fn unterminated_block_anchor() {
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
-        TAttrlist {
-            attributes: &[TElementAttribute {
+        Attrlist {
+            attributes: &[ElementAttribute {
                 name: None,
                 shorthand_items: &["[notice"],
                 value: "[notice"
             },],
-            source: TSpan {
+            source: Span {
                 data: "[notice",
                 line: 1,
                 col: 2,
@@ -816,7 +814,7 @@ fn unterminated_block_anchor() {
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 3,
             col: 1,

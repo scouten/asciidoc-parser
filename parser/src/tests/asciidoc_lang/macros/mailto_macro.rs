@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/mailto-macro.adoc");
 
@@ -15,18 +15,7 @@ The mailto macro is a specialization of the xref:url-macro.adoc[URL macro] that 
 mod link_text_and_named_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -55,21 +44,21 @@ mailto:join@discuss.example.org[Subscribe]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe]",
                             line: 1,
                             col: 1,
@@ -77,7 +66,7 @@ mailto:join@discuss.example.org[Subscribe]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe]",
                         line: 1,
                         col: 1,
@@ -88,7 +77,7 @@ mailto:join@discuss.example.org[Subscribe]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe]",
                     line: 1,
                     col: 1,
@@ -116,21 +105,21 @@ mailto:join@discuss.example.org[Subscribe,role=email]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,role=email]",
                             line: 1,
                             col: 1,
@@ -138,7 +127,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org\" class=\"email\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,role=email]",
                         line: 1,
                         col: 1,
@@ -149,7 +138,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,role=email]",
                     line: 1,
                     col: 1,
@@ -179,21 +168,21 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
                             line: 1,
                             col: 1,
@@ -201,7 +190,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org\">Click, subscribe, and participate!</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
                         line: 1,
                         col: 1,
@@ -212,7 +201,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[\"Click, subscribe, and participate!\"]",
                     line: 1,
                     col: 1,
@@ -234,18 +223,7 @@ To learn more about how the attributes are parsed, refer to xref:link-macro-attr
 mod subject_and_body {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        tests::{
-            fixtures::{
-                TSpan,
-                blocks::{TBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -277,21 +255,21 @@ When the reader clicks the link, a conforming email client will fill in the subj
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
                             line: 1,
                             col: 1,
@@ -299,7 +277,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
                         line: 1,
                         col: 1,
@@ -310,7 +288,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,Subscribe me]",
                     line: 1,
                     col: 1,
@@ -342,21 +320,21 @@ When the reader clicks the link, a conforming email client will fill in the body
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
                             line: 1,
                             col: 1,
@@ -364,7 +342,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me&amp;body=I%20want%20to%20participate.\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
                         line: 1,
                         col: 1,
@@ -375,7 +353,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to participate.]",
                     line: 1,
                     col: 1,
@@ -404,21 +382,21 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
                             line: 1,
                             col: 1,
@@ -426,7 +404,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me&amp;body=I%20want%20to%20participate.\">join@discuss.example.org</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
                         line: 1,
                         col: 1,
@@ -437,7 +415,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[,Subscribe me,I want to participate.]",
                     line: 1,
                     col: 1,
@@ -465,21 +443,21 @@ mailto:join@discuss.example.org[,Subscribe me]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[,Subscribe me]",
                             line: 1,
                             col: 1,
@@ -487,7 +465,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=Subscribe%20me\">join@discuss.example.org</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[,Subscribe me]",
                         line: 1,
                         col: 1,
@@ -498,7 +476,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[,Subscribe me]",
                     line: 1,
                     col: 1,
@@ -526,21 +504,21 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",
                             line: 1,
                             col: 1,
@@ -548,7 +526,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                         },
                         rendered: "<a href=\"mailto:join@discuss.example.org?subject=I%20want%20to%20participate%2C%20so%20please%20subscribe%20me\">Subscribe</a>",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",
                         line: 1,
                         col: 1,
@@ -559,7 +537,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "mailto:join@discuss.example.org[Subscribe,\"I want to participate, so please subscribe me\"]",
                     line: 1,
                     col: 1,

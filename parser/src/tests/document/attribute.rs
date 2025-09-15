@@ -3,49 +3,46 @@ use std::ops::Deref;
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    HasSpan, Parser, Span,
-    blocks::{Block, ContentModel, IsBlock},
+    HasSpan, Parser,
+    blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
-    document::Attribute,
     parser::ModificationContext,
-    tests::fixtures::{
-        TSpan,
-        blocks::{TBlock, TSimpleBlock},
-        content::TContent,
-        document::{TAttribute, TInterpretedValue},
-    },
+    tests::prelude::*,
     warnings::WarningType,
 };
 
 #[test]
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
-    let h1 = Attribute::parse(Span::new(":foo: bar"), &Parser::default()).unwrap();
+    let h1 = crate::document::Attribute::parse(crate::Span::new(":foo: bar"), &Parser::default())
+        .unwrap();
     let h2 = h1.clone();
     assert_eq!(h1, h2);
 }
 
 #[test]
 fn simple_value() {
-    let mi = Attribute::parse(Span::new(":foo: bar\nblah"), &Parser::default()).unwrap();
+    let mi =
+        crate::document::Attribute::parse(crate::Span::new(":foo: bar\nblah"), &Parser::default())
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "foo",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "bar",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar"),
-            source: TSpan {
+            value: InterpretedValue::Value("bar"),
+            source: Span {
                 data: ":foo: bar",
                 line: 1,
                 col: 1,
@@ -54,11 +51,11 @@ fn simple_value() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar"));
+    assert_eq!(mi.item.value(), InterpretedValue::Value("bar"));
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 2,
             col: 1,
@@ -69,20 +66,21 @@ fn simple_value() {
 
 #[test]
 fn no_value() {
-    let mi = Attribute::parse(Span::new(":foo:\nblah"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(crate::Span::new(":foo:\nblah"), &Parser::default())
+        .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "foo",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Set,
-            source: TSpan {
+            value: InterpretedValue::Set,
+            source: Span {
                 data: ":foo:",
                 line: 1,
                 col: 1,
@@ -91,11 +89,11 @@ fn no_value() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Set);
+    assert_eq!(mi.item.value(), InterpretedValue::Set);
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 2,
             col: 1,
@@ -106,20 +104,24 @@ fn no_value() {
 
 #[test]
 fn name_with_hyphens() {
-    let mi = Attribute::parse(Span::new(":name-with-hyphen:"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(
+        crate::Span::new(":name-with-hyphen:"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "name-with-hyphen",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Set,
-            source: TSpan {
+            value: InterpretedValue::Set,
+            source: Span {
                 data: ":name-with-hyphen:",
                 line: 1,
                 col: 1,
@@ -128,11 +130,11 @@ fn name_with_hyphens() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Set);
+    assert_eq!(mi.item.value(), InterpretedValue::Set);
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 1,
             col: 19,
@@ -143,20 +145,22 @@ fn name_with_hyphens() {
 
 #[test]
 fn unset_prefix() {
-    let mi = Attribute::parse(Span::new(":!foo:\nblah"), &Parser::default()).unwrap();
+    let mi =
+        crate::document::Attribute::parse(crate::Span::new(":!foo:\nblah"), &Parser::default())
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "foo",
                 line: 1,
                 col: 3,
                 offset: 2,
             },
             value_source: None,
-            value: TInterpretedValue::Unset,
-            source: TSpan {
+            value: InterpretedValue::Unset,
+            source: Span {
                 data: ":!foo:",
                 line: 1,
                 col: 1,
@@ -165,11 +169,11 @@ fn unset_prefix() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Unset);
+    assert_eq!(mi.item.value(), InterpretedValue::Unset);
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 2,
             col: 1,
@@ -180,20 +184,22 @@ fn unset_prefix() {
 
 #[test]
 fn unset_postfix() {
-    let mi = Attribute::parse(Span::new(":foo!:\nblah"), &Parser::default()).unwrap();
+    let mi =
+        crate::document::Attribute::parse(crate::Span::new(":foo!:\nblah"), &Parser::default())
+            .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "foo",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
             value_source: None,
-            value: TInterpretedValue::Unset,
-            source: TSpan {
+            value: InterpretedValue::Unset,
+            source: Span {
                 data: ":foo!:",
                 line: 1,
                 col: 1,
@@ -202,11 +208,11 @@ fn unset_postfix() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Unset);
+    assert_eq!(mi.item.value(), InterpretedValue::Unset);
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 2,
             col: 1,
@@ -217,45 +223,61 @@ fn unset_postfix() {
 
 #[test]
 fn err_unset_prefix_and_postfix() {
-    assert!(Attribute::parse(Span::new(":!foo!:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":!foo!:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn err_invalid_ident1() {
-    assert!(Attribute::parse(Span::new(":@invalid:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":@invalid:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn err_invalid_ident2() {
-    assert!(Attribute::parse(Span::new(":invalid@:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":invalid@:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn err_invalid_ident3() {
-    assert!(Attribute::parse(Span::new(":-invalid:\nblah"), &Parser::default()).is_none());
+    assert!(
+        crate::document::Attribute::parse(crate::Span::new(":-invalid:\nblah"), &Parser::default())
+            .is_none()
+    );
 }
 
 #[test]
 fn value_with_soft_wrap() {
-    let mi = Attribute::parse(Span::new(":foo: bar \\\n blah"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(
+        crate::Span::new(":foo: bar \\\n blah"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "foo",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "bar \\\n blah",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar blah"),
-            source: TSpan {
+            value: InterpretedValue::Value("bar blah"),
+            source: Span {
                 data: ":foo: bar \\\n blah",
                 line: 1,
                 col: 1,
@@ -264,11 +286,11 @@ fn value_with_soft_wrap() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar blah"));
+    assert_eq!(mi.item.value(), InterpretedValue::Value("bar blah"));
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 2,
             col: 6,
@@ -279,25 +301,29 @@ fn value_with_soft_wrap() {
 
 #[test]
 fn value_with_hard_wrap() {
-    let mi = Attribute::parse(Span::new(":foo: bar + \\\n blah"), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(
+        crate::Span::new(":foo: bar + \\\n blah"),
+        &Parser::default(),
+    )
+    .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "foo",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "bar + \\\n blah",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar\nblah"),
-            source: TSpan {
+            value: InterpretedValue::Value("bar\nblah"),
+            source: Span {
                 data: ":foo: bar + \\\n blah",
                 line: 1,
                 col: 1,
@@ -306,11 +332,11 @@ fn value_with_hard_wrap() {
         }
     );
 
-    assert_eq!(mi.item.value(), TInterpretedValue::Value("bar\nblah"));
+    assert_eq!(mi.item.value(), InterpretedValue::Value("bar\nblah"));
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "",
             line: 2,
             col: 6,
@@ -322,28 +348,28 @@ fn value_with_hard_wrap() {
 #[test]
 fn is_block() {
     let mut parser = Parser::default();
-    let maw = Block::parse(Span::new(":foo: bar\nblah"), &mut parser);
+    let maw = crate::blocks::Block::parse(crate::Span::new(":foo: bar\nblah"), &mut parser);
 
     let mi = maw.item.unwrap();
     let block = mi.item;
 
     assert_eq!(
         block,
-        TBlock::DocumentAttribute(TAttribute {
-            name: TSpan {
+        Block::DocumentAttribute(Attribute {
+            name: Span {
                 data: "foo",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "bar",
                 line: 1,
                 col: 7,
                 offset: 6,
             }),
-            value: TInterpretedValue::Value("bar"),
-            source: TSpan {
+            value: InterpretedValue::Value("bar"),
+            source: Span {
                 data: ":foo: bar",
                 line: 1,
                 col: 1,
@@ -363,7 +389,7 @@ fn is_block() {
 
     assert_eq!(
         block.span(),
-        TSpan {
+        Span {
             data: ":foo: bar",
             line: 1,
             col: 1,
@@ -371,15 +397,15 @@ fn is_block() {
         }
     );
 
-    let Block::DocumentAttribute(attr) = block else {
+    let crate::blocks::Block::DocumentAttribute(attr) = block else {
         panic!("Wrong type");
     };
 
-    assert_eq!(attr.value(), TInterpretedValue::Value("bar"));
+    assert_eq!(attr.value(), InterpretedValue::Value("bar"));
 
     assert_eq!(
         mi.after,
-        TSpan {
+        Span {
             data: "blah",
             line: 2,
             col: 1,
@@ -402,9 +428,9 @@ fn affects_document_state() {
 
     assert_eq!(
         block1,
-        &TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        &Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "We are agreed? {agreed}",
                     line: 1,
                     col: 1,
@@ -412,7 +438,7 @@ fn affects_document_state() {
                 },
                 rendered: "We are agreed? yes",
             },
-            source: TSpan {
+            source: Span {
                 data: "We are agreed? {agreed}",
                 line: 1,
                 col: 1,
@@ -431,9 +457,9 @@ fn affects_document_state() {
 
     assert_eq!(
         block3,
-        &TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        &Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "Are we still agreed? {agreed}",
                     line: 5,
                     col: 1,
@@ -441,7 +467,7 @@ fn affects_document_state() {
                 },
                 rendered: "Are we still agreed? no",
             },
-            source: TSpan {
+            source: Span {
                 data: "Are we still agreed? {agreed}",
                 line: 5,
                 col: 1,
@@ -472,9 +498,9 @@ fn block_enforces_permission() {
 
     assert_eq!(
         block3,
-        &TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        &Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "Are we agreed? {agreed}",
                     line: 5,
                     col: 1,
@@ -482,7 +508,7 @@ fn block_enforces_permission() {
                 },
                 rendered: "Are we agreed? yes",
             },
-            source: TSpan {
+            source: Span {
                 data: "Are we agreed? {agreed}",
                 line: 5,
                 col: 1,
@@ -502,7 +528,7 @@ fn block_enforces_permission() {
 
     assert_eq!(
         &warning1.source,
-        TSpan {
+        Span {
             data: ":agreed: no",
             line: 3,
             col: 1,

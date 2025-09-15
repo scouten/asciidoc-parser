@@ -1,4 +1,4 @@
-use crate::tests::sdd::{non_normative, track_file};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/macros/pages/image-link.adoc");
 
@@ -14,20 +14,7 @@ You can turn an image into a link by using the `link` attribute.
 mod link_attribute {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock, TSimpleBlock},
-                content::TContent,
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -61,40 +48,40 @@ image::logo.png[Logo]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "logo.png",
                         line: 2,
                         col: 8,
                         offset: 34,
                     },
-                    macro_attrlist: TAttrlist {
-                        attributes: &[TElementAttribute {
+                    macro_attrlist: Attrlist {
+                        attributes: &[ElementAttribute {
                             name: None,
                             value: "Logo",
                             shorthand_items: &["Logo"],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "Logo",
                             line: 2,
                             col: 17,
                             offset: 43,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "[link=https://example.org]\nimage::logo.png[Logo]",
                         line: 1,
                         col: 1,
@@ -103,13 +90,13 @@ image::logo.png[Logo]
                     title_source: None,
                     title: None,
                     anchor: None,
-                    attrlist: Some(TAttrlist {
-                        attributes: &[TElementAttribute {
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
                             name: Some("link",),
                             value: "https://example.org",
                             shorthand_items: &[],
                         },],
-                        source: TSpan {
+                        source: Span {
                             data: "link=https://example.org",
                             line: 1,
                             col: 2,
@@ -117,7 +104,7 @@ image::logo.png[Logo]
                         },
                     },),
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "[link=https://example.org]\nimage::logo.png[Logo]",
                     line: 1,
                     col: 1,
@@ -145,47 +132,47 @@ image::logo.png[Logo,link=https://example.org]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "logo.png",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Logo",
                                 shorthand_items: &["Logo"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("link",),
                                 value: "https://example.org",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Logo,link=https://example.org",
                             line: 1,
                             col: 17,
                             offset: 16,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::logo.png[Logo,link=https://example.org]",
                         line: 1,
                         col: 1,
@@ -196,7 +183,7 @@ image::logo.png[Logo,link=https://example.org]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::logo.png[Logo,link=https://example.org]",
                     line: 1,
                     col: 1,
@@ -225,21 +212,21 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
                             line: 1,
                             col: 1,
@@ -247,7 +234,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                         },
                         rendered: "<span class=\"image\"><a class=\"image\" href=\"https://apply.example.org\"><img src=\"apply.jpg\" alt=\"Apply\"></a></span> today!",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
                         line: 1,
                         col: 1,
@@ -258,7 +245,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image:apply.jpg[Apply,link=https://apply.example.org] today!",
                     line: 1,
                     col: 1,
@@ -273,19 +260,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
 mod link_controls {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::MediaType,
-        tests::{
-            fixtures::{
-                TSpan,
-                attributes::{TAttrlist, TElementAttribute},
-                blocks::{TBlock, TMediaBlock},
-                document::{TDocument, THeader},
-            },
-            sdd::{non_normative, verifies},
-        },
-    };
+    use crate::{Parser, blocks::MediaType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -322,57 +297,57 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
 
         assert_eq!(
             doc,
-            TDocument {
-                header: THeader {
+            Document {
+                header: Header {
                     title_source: None,
                     title: None,
                     attributes: &[],
-                    source: TSpan {
+                    source: Span {
                         data: "",
                         line: 1,
                         col: 1,
                         offset: 0,
                     },
                 },
-                blocks: &[TBlock::Media(TMediaBlock {
+                blocks: &[Block::Media(MediaBlock {
                     type_: MediaType::Image,
-                    target: TSpan {
+                    target: Span {
                         data: "logo.png",
                         line: 1,
                         col: 8,
                         offset: 7,
                     },
-                    macro_attrlist: TAttrlist {
+                    macro_attrlist: Attrlist {
                         attributes: &[
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: None,
                                 value: "Logo",
                                 shorthand_items: &["Logo"],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("link",),
                                 value: "https://example.org",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("window",),
                                 value: "_blank",
                                 shorthand_items: &[],
                             },
-                            TElementAttribute {
+                            ElementAttribute {
                                 name: Some("opts",),
                                 value: "nofollow",
                                 shorthand_items: &[],
                             },
                         ],
-                        source: TSpan {
+                        source: Span {
                             data: "Logo,link=https://example.org,window=_blank,opts=nofollow",
                             line: 1,
                             col: 17,
                             offset: 16,
                         },
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]",
                         line: 1,
                         col: 1,
@@ -383,7 +358,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     anchor: None,
                     attrlist: None,
                 },),],
-                source: TSpan {
+                source: Span {
                     data: "image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]",
                     line: 1,
                     col: 1,

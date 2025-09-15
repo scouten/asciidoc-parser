@@ -1,16 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{
-    Parser, Span,
-    document::Attribute,
-    tests::{
-        fixtures::{
-            TSpan,
-            document::{TAttribute, TInterpretedValue},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
-};
+use crate::{Parser, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/custom-attributes.adoc");
 
@@ -26,17 +16,9 @@ When you find yourself typing the same text repeatedly, or text that often needs
 );
 
 mod user_defined_names {
-    use crate::{
-        Parser, Span,
-        document::{Attribute, InterpretedValue},
-        tests::{
-            fixtures::{
-                TSpan,
-                document::{TAttribute, TInterpretedValue},
-            },
-            sdd::verifies,
-        },
-    };
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, tests::prelude::*};
 
     verifies!(
         r#"
@@ -62,22 +44,25 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn at_least_one_character_long() {
-        assert!(Attribute::parse(Span::new("::"), &Parser::default()).is_none());
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new("::"), &Parser::default()).is_none()
+        );
 
-        let mi = Attribute::parse(Span::new(":a:"), &Parser::default()).unwrap();
+        let mi =
+            crate::document::Attribute::parse(crate::Span::new(":a:"), &Parser::default()).unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
-                name: TSpan {
+            Attribute {
+                name: Span {
                     data: "a",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
-                source: TSpan {
+                value: InterpretedValue::Set,
+                source: Span {
                     data: ":a:",
                     line: 1,
                     col: 1,
@@ -91,22 +76,26 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn begin_with_word_character() {
-        assert!(Attribute::parse(Span::new(":-abc:"), &Parser::default()).is_none());
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new(":-abc:"), &Parser::default())
+                .is_none()
+        );
 
-        let mi = Attribute::parse(Span::new(":9abc:"), &Parser::default()).unwrap();
+        let mi = crate::document::Attribute::parse(crate::Span::new(":9abc:"), &Parser::default())
+            .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
-                name: TSpan {
+            Attribute {
+                name: Span {
                     data: "9abc",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
-                source: TSpan {
+                value: InterpretedValue::Set,
+                source: Span {
                     data: ":9abc:",
                     line: 1,
                     col: 1,
@@ -117,20 +106,21 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
         assert_eq!(mi.item.value(), &InterpretedValue::Set);
 
-        let mi = Attribute::parse(Span::new(":_abc:"), &Parser::default()).unwrap();
+        let mi = crate::document::Attribute::parse(crate::Span::new(":_abc:"), &Parser::default())
+            .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
-                name: TSpan {
+            Attribute {
+                name: Span {
                     data: "_abc",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
-                source: TSpan {
+                value: InterpretedValue::Set,
+                source: Span {
                     data: ":_abc:",
                     line: 1,
                     col: 1,
@@ -144,23 +134,31 @@ A best practice is to only use lowercase letters in the name and avoid starting 
 
     #[test]
     fn only_contain_word_characters_and_hyphens() {
-        assert!(Attribute::parse(Span::new(":abc def:"), &Parser::default()).is_none());
-        assert!(Attribute::parse(Span::new(":abc.def:"), &Parser::default()).is_none());
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new(":abc def:"), &Parser::default())
+                .is_none()
+        );
+        assert!(
+            crate::document::Attribute::parse(crate::Span::new(":abc.def:"), &Parser::default())
+                .is_none()
+        );
 
-        let mi = Attribute::parse(Span::new(":9ab-cdef:"), &Parser::default()).unwrap();
+        let mi =
+            crate::document::Attribute::parse(crate::Span::new(":9ab-cdef:"), &Parser::default())
+                .unwrap();
 
         assert_eq!(
             mi.item,
-            TAttribute {
-                name: TSpan {
+            Attribute {
+                name: Span {
                     data: "9ab-cdef",
                     line: 1,
                     col: 2,
                     offset: 1,
                 },
                 value_source: None,
-                value: TInterpretedValue::Set,
-                source: TSpan {
+                value: InterpretedValue::Set,
+                source: Span {
                     data: ":9ab-cdef:",
                     line: 1,
                     col: 1,
@@ -177,11 +175,11 @@ A best practice is to only use lowercase letters in the name and avoid starting 
         let mut parser = Parser::default();
         parser.parse(":URL: /foo/bar");
 
-        assert_eq!(parser.attribute_value("URL"), TInterpretedValue::Unset);
+        assert_eq!(parser.attribute_value("URL"), InterpretedValue::Unset);
 
         assert_eq!(
             parser.attribute_value("url"),
-            TInterpretedValue::Value("/foo/bar")
+            InterpretedValue::Value("/foo/bar")
         );
     }
 }
@@ -218,27 +216,27 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 "#
     );
 
-    let mi = Attribute::parse(Span::new(":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks."), &Parser::default()).unwrap();
+    let mi = crate::document::Attribute::parse(crate::Span::new(":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks."), &Parser::default()).unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "disclaimer",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.",
                 line: 1,
                 col: 14,
                 offset: 13,
             }),
-            value: TInterpretedValue::Value(
+            value: InterpretedValue::Value(
                 "Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."
             ),
-            source: TSpan {
+            source: Span {
                 data: ":disclaimer: Don't pet the wild Wolpertingers. If you let them into your system, we're \\\nnot responsible for any loss of hair, chocolate, or purple socks.",
                 line: 1,
                 col: 1,
@@ -249,34 +247,34 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 
     assert_eq!(
         mi.item.value(),
-        TInterpretedValue::Value(
+        InterpretedValue::Value(
             "Don't pet the wild Wolpertingers. If you let them into your system, we're not responsible for any loss of hair, chocolate, or purple socks."
         )
     );
 
-    let mi = Attribute::parse(
-        Span::new(":url-repo: https://github.com/asciidoctor/asciidoctor"),
+    let mi = crate::document::Attribute::parse(
+        crate::Span::new(":url-repo: https://github.com/asciidoctor/asciidoctor"),
         &Parser::default(),
     )
     .unwrap();
 
     assert_eq!(
         mi.item,
-        TAttribute {
-            name: TSpan {
+        Attribute {
+            name: Span {
                 data: "url-repo",
                 line: 1,
                 col: 2,
                 offset: 1,
             },
-            value_source: Some(TSpan {
+            value_source: Some(Span {
                 data: "https://github.com/asciidoctor/asciidoctor",
                 line: 1,
                 col: 12,
                 offset: 11,
             }),
-            value: TInterpretedValue::Value("https://github.com/asciidoctor/asciidoctor"),
-            source: TSpan {
+            value: InterpretedValue::Value("https://github.com/asciidoctor/asciidoctor"),
+            source: Span {
                 data: ":url-repo: https://github.com/asciidoctor/asciidoctor",
                 line: 1,
                 col: 1,
@@ -287,6 +285,6 @@ Now, you can xref:reference-attributes.adoc#reference-custom[reference these att
 
     assert_eq!(
         mi.item.value(),
-        TInterpretedValue::Value("https://github.com/asciidoctor/asciidoctor")
+        InterpretedValue::Value("https://github.com/asciidoctor/asciidoctor")
     );
 }

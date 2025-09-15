@@ -2,23 +2,23 @@ use std::fmt;
 
 use crate::{
     HasSpan,
-    blocks::{IsBlock, MediaBlock, MediaType},
-    tests::fixtures::{TSpan, attributes::TAttrlist},
+    blocks::{IsBlock, MediaType},
+    tests::fixtures::{Span, attributes::Attrlist},
 };
 
 #[derive(Eq, PartialEq)]
-pub(crate) struct TMediaBlock {
+pub(crate) struct MediaBlock {
     pub type_: MediaType,
-    pub target: TSpan,
-    pub macro_attrlist: TAttrlist,
-    pub source: TSpan,
-    pub title_source: Option<TSpan>,
+    pub target: Span,
+    pub macro_attrlist: Attrlist,
+    pub source: Span,
+    pub title_source: Option<Span>,
     pub title: Option<&'static str>,
-    pub anchor: Option<TSpan>,
-    pub attrlist: Option<TAttrlist>,
+    pub anchor: Option<Span>,
+    pub attrlist: Option<Attrlist>,
 }
 
-impl fmt::Debug for TMediaBlock {
+impl fmt::Debug for MediaBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("MediaBlock")
             .field("type_", &self.type_)
@@ -33,19 +33,19 @@ impl fmt::Debug for TMediaBlock {
     }
 }
 
-impl<'src> PartialEq<MediaBlock<'src>> for TMediaBlock {
-    fn eq(&self, other: &MediaBlock<'src>) -> bool {
+impl<'src> PartialEq<crate::blocks::MediaBlock<'src>> for MediaBlock {
+    fn eq(&self, other: &crate::blocks::MediaBlock<'src>) -> bool {
         fixture_eq_observed(self, other)
     }
 }
 
-impl PartialEq<TMediaBlock> for MediaBlock<'_> {
-    fn eq(&self, other: &TMediaBlock) -> bool {
+impl PartialEq<MediaBlock> for crate::blocks::MediaBlock<'_> {
+    fn eq(&self, other: &MediaBlock) -> bool {
         fixture_eq_observed(other, self)
     }
 }
 
-fn fixture_eq_observed(fixture: &TMediaBlock, observed: &MediaBlock) -> bool {
+fn fixture_eq_observed(fixture: &MediaBlock, observed: &crate::blocks::MediaBlock) -> bool {
     if fixture.type_ != observed.type_() {
         return false;
     }

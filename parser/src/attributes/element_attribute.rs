@@ -20,7 +20,7 @@ impl<'src> ElementAttribute<'src> {
         start_index: usize,
         _parser: &Parser,
         mut parse_shorthand: ParseShorthand,
-    ) -> (Option<(Self, usize)>, Vec<WarningType>) {
+    ) -> (Self, usize, Vec<WarningType>) {
         let mut warnings: Vec<WarningType> = vec![];
 
         let (name, value, shorthand_item_indices, offset) = {
@@ -47,8 +47,9 @@ impl<'src> ElementAttribute<'src> {
             };
 
             let after = after.take_whitespace_with_newline().after;
+            let first_char = after.data().chars().next();
 
-            let value = match after.data().chars().next() {
+            let value = match first_char {
                 Some('\'') | Some('"') => match after.take_quoted_string() {
                     Some(v) => {
                         parse_shorthand = ParseShorthand(false);
@@ -56,14 +57,24 @@ impl<'src> ElementAttribute<'src> {
                     }
                     None => {
                         warnings.push(WarningType::AttributeValueMissingTerminatingQuote);
-                        return (None, warnings);
+                        after.take_while(|c| c != ',').trim_item_trailing_spaces()
                     }
                 },
-                _ => after.take_while(|c| c != ','),
+                _ => after.take_while(|c| c != ',').trim_item_trailing_spaces(),
             };
 
             let after = value.after;
-            let value = cowstr_from_source_and_span(source_text, &value.item);
+            let mut value = cowstr_from_source_and_span(source_text, &value.item);
+
+            if let Some(first) = first_char
+                && (first == '\'' || first == '\"')
+            {
+                let escaped_quote = format!("\\{first}");
+                let new_value = value.replace(&escaped_quote, &first.to_string());
+                if new_value != *value {
+                    value = CowStr::from(new_value);
+                }
+            }
 
             // TO DO: Redo this to support substitutions but only in correct circumstances.
             // It doesn't apply in all cases.
@@ -87,14 +98,12 @@ impl<'src> ElementAttribute<'src> {
         };
 
         (
-            Some((
-                Self {
-                    name,
-                    value,
-                    shorthand_item_indices,
-                },
-                offset,
-            )),
+            Self {
+                name,
+                value,
+                shorthand_item_indices,
+            },
+            offset,
             warnings,
         )
     }

@@ -1,5 +1,6 @@
 use std::borrow::Cow;
 
+use pretty_assertions_sorted::assert_eq;
 use regex::{Captures, Regex, RegexBuilder};
 
 use crate::internal::{LookaheadReplacer, LookaheadResult, replace_with_lookahead};

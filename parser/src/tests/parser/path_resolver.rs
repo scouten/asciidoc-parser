@@ -1,6 +1,8 @@
 use crate::parser::PathResolver;
 
 mod posixify {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::parser::PathResolver;
 
     #[test]
@@ -32,6 +34,8 @@ mod posixify {
 }
 
 mod web_path {
+    use pretty_assertions_sorted::assert_eq;
+
     use crate::parser::PathResolver;
 
     #[test]

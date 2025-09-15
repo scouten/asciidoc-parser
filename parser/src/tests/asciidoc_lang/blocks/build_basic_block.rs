@@ -1,18 +1,9 @@
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
-    Parser, Span,
-    blocks::{Block, ContentModel, IsBlock, MediaType},
-    tests::{
-        fixtures::{
-            TSpan,
-            attributes::{TAttrlist, TElementAttribute},
-            blocks::{TBlock, TCompoundDelimitedBlock, TMediaBlock, TSimpleBlock},
-            content::TContent,
-            document::{TDocument, THeader},
-        },
-        sdd::{non_normative, track_file, verifies},
-    },
+    Parser,
+    blocks::{ContentModel, IsBlock, MediaType},
+    tests::prelude::*,
 };
 
 track_file!("docs/modules/blocks/pages/build-basic-block.adoc");
@@ -86,12 +77,12 @@ This is more content in the sidebar block.
 
     assert_eq!(
         doc,
-        TDocument {
-            header: THeader {
+        Document {
+            header: Header {
                 title_source: None,
                 title: None,
                 attributes: &[],
-                source: TSpan {
+                source: Span {
                     data: "",
                     line: 1,
                     col: 1,
@@ -99,9 +90,9 @@ This is more content in the sidebar block.
                 },
             },
             blocks: &[
-                TBlock::Simple(TSimpleBlock {
-                    content: TContent {
-                        original: TSpan {
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
                             data: "Text in your document.",
                             line: 1,
                             col: 1,
@@ -109,7 +100,7 @@ This is more content in the sidebar block.
                         },
                         rendered: "Text in your document.",
                     },
-                    source: TSpan {
+                    source: Span {
                         data: "Text in your document.",
                         line: 1,
                         col: 1,
@@ -120,11 +111,11 @@ This is more content in the sidebar block.
                     anchor: None,
                     attrlist: None,
                 },),
-                TBlock::CompoundDelimited(TCompoundDelimitedBlock {
+                Block::CompoundDelimited(CompoundDelimitedBlock {
                     blocks: &[
-                        TBlock::Simple(TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
                                     data: "This is content in a sidebar block.",
                                     line: 4,
                                     col: 1,
@@ -132,7 +123,7 @@ This is more content in the sidebar block.
                                 },
                                 rendered: "This is content in a sidebar block.",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "This is content in a sidebar block.",
                                 line: 4,
                                 col: 1,
@@ -143,24 +134,24 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        TBlock::Media(TMediaBlock {
+                        Block::Media(MediaBlock {
                             type_: MediaType::Image,
-                            target: TSpan {
+                            target: Span {
                                 data: "name.png",
                                 line: 6,
                                 col: 8,
                                 offset: 73,
                             },
-                            macro_attrlist: TAttrlist {
+                            macro_attrlist: Attrlist {
                                 attributes: &[],
-                                source: TSpan {
+                                source: Span {
                                     data: "",
                                     line: 6,
                                     col: 17,
                                     offset: 82,
                                 },
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "image::name.png[]",
                                 line: 6,
                                 col: 1,
@@ -171,9 +162,9 @@ This is more content in the sidebar block.
                             anchor: None,
                             attrlist: None,
                         },),
-                        TBlock::Simple(TSimpleBlock {
-                            content: TContent {
-                                original: TSpan {
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
                                     data: "This is more content in the sidebar block.",
                                     line: 8,
                                     col: 1,
@@ -181,7 +172,7 @@ This is more content in the sidebar block.
                                 },
                                 rendered: "This is more content in the sidebar block.",
                             },
-                            source: TSpan {
+                            source: Span {
                                 data: "This is more content in the sidebar block.",
                                 line: 8,
                                 col: 1,
@@ -194,7 +185,7 @@ This is more content in the sidebar block.
                         },),
                     ],
                     context: "sidebar",
-                    source: TSpan {
+                    source: Span {
                         data: "****\nThis is content in a sidebar block.\n\nimage::name.png[]\n\nThis is more content in the sidebar block.\n****",
                         line: 3,
                         col: 1,
@@ -206,7 +197,7 @@ This is more content in the sidebar block.
                     attrlist: None,
                 },),
             ],
-            source: TSpan {
+            source: Span {
                 data: "Text in your document.\n\n****\nThis is content in a sidebar block.\n\nimage::name.png[]\n\nThis is more content in the sidebar block.\n****",
                 line: 1,
                 col: 1,
@@ -246,8 +237,8 @@ include::example$block.adoc[tag=opt-listing]
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
-        Span::new("[listing]\nsudo dnf install asciidoc"),
+    let mi = crate::blocks::Block::parse(
+        crate::Span::new("[listing]\nsudo dnf install asciidoc"),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -255,9 +246,9 @@ include::example$block.adoc[tag=opt-listing]
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "sudo dnf install asciidoc",
                     line: 2,
                     col: 1,
@@ -265,7 +256,7 @@ include::example$block.adoc[tag=opt-listing]
                 },
                 rendered: "sudo dnf install asciidoc",
             },
-            source: TSpan {
+            source: Span {
                 data: "[listing]\nsudo dnf install asciidoc",
                 line: 1,
                 col: 1,
@@ -274,13 +265,13 @@ include::example$block.adoc[tag=opt-listing]
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["listing"],
                     value: "listing"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "listing",
                     line: 1,
                     col: 2,
@@ -312,8 +303,8 @@ However, note that the lines of a styled paragraph are first parsed like a parag
 
     let mut parser = Parser::default();
 
-    let mi = Block::parse(
-        Span::new("[quote]\nNever do today what you can put off `'til tomorrow."),
+    let mi = crate::blocks::Block::parse(
+        crate::Span::new("[quote]\nNever do today what you can put off `'til tomorrow."),
         &mut parser,
     )
     .unwrap_if_no_warnings()
@@ -321,9 +312,9 @@ However, note that the lines of a styled paragraph are first parsed like a parag
 
     assert_eq!(
         mi.item,
-        TBlock::Simple(TSimpleBlock {
-            content: TContent {
-                original: TSpan {
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
                     data: "Never do today what you can put off `'til tomorrow.",
                     line: 2,
                     col: 1,
@@ -331,7 +322,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                 },
                 rendered: "Never do today what you can put off &#8217;til tomorrow.",
             },
-            source: TSpan {
+            source: Span {
                 data: "[quote]\nNever do today what you can put off `'til tomorrow.",
                 line: 1,
                 col: 1,
@@ -340,13 +331,13 @@ However, note that the lines of a styled paragraph are first parsed like a parag
             title_source: None,
             title: None,
             anchor: None,
-            attrlist: Some(TAttrlist {
-                attributes: &[TElementAttribute {
+            attrlist: Some(Attrlist {
+                attributes: &[ElementAttribute {
                     name: None,
                     shorthand_items: &["quote"],
                     value: "quote"
                 },],
-                source: TSpan {
+                source: Span {
                     data: "quote",
                     line: 1,
                     col: 2,

@@ -10,13 +10,13 @@
 ///     concept in the public API surface so that debug output is
 ///     easier to comprehend.
 mod attribute;
-pub(crate) use attribute::TAttribute;
+pub(crate) use attribute::Attribute;
 
 mod attribute_value;
-pub(crate) use attribute_value::TInterpretedValue;
+pub(crate) use attribute_value::InterpretedValue;
 
 mod document;
-pub(crate) use document::TDocument;
+pub(crate) use document::Document;
 
 mod header;
-pub(crate) use header::THeader;
+pub(crate) use header::Header;

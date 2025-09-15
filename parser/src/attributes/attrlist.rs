@@ -16,7 +16,7 @@ use crate::{
 /// entries, determines whether each entry is a positional or named attribute,
 /// parses the entry accordingly, and assigns the result as an attribute on the
 /// node.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct Attrlist<'src> {
     attributes: Vec<ElementAttribute<'src>>,
     source: Span<'src>,
@@ -51,7 +51,7 @@ impl<'src> Attrlist<'src> {
         let mut index = 0;
 
         let after_index = loop {
-            let (maybe_attr, warning_types) = ElementAttribute::parse(
+            let (attr, new_index, warning_types) = ElementAttribute::parse(
                 &source_cow,
                 index,
                 parser,
@@ -69,10 +69,6 @@ impl<'src> Attrlist<'src> {
                 });
             }
 
-            let Some((attr, new_index)) = maybe_attr else {
-                break index;
-            };
-
             if attr.name().is_none() {
                 parse_shorthand_items = false;
             }
@@ -87,7 +83,9 @@ impl<'src> Attrlist<'src> {
                 break index;
             }
 
-            attributes.push(attr);
+            if attr.name().is_none() || attr.value() != "None" {
+                attributes.push(attr);
+            }
 
             after = after.take_whitespace().after;
 
