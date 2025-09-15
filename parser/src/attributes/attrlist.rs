@@ -51,7 +51,7 @@ impl<'src> Attrlist<'src> {
         let mut index = 0;
 
         let after_index = loop {
-            let (maybe_attr, warning_types) = ElementAttribute::parse(
+            let (attr, new_index, warning_types) = ElementAttribute::parse(
                 &source_cow,
                 index,
                 parser,
@@ -68,10 +68,6 @@ impl<'src> Attrlist<'src> {
                     warning: warning_type,
                 });
             }
-
-            let Some((attr, new_index)) = maybe_attr else {
-                break index;
-            };
 
             if attr.name().is_none() {
                 parse_shorthand_items = false;

@@ -20,7 +20,7 @@ impl<'src> ElementAttribute<'src> {
         start_index: usize,
         _parser: &Parser,
         mut parse_shorthand: ParseShorthand,
-    ) -> (Option<(Self, usize)>, Vec<WarningType>) {
+    ) -> (Self, usize, Vec<WarningType>) {
         let mut warnings: Vec<WarningType> = vec![];
 
         let (name, value, shorthand_item_indices, offset) = {
@@ -47,7 +47,6 @@ impl<'src> ElementAttribute<'src> {
             };
 
             let after = after.take_whitespace_with_newline().after;
-
             let first_char = after.data().chars().next();
 
             let value = match first_char {
@@ -58,7 +57,7 @@ impl<'src> ElementAttribute<'src> {
                     }
                     None => {
                         warnings.push(WarningType::AttributeValueMissingTerminatingQuote);
-                        return (None, warnings);
+                        after.take_while(|c| c != ',').trim_item_trailing_spaces()
                     }
                 },
                 _ => after.take_while(|c| c != ',').trim_item_trailing_spaces(),
@@ -99,14 +98,12 @@ impl<'src> ElementAttribute<'src> {
         };
 
         (
-            Some((
-                Self {
-                    name,
-                    value,
-                    shorthand_item_indices,
-                },
-                offset,
-            )),
+            Self {
+                name,
+                value,
+                shorthand_item_indices,
+            },
+            offset,
             warnings,
         )
     }
