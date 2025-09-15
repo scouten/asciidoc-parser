@@ -74,9 +74,6 @@ where
     #[inline(always)]
     #[allow(unused)] // TEMPORARY while building
     pub(crate) fn unwrap_item_or_default(self) -> U {
-        match self.item {
-            Some(u) => u,
-            None => U::default(),
-        }
+        self.item.unwrap_or_default()
     }
 }
