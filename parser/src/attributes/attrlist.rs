@@ -16,7 +16,7 @@ use crate::{
 /// entries, determines whether each entry is a positional or named attribute,
 /// parses the entry accordingly, and assigns the result as an attribute on the
 /// node.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct Attrlist<'src> {
     attributes: Vec<ElementAttribute<'src>>,
     source: Span<'src>,
@@ -375,15 +375,6 @@ impl<'src> Attrlist<'src> {
         let options = self.options();
         let name = name.as_ref();
         options.contains(&name)
-    }
-}
-
-impl<'src> Default for Attrlist<'src> {
-    fn default() -> Self {
-        Self {
-            attributes: vec![],
-            source: Span::default(),
-        }
     }
 }
 

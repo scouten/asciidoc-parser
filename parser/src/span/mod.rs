@@ -97,7 +97,7 @@ impl AsRef<str> for Span<'_> {
 
 const EMPTY_STR: &str = "";
 
-impl<'src> Default for Span<'_> {
+impl Default for Span<'_> {
     fn default() -> Self {
         Self {
             data: EMPTY_STR,
