@@ -1768,4 +1768,180 @@ If there is a closing single quote, and the first character is not an escaped si
             }
         );
     }
+
+    #[test]
+    fn no_escape_in_block_attrlist() {
+        verifies!(
+            r#"
+.When to escape a closing square bracket
+****
+Since the terminal of an attrlist is a closing square bracket, it's sometimes necessary to escape a closing square bracket if it appears in the value of an attribute.
+
+In line-oriented syntax such as a block attribute list, a block macro, and an include directive, you do not have to escape closing square brackets that appear in the attrlist itself.
+That's because the parser already knows to look for the closing square bracket at the end of the line.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser
+            .parse("[quote, author=my [bracketed] name]\n____\nWho wrote this, anyway?\n____");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::CompoundDelimited(CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "Who wrote this, anyway?",
+                                line: 3,
+                                col: 1,
+                                offset: 41,
+                            },
+                            rendered: "Who wrote this, anyway?",
+                        },
+                        source: Span {
+                            data: "Who wrote this, anyway?",
+                            line: 3,
+                            col: 1,
+                            offset: 41,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "quote",
+                    source: Span {
+                        data: "[quote, author=my [bracketed] name]\n____\nWho wrote this, anyway?\n____",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: None,
+                                value: "quote",
+                                shorthand_items: &["quote"],
+                            },
+                            ElementAttribute {
+                                name: Some("author",),
+                                value: "my [bracketed] name",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "quote, author=my [bracketed] name",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[quote, author=my [bracketed] name]\n____\nWho wrote this, anyway?\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn escape_in_inline_attrlist() {
+        verifies!(
+            r#"
+If a closing square bracket appears in the attrlist of an inline element, such as an inline macro, it usually has to be escaped using a backslash or by using the character reference `+&#93;+`.
+There are some exceptions to this rule, such as a link macro in a footnote, which are influenced by the substitution order.
+****
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("http://example.com[sam&#93;ple]bracket]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "http://example.com[sam&#93;ple]bracket]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a href=\"http://example.com\">sam&#93;ple</a>bracket]",
+                    },
+                    source: Span {
+                        data: "http://example.com[sam&#93;ple]bracket]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "http://example.com[sam&#93;ple]bracket]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 }
+
+// What follows is covered already by tests earlier in this file.
+non_normative!(
+    r#"
+== Substitutions
+
+// tag::subs[]
+Recall that attribute references are expanded before the attrlist is parsed.
+Therefore, it's not necessary to force substitutions to be applied to a value if you're only interested in applying the attributes substitution.
+The attributes substitution has already been applied at this point.
+
+If the attribute name (in the case of a positional attribute) or value (in the case of a named attribute) is enclosed in single quotes (e.g., `+citetitle='Processed by https://asciidoctor.org'+`), and the attribute is defined in an attrlist on a block, then the xref:subs:index.adoc#normal-group[normal substitution group] is applied to the value at assignment time.
+No special processing is performed, aside from the expansion of attribute references, if the value is not enclosed in quotes or is enclosed in double quotes.
+
+If the value contains the same quote character used to enclose the value, escape the quote character in the value by prefixing it with a backslash (e.g., `+citetitle='A \'use case\' diagram, generated by https://plantuml.com'+`).
+// end::subs[]
+"#
+);
