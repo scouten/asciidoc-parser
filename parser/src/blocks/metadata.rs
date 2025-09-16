@@ -197,6 +197,10 @@ fn parse_maybe_attrlist_line<'src>(
     // Drop opening and closing braces now that we know they are there.
     let attrlist_src = line.slice(1..line.len() - 1);
 
+    if attrlist_src.starts_with(' ') || attrlist_src.starts_with('\t') {
+        return None;
+    }
+
     let MatchAndWarnings {
         item: MatchedItem {
             item: attrlist,

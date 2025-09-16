@@ -386,199 +386,1562 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
             },)
         );
 
-        /* NO COVERAGE YET
+        verifies!(
+            r#"
+This shorthand syntax also appears on formatted text.
+Here's an example that shows how to set the ID and add a role to a strong phrase.
+Specifically, this syntax sets the ID to `free-world` and adds the `goals` role.
 
-        This shorthand syntax also appears on formatted text.
-        Here's an example that shows how to set the ID and add a role to a strong phrase.
-        Specifically, this syntax sets the ID to `free-world` and adds the `goals` role.
+----
+[#free-world.goals]*free the world*
+----
 
-        ----
-        [#free-world.goals]*free the world*
-        ----
+Formatted text does not support a style, so the first and only positional attribute is always the shorthand syntax.
 
-        Formatted text does not support a style, so the first and only positional attribute is always the shorthand syntax.
+"#
+        );
 
-        */
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[#free-world.goals]*free the world*");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[#free-world.goals]*free the world*",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<strong id=\"free-world\" class=\"goals\">free the world</strong>",
+                    },
+                    source: Span {
+                        data: "[#free-world.goals]*free the world*",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[#free-world.goals]*free the world*",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
     }
-
-    // NO COVERAGE YET:
-
-    // === Block style and attribute shorthand
-
-    // The first positional attribute on all blocks (including sections) is
-    // special. It's used to define the
-    // xref:blocks:index.adoc#block-style[block style]. It also supports a
-    // shorthand syntax for defining the ID, role, and options attributes.
-    // This shorthand syntax can also be used on formatted text, even though
-    // formatted text doesn't technically support attributes.
-
-    // The attribute shorthand is inspired by the HAML and Slim template
-    // languages as a way of saving the author some typing. Instead of
-    // having to use the longhand form of a name attribute, it's possible to
-    // compress the assignment to a value prefixed by a special marker.
-    // The markers are mapped as follows:
-
-    // * `#` - ID
-    // * `.` - role
-    // * `%` - option
-
-    // Each shorthand entry is placed directly adjacent to previous one,
-    // starting immediately after the optional block style. The order of the
-    // entries does not matter, except for the style, which must come first.
-
-    // Here's an example that shows how to set an ID on a section using this
-    // shorthand syntax:
-
-    // ----
-    // [#custom-id]
-    // == Section with Custom ID
-    // ----
-
-    // The shorthand entry must follow the block style, if present.
-    // Here's an example that shows how to set an ID on an appendix section
-    // using this shorthand syntax:
-
-    // ----
-    // [appendix#custom-id]
-    // == Appendix with Custom ID
-    // ----
-
-    // Here's an example of a block that uses the shorthand syntax to set the
-    // ID, a role, and an option for a list. Specifically, this syntax sets
-    // the ID to `rules`, adds the role `prominent`, and sets the option
-    // `incremental`.
-
-    // ----
-    // [#rules.prominent%incremental]
-    // * Work hard
-    // * Play hard
-    // * Be happy
-    // ----
-
-    // A block can have multiple roles and options, so these shorthand entries
-    // may be repeated. Here's an example that shows how to set several
-    // options on a table. Specifically, this syntax sets the `header`,
-    // `footer`, and `autowidth` options.
-
-    // ----
-    // [%header%footer%autowidth]
-    // |===
-    // |Header A |Header B
-    // |Footer A |Footer B
-    // |===
-    // ----
-
-    // This shorthand syntax also appears on formatted text.
-    // Here's an example that shows how to set the ID and add a role to a strong
-    // phrase. Specifically, this syntax sets the ID to `free-world` and
-    // adds the `goals` role.
-
-    // ----
-    // [#free-world.goals]*free the world*
-    // ----
-
-    // Formatted text does not support a style, so the first and only positional
-    // attribute is always the shorthand syntax.
 }
 
-// [#named]
-// == Named attribute
+mod named_attribute {
+    use pretty_assertions_sorted::assert_eq;
 
-// // tag::name[]
-// A named attribute consists of a name and a value separated by an `=`
-// character (e.g., `name=value`).
+    use crate::{Parser, tests::prelude::*};
 
-// If the value contains a space, comma, or quote character, it must be enclosed
-// in double or single quotes (e.g., `name="value with space"`). In all other
-// cases, the surrounding quotes are optional.
+    non_normative!(
+        r#"
+[#named]
+== Named attribute
 
-// If the value contains the *same* quote character used to enclose the value,
-// the quote character in the value must be escaped by prefixing it with a
-// backslash (e.g., `value="the song \"Dark Horse\""`).
+// tag::name[]
+"#
+    );
 
-// If enclosing quotes are used, they are dropped from the parsed value and the
-// preceding backslash is dropped from any escaped quotes.
+    #[test]
+    fn basic_syntax() {
+        verifies!(
+            r#"
+A named attribute consists of a name and a value separated by an `=` character (e.g., `name=value`).
 
-// [#unset]
-// === Unset a named attribute
+"#
+        );
 
-// To undefine a named attribute, set the value to `None` (case sensitive).
-// // end::name[]
+        let mut parser = Parser::default();
 
-// == Attribute list parsing
+        let doc = parser.parse("[foo=bar]\nSome text here.");
 
-// The source text that's used to define attributes for an element is referred
-// to as an [.term]*attrlist*. An attrlist is always enclosed in a pair of
-// square brackets. This applies for block attributes as well as attributes on a
-// block or inline macro. The processor splits the attrlist into individual
-// attribute entries, determines whether each entry is a positional or named
-// attribute, parses the entry accordingly, and assigns the result as an
-// attribute on the node.
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 10,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("foo"),
+                            value: "bar",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "foo=bar",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 
-// The rules for what defines the boundaries of an individual attribute, and
-// whether the attribute is positional or named, are defined below.
-// In these rules, `name` consists of a word character (letter or numeral)
-// followed by any number of word or `-` characters (e.g., `see-also`).
+    #[test]
+    fn enclose_value_in_quotes() {
+        verifies!(
+            r#"
+If the value contains a space, comma, or quote character, it must be enclosed in double or single quotes (e.g., `name="value with space"`).
+In all other cases, the surrounding quotes are optional.
 
-// * Attribute references are expanded before the attrlist is parsed (i.e., the
-//   attributes substitution is applied).
-// * Parsing an attribute proceeds from the beginning of the attribute list
-//   string or after a previously identified delimiter (`,`).
-// ** The first character of an attribute list cannot be a tab or space.
-// For subsequent attributes, any leading space or tab characters are skipped.
-// * If a valid attribute name is found, and it is followed by an equals sign
-//   (=), then the parser recognizes this as a named attribute.
-// The text after the equals sign (=) and up to the next comma or end of list is
-// taken as the attribute value. Space and tab characters around the equals sign
-// (=) and at the end of the value are ignored.
-// * Otherwise, this is a positional attribute with a value that ends at the
-//   next delimiter or end of list.
-// Any space or tab characters at the boundaries of the value are ignored.
-// * To parse the attribute value:
-// ** If the first character is not a quote, the string is read until the next
-// delimiter or end of string. ** If the first character is a double quote
-// (i.e., `"`), then the string is read until the next unescaped double quote
-// or, if there is no closing double quote, the next delimiter. If there is a
-// closing double quote, the enclosing double quote characters are removed and
-// escaped double quote characters are unescaped; if not, the initial double
-// quote is retained. ** If the next character is a single quote (i.e., `'`),
-// then the string is read until the next unescaped single quote or, if there is
-// no closing single quote, the next delimiter. If there is a closing single
-// quote, the enclosing single quote characters are removed and escaped single
-// quote characters are unescaped; if not, the initial single quote is retained.
-// If there is a closing single quote, and the first character is not an escaped
-// single quote, substitutions are performed on the value as described in
-// <<Substitutions>>.
+"#
+        );
 
-// .When to escape a closing square bracket
-// ****
-// Since the terminal of an attrlist is a closing square bracket, it's sometimes
-// necessary to escape a closing square bracket if it appears in the value of an
-// attribute.
+        let mut parser = Parser::default();
 
-// In line-oriented syntax such as a block attribute list, a block macro, and an
-// include directive, you do not have to escape closing square brackets that
-// appear in the attrlist itself. That's because the parser already knows to
-// look for the closing square bracket at the end of the line.
+        let doc = parser.parse("[name=\"value with space\"]\nSome text here.");
 
-// If a closing square bracket appears in the attrlist of an inline element,
-// such as an inline macro, it usually has to be escaped using a backslash or by
-// using the character reference `+&#93;+`. There are some exceptions to this
-// rule, such as a link macro in a footnote, which are influenced by the
-// substitution order. ****
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 26,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[name=\"value with space\"]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("name",),
+                            value: "value with space",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "name=\"value with space\"",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[name=\"value with space\"]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 
-// == Substitutions
+    #[test]
+    fn escape_same_quote_with_backslash() {
+        verifies!(
+            r#"
+If the value contains the *same* quote character used to enclose the value, the quote character in the value must be escaped by prefixing it with a backslash (e.g., `value="the song \"Dark Horse\""`).
 
-// // tag::subs[]
-// Recall that attribute references are expanded before the attrlist is parsed.
-// Therefore, it's not necessary to force substitutions to be applied to a value
-// if you're only interested in applying the attributes substitution.
-// The attributes substitution has already been applied at this point.
+If enclosing quotes are used, they are dropped from the parsed value and the preceding backslash is dropped from any escaped quotes.
 
-// If the attribute name (in the case of a positional attribute) or value (in the case of a named attribute) is enclosed in single quotes (e.g., `+citetitle='Processed by https://asciidoctor.org'+`), and the attribute is defined in an attrlist on a block, then the xref:subs:index.adoc#normal-group[normal substitution group] is applied to the value at assignment time.
-// No special processing is performed, aside from the expansion of attribute
-// references, if the value is not enclosed in quotes or is enclosed in double
-// quotes.
+"#
+        );
 
-// If the value contains the same quote character used to enclose the value, escape the quote character in the value by prefixing it with a backslash (e.g., `+citetitle='A \'use case\' diagram, generated by https://plantuml.com'+`).
-// // end::subs[]
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[value=\"the song \\\"Dark Horse\\\"\"]\nSome text here.");
+
+        assert_eq!(
+            &doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 34,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[value=\"the song \\\"Dark Horse\\\"\"]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("value",),
+                            value: "the song \"Dark Horse\"",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "value=\"the song \\\"Dark Horse\\\"\"",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[value=\"the song \\\"Dark Horse\\\"\"]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn unset() {
+        verifies!(
+            r#"
+ [#unset]
+ === Unset a named attribute
+ 
+ To undefine a named attribute, set the value to `None` (case sensitive).
+ // end::name[]
+ 
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo=bar,value=None]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 21,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar,value=None]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("foo",),
+                            value: "bar",
+                            shorthand_items: &[],
+                        },],
+                        source: Span {
+                            data: "foo=bar,value=None",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar,value=None]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
+
+mod attribute_list_parsing {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, tests::prelude::*, warnings::WarningType};
+
+    non_normative!(
+        r#"
+== Attribute list parsing
+
+The source text that's used to define attributes for an element is referred to as an [.term]*attrlist*.
+An attrlist is always enclosed in a pair of square brackets.
+This applies for block attributes as well as attributes on a block or inline macro.
+The processor splits the attrlist into individual attribute entries, determines whether each entry is a positional or named attribute, parses the entry accordingly, and assigns the result as an attribute on the node.
+
+The rules for what defines the boundaries of an individual attribute, and whether the attribute is positional or named, are defined below.
+"#
+    );
+
+    #[test]
+    fn definition_of_name() {
+        verifies!(
+            r#"
+In these rules, `name` consists of a word character (letter or numeral) followed by any number of word or `-` characters (e.g., `see-also`).
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo=bar,94-pages=94]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 22,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar,94-pages=94]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo"),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("94-pages",),
+                                value: "94",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo=bar,94-pages=94",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar,94-pages=94]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn attribute_substitution_before_parsing() {
+        verifies!(
+            r#"
+* Attribute references are expanded before the attrlist is parsed (i.e., the attributes substitution is applied).
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc =
+            parser.parse(":url: https://example.com\n\n[foo=bar,target={url}]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[Attribute {
+                        name: Span {
+                            data: "url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        value_source: Some(Span {
+                            data: "https://example.com",
+                            line: 1,
+                            col: 7,
+                            offset: 6,
+                        },),
+                        value: InterpretedValue::Value("https://example.com",),
+                        source: Span {
+                            data: ":url: https://example.com",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },],
+                    source: Span {
+                        data: ":url: https://example.com",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 4,
+                            col: 1,
+                            offset: 50,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar,target={url}]\nSome text here.",
+                        line: 3,
+                        col: 1,
+                        offset: 27,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "https://example.com",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo=bar,target={url}",
+                            line: 3,
+                            col: 2,
+                            offset: 28,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: ":url: https://example.com\n\n[foo=bar,target={url}]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn attrlist_cant_start_with_space() {
+        // NOTE: The requirement about parsing an attribute is covered elsewhere.
+        verifies!(
+            r#"
+* Parsing an attribute proceeds from the beginning of the attribute list string or after a previously identified delimiter (`,`).
+** The first character of an attribute list cannot be a tab or space.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[ foo=bar,target={url}]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[ foo=bar,target={url}]\nSome text here.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "[ foo=bar,target={url}]\nSome text here.",
+                    },
+                    source: Span {
+                        data: "[ foo=bar,target={url}]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[ foo=bar,target={url}]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn subsequent_attrs_ignore_leading_space_or_tab() {
+        verifies!(
+            r#"
+For subsequent attributes, any leading space or tab characters are skipped.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo=bar, target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 22,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo=bar, target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo=bar, target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo=bar, target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn named_attributes() {
+        verifies!(
+            r#"
+* If a valid attribute name is found, and it is followed by an equals sign (=), then the parser recognizes this as a named attribute.
+The text after the equals sign (=) and up to the next comma or end of list is taken as the attribute value.
+Space and tab characters around the equals sign (=) and at the end of the value are ignored.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = bar, target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 24,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = bar, target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = bar, target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = bar, target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn otherwise_positional() {
+        verifies!(
+            r#"
+* Otherwise, this is a positional attribute with a value that ends at the next delimiter or end of list.
+Any space or tab characters at the boundaries of the value are ignored.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[_foo = bar , zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 32,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[_foo = bar , zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: None,
+                                value: "_foo = bar",
+                                shorthand_items: &["_foo = bar"]
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "_foo = bar , zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[_foo = bar , zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_unquoted() {
+        verifies!(
+            r#"
+* To parse the attribute value:
+** If the first character is not a quote, the string is read until the next delimiter or end of string.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = bar, zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 30,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = bar, zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = bar, zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = bar, zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_double_quote_unclosed() {
+        verifies!(
+            r#"
+** If the first character is a double quote (i.e., `"`), then the string is read until the next unescaped double quote or, if there is no closing double quote, the next delimiter.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \"bar, zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 31,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = \"bar, zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "\"bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = \"bar, zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = \"bar, zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[Warning {
+                    source: Span {
+                        data: "foo = \"bar, zip , target=url",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    warning: WarningType::AttributeValueMissingTerminatingQuote,
+                },],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_double_quote_closed() {
+        verifies!(
+            r#"
+If there is a closing double quote, the enclosing double quote characters are removed and escaped double quote characters are unescaped; if not, the initial double quote is retained.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \"bar\\\"boop\", zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 38,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = \"bar\\\"boop\", zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar\"boop",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = \"bar\\\"boop\", zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = \"bar\\\"boop\", zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_single_quote_unclosed() {
+        verifies!(
+            r#"
+** If the next character is a single quote (i.e., `'`), then the string is read until the next unescaped single quote or, if there is no closing single quote, the next delimiter.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \'bar, zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 31,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = 'bar, zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "'bar",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = 'bar, zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = 'bar, zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[Warning {
+                    source: Span {
+                        data: "foo = 'bar, zip , target=url",
+                        line: 1,
+                        col: 2,
+                        offset: 1,
+                    },
+                    warning: WarningType::AttributeValueMissingTerminatingQuote,
+                },],
+            }
+        );
+    }
+
+    #[test]
+    fn parse_value_single_quote_closed() {
+        verifies!(
+            r#"
+If there is a closing single quote, the enclosing single quote characters are removed and escaped single quote characters are unescaped; if not, the initial single quote is retained.
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[foo = \'bar\\\'boop\', zip , target=url]\nSome text here.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some text here.",
+                            line: 2,
+                            col: 1,
+                            offset: 38,
+                        },
+                        rendered: "Some text here.",
+                    },
+                    source: Span {
+                        data: "[foo = 'bar\\'boop', zip , target=url]\nSome text here.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: Some("foo",),
+                                value: "bar&#8217;boop",
+                                shorthand_items: &[],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "zip",
+                                shorthand_items: &["zip"],
+                            },
+                            ElementAttribute {
+                                name: Some("target",),
+                                value: "url",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "foo = 'bar\\'boop', zip , target=url",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[foo = 'bar\\'boop', zip , target=url]\nSome text here.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn single_quoted_gets_substititions() {
+        verifies!(
+            r#"
+If there is a closing single quote, and the first character is not an escaped single quote, substitutions are performed on the value as described in <<Substitutions>>.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[quote, author='*Strong* and _emphasis_']\n____\nThis shows formatting substitutions in single-quoted values\n____");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::CompoundDelimited(CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "This shows formatting substitutions in single-quoted values",
+                                line: 3,
+                                col: 1,
+                                offset: 47,
+                            },
+                            rendered: "This shows formatting substitutions in single-quoted values",
+                        },
+                        source: Span {
+                            data: "This shows formatting substitutions in single-quoted values",
+                            line: 3,
+                            col: 1,
+                            offset: 47,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "quote",
+                    source: Span {
+                        data: "[quote, author='*Strong* and _emphasis_']\n____\nThis shows formatting substitutions in single-quoted values\n____",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: None,
+                                value: "quote",
+                                shorthand_items: &["quote"],
+                            },
+                            ElementAttribute {
+                                name: Some("author",),
+                                value: "<strong>Strong</strong> and <em>emphasis</em>",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "quote, author='*Strong* and _emphasis_'",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[quote, author='*Strong* and _emphasis_']\n____\nThis shows formatting substitutions in single-quoted values\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn no_escape_in_block_attrlist() {
+        verifies!(
+            r#"
+.When to escape a closing square bracket
+****
+Since the terminal of an attrlist is a closing square bracket, it's sometimes necessary to escape a closing square bracket if it appears in the value of an attribute.
+
+In line-oriented syntax such as a block attribute list, a block macro, and an include directive, you do not have to escape closing square brackets that appear in the attrlist itself.
+That's because the parser already knows to look for the closing square bracket at the end of the line.
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser
+            .parse("[quote, author=my [bracketed] name]\n____\nWho wrote this, anyway?\n____");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::CompoundDelimited(CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "Who wrote this, anyway?",
+                                line: 3,
+                                col: 1,
+                                offset: 41,
+                            },
+                            rendered: "Who wrote this, anyway?",
+                        },
+                        source: Span {
+                            data: "Who wrote this, anyway?",
+                            line: 3,
+                            col: 1,
+                            offset: 41,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "quote",
+                    source: Span {
+                        data: "[quote, author=my [bracketed] name]\n____\nWho wrote this, anyway?\n____",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: None,
+                                value: "quote",
+                                shorthand_items: &["quote"],
+                            },
+                            ElementAttribute {
+                                name: Some("author",),
+                                value: "my [bracketed] name",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        source: Span {
+                            data: "quote, author=my [bracketed] name",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[quote, author=my [bracketed] name]\n____\nWho wrote this, anyway?\n____",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn escape_in_inline_attrlist() {
+        verifies!(
+            r#"
+If a closing square bracket appears in the attrlist of an inline element, such as an inline macro, it usually has to be escaped using a backslash or by using the character reference `+&#93;+`.
+There are some exceptions to this rule, such as a link macro in a footnote, which are influenced by the substitution order.
+****
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("http://example.com[sam&#93;ple]bracket]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "http://example.com[sam&#93;ple]bracket]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a href=\"http://example.com\">sam&#93;ple</a>bracket]",
+                    },
+                    source: Span {
+                        data: "http://example.com[sam&#93;ple]bracket]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "http://example.com[sam&#93;ple]bracket]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
+
+// What follows is covered already by tests earlier in this file.
+non_normative!(
+    r#"
+== Substitutions
+
+// tag::subs[]
+Recall that attribute references are expanded before the attrlist is parsed.
+Therefore, it's not necessary to force substitutions to be applied to a value if you're only interested in applying the attributes substitution.
+The attributes substitution has already been applied at this point.
+
+If the attribute name (in the case of a positional attribute) or value (in the case of a named attribute) is enclosed in single quotes (e.g., `+citetitle='Processed by https://asciidoctor.org'+`), and the attribute is defined in an attrlist on a block, then the xref:subs:index.adoc#normal-group[normal substitution group] is applied to the value at assignment time.
+No special processing is performed, aside from the expansion of attribute references, if the value is not enclosed in quotes or is enclosed in double quotes.
+
+If the value contains the same quote character used to enclose the value, escape the quote character in the value by prefixing it with a backslash (e.g., `+citetitle='A \'use case\' diagram, generated by https://plantuml.com'+`).
+// end::subs[]
+"#
+);
