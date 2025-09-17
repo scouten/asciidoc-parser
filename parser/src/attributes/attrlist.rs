@@ -230,9 +230,11 @@ impl<'src> Attrlist<'src> {
     /// * Goal 2
     /// ```
     pub fn id(&'src self) -> Option<&'src str> {
-        self.nth_attribute(1)
-            .and_then(|attr1| attr1.id())
-            .or_else(|| self.named_attribute("id").map(|attr| attr.value()))
+        self.anchor().or_else(|| {
+            self.nth_attribute(1)
+                .and_then(|attr1| attr1.id())
+                .or_else(|| self.named_attribute("id").map(|attr| attr.value()))
+        })
     }
 
     /// Returns any role attributes that were found.

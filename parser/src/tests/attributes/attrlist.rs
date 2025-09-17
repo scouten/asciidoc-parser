@@ -1036,6 +1036,8 @@ mod id {
             }
         );
 
+        assert_eq!(mi.item.id().unwrap(), "goals");
+
         assert_eq!(
             mi.after,
             Span {
