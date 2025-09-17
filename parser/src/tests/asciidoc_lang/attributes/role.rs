@@ -115,6 +115,7 @@ This is a sidebar with a role assigned to it, rolename.
                         shorthand_items: &[".rolename"],
                         value: ".rolename"
                     },],
+                    anchor: None,
                     source: Span {
                         data: ".rolename",
                         line: 1,
@@ -194,6 +195,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                         shorthand_items: &[".role1", ".role2"],
                         value: ".role1.role2"
                     },],
+                    anchor: None,
                     source: Span {
                         data: ".role1.role2",
                         line: 1,
@@ -274,6 +276,7 @@ This is a sidebar with one role assigned to it, rolename.
                         shorthand_items: &[],
                         value: "rolename"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "role=rolename",
                         line: 1,
@@ -359,6 +362,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                         shorthand_items: &[],
                         value: "role1 role2"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "role=\"role1 role2\"",
                         line: 1,

@@ -98,6 +98,7 @@ This is a sidebar with an option assigned to it, named option.
                         shorthand_items: &["%option"],
                         value: "%option"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "%option",
                         line: 1,
@@ -185,6 +186,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                         shorthand_items: &["%option1", "%option2"],
                         value: "%option1%option2"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "%option1%option2",
                         line: 1,
@@ -276,6 +278,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                             value: "2*~"
                         },
                     ],
+                    anchor: None,
                     source: Span {
                         data: "%header%footer%autowidth,cols=2*~",
                         line: 1,
@@ -371,6 +374,7 @@ This is a sidebar with an option assigned to it, named option.
                         shorthand_items: &[],
                         value: "option"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "opts=option",
                         line: 1,
@@ -457,6 +461,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                         shorthand_items: &[],
                         value: "option1,option2"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "opts=\"option1,option2\"",
                         line: 1,
@@ -548,6 +553,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                             value: "header,footer,autowidth"
                         },
                     ],
+                    anchor: None,
                     source: Span {
                         data: "cols=2*~,opts=\"header,footer,autowidth\"",
                         line: 1,
@@ -648,6 +654,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                         shorthand_items: &["horizontal", ".properties", "%step"],
                         value: "horizontal.properties%step"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "horizontal.properties%step",
                         line: 1,
@@ -746,6 +753,7 @@ property 2:: does different stuff
                             value: "step"
                         },
                     ],
+                    anchor: None,
                     source: Span {
                         data: "horizontal,role=properties,opts=step",
                         line: 1,

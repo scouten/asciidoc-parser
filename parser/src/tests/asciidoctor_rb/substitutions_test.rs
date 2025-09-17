@@ -6046,6 +6046,7 @@ mod post_replacements {
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "%hardbreaks",
                         line: 1,
@@ -6094,6 +6095,7 @@ mod post_replacements {
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "%hardbreaks",
                         line: 1,
@@ -6140,6 +6142,7 @@ mod post_replacements {
                         shorthand_items: &["%hardbreaks"],
                         value: "%hardbreaks"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "%hardbreaks",
                         line: 1,

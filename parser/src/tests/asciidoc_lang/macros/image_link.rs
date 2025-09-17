@@ -74,6 +74,7 @@ image::logo.png[Logo]
                             value: "Logo",
                             shorthand_items: &["Logo"],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "Logo",
                             line: 2,
@@ -96,6 +97,7 @@ image::logo.png[Logo]
                             value: "https://example.org",
                             shorthand_items: &[],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "link=https://example.org",
                             line: 1,
@@ -165,6 +167,7 @@ image::logo.png[Logo,link=https://example.org]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "Logo,link=https://example.org",
                             line: 1,
@@ -340,6 +343,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "Logo,link=https://example.org,window=_blank,opts=nofollow",
                             line: 1,

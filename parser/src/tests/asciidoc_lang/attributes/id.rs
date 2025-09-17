@@ -283,6 +283,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                         shorthand_items: &["#goals"],
                         value: "#goals"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "#goals",
                         line: 1,
@@ -348,6 +349,7 @@ In the longhand syntax, you use a standard named attribute.
                         shorthand_items: &[],
                         value: "goals"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "id=goals",
                         line: 1,
@@ -488,6 +490,7 @@ ____
                             value: "Dr. Emmett Brown"
                         },
                     ],
+                    anchor: None,
                     source: Span {
                         data: "quote.movie#roads,Dr. Emmett Brown",
                         line: 1,

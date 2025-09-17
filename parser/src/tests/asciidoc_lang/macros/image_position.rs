@@ -109,6 +109,7 @@ include::example$image.adoc[tag=float]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "Tiger,200,200,float=\"right\",align=\"center\"",
                             line: 1,
@@ -283,6 +284,7 @@ include::example$image.adoc[tag=role]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "Tiger,200,200",
                             line: 2,
@@ -305,6 +307,7 @@ include::example$image.adoc[tag=role]
                             value: ".right.text-center",
                             shorthand_items: &[".right", ".text-center"],
                         },],
+                        anchor: None,
                         source: Span {
                             data: ".right.text-center",
                             line: 1,

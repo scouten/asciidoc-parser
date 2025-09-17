@@ -624,6 +624,7 @@ mod listing {
                         value: "quotes",
                         shorthand_items: &[],
                     },],
+                    anchor: None,
                     source: Span {
                         data: "subs=quotes",
                         line: 1,
@@ -654,6 +655,7 @@ mod listing {
                     value: "quotes",
                     shorthand_items: &[],
                 },],
+                anchor: None,
                 source: Span {
                     data: "subs=quotes",
                     line: 1,

@@ -423,6 +423,7 @@ fn warn_child_attrlist_has_extra_comma() {
                             value: "400"
                         }
                     ],
+                    anchor: None,
                     source: Span {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,

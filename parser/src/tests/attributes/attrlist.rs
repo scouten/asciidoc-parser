@@ -25,6 +25,7 @@ fn impl_default() {
         attrlist,
         Attrlist {
             attributes: &[],
+            anchor: None,
             source: Span {
                 data: "",
                 line: 1,
@@ -70,6 +71,7 @@ fn empty_source() {
         mi.item,
         Attrlist {
             attributes: &[],
+            anchor: None,
             source: Span {
                 data: "",
                 line: 1,
@@ -144,6 +146,7 @@ fn empty_positional_attributes() {
                     value: "400"
                 }
             ],
+            anchor: None,
             source: Span {
                 data: ",300,400",
                 line: 1,
@@ -270,6 +273,7 @@ fn only_positional_attributes() {
                     value: "400"
                 }
             ],
+            anchor: None,
             source: Span {
                 data: "Sunset,300,400",
                 line: 1,
@@ -396,6 +400,7 @@ fn trim_trailing_space() {
                     value: "400"
                 }
             ],
+            anchor: None,
             source: Span {
                 data: "Sunset ,300 , 400",
                 line: 1,
@@ -522,6 +527,7 @@ fn only_named_attributes() {
                     value: "400"
                 }
             ],
+            anchor: None,
             source: Span {
                 data: "alt=Sunset,width=300,height=400",
                 line: 1,
@@ -644,6 +650,7 @@ fn ignore_named_attribute_with_none_value() {
                     value: "400"
                 }
             ],
+            anchor: None,
             source: Span {
                 data: "alt=Sunset,width=None,height=400",
                 line: 1,
@@ -746,6 +753,7 @@ fn err_unparsed_remainder_after_value() {
                 shorthand_items: &[],
                 value: "Sunset"
             }],
+            anchor: None,
             source: Span {
                 data: "alt=\"Sunset\"width=300",
                 line: 1,
@@ -799,6 +807,7 @@ fn propagates_error_from_element_attribute() {
                 shorthand_items: &["foo", "#id"],
                 value: "foo%#id"
             }],
+            anchor: None,
             source: Span {
                 data: "foo%#id",
                 line: 1,
@@ -832,6 +841,45 @@ fn propagates_error_from_element_attribute() {
     );
 }
 
+#[test]
+fn anchor_syntax() {
+    let p = Parser::default();
+
+    let maw = crate::attributes::Attrlist::parse(
+        crate::Span::new("[notice]"),
+        &p,
+        AttrlistContext::Inline,
+    );
+
+    let mi = maw.item.clone();
+
+    assert_eq!(
+        mi.item,
+        Attrlist {
+            attributes: &[],
+            anchor: Some("notice"),
+            source: Span {
+                data: "[notice]",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        Span {
+            data: "",
+            line: 1,
+            col: 9,
+            offset: 8
+        }
+    );
+
+    assert!(maw.warnings.is_empty());
+}
+
 mod id {
     use pretty_assertions_sorted::assert_eq;
 
@@ -856,6 +904,7 @@ mod id {
                     shorthand_items: &["#goals"],
                     value: "#goals"
                 }],
+                anchor: None,
                 source: Span {
                     data: "#goals",
                     line: 1,
@@ -919,6 +968,7 @@ mod id {
                         value: "goals"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo=bar,id=goals",
                     line: 1,
@@ -962,18 +1012,41 @@ mod id {
     }
 
     #[test]
-    #[should_panic]
     fn via_block_anchor_syntax() {
         let p = Parser::default();
 
-        let _pr = crate::attributes::Attrlist::parse(
+        let mi = crate::attributes::Attrlist::parse(
             crate::Span::new("[goals]"),
             &p,
             AttrlistContext::Inline,
         )
         .unwrap_if_no_warnings();
 
-        // TO DO (#122): Parse block anchor syntax
+        assert_eq!(
+            mi.item,
+            Attrlist {
+                attributes: &[],
+                anchor: Some("goals"),
+                source: Span {
+                    data: "[goals]",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert_eq!(mi.item.id().unwrap(), "goals");
+
+        assert_eq!(
+            mi.after,
+            Span {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
     }
 
     #[test]
@@ -1002,6 +1075,7 @@ mod id {
                         value: "blah#goals"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo,blah#goals",
                     line: 1,
@@ -1051,6 +1125,7 @@ mod roles {
                     shorthand_items: &[".rolename"],
                     value: ".rolename"
                 }],
+                anchor: None,
                 source: Span {
                     data: ".rolename",
                     line: 1,
@@ -1110,6 +1185,7 @@ mod roles {
                     shorthand_items: &[".rolename"],
                     value: ".rolename"
                 }],
+                anchor: None,
                 source: Span {
                     data: ".rolename ",
                     line: 1,
@@ -1168,6 +1244,7 @@ mod roles {
                     shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1.role2.role3"
                 }],
+                anchor: None,
                 source: Span {
                     data: ".role1.role2.role3",
                     line: 1,
@@ -1231,6 +1308,7 @@ mod roles {
                     shorthand_items: &[".role1", ".role2", ".role3"],
                     value: ".role1 .role2 .role3"
                 }],
+                anchor: None,
                 source: Span {
                     data: ".role1 .role2 .role3 ",
                     line: 1,
@@ -1301,6 +1379,7 @@ mod roles {
                         value: "role1"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo=bar,role=role1",
                     line: 1,
@@ -1370,6 +1449,7 @@ mod roles {
                         value: "role1 role2   role3"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo=bar,role=role1 role2   role3 ",
                     line: 1,
@@ -1442,6 +1522,7 @@ mod roles {
                         value: "na1 na2   na3"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "#foo.sh1.sh2,role=na1 na2   na3 ",
                     line: 1,
@@ -1509,6 +1590,7 @@ mod roles {
                         value: "blah.rolename"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo,blah.rolename",
                     line: 1,
@@ -1557,6 +1639,7 @@ mod options {
                     shorthand_items: &["%option"],
                     value: "%option"
                 }],
+                anchor: None,
                 source: Span {
                     data: "%option",
                     line: 1,
@@ -1619,6 +1702,7 @@ mod options {
                     shorthand_items: &["%option1", "%option2", "%option3",],
                     value: "%option1%option2%option3"
                 }],
+                anchor: None,
                 source: Span {
                     data: "%option1%option2%option3",
                     line: 1,
@@ -1691,6 +1775,7 @@ mod options {
                         value: "option1"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo=bar,options=option1",
                     line: 1,
@@ -1764,6 +1849,7 @@ mod options {
                         value: "option1"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo=bar,opts=option1",
                     line: 1,
@@ -1838,6 +1924,7 @@ mod options {
                         value: "option1,option2,option3"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo=bar,options=\"option1,option2,option3\"",
                     line: 1,
@@ -1915,6 +2002,7 @@ mod options {
                         value: "na1,na2,na3"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "#foo%sh1%sh2,options=\"na1,na2,na3\"",
                     line: 1,
@@ -1990,6 +2078,7 @@ mod options {
                         value: "blah%option"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "foo,blah%option",
                     line: 1,
@@ -2048,6 +2137,7 @@ fn err_double_comma() {
                     value: "400"
                 },
             ],
+            anchor: None,
             source: Span {
                 data: "alt=Sunset,width=300,,height=400",
                 line: 1,
@@ -2116,6 +2206,7 @@ fn applies_attribute_substitution_before_parsing() {
                     value: "400"
                 }
             ],
+            anchor: None,
             source: Span {
                 data: "Sunset,{sunset_dimensions}",
                 line: 1,
@@ -2241,6 +2332,7 @@ fn ignores_unknown_attribute_when_applying_attribution_substitution() {
                     value: "{not_sunset_dimensions}"
                 },
             ],
+            anchor: None,
             source: Span {
                 data: "Sunset,{not_sunset_dimensions}",
                 line: 1,

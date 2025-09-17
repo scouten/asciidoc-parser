@@ -167,6 +167,7 @@ You can inspect the value stored in an attribute using this trick:
                         value: "attributes+",
                         shorthand_items: &[],
                     },],
+                    anchor: None,
                     source: Span {
                         data: "subs=attributes+",
                         line: 3,
@@ -247,6 +248,7 @@ If the macro is absent, the value is processed with the header substitution grou
                         value: "attributes+",
                         shorthand_items: &[],
                     },],
+                    anchor: None,
                     source: Span {
                         data: "subs=attributes+",
                         line: 3,
@@ -456,6 +458,7 @@ This strategy is akin to post-processing the attribute value.
                     value: "specialchars,attributes,quotes,replacements,macros,post_replacements",
                     shorthand_items: &[],
                 },],
+                anchor: None,
                 source: Span {
                     data: "subs=\"specialchars,attributes,quotes,replacements,macros,post_replacements\"",
                     line: 3,

@@ -186,6 +186,7 @@ fn has_target() {
             },
             macro_attrlist: Attrlist {
                 attributes: &[],
+                anchor: None,
                 source: Span {
                     data: "",
                     line: 1,
@@ -250,6 +251,7 @@ fn has_target_and_attrlist() {
                     shorthand_items: &["blah"],
                     value: "blah"
                 }],
+                anchor: None,
                 source: Span {
                     data: "blah",
                     line: 1,
@@ -301,6 +303,7 @@ fn audio() {
             },
             macro_attrlist: Attrlist {
                 attributes: &[],
+                anchor: None,
                 source: Span {
                     data: "",
                     line: 1,
@@ -361,6 +364,7 @@ fn video() {
             },
             macro_attrlist: Attrlist {
                 attributes: &[],
+                anchor: None,
                 source: Span {
                     data: "",
                     line: 1,
@@ -434,6 +438,7 @@ fn err_duplicate_comma() {
                         value: "blap"
                     }
                 ],
+                anchor: None,
                 source: Span {
                     data: "blah,,blap",
                     line: 1,

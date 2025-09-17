@@ -19,6 +19,7 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct Attrlist<'src> {
     attributes: Vec<ElementAttribute<'src>>,
+    anchor: Option<CowStr<'src>>,
     source: Span<'src>,
 }
 
@@ -46,7 +47,19 @@ impl<'src> Attrlist<'src> {
         };
 
         if source_cow.starts_with('[') && source_cow.ends_with(']') {
-            todo!("Parse block anchor syntax (issue #122)");
+            let anchor = source_cow[1..source_cow.len() - 1].to_owned();
+
+            return MatchAndWarnings {
+                item: MatchedItem {
+                    item: Self {
+                        attributes,
+                        anchor: Some(CowStr::from(anchor)),
+                        source,
+                    },
+                    after: source.discard_all(),
+                },
+                warnings,
+            };
         }
 
         let mut index = 0;
@@ -122,7 +135,11 @@ impl<'src> Attrlist<'src> {
 
         MatchAndWarnings {
             item: MatchedItem {
-                item: Self { attributes, source },
+                item: Self {
+                    attributes,
+                    anchor: None,
+                    source,
+                },
                 after: source.discard_all(),
             },
             warnings,
@@ -133,6 +150,11 @@ impl<'src> Attrlist<'src> {
     /// this attrlist.
     pub fn attributes(&'src self) -> Iter<'src, ElementAttribute<'src>> {
         self.attributes.iter()
+    }
+
+    /// Returns the anchor found in this attribute list, if any.
+    pub fn anchor(&'src self) -> Option<&'src str> {
+        self.anchor.as_deref()
     }
 
     /// Returns the first attribute with the given name.
@@ -208,9 +230,11 @@ impl<'src> Attrlist<'src> {
     /// * Goal 2
     /// ```
     pub fn id(&'src self) -> Option<&'src str> {
-        self.nth_attribute(1)
-            .and_then(|attr1| attr1.id())
-            .or_else(|| self.named_attribute("id").map(|attr| attr.value()))
+        self.anchor().or_else(|| {
+            self.nth_attribute(1)
+                .and_then(|attr1| attr1.id())
+                .or_else(|| self.named_attribute("id").map(|attr| attr.value()))
+        })
     }
 
     /// Returns any role attributes that were found.

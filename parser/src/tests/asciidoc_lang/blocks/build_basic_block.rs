@@ -144,6 +144,7 @@ This is more content in the sidebar block.
                             },
                             macro_attrlist: Attrlist {
                                 attributes: &[],
+                                anchor: None,
                                 source: Span {
                                     data: "",
                                     line: 6,
@@ -271,6 +272,7 @@ include::example$block.adoc[tag=opt-listing]
                     shorthand_items: &["listing"],
                     value: "listing"
                 },],
+                anchor: None,
                 source: Span {
                     data: "listing",
                     line: 1,
@@ -337,6 +339,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                     shorthand_items: &["quote"],
                     value: "quote"
                 },],
+                anchor: None,
                 source: Span {
                     data: "quote",
                     line: 1,
