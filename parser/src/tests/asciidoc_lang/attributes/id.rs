@@ -509,183 +509,718 @@ TIP: The order of ID and role values in the shorthand syntax does not matter.
 CAUTION: If the ID contains a `.`, you must define it using either a longhand assignment (e.g., `id=classname.propertyname`) or the anchor shorthand (e.g., `+[[classname.propertyname]]+`).
 This is necessary since the `.` character in the shorthand syntax is the delimiter for a role, and thus gets misinterpreted as such.
 // end::bl[]
+
 "#
     );
 }
 
-// No coverage as yet ...
+mod inline_assignment {
+    use pretty_assertions_sorted::assert_eq;
 
-// == Inline assignment
+    use crate::{Parser, tests::prelude::*};
 
-// // tag::in[]
-// The id (`#`) shorthand can be used on inline quoted text.
+    non_normative!(
+        r#"
+== Inline assignment
 
-// .Quoted text with ID assignment using shorthand syntax
-// ----
-// [#free_the_world]#free the world#
-// ----
+// tag::in[]
+"#
+    );
 
-// .General text with preceding ID assignment using inline anchor syntax
-// ----
-// [[free_the_world]]free the world
-// ----
-// // end::in[]
+    #[test]
+    fn inline_shorthand_syntax() {
+        verifies!(
+            r#"
+// tag::in[]
+The id (`#`) shorthand can be used on inline quoted text.
 
-// [#anchor]
-// == Use an ID as an anchor
+.Quoted text with ID assignment using shorthand syntax
+----
+[#free_the_world]#free the world#
+----
 
-// An anchor (aka ID) can be defined almost anywhere in the document, including
-// on a section title, on a discrete heading, on a paragraph, on an image, on a
-// delimited block, on an inline phrase, and so forth. The anchor is declared by
-// enclosing a _valid_ XML Name in double square brackets (e.g., `+[[idname]]+`)
-// or using the shorthand ID syntax (e.g., `[#idname]`) at the start of an
-// attribute list. The shorthand form is the preferred syntax.
+"#
+        );
 
-// The double square bracket form requires the ID to start with a letter, an
-// underscore, or a colon, ensuring the ID is portable. According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a portable ID may not begin with a number, even though a number is allowed elsewhere in the name.
-// The shorthand form in an attribute list does not impose this restriction.
+        let mut parser = Parser::default();
 
-// === On block element
+        let doc = parser.parse("[#free_the_world]#free the world#");
 
-// To reference a block element, you must assign an ID to that block.
-// You can define an ID using the shorthand syntax:
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[#free_the_world]#free the world#",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<span id=\"free_the_world\">free the world</span>",
+                    },
+                    source: Span {
+                        data: "[#free_the_world]#free the world#",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[#free_the_world]#free the world#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 
-// .Assign an ID to a paragraph using shorthand syntax
-// [source]
-// ----
-// include::example$id.adoc[tag=block-id-shorthand]
-// ----
+    #[test]
+    fn inline_anchor_syntax() {
+        verifies!(
+            r#"
+.General text with preceding ID assignment using inline anchor syntax
+----
+[[free_the_world]]free the world
+----
+// end::in[]
 
-// or you can define it using the block anchor syntax:
+"#
+        );
 
-// .Assign an ID to a paragraph using block anchor syntax
-// [source]
-// ----
-// include::example$id.adoc[tag=block-id-brackets]
-// ----
+        let mut parser = Parser::default();
 
-// === As an inline anchor
+        let doc = parser.parse("[[free_the_world]]free the world");
 
-// You can also define an anchor anywhere in content that receives normal
-// substitutions (specifically the macros substitution). You can enclose the ID
-// in double square brackets:
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[free_the_world]]free the world",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a id=\"free_the_world\"></a>free the world",
+                    },
+                    source: Span {
+                        data: "[[free_the_world]]free the world",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[free_the_world]]free the world",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
 
-// .Define an inline anchor
-// [source]
-// ----
-// include::example$id.adoc[tag=anchor-brackets]
-// ----
+#[allow(unused)]
+mod anchor {
+    use pretty_assertions_sorted::assert_eq;
 
-// or using the shorthand ID syntax.
+    use crate::{Parser, tests::prelude::*};
 
-// .Define an inline anchor using shorthand syntax
-// [source]
-// ----
-// include::example$id.adoc[tag=anchor-shorthand]
-// ----
+    non_normative!(
+        r#"
+[#anchor]
+== Use an ID as an anchor
 
-// === On a list item
+An anchor (aka ID) can be defined almost anywhere in the document, including on a section title, on a discrete heading, on a paragraph, on an image, on a delimited block, on an inline phrase, and so forth.
+The anchor is declared by enclosing a _valid_ XML Name in double square brackets (e.g., `+[[idname]]+`) or using the shorthand ID syntax (e.g., `[#idname]`) at the start of an attribute list.
+The shorthand form is the preferred syntax.
 
-// In addition to being able to define anchors on sections and blocks, anchors
-// can be defined inline wherever you can type normal text (anchors are a macros
-// substitution). The anchors in the text get replaced with invisible anchor
-// points in the output.
+"#
+    );
 
-// For example, you would not put an anchor in front of a list item:
+    #[test]
+    fn double_square_bracket_rules() {
+        verifies!(
+            r#"
+The double square bracket form requires the ID to start with a letter, an underscore, or a colon, ensuring the ID is portable.
+According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a portable ID may not begin with a number, even though a number is allowed elsewhere in the name.
+"#
+        );
 
-// .*Invalid* position for an anchor ID in front of a list item
-// [source]
-// ----
-// include::example$id.adoc[tag=anchor-wrong]
-// ----
+        let mut parser = Parser::default();
 
-// Instead, you would put it at the start of the text of the list item:
+        let doc = parser.parse("[[start_with_letter]]#free the world#");
 
-// .Define an inline anchor on a list item
-// [source]
-// ----
-// include::example$id.adoc[tag=anchor-list-item]
-// ----
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[start_with_letter]]#free the world#",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a id=\"start_with_letter\"></a><mark>free the world</mark>",
+                    },
+                    source: Span {
+                        data: "[[start_with_letter]]#free the world#",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[start_with_letter]]#free the world#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
 
-// For a description list, the anchor must be placed at the start of the term:
+        let mut parser = Parser::default();
 
-// .Define an inline anchor on a description list item
-// [source]
-// ----
-// include::example$id.adoc[tag=anchor-dlist-item]
-// ----
+        let doc = parser.parse("[[_start_with_underscore]]#free the world#");
 
-// You can add multiple anchors to a list item or description list term.
-// However, only the first anchor is registered for use as an xref within the
-// document. The remaining anchors are auxiliary and are used for making deep
-// links (i.e., accessible from a URL fragment).
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[_start_with_underscore]]#free the world#",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a id=\"_start_with_underscore\"></a><mark>free the world</mark>",
+                    },
+                    source: Span {
+                        data: "[[_start_with_underscore]]#free the world#",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[_start_with_underscore]]#free the world#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
 
-// === On a table cell
+        let mut parser = Parser::default();
 
-// You can assign an ID to a table cell by placing an inline anchor at the start
-// of the cell.
+        let doc = parser.parse("[[:start_with_colon]]#free the world#");
 
-// .Assigning an ID to a table cell using an inline anchor
-// [source]
-// ----
-// |===
-// |[[my_cell]]The table cell I want to jump to.
-// |===
-// ----
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[:start_with_colon]]#free the world#",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a id=\":start_with_colon\"></a><mark>free the world</mark>",
+                    },
+                    source: Span {
+                        data: "[[:start_with_colon]]#free the world#",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[:start_with_colon]]#free the world#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
 
-// === On an inline image
+        let mut parser = Parser::default();
 
-// You cannot currently define an ID on an inline image.
-// Instead you need to place an inline anchor adjacent to it.
+        let doc = parser.parse("[[1start_with_number]]#free the world#");
 
-// .Placing an inline anchor adjacent to an inline image using shorthand
-// [source]
-// ----
-// include::example$id.adoc[tag=inline-anchor-brackets]
-// ----
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[1start_with_number]]#free the world#",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "[[1start_with_number]]<mark>free the world</mark>",
+                    },
+                    source: Span {
+                        data: "[[1start_with_number]]#free the world#",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[1start_with_number]]#free the world#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 
-// Instead of the shorthand form, you can use the macro `anchor` to achieve the
-// same goal.
+    #[test]
+    fn shorthand_form() {
+        verifies!(
+            r#"
+The shorthand form in an attribute list does not impose this restriction.
+"#
+        );
 
-// .Placing an inline anchor adjacent to an inline image using a macro
-// [source]
-// ----
-// include::example$id.adoc[tag=inline-anchor-macro]
-// ----
+        let mut parser = Parser::default();
 
-// == Add additional anchors to a section
+        let doc = parser.parse("[#1start_with_number]#free the world#");
 
-// To add additional anchors to a section (with or without an autogenerated ID),
-// place the anchors in front of the title (without any spaces).
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[#1start_with_number]#free the world#",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<span id=\"1start_with_number\">free the world</span>",
+                    },
+                    source: Span {
+                        data: "[#1start_with_number]#free the world#",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[#1start_with_number]#free the world#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
 
-// .Add additional anchors to a section using inline anchors
-// [source]
-// ----
-// include::example$id.adoc[tag=anchor-header-extra]
-// ----
+    #[test]
+    fn block_element_shorthand_syntax() {
+        verifies!(
+            r#"
+=== On block element
 
-// CAUTION: You cannot use inline anchors in a section title to make internal
-// references to that section. The processor will flag these as possible invalid
-// references. These additional anchors are only intended for making deep links
-// using an alternate ID.
+To reference a block element, you must assign an ID to that block.
+You can define an ID using the shorthand syntax:
 
-// Remember that inline anchors are discovered wherever the macros substitution
-// is applied (e.g., paragraph text). If text content doesn't belong somewhere,
-// neither does an inline anchor point.
+.Assign an ID to a paragraph using shorthand syntax
+[source]
+----
+include::example$id.adoc[tag=block-id-shorthand]
+----
 
-// == Customize automatic xreftext
+"#
+        );
 
-// It's possible to customize the text that will be used in the cross reference
-// link (called `xreflabel`). If not defined, the AsciiDoc processor does it
-// best to find suitable text (the solution differs from case to case).
-// In case of an image, the image caption will be used.
-// In case of a section header, the text of the section's title will be used.
+        let mut parser = Parser::default();
 
-// To define the `xreflabel`, add it in the anchor definition right after the ID
-// (separated by a comma).
+        let doc = parser.parse("[#notice]\nThis paragraph gets a lot of attention.");
 
-// .An anchor ID with a defined xreflabel. The caption will not be used as link
-// text. [source]
-// ----
-// include::example$id.adoc[tag=anchor-xreflabel]
-// ----
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "This paragraph gets a lot of attention.",
+                            line: 2,
+                            col: 1,
+                            offset: 10,
+                        },
+                        rendered: "This paragraph gets a lot of attention.",
+                    },
+                    source: Span {
+                        data: "[#notice]\nThis paragraph gets a lot of attention.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "#notice",
+                            shorthand_items: &["#notice"],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "#notice",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[#notice]\nThis paragraph gets a lot of attention.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn block_element_anchor_syntax() {
+        verifies!(
+            r#"
+or you can define it using the block anchor syntax:
+
+.Assign an ID to a paragraph using block anchor syntax
+[source]
+----
+include::example$id.adoc[tag=block-id-brackets]
+----
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[[notice]]\nThis paragraph gets a lot of attention.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "This paragraph gets a lot of attention.",
+                            line: 2,
+                            col: 1,
+                            offset: 11,
+                        },
+                        rendered: "This paragraph gets a lot of attention.",
+                    },
+                    source: Span {
+                        data: "[[notice]]\nThis paragraph gets a lot of attention.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: Some(Span {
+                        data: "notice",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },),
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[notice]]\nThis paragraph gets a lot of attention.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn inline_anchor_brackets() {
+        verifies!(
+            r#"
+=== As an inline anchor
+
+You can also define an anchor anywhere in content that receives normal substitutions (specifically the macros substitution).
+You can enclose the ID in double square brackets:
+
+.Define an inline anchor
+[source]
+----
+include::example$id.adoc[tag=anchor-brackets]
+----
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc =
+            parser.parse("[[bookmark-a]]Inline anchors make arbitrary content referenceable.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[bookmark-a]]Inline anchors make arbitrary content referenceable.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a id=\"bookmark-a\"></a>Inline anchors make arbitrary content referenceable.",
+                    },
+                    source: Span {
+                        data: "[[bookmark-a]]Inline anchors make arbitrary content referenceable.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[bookmark-a]]Inline anchors make arbitrary content referenceable.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn inline_anchor_shorthand() {
+        verifies!(
+            r#"
+or using the shorthand ID syntax.
+
+.Define an inline anchor using shorthand syntax
+[source]
+----
+include::example$id.adoc[tag=anchor-shorthand]
+----
+
+"#
+        );
+
+        let mut parser = Parser::default();
+
+        let doc =
+            parser.parse("[#bookmark-b]#Inline anchors can be applied to a phrase like this one.#");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[#bookmark-b]#Inline anchors can be applied to a phrase like this one.#",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<span id=\"bookmark-b\">Inline anchors can be applied to a phrase like this one.</span>",
+                    },
+                    source: Span {
+                        data: "[#bookmark-b]#Inline anchors can be applied to a phrase like this one.#",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[#bookmark-b]#Inline anchors can be applied to a phrase like this one.#",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
