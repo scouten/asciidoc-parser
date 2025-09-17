@@ -77,12 +77,17 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
         todo!("Port bibliography reference macro");
         // Port Ruby Asciidoctor's implementation from lines 719..721.
     }
+    */
 
     if (found_square_bracket && text.contains("[[")) || (found_macroish && text.contains("or:")) {
-        todo!("Port inline anchor macro");
-        // Port Ruby Asciidoctor's implementation from lines 723..739.
+        let replacer = InlineAnchorReplacer(parser);
+
+        if let Cow::Owned(new_result) = INLINE_ANCHOR.replace_all(content.rendered(), replacer) {
+            content.rendered = new_result.into();
+        }
     }
 
+    /*
     if (text.contains('&') && text.contains(";&l") || (found_macroish && text.contains("xref:"))) {
         todo!("Port cross-reference macro");
         // Port Ruby Asciidoctor's implementation from lines 742..840.
@@ -649,7 +654,6 @@ static INLINE_EMAIL: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-#[allow(unused)] // TEMPORARY while building
 struct InlineEmailReplacer<'p>(&'p Parser<'p>);
 
 #[allow(unused)] // TEMPORARY while building
@@ -683,6 +687,74 @@ impl Replacer for InlineEmailReplacer<'_> {
         };
 
         self.0.renderer.render_link(&params, dest);
+    }
+}
+
+/// Matches an anchor (i.e., id + optional reference text) in the flow of text.
+///
+/// ##Examples
+///
+/// * `[[idname]]`
+/// * `[[idname,Reference Text]]`
+/// * `anchor:idname[]`
+/// * `anchor:idname[Reference Text]`
+static INLINE_ANCHOR: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(
+        r#"(?x)
+    (\\)?                           # (1) optional escape backslash before the anchor
+
+    (?:                             # either [[id[, reftext]]] OR anchor:id[reftext]
+      \[\[                          # [[
+        (                           # (2) anchor id for [[...]]
+          [\p{Alphabetic}_:]        #     first char: letter, '_' or ':'
+          [\p{Alphabetic}\p{Nd}_\-:.]*  # rest: letters/digits/_ or '-', ':', '.'
+        )
+        (?: , \s* (.+?) )?          # (3) optional reftext after comma (lazy)
+        \]\]                        # ]]
+      |
+        anchor:                     # 'anchor:' prefix
+        (                           # (4) anchor id for anchor:...[]
+          [\p{Alphabetic}_:]        #     first char: letter, '_' or ':'
+          [\p{Alphabetic}\p{Nd}_\-:.]*  # rest: letters/digits/_ or '-', ':', '.'
+        )                           # end (4)
+        \[                          # opening '[' for reftext
+          (?:                       # either empty [] or a non-empty reftext
+            \]                      #   empty -> immediate ']'
+          |                         #   OR
+            (.*?[^\\])              # (5) non-empty reftext (ends with a non-escaped char)
+            \]                      #   closing ']'
+          )
+    )                               # end alternation
+        "#,
+    )
+    .unwrap()
+});
+
+#[derive(Debug)]
+struct InlineAnchorReplacer<'p>(&'p Parser<'p>);
+
+impl Replacer for InlineAnchorReplacer<'_> {
+    fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
+        if caps.get(1).is_some() {
+            dest.push_str(&caps[0][1..]);
+            return;
+        }
+
+        // NOTE: reftext is only relevant for DocBook output;
+        // in that case it is used as value of xreflabel attribute.
+
+        let (id, reftext) = if let Some(id) = caps.get(2) {
+            (id.as_str(), caps.get(3).map(|m| m.as_str().to_string()))
+        } else {
+            (
+                &caps[4],
+                caps.get(5)
+                    .map(|m| m.as_str().to_string().replace("\\]", "]")),
+            )
+        };
+
+        self.0.renderer.render_anchor(id, reftext, dest);
     }
 }
 

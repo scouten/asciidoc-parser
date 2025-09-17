@@ -652,3 +652,459 @@ mod link_macro {
         );
     }
 }
+
+mod inline_anchor {
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, tests::prelude::*};
+
+    #[test]
+    fn inline_ref_double_brackets() {
+        let doc = Parser::default().parse("Here you can read about tigers.[[tigers]]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Here you can read about tigers.[[tigers]]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "Here you can read about tigers.<a id=\"tigers\"></a>",
+                    },
+                    source: Span {
+                        data: "Here you can read about tigers.[[tigers]]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Here you can read about tigers.[[tigers]]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn inline_ref_macro() {
+        let doc = Parser::default().parse("Here you can read about tigers.anchor:tigers[]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Here you can read about tigers.anchor:tigers[]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "Here you can read about tigers.<a id=\"tigers\"></a>",
+                    },
+                    source: Span {
+                        data: "Here you can read about tigers.anchor:tigers[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Here you can read about tigers.anchor:tigers[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn inline_ref_with_reftext_double_brackets() {
+        let doc = Parser::default().parse("Here you can read about tigers.[[tigers,Tigers]]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Here you can read about tigers.[[tigers,Tigers]]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "Here you can read about tigers.<a id=\"tigers\"></a>",
+                    },
+                    source: Span {
+                        data: "Here you can read about tigers.[[tigers,Tigers]]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Here you can read about tigers.[[tigers,Tigers]]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn inline_ref_with_reftext_macro() {
+        let doc = Parser::default().parse("Here you can read about tigers.anchor:tigers[Tigers]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Here you can read about tigers.anchor:tigers[Tigers]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "Here you can read about tigers.<a id=\"tigers\"></a>",
+                    },
+                    source: Span {
+                        data: "Here you can read about tigers.anchor:tigers[Tigers]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Here you can read about tigers.anchor:tigers[Tigers]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn mixed_inline_anchor_macro_and_anchor_shorthand_with_empty_reftext() {
+        let doc = Parser::default().parse("anchor:one[][[two]]anchor:three[][[four]]anchor:five[]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "anchor:one[][[two]]anchor:three[][[four]]anchor:five[]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: r#"<a id="one"></a><a id="two"></a><a id="three"></a><a id="four"></a><a id="five"></a>"#,
+                    },
+                    source: Span {
+                        data: "anchor:one[][[two]]anchor:three[][[four]]anchor:five[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "anchor:one[][[two]]anchor:three[][[four]]anchor:five[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn inline_ref_can_start_with_colon() {
+        let doc = Parser::default().parse("[[:idname]] text");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[:idname]] text",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a id=\":idname\"></a> text",
+                    },
+                    source: Span {
+                        data: "[[:idname]] text",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[:idname]] text",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn inline_ref_cannot_start_with_digit() {
+        let doc = Parser::default().parse("[[1-install]] text");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[1-install]] text",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "[[1-install]] text",
+                    },
+                    source: Span {
+                        data: "[[1-install]] text",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "[[1-install]] text",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn escaped_inline_ref_square_brackets() {
+        let doc = Parser::default().parse("Here you can read about tigers.\\[[tigers]]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Here you can read about tigers.\\[[tigers]]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "Here you can read about tigers.[[tigers]]",
+                    },
+                    source: Span {
+                        data: "Here you can read about tigers.\\[[tigers]]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Here you can read about tigers.\\[[tigers]]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+
+    #[test]
+    fn escaped_inline_ref_macro() {
+        let doc = Parser::default().parse("Here you can read about tigers.\\anchor:tigers[]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Here you can read about tigers.\\anchor:tigers[]",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "Here you can read about tigers.anchor:tigers[]",
+                    },
+                    source: Span {
+                        data: "Here you can read about tigers.\\anchor:tigers[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Here you can read about tigers.\\anchor:tigers[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
+    }
+}
