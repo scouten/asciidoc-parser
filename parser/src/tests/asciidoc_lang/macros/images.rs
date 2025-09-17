@@ -102,6 +102,7 @@ include::example$image.adoc[tag=base]
                         },
                         macro_attrlist: Attrlist {
                             attributes: &[],
+                            anchor: None,
                             source: Span {
                                 data: "",
                                 line: 3,
@@ -206,6 +207,7 @@ include::example$image.adoc[tag=alt]
                             value: "Sunset",
                             shorthand_items: &["Sunset"],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "Sunset",
                             line: 1,
@@ -287,6 +289,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                             value: "Mesa Verde Sunset, by JAVH",
                             shorthand_items: &[],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "\"Mesa Verde Sunset, by JAVH\"",
                             line: 1,
@@ -390,6 +393,7 @@ include::example$image.adoc[tag=attr]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "Sunset,200,100",
                             line: 3,
@@ -424,6 +428,7 @@ include::example$image.adoc[tag=attr]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "#img-sunset,link=https://www.flickr.com/photos/javh/5448336655",
                             line: 2,

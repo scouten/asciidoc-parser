@@ -175,6 +175,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                         shorthand_items: &["#custom-id"],
                         value: "#custom-id"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "#custom-id",
                         line: 1,
@@ -236,6 +237,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                         shorthand_items: &["appendix", "#custom-id"],
                         value: "appendix#custom-id"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "appendix#custom-id",
                         line: 1,
@@ -305,6 +307,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                         shorthand_items: &["#rules", ".prominent", "%incremental"],
                         value: "#rules.prominent%incremental"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "#rules.prominent%incremental",
                         line: 1,
@@ -376,6 +379,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                         shorthand_items: &["%header", "%footer", "%autowidth",],
                         value: "%header%footer%autowidth"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "%header%footer%autowidth",
                         line: 1,
@@ -518,6 +522,7 @@ A named attribute consists of a name and a value separated by an `=` character (
                             value: "bar",
                             shorthand_items: &[],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "foo=bar",
                             line: 1,
@@ -590,6 +595,7 @@ In all other cases, the surrounding quotes are optional.
                             value: "value with space",
                             shorthand_items: &[],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "name=\"value with space\"",
                             line: 1,
@@ -663,6 +669,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                             value: "the song \"Dark Horse\"",
                             shorthand_items: &[],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "value=\"the song \\\"Dark Horse\\\"\"",
                             line: 1,
@@ -738,6 +745,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                             value: "bar",
                             shorthand_items: &[],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "foo=bar,value=None",
                             line: 1,
@@ -835,6 +843,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo=bar,94-pages=94",
                             line: 1,
@@ -933,6 +942,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo=bar,target={url}",
                             line: 3,
@@ -1070,6 +1080,7 @@ For subsequent attributes, any leading space or tab characters are skipped.
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo=bar, target=url",
                             line: 1,
@@ -1149,6 +1160,7 @@ Space and tab characters around the equals sign (=) and at the end of the value 
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo = bar, target=url",
                             line: 1,
@@ -1232,6 +1244,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "_foo = bar , zip , target=url",
                             line: 1,
@@ -1315,6 +1328,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo = bar, zip , target=url",
                             line: 1,
@@ -1397,6 +1411,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo = \"bar, zip , target=url",
                             line: 1,
@@ -1487,6 +1502,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo = \"bar\\\"boop\", zip , target=url",
                             line: 1,
@@ -1569,6 +1585,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo = 'bar, zip , target=url",
                             line: 1,
@@ -1659,6 +1676,7 @@ If there is a closing single quote, the enclosing single quote characters are re
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "foo = 'bar\\'boop', zip , target=url",
                             line: 1,
@@ -1750,6 +1768,7 @@ If there is a closing single quote, and the first character is not an escaped si
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "quote, author='*Strong* and _emphasis_'",
                             line: 1,
@@ -1847,6 +1866,7 @@ That's because the parser already knows to look for the closing square bracket a
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "quote, author=my [bracketed] name",
                             line: 1,

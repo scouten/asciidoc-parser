@@ -105,6 +105,7 @@ To learn more about how the attribute list is parsed, see xref:positional-and-na
                         value: "value of named",
                     }
                 ],
+                anchor: None,
                 source: Span {
                     data: r#"first-positional,second-positional,named="value of named""#,
                     line: 1,
@@ -234,6 +235,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                             value: "value of named"
                         },
                     ],
+                    anchor: None,
                     source: Span {
                         data: "style,second-positional,named=\"value of named\"",
                         line: 1,
@@ -363,6 +365,7 @@ name::target[first-positional,second-positional,named="value of named"]
                             value: "value of named"
                         },
                     ],
+                    anchor: None,
                     source: Span {
                         data: "first-positional,second-positional,named=\"value of named\"",
                         line: 1,

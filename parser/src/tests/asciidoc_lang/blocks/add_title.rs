@@ -257,6 +257,7 @@ stages: [ init, verify, deploy ]
                         value: "yaml"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "source,yaml",
                     line: 2,
@@ -343,6 +344,7 @@ If you don't plant it in a container, it will take over your garden.
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
+                anchor: None,
                 source: Span {
                     data: "sidebar",
                     line: 2,

@@ -130,6 +130,7 @@ image::sunset.jpg[Sunset]
                             shorthand_items: &["Sunset"],
                             value: "Sunset"
                         }],
+                        anchor: None,
                         source: Span {
                             data: "Sunset",
                             line: 1,

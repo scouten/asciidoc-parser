@@ -481,6 +481,7 @@ fn err_bad_header_and_bad_macro() {
                                             value: "400"
                                         },
                                     ],
+                                    anchor: None,
                                     source: Span {
                                         data: "alt=Sunset,width=300,,height=400",
                                         line: 6,

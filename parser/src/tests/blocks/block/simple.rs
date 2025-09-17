@@ -242,6 +242,7 @@ fn attrlist() {
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
+                anchor: None,
                 source: Span {
                     data: "sidebar",
                     line: 1,
@@ -272,6 +273,7 @@ fn attrlist() {
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
             },],
+            anchor: None,
             source: Span {
                 data: "sidebar",
                 line: 1,
@@ -335,6 +337,7 @@ fn title_and_attrlist() {
                     shorthand_items: &["sidebar"],
                     value: "sidebar"
                 },],
+                anchor: None,
                 source: Span {
                     data: "sidebar",
                     line: 2,
@@ -365,6 +368,7 @@ fn title_and_attrlist() {
                 shorthand_items: &["sidebar"],
                 value: "sidebar"
             },],
+            anchor: None,
             source: Span {
                 data: "sidebar",
                 line: 2,
@@ -761,6 +765,7 @@ fn unterminated_block_anchor() {
                     shorthand_items: &["[notice",],
                     value: "[notice"
                 },],
+                anchor: None,
                 source: Span {
                     data: "[notice",
                     line: 1,
@@ -803,6 +808,7 @@ fn unterminated_block_anchor() {
                 shorthand_items: &["[notice"],
                 value: "[notice"
             },],
+            anchor: None,
             source: Span {
                 data: "[notice",
                 line: 1,

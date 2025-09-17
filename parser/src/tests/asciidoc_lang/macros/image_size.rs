@@ -84,6 +84,7 @@ image::flower.jpg[Flower,640,480]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "Flower,640,480",
                             line: 1,
@@ -169,6 +170,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "alt=Flower,width=640,height=480",
                             line: 1,

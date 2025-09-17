@@ -248,6 +248,7 @@ fn has_macro_block_with_extra_blank_line() {
                             value: "400"
                         }
                     ],
+                    anchor: None,
                     source: Span {
                         data: "alt=Sunset,width=300,height=400",
                         line: 3,
@@ -351,6 +352,7 @@ fn has_child_block_with_errors() {
                             value: "400"
                         }
                     ],
+                    anchor: None,
                     source: Span {
                         data: "alt=Sunset,width=300,,height=400",
                         line: 3,

@@ -82,6 +82,7 @@ Content of delimited example block
                     shorthand_items: &["#the-id-of-this-block",],
                     value: "#the-id-of-this-block"
                 },],
+                anchor: None,
                 source: Span {
                     data: "#the-id-of-this-block",
                     line: 1,
@@ -166,6 +167,7 @@ Roads? Where we're going, we don't need roads.
                     shorthand_items: &["quote", "#roads"],
                     value: "quote#roads"
                 },],
+                anchor: None,
                 source: Span {
                     data: "quote#roads",
                     line: 1,
@@ -244,6 +246,7 @@ Roads? Where we're going, we don't need roads.
                         value: "Back to the Future"
                     },
                 ],
+                anchor: None,
                 source: Span {
                     data: "quote#roads,Dr. Emmett Brown,Back to the Future",
                     line: 1,

@@ -85,6 +85,7 @@ include::example$image.adoc[tag=url]
                                 shorthand_items: &[],
                             },
                         ],
+                        anchor: None,
                         source: Span {
                             data: "Tux,250,350",
                             line: 1,

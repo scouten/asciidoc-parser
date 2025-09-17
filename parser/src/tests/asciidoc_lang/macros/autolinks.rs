@@ -673,6 +673,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                             value: "-macros",
                             shorthand_items: &[],
                         },],
+                        anchor: None,
                         source: Span {
                             data: "subs=-macros",
                             line: 1,

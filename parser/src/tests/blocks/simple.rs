@@ -206,6 +206,7 @@ fn overrides_sub_group_via_subs_attribute() {
                     value: "quotes",
                     shorthand_items: &[],
                 },],
+                anchor: None,
                 source: Span {
                     data: "subs=quotes",
                     line: 1,

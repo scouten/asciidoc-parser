@@ -8,6 +8,7 @@ use crate::{
 #[derive(Eq, PartialEq)]
 pub(crate) struct Attrlist {
     pub attributes: &'static [ElementAttribute],
+    pub anchor: Option<&'static str>,
     pub source: Span,
 }
 
@@ -15,6 +16,7 @@ impl fmt::Debug for Attrlist {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Attrlist")
             .field("attributes", &self.attributes)
+            .field("anchor", &self.anchor)
             .field("source", &self.source)
             .finish()
     }
@@ -40,6 +42,10 @@ impl PartialEq<Attrlist> for &crate::attributes::Attrlist<'_> {
 
 fn fixture_eq_observed(fixture: &Attrlist, observed: &crate::attributes::Attrlist) -> bool {
     if fixture.source != observed.span() {
+        return false;
+    }
+
+    if fixture.anchor != observed.anchor() {
         return false;
     }
 

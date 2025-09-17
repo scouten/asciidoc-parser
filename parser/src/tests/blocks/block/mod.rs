@@ -261,6 +261,7 @@ mod error_cases {
                     shorthand_items: &[],
                     value: "Sunset"
                 },],
+                anchor: None,
                 source: Span {
                     data: "alt=\"Sunset\"width=300",
                     line: 1,
@@ -316,6 +317,7 @@ mod error_cases {
                         shorthand_items: &[],
                         value: "Sunset"
                     },],
+                    anchor: None,
                     source: Span {
                         data: "alt=\"Sunset\"width=300",
                         line: 1,

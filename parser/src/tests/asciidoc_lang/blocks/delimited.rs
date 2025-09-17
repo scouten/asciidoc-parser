@@ -730,6 +730,7 @@ Live within the simulated reality without want or fear.
                                 shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
+                            anchor: None,
                             source: Span {
                                 data: "%collapsible",
                                 line: 5,
@@ -781,6 +782,7 @@ Live within the simulated reality without want or fear.
                                 shorthand_items: &["%collapsible"],
                                 value: "%collapsible"
                             },],
+                            anchor: None,
                             source: Span {
                                 data: "%collapsible",
                                 line: 11,

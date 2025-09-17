@@ -19,6 +19,7 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq, Default)]
 pub struct Attrlist<'src> {
     attributes: Vec<ElementAttribute<'src>>,
+    anchor: Option<CowStr<'src>>,
     source: Span<'src>,
 }
 
@@ -122,7 +123,11 @@ impl<'src> Attrlist<'src> {
 
         MatchAndWarnings {
             item: MatchedItem {
-                item: Self { attributes, source },
+                item: Self {
+                    attributes,
+                    anchor: None,
+                    source,
+                },
                 after: source.discard_all(),
             },
             warnings,
@@ -133,6 +138,11 @@ impl<'src> Attrlist<'src> {
     /// this attrlist.
     pub fn attributes(&'src self) -> Iter<'src, ElementAttribute<'src>> {
         self.attributes.iter()
+    }
+
+    /// Returns the anchor found in this attribute list, if any.
+    pub fn anchor(&'src self) -> Option<&'src str> {
+        self.anchor.as_deref()
     }
 
     /// Returns the first attribute with the given name.
