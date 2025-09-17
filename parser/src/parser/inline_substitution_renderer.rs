@@ -143,6 +143,12 @@ pub trait InlineSubstitutionRenderer: Debug {
     /// The renderer should write an appropriate rendering of the specified
     /// link, to `dest`.
     fn render_link(&self, params: &LinkRenderParams, dest: &mut String);
+
+    /// Renders an anchor.
+    ///
+    /// The rendered should write an appropriate rendering of the specified
+    /// anchor with ID and possible ref text (only used by some renderers).
+    fn render_anchor(&self, id: &str, reftext: Option<String>, dest: &mut String);
 }
 
 /// Specifies which special character is being replaced in a call to
@@ -679,6 +685,10 @@ impl InlineSubstitutionRenderer for HtmlSubstitutionRenderer {
         );
 
         dest.push_str(&link);
+    }
+
+    fn render_anchor(&self, id: &str, _reftext: Option<String>, dest: &mut String) {
+        dest.push_str(&format!("<a id=\"{id}\"></a>"));
     }
 }
 
