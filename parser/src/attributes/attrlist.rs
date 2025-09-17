@@ -47,7 +47,19 @@ impl<'src> Attrlist<'src> {
         };
 
         if source_cow.starts_with('[') && source_cow.ends_with(']') {
-            todo!("Parse block anchor syntax (issue #122)");
+            let anchor = source_cow[1..source_cow.len() - 1].to_owned();
+
+            return MatchAndWarnings {
+                item: MatchedItem {
+                    item: Self {
+                        attributes,
+                        anchor: Some(CowStr::from(anchor)),
+                        source,
+                    },
+                    after: source.discard_all(),
+                },
+                warnings,
+            };
         }
 
         let mut index = 0;

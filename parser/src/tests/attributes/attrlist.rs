@@ -841,6 +841,45 @@ fn propagates_error_from_element_attribute() {
     );
 }
 
+#[test]
+fn anchor_syntax() {
+    let p = Parser::default();
+
+    let maw = crate::attributes::Attrlist::parse(
+        crate::Span::new("[notice]"),
+        &p,
+        AttrlistContext::Inline,
+    );
+
+    let mi = maw.item.clone();
+
+    assert_eq!(
+        mi.item,
+        Attrlist {
+            attributes: &[],
+            anchor: Some("notice"),
+            source: Span {
+                data: "[notice]",
+                line: 1,
+                col: 1,
+                offset: 0
+            }
+        }
+    );
+
+    assert_eq!(
+        mi.after,
+        Span {
+            data: "",
+            line: 1,
+            col: 9,
+            offset: 8
+        }
+    );
+
+    assert!(maw.warnings.is_empty());
+}
+
 mod id {
     use pretty_assertions_sorted::assert_eq;
 
@@ -973,18 +1012,39 @@ mod id {
     }
 
     #[test]
-    #[should_panic]
     fn via_block_anchor_syntax() {
         let p = Parser::default();
 
-        let _pr = crate::attributes::Attrlist::parse(
+        let mi = crate::attributes::Attrlist::parse(
             crate::Span::new("[goals]"),
             &p,
             AttrlistContext::Inline,
         )
         .unwrap_if_no_warnings();
 
-        // TO DO (#122): Parse block anchor syntax
+        assert_eq!(
+            mi.item,
+            Attrlist {
+                attributes: &[],
+                anchor: Some("goals"),
+                source: Span {
+                    data: "[goals]",
+                    line: 1,
+                    col: 1,
+                    offset: 0
+                }
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            Span {
+                data: "",
+                line: 1,
+                col: 8,
+                offset: 7
+            }
+        );
     }
 
     #[test]
