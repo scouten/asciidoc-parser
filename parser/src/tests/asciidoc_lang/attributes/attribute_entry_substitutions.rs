@@ -270,6 +270,7 @@ mod attributes_defined_outside_document {
 
     use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
+    // Non-normative because we have a different API and no CLI.
     non_normative!(
         r#"
 == Substitutions for attributes defined outside the document

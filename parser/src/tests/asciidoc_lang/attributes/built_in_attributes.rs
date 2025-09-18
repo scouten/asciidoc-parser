@@ -136,6 +136,7 @@ This explicit user-defined value replaces the default value (assuming the attrib
     );
 }
 
+// Non-normative because this section is commented out.
 non_normative!(
     r#"
 ////

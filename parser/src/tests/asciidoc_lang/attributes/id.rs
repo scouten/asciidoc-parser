@@ -188,11 +188,8 @@ install the gem
         );
     }
 
-    #[test]
-    #[ignore]
-    fn block_id() {
-        non_normative!(
-            r#"
+    non_normative!(
+        r#"
 ////
 BlockId
 
@@ -200,8 +197,7 @@ NOTE: Section pending
 ////
 
 "#
-        );
-    }
+    );
 }
 
 mod block_assignment {
