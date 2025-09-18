@@ -530,6 +530,7 @@ mod defining_without_attribute_entry {
 
     use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
 
+    // Non-normative because we have a different API and no CLI.
     non_normative!(
         r#"
 == Defining document attributes without an attribute entry
@@ -628,6 +629,7 @@ pass:a,q[{attribute-with-formatted-text}]
         );
     }
 
+    // Non-normative because we have a different API and no CLI.
     non_normative!(
         r#"
 When an attribute is declared from the command line or API, it is implicitly a document header attribute.
@@ -641,6 +643,7 @@ The one exception to this rule is the `sectnums` attribute, which can always be 
     );
 }
 
+// Non-normative because this block is commented out.
 non_normative!(
     r#"
 ////

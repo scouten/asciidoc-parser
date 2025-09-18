@@ -2,6 +2,7 @@ use crate::tests::prelude::*;
 
 track_file!("docs/modules/attributes/pages/document-attributes.adoc");
 
+// Non-normative: Introductory text.
 non_normative!(
     r#"
 = Document Attributes
