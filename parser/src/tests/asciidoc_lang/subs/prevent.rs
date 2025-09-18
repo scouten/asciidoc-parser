@@ -89,8 +89,6 @@ The URL \https://example.org isn't converted into an active link.
                     panic!("Unexpected block type: {block:?}");
                 };
 
-                println!("{}", &block.content().rendered());
-
                 format!("{}\n\n", block.content().rendered())
             })
             .collect::<String>();
