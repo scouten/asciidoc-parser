@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0](https://github.com/scouten/asciidoc-parser/compare/v0.6.0...v0.7.0)
+_18 September 2025_
+
+### Added
+
+* Implement inline anchor macro substitution ([#363](https://github.com/scouten/asciidoc-parser/pull/363))
+* Recognize anchor syntax when parsing `Attrlist` ([#362](https://github.com/scouten/asciidoc-parser/pull/362))
+* Implement `Default` for `Span` ([#355](https://github.com/scouten/asciidoc-parser/pull/355))
+* Add `Default` implementation to `Attrlist` ([#353](https://github.com/scouten/asciidoc-parser/pull/353))
+
+### Fixed
+
+* Block metadata should ignore block anchor if the anchor name is invalid ([#366](https://github.com/scouten/asciidoc-parser/pull/366))
+* Apply normal substitutions in `ElementAttribute::parse` but only when parsing attrlists for blocks and only when the value is single-quoted ([#361](https://github.com/scouten/asciidoc-parser/pull/361))
+* Attribute value with unmatched initial quote ends at next comma or EOF instead ([#359](https://github.com/scouten/asciidoc-parser/pull/359))
+* Trim trailing whitespace from attrlist values ([#358](https://github.com/scouten/asciidoc-parser/pull/358))
+* A named attribute with the exact value "None" should be ignored ([#350](https://github.com/scouten/asciidoc-parser/pull/350))
+* Quoted attribute value should unescape quotes inside the value ([#348](https://github.com/scouten/asciidoc-parser/pull/348))
+
+### Other
+
+* Improve SDD coverage for ID page ([#364](https://github.com/scouten/asciidoc-parser/pull/364))
+
 ## [0.6.0](https://github.com/scouten/asciidoc-parser/compare/v0.5.0...v0.6.0)
 _08 September 2025_
 
