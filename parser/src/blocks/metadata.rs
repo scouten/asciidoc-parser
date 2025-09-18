@@ -70,23 +70,17 @@ impl<'src> BlockMetadata<'src> {
         });
 
         // Does this block have a block anchor?
-        let (anchor, block_start) = if let Some(MatchAndWarnings {
-            item:
-                MatchedItem {
-                    item: anchor,
-                    after: block_start,
-                },
-            warnings: mut attrlist_warnings,
-        }) = parse_maybe_block_anchor(block_start)
-        {
-            if !attrlist_warnings.is_empty() {
-                warnings.append(&mut attrlist_warnings);
-            }
+        let mut anchor_maw = parse_maybe_block_anchor(block_start);
 
-            (Some(anchor), block_start)
+        let (anchor, block_start) = if let Some(mi) = anchor_maw.item {
+            (Some(mi.item), mi.after)
         } else {
             (None, block_start)
         };
+
+        if !anchor_maw.warnings.is_empty() {
+            warnings.append(&mut anchor_maw.warnings);
+        }
 
         // Does this block have an attribute list?
         let (attrlist, block_start) = if let Some(MatchAndWarnings {
@@ -128,9 +122,12 @@ impl<'src> BlockMetadata<'src> {
 
 fn parse_maybe_block_anchor(
     source: Span<'_>,
-) -> Option<MatchAndWarnings<'_, MatchedItem<'_, Span<'_>>>> {
+) -> MatchAndWarnings<'_, Option<MatchedItem<'_, Span<'_>>>> {
     if !source.starts_with("[[") {
-        return None;
+        return MatchAndWarnings {
+            item: None,
+            warnings: vec![],
+        };
     }
 
     let MatchedItem {
@@ -139,41 +136,42 @@ fn parse_maybe_block_anchor(
     } = source.take_normalized_line();
 
     if !line.ends_with("]]") {
-        return None;
+        return MatchAndWarnings {
+            item: None,
+            warnings: vec![],
+        };
     }
 
     // Drop opening and closing brace pairs now that we know they are there.
     let anchor_src = line.slice(2..line.len() - 2);
     if anchor_src.is_empty() {
-        return Some(MatchAndWarnings {
-            item: MatchedItem {
-                item: anchor_src,
-                after: block_start,
-            },
+        return MatchAndWarnings {
+            item: None,
             warnings: vec![Warning {
                 source: anchor_src,
                 warning: WarningType::EmptyBlockAnchorName,
             }],
-        });
+        };
     }
 
     // Warn if anchor name doesn't match the XML "Name" pattern.
-    let warnings = if anchor_src.is_xml_name() {
-        vec![]
-    } else {
-        vec![Warning {
-            source: anchor_src,
-            warning: WarningType::InvalidBlockAnchorName,
-        }]
-    };
+    if !anchor_src.is_xml_name() {
+        return MatchAndWarnings {
+            item: None,
+            warnings: vec![Warning {
+                source: anchor_src,
+                warning: WarningType::InvalidBlockAnchorName,
+            }],
+        };
+    }
 
-    Some(MatchAndWarnings {
-        item: MatchedItem {
+    MatchAndWarnings {
+        item: Some(MatchedItem {
             item: anchor_src,
             after: block_start,
-        },
-        warnings,
-    })
+        }),
+        warnings: vec![],
+    }
 }
 
 fn parse_maybe_attrlist_line<'src>(
@@ -197,7 +195,10 @@ fn parse_maybe_attrlist_line<'src>(
     // Drop opening and closing braces now that we know they are there.
     let attrlist_src = line.slice(1..line.len() - 1);
 
-    if attrlist_src.starts_with(' ') || attrlist_src.starts_with('\t') {
+    if attrlist_src.starts_with(' ')
+        || attrlist_src.starts_with('\t')
+        || (attrlist_src.starts_with('[') && attrlist_src.ends_with(']'))
+    {
         return None;
     }
 
