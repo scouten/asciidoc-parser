@@ -88,8 +88,6 @@ Depending on the capabilities of the web application, the space character can be
 
         let doc = Parser::default().parse("https://example.org?q=label:%22Requires%20docs%22");
 
-        dbg!(&doc);
-
         assert_eq!(
             doc,
             Document {
@@ -182,8 +180,6 @@ The prefix will still be present in the link target.
 
         let doc = Parser::default()
             .parse("= Document Title\n:hide-uri-scheme:\n\nhttps://asciidoctor.org");
-
-        dbg!(&doc);
 
         assert_eq!(
             doc,

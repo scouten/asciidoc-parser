@@ -524,8 +524,6 @@ fn block_enforces_permission() {
     let mut warnings = doc.warnings();
     let warning1 = warnings.next().unwrap();
 
-    dbg!(&warning1);
-
     assert_eq!(
         &warning1.source,
         Span {
