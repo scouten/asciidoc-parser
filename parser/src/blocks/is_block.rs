@@ -133,7 +133,9 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
     /// * Goal 2
     /// ```
     fn id(&'src self) -> Option<&'src str> {
-        self.attrlist().and_then(|attrlist| attrlist.id())
+        self.anchor()
+            .map(|a| a.data())
+            .or_else(|| self.attrlist().and_then(|attrlist| attrlist.id()))
     }
 
     /// Returns any role attributes that were found.

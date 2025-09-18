@@ -73,12 +73,12 @@ All the language requires in this case is that the value be non-empty.
             Block::Simple(SimpleBlock {
                 content: Content {
                     original: Span {
-                        data: "This paragraph gets a lot of attention.",
-                        line: 2,
+                        data: "[[]]\nThis paragraph gets a lot of attention.",
+                        line: 1,
                         col: 1,
-                        offset: 5,
+                        offset: 0,
                     },
-                    rendered: "This paragraph gets a lot of attention.",
+                    rendered: "[[]]\nThis paragraph gets a lot of attention.",
                 },
                 source: Span {
                     data: "[[]]\nThis paragraph gets a lot of attention.",
@@ -88,12 +88,7 @@ All the language requires in this case is that the value be non-empty.
                 },
                 title_source: None,
                 title: None,
-                anchor: Some(Span {
-                    data: "",
-                    line: 1,
-                    col: 3,
-                    offset: 2,
-                },),
+                anchor: None,
                 attrlist: None,
             })
         );
@@ -172,12 +167,12 @@ install the gem
             Block::Simple(SimpleBlock {
                 content: Content {
                     original: Span {
-                        data: "This paragraph gets a lot of attention.",
-                        line: 2,
+                        data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
+                        line: 1,
                         col: 1,
-                        offset: 17,
+                        offset: 0,
                     },
-                    rendered: "This paragraph gets a lot of attention.",
+                    rendered: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
                 },
                 source: Span {
                     data: "[[3 blind mice]]\nThis paragraph gets a lot of attention.",
@@ -187,12 +182,7 @@ install the gem
                 },
                 title_source: None,
                 title: None,
-                anchor: Some(Span {
-                    data: "3 blind mice",
-                    line: 1,
-                    col: 3,
-                    offset: 2,
-                },),
+                anchor: None,
                 attrlist: None,
             })
         );
@@ -217,7 +207,7 @@ NOTE: Section pending
 mod block_assignment {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -506,12 +496,33 @@ ____
         r#"
 TIP: The order of ID and role values in the shorthand syntax does not matter.
 
+"#
+    );
+
+    #[test]
+    fn block_id_containing_dot() {
+        verifies!(
+            r#"
 CAUTION: If the ID contains a `.`, you must define it using either a longhand assignment (e.g., `id=classname.propertyname`) or the anchor shorthand (e.g., `+[[classname.propertyname]]+`).
 This is necessary since the `.` character in the shorthand syntax is the delimiter for a role, and thus gets misinterpreted as such.
 // end::bl[]
 
 "#
-    );
+        );
+
+        let doc = Parser::default()
+            .parse("[id=classname.propertyname1]\nprop1\n\n[[classname.propertyname2]]\nprop2");
+
+        let mut blocks = doc.nested_blocks();
+
+        let block1 = blocks.next().unwrap();
+        assert_eq!(block1.id().unwrap(), "classname.propertyname1");
+
+        let block2 = blocks.next().unwrap();
+        assert_eq!(block2.id().unwrap(), "classname.propertyname2");
+
+        assert!(blocks.next().is_none());
+    }
 }
 
 mod inline_assignment {
