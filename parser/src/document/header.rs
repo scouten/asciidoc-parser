@@ -48,7 +48,7 @@ impl<'src> Header<'src> {
 
         let (title_source, mut after) = if let Some(mi) = parse_title(source) {
             // TO DO (#370): Look for author line and parse into data model.
-            
+
             // TO DO (#371): Look for revision line and parse into data model.
             (Some(mi.item), mi.after)
         } else {
