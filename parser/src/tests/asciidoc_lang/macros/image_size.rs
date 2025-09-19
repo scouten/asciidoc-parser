@@ -51,6 +51,7 @@ image::flower.jpg[Flower,640,480]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -137,6 +138,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,

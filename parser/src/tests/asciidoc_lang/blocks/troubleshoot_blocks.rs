@@ -45,6 +45,7 @@ It will be styled as a sidebar.
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
@@ -128,6 +129,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,

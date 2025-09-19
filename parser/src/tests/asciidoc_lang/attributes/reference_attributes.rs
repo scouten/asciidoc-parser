@@ -133,6 +133,7 @@ Actually, please don't.
                         },
                     },
                 ],
+                comments: &[],
                 source: Span {
                     data: "= Ops Manual\n:disclaimer: Don't pet the wild Wolpertingers. We're not responsible for any loss \\\nof hair, chocolate, or purple socks.\n:url-repo: https://github.com/asciidoctor/asciidoctor",
                     line: 1,
@@ -232,6 +233,7 @@ Our servers don't like them either.
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
@@ -347,6 +349,7 @@ In the path /items/\{id}, id is a path parameter.
                             offset: 0,
                         },
                     },],
+                    comments: &[],
                     source: Span {
                         data: ":id: foo",
                         line: 1,
@@ -407,6 +410,7 @@ If the syntax that follows the backslash does not match an attribute reference, 
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -503,6 +507,7 @@ In the path +/items/{id}+, id is a path parameter.
                             offset: 0,
                         },
                     },],
+                    comments: &[],
                     source: Span {
                         data: ":id: foo",
                         line: 1,
@@ -563,6 +568,7 @@ All the text between the passthrough enclosure will get passed through to the ou
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,

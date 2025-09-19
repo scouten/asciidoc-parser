@@ -120,6 +120,7 @@ At the end of the value, press kbd:[Enter].
                         offset: 10,
                     },
                 },],
+                comments: &[],
                 source: Span {
                     data: "= Testing\n:name-of-an-attribute: value of the attribute",
                     line: 1,
@@ -209,6 +210,7 @@ That means you don't need to escape special characters such in an HTML tag.
                         offset: 10,
                     },
                 },],
+                comments: &[],
                 source: Span {
                     data: "= Testing\n:lt-attribute: <",
                     line: 1,
@@ -320,6 +322,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                         },
                     },
                 ],
+                comments: &[],
                 source: Span {
                     data: ":url-org: https://example.org/projects\n:url-project: {url-org}/project-name",
                     line: 1,
@@ -388,6 +391,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
                         offset: 0,
                     },
                 },],
+                comments: &[],
                 source: Span {
                     data: ":name-of-an-attribute:",
                     line: 1,

@@ -18,6 +18,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -69,6 +70,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -119,6 +121,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -189,6 +192,7 @@ mod inline_link {
                             offset: 12,
                         },
                     },],
+                    comments: &[],
                     source: Span {
                         data: "= Test Page\n:hide-uri-scheme:",
                         line: 1,
@@ -241,6 +245,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -293,6 +298,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -364,6 +370,7 @@ mod inline_link {
                             offset: 7,
                         },
                     },],
+                    comments: &[],
                     source: Span {
                         data: "= Test\n:hide-uri-scheme:",
                         line: 1,
@@ -421,6 +428,7 @@ mod link_macro {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -471,6 +479,7 @@ mod link_macro {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -542,6 +551,7 @@ mod link_macro {
                             offset: 16,
                         },
                     },],
+                    comments: &[],
                     source: Span {
                         data: "= Test Document\n:hide-uri-scheme:",
                         line: 1,
@@ -613,6 +623,7 @@ mod link_macro {
                             offset: 16,
                         },
                     },],
+                    comments: &[],
                     source: Span {
                         data: "= Test Document\n:hide-uri-scheme:",
                         line: 1,
@@ -669,6 +680,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -719,6 +731,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -769,6 +782,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -819,6 +833,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -869,6 +884,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -919,6 +935,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -969,6 +986,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -1019,6 +1037,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -1069,6 +1088,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,

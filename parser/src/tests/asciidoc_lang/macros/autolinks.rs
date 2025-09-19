@@ -44,6 +44,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -100,6 +101,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -156,6 +158,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -212,6 +215,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -269,6 +273,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -336,6 +341,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -404,6 +410,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -477,6 +484,7 @@ For email address which do not conform to these restriction, you can use the xre
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -552,6 +560,7 @@ The URL and email address will both be shown in plain text.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -641,6 +650,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
