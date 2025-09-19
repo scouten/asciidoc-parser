@@ -53,6 +53,7 @@ image::logo.png[Logo]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -139,6 +140,7 @@ image::logo.png[Logo,link=https://example.org]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -220,6 +222,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -305,6 +308,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,

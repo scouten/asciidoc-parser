@@ -41,6 +41,7 @@ fn empty_source() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
@@ -69,6 +70,7 @@ fn only_spaces() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
@@ -98,6 +100,7 @@ fn one_simple_block() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
@@ -148,6 +151,7 @@ fn two_simple_blocks() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
@@ -224,6 +228,7 @@ fn two_blocks_and_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "= Example Title",
                     line: 1,
@@ -287,6 +292,169 @@ fn two_blocks_and_title() {
 }
 
 #[test]
+fn blank_lines_before_header() {
+    let doc = Parser::default().parse("\n\n= Example Title\n\nabc\n\ndef");
+
+    assert_eq!(
+        doc,
+        Document {
+            header: Header {
+                title_source: Some(Span {
+                    data: "Example Title",
+                    line: 3,
+                    col: 3,
+                    offset: 4,
+                },),
+                title: Some("Example Title",),
+                attributes: &[],
+                comments: &[],
+                source: Span {
+                    data: "= Example Title",
+                    line: 3,
+                    col: 1,
+                    offset: 2,
+                },
+            },
+            blocks: &[
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "abc",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        rendered: "abc",
+                    },
+                    source: Span {
+                        data: "abc",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "def",
+                            line: 7,
+                            col: 1,
+                            offset: 24,
+                        },
+                        rendered: "def",
+                    },
+                    source: Span {
+                        data: "def",
+                        line: 7,
+                        col: 1,
+                        offset: 24,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),
+            ],
+            source: Span {
+                data: "\n\n= Example Title\n\nabc\n\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+}
+
+#[test]
+fn blank_lines_and_comment_before_header() {
+    let doc = Parser::default().parse("\n// ignore this comment\n= Example Title\n\nabc\n\ndef");
+
+    assert_eq!(
+        doc,
+        Document {
+            header: Header {
+                title_source: Some(Span {
+                    data: "Example Title",
+                    line: 3,
+                    col: 3,
+                    offset: 26,
+                },),
+                title: Some("Example Title",),
+                attributes: &[],
+                comments: &[Span {
+                    data: "// ignore this comment",
+                    line: 2,
+                    col: 1,
+                    offset: 1,
+                },],
+                source: Span {
+                    data: "= Example Title",
+                    line: 3,
+                    col: 1,
+                    offset: 24,
+                },
+            },
+            blocks: &[
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "abc",
+                            line: 5,
+                            col: 1,
+                            offset: 41,
+                        },
+                        rendered: "abc",
+                    },
+                    source: Span {
+                        data: "abc",
+                        line: 5,
+                        col: 1,
+                        offset: 41,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "def",
+                            line: 7,
+                            col: 1,
+                            offset: 46,
+                        },
+                        rendered: "def",
+                    },
+                    source: Span {
+                        data: "def",
+                        line: 7,
+                        col: 1,
+                        offset: 46,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),
+            ],
+            source: Span {
+                data: "\n// ignore this comment\n= Example Title\n\nabc\n\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+}
+
+#[test]
 fn extra_space_before_title() {
     assert_eq!(
         Parser::default().parse("=   Example Title\n\nabc"),
@@ -300,6 +468,7 @@ fn extra_space_before_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "=   Example Title",
                     line: 1,
@@ -353,6 +522,7 @@ fn err_bad_header() {
                 }),
                 title: Some("Title"),
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "= Title",
                     line: 1,
@@ -414,6 +584,7 @@ fn err_bad_header_and_bad_macro() {
                 }),
                 title: Some("Title"),
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "= Title",
                     line: 1,

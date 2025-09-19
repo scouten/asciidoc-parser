@@ -52,6 +52,7 @@ include::example$image.adoc[tag=url]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -146,6 +147,7 @@ include::example$image.adoc[tag=in-url]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,

@@ -16,22 +16,38 @@ pub struct Header<'src> {
     title_source: Option<Span<'src>>,
     title: Option<String>,
     attributes: Vec<Attribute<'src>>,
+    comments: Vec<Span<'src>>,
     source: Span<'src>,
 }
 
 impl<'src> Header<'src> {
     pub(crate) fn parse(
-        source: Span<'src>,
+        mut source: Span<'src>,
         parser: &mut Parser,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
         let original_src = source;
 
         let mut attributes: Vec<Attribute> = vec![];
+        let mut comments: Vec<Span<'src>> = vec![];
         let mut warnings: Vec<Warning<'src>> = vec![];
 
-        let source = source.discard_empty_lines();
+        // Look for empty lines and/or comments before header.
+        while !source.is_empty() {
+            let line_mi = source.take_normalized_line();
+            let line = line_mi.item;
+
+            if line.is_empty() {
+                source = line_mi.after;
+            } else if line.starts_with("//") && !line.starts_with("///") {
+                comments.push(line);
+                source = line_mi.after;
+            } else {
+                break;
+            }
+        }
 
         let (title_source, mut after) = if let Some(mi) = parse_title(source) {
+            // TO DO: Look for author/revision lines.
             (Some(mi.item), mi.after)
         } else {
             (None, source)
@@ -58,7 +74,8 @@ impl<'src> Header<'src> {
                     item: Self {
                         title_source: None,
                         title: None,
-                        attributes,
+                        attributes: vec![],
+                        comments: vec![],
                         source: original_src.into_parse_result(0).item,
                     },
                     after,
@@ -85,6 +102,7 @@ impl<'src> Header<'src> {
                     title_source,
                     title,
                     attributes,
+                    comments,
                     source: source.trim_trailing_whitespace(),
                 },
                 after,
@@ -107,6 +125,11 @@ impl<'src> Header<'src> {
     /// Return an iterator over the attributes in this header.
     pub fn attributes(&'src self) -> Iter<'src, Attribute<'src>> {
         self.attributes.iter()
+    }
+
+    /// Return an iterator over the comments in this header.
+    pub fn comments(&'src self) -> Iter<'src, Span<'src>> {
+        self.comments.iter()
     }
 }
 

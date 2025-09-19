@@ -560,6 +560,7 @@ The id (`#`) shorthand can be used on inline quoted text.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -623,6 +624,7 @@ The id (`#`) shorthand can be used on inline quoted text.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -701,6 +703,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -750,6 +753,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -799,6 +803,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -848,6 +853,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -906,6 +912,7 @@ The shorthand form in an attribute list does not impose this restriction.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -974,6 +981,7 @@ include::example$id.adoc[tag=block-id-shorthand]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -1052,6 +1060,7 @@ include::example$id.adoc[tag=block-id-brackets]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -1126,6 +1135,7 @@ include::example$id.adoc[tag=anchor-brackets]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -1192,6 +1202,7 @@ include::example$id.adoc[tag=anchor-shorthand]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,

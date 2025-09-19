@@ -10,6 +10,7 @@ pub(crate) struct Header {
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub attributes: &'static [Attribute],
+    pub comments: &'static [Span],
     pub source: Span,
 }
 
@@ -19,6 +20,7 @@ impl fmt::Debug for Header {
             .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("attributes", &self.attributes)
+            .field("comments", &self.comments)
             .field("source", &self.source)
             .finish()
     }
@@ -77,6 +79,16 @@ fn fixture_eq_observed(fixture: &Header, observed: &crate::document::Header) -> 
         fixture.attributes.iter().zip(observed.attributes())
     {
         if fixture_attribute != observed_attribute {
+            return false;
+        }
+    }
+
+    if fixture.comments.len() != observed.comments().len() {
+        return false;
+    }
+
+    for (fixture_comment, observed_comment) in fixture.comments.iter().zip(observed.comments()) {
+        if fixture_comment != observed_comment {
             return false;
         }
     }

@@ -54,16 +54,14 @@ impl<'src> Document<'src> {
     /// [`warnings()`]: Self::warnings
     pub(crate) fn parse(source: &'src str, parser: &mut Parser) -> Self {
         let source = Span::new(source);
-        let i = source.discard_empty_lines();
-        let i = if i.is_empty() { source } else { i };
 
-        let mi = Header::parse(i, parser);
-        let i = mi.item.after;
+        let mi = Header::parse(source, parser);
+        let next = mi.item.after;
 
         let header = mi.item.item;
         let mut warnings = mi.warnings;
 
-        let mut maw_blocks = parse_blocks_until(i, |_| false, parser);
+        let mut maw_blocks = parse_blocks_until(next, |_| false, parser);
 
         if !maw_blocks.warnings.is_empty() {
             warnings.append(&mut maw_blocks.warnings);

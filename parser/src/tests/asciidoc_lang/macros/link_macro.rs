@@ -51,6 +51,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -141,6 +142,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -205,6 +207,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -290,6 +293,7 @@ link:report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -363,6 +367,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -424,6 +429,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -485,6 +491,7 @@ link:My%20Documents/report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -558,6 +565,7 @@ link:Avengers%3A%20Endgame.html[]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -623,6 +631,7 @@ link:++https://example.org/now_this__link_works.html++[]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -686,6 +695,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,
@@ -749,6 +759,7 @@ link:file:///home/username[Your files]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    comments: &[],
                     source: Span {
                         data: "",
                         line: 1,

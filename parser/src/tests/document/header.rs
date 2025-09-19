@@ -31,6 +31,7 @@ fn only_title() {
             }),
             title: Some("Just the Title"),
             attributes: &[],
+            comments: &[],
             source: Span {
                 data: "= Just the Title",
                 line: 1,
@@ -70,6 +71,7 @@ fn trims_leading_spaces_in_title() {
             }),
             title: Some("Just the Title"),
             attributes: &[],
+            comments: &[],
             source: Span {
                 data: "=    Just the Title",
                 line: 1,
@@ -107,6 +109,7 @@ fn trims_trailing_spaces_in_title() {
             }),
             title: Some("Just the Title"),
             attributes: &[],
+            comments: &[],
             source: Span {
                 data: "= Just the Title",
                 line: 1,
@@ -168,6 +171,7 @@ fn title_and_attribute() {
                     offset: 17,
                 }
             }],
+            comments: &[],
             source: Span {
                 data: "= Just the Title\n:foo: bar",
                 line: 1,
@@ -229,6 +233,7 @@ fn title_applies_header_substitutions() {
                     offset: 31,
                 }
             }],
+            comments: &[],
             source: Span {
                 data: "= The Title & Some{sp}Nonsense\n:foo: bar",
                 line: 1,
@@ -281,6 +286,7 @@ fn attribute_without_title() {
                     offset: 0,
                 }
             }],
+            comments: &[],
             source: Span {
                 data: ":foo: bar",
                 line: 1,

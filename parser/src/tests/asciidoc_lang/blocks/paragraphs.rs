@@ -51,6 +51,7 @@ include::example$paragraph.adoc[tag=para]
                 title_source: None,
                 title: None,
                 attributes: &[],
+                comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
