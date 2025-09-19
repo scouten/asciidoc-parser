@@ -287,6 +287,84 @@ fn two_blocks_and_title() {
 }
 
 #[test]
+fn blank_lines_before_header() {
+    let doc = Parser::default().parse("\n\n= Example Title\n\nabc\n\ndef");
+
+    assert_eq!(
+        doc,
+        Document {
+            header: Header {
+                title_source: Some(Span {
+                    data: "Example Title",
+                    line: 3,
+                    col: 3,
+                    offset: 4,
+                },),
+                title: Some("Example Title",),
+                attributes: &[],
+                source: Span {
+                    data: "= Example Title",
+                    line: 3,
+                    col: 1,
+                    offset: 2,
+                },
+            },
+            blocks: &[
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "abc",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        rendered: "abc",
+                    },
+                    source: Span {
+                        data: "abc",
+                        line: 5,
+                        col: 1,
+                        offset: 19,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "def",
+                            line: 7,
+                            col: 1,
+                            offset: 24,
+                        },
+                        rendered: "def",
+                    },
+                    source: Span {
+                        data: "def",
+                        line: 7,
+                        col: 1,
+                        offset: 24,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),
+            ],
+            source: Span {
+                data: "\n\n= Example Title\n\nabc\n\ndef",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+}
+
+#[test]
 fn extra_space_before_title() {
     assert_eq!(
         Parser::default().parse("=   Example Title\n\nabc"),
