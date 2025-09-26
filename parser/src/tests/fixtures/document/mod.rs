@@ -15,6 +15,12 @@ pub(crate) use attribute::Attribute;
 mod attribute_value;
 pub(crate) use attribute_value::InterpretedValue;
 
+mod author;
+pub(crate) use author::Author;
+
+mod author_line;
+pub(crate) use author_line::AuthorLine;
+
 mod document;
 pub(crate) use document::Document;
 
