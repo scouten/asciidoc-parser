@@ -146,7 +146,7 @@ static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 fn apply_header_subs(source: &str, parser: &Parser) -> String {
-    let span = Span::new(&source);
+    let span = Span::new(source);
 
     let mut content = Content::from(span);
     SubstitutionGroup::Header.apply(&mut content, parser, None);
