@@ -42,7 +42,7 @@ impl PartialEq<Author> for &crate::document::Author {
 fn fixture_eq_observed(fixture: &Author, observed: &crate::document::Author) -> bool {
     fixture.name == observed.name()
         && fixture.firstname == observed.firstname()
-        && fixture.middlename.as_deref() == observed.middlename()
-        && fixture.lastname.as_deref() == observed.lastname()
-        && fixture.email.as_deref() == observed.email()
+        && fixture.middlename == observed.middlename()
+        && fixture.lastname == observed.lastname()
+        && fixture.email == observed.email()
 }
