@@ -4,9 +4,10 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock},
+    blocks::{ContentModel, IsBlock, MediaType},
     content::SubstitutionGroup,
     tests::prelude::*,
+    warnings::WarningType,
 };
 
 #[test]
@@ -511,6 +512,243 @@ fn extra_space_before_title() {
                 offset: 0
             },
             warnings: &[],
+        }
+    );
+}
+
+#[test]
+fn err_bad_header() {
+    assert_eq!(
+        Parser::default().parse("= Title\nJane Smith <jane@example.com>\nnot an attribute\n"),
+        Document {
+            header: Header {
+                title_source: Some(Span {
+                    data: "Title",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                }),
+                title: Some("Title"),
+                attributes: &[],
+                author_line: Some(AuthorLine {
+                    authors: &[Author {
+                        name: "Jane Smith",
+                        firstname: "Jane",
+                        middlename: None,
+                        lastname: Some("Smith"),
+                        email: Some("jane@example.com"),
+                    }],
+                    source: Span {
+                        data: "Jane Smith <jane@example.com>",
+                        line: 2,
+                        col: 1,
+                        offset: 8,
+                    },
+                }),
+                comments: &[],
+                source: Span {
+                    data: "= Title\nJane Smith <jane@example.com>",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            },
+            blocks: &[Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "not an attribute",
+                        line: 3,
+                        col: 1,
+                        offset: 38,
+                    },
+                    rendered: "not an attribute",
+                },
+                source: Span {
+                    data: "not an attribute",
+                    line: 3,
+                    col: 1,
+                    offset: 38,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            })],
+            source: Span {
+                data: "= Title\nJane Smith <jane@example.com>\nnot an attribute",
+                line: 1,
+                col: 1,
+                offset: 0
+            },
+            warnings: &[Warning {
+                source: Span {
+                    data: "not an attribute",
+                    line: 3,
+                    col: 1,
+                    offset: 38,
+                },
+                warning: WarningType::DocumentHeaderNotTerminated,
+            },],
+        }
+    );
+}
+
+#[test]
+fn err_bad_header_and_bad_macro() {
+    assert_eq!(
+        Parser::default().parse("= Title\nJane Smith <jane@example.com>\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
+        Document {
+            header: Header {
+                title_source: Some(Span {
+                    data: "Title",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                }),
+                title: Some("Title"),
+                attributes: &[],
+                author_line: Some(AuthorLine {
+                    authors: &[Author {
+                        name: "Jane Smith",
+                        firstname: "Jane",
+                        middlename: None,
+                        lastname: Some("Smith"),
+                        email: Some("jane@example.com"),
+                    }],
+                    source: Span {
+                        data: "Jane Smith <jane@example.com>",
+                        line: 2,
+                        col: 1,
+                        offset: 8,
+                    },
+                }),
+                comments: &[],
+                source: Span {
+                    data: "= Title\nJane Smith <jane@example.com>",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            },
+            blocks: &[
+                Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "not an attribute",
+                            line: 3,
+                            col: 1,
+                            offset: 38,
+                        },
+                        rendered: "not an attribute",
+                    },
+                    source: Span {
+                        data: "not an attribute",
+                        line: 3,
+                        col: 1,
+                        offset: 38,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            ),
+            Block::Section(
+                SectionBlock {
+                    level: 1,
+                    section_title: Span {
+                        data: "Section Title",
+                        line: 5,
+                        col: 4,
+                        offset: 59,
+                    },
+                    blocks: &[
+                        Block::Media(
+                            MediaBlock {
+                                type_: MediaType::Image,
+                                target: Span {
+                                    data: "bar",
+                                    line: 7,
+                                    col: 8,
+                                    offset: 81,
+                                },
+                                macro_attrlist: Attrlist {
+                                    attributes: &[
+                                        ElementAttribute {
+                                            name: Some("alt"),
+                                            shorthand_items: &[],
+                                            value: "Sunset"
+                                        },
+                                        ElementAttribute {
+                                            name: Some("width"),
+                                            shorthand_items: &[],
+                                            value: "300"
+                                        },
+                                        ElementAttribute {
+                                            name: Some("height"),
+                                            shorthand_items: &[],
+                                            value: "400"
+                                        },
+                                    ],
+                                    anchor: None,
+                                    source: Span {
+                                        data: "alt=Sunset,width=300,,height=400",
+                                        line: 7,
+                                        col: 12,
+                                        offset: 85,
+                                    },
+                                },
+                                source: Span {
+                                    data: "image::bar[alt=Sunset,width=300,,height=400]",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 74,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                attrlist: None,
+                            },
+                        ),
+                    ],
+                    source: Span {
+                        data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
+                        line: 5,
+                        col: 1,
+                        offset: 56,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },
+            )],
+            source: Span {
+                data: "= Title\nJane Smith <jane@example.com>\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
+                line: 1,
+                col: 1,
+                offset: 0
+            },
+            warnings: &[
+                Warning {
+                    source: Span {
+                        data: "not an attribute",
+                        line: 3,
+                        col: 1,
+                        offset: 38,
+                    },
+                    warning: WarningType::DocumentHeaderNotTerminated,
+                },
+                Warning {
+                    source: Span {
+                        data: "alt=Sunset,width=300,,height=400",
+                        line: 7,
+                        col: 12,
+                        offset: 85,
+                    },
+                    warning: WarningType::EmptyAttributeValue,
+                },
+            ],
         }
     );
 }
