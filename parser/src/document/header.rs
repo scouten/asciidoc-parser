@@ -3,7 +3,7 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     content::{Content, SubstitutionGroup},
-    document::Attribute,
+    document::{Attribute, AuthorLine},
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
@@ -16,6 +16,7 @@ pub struct Header<'src> {
     title_source: Option<Span<'src>>,
     title: Option<String>,
     attributes: Vec<Attribute<'src>>,
+    author_line: Option<AuthorLine<'src>>,
     comments: Vec<Span<'src>>,
     source: Span<'src>,
 }
@@ -25,78 +26,58 @@ impl<'src> Header<'src> {
         mut source: Span<'src>,
         parser: &mut Parser,
     ) -> MatchAndWarnings<'src, MatchedItem<'src, Self>> {
-        let original_src = source;
+        let original_source = source.discard_empty_lines();
 
+        let mut title_source: Option<Span<'src>> = None;
+        let mut title: Option<String> = None;
         let mut attributes: Vec<Attribute> = vec![];
+        let mut author_line: Option<AuthorLine<'src>> = None;
         let mut comments: Vec<Span<'src>> = vec![];
         let mut warnings: Vec<Warning<'src>> = vec![];
 
-        // Look for empty lines and/or comments before header.
+        // Aside from the title line, items can appear in almost any order.
         while !source.is_empty() {
             let line_mi = source.take_normalized_line();
             let line = line_mi.item;
 
+            // A blank line after the title ends the header.
             if line.is_empty() {
+                if title.is_some() {
+                    break;
+                }
                 source = line_mi.after;
             } else if line.starts_with("//") && !line.starts_with("///") {
                 comments.push(line);
                 source = line_mi.after;
+            } else if line.starts_with(':')
+                && let Some(attr) = Attribute::parse(source, parser)
+            {
+                parser.set_attribute_from_header(&attr.item, &mut warnings);
+                attributes.push(attr.item);
+                source = attr.after;
+            } else if title.is_none() && line.starts_with("= ") {
+                let title_span = line.discard(2).discard_whitespace();
+                title = Some(apply_header_subs(title_span.data(), parser));
+                title_source = Some(title_span);
+                source = line_mi.after;
+            } else if title.is_some() && author_line.is_none() {
+                author_line = Some(AuthorLine::parse(line, parser));
+                source = line_mi.after;
+            // else if title.is_some() && author_line.is_some() {
+            // parse revision line
             } else {
+                if title.is_some() {
+                    warnings.push(Warning {
+                        source: line,
+                        warning: WarningType::DocumentHeaderNotTerminated,
+                    });
+                }
                 break;
             }
         }
 
-        let (title_source, mut after) = if let Some(mi) = parse_title(source) {
-            // TO DO (#370): Look for author line and parse into data model.
-
-            // TO DO (#371): Look for revision line and parse into data model.
-            (Some(mi.item), mi.after)
-        } else {
-            (None, source)
-        };
-
-        let title = title_source.map(|ref span| {
-            let mut content = Content::from(*span);
-            SubstitutionGroup::Header.apply(&mut content, parser, None);
-            content.rendered.into_string()
-        });
-
-        while let Some(attr) = Attribute::parse(after, parser) {
-            parser.set_attribute_from_header(&attr.item, &mut warnings);
-            attributes.push(attr.item);
-            after = attr.after;
-        }
-
-        let source = source.trim_remainder(after);
-
-        // Nothing resembling a header so far? Don't look for empty line.
-        if title_source.is_none() && attributes.is_empty() {
-            return MatchAndWarnings {
-                item: MatchedItem {
-                    item: Self {
-                        title_source: None,
-                        title: None,
-                        attributes: vec![],
-                        comments: vec![],
-                        source: original_src.into_parse_result(0).item,
-                    },
-                    after,
-                },
-                warnings,
-            };
-        }
-
-        // Header is valid so far. Warn if not followed by empty line or EOF.
-        after = match after.take_empty_line() {
-            Some(mi) => mi.after.discard_empty_lines(),
-            None => {
-                warnings.push(Warning {
-                    source: after.take_line().item,
-                    warning: WarningType::DocumentHeaderNotTerminated,
-                });
-                after
-            }
-        };
+        let after = source.discard_empty_lines();
+        let source = original_source.trim_remainder(source);
 
         MatchAndWarnings {
             item: MatchedItem {
@@ -104,6 +85,7 @@ impl<'src> Header<'src> {
                     title_source,
                     title,
                     attributes,
+                    author_line,
                     comments,
                     source: source.trim_trailing_whitespace(),
                 },
@@ -129,6 +111,11 @@ impl<'src> Header<'src> {
         self.attributes.iter()
     }
 
+    /// Returns the author line, if found.
+    pub fn author_line(&self) -> Option<&AuthorLine<'src>> {
+        self.author_line.as_ref()
+    }
+
     /// Return an iterator over the comments in this header.
     pub fn comments(&'src self) -> Iter<'src, Span<'src>> {
         self.comments.iter()
@@ -141,13 +128,11 @@ impl<'src> HasSpan<'src> for Header<'src> {
     }
 }
 
-fn parse_title(source: Span<'_>) -> Option<MatchedItem<'_, Span<'_>>> {
-    let line = source.take_non_empty_line()?;
-    let equal = line.item.take_prefix("=")?;
-    let ws = equal.after.take_required_whitespace()?;
+fn apply_header_subs(source: &str, parser: &Parser) -> String {
+    let span = Span::new(source);
 
-    Some(MatchedItem {
-        item: ws.after,
-        after: line.after,
-    })
+    let mut content = Content::from(span);
+    SubstitutionGroup::Header.apply(&mut content, parser, None);
+
+    content.rendered().to_string()
 }

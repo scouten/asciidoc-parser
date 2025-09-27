@@ -41,6 +41,7 @@ fn empty_source() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -70,12 +71,13 @@ fn only_spaces() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
-                    col: 1,
-                    offset: 0
+                    col: 5,
+                    offset: 4
                 },
             },
             source: Span {
@@ -100,6 +102,7 @@ fn one_simple_block() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -151,6 +154,7 @@ fn two_simple_blocks() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -228,6 +232,7 @@ fn two_blocks_and_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "= Example Title",
@@ -307,6 +312,7 @@ fn blank_lines_before_header() {
                 },),
                 title: Some("Example Title",),
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "= Example Title",
@@ -386,6 +392,7 @@ fn blank_lines_and_comment_before_header() {
                 },),
                 title: Some("Example Title",),
                 attributes: &[],
+                author_line: None,
                 comments: &[Span {
                     data: "// ignore this comment",
                     line: 2,
@@ -393,10 +400,10 @@ fn blank_lines_and_comment_before_header() {
                     offset: 1,
                 },],
                 source: Span {
-                    data: "= Example Title",
-                    line: 3,
+                    data: "// ignore this comment\n= Example Title",
+                    line: 2,
                     col: 1,
-                    offset: 24,
+                    offset: 1,
                 },
             },
             blocks: &[
@@ -468,6 +475,7 @@ fn extra_space_before_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "=   Example Title",
@@ -511,7 +519,7 @@ fn extra_space_before_title() {
 #[test]
 fn err_bad_header() {
     assert_eq!(
-        Parser::default().parse("= Title\nnot an attribute\n"),
+        Parser::default().parse("= Title\nJane Smith <jane@example.com>\nnot an attribute\n"),
         Document {
             header: Header {
                 title_source: Some(Span {
@@ -522,9 +530,24 @@ fn err_bad_header() {
                 }),
                 title: Some("Title"),
                 attributes: &[],
+                author_line: Some(AuthorLine {
+                    authors: &[Author {
+                        name: "Jane Smith",
+                        firstname: "Jane",
+                        middlename: None,
+                        lastname: Some("Smith"),
+                        email: Some("jane@example.com"),
+                    }],
+                    source: Span {
+                        data: "Jane Smith <jane@example.com>",
+                        line: 2,
+                        col: 1,
+                        offset: 8,
+                    },
+                }),
                 comments: &[],
                 source: Span {
-                    data: "= Title",
+                    data: "= Title\nJane Smith <jane@example.com>",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -534,17 +557,17 @@ fn err_bad_header() {
                 content: Content {
                     original: Span {
                         data: "not an attribute",
-                        line: 2,
+                        line: 3,
                         col: 1,
-                        offset: 8,
+                        offset: 38,
                     },
                     rendered: "not an attribute",
                 },
                 source: Span {
                     data: "not an attribute",
-                    line: 2,
+                    line: 3,
                     col: 1,
-                    offset: 8,
+                    offset: 38,
                 },
                 title_source: None,
                 title: None,
@@ -552,7 +575,7 @@ fn err_bad_header() {
                 attrlist: None,
             })],
             source: Span {
-                data: "= Title\nnot an attribute",
+                data: "= Title\nJane Smith <jane@example.com>\nnot an attribute",
                 line: 1,
                 col: 1,
                 offset: 0
@@ -560,9 +583,9 @@ fn err_bad_header() {
             warnings: &[Warning {
                 source: Span {
                     data: "not an attribute",
-                    line: 2,
+                    line: 3,
                     col: 1,
-                    offset: 8,
+                    offset: 38,
                 },
                 warning: WarningType::DocumentHeaderNotTerminated,
             },],
@@ -573,7 +596,7 @@ fn err_bad_header() {
 #[test]
 fn err_bad_header_and_bad_macro() {
     assert_eq!(
-        Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
+        Parser::default().parse("= Title\nJane Smith <jane@example.com>\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         Document {
             header: Header {
                 title_source: Some(Span {
@@ -584,9 +607,24 @@ fn err_bad_header_and_bad_macro() {
                 }),
                 title: Some("Title"),
                 attributes: &[],
+                author_line: Some(AuthorLine {
+                    authors: &[Author {
+                        name: "Jane Smith",
+                        firstname: "Jane",
+                        middlename: None,
+                        lastname: Some("Smith"),
+                        email: Some("jane@example.com"),
+                    }],
+                    source: Span {
+                        data: "Jane Smith <jane@example.com>",
+                        line: 2,
+                        col: 1,
+                        offset: 8,
+                    },
+                }),
                 comments: &[],
                 source: Span {
-                    data: "= Title",
+                    data: "= Title\nJane Smith <jane@example.com>",
                     line: 1,
                     col: 1,
                     offset: 0,
@@ -597,17 +635,17 @@ fn err_bad_header_and_bad_macro() {
                     content: Content {
                         original: Span {
                             data: "not an attribute",
-                            line: 2,
+                            line: 3,
                             col: 1,
-                            offset: 8,
+                            offset: 38,
                         },
                         rendered: "not an attribute",
                     },
                     source: Span {
                         data: "not an attribute",
-                        line: 2,
+                        line: 3,
                         col: 1,
-                        offset: 8,
+                        offset: 38,
                     },
                     title_source: None,
                     title: None,
@@ -620,9 +658,9 @@ fn err_bad_header_and_bad_macro() {
                     level: 1,
                     section_title: Span {
                         data: "Section Title",
-                        line: 4,
+                        line: 5,
                         col: 4,
-                        offset: 29,
+                        offset: 59,
                     },
                     blocks: &[
                         Block::Media(
@@ -630,9 +668,9 @@ fn err_bad_header_and_bad_macro() {
                                 type_: MediaType::Image,
                                 target: Span {
                                     data: "bar",
-                                    line: 6,
+                                    line: 7,
                                     col: 8,
-                                    offset: 51,
+                                    offset: 81,
                                 },
                                 macro_attrlist: Attrlist {
                                     attributes: &[
@@ -655,16 +693,16 @@ fn err_bad_header_and_bad_macro() {
                                     anchor: None,
                                     source: Span {
                                         data: "alt=Sunset,width=300,,height=400",
-                                        line: 6,
+                                        line: 7,
                                         col: 12,
-                                        offset: 55,
+                                        offset: 85,
                                     },
                                 },
                                 source: Span {
                                     data: "image::bar[alt=Sunset,width=300,,height=400]",
-                                    line: 6,
+                                    line: 7,
                                     col: 1,
-                                    offset: 44,
+                                    offset: 74,
                                 },
                                 title_source: None,
                                 title: None,
@@ -675,9 +713,9 @@ fn err_bad_header_and_bad_macro() {
                     ],
                     source: Span {
                         data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
-                        line: 4,
+                        line: 5,
                         col: 1,
-                        offset: 26,
+                        offset: 56,
                     },
                     title_source: None,
                     title: None,
@@ -686,28 +724,29 @@ fn err_bad_header_and_bad_macro() {
                 },
             )],
             source: Span {
-                data: "= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
+                data: "= Title\nJane Smith <jane@example.com>\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
                 line: 1,
                 col: 1,
                 offset: 0
             },
-            warnings: &[Warning {
-                source: Span {
-                    data: "not an attribute",
-                    line: 2,
-                    col: 1,
-                    offset: 8,
+            warnings: &[
+                Warning {
+                    source: Span {
+                        data: "not an attribute",
+                        line: 3,
+                        col: 1,
+                        offset: 38,
+                    },
+                    warning: WarningType::DocumentHeaderNotTerminated,
                 },
-                warning: WarningType::DocumentHeaderNotTerminated,
-            },
-            Warning {
-                source: Span {
-                    data: "alt=Sunset,width=300,,height=400",
-                    line: 6,
-                    col: 12,
-                    offset: 55,
-                },
-                warning: WarningType::EmptyAttributeValue,
+                Warning {
+                    source: Span {
+                        data: "alt=Sunset,width=300,,height=400",
+                        line: 7,
+                        col: 12,
+                        offset: 85,
+                    },
+                    warning: WarningType::EmptyAttributeValue,
                 },
             ],
         }

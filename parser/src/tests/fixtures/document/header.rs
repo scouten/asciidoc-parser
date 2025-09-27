@@ -2,7 +2,10 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::{
     HasSpan,
-    tests::fixtures::{Span, document::Attribute},
+    tests::fixtures::{
+        Span,
+        document::{Attribute, AuthorLine},
+    },
 };
 
 #[derive(Eq, PartialEq)]
@@ -10,6 +13,7 @@ pub(crate) struct Header {
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub attributes: &'static [Attribute],
+    pub author_line: Option<AuthorLine>,
     pub comments: &'static [Span],
     pub source: Span,
 }
@@ -20,6 +24,7 @@ impl fmt::Debug for Header {
             .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("attributes", &self.attributes)
+            .field("author_line", &self.author_line)
             .field("comments", &self.comments)
             .field("source", &self.source)
             .finish()
@@ -81,6 +86,17 @@ fn fixture_eq_observed(fixture: &Header, observed: &crate::document::Header) -> 
         if fixture_attribute != observed_attribute {
             return false;
         }
+    }
+
+    if fixture.author_line.is_some() != observed.author_line().is_some() {
+        return false;
+    }
+
+    if let Some(fixture_author_line) = &fixture.author_line
+        && let Some(observed_author_line) = observed.author_line()
+        && fixture_author_line != observed_author_line
+    {
+        return false;
     }
 
     if fixture.comments.len() != observed.comments().len() {
