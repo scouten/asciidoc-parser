@@ -7,7 +7,6 @@ impl Span<'_> {
         self.into_parse_result(n).after
     }
 
-    #[allow(unused)]
     /// Return a new span, discarding any whitespace found at the beginning of
     /// the input span.
     pub(crate) fn discard_whitespace(self) -> Self {

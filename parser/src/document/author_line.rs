@@ -1,16 +1,6 @@
-#![allow(unused)] // TEMPORARY while building
+use std::slice::Iter;
 
-use std::{slice::Iter, sync::LazyLock};
-
-use regex::Regex;
-
-use crate::{
-    HasSpan, Parser, Span,
-    content::{Content, SubstitutionGroup},
-    document::Author,
-    span::MatchedItem,
-    warnings::{MatchAndWarnings, Warning},
-};
+use crate::{HasSpan, Parser, Span, document::Author};
 
 /// The author line is directly after the document title line in the document
 /// header. When the content on this line is structured correctly, the processor
@@ -22,7 +12,7 @@ pub struct AuthorLine<'src> {
 }
 
 impl<'src> AuthorLine<'src> {
-    pub(crate) fn parse(mut source: Span<'src>, parser: &mut Parser) -> Self {
+    pub(crate) fn parse(source: Span<'src>, parser: &mut Parser) -> Self {
         let authors: Vec<Author> = source
             .data()
             .split(';')

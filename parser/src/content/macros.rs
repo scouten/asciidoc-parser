@@ -656,7 +656,6 @@ static INLINE_EMAIL: LazyLock<Regex> = LazyLock::new(|| {
 #[derive(Debug)]
 struct InlineEmailReplacer<'p>(&'p Parser<'p>);
 
-#[allow(unused)] // TEMPORARY while building
 impl Replacer for InlineEmailReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
         if let Some(escape) = &caps.get(1)
