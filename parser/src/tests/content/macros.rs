@@ -18,6 +18,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -70,6 +71,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -121,6 +123,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -192,6 +195,7 @@ mod inline_link {
                             offset: 12,
                         },
                     },],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "= Test Page\n:hide-uri-scheme:",
@@ -245,6 +249,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -298,6 +303,7 @@ mod inline_link {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -370,6 +376,7 @@ mod inline_link {
                             offset: 7,
                         },
                     },],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "= Test\n:hide-uri-scheme:",
@@ -428,6 +435,7 @@ mod link_macro {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -479,6 +487,7 @@ mod link_macro {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -551,6 +560,7 @@ mod link_macro {
                             offset: 16,
                         },
                     },],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "= Test Document\n:hide-uri-scheme:",
@@ -623,6 +633,7 @@ mod link_macro {
                             offset: 16,
                         },
                     },],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "= Test Document\n:hide-uri-scheme:",
@@ -680,6 +691,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -731,6 +743,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -782,6 +795,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -833,6 +847,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -884,6 +899,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -935,6 +951,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -986,6 +1003,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1037,6 +1055,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1088,6 +1107,7 @@ mod inline_anchor {
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

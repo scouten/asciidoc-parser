@@ -133,6 +133,7 @@ Actually, please don't.
                         },
                     },
                 ],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "= Ops Manual\n:disclaimer: Don't pet the wild Wolpertingers. We're not responsible for any loss \\\nof hair, chocolate, or purple socks.\n:url-repo: https://github.com/asciidoctor/asciidoctor",
@@ -233,6 +234,7 @@ Our servers don't like them either.
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -349,6 +351,7 @@ In the path /items/\{id}, id is a path parameter.
                             offset: 0,
                         },
                     },],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: ":id: foo",
@@ -410,6 +413,7 @@ If the syntax that follows the backslash does not match an attribute reference, 
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -507,6 +511,7 @@ In the path +/items/{id}+, id is a path parameter.
                             offset: 0,
                         },
                     },],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: ":id: foo",
@@ -568,6 +573,7 @@ All the text between the passthrough enclosure will get passed through to the ou
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

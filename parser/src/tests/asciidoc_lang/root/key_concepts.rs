@@ -109,6 +109,7 @@ image::sunset.jpg[Sunset]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -183,6 +184,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

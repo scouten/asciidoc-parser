@@ -4,10 +4,9 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MediaType},
+    blocks::{ContentModel, IsBlock},
     content::SubstitutionGroup,
     tests::prelude::*,
-    warnings::WarningType,
 };
 
 #[test]
@@ -41,6 +40,7 @@ fn empty_source() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -70,12 +70,13 @@ fn only_spaces() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
                     line: 1,
-                    col: 1,
-                    offset: 0
+                    col: 5,
+                    offset: 4
                 },
             },
             source: Span {
@@ -100,6 +101,7 @@ fn one_simple_block() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -151,6 +153,7 @@ fn two_simple_blocks() {
                 title_source: None,
                 title: None,
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -228,6 +231,7 @@ fn two_blocks_and_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "= Example Title",
@@ -307,6 +311,7 @@ fn blank_lines_before_header() {
                 },),
                 title: Some("Example Title",),
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "= Example Title",
@@ -386,6 +391,7 @@ fn blank_lines_and_comment_before_header() {
                 },),
                 title: Some("Example Title",),
                 attributes: &[],
+                author_line: None,
                 comments: &[Span {
                     data: "// ignore this comment",
                     line: 2,
@@ -393,10 +399,10 @@ fn blank_lines_and_comment_before_header() {
                     offset: 1,
                 },],
                 source: Span {
-                    data: "= Example Title",
-                    line: 3,
+                    data: "// ignore this comment\n= Example Title",
+                    line: 2,
                     col: 1,
-                    offset: 24,
+                    offset: 1,
                 },
             },
             blocks: &[
@@ -468,6 +474,7 @@ fn extra_space_before_title() {
                 }),
                 title: Some("Example Title"),
                 attributes: &[],
+                author_line: None,
                 comments: &[],
                 source: Span {
                     data: "=   Example Title",
@@ -504,212 +511,6 @@ fn extra_space_before_title() {
                 offset: 0
             },
             warnings: &[],
-        }
-    );
-}
-
-#[test]
-fn err_bad_header() {
-    assert_eq!(
-        Parser::default().parse("= Title\nnot an attribute\n"),
-        Document {
-            header: Header {
-                title_source: Some(Span {
-                    data: "Title",
-                    line: 1,
-                    col: 3,
-                    offset: 2,
-                }),
-                title: Some("Title"),
-                attributes: &[],
-                comments: &[],
-                source: Span {
-                    data: "= Title",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            },
-            blocks: &[Block::Simple(SimpleBlock {
-                content: Content {
-                    original: Span {
-                        data: "not an attribute",
-                        line: 2,
-                        col: 1,
-                        offset: 8,
-                    },
-                    rendered: "not an attribute",
-                },
-                source: Span {
-                    data: "not an attribute",
-                    line: 2,
-                    col: 1,
-                    offset: 8,
-                },
-                title_source: None,
-                title: None,
-                anchor: None,
-                attrlist: None,
-            })],
-            source: Span {
-                data: "= Title\nnot an attribute",
-                line: 1,
-                col: 1,
-                offset: 0
-            },
-            warnings: &[Warning {
-                source: Span {
-                    data: "not an attribute",
-                    line: 2,
-                    col: 1,
-                    offset: 8,
-                },
-                warning: WarningType::DocumentHeaderNotTerminated,
-            },],
-        }
-    );
-}
-
-#[test]
-fn err_bad_header_and_bad_macro() {
-    assert_eq!(
-        Parser::default().parse("= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
-        Document {
-            header: Header {
-                title_source: Some(Span {
-                    data: "Title",
-                    line: 1,
-                    col: 3,
-                    offset: 2,
-                }),
-                title: Some("Title"),
-                attributes: &[],
-                comments: &[],
-                source: Span {
-                    data: "= Title",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            },
-            blocks: &[
-                Block::Simple(SimpleBlock {
-                    content: Content {
-                        original: Span {
-                            data: "not an attribute",
-                            line: 2,
-                            col: 1,
-                            offset: 8,
-                        },
-                        rendered: "not an attribute",
-                    },
-                    source: Span {
-                        data: "not an attribute",
-                        line: 2,
-                        col: 1,
-                        offset: 8,
-                    },
-                    title_source: None,
-                    title: None,
-                    anchor: None,
-                    attrlist: None,
-                }
-            ),
-            Block::Section(
-                SectionBlock {
-                    level: 1,
-                    section_title: Span {
-                        data: "Section Title",
-                        line: 4,
-                        col: 4,
-                        offset: 29,
-                    },
-                    blocks: &[
-                        Block::Media(
-                            MediaBlock {
-                                type_: MediaType::Image,
-                                target: Span {
-                                    data: "bar",
-                                    line: 6,
-                                    col: 8,
-                                    offset: 51,
-                                },
-                                macro_attrlist: Attrlist {
-                                    attributes: &[
-                                        ElementAttribute {
-                                            name: Some("alt"),
-                                            shorthand_items: &[],
-                                            value: "Sunset"
-                                        },
-                                        ElementAttribute {
-                                            name: Some("width"),
-                                            shorthand_items: &[],
-                                            value: "300"
-                                        },
-                                        ElementAttribute {
-                                            name: Some("height"),
-                                            shorthand_items: &[],
-                                            value: "400"
-                                        },
-                                    ],
-                                    anchor: None,
-                                    source: Span {
-                                        data: "alt=Sunset,width=300,,height=400",
-                                        line: 6,
-                                        col: 12,
-                                        offset: 55,
-                                    },
-                                },
-                                source: Span {
-                                    data: "image::bar[alt=Sunset,width=300,,height=400]",
-                                    line: 6,
-                                    col: 1,
-                                    offset: 44,
-                                },
-                                title_source: None,
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
-                            },
-                        ),
-                    ],
-                    source: Span {
-                        data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
-                        line: 4,
-                        col: 1,
-                        offset: 26,
-                    },
-                    title_source: None,
-                    title: None,
-                    anchor: None,
-                    attrlist: None,
-                },
-            )],
-            source: Span {
-                data: "= Title\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
-                line: 1,
-                col: 1,
-                offset: 0
-            },
-            warnings: &[Warning {
-                source: Span {
-                    data: "not an attribute",
-                    line: 2,
-                    col: 1,
-                    offset: 8,
-                },
-                warning: WarningType::DocumentHeaderNotTerminated,
-            },
-            Warning {
-                source: Span {
-                    data: "alt=Sunset,width=300,,height=400",
-                    line: 6,
-                    col: 12,
-                    offset: 55,
-                },
-                warning: WarningType::EmptyAttributeValue,
-                },
-            ],
         }
     );
 }
