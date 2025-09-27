@@ -40,14 +40,6 @@ impl<'src> Content<'src> {
     pub fn is_empty(&self) -> bool {
         self.rendered.as_ref().is_empty()
     }
-
-    #[allow(unused)]
-    /// Replaces an exact string with another exact string.
-    pub(crate) fn replace_str(&mut self, from: &str, to: &'static str) {
-        if self.rendered.contains(from) {
-            self.rendered = self.rendered.replace(from, to).into();
-        }
-    }
 }
 
 impl<'src> From<Span<'src>> for Content<'src> {

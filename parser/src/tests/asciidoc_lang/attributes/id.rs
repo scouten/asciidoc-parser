@@ -667,7 +667,6 @@ The id (`#`) shorthand can be used on inline quoted text.
     }
 }
 
-#[allow(unused)]
 mod anchor {
     use pretty_assertions_sorted::assert_eq;
 

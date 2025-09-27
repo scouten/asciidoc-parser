@@ -276,7 +276,6 @@ Our servers don't like them either.
 }
 
 mod escape_attribute_reference {
-    #![allow(unused)] // TEMPORARY
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{Parser, tests::prelude::*};
