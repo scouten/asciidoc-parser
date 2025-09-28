@@ -53,6 +53,8 @@ image::logo.png[Logo]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -140,6 +142,8 @@ image::logo.png[Logo,link=https://example.org]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -222,6 +226,8 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -308,6 +314,8 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

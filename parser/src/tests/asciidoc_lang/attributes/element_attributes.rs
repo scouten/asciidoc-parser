@@ -268,6 +268,8 @@ If this happens, append `+{empty}+` to the end of the line to disrupt the syntax
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -415,6 +417,8 @@ Specifically, it does not support named attributes, only the attribute shorthand
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

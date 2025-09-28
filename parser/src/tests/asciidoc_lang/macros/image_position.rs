@@ -66,6 +66,8 @@ include::example$image.adoc[tag=float]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -167,6 +169,8 @@ include::example$image.adoc[tag=in-float]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -253,6 +257,8 @@ include::example$image.adoc[tag=role]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -353,6 +359,8 @@ include::example$image.adoc[tag=in-role]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

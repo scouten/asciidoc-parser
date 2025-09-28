@@ -58,6 +58,8 @@ icon:heart[2x,role=red]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

@@ -8,7 +8,6 @@ impl Span<'_> {
         self.slice(0..new_len)
     }
 
-    #[allow(unused)] // TEMPORARY
     /// Return a [`Span`] that is the same as the source, but a single trailing
     /// line-ending (if found) removed.
     pub(crate) fn trim_trailing_line_end(&self) -> Self {

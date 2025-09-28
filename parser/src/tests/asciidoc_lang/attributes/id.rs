@@ -560,6 +560,8 @@ The id (`#`) shorthand can be used on inline quoted text.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -624,6 +626,8 @@ The id (`#`) shorthand can be used on inline quoted text.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -665,7 +669,6 @@ The id (`#`) shorthand can be used on inline quoted text.
     }
 }
 
-#[allow(unused)]
 mod anchor {
     use pretty_assertions_sorted::assert_eq;
 
@@ -703,6 +706,8 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -753,6 +758,8 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -803,6 +810,8 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -853,6 +862,8 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -912,6 +923,8 @@ The shorthand form in an attribute list does not impose this restriction.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -981,6 +994,8 @@ include::example$id.adoc[tag=block-id-shorthand]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1060,6 +1075,8 @@ include::example$id.adoc[tag=block-id-brackets]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1135,6 +1152,8 @@ include::example$id.adoc[tag=anchor-brackets]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1202,6 +1221,8 @@ include::example$id.adoc[tag=anchor-shorthand]
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

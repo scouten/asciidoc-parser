@@ -50,6 +50,8 @@ This is a basic AsciiDoc document.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -120,6 +122,8 @@ This document contains two paragraphs.
                     title_source: None,
                     title: None,
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -237,7 +241,9 @@ It also has a header that specifies the document title.
                             },
                         },
                     ],
-                comments: &[],
+                author_line: None,
+                revision_line: None,
+                    comments: &[],
                     source: Span {
                         data: "= Document Title\n:reproducible:",
                         line: 1,
@@ -518,6 +524,8 @@ A single empty line separates the header from the body.
                             offset: 8,
                         },
                     },],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "= Title\n:name: value",

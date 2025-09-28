@@ -19,7 +19,6 @@ impl<'src> Span<'src> {
     }
 
     /// Split this span, consuming any white space including new-line.
-    #[allow(unused)] // TEMPORARY
     pub(crate) fn take_whitespace_with_newline(self) -> MatchedItem<'src, Self> {
         self.take_while(|c| c == ' ' || c == '\t' || c == '\n')
     }
@@ -48,7 +47,6 @@ impl<'src> Span<'src> {
     ///
     /// Returns `None` if there is not at least one non-empty line at
     /// beginning of input.
-    #[allow(unused)] // TEMPORARY while refactoring
     pub(crate) fn take_non_empty_lines(self) -> Option<MatchedItem<'src, Self>> {
         let mut next = self;
 
