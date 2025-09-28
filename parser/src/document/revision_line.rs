@@ -89,14 +89,10 @@ fn is_valid_standalone_revision(s: &str) -> bool {
 }
 
 fn strip_non_numeric_prefix(s: &str) -> String {
-    if let Some(captures) = NON_NUMERIC_PREFIX.captures(s) {
-        captures
-            .get(1)
-            .map_or_else(|| s.to_owned(), |m| m.as_str().to_owned())
-    } else {
-        // Unreachable: NON_NUMERIC_PREFIX never fails to match even an empty string.
-        s.to_owned()
-    }
+    NON_NUMERIC_PREFIX
+        .captures(s)
+        .and_then(|captures| captures.get(1))
+        .map_or_else(|| s.to_owned(), |m| m.as_str().to_owned())
 }
 
 static STANDALONE_REVISION: LazyLock<Regex> = LazyLock::new(|| {
