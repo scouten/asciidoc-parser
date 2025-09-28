@@ -13,7 +13,7 @@ The document header encapsulates the document title, author and revision informa
 );
 
 mod structure {
-    // use pretty_assertions_sorted::assert_eq;
+    use pretty_assertions_sorted::assert_eq;
 
     use crate::{Parser, tests::prelude::*};
 
@@ -58,10 +58,10 @@ In other words, the document must start with a document header if it has one.
                         offset: 1,
                     },],
                     source: Span {
-                        data: "= Title",
-                        line: 3,
+                        data: "// comment\n= Title",
+                        line: 2,
                         col: 1,
-                        offset: 12,
+                        offset: 1,
                     },
                 },
                 blocks: &[],
