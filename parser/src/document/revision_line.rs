@@ -94,6 +94,7 @@ fn strip_non_numeric_prefix(s: &str) -> String {
             .get(1)
             .map_or_else(|| s.to_owned(), |m| m.as_str().to_owned())
     } else {
+        // Unreachable: NON_NUMERIC_PREFIX never fails to match even an empty string.
         s.to_owned()
     }
 }
