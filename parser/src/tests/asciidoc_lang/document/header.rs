@@ -77,12 +77,8 @@ In other words, the document must start with a document header if it has one.
     }
 
     #[test]
-    #[ignore]
     fn author_revision_lines() {
-        // TO DO (#370): Support for author data model.
-
-        // TO DO (#371): Support for revision data model.
-        to_do_verifies!(
+        verifies!(
             r#"
 A header typically begins with a xref:title.adoc[].
 When a document title is specified, it may be immediately followed by one or two designated lines of content.
@@ -91,6 +87,83 @@ These implicit content lines are used to assign xref:author-information.adoc[] a
 "#
         );
 
-        todo!();
+        let doc = Parser::default().parse("= Document Title\nJohn Doe <john@example.com>\nv1.0, 2023-01-15: Initial release\n\nSome content.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: Some(Span {
+                        data: "Document Title",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    }),
+                    title: Some("Document Title"),
+                    attributes: &[],
+                    author_line: Some(AuthorLine {
+                        authors: &[Author {
+                            name: "John Doe",
+                            firstname: "John",
+                            middlename: None,
+                            lastname: Some("Doe"),
+                            email: Some("john@example.com"),
+                        }],
+                        source: Span {
+                            data: "John Doe <john@example.com>",
+                            line: 2,
+                            col: 1,
+                            offset: 17,
+                        },
+                    }),
+                    revision_line: Some(RevisionLine {
+                        revnumber: Some("1.0"),
+                        revdate: "2023-01-15",
+                        revremark: Some("Initial release"),
+                        source: Span {
+                            data: "v1.0, 2023-01-15: Initial release",
+                            line: 3,
+                            col: 1,
+                            offset: 45,
+                        },
+                    }),
+                    comments: &[],
+                    source: Span {
+                        data: "= Document Title\nJohn Doe <john@example.com>\nv1.0, 2023-01-15: Initial release",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some content.",
+                            line: 5,
+                            col: 1,
+                            offset: 80,
+                        },
+                        rendered: "Some content.",
+                    },
+                    source: Span {
+                        data: "Some content.",
+                        line: 5,
+                        col: 1,
+                        offset: 80,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                })],
+                source: Span {
+                    data: "= Document Title\nJohn Doe <john@example.com>\nv1.0, 2023-01-15: Initial release\n\nSome content.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+            }
+        );
     }
 }
