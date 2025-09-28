@@ -268,7 +268,7 @@ pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
 
 /// The content model of a block determines what kind of content the block can
 /// have (if any) and how that content is processed.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub enum ContentModel {
     /// A block that may only contain other blocks (e.g., a section)
     Compound,
@@ -291,4 +291,17 @@ pub enum ContentModel {
     /// A special content model reserved for tables that enforces a fixed
     /// structure
     Table,
+}
+
+impl std::fmt::Debug for ContentModel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ContentModel::Compound => write!(f, "ContentModel::Compound"),
+            ContentModel::Simple => write!(f, "ContentModel::Simple"),
+            ContentModel::Verbatim => write!(f, "ContentModel::Verbatim"),
+            ContentModel::Raw => write!(f, "ContentModel::Raw"),
+            ContentModel::Empty => write!(f, "ContentModel::Empty"),
+            ContentModel::Table => write!(f, "ContentModel::Table"),
+        }
+    }
 }

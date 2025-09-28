@@ -16,7 +16,7 @@ pub struct Warning<'src> {
 }
 
 /// Type of possible parse error that was detected.
-#[derive(Clone, Debug, Eq, Error, PartialEq)]
+#[derive(Clone, Eq, Error, PartialEq)]
 pub enum WarningType {
     #[error("An attribute value is missing its terminating quote")]
     AttributeValueMissingTerminatingQuote,
@@ -64,6 +64,56 @@ pub enum WarningType {
 
     #[error("Attribute {0:?} can not be modified by document")]
     AttributeValueIsLocked(String),
+}
+
+impl std::fmt::Debug for WarningType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            WarningType::AttributeValueMissingTerminatingQuote => {
+                write!(f, "WarningType::AttributeValueMissingTerminatingQuote")
+            }
+
+            WarningType::DocumentHeaderNotTerminated => {
+                write!(f, "WarningType::DocumentHeaderNotTerminated")
+            }
+
+            WarningType::EmptyAttributeValue => write!(f, "WarningType::EmptyAttributeValue"),
+            WarningType::EmptyShorthandItem => write!(f, "WarningType::EmptyShorthandItem"),
+            WarningType::InvalidMacroName => write!(f, "WarningType::InvalidMacroName"),
+
+            WarningType::MediaMacroMissingTarget => {
+                write!(f, "WarningType::MediaMacroMissingTarget")
+            }
+
+            WarningType::MacroMissingAttributeList => {
+                write!(f, "WarningType::MacroMissingAttributeList")
+            }
+
+            WarningType::MacroMissingDoubleColon => {
+                write!(f, "WarningType::MacroMissingDoubleColon")
+            }
+
+            WarningType::MissingCommaAfterQuotedAttributeValue => {
+                write!(f, "WarningType::MissingCommaAfterQuotedAttributeValue")
+            }
+
+            WarningType::UnterminatedDelimitedBlock => {
+                write!(f, "WarningType::UnterminatedDelimitedBlock")
+            }
+
+            WarningType::MissingBlockAfterTitleOrAttributeList => {
+                write!(f, "WarningType::MissingBlockAfterTitleOrAttributeList")
+            }
+
+            WarningType::EmptyBlockAnchorName => write!(f, "WarningType::EmptyBlockAnchorName"),
+            WarningType::InvalidBlockAnchorName => write!(f, "WarningType::InvalidBlockAnchorName"),
+
+            WarningType::AttributeValueIsLocked(value) => f
+                .debug_tuple("WarningType::AttributeValueIsLocked")
+                .field(value)
+                .finish(),
+        }
+    }
 }
 
 /// Return type used to signal one or more possible parse error.

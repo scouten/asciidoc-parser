@@ -141,7 +141,7 @@ impl<'src> IsBlock<'src> for Attribute<'src> {
 /// If the value contains a textual value, this value will
 /// have any continuation markers resolved, but will no longer
 /// contain a reference to the [`Span`] that contains the value.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub enum InterpretedValue {
     /// A custom value with all necessary interpolations applied.
     Value(String),
@@ -152,6 +152,20 @@ pub enum InterpretedValue {
 
     /// Explicitly unset. This is typically interpreted as boolean `false`.
     Unset,
+}
+
+impl std::fmt::Debug for InterpretedValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            InterpretedValue::Value(value) => f
+                .debug_tuple("InterpretedValue::Value")
+                .field(value)
+                .finish(),
+
+            InterpretedValue::Set => write!(f, "InterpretedValue::Set"),
+            InterpretedValue::Unset => write!(f, "InterpretedValue::Unset"),
+        }
+    }
 }
 
 impl InterpretedValue {
