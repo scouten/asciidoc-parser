@@ -40,8 +40,8 @@ impl PartialEq<RevisionLine> for &crate::document::RevisionLine<'_> {
 }
 
 fn fixture_eq_observed(fixture: &RevisionLine, observed: &crate::document::RevisionLine) -> bool {
-    fixture.revnumber.as_deref() == observed.revnumber()
+    fixture.revnumber == observed.revnumber()
         && fixture.revdate == observed.revdate()
-        && fixture.revremark.as_deref() == observed.revremark()
+        && fixture.revremark == observed.revremark()
         && fixture.source == observed.span()
 }
