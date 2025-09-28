@@ -49,6 +49,8 @@ In other words, the document must start with a document header if it has one.
                     },),
                     title: Some("Title",),
                     attributes: &[],
+                    author_line: None,
+                    revision_line: None,
                     comments: &[Span {
                         data: "// comment",
                         line: 2,
