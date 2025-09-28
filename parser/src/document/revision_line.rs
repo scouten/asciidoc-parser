@@ -7,9 +7,10 @@ use crate::{
     content::{Content, SubstitutionGroup},
 };
 
-/// The author line is directly after the document title line in the document
+/// The revision line is the line directly after the author line in the document
 /// header. When the content on this line is structured correctly, the processor
-/// assigns the content to the built-in author and email attributes.
+/// assigns the content to the built-in `revnumber`, `revdate`, and `revremark`
+/// attributes.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct RevisionLine<'src> {
     revnumber: Option<String>,
@@ -27,19 +28,19 @@ impl<'src> RevisionLine<'src> {
         };
 
         let (revnumber, revdate) = if let Some((rev, date)) = left_of_colon.split_once(',') {
-            // When there's a comma, we have a revision number followed by a date
+            // When there's a comma, we have a revision number followed by a date.
             let rev_trimmed = rev.trim();
             let cleaned_rev = strip_non_numeric_prefix(rev_trimmed);
             (Some(cleaned_rev), date.trim().to_owned())
         } else {
-            // No comma - check if this is a standalone revision number
+            // No comma - check if this is a standalone revision number.
             let trimmed = left_of_colon.trim();
             if is_valid_standalone_revision(trimmed) {
-                // This is a standalone revision number (like "v1.2.3")
+                // This is a standalone revision number (like "v1.2.3").
                 let cleaned_rev = strip_non_numeric_prefix(trimmed);
                 (Some(cleaned_rev), String::new())
             } else {
-                // This is just a date or other content, not a revision number
+                // This is just a date or other content, not a revision number.
                 (None, trimmed.to_owned())
             }
         };
@@ -83,17 +84,10 @@ fn apply_header_subs(source: &str, parser: &Parser) -> String {
     content.rendered().to_string()
 }
 
-/// Checks if a string is a valid standalone revision number.
-/// According to Asciidoctor behavior, standalone revision numbers must:
-/// - Start with "v" followed by at least one digit, OR
-/// - Be part of a larger revision line (with comma or colon)
 fn is_valid_standalone_revision(s: &str) -> bool {
     STANDALONE_REVISION.is_match(s)
 }
 
-/// Strips non-numeric prefixes from revision numbers.
-/// This removes any leading non-digit characters, which matches Asciidoctor's
-/// behavior of dropping letters and symbols that precede the revision number.
 fn strip_non_numeric_prefix(s: &str) -> String {
     if let Some(captures) = NON_NUMERIC_PREFIX.captures(s) {
         captures
@@ -104,13 +98,11 @@ fn strip_non_numeric_prefix(s: &str) -> String {
     }
 }
 
-/// Matches standalone revision numbers that start with "v" followed by digits
 static STANDALONE_REVISION: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(r"^v\d").unwrap()
 });
 
-/// Captures non-numeric prefix and the numeric part that follows
 static NON_NUMERIC_PREFIX: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(r"^[^0-9]*(.*)$").unwrap()
