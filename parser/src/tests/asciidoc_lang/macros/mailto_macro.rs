@@ -50,6 +50,7 @@ mailto:join@discuss.example.org[Subscribe]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -113,6 +114,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -178,6 +180,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -267,6 +270,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -334,6 +338,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -398,6 +403,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -461,6 +467,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -524,6 +531,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

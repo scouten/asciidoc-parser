@@ -3,7 +3,7 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     content::{Content, SubstitutionGroup},
-    document::{Attribute, AuthorLine},
+    document::{Attribute, AuthorLine, RevisionLine},
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
@@ -17,6 +17,7 @@ pub struct Header<'src> {
     title: Option<String>,
     attributes: Vec<Attribute<'src>>,
     author_line: Option<AuthorLine<'src>>,
+    revision_line: Option<RevisionLine<'src>>,
     comments: Vec<Span<'src>>,
     source: Span<'src>,
 }
@@ -32,6 +33,7 @@ impl<'src> Header<'src> {
         let mut title: Option<String> = None;
         let mut attributes: Vec<Attribute> = vec![];
         let mut author_line: Option<AuthorLine<'src>> = None;
+        let mut revision_line: Option<RevisionLine<'src>> = None;
         let mut comments: Vec<Span<'src>> = vec![];
         let mut warnings: Vec<Warning<'src>> = vec![];
 
@@ -63,8 +65,9 @@ impl<'src> Header<'src> {
             } else if title.is_some() && author_line.is_none() {
                 author_line = Some(AuthorLine::parse(line, parser));
                 source = line_mi.after;
-            // else if title.is_some() && author_line.is_some() {
-            // parse revision line
+            } else if title.is_some() && author_line.is_some() && revision_line.is_none() {
+                revision_line = Some(RevisionLine::parse(line, parser));
+                source = line_mi.after;
             } else {
                 if title.is_some() {
                     warnings.push(Warning {
@@ -86,6 +89,7 @@ impl<'src> Header<'src> {
                     title,
                     attributes,
                     author_line,
+                    revision_line,
                     comments,
                     source: source.trim_trailing_whitespace(),
                 },
@@ -114,6 +118,11 @@ impl<'src> Header<'src> {
     /// Returns the author line, if found.
     pub fn author_line(&self) -> Option<&AuthorLine<'src>> {
         self.author_line.as_ref()
+    }
+
+    /// Returns the revision line, if found.
+    pub fn revision_line(&self) -> Option<&RevisionLine<'src>> {
+        self.revision_line.as_ref()
     }
 
     /// Return an iterator over the comments in this header.

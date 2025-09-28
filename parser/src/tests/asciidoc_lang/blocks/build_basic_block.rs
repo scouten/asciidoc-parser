@@ -83,6 +83,7 @@ This is more content in the sidebar block.
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",

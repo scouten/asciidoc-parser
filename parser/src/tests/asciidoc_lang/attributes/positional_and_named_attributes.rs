@@ -417,6 +417,7 @@ Formatted text does not support a style, so the first and only positional attrib
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -493,6 +494,7 @@ A named attribute consists of a name and a value separated by an `=` character (
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -568,6 +570,7 @@ In all other cases, the surrounding quotes are optional.
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -644,6 +647,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -722,6 +726,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -815,6 +820,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -916,6 +922,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                         },
                     },],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: ":url: https://example.com",
@@ -998,6 +1005,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1058,6 +1066,7 @@ For subsequent attributes, any leading space or tab characters are skipped.
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1140,6 +1149,7 @@ Space and tab characters around the equals sign (=) and at the end of the value 
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1221,6 +1231,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1307,6 +1318,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1392,6 +1404,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1485,6 +1498,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1570,6 +1584,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1663,6 +1678,7 @@ If there is a closing single quote, the enclosing single quote characters are re
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1749,6 +1765,7 @@ If there is a closing single quote, and the first character is not an escaped si
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1849,6 +1866,7 @@ That's because the parser already knows to look for the closing square bracket a
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1945,6 +1963,7 @@ There are some exceptions to this rule, such as a link macro in a footnote, whic
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

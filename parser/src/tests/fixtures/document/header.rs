@@ -4,7 +4,7 @@ use crate::{
     HasSpan,
     tests::fixtures::{
         Span,
-        document::{Attribute, AuthorLine},
+        document::{Attribute, AuthorLine, RevisionLine},
     },
 };
 
@@ -14,6 +14,7 @@ pub(crate) struct Header {
     pub title: Option<&'static str>,
     pub attributes: &'static [Attribute],
     pub author_line: Option<AuthorLine>,
+    pub revision_line: Option<RevisionLine>,
     pub comments: &'static [Span],
     pub source: Span,
 }
@@ -25,6 +26,7 @@ impl fmt::Debug for Header {
             .field("title", &self.title)
             .field("attributes", &self.attributes)
             .field("author_line", &self.author_line)
+            .field("revision_line", &self.revision_line)
             .field("comments", &self.comments)
             .field("source", &self.source)
             .finish()
@@ -95,6 +97,17 @@ fn fixture_eq_observed(fixture: &Header, observed: &crate::document::Header) -> 
     if let Some(fixture_author_line) = &fixture.author_line
         && let Some(observed_author_line) = observed.author_line()
         && fixture_author_line != observed_author_line
+    {
+        return false;
+    }
+
+    if fixture.revision_line.is_some() != observed.revision_line().is_some() {
+        return false;
+    }
+
+    if let Some(fixture_revision_line) = &fixture.revision_line
+        && let Some(observed_revision_line) = observed.revision_line()
+        && fixture_revision_line != observed_revision_line
     {
         return false;
     }

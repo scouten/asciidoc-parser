@@ -48,6 +48,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -125,6 +126,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -191,6 +193,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -256,6 +259,7 @@ https://example.org["1=2 posits the problem of inequality"]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -322,6 +326,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -397,6 +402,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -487,6 +493,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -558,6 +565,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -637,6 +645,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -702,6 +711,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -768,6 +778,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -834,6 +845,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -898,6 +910,7 @@ link:post.html[My Post,opts=nofollow]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -968,6 +981,7 @@ include::example$url.adoc[tag=linkattrs-s]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1041,6 +1055,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -1104,6 +1119,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",

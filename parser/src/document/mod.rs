@@ -14,3 +14,6 @@ pub use document::Document;
 
 mod header;
 pub use header::Header;
+
+mod revision_line;
+pub use revision_line::RevisionLine;
