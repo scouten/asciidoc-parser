@@ -60,6 +60,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                     },
                 },],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "= Document Title\n:link-with-underscores: https://asciidoctor.org/now_this__link_works.html",
@@ -112,6 +113,7 @@ fn pass_macro() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -165,6 +167,7 @@ fn double_plus_inline_macro() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",

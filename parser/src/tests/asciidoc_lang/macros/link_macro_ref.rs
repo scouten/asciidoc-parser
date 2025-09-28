@@ -39,6 +39,7 @@ fn id() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -101,6 +102,7 @@ fn role() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -163,6 +165,7 @@ fn title() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -225,6 +228,7 @@ fn window() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -289,6 +293,7 @@ fn window_shorthand() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",
@@ -350,6 +355,7 @@ fn opts() {
                 title: None,
                 attributes: &[],
                 author_line: None,
+                revision_line: None,
                 comments: &[],
                 source: Span {
                     data: "",

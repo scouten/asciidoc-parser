@@ -96,6 +96,7 @@ Depending on the capabilities of the web application, the space character can be
                     title: None,
                     attributes: &[],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "",
@@ -211,6 +212,7 @@ The prefix will still be present in the link target.
                         },
                     },],
                     author_line: None,
+                    revision_line: None,
                     comments: &[],
                     source: Span {
                         data: "= Document Title\n:hide-uri-scheme:",

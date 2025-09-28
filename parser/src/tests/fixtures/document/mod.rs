@@ -26,3 +26,6 @@ pub(crate) use document::Document;
 
 mod header;
 pub(crate) use header::Header;
+
+mod revision_line;
+pub(crate) use revision_line::RevisionLine;
