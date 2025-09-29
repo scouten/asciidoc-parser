@@ -95,6 +95,11 @@ fn apply_special_characters(content: &mut Content<'_>, renderer: &dyn InlineSubs
     content.rendered = result.into();
 }
 
+static SPECIAL_CHARS: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new("[<>&]").unwrap()
+});
+
 #[derive(Debug)]
 struct SpecialCharacterReplacer<'r> {
     renderer: &'r dyn InlineSubstitutionRenderer,
@@ -102,27 +107,25 @@ struct SpecialCharacterReplacer<'r> {
 
 impl Replacer for SpecialCharacterReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        // Since SPECIAL_CHARS regex only matches '<', '>', or '&', we can directly map
-        // them without needing a fallback case.
-        let which = match caps[0].as_ref() {
-            "<" => SpecialCharacter::Lt,
-            ">" => SpecialCharacter::Gt,
-            "&" => SpecialCharacter::Ampersand,
-            // This case is unreachable due to the regex pattern, but we include it
-            // to make the code more defensive and satisfy the compiler's exhaustiveness check.
-            other => unreachable!(
-                "SPECIAL_CHARS regex matched unexpected character: {}",
-                other
-            ),
-        };
-        self.renderer.render_special_character(which, dest);
+        // The SPECIAL_CHARS regex only matches '<', '>', and '&'. This sequence is
+        // specifically constructed to avoid having any unreachable code.
+        let ch = &caps[0];
+
+        if ch == "<" {
+            self.renderer
+                .render_special_character(SpecialCharacter::Lt, dest);
+        } else if ch == ">" {
+            self.renderer
+                .render_special_character(SpecialCharacter::Gt, dest);
+        } else if ch == "&" {
+            self.renderer
+                .render_special_character(SpecialCharacter::Ampersand, dest);
+        }
+
+        // No other cases _should_ occur, but if they do, we'll fail safely by
+        // not writing anything into dest.
     }
 }
-
-static SPECIAL_CHARS: LazyLock<Regex> = LazyLock::new(|| {
-    #[allow(clippy::unwrap_used)]
-    Regex::new("[<>&]").unwrap()
-});
 
 static QUOTED_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
