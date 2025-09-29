@@ -318,3 +318,14 @@ fn attribute_without_title() {
         }
     );
 }
+
+#[test]
+fn sets_doctitle_attribute() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse("= Document Title Goes Here");
+
+    assert_eq!(
+        parser.attribute_value("doctitle"),
+        InterpretedValue::Value("Document Title Goes Here")
+    );
+}
