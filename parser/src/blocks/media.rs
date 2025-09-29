@@ -21,7 +21,7 @@ pub struct MediaBlock<'src> {
 }
 
 /// A media type may be one of three different types.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub enum MediaType {
     /// Still image
     Image,
@@ -31,6 +31,16 @@ pub enum MediaType {
 
     /// Audio
     Audio,
+}
+
+impl std::fmt::Debug for MediaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            MediaType::Image => write!(f, "MediaType::Image"),
+            MediaType::Video => write!(f, "MediaType::Video"),
+            MediaType::Audio => write!(f, "MediaType::Audio"),
+        }
+    }
 }
 
 impl<'src> MediaBlock<'src> {

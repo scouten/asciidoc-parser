@@ -26,7 +26,7 @@ use crate::{
 ///
 /// This enum represents all of the block types that are understood directly by
 /// this parser and also implements the [`IsBlock`] trait.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[allow(clippy::large_enum_variant)] // TEMPORARY: review later
 #[non_exhaustive]
 pub enum Block<'src> {
@@ -53,6 +53,30 @@ pub enum Block<'src> {
     /// When an attribute is defined in the document body using an attribute
     /// entry, that’s simply referred to as a document attribute.
     DocumentAttribute(Attribute<'src>),
+}
+
+impl<'src> std::fmt::Debug for Block<'src> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Block::Simple(block) => f.debug_tuple("Block::Simple").field(block).finish(),
+            Block::Media(block) => f.debug_tuple("Block::Media").field(block).finish(),
+            Block::Section(block) => f.debug_tuple("Block::Section").field(block).finish(),
+
+            Block::RawDelimited(block) => {
+                f.debug_tuple("Block::RawDelimited").field(block).finish()
+            }
+
+            Block::CompoundDelimited(block) => f
+                .debug_tuple("Block::CompoundDelimited")
+                .field(block)
+                .finish(),
+
+            Block::DocumentAttribute(block) => f
+                .debug_tuple("Block::DocumentAttribute")
+                .field(block)
+                .finish(),
+        }
+    }
 }
 
 impl<'src> Block<'src> {
