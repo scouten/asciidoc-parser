@@ -271,7 +271,7 @@ impl<'p> Parser<'p> {
 
     /// Called from [`Header::parse()`] for a value that is derived from parsing
     /// the header (except for attribute lines).
-    pub(crate) fn set_attribute_by_value_from_header<'src, N: AsRef<str>>(
+    pub(crate) fn set_attribute_by_value_from_header<N: AsRef<str>>(
         &mut self,
         name: N,
         mut value: InterpretedValue,
