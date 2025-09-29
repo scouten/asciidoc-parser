@@ -18,6 +18,76 @@ mod content_model {
     }
 }
 
+mod impl_debug {
+    use crate::{Parser, blocks::Block, span::Span};
+
+    #[test]
+    fn simple() {
+        let mut parser = Parser::default();
+        let mi = Block::parse(Span::new("This is a simple paragraph."), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        let debug_output = format!("{:?}", mi.item);
+        assert!(debug_output.starts_with("Block::Simple"));
+    }
+
+    #[test]
+    fn media() {
+        let mut parser = Parser::default();
+        let mi = Block::parse(Span::new("image::example.png[]"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        let debug_output = format!("{:?}", mi.item);
+        assert!(debug_output.starts_with("Block::Media"));
+    }
+
+    #[test]
+    fn section() {
+        let mut parser = Parser::default();
+        let mi = Block::parse(Span::new("== Section Title\n"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        let debug_output = format!("{:?}", mi.item);
+        assert!(debug_output.starts_with("Block::Section"));
+    }
+
+    #[test]
+    fn raw_delimited() {
+        let mut parser = Parser::default();
+        let mi = Block::parse(Span::new("----\ncode\n----"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        let debug_output = format!("{:?}", mi.item);
+        assert!(debug_output.starts_with("Block::RawDelimited"));
+    }
+
+    #[test]
+    fn compound_delimited() {
+        let mut parser = Parser::default();
+        let mi = Block::parse(Span::new("****\nSidebar content\n****"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        let debug_output = format!("{:?}", mi.item);
+        assert!(debug_output.starts_with("Block::CompoundDelimited"));
+    }
+
+    #[test]
+    fn document_attribute() {
+        let mut parser = Parser::default();
+        let mi = Block::parse(Span::new(":author: John Doe"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        let debug_output = format!("{:?}", mi.item);
+        assert!(debug_output.starts_with("Block::DocumentAttribute"));
+    }
+}
+
 mod error_cases {
     use std::ops::Deref;
 
