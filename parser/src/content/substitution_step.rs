@@ -102,16 +102,20 @@ struct SpecialCharacterReplacer<'r> {
 
 impl Replacer for SpecialCharacterReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        if let Some(which) = match caps[0].as_ref() {
-            "<" => Some(SpecialCharacter::Lt),
-            ">" => Some(SpecialCharacter::Gt),
-            "&" => Some(SpecialCharacter::Ampersand),
-            _ => None,
-        } {
-            self.renderer.render_special_character(which, dest);
-        } else {
-            dest.push_str(caps[0].as_ref());
-        }
+        // Since SPECIAL_CHARS regex only matches '<', '>', or '&', we can directly map
+        // them without needing a fallback case.
+        let which = match caps[0].as_ref() {
+            "<" => SpecialCharacter::Lt,
+            ">" => SpecialCharacter::Gt,
+            "&" => SpecialCharacter::Ampersand,
+            // This case is unreachable due to the regex pattern, but we include it
+            // to make the code more defensive and satisfy the compiler's exhaustiveness check.
+            other => unreachable!(
+                "SPECIAL_CHARS regex matched unexpected character: {}",
+                other
+            ),
+        };
+        self.renderer.render_special_character(which, dest);
     }
 }
 
