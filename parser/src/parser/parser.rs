@@ -271,23 +271,17 @@ impl<'p> Parser<'p> {
 
     /// Called from [`Header::parse()`] for a value that is derived from parsing
     /// the header (except for attribute lines).
-    pub(crate) fn set_attribute_by_value_from_header<N: AsRef<str>>(
+    pub(crate) fn set_attribute_by_value_from_header<N: AsRef<str>, V: AsRef<str>>(
         &mut self,
         name: N,
-        mut value: InterpretedValue,
+        value: V,
     ) {
         let attr_name = name.as_ref().to_lowercase();
-
-        if let InterpretedValue::Set = value
-            && let Some(default_value) = self.default_attribute_values.get(&attr_name)
-        {
-            value = InterpretedValue::Value(default_value.clone());
-        }
 
         let attribute_value = AttributeValue {
             allowable_value: AllowableValue::Any,
             modification_context: ModificationContext::Anywhere,
-            value,
+            value: InterpretedValue::Value(value.as_ref().to_owned()),
         };
 
         self.attribute_values.insert(attr_name, attribute_value);

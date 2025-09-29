@@ -3,7 +3,7 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     content::{Content, SubstitutionGroup},
-    document::{Attribute, AuthorLine, InterpretedValue, RevisionLine},
+    document::{Attribute, AuthorLine, RevisionLine},
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
@@ -61,10 +61,7 @@ impl<'src> Header<'src> {
                 let title_span = line.discard(2).discard_whitespace();
                 let title_str = apply_header_subs(title_span.data(), parser);
 
-                parser.set_attribute_by_value_from_header(
-                    "doctitle",
-                    InterpretedValue::Value(title_str.clone()),
-                );
+                parser.set_attribute_by_value_from_header("doctitle", &title_str);
 
                 title = Some(title_str);
                 title_source = Some(title_span);
