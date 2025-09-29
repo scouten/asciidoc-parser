@@ -468,15 +468,11 @@ impl Replacer for AttributeReplacer<'_> {
             return;
         }
 
-        match self.0.attribute_value(attr_name) {
-            InterpretedValue::Value(value) => {
-                dest.push_str(value.as_ref());
-            }
-            _ => {
-                // TO DO: What is the correct replacement value for Set and
-                // Unset? For now, they look alike (nothing).
-            }
+        if let InterpretedValue::Value(value) = self.0.attribute_value(attr_name) {
+            dest.push_str(value.as_ref());
         }
+        // Language description is unclear as to what happens for "set" and
+        // "unset" attribute values. For now, we'll replace those with nothing.
     }
 }
 
