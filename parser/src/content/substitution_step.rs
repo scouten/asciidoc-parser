@@ -95,6 +95,11 @@ fn apply_special_characters(content: &mut Content<'_>, renderer: &dyn InlineSubs
     content.rendered = result.into();
 }
 
+static SPECIAL_CHARS: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new("[<>&]").unwrap()
+});
+
 #[derive(Debug)]
 struct SpecialCharacterReplacer<'r> {
     renderer: &'r dyn InlineSubstitutionRenderer,
@@ -102,23 +107,25 @@ struct SpecialCharacterReplacer<'r> {
 
 impl Replacer for SpecialCharacterReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
-        if let Some(which) = match caps[0].as_ref() {
-            "<" => Some(SpecialCharacter::Lt),
-            ">" => Some(SpecialCharacter::Gt),
-            "&" => Some(SpecialCharacter::Ampersand),
-            _ => None,
-        } {
-            self.renderer.render_special_character(which, dest);
-        } else {
-            dest.push_str(caps[0].as_ref());
+        // The SPECIAL_CHARS regex only matches '<', '>', and '&'. This sequence is
+        // specifically constructed to avoid having any unreachable code.
+        let ch = &caps[0];
+
+        if ch == "<" {
+            self.renderer
+                .render_special_character(SpecialCharacter::Lt, dest);
+        } else if ch == ">" {
+            self.renderer
+                .render_special_character(SpecialCharacter::Gt, dest);
+        } else if ch == "&" {
+            self.renderer
+                .render_special_character(SpecialCharacter::Ampersand, dest);
         }
+
+        // No other cases _should_ occur, but if they do, we'll fail safely by
+        // not writing anything into dest.
     }
 }
-
-static SPECIAL_CHARS: LazyLock<Regex> = LazyLock::new(|| {
-    #[allow(clippy::unwrap_used)]
-    Regex::new("[<>&]").unwrap()
-});
 
 static QUOTED_TEXT_SNIFF: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
@@ -461,15 +468,11 @@ impl Replacer for AttributeReplacer<'_> {
             return;
         }
 
-        match self.0.attribute_value(attr_name) {
-            InterpretedValue::Value(value) => {
-                dest.push_str(value.as_ref());
-            }
-            _ => {
-                // TO DO: What is the correct replacement value for Set and
-                // Unset? For now, they look alike (nothing).
-            }
+        if let InterpretedValue::Value(value) = self.0.attribute_value(attr_name) {
+            dest.push_str(value.as_ref());
         }
+        // Language description is unclear as to what happens for "set" and
+        // "unset" attribute values. For now, we'll replace those with nothing.
     }
 }
 
