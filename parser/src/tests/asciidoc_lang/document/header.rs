@@ -76,6 +76,20 @@ In other words, the document must start with a document header if it has one.
         );
     }
 
+    // Treating as non-normative because this condition is well-covered
+    // elsewhere.
+    non_normative!(
+        r#"
+[IMPORTANT]
+====
+[.lead]
+*The document header may not contain empty lines.*
+The first empty line the processor encounters after the document header begins marks the <<when-does-the-document-header-end,end of the document header>> and the start of the document body.
+====
+
+"#
+    );
+
     #[test]
     fn author_revision_lines() {
         verifies!(
@@ -167,19 +181,10 @@ These implicit content lines are used to assign xref:author-information.adoc[] a
         );
     }
 
+    // Treating as non-normative because these conditions are well-verified in the
+    // test suite for header parsing.
     non_normative!(
         r#"
-[IMPORTANT]
-====
-[.lead]
-*The document header may not contain empty lines.*
-The first empty line the processor encounters after the document header begins marks the <<when-does-the-document-header-end,end of the document header>> and the start of the document body.
-====
-
-A header typically begins with a xref:title.adoc[].
-When a document title is specified, it may be immediately followed by one or two designated lines of content.
-These implicit content lines are used to assign xref:author-information.adoc[] and xref:revision-information.adoc[] to the document.
-
 The header may contain the following elements as long as there aren't any empty lines between them:
 
 * optional document title (a level-0 heading)
