@@ -1,4 +1,5 @@
-        use crate::{tests::prelude::*};
+
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/document/pages/author-information.adoc");
 
@@ -13,7 +14,8 @@ These optional attributes can be set and assigned values xref:author-line.adoc[u
 "#
 );
 
-// See tests in parser/src/tests/document/author_line.rs named `sets_author_attributes_*` which cover these behaviors.
+// See tests in parser/src/tests/document/author_line.rs named
+// `sets_author_attributes_*` which cover these behaviors.
 
 verifies!(
     r#"
@@ -77,4 +79,5 @@ If `author_<n>` contains more than two space-separated names, the second name is
 authorinitials_<n>::
 The first character of the `firstname_<n>`, `middlename_<n>`, and `lastname_<n>` attribute values.
 The value of the `authorinitials_<n>` attribute will consist of three characters or less depending on how many parts are in the author's name.
-"#);
+"#
+);
