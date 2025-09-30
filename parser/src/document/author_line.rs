@@ -21,7 +21,7 @@ impl<'src> AuthorLine<'src> {
 
         for (index, author) in authors.iter().enumerate() {
             set_nth_attribute(parser, "author", index, author.name());
-            set_nth_attribute(parser, "initials", index, author.initials());
+            set_nth_attribute(parser, "authorinitials", index, author.initials());
             set_nth_attribute(parser, "firstname", index, author.firstname());
 
             if let Some(middlename) = author.middlename() {
