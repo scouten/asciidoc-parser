@@ -59,7 +59,11 @@ impl<'src> Header<'src> {
                 source = attr.after;
             } else if title.is_none() && line.starts_with("= ") {
                 let title_span = line.discard(2).discard_whitespace();
-                title = Some(apply_header_subs(title_span.data(), parser));
+                let title_str = apply_header_subs(title_span.data(), parser);
+
+                parser.set_attribute_by_value_from_header("doctitle", &title_str);
+
+                title = Some(title_str);
                 title_source = Some(title_span);
                 source = line_mi.after;
             } else if title.is_some() && author_line.is_none() {
