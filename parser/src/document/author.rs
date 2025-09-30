@@ -119,6 +119,29 @@ impl Author {
     pub fn email(&self) -> Option<&str> {
         self.email.as_deref()
     }
+
+    /// Returns the initials of the author.
+    ///
+    /// The first character of the `firstname`, `middlename`, and `lastname`
+    /// attribute values are assigned to the `authorinitials` attribute. The
+    /// value of the `authorinitials` attribute will consist of three characters
+    /// or less depending on how many parts are in the author’s name.
+    pub fn initials(&self) -> String {
+        format!(
+            "{first}{middle}{last}",
+            first = first_char_or_empty_string(&self.firstname),
+            middle = opt_first_char_or_empty_string(self.middlename.as_deref()),
+            last = opt_first_char_or_empty_string(self.lastname.as_deref()),
+        )
+    }
+}
+
+fn first_char_or_empty_string(s: &str) -> String {
+    s.chars().next().map_or(String::new(), |c| c.to_string())
+}
+
+fn opt_first_char_or_empty_string(s: Option<&str>) -> String {
+    s.map(|s| first_char_or_empty_string(s)).unwrap_or_default()
 }
 
 static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
