@@ -642,22 +642,22 @@ fn err_bad_header_and_bad_macro() {
                         offset: 8,
                     },
                 }),
-        revision_line: Some(
-            RevisionLine {
-                revnumber: Some(
-                    "1",
+                revision_line: Some(
+                    RevisionLine {
+                        revnumber: Some(
+                            "1",
+                        ),
+                        revdate: "2025-09-28",
+                        revremark: None,
+                        source: Span {
+                            data: "v1, 2025-09-28",
+                            line: 3,
+                            col: 1,
+                            offset: 38,
+                        },
+                    },
                 ),
-                revdate: "2025-09-28",
-                revremark: None,
-                source: Span {
-                    data: "v1, 2025-09-28",
-                    line: 3,
-                    col: 1,
-                    offset: 38,
-                },
-            },
-        ),
-                                    comments: &[],
+                comments: &[],
                 source: Span {
                     data: "= Title\nJane Smith <jane@example.com>\nv1, 2025-09-28",
                     line: 1,
