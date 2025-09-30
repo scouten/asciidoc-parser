@@ -393,3 +393,210 @@ fn err_individual_name_components_as_attributes() {
         }
     );
 }
+
+#[test]
+fn sets_author_attributes_single_author_with_all_parts() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse("= Document Title\nKismet R. Lee <kismet@asciidoctor.org>");
+
+    // Primary author attributes
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("Kismet R. Lee")
+    );
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("Kismet")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Value("R.")
+    );
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Lee")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("KRL")
+    );
+    assert_eq!(
+        parser.attribute_value("email"),
+        InterpretedValue::Value("kismet@asciidoctor.org")
+    );
+}
+
+#[test]
+fn sets_author_attributes_single_author_without_middle_name() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse("= Document Title\nDoc Writer <doc@example.com>");
+
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("Doc Writer")
+    );
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("Doc")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Writer")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("DW")
+    );
+    assert_eq!(
+        parser.attribute_value("email"),
+        InterpretedValue::Value("doc@example.com")
+    );
+}
+
+#[test]
+fn sets_author_attributes_single_author_first_name_only() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse("= Document Title\nJohn <john@example.com>");
+
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("John")
+    );
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("John")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(parser.attribute_value("lastname"), InterpretedValue::Unset);
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("J")
+    );
+    assert_eq!(
+        parser.attribute_value("email"),
+        InterpretedValue::Value("john@example.com")
+    );
+}
+
+#[test]
+fn sets_author_attributes_single_author_without_email() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse("= Document Title\nMary Sue Brontë");
+
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("Mary Sue Brontë")
+    );
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("Mary")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Value("Sue")
+    );
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Brontë")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("MSB")
+    );
+    assert_eq!(parser.attribute_value("email"), InterpretedValue::Unset);
+}
+
+#[test]
+fn sets_author_attributes_multiple_authors() {
+    let mut parser = Parser::default();
+    let _doc = parser
+        .parse("= Document Title\nJane Smith <jane@example.com>; John Doe <john@example.com>");
+
+    // First author (primary)
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("Jane Smith")
+    );
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("Jane")
+    );
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Smith")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("JS")
+    );
+    assert_eq!(
+        parser.attribute_value("email"),
+        InterpretedValue::Value("jane@example.com")
+    );
+
+    // Second author
+    assert_eq!(
+        parser.attribute_value("author_2"),
+        InterpretedValue::Value("John Doe")
+    );
+    assert_eq!(
+        parser.attribute_value("firstname_2"),
+        InterpretedValue::Value("John")
+    );
+    assert_eq!(
+        parser.attribute_value("lastname_2"),
+        InterpretedValue::Value("Doe")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials_2"),
+        InterpretedValue::Value("JD")
+    );
+    assert_eq!(
+        parser.attribute_value("email_2"),
+        InterpretedValue::Value("john@example.com")
+    );
+
+    // Verify middlename attributes are unset for both authors
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(
+        parser.attribute_value("middlename_2"),
+        InterpretedValue::Unset
+    );
+}
+
+#[test]
+fn sets_author_attributes_unicode_names() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse("= Document Title\nΑλέξανδρος Μ. Παπαδόπουλος");
+
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("Αλέξανδρος Μ. Παπαδόπουλος")
+    );
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("Αλέξανδρος")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Value("Μ.")
+    );
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Παπαδόπουλος")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("ΑΜΠ")
+    );
+}

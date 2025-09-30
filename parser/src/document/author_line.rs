@@ -19,6 +19,24 @@ impl<'src> AuthorLine<'src> {
             .filter_map(|raw_author| Author::parse(raw_author, parser))
             .collect();
 
+        for (index, author) in authors.iter().enumerate() {
+            set_nth_attribute(parser, "author", index, author.name());
+            set_nth_attribute(parser, "authorinitials", index, author.initials());
+            set_nth_attribute(parser, "firstname", index, author.firstname());
+
+            if let Some(middlename) = author.middlename() {
+                set_nth_attribute(parser, "middlename", index, middlename);
+            }
+
+            if let Some(lastname) = author.lastname() {
+                set_nth_attribute(parser, "lastname", index, lastname);
+            }
+
+            if let Some(email) = author.email() {
+                set_nth_attribute(parser, "email", index, email);
+            }
+        }
+
         Self { authors, source }
     }
 
@@ -26,6 +44,16 @@ impl<'src> AuthorLine<'src> {
     pub fn authors(&'src self) -> Iter<'src, Author> {
         self.authors.iter()
     }
+}
+
+fn set_nth_attribute<V: AsRef<str>>(parser: &mut Parser, name: &str, index: usize, value: V) {
+    let name = if index == 0 {
+        name.to_string()
+    } else {
+        format!("{name}_{count}", count = index + 1)
+    };
+
+    parser.set_attribute_by_value_from_header(name, value);
 }
 
 impl<'src> HasSpan<'src> for AuthorLine<'src> {
