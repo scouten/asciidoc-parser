@@ -141,7 +141,7 @@ fn first_char_or_empty_string(s: &str) -> String {
 }
 
 fn opt_first_char_or_empty_string(s: Option<&str>) -> String {
-    s.map(|s| first_char_or_empty_string(s)).unwrap_or_default()
+    s.map(first_char_or_empty_string).unwrap_or_default()
 }
 
 static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
