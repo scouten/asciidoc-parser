@@ -1,4 +1,3 @@
-
 use crate::tests::prelude::*;
 
 track_file!("docs/modules/document/pages/author-information.adoc");
