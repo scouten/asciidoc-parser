@@ -109,15 +109,13 @@ The author line also accepts xref:multiple-authors.adoc[multiple authors].
 fn author_and_email() {
     non_normative!(
         r#"
-== When can I use the author line?
+== Assign an author and email
 
 "#
     );
 
     verifies!(
         r#"
-== Assign an author and email
-
 In <<ex-line>>, let's add an author and their email address using the author line.
 The author line must be placed on the line directly below the xref:title.adoc[document title] and start with an author's name.
 
