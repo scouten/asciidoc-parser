@@ -44,10 +44,10 @@ impl<'src> AuthorLine<'src> {
     }
 }
 
-/// Split author line on semicolon followed by whitespace.
-/// This preserves semicolons that are part of character references (e.g.,
-/// &#174;) or attribute references that escape character references (e.g.,
-/// &#174;{empty}).
+/// Split author line on semicolon followed by whitespace. This preserves
+/// semicolons that are part of character references (e.g., `&#174;`) or
+/// attribute references that escape character references (e.g.,
+/// `&#174;{empty}`).
 fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &str> {
     let mut parts = Vec::new();
     let mut start = 0;
@@ -58,7 +58,7 @@ fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &s
         if chars[i] == ';' {
             // Check if the semicolon is followed by whitespace.
             if i + 1 < chars.len() && chars[i + 1].is_whitespace() {
-                // Split here - take everything from start to i (excluding the semicolon).
+                // Split here: Take everything from start to i (excluding the semicolon).
                 let part = &input[start..find_byte_index(&input, start, i)];
                 if !part.trim().is_empty() {
                     parts.push(part.trim());

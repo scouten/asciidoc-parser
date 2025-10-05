@@ -194,64 +194,6 @@ fn greek() {
 }
 
 #[test]
-fn debug_semicolon_case() {
-    use crate::document::author::apply_author_subs;
-    let mut parser = Parser::default();
-
-    let input = "AsciiDoc&#174;{empty} WG";
-    let expanded = apply_author_subs(input, &parser);
-    println!("Input: '{}'", input);
-    println!("Expanded: '{}'", expanded);
-
-    // Test regex matching
-    use std::sync::LazyLock;
-
-    use regex::Regex;
-    static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
-        #[allow(clippy::unwrap_used)]
-        Regex::new(
-            r#"(?x)
-                ^
-    
-                # Group 1: First name (required)
-                ([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*)
-    
-                # Group 2: Middle name (optional)
-                (?:\ +([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*))?
-    
-                # Group 3: Last name (optional)
-                (?:\ +([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*))?
-    
-                # Group 4: Email address (optional)
-                (?:\ +<([^>]+)>)?
-    
-                $
-            "#,
-        )
-        .unwrap()
-    });
-
-    if let Some(captures) = AUTHOR.captures(&expanded) {
-        println!(
-            "Regex matches! Groups: {:?}",
-            captures
-                .iter()
-                .map(|m| m.map(|m| m.as_str()))
-                .collect::<Vec<_>>()
-        );
-    } else {
-        println!("Regex does NOT match expanded string");
-    }
-
-    let al = crate::document::AuthorLine::parse(
-        crate::Span::new("AsciiDoc&#174;{empty} WG; Another Author"),
-        &mut parser,
-    );
-
-    println!("Actual result: {:#?}", al);
-}
-
-#[test]
 fn debug_individual_name_components() {
     use crate::parser::ModificationContext;
 
@@ -267,25 +209,7 @@ fn debug_individual_name_components() {
     // Test what our parse function produces.
     let result =
         crate::document::Author::parse("{first-name} {last-name} <{author-email}>", &parser);
-    println!("Parse result: {:?}", result);
-}
 
-#[test]
-fn debug_individual_author_expansion() {
-    use crate::{document::author::apply_author_subs, parser::ModificationContext};
-
-    let parser = Parser::default().with_intrinsic_attribute(
-        "full-author",
-        "John Doe <john@example.com>",
-        ModificationContext::Anywhere,
-    );
-
-    // Test what apply_author_subs produces.
-    let expanded = apply_author_subs("{full-author}", &parser);
-    println!("apply_author_subs result: '{}'", expanded);
-
-    // Test what our parse function produces.
-    let result = crate::document::Author::parse("{full-author}", &parser);
     println!("Parse result: {:?}", result);
 }
 
