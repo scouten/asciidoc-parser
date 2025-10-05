@@ -194,64 +194,6 @@ fn greek() {
 }
 
 #[test]
-fn debug_individual_name_components() {
-    use crate::parser::ModificationContext;
-
-    let parser = Parser::default()
-        .with_intrinsic_attribute("first-name", "Jane", ModificationContext::Anywhere)
-        .with_intrinsic_attribute("last-name", "Smith", ModificationContext::Anywhere)
-        .with_intrinsic_attribute(
-            "author-email",
-            "jane@example.com",
-            ModificationContext::Anywhere,
-        );
-
-    // Test what our parse function produces.
-    let result =
-        crate::document::Author::parse("{first-name} {last-name} <{author-email}>", &parser);
-
-    println!("Parse result: {:?}", result);
-}
-
-#[test]
-fn debug_header_subs() {
-    use crate::{
-        content::{Content, SubstitutionGroup, SubstitutionStep},
-        parser::ModificationContext,
-    };
-
-    let parser = Parser::default().with_intrinsic_attribute(
-        "author-list",
-        "Jane Smith <jane@example.com>; John Doe <john@example.com>",
-        ModificationContext::Anywhere,
-    );
-    let test_input = "{author-list}";
-    let span = crate::Span::new(test_input);
-
-    let mut content = Content::from(span);
-
-    println!("Initial: '{}'", content.rendered());
-
-    // Apply SpecialCharacters first (should do nothing since no < > &)
-    SubstitutionStep::SpecialCharacters.apply(&mut content, &parser, None);
-    println!("After SpecialCharacters: '{}'", content.rendered());
-
-    // Apply AttributeReferences second (should expand {author-list})
-    SubstitutionStep::AttributeReferences.apply(&mut content, &parser, None);
-    println!("After AttributeReferences: '{}'", content.rendered());
-
-    // Apply SpecialCharacters again (should now encode < > that were added)
-    SubstitutionStep::SpecialCharacters.apply(&mut content, &parser, None);
-    println!("After SpecialCharacters again: '{}'", content.rendered());
-
-    // Now test what Header substitution group does in one go
-    let span2 = crate::Span::new("{author-list}");
-    let mut content2 = Content::from(span2);
-    SubstitutionGroup::Header.apply(&mut content2, &parser, None);
-    println!("Header group result: '{}'", content2.rendered());
-}
-
-#[test]
 fn japanese() {
     let mut parser = Parser::default();
 
