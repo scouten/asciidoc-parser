@@ -600,3 +600,41 @@ fn sets_author_attributes_unicode_names() {
         InterpretedValue::Value("ΑΜΠ")
     );
 }
+
+#[test]
+fn semicolon_in_character_reference_not_treated_as_separator() {
+    let mut parser = Parser::default();
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("AsciiDoc&#174;{empty} WG; Another Author"),
+        &mut parser,
+    );
+
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[
+                Author {
+                    name: "AsciiDoc&amp;#174; WG",
+                    firstname: "AsciiDoc&amp;#174; WG",
+                    middlename: None,
+                    lastname: None,
+                    email: None,
+                },
+                Author {
+                    name: "Another Author",
+                    firstname: "Another",
+                    middlename: None,
+                    lastname: Some("Author",),
+                    email: None,
+                },
+            ],
+            source: Span {
+                data: "AsciiDoc&#174;{empty} WG; Another Author",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
