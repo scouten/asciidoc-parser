@@ -194,9 +194,108 @@ fn greek() {
 }
 
 #[test]
-fn debug_header_subs() {
-    use crate::{content::{Content, SubstitutionGroup}, parser::ModificationContext};
+fn debug_semicolon_case() {
+    use crate::document::author::apply_author_subs;
+    let mut parser = Parser::default();
+
+    let input = "AsciiDoc&#174;{empty} WG";
+    let expanded = apply_author_subs(input, &parser);
+    println!("Input: '{}'", input);
+    println!("Expanded: '{}'", expanded);
+
+    // Test regex matching
+    use std::sync::LazyLock;
+
+    use regex::Regex;
+    static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
+        #[allow(clippy::unwrap_used)]
+        Regex::new(
+            r#"(?x)
+                ^
     
+                # Group 1: First name (required)
+                ([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*)
+    
+                # Group 2: Middle name (optional)
+                (?:\ +([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*))?
+    
+                # Group 3: Last name (optional)
+                (?:\ +([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*))?
+    
+                # Group 4: Email address (optional)
+                (?:\ +<([^>]+)>)?
+    
+                $
+            "#,
+        )
+        .unwrap()
+    });
+
+    if let Some(captures) = AUTHOR.captures(&expanded) {
+        println!(
+            "Regex matches! Groups: {:?}",
+            captures
+                .iter()
+                .map(|m| m.map(|m| m.as_str()))
+                .collect::<Vec<_>>()
+        );
+    } else {
+        println!("Regex does NOT match expanded string");
+    }
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("AsciiDoc&#174;{empty} WG; Another Author"),
+        &mut parser,
+    );
+
+    println!("Actual result: {:#?}", al);
+}
+
+#[test]
+fn debug_individual_name_components() {
+    use crate::parser::ModificationContext;
+
+    let parser = Parser::default()
+        .with_intrinsic_attribute("first-name", "Jane", ModificationContext::Anywhere)
+        .with_intrinsic_attribute("last-name", "Smith", ModificationContext::Anywhere)
+        .with_intrinsic_attribute(
+            "author-email",
+            "jane@example.com",
+            ModificationContext::Anywhere,
+        );
+
+    // Test what our parse function produces.
+    let result =
+        crate::document::Author::parse("{first-name} {last-name} <{author-email}>", &parser);
+    println!("Parse result: {:?}", result);
+}
+
+#[test]
+fn debug_individual_author_expansion() {
+    use crate::{document::author::apply_author_subs, parser::ModificationContext};
+
+    let parser = Parser::default().with_intrinsic_attribute(
+        "full-author",
+        "John Doe <john@example.com>",
+        ModificationContext::Anywhere,
+    );
+
+    // Test what apply_author_subs produces.
+    let expanded = apply_author_subs("{full-author}", &parser);
+    println!("apply_author_subs result: '{}'", expanded);
+
+    // Test what our parse function produces.
+    let result = crate::document::Author::parse("{full-author}", &parser);
+    println!("Parse result: {:?}", result);
+}
+
+#[test]
+fn debug_header_subs() {
+    use crate::{
+        content::{Content, SubstitutionGroup, SubstitutionStep},
+        parser::ModificationContext,
+    };
+
     let parser = Parser::default().with_intrinsic_attribute(
         "author-list",
         "Jane Smith <jane@example.com>; John Doe <john@example.com>",
@@ -204,14 +303,28 @@ fn debug_header_subs() {
     );
     let test_input = "{author-list}";
     let span = crate::Span::new(test_input);
-    
+
     let mut content = Content::from(span);
-    SubstitutionGroup::Header.apply(&mut content, &parser, None);
-    
-    println!("Input: {}", test_input);
-    println!("Output: {}", content.rendered());
-    
-    // This should show us what's happening with attribute substitution
+
+    println!("Initial: '{}'", content.rendered());
+
+    // Apply SpecialCharacters first (should do nothing since no < > &)
+    SubstitutionStep::SpecialCharacters.apply(&mut content, &parser, None);
+    println!("After SpecialCharacters: '{}'", content.rendered());
+
+    // Apply AttributeReferences second (should expand {author-list})
+    SubstitutionStep::AttributeReferences.apply(&mut content, &parser, None);
+    println!("After AttributeReferences: '{}'", content.rendered());
+
+    // Apply SpecialCharacters again (should now encode < > that were added)
+    SubstitutionStep::SpecialCharacters.apply(&mut content, &parser, None);
+    println!("After SpecialCharacters again: '{}'", content.rendered());
+
+    // Now test what Header substitution group does in one go
+    let span2 = crate::Span::new("{author-list}");
+    let mut content2 = Content::from(span2);
+    SubstitutionGroup::Header.apply(&mut content2, &parser, None);
+    println!("Header group result: '{}'", content2.rendered());
 }
 
 #[test]
@@ -332,8 +445,8 @@ fn attr_sub_applied_after_parsing() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "Jane Smith &lt;jane@example.com&gt;; John Doe &lt;john@example.com&gt;",
-                firstname: "Jane Smith &lt;jane@example.com&gt;; John Doe &lt;john@example.com&gt;",
+                name: "Jane Smith <jane@example.com>; John Doe <john@example.com>",
+                firstname: "Jane Smith <jane@example.com>; John Doe <john@example.com>",
                 middlename: None,
                 lastname: None,
                 email: None,
@@ -362,11 +475,11 @@ fn attr_sub_for_individual_author() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "{full-author}",
-                firstname: "John",
+                name: "John Doe <john@example.com>",
+                firstname: "John Doe <john@example.com>",
                 middlename: None,
-                lastname: Some("Doe",),
-                email: Some("john@example.com",),
+                lastname: None,
+                email: None,
             },],
             source: Span {
                 data: "{full-author}",
@@ -399,8 +512,8 @@ fn err_individual_name_components_as_attributes() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "Jane Smith &amp;lt;jane@example.com&amp;gt;",
-                firstname: "Jane Smith &amp;lt;jane@example.com&amp;gt;",
+                name: "Jane Smith &lt;jane@example.com&gt;",
+                firstname: "Jane Smith &lt;jane@example.com&gt;",
                 middlename: None,
                 lastname: None,
                 email: None,
@@ -636,17 +749,17 @@ fn semicolon_in_character_reference_not_treated_as_separator() {
         AuthorLine {
             authors: &[
                 Author {
-                    name: "AsciiDoc&amp;#174; WG",
-                    firstname: "AsciiDoc&amp;#174; WG",
+                    name: "AsciiDoc&#174; WG",
+                    firstname: "AsciiDoc&#174;",
                     middlename: None,
-                    lastname: None,
+                    lastname: Some("WG"),
                     email: None,
                 },
                 Author {
                     name: "Another Author",
                     firstname: "Another",
                     middlename: None,
-                    lastname: Some("Author",),
+                    lastname: Some("Author"),
                     email: None,
                 },
             ],

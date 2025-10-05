@@ -3,7 +3,8 @@
 mod attribute;
 pub use attribute::{Attribute, InterpretedValue};
 
-mod author;
+/// Author parsing and representation.
+pub mod author;
 pub use author::Author;
 
 mod author_line;

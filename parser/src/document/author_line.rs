@@ -45,13 +45,14 @@ impl<'src> AuthorLine<'src> {
 }
 
 /// Split author line on semicolon followed by whitespace.
-/// This preserves semicolons that are part of character references (e.g., &#174;)
-/// or attribute references that escape character references (e.g., &#174;{empty}).
+/// This preserves semicolons that are part of character references (e.g.,
+/// &#174;) or attribute references that escape character references (e.g.,
+/// &#174;{empty}).
 fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &str> {
     let mut parts = Vec::new();
     let mut start = 0;
     let chars: Vec<char> = input.chars().collect();
-    
+
     let mut i = 0;
     while i < chars.len() {
         if chars[i] == ';' {
@@ -62,7 +63,7 @@ fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &s
                 if !part.trim().is_empty() {
                     parts.push(part.trim());
                 }
-                
+
                 // Skip the semicolon and any following whitespace.
                 i += 1;
                 while i < chars.len() && chars[i].is_whitespace() {
@@ -74,7 +75,7 @@ fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &s
         }
         i += 1;
     }
-    
+
     // Add the remaining part if any.
     if start < input.len() {
         let part = &input[start..];
@@ -82,16 +83,17 @@ fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &s
             parts.push(part.trim());
         }
     }
-    
+
     parts.into_iter()
 }
 
-/// Find the byte index in the original string corresponding to a character index.
+/// Find the byte index in the original string corresponding to a character
+/// index.
 fn find_byte_index(input: &str, start_byte: usize, char_index: usize) -> usize {
     let substring = &input[start_byte..];
     let mut byte_offset = 0;
     let mut current_char_index = 0;
-    
+
     for ch in substring.chars() {
         if current_char_index >= char_index {
             break;
@@ -99,7 +101,7 @@ fn find_byte_index(input: &str, start_byte: usize, char_index: usize) -> usize {
         byte_offset += ch.len_utf8();
         current_char_index += 1;
     }
-    
+
     start_byte + byte_offset
 }
 
