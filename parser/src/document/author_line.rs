@@ -59,7 +59,7 @@ fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &s
             // Check if the semicolon is followed by whitespace.
             if i + 1 < chars.len() && chars[i + 1].is_whitespace() {
                 // Split here: Take everything from start to i (excluding the semicolon).
-                let part = &input[start..find_byte_index(&input, start, i)];
+                let part = &input[start..find_byte_index(input, start, i)];
                 if !part.trim().is_empty() {
                     parts.push(part.trim());
                 }
@@ -69,7 +69,7 @@ fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &s
                 while i < chars.len() && chars[i].is_whitespace() {
                     i += 1;
                 }
-                start = find_byte_index(&input, 0, i);
+                start = find_byte_index(input, 0, i);
                 continue;
             }
         }
@@ -92,14 +92,12 @@ fn split_authors_on_semicolon_whitespace(input: &str) -> impl Iterator<Item = &s
 fn find_byte_index(input: &str, start_byte: usize, char_index: usize) -> usize {
     let substring = &input[start_byte..];
     let mut byte_offset = 0;
-    let mut current_char_index = 0;
 
-    for ch in substring.chars() {
+    for (current_char_index, ch) in substring.chars().enumerate() {
         if current_char_index >= char_index {
             break;
         }
         byte_offset += ch.len_utf8();
-        current_char_index += 1;
     }
 
     start_byte + byte_offset
