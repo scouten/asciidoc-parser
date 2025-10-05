@@ -37,14 +37,16 @@ impl Author {
 
         let (name_without_email, _) = source.split_once('<').unwrap_or((source, ""));
 
-        let author_source = if name_without_email.contains('{') {
-            apply_header_subs(source, parser)
+        let (processed_name_without_email, author_source, already_processed) = if name_without_email.contains('{') {
+            let processed = apply_header_subs(source, parser);
+            let (processed_name_part, _) = processed.split_once('<').unwrap_or((&processed, ""));
+            (processed_name_part.trim().to_string(), processed, true)
         } else {
-            source.to_string()
+            (name_without_email.trim().to_string(), source.to_string(), false)
         };
 
         if let Some(captures) = AUTHOR.captures(&author_source) {
-            let name = name_without_email.trim().to_string();
+            let name = processed_name_without_email;
             let firstname = captures[1].to_string();
             let mut middlename = captures.get(2).map(|m| m.as_str().to_string());
             let mut lastname = captures.get(3).map(|m| m.as_str().to_string());
@@ -69,7 +71,11 @@ impl Author {
             // names to be parsed into first/middle/last/email. In that case,
             // we get simple and just treat it all as first name.
 
-            let name = apply_header_subs(&author_source, parser);
+            let name = if already_processed {
+                author_source
+            } else {
+                apply_header_subs(&author_source, parser)
+            };
 
             Some(Self {
                 name: name.clone(),
