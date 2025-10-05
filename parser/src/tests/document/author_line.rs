@@ -194,6 +194,27 @@ fn greek() {
 }
 
 #[test]
+fn debug_header_subs() {
+    use crate::{content::{Content, SubstitutionGroup}, parser::ModificationContext};
+    
+    let parser = Parser::default().with_intrinsic_attribute(
+        "author-list",
+        "Jane Smith <jane@example.com>; John Doe <john@example.com>",
+        ModificationContext::Anywhere,
+    );
+    let test_input = "{author-list}";
+    let span = crate::Span::new(test_input);
+    
+    let mut content = Content::from(span);
+    SubstitutionGroup::Header.apply(&mut content, &parser, None);
+    
+    println!("Input: {}", test_input);
+    println!("Output: {}", content.rendered());
+    
+    // This should show us what's happening with attribute substitution
+}
+
+#[test]
 fn japanese() {
     let mut parser = Parser::default();
 
