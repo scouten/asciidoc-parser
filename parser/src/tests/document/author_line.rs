@@ -23,6 +23,80 @@ fn empty_line() {
 }
 
 #[test]
+fn attr_sub_with_html_encoding_fallback() {
+    // Test case for code coverage: input contains attributes but after expansion
+    // doesn't match AUTHOR regex and contains angle brackets that need HTML
+    // encoding.
+    let mut parser = Parser::default().with_intrinsic_attribute(
+        "weird-content",
+        "Complex <weird> & stuff",
+        ModificationContext::Anywhere,
+    );
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("Some {weird-content} pattern"),
+        &mut parser,
+    );
+
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[Author {
+                name: "Some Complex &lt;weird&gt; &amp; stuff pattern",
+                firstname: "Some Complex &lt;weird&gt; &amp; stuff pattern",
+                middlename: None,
+                lastname: None,
+                email: None,
+            },],
+            source: Span {
+                data: "Some {weird-content} pattern",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
+
+#[test]
+fn empty_author() {
+    let mut parser = Parser::default();
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("Author One; ; Author Three"),
+        &mut parser,
+    );
+
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[
+                Author {
+                    name: "Author One",
+                    firstname: "Author",
+                    middlename: None,
+                    lastname: Some("One",),
+                    email: None,
+                },
+                Author {
+                    name: "Author Three",
+                    firstname: "Author",
+                    middlename: None,
+                    lastname: Some("Three",),
+                    email: None,
+                },
+            ],
+            source: Span {
+                data: "Author One; ; Author Three",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
+
+#[test]
 fn one_simple_author() {
     let mut parser = Parser::default();
 
@@ -311,8 +385,8 @@ fn attr_sub_applied_after_parsing() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "Jane Smith &lt;jane@example.com&gt;; John Doe &lt;john@example.com&gt;",
-                firstname: "Jane Smith &lt;jane@example.com&gt;; John Doe &lt;john@example.com&gt;",
+                name: "Jane Smith <jane@example.com>; John Doe <john@example.com>",
+                firstname: "Jane Smith <jane@example.com>; John Doe <john@example.com>",
                 middlename: None,
                 lastname: None,
                 email: None,
@@ -341,11 +415,11 @@ fn attr_sub_for_individual_author() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "{full-author}",
-                firstname: "John",
+                name: "John Doe <john@example.com>",
+                firstname: "John Doe <john@example.com>",
                 middlename: None,
-                lastname: Some("Doe",),
-                email: Some("john@example.com",),
+                lastname: None,
+                email: None,
             },],
             source: Span {
                 data: "{full-author}",
@@ -378,8 +452,8 @@ fn err_individual_name_components_as_attributes() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "Jane Smith &amp;lt;jane@example.com&amp;gt;",
-                firstname: "Jane Smith &amp;lt;jane@example.com&amp;gt;",
+                name: "Jane Smith &lt;jane@example.com&gt;",
+                firstname: "Jane Smith &lt;jane@example.com&gt;",
                 middlename: None,
                 lastname: None,
                 email: None,
@@ -598,5 +672,43 @@ fn sets_author_attributes_unicode_names() {
     assert_eq!(
         parser.attribute_value("authorinitials"),
         InterpretedValue::Value("ΑΜΠ")
+    );
+}
+
+#[test]
+fn semicolon_in_character_reference_not_treated_as_separator() {
+    let mut parser = Parser::default();
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("AsciiDoc&#174;{empty} WG; Another Author"),
+        &mut parser,
+    );
+
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[
+                Author {
+                    name: "AsciiDoc&#174; WG",
+                    firstname: "AsciiDoc&#174;",
+                    middlename: None,
+                    lastname: Some("WG"),
+                    email: None,
+                },
+                Author {
+                    name: "Another Author",
+                    firstname: "Another",
+                    middlename: None,
+                    lastname: Some("Author"),
+                    email: None,
+                },
+            ],
+            source: Span {
+                data: "AsciiDoc&#174;{empty} WG; Another Author",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
     );
 }
