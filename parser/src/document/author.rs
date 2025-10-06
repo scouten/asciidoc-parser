@@ -2,10 +2,7 @@ use std::sync::LazyLock;
 
 use regex::Regex;
 
-use crate::{
-    Parser, Span,
-    content::{Content, SubstitutionGroup},
-};
+use crate::{Parser, Span, content::Content};
 
 /// Represents a single author as (typically) described on the [author line].
 ///
@@ -35,22 +32,43 @@ impl Author {
             return None;
         }
 
-        let (name_without_email, _) = source.split_once('<').unwrap_or((source, ""));
+        // Parse the raw input first to extract components, then apply attribute
+        // substitution to individual components afterwards. Special case: If the entire
+        // input is a single attribute reference, treat the expanded result as a single
+        // name.
+        let is_single_attribute = source.trim().starts_with('{')
+            && source.trim().ends_with('}')
+            && source.matches('{').count() == 1;
 
-        let author_source = if name_without_email.contains('{') {
-            apply_header_subs(source, parser)
-        } else {
-            source.to_string()
-        };
+        if is_single_attribute {
+            // Entire input is a single attribute reference: Expand and treat as single
+            // name.
+            let expanded_source = apply_author_subs(source, parser);
 
-        if let Some(captures) = AUTHOR.captures(&author_source) {
-            let name = name_without_email.trim().to_string();
-            let firstname = captures[1].to_string();
-            let mut middlename = captures.get(2).map(|m| m.as_str().to_string());
-            let mut lastname = captures.get(3).map(|m| m.as_str().to_string());
+            Some(Self {
+                name: expanded_source.clone(),
+                firstname: expanded_source,
+                middlename: None,
+                lastname: None,
+                email: None,
+            })
+        } else if let Some(captures) = AUTHOR.captures(source) {
+            // Raw input matches author pattern: Extract components then apply
+            // substitutions.
+            let name_without_email = source.split_once('<').unwrap_or((source, "")).0.trim();
+            let name = name_without_email.to_string();
+
+            // Extract raw components first.
+            let firstname = apply_author_subs(&captures[1], parser);
+            let mut middlename = captures
+                .get(2)
+                .map(|m| apply_author_subs(m.as_str(), parser));
+            let mut lastname = captures
+                .get(3)
+                .map(|m| apply_author_subs(m.as_str(), parser));
             let email = captures
                 .get(4)
-                .map(|m| apply_header_subs(m.as_str(), parser));
+                .map(|m| apply_author_subs(m.as_str(), parser));
 
             if middlename.is_some() && lastname.is_none() {
                 lastname = middlename;
@@ -64,12 +82,76 @@ impl Author {
                 lastname,
                 email,
             })
-        } else {
-            // AsciiDoc syntax doesn't allow more than three space-separated
-            // names to be parsed into first/middle/last/email. In that case,
-            // we get simple and just treat it all as first name.
+        } else if source.contains('{') {
+            // Input contains attributes that prevent regex match: Expand first, then try
+            // parsing.
+            let expanded_source = apply_author_subs(source, parser);
 
-            let name = apply_header_subs(&author_source, parser);
+            if let Some(captures) = AUTHOR.captures(&expanded_source) {
+                // After expansion, it matches the pattern: Parse normally.
+                let name_without_email = expanded_source
+                    .split_once('<')
+                    .unwrap_or((&expanded_source, ""))
+                    .0
+                    .trim();
+                let name = name_without_email.to_string();
+
+                let firstname = captures[1].to_string();
+                let mut middlename = captures.get(2).map(|m| m.as_str().to_string());
+                let mut lastname = captures.get(3).map(|m| m.as_str().to_string());
+                let email = captures.get(4).map(|m| m.as_str().to_string());
+
+                if middlename.is_some() && lastname.is_none() {
+                    lastname = middlename;
+                    middlename = None;
+                }
+
+                Some(Self {
+                    name,
+                    firstname,
+                    middlename,
+                    lastname,
+                    email,
+                })
+            } else {
+                // Even after expansion, doesn't match: Treat as single name with HTML encoding.
+                let mut expanded_name = expanded_source;
+
+                if expanded_name.contains('<') && expanded_name.contains('>') {
+                    let span = crate::Span::new(&expanded_name);
+                    let mut content = crate::content::Content::from(span);
+                    crate::content::SubstitutionStep::SpecialCharacters.apply(
+                        &mut content,
+                        parser,
+                        None,
+                    );
+                    expanded_name = content.rendered().to_string();
+                }
+
+                Some(Self {
+                    name: expanded_name.clone(),
+                    firstname: expanded_name,
+                    middlename: None,
+                    lastname: None,
+                    email: None,
+                })
+            }
+        } else {
+            // Input doesn't contain attributes and doesn't match pattern: Treat as single
+            // name.
+            let mut name = source.to_string();
+
+            // Apply HTML encoding for unparseable patterns that contain angle brackets.
+            if name.contains('<') && name.contains('>') {
+                let span = crate::Span::new(&name);
+                let mut content = crate::content::Content::from(span);
+                crate::content::SubstitutionStep::SpecialCharacters.apply(
+                    &mut content,
+                    parser,
+                    None,
+                );
+                name = content.rendered().to_string();
+            }
 
             Some(Self {
                 name: name.clone(),
@@ -151,13 +233,13 @@ static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
             ^
 
             # Group 1: First name (required)
-            ([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*)
+            ([a-zA-Z0-9_\p{L}\p{N}&\#;][a-zA-Z0-9_\p{L}\p{N}\-'.&\#;]*)
 
             # Group 2: Middle name (optional)
-            (?:\ +([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*))?
+            (?:\ +([a-zA-Z0-9_\p{L}\p{N}&\#;][a-zA-Z0-9_\p{L}\p{N}\-'.&\#;]*))?
 
             # Group 3: Last name (optional)
-            (?:\ +([a-zA-Z0-9_\p{L}\p{N}][a-zA-Z0-9_\p{L}\p{N}\-'.]*))?
+            (?:\ +([a-zA-Z0-9_\p{L}\p{N}&\#;][a-zA-Z0-9_\p{L}\p{N}\-'.&\#;]*))?
 
             # Group 4: Email address (optional)
             (?:\ +<([^>]+)>)?
@@ -168,11 +250,37 @@ static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-fn apply_header_subs(source: &str, parser: &Parser) -> String {
+fn apply_author_subs(source: &str, parser: &Parser) -> String {
     let span = Span::new(source);
-
     let mut content = Content::from(span);
-    SubstitutionGroup::Header.apply(&mut content, parser, None);
+
+    use crate::content::SubstitutionStep;
+
+    // Apply attribute references first.
+    SubstitutionStep::AttributeReferences.apply(&mut content, parser, None);
+
+    // Apply HTML encoding:
+    // - Single attribute reference (like {full-author}): No HTML encoding.
+    // - Single attribute in email position (like <{email}>): No HTML encoding.
+    // - Multiple attributes or complex patterns: HTML encoding.
+    // - Don't HTML encode if the content only has pre-existing HTML entities.
+    let is_simple_single_attribute = source.trim().starts_with('{')
+        && source.trim().ends_with('}')
+        && source.matches('{').count() == 1;
+
+    let has_multiple_attributes = source.matches('{').count() > 1;
+
+    // Check if we should apply HTML encoding.
+    let rendered = content.rendered();
+    let has_angle_brackets = rendered.contains('<') && rendered.contains('>');
+    let has_unencoded_ampersand = rendered.contains('&') && !rendered.contains("&amp;");
+
+    if !is_simple_single_attribute
+        && has_multiple_attributes
+        && (has_angle_brackets || has_unencoded_ampersand)
+    {
+        SubstitutionStep::SpecialCharacters.apply(&mut content, parser, None);
+    }
 
     content.rendered().to_string()
 }
