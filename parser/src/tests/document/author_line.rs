@@ -25,13 +25,13 @@ fn empty_line() {
 #[test]
 fn attr_sub_with_html_encoding_fallback() {
     // Test case for code coverage: input contains attributes but after expansion
-    // doesn't match AUTHOR regex and contains angle brackets that need HTML encoding
-    let mut parser = Parser::default()
-        .with_intrinsic_attribute(
-            "weird-content",
-            "Complex <weird> & stuff",
-            ModificationContext::Anywhere,
-        );
+    // doesn't match AUTHOR regex and contains angle brackets that need HTML
+    // encoding.
+    let mut parser = Parser::default().with_intrinsic_attribute(
+        "weird-content",
+        "Complex <weird> & stuff",
+        ModificationContext::Anywhere,
+    );
 
     let al = crate::document::AuthorLine::parse(
         crate::Span::new("Some {weird-content} pattern"),
@@ -57,7 +57,6 @@ fn attr_sub_with_html_encoding_fallback() {
         }
     );
 }
-
 
 #[test]
 fn one_simple_author() {
