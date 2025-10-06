@@ -410,3 +410,24 @@ fn sets_author_attributes_from_author_attribute_single_name() {
     );
     assert_eq!(parser.attribute_value("email"), InterpretedValue::Unset);
 }
+
+#[test]
+fn sets_author_attributes_from_empty_string() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse(":author:");
+
+    // Verify that individual author attributes are set.
+    assert_eq!(parser.attribute_value("firstname"), InterpretedValue::Unset);
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(parser.attribute_value("lastname"), InterpretedValue::Unset);
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(parser.attribute_value("email"), InterpretedValue::Unset);
+
+    assert_eq!(parser.attribute_value("author"), InterpretedValue::Set);
+}
