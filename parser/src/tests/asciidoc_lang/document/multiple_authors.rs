@@ -146,10 +146,10 @@ This limitation may be lifted in the future.
                 author_line: Some(AuthorLine {
                     authors: &[
                         Author {
-                            name: "AsciiDoc&#174;{empty} WG",
-                            firstname: "AsciiDoc&#174;{empty} WG",
+                            name: "AsciiDoc&#174; WG",
+                            firstname: "AsciiDoc&#174;",
                             middlename: None,
-                            lastname: None,
+                            lastname: Some("WG"),
                             email: None,
                         },
                         Author {
