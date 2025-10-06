@@ -59,6 +59,44 @@ fn attr_sub_with_html_encoding_fallback() {
 }
 
 #[test]
+fn empty_author() {
+    let mut parser = Parser::default();
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("Author One; ; Author Three"),
+        &mut parser,
+    );
+
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[
+                Author {
+                    name: "Author One",
+                    firstname: "Author",
+                    middlename: None,
+                    lastname: Some("One",),
+                    email: None,
+                },
+                Author {
+                    name: "Author Three",
+                    firstname: "Author",
+                    middlename: None,
+                    lastname: Some("Three",),
+                    email: None,
+                },
+            ],
+            source: Span {
+                data: "Author One; ; Author Three",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
+
+#[test]
 fn one_simple_author() {
     let mut parser = Parser::default();
 
