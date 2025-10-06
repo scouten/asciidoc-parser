@@ -329,3 +329,105 @@ fn sets_doctitle_attribute() {
         InterpretedValue::Value("Document Title Goes Here")
     );
 }
+
+#[test]
+fn sets_author_attributes_from_author_attribute() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse(":author: John Q. Smith <john@example.com>");
+
+    // Verify that individual author attributes are set.
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("John")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Value("Q.")
+    );
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Smith")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("JQS")
+    );
+    assert_eq!(
+        parser.attribute_value("email"),
+        InterpretedValue::Value("john@example.com")
+    );
+
+    // Also verify the original author attribute is still set (with HTML encoding).
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("John Q. Smith &lt;john@example.com&gt;")
+    );
+}
+
+#[test]
+fn sets_author_attributes_from_author_attribute_two_names() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse(":author: Jane Doe");
+
+    // Verify that individual author attributes are set.
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("Jane")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Doe")
+    );
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("JD")
+    );
+    assert_eq!(parser.attribute_value("email"), InterpretedValue::Unset);
+}
+
+#[test]
+fn sets_author_attributes_from_author_attribute_single_name() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse(":author: Cher");
+
+    // Verify that individual author attributes are set.
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("Cher")
+    );
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(parser.attribute_value("lastname"), InterpretedValue::Unset);
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("C")
+    );
+    assert_eq!(parser.attribute_value("email"), InterpretedValue::Unset);
+}
+
+#[test]
+fn sets_author_attributes_from_empty_string() {
+    let mut parser = Parser::default();
+    let _doc = parser.parse(":author:");
+
+    // Verify that individual author attributes are set.
+    assert_eq!(parser.attribute_value("firstname"), InterpretedValue::Unset);
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(parser.attribute_value("lastname"), InterpretedValue::Unset);
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Unset
+    );
+    assert_eq!(parser.attribute_value("email"), InterpretedValue::Unset);
+
+    assert_eq!(parser.attribute_value("author"), InterpretedValue::Set);
+}

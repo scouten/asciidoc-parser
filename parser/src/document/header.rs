@@ -3,7 +3,7 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     content::{Content, SubstitutionGroup},
-    document::{Attribute, AuthorLine, RevisionLine},
+    document::{Attribute, Author, AuthorLine, RevisionLine},
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
@@ -54,6 +54,26 @@ impl<'src> Header<'src> {
             } else if line.starts_with(':')
                 && let Some(attr) = Attribute::parse(source, parser)
             {
+                // Special handling for :author: attribute to populate individual author
+                // attributes.
+                if attr.item.name().data().eq_ignore_ascii_case("author")
+                    && let Some(raw_value) = attr.item.raw_value()
+                    && let Some(author) = Author::parse(raw_value.data(), parser)
+                {
+                    // Set individual author attributes.
+                    parser.set_attribute_by_value_from_header("firstname", author.firstname());
+                    if let Some(middlename) = author.middlename() {
+                        parser.set_attribute_by_value_from_header("middlename", middlename);
+                    }
+                    if let Some(lastname) = author.lastname() {
+                        parser.set_attribute_by_value_from_header("lastname", lastname);
+                    }
+                    parser.set_attribute_by_value_from_header("authorinitials", author.initials());
+                    if let Some(email) = author.email() {
+                        parser.set_attribute_by_value_from_header("email", email);
+                    }
+                }
+
                 parser.set_attribute_from_header(&attr.item, &mut warnings);
                 attributes.push(attr.item);
                 source = attr.after;
