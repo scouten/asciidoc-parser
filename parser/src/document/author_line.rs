@@ -16,7 +16,7 @@ impl<'src> AuthorLine<'src> {
         let authors: Vec<Author> = source
             .data()
             .split("; ")
-                .filter_map(|raw_author| Author::parse(raw_author, parser))
+            .filter_map(|raw_author| Author::parse(raw_author, parser))
             .collect();
 
         for (index, author) in authors.iter().enumerate() {
