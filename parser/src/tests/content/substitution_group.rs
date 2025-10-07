@@ -602,3 +602,112 @@ mod header {
         assert_eq!(content.rendered, CowStr::Borrowed("[#id]#a few words#"));
     }
 }
+
+mod title {
+    use crate::{
+        Parser,
+        content::{Content, SubstitutionGroup},
+        strings::CowStr,
+    };
+
+    #[test]
+    fn empty() {
+        let mut content = Content::from(crate::Span::default());
+        let p = Parser::default();
+        SubstitutionGroup::Title.apply(&mut content, &p, None);
+        assert!(content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed(""));
+    }
+
+    #[test]
+    fn basic_non_empty_span() {
+        let mut content = Content::from(crate::Span::new("blah"));
+        let p = Parser::default();
+        SubstitutionGroup::Title.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(content.rendered, CowStr::Borrowed("blah"));
+    }
+
+    #[test]
+    fn match_lt_and_gt() {
+        let mut content = Content::from(crate::Span::new("bl<ah>"));
+        let p = Parser::default();
+        SubstitutionGroup::Title.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;ah&gt;".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn match_amp() {
+        let mut content = Content::from(crate::Span::new("bl<a&h>"));
+        let p = Parser::default();
+        SubstitutionGroup::Title.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed("bl&lt;a&amp;h&gt;".to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn strong_word() {
+        let mut content = Content::from(crate::Span::new("One *word* is strong."));
+        let p = Parser::default();
+        SubstitutionGroup::Title.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "One <strong>word</strong> is strong."
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
+    #[test]
+    fn strong_word_with_special_chars() {
+        let mut content = Content::from(crate::Span::new("One *wo<r>d* is strong."));
+        let p = Parser::default();
+        SubstitutionGroup::Title.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(
+                "One <strong>wo&lt;r&gt;d</strong> is strong."
+                    .to_string()
+                    .into_boxed_str()
+            )
+        );
+    }
+
+    #[test]
+    fn marked_string_with_id() {
+        let mut content = Content::from(crate::Span::new(r#"[#id]#a few words#"#));
+        let p = Parser::default();
+        SubstitutionGroup::Title.apply(&mut content, &p, None);
+        assert!(!content.is_empty());
+        assert_eq!(
+            content.rendered,
+            CowStr::Boxed(r#"<span id="id">a few words</span>"#.to_string().into_boxed_str())
+        );
+    }
+
+    #[test]
+    fn title_behaves_same_as_normal() {
+        let test_input = "One *wo<r>d* is strong with [#id]#marked text#.";
+        
+        let mut title_content = Content::from(crate::Span::new(test_input));
+        let mut normal_content = Content::from(crate::Span::new(test_input));
+        let p = Parser::default();
+        
+        SubstitutionGroup::Title.apply(&mut title_content, &p, None);
+        SubstitutionGroup::Normal.apply(&mut normal_content, &p, None);
+        
+        // Title should produce exactly the same result as Normal
+        assert_eq!(title_content.rendered, normal_content.rendered);
+    }
+}
