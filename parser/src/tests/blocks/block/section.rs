@@ -89,7 +89,7 @@ fn simplest_section_block() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -147,7 +147,7 @@ fn has_child_block() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -258,7 +258,7 @@ fn title() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 2,
                 col: 4,
@@ -391,7 +391,7 @@ fn warn_child_attrlist_has_extra_comma() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,

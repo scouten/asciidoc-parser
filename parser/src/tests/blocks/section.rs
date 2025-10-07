@@ -78,7 +78,7 @@ fn simplest_section_block() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -137,7 +137,7 @@ fn has_child_block() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -216,7 +216,7 @@ fn has_macro_block_with_extra_blank_line() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -320,7 +320,7 @@ fn has_child_block_with_errors() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -436,7 +436,7 @@ fn dont_stop_at_child_section() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -466,7 +466,7 @@ fn dont_stop_at_child_section() {
                 }),
                 Block::Section(SectionBlock {
                     level: 2,
-                    section_title: Span {
+                    section_title_source: Span {
                         data: "Section 2",
                         line: 5,
                         col: 5,
@@ -557,7 +557,7 @@ fn stop_at_peer_section() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 4,
@@ -636,7 +636,7 @@ fn stop_at_ancestor_section() {
         mi.item,
         SectionBlock {
             level: 2,
-            section_title: Span {
+            section_title_source: Span {
                 data: "Section Title",
                 line: 1,
                 col: 5,

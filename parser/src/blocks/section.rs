@@ -21,7 +21,7 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SectionBlock<'src> {
     level: usize,
-    section_title: Span<'src>,
+    section_title_source: Span<'src>,
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
     title_source: Option<Span<'src>>,
@@ -51,7 +51,7 @@ impl<'src> SectionBlock<'src> {
             item: MatchedItem {
                 item: Self {
                     level: level.item.0,
-                    section_title: level.item.1,
+                    section_title_source: level.item.1,
                     blocks: blocks.item,
                     source: source.trim_trailing_whitespace(),
                     title_source: metadata.title_source,
@@ -78,9 +78,9 @@ impl<'src> SectionBlock<'src> {
         self.level
     }
 
-    /// Return a [`Span`] containing the section title.
-    pub fn section_title(&'src self) -> &'src Span<'src> {
-        &self.section_title
+    /// Return a [`Span`] containing the section title source.
+    pub fn section_title_source(&'src self) -> &'src Span<'src> {
+        &self.section_title_source
     }
 }
 

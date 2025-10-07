@@ -153,7 +153,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
             block,
             Block::Section(SectionBlock {
                 level: 1,
-                section_title: Span {
+                section_title_source: Span {
                     data: "Section with Custom ID",
                     line: 2,
                     col: 4,
@@ -215,7 +215,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
             block,
             Block::Section(SectionBlock {
                 level: 1,
-                section_title: Span {
+                section_title_source: Span {
                     data: "Appendix with Custom ID",
                     line: 2,
                     col: 4,

@@ -129,7 +129,7 @@ mod error_cases {
             mi.item,
             SectionBlock {
                 level: 2,
-                section_title: Span {
+                section_title_source: Span {
                     data: "Section Title",
                     line: 1,
                     col: 5,
@@ -345,7 +345,7 @@ mod error_cases {
             mi.item,
             Block::Section(SectionBlock {
                 level: 2,
-                section_title: Span {
+                section_title_source: Span {
                     data: "Section Title (except it isn't)",
                     line: 2,
                     col: 5,
