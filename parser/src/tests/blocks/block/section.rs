@@ -89,11 +89,14 @@ fn simplest_section_block() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title_source: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[],
             source: Span {
@@ -147,11 +150,14 @@ fn has_child_block() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title_source: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Simple(SimpleBlock {
                 content: Content {
@@ -258,11 +264,14 @@ fn title() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title_source: Span {
-                data: "Section Title",
-                line: 2,
-                col: 4,
-                offset: 24,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 2,
+                    col: 4,
+                    offset: 24,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Simple(SimpleBlock {
                 content: Content {
@@ -391,11 +400,14 @@ fn warn_child_attrlist_has_extra_comma() {
         mi.item,
         Block::Section(SectionBlock {
             level: 1,
-            section_title_source: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Media(MediaBlock {
                 type_: MediaType::Image,

@@ -691,11 +691,14 @@ fn err_bad_header_and_bad_macro() {
             Block::Section(
                 SectionBlock {
                     level: 1,
-                    section_title_source: Span {
-                        data: "Section Title",
-                        line: 6,
-                        col: 4,
-                        offset: 74,
+                    section_title: Content {
+                        original: Span {
+                            data: "Section Title",
+                            line: 6,
+                            col: 4,
+                            offset: 74,
+                        },
+                        rendered: "Section Title",
                     },
                     blocks: &[
                         Block::Media(

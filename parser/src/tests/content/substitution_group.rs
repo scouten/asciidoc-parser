@@ -699,14 +699,14 @@ mod title {
     #[test]
     fn title_behaves_same_as_normal() {
         let test_input = "One *wo<r>d* is strong with [#id]#marked text#.";
-        
+
         let mut title_content = Content::from(crate::Span::new(test_input));
         let mut normal_content = Content::from(crate::Span::new(test_input));
         let p = Parser::default();
-        
+
         SubstitutionGroup::Title.apply(&mut title_content, &p, None);
         SubstitutionGroup::Normal.apply(&mut normal_content, &p, None);
-        
+
         // Title should produce exactly the same result as Normal
         assert_eq!(title_content.rendered, normal_content.rendered);
     }
