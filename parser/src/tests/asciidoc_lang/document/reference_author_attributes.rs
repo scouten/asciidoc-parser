@@ -17,6 +17,7 @@ You can reference the built-in author attributes in your document regardless of 
 fn referencing_single_author_attributes() {
     non_normative!(
         r#"
+[#reference-author]
 == Referencing the author attributes
 
 "#
@@ -215,6 +216,7 @@ include::example$reference-author.adoc[]
 fn referencing_multiple_author_attributes() {
     non_normative!(
         r#"
+[#reference-multiple-authors]
 == Referencing information for multiple authors
 
 "#
