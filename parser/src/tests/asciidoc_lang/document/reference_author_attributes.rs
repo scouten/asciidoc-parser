@@ -32,6 +32,10 @@ In <<ex-reference>>, the `author` and `email` attributes are assigned using attr
 include::example$reference-author.adoc[]
 ----
 
+The result of <<ex-reference>> is displayed below.
+
+image::reference-author.png[Reference the built-in attributes for an author,role=screenshot]
+
 "#
     );
 
