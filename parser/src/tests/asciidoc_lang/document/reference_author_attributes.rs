@@ -8,8 +8,6 @@ non_normative!(
     r#"
 = Reference the Author Information
 
-You can reference the built-in author attributes in your document regardless of whether they're set via the author line or attribute entries.
-
 "#
 );
 
