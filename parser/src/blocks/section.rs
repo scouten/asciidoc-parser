@@ -6,6 +6,7 @@ use crate::{
     blocks::{
         Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
     },
+    content::{Content, SubstitutionGroup},
     span::MatchedItem,
     strings::CowStr,
     warnings::MatchAndWarnings,
@@ -21,7 +22,7 @@ use crate::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SectionBlock<'src> {
     level: usize,
-    section_title: Span<'src>,
+    section_title: Content<'src>,
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
     title_source: Option<Span<'src>>,
@@ -47,11 +48,14 @@ impl<'src> SectionBlock<'src> {
         let blocks = maw_blocks.item;
         let source = metadata.source.trim_remainder(blocks.after);
 
+        let mut section_title = Content::from(level.item.1);
+        SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
+
         Some(MatchAndWarnings {
             item: MatchedItem {
                 item: Self {
                     level: level.item.0,
-                    section_title: level.item.1,
+                    section_title,
                     blocks: blocks.item,
                     source: source.trim_trailing_whitespace(),
                     title_source: metadata.title_source,
@@ -78,9 +82,15 @@ impl<'src> SectionBlock<'src> {
         self.level
     }
 
-    /// Return a [`Span`] containing the section title.
-    pub fn section_title(&'src self) -> &'src Span<'src> {
-        &self.section_title
+    /// Return a [`Span`] containing the section title source.
+    pub fn section_title_source(&self) -> Span<'src> {
+        self.section_title.original()
+    }
+
+    /// Return the processed section title after substitutions have been
+    /// applied.
+    pub fn section_title(&'src self) -> &'src str {
+        self.section_title.rendered()
     }
 }
 

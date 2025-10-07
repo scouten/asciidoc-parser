@@ -3,13 +3,13 @@ use std::fmt;
 use crate::{
     HasSpan,
     blocks::IsBlock,
-    tests::fixtures::{Span, attributes::Attrlist, blocks::Block},
+    tests::fixtures::{Span, attributes::Attrlist, blocks::Block, content::Content},
 };
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct SectionBlock {
     pub level: usize,
-    pub section_title: Span,
+    pub section_title: Content,
     pub blocks: &'static [Block],
     pub source: Span,
     pub title_source: Option<Span>,
@@ -50,7 +50,11 @@ fn fixture_eq_observed(fixture: &SectionBlock, observed: &crate::blocks::Section
         return false;
     }
 
-    if &fixture.section_title != observed.section_title() {
+    if fixture.section_title.original != observed.section_title_source() {
+        return false;
+    }
+
+    if fixture.section_title.rendered != observed.section_title() {
         return false;
     }
 

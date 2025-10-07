@@ -16,6 +16,10 @@ pub enum SubstitutionGroup {
     /// next sections.
     Normal,
 
+    /// The title substitution group is applied to section and block titles.
+    /// It uses the same substitution steps as Normal.
+    Title,
+
     /// The header substitution group is applied to metadata lines (author and
     /// revision information) in the document header. It’s also applied to the
     /// values of attribute entries, regardless of whether those entries are
@@ -208,7 +212,7 @@ impl SubstitutionGroup {
 
     fn steps(&self) -> &[SubstitutionStep] {
         match self {
-            Self::Normal => &[
+            Self::Normal | Self::Title => &[
                 SubstitutionStep::SpecialCharacters,
                 SubstitutionStep::Quotes,
                 SubstitutionStep::AttributeReferences,

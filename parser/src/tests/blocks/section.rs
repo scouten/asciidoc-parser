@@ -78,11 +78,14 @@ fn simplest_section_block() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[],
             source: Span {
@@ -137,11 +140,14 @@ fn has_child_block() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Simple(SimpleBlock {
                 content: Content {
@@ -216,11 +222,14 @@ fn has_macro_block_with_extra_blank_line() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Media(MediaBlock {
                 type_: MediaType::Image,
@@ -320,11 +329,14 @@ fn has_child_block_with_errors() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Media(MediaBlock {
                 type_: MediaType::Image,
@@ -436,11 +448,14 @@ fn dont_stop_at_child_section() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[
                 Block::Simple(SimpleBlock {
@@ -466,11 +481,14 @@ fn dont_stop_at_child_section() {
                 }),
                 Block::Section(SectionBlock {
                     level: 2,
-                    section_title: Span {
-                        data: "Section 2",
-                        line: 5,
-                        col: 5,
-                        offset: 27,
+                    section_title: Content {
+                        original: Span {
+                            data: "Section 2",
+                            line: 5,
+                            col: 5,
+                            offset: 27,
+                        },
+                        rendered: "Section 2",
                     },
                     blocks: &[Block::Simple(SimpleBlock {
                         content: Content {
@@ -557,11 +575,14 @@ fn stop_at_peer_section() {
         mi.item,
         SectionBlock {
             level: 1,
-            section_title: Span {
-                data: "Section Title",
-                line: 1,
-                col: 4,
-                offset: 3,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 4,
+                    offset: 3,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Simple(SimpleBlock {
                 content: Content {
@@ -636,11 +657,14 @@ fn stop_at_ancestor_section() {
         mi.item,
         SectionBlock {
             level: 2,
-            section_title: Span {
-                data: "Section Title",
-                line: 1,
-                col: 5,
-                offset: 4,
+            section_title: Content {
+                original: Span {
+                    data: "Section Title",
+                    line: 1,
+                    col: 5,
+                    offset: 4,
+                },
+                rendered: "Section Title",
             },
             blocks: &[Block::Simple(SimpleBlock {
                 content: Content {
@@ -684,5 +708,59 @@ fn stop_at_ancestor_section() {
             col: 1,
             offset: 24
         }
+    );
+}
+
+#[test]
+fn section_title_with_markup() {
+    let mut parser = Parser::default();
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Section with *bold* text"),
+        &mut parser,
+    )
+    .unwrap()
+    .unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item.section_title_source(),
+        Span {
+            data: "Section with *bold* text",
+            line: 1,
+            col: 4,
+            offset: 3,
+        }
+    );
+
+    assert_eq!(
+        mi.item.section_title(),
+        "Section with <strong>bold</strong> text"
+    );
+}
+
+#[test]
+fn section_title_with_special_chars() {
+    let mut parser = Parser::default();
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Section with <brackets> & ampersands"),
+        &mut parser,
+    )
+    .unwrap()
+    .unwrap_if_no_warnings();
+
+    assert_eq!(
+        mi.item.section_title_source(),
+        Span {
+            data: "Section with <brackets> & ampersands",
+            line: 1,
+            col: 4,
+            offset: 3,
+        }
+    );
+
+    assert_eq!(
+        mi.item.section_title(),
+        "Section with &lt;brackets&gt; &amp; ampersands"
     );
 }

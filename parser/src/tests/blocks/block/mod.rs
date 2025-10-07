@@ -129,11 +129,14 @@ mod error_cases {
             mi.item,
             SectionBlock {
                 level: 2,
-                section_title: Span {
-                    data: "Section Title",
-                    line: 1,
-                    col: 5,
-                    offset: 4,
+                section_title: Content {
+                    original: Span {
+                        data: "Section Title",
+                        line: 1,
+                        col: 5,
+                        offset: 4,
+                    },
+                    rendered: "Section Title",
                 },
                 blocks: &[
                     Block::Simple(SimpleBlock {
@@ -345,11 +348,14 @@ mod error_cases {
             mi.item,
             Block::Section(SectionBlock {
                 level: 2,
-                section_title: Span {
-                    data: "Section Title (except it isn't)",
-                    line: 2,
-                    col: 5,
-                    offset: 28,
+                section_title: Content {
+                    original: Span {
+                        data: "Section Title (except it isn't)",
+                        line: 2,
+                        col: 5,
+                        offset: 28,
+                    },
+                    rendered: "Section Title (except it isn&#8217;t)",
                 },
                 blocks: &[Block::Simple(SimpleBlock {
                     content: Content {
