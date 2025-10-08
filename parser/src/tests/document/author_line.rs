@@ -222,8 +222,8 @@ fn underscore_join() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "Mary_Sue Brontë",
-                firstname: "Mary_Sue",
+                name: "Mary Sue Brontë", // Underscore replaced with space
+                firstname: "Mary Sue",   // Underscore replaced with space
                 middlename: None,
                 lastname: Some("Brontë",),
                 email: None,
@@ -303,14 +303,107 @@ fn arabic() {
         al,
         AuthorLine {
             authors: &[Author {
-                name: "عبد_الله",
-                firstname: "عبد_الله",
+                name: "عبد الله",      // Underscore replaced with space
+                firstname: "عبد الله", // Underscore replaced with space
                 middlename: None,
                 lastname: None,
                 email: None,
             },],
             source: Span {
                 data: "عبد_الله",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
+
+#[test]
+fn underscore_replacement_in_all_name_parts() {
+    let mut parser = Parser::default();
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("John_Paul Mary_Jane Smith_Jones <email@example.com>"),
+        &mut parser,
+    );
+
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[Author {
+                name: "John Paul Mary Jane Smith Jones", // Underscore replaced with space
+                firstname: "John Paul",                  // Underscore replaced with space
+                middlename: Some("Mary Jane"),           // Underscore replaced with space
+                lastname: Some("Smith Jones"),           // Underscore replaced with space
+                email: Some("email@example.com"),
+            },],
+            source: Span {
+                data: "John_Paul Mary_Jane Smith_Jones <email@example.com>",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
+
+#[test]
+fn multiple_underscores_in_name_parts() {
+    let mut parser = Parser::default();
+
+    let al = crate::document::AuthorLine::parse(crate::Span::new("A_B_C D_E_F G_H_I"), &mut parser);
+
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[Author {
+                name: "A B C D E F G H I", // Multiple underscores replaced with spaces
+                firstname: "A B C",        // Multiple underscores replaced with spaces
+                middlename: Some("D E F"), // Multiple underscores replaced with spaces
+                lastname: Some("G H I"),   // Multiple underscores replaced with spaces
+                email: None,
+            },],
+            source: Span {
+                data: "A_B_C D_E_F G_H_I",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+        }
+    );
+}
+
+#[test]
+fn underscore_replacement_with_attribute_substitution() {
+    let mut parser = Parser::default()
+        .with_intrinsic_attribute("first-part", "John_Paul", ModificationContext::Anywhere)
+        .with_intrinsic_attribute("last-part", "Smith_Jones", ModificationContext::Anywhere);
+
+    let al = crate::document::AuthorLine::parse(
+        crate::Span::new("{first-part} {last-part} <email@example.com>"),
+        &mut parser,
+    );
+
+    // Note: This test documents the current behavior where attribute substitution
+    // happens after parsing, which results in HTML encoding of the angle brackets.
+    // The underscore replacement should still work on the attribute-substituted
+    // values.
+    assert_eq!(
+        al,
+        AuthorLine {
+            authors: &[Author {
+                name: "John Paul Smith Jones &lt;email@example.com&gt;", /* Underscore replaced
+                                                                          * with space */
+                firstname: "John Paul Smith Jones &lt;email@example.com&gt;", /* Underscore
+                                                                               * replaced with
+                                                                               * space */
+                middlename: None,
+                lastname: None,
+                email: None,
+            },],
+            source: Span {
+                data: "{first-part} {last-part} <email@example.com>",
                 line: 1,
                 col: 1,
                 offset: 0,
