@@ -109,15 +109,13 @@ Thus, it's important to use the underscore separator to ensure there are no more
 fn ex_line_compound() {
     non_normative!(
         r#"
-== Connecting compound author names
+== Compound names in the author line
 
 "#
     );
 
     verifies!(
         r#"
-== Compound names in the author line
-
 In <<ex-line-compound>>, the first author has a compound first name and the second author has a compound surname.
 
 .Assign compound names in the author line
@@ -330,10 +328,15 @@ image::reference-compound-names.png[Compound author names displayed in the docum
 
 #[test]
 fn ex_compound() {
-    verifies!(
+    non_normative!(
         r#"
 == Compound names in the author attribute
 
+"#
+    );
+
+    verifies!(
+        r#"
 An underscore (`+_+`) should also be placed between each part of a compound name when the author is assigned using the `author` attribute.
 
 .Assign a compound name using the author attribute
