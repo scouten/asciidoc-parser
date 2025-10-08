@@ -45,9 +45,10 @@ impl Author {
             // name.
             let expanded_source = apply_author_subs(source, parser);
 
+            let name_with_spaces = replace_underscores_with_spaces(expanded_source);
             Some(Self {
-                name: expanded_source.clone(),
-                firstname: expanded_source,
+                name: name_with_spaces.clone(),
+                firstname: name_with_spaces,
                 middlename: None,
                 lastname: None,
                 email: None,
@@ -56,16 +57,17 @@ impl Author {
             // Raw input matches author pattern: Extract components then apply
             // substitutions.
             let name_without_email = source.split_once('<').unwrap_or((source, "")).0.trim();
-            let name = name_without_email.to_string();
+            let name = replace_underscores_with_spaces(name_without_email.to_string());
 
             // Extract raw components first.
-            let firstname = apply_author_subs(&captures[1], parser);
+            let firstname =
+                replace_underscores_with_spaces(apply_author_subs(&captures[1], parser));
             let mut middlename = captures
                 .get(2)
-                .map(|m| apply_author_subs(m.as_str(), parser));
+                .map(|m| replace_underscores_with_spaces(apply_author_subs(m.as_str(), parser)));
             let mut lastname = captures
                 .get(3)
-                .map(|m| apply_author_subs(m.as_str(), parser));
+                .map(|m| replace_underscores_with_spaces(apply_author_subs(m.as_str(), parser)));
             let email = captures
                 .get(4)
                 .map(|m| apply_author_subs(m.as_str(), parser));
@@ -94,11 +96,15 @@ impl Author {
                     .unwrap_or((&expanded_source, ""))
                     .0
                     .trim();
-                let name = name_without_email.to_string();
+                let name = replace_underscores_with_spaces(name_without_email.to_string());
 
-                let firstname = captures[1].to_string();
-                let mut middlename = captures.get(2).map(|m| m.as_str().to_string());
-                let mut lastname = captures.get(3).map(|m| m.as_str().to_string());
+                let firstname = replace_underscores_with_spaces(captures[1].to_string());
+                let mut middlename = captures
+                    .get(2)
+                    .map(|m| replace_underscores_with_spaces(m.as_str().to_string()));
+                let mut lastname = captures
+                    .get(3)
+                    .map(|m| replace_underscores_with_spaces(m.as_str().to_string()));
                 let email = captures.get(4).map(|m| m.as_str().to_string());
 
                 if middlename.is_some() && lastname.is_none() {
@@ -128,9 +134,10 @@ impl Author {
                     expanded_name = content.rendered().to_string();
                 }
 
+                let name_with_spaces = replace_underscores_with_spaces(expanded_name);
                 Some(Self {
-                    name: expanded_name.clone(),
-                    firstname: expanded_name,
+                    name: name_with_spaces.clone(),
+                    firstname: name_with_spaces,
                     middlename: None,
                     lastname: None,
                     email: None,
@@ -153,9 +160,10 @@ impl Author {
                 name = content.rendered().to_string();
             }
 
+            let name_with_spaces = replace_underscores_with_spaces(name);
             Some(Self {
-                name: name.clone(),
-                firstname: name,
+                name: name_with_spaces.clone(),
+                firstname: name_with_spaces,
                 middlename: None,
                 lastname: None,
                 email: None,
@@ -224,6 +232,11 @@ fn first_char_or_empty_string(s: &str) -> String {
 
 fn opt_first_char_or_empty_string(s: Option<&str>) -> String {
     s.map(first_char_or_empty_string).unwrap_or_default()
+}
+
+/// Replace underscores with spaces in a name component.
+fn replace_underscores_with_spaces(name: String) -> String {
+    name.replace('_', " ")
 }
 
 static AUTHOR: LazyLock<Regex> = LazyLock::new(|| {
