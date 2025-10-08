@@ -1,8 +1,8 @@
-// use pretty_assertions_sorted::assert_eq;
+use pretty_assertions_sorted::assert_eq;
 
 use crate::{Parser, tests::prelude::*};
 
-track_file!("docs/modules/document/pages/author-line.adoc");
+track_file!("docs/modules/document/pages/compound-author-name.adoc");
 
 non_normative!(
     r#"
