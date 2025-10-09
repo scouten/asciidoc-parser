@@ -6,5 +6,6 @@ mod header;
 mod multiple_authors;
 mod reference_author_attributes;
 mod revision_information;
+mod revision_line;
 mod subtitle;
 mod title;
