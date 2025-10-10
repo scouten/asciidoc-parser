@@ -4,6 +4,17 @@ This document summarizes the changes introduced to the AsciiDoc Language Documen
 For a detailed view of what's changed, refer to the repository's
 https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
+== Published Q2 2025
+
+Changed::
+* Clarify when the first line of a block is interpreted as a block attribute line
+* Clarify how the processor processes character references
+
+Fixed::
+* Fix error in description of unlocked vs locked document attributes
+* Correct documentation for macro substitution that states it applies to passthrough blocks by default
+* Add missing q / quotes entry in custom substitutions table
+
 == Published Q1 2025
 
 Added::
