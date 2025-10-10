@@ -5,6 +5,7 @@ mod compound_author_name;
 mod header;
 mod multiple_authors;
 mod reference_author_attributes;
+mod reference_revision_attributes;
 mod revision_attribute_entries;
 mod revision_information;
 mod revision_line;
