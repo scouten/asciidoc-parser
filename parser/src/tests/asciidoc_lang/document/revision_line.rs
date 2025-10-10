@@ -607,7 +607,7 @@ The date can contain letters, numbers, symbols, and attribute references.
     );
 }
 
-non_normative!(
+verifies!(
     r#"
 When the default stylesheet is applied, the revision information is displayed on the same line as the author information.
 Note that the revision number is preceded with the word _Version_.
