@@ -1,0 +1,64 @@
+use crate::tests::prelude::*;
+
+track_file!("docs/modules/document/pages/doctype.adoc");
+
+// Treating this entire page as non-normative because this crate doesn't pay
+// attention to `doctype` attribute.
+non_normative!(
+    r#"
+= Document Type
+:page-aliases: doctypes.adoc
+
+The document type (aka doctype) declares the expected structure of an AsciiDoc document.
+AsciiDoc defines a fixed set of document types.
+Each document type provides a slight variation on the permitted structure of an AsciiDoc document to accommodate different uses cases.
+
+The default doctype is `article`, which provides the foundation structure on which other doctypes build.
+The `book` doctype permits multiple level-0 sections that act as part sections.
+The `manpage` doctype provides an extended header for defining standard metadata of a manpage, such as the volume number, man, and purpose.
+The `inline` doctype is intended for embedded scenarios.
+
+== Document types
+
+Article (`article`)::
+The default doctype.
+In DocBook, this includes the appendix, abstract, bibliography, glossary, and index sections.
+Unless you are making a book or a man page, you don't need to worry about the doctype.
+The default will suffice.
+
+Book (`book`)::
+Builds on the article doctype with the additional ability to use a top-level title as part titles, includes the appendix, dedication, preface, bibliography, glossary, index, and colophon.
+There's also the concept of a multi-part book, but the distinction from a regular book is determined by the content.
+A book only has chapters and special sections, whereas a multi-part book is divided by parts that each contain one or more chapters or special sections.
+
+Man page (`manpage`)::
+Used for producing a roff or HTML-formatted manual page (man page) for Unix and Unix-like operating systems.
+This doctype instructs the parser to recognize a special document header and section naming conventions for organizing the AsciiDoc content as a man page.
+See xref:asciidoctor:manpage-backend:index.adoc[] for details on how structure a man page using AsciiDoc and generate it using Asciidoctor.
+
+Inline (`inline`)::
+There may be cases when you only want to apply inline AsciiDoc formatting to input text without wrapping it in a block element.
+For example, in the Asciidoclet project (AsciiDoc in Javadoc), only the inline formatting is needed for the text in Javadoc tags.
+// {asciidoclet-ref}[Asciidoclet project]
+
+== Inline doctype rules
+
+The rules for the inline doctype are as follows:
+
+* Only a single paragraph is read from the AsciiDoc source.
+* Inline formatting is applied.
+* The output is not wrapped in the normal paragraph tags.
+
+Given the following input:
+
+[source]
+https://asciidoctor.org[AsciiDoc] is a _lightweight_ markup language...
+
+Processing it with the options `doctype=inline` and `backend=html5` produces:
+
+[source,html]
+<a href="https://asciidoctor.org">AsciiDoc</a> is a <em>lightweight</em> markup language&#8230;
+
+The inline doctype allows the AsciiDoc processor to cover the full range of applications, from unstructured (inline) text to full, standalone documents!
+"#
+);

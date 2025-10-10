@@ -2,6 +2,7 @@ mod author_attribute_entries;
 mod author_information;
 mod author_line;
 mod compound_author_name;
+mod doctype;
 mod header;
 mod header_ref;
 mod metadata;
