@@ -160,3 +160,170 @@ fn no_numeric_content() {
     assert_eq!(result.revdate(), "2023-01-01");
     assert_eq!(result.revremark(), None);
 }
+
+#[test]
+fn sets_document_attributes_with_all_components() {
+    let mut parser = Parser::default();
+    let _result = crate::document::RevisionLine::parse(
+        Span::new("v2.1.0, 2023-12-25: Christmas release"),
+        &mut parser,
+    );
+
+    assert_eq!(
+        parser.attribute_value("revnumber").as_maybe_str(),
+        Some("2.1.0")
+    );
+
+    assert_eq!(
+        parser.attribute_value("revdate").as_maybe_str(),
+        Some("2023-12-25")
+    );
+
+    assert_eq!(
+        parser.attribute_value("revremark").as_maybe_str(),
+        Some("Christmas release")
+    );
+}
+
+#[test]
+fn sets_document_attributes_revision_number_only() {
+    let mut parser = Parser::default();
+    let _result = crate::document::RevisionLine::parse(Span::new("v1.2.3"), &mut parser);
+
+    assert_eq!(
+        parser.attribute_value("revnumber").as_maybe_str(),
+        Some("1.2.3")
+    );
+
+    assert_eq!(parser.attribute_value("revdate").as_maybe_str(), Some(""));
+    assert_eq!(parser.attribute_value("revremark").as_maybe_str(), None);
+}
+
+#[test]
+fn sets_document_attributes_date_only() {
+    let mut parser = Parser::default();
+    let _result = crate::document::RevisionLine::parse(Span::new("2023-01-15"), &mut parser);
+
+    assert_eq!(parser.attribute_value("revnumber").as_maybe_str(), None);
+
+    assert_eq!(
+        parser.attribute_value("revdate").as_maybe_str(),
+        Some("2023-01-15")
+    );
+
+    assert_eq!(parser.attribute_value("revremark").as_maybe_str(), None);
+}
+
+#[test]
+fn sets_document_attributes_date_with_remark() {
+    let mut parser = Parser::default();
+    let _result =
+        crate::document::RevisionLine::parse(Span::new("2023-01-15: New year update"), &mut parser);
+
+    assert_eq!(parser.attribute_value("revnumber").as_maybe_str(), None);
+
+    assert_eq!(
+        parser.attribute_value("revdate").as_maybe_str(),
+        Some("2023-01-15")
+    );
+
+    assert_eq!(
+        parser.attribute_value("revremark").as_maybe_str(),
+        Some("New year update")
+    );
+}
+
+#[test]
+fn sets_document_attributes_revision_with_date() {
+    let mut parser = Parser::default();
+    let _result =
+        crate::document::RevisionLine::parse(Span::new("v1.2.3, 2023-01-15"), &mut parser);
+
+    assert_eq!(
+        parser.attribute_value("revnumber").as_maybe_str(),
+        Some("1.2.3")
+    );
+
+    assert_eq!(
+        parser.attribute_value("revdate").as_maybe_str(),
+        Some("2023-01-15")
+    );
+
+    assert_eq!(parser.attribute_value("revremark").as_maybe_str(), None);
+}
+
+#[test]
+fn sets_document_attributes_revision_with_remark_only() {
+    let mut parser = Parser::default();
+    let _result =
+        crate::document::RevisionLine::parse(Span::new("v1.2.3: A great release"), &mut parser);
+
+    assert_eq!(
+        parser.attribute_value("revnumber").as_maybe_str(),
+        Some("1.2.3")
+    );
+
+    assert_eq!(parser.attribute_value("revdate").as_maybe_str(), Some(""));
+
+    assert_eq!(
+        parser.attribute_value("revremark").as_maybe_str(),
+        Some("A great release")
+    );
+}
+
+#[test]
+fn sets_document_attributes_with_whitespace_handling() {
+    let mut parser = Parser::default();
+    let _result = crate::document::RevisionLine::parse(
+        Span::new("  v1.0.0  ,   Jan 1, 2023   :   Initial release  "),
+        &mut parser,
+    );
+
+    assert_eq!(
+        parser.attribute_value("revnumber").as_maybe_str(),
+        Some("1.0.0")
+    );
+
+    assert_eq!(
+        parser.attribute_value("revdate").as_maybe_str(),
+        Some("Jan 1, 2023")
+    );
+
+    assert_eq!(
+        parser.attribute_value("revremark").as_maybe_str(),
+        Some("Initial release")
+    );
+}
+
+#[test]
+fn sets_document_attributes_with_prefix_stripping() {
+    let mut parser = Parser::default();
+    let _result =
+        crate::document::RevisionLine::parse(Span::new("abc123def, 2023-01-01"), &mut parser);
+
+    assert_eq!(
+        parser.attribute_value("revnumber").as_maybe_str(),
+        Some("123def")
+    );
+
+    assert_eq!(
+        parser.attribute_value("revdate").as_maybe_str(),
+        Some("2023-01-01")
+    );
+
+    assert_eq!(parser.attribute_value("revremark").as_maybe_str(), None);
+}
+
+#[test]
+fn sets_document_attributes_complex_version() {
+    let mut parser = Parser::default();
+    let _result = crate::document::RevisionLine::parse(Span::new("v1.2.3-beta.1"), &mut parser);
+
+    assert_eq!(
+        parser.attribute_value("revnumber").as_maybe_str(),
+        Some("1.2.3-beta.1")
+    );
+
+    assert_eq!(parser.attribute_value("revdate").as_maybe_str(), Some(""));
+    assert_eq!(parser.attribute_value("revremark").as_maybe_str(), None);
+}
