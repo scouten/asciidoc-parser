@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0](https://github.com/scouten/asciidoc-parser/compare/v0.7.0...v0.8.0)
+_10 October 2025_
+
+### Added
+
+* Support compound names in author line ([#391](https://github.com/scouten/asciidoc-parser/pull/391))
+* Apply title substitutions when parsing section titles ([#390](https://github.com/scouten/asciidoc-parser/pull/390))
+* Set derived author name attributes when :author: attribute is set in document header ([#388](https://github.com/scouten/asciidoc-parser/pull/388))
+* Parse revision line in document header ([#377](https://github.com/scouten/asciidoc-parser/pull/377))
+* Refactor document header parsing ([#375](https://github.com/scouten/asciidoc-parser/pull/375))
+* Implement parsing for author line ([#374](https://github.com/scouten/asciidoc-parser/pull/374))
+
+### Fixed
+
+* Set document attributes from revision line ([#392](https://github.com/scouten/asciidoc-parser/pull/392))
+* Author line parsing had several bugs ([#387](https://github.com/scouten/asciidoc-parser/pull/387))
+* Set document attributes from author line ([#384](https://github.com/scouten/asciidoc-parser/pull/384))
+* Set `doctitle` attribute from document header title line ([#381](https://github.com/scouten/asciidoc-parser/pull/381))
+* Allow comment lines between document start and title ([#368](https://github.com/scouten/asciidoc-parser/pull/368))
+
+### Updated dependencies
+
+* Update codspeed-criterion-compat requirement in /parser ([#389](https://github.com/scouten/asciidoc-parser/pull/389))
+
 ## [0.7.0](https://github.com/scouten/asciidoc-parser/compare/v0.6.0...v0.7.0)
 _18 September 2025_
 
