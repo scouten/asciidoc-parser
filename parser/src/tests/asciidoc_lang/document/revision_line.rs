@@ -607,7 +607,7 @@ The date can contain letters, numbers, symbols, and attribute references.
     );
 }
 
-verifies!(
+non_normative!(
     r#"
 When the default stylesheet is applied, the revision information is displayed on the same line as the author information.
 Note that the revision number is preceded with the word _Version_.
@@ -622,7 +622,7 @@ image::revision-line.png["Byline with a version number, revision date, and revis
 #[test]
 fn ex_prefix() {
     verifies!(
-        r#"        
+        r#"
 Let's look at another revision line.
 In <<ex-prefix>>, the version starts with a letter, the date is a reference to the attribute `docdate`, and there's a Unicode glyph in the remark.
 
