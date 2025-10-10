@@ -10,3 +10,4 @@ mod revision_information;
 mod revision_line;
 mod subtitle;
 mod title;
+mod version_label;
