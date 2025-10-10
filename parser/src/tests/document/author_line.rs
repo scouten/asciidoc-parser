@@ -805,3 +805,196 @@ fn semicolon_in_character_reference_not_treated_as_separator() {
         }
     );
 }
+
+#[test]
+fn comprehensive_author_attribute_test() {
+    // This test verifies that all author attribute types work correctly for
+    // multiple authors, including edge cases like missing middle names and emails.
+
+    let mut parser = Parser::default();
+    let doc = parser.parse("= Document Title\nFirst Second Last <first@example.com>; Only First; A B C <abc@example.com>; No Email Guy");
+
+    assert_eq!(
+        parser.attribute_value("author"),
+        InterpretedValue::Value("First Second Last")
+    );
+
+    assert_eq!(
+        parser.attribute_value("firstname"),
+        InterpretedValue::Value("First")
+    );
+
+    assert_eq!(
+        parser.attribute_value("middlename"),
+        InterpretedValue::Value("Second")
+    );
+
+    assert_eq!(
+        parser.attribute_value("lastname"),
+        InterpretedValue::Value("Last")
+    );
+
+    assert_eq!(
+        parser.attribute_value("authorinitials"),
+        InterpretedValue::Value("FSL")
+    );
+
+    assert_eq!(
+        parser.attribute_value("email"),
+        InterpretedValue::Value("first@example.com")
+    );
+
+    assert_eq!(
+        parser.attribute_value("author_2"),
+        InterpretedValue::Value("Only First")
+    );
+
+    assert_eq!(
+        parser.attribute_value("firstname_2"),
+        InterpretedValue::Value("Only")
+    );
+
+    assert_eq!(
+        parser.attribute_value("middlename_2"),
+        InterpretedValue::Unset
+    );
+
+    assert_eq!(
+        parser.attribute_value("lastname_2"),
+        InterpretedValue::Value("First")
+    );
+
+    assert_eq!(
+        parser.attribute_value("authorinitials_2"),
+        InterpretedValue::Value("OF")
+    );
+
+    assert_eq!(parser.attribute_value("email_2"), InterpretedValue::Unset);
+
+    assert_eq!(
+        parser.attribute_value("author_3"),
+        InterpretedValue::Value("A B C")
+    );
+
+    assert_eq!(
+        parser.attribute_value("firstname_3"),
+        InterpretedValue::Value("A")
+    );
+
+    assert_eq!(
+        parser.attribute_value("middlename_3"),
+        InterpretedValue::Value("B")
+    );
+
+    assert_eq!(
+        parser.attribute_value("lastname_3"),
+        InterpretedValue::Value("C")
+    );
+
+    assert_eq!(
+        parser.attribute_value("authorinitials_3"),
+        InterpretedValue::Value("ABC")
+    );
+
+    assert_eq!(
+        parser.attribute_value("email_3"),
+        InterpretedValue::Value("abc@example.com")
+    );
+
+    assert_eq!(
+        parser.attribute_value("author_4"),
+        InterpretedValue::Value("No Email Guy")
+    );
+
+    assert_eq!(
+        parser.attribute_value("firstname_4"),
+        InterpretedValue::Value("No")
+    );
+
+    assert_eq!(
+        parser.attribute_value("middlename_4"),
+        InterpretedValue::Value("Email")
+    );
+
+    assert_eq!(
+        parser.attribute_value("lastname_4"),
+        InterpretedValue::Value("Guy")
+    );
+
+    assert_eq!(
+        parser.attribute_value("authorinitials_4"),
+        InterpretedValue::Value("NEG")
+    );
+
+    assert_eq!(parser.attribute_value("email_4"), InterpretedValue::Unset);
+
+    assert_eq!(
+        doc,
+        Document {
+            header: Header {
+                title_source: Some(Span {
+                    data: "Document Title",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                },),
+                title: Some("Document Title",),
+                attributes: &[],
+                author_line: Some(AuthorLine {
+                    authors: &[
+                        Author {
+                            name: "First Second Last",
+                            firstname: "First",
+                            middlename: Some("Second",),
+                            lastname: Some("Last",),
+                            email: Some("first@example.com",),
+                        },
+                        Author {
+                            name: "Only First",
+                            firstname: "Only",
+                            middlename: None,
+                            lastname: Some("First",),
+                            email: None,
+                        },
+                        Author {
+                            name: "A B C",
+                            firstname: "A",
+                            middlename: Some("B",),
+                            lastname: Some("C",),
+                            email: Some("abc@example.com",),
+                        },
+                        Author {
+                            name: "No Email Guy",
+                            firstname: "No",
+                            middlename: Some("Email",),
+                            lastname: Some("Guy",),
+                            email: None,
+                        },
+                    ],
+                    source: Span {
+                        data: "First Second Last <first@example.com>; Only First; A B C <abc@example.com>; No Email Guy",
+                        line: 2,
+                        col: 1,
+                        offset: 17,
+                    },
+                },),
+                revision_line: None,
+                comments: &[],
+                source: Span {
+                    data: "= Document Title\nFirst Second Last <first@example.com>; Only First; A B C <abc@example.com>; No Email Guy",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+            },
+            blocks: &[],
+            source: Span {
+                data: "= Document Title\nFirst Second Last <first@example.com>; Only First; A B C <abc@example.com>; No Email Guy",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warnings: &[],
+        }
+    );
+}

@@ -1,0 +1,17 @@
+mod author_attribute_entries;
+mod author_information;
+mod author_line;
+mod compound_author_name;
+mod doctype;
+mod header;
+mod header_ref;
+mod metadata;
+mod multiple_authors;
+mod reference_author_attributes;
+mod reference_revision_attributes;
+mod revision_attribute_entries;
+mod revision_information;
+mod revision_line;
+mod subtitle;
+mod title;
+mod version_label;

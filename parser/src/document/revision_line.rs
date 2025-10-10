@@ -64,16 +64,35 @@ impl<'src> RevisionLine<'src> {
     }
 
     /// Returns the revision number, if present.
+    ///
+    /// The document’s revision number or version is assigned to the built-in
+    /// `revnumber` attribute. When assigned using the revision line, the
+    /// version must contain at least one number, and, if it isn’t followed by a
+    /// date or remark, it must begin with the letter `v` (e.g., `v7.0.6`). Any
+    /// letters or symbols preceding the number, including `v`, are dropped when
+    /// the document is rendered. If `revnumber` is set with an attribute entry,
+    /// it doesn’t have to contain a number and the entire value is displayed in
+    /// the rendered document.
     pub fn revnumber(&self) -> Option<&str> {
         self.revnumber.as_deref()
     }
 
     /// Returns the revision date.
+    ///
+    /// The date the revision was completed is assigned to the built-in
+    /// `revdate` attribute. If the date is assigned using the revision line, it
+    /// must be separated from the version by a comma (e.g., `78.1,
+    /// 2020-10-10`). The date can contain letters, numbers, symbols, and
+    /// attribute references.
     pub fn revdate(&self) -> &str {
         &self.revdate
     }
 
     /// Returns the revision remark, if present.
+    ///
+    /// Remarks about the revision of the document are assigned to the built-in
+    /// `revremark` attribute. The remark must be separated by a colon (`:`)
+    /// from the version or revision date when assigned using the revision line.
     pub fn revremark(&self) -> Option<&str> {
         self.revremark.as_deref()
     }
