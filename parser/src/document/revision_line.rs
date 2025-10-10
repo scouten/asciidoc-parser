@@ -33,7 +33,7 @@ impl<'src> RevisionLine<'src> {
             let cleaned_rev = strip_non_numeric_prefix(rev_trimmed);
             (Some(cleaned_rev), date.trim().to_owned())
         } else {
-            // No comma - check if this is a standalone revision number.
+            // No comma: Check if this is a standalone revision number.
             let trimmed = left_of_colon.trim();
             if is_valid_standalone_revision(trimmed) {
                 // This is a standalone revision number (like "v1.2.3").
@@ -44,6 +44,16 @@ impl<'src> RevisionLine<'src> {
                 (None, trimmed.to_owned())
             }
         };
+
+        if let Some(revnumber) = revnumber.as_deref() {
+            parser.set_attribute_by_value_from_header("revnumber", revnumber);
+        }
+
+        parser.set_attribute_by_value_from_header("revdate", &revdate);
+
+        if let Some(revremark) = revremark.as_deref() {
+            parser.set_attribute_by_value_from_header("revremark", revremark);
+        }
 
         Self {
             revnumber: revnumber.map(|s| apply_header_subs(&s, parser)),
