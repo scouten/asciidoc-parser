@@ -3,6 +3,7 @@ mod author_information;
 mod author_line;
 mod compound_author_name;
 mod header;
+mod header_ref;
 mod metadata;
 mod multiple_authors;
 mod reference_author_attributes;
