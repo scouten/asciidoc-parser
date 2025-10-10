@@ -809,7 +809,7 @@ fn semicolon_in_character_reference_not_treated_as_separator() {
 #[test]
 fn comprehensive_author_attribute_test() {
     // This test verifies that all author attribute types work correctly for
-    // multiple authors,  including edge cases like missing middle names and emails.
+    // multiple authors, including edge cases like missing middle names and emails.
 
     let mut parser = Parser::default();
     let doc = parser.parse("= Document Title\nFirst Second Last <first@example.com>; Only First; A B C <abc@example.com>; No Email Guy");
