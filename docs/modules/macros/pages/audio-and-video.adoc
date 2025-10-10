@@ -84,6 +84,8 @@ include::example$video.adoc[tag=caption]
 The video macro supports embedding videos from external video hosting services like Vimeo and YouTube.
 The AsciiDoc processor, specifically the converter, automatically generates the correct code to embed the video in the HTML output.
 
+IMPORTANT: In order for an embedded YouTube video to work in Firefox when viewing the generated HTML document through the file: protocol, you must set `security.fileuri.strict_origin_policy` on the about:config settings page to `false`.
+
 To use this feature, put the video ID in the macro target and the name of the hosting service in the first positional attribute.
 
 .Embed a Vimeo video

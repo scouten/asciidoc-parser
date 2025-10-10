@@ -9,6 +9,7 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 Changed::
 * Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
 * Clarify that a nested list item is not an interrupting line for an attached paragraph
+* Document the additional requirement in Firefox to view an embedded YouTube video
 
 == Published Q2 2025
 
