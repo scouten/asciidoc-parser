@@ -79,6 +79,9 @@ fn main() {
         let path = entry.path().to_str().unwrap().trim_start_matches("../");
         // (unwrap: Should have been filtered out above.)
 
+        // if !path.contains("/revision-line.adoc") {
+        //     return;
+        // }
         println!("        {path:?}: {{");
 
         emit_adoc_coverage(path, spec_coverage.get(path));
@@ -94,6 +97,10 @@ fn main() {
 }
 
 fn parse_rs_file(path: &Path) -> Option<(String, Vec<(String, bool)>)> {
+    // if !path.ends_with("revision_line.rs") {
+    //     return None;
+    // }
+
     let rs_file = fs::read(path).unwrap();
 
     let mut tracked_file: Option<String> = None;
