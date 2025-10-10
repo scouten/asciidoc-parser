@@ -4,9 +4,19 @@
 
 This is an effort to write a semantic parser for the [AsciiDoc language](https://docs.asciidoctor.org/asciidoc/latest/) in the [Rust](https://rust-lang.org) language.
 
-The project is in its infancy as of July 2025 and in **no way ready to use.**
+As of October 2025 this crate is ready for experimental projects, but far from a complete parser and not yet suitable for production applications.
 
 You're welcome to follow along and contribute with the understanding that I may or may not drive this project a mature (1.0) release.
+
+## Why is the code coverage so low?
+
+If you know me from other projects, you know that I value high code coverage and that isn't changed here, despite what the badge above might say.
+
+With this prject, I'm doing an experiment in what I call "spec-driven development." That means not only am I monitoring [coverage of the _code_](https://app.codecov.io/gh/scouten/asciidoc-parser/tree/main/parser%2Fsrc) (which is typically above 99%) but also [coverage of the _spec_](https://app.codecov.io/gh/scouten/asciidoc-parser/tree/main/docs%2Fmodules).
+
+I'm reading page-by-page, line-by-line, and verifying that the implementation matches the specification(*). This slows progress considerably, but I expect it to result in an implementation that is very solid once complete. I've started tracking bugs found via this approach with the tag [#sddbugfind](https://github.com/scouten/asciidoc-parser/pulls?q=is%3Apr+label%3Asddbugfind+is%3Aclosed). There are many already since I started tracking in August 2025.
+
+(*) Yes, I'm aware that the Asciidoc language authors consider this a "language description," not a specification. Since I'm experimenting with and potentially introducing the term spec-driven development as a broader term, I'm splitting the difference here.
 
 ## No planned support for some AsciiDoc features
 
