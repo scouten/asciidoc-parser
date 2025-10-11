@@ -21,7 +21,7 @@ use crate::{
 /// This trait implements many of the same core methods as the [`Block`] enum
 /// but provides a mechanism for third-party code to extend the behavior of
 /// blocks.
-pub trait IsBlock<'src>: HasSpan<'src> + Clone + Debug + Eq + PartialEq {
+pub trait IsBlock<'src>: HasSpan<'src> + Debug + Eq + PartialEq {
     /// Returns the [`ContentModel`] for this block.
     fn content_model(&self) -> ContentModel;
 
