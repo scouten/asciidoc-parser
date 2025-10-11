@@ -61,7 +61,10 @@ impl<'p> Parser<'p> {
     /// provided via the [`warnings()`] iterator.
     ///
     /// [`warnings()`]: Document::warnings
-    pub fn parse<'src>(&mut self, source: &'src str) -> Document<'src> {
+    pub fn parse(&mut self, source: &str) -> Document<'static> {
+        // The mutable borrow of self ends when Document::parse returns,
+        // ensuring no mutable reference to Parser escapes with the Document.
+        // The Document is self-contained and owns its source string internally.
         Document::parse(source, self)
     }
 

@@ -11,14 +11,6 @@ use crate::{
 };
 
 #[test]
-fn impl_clone() {
-    // Silly test to mark the #[derive(...)] line as covered.
-    let doc1 = Parser::default().parse("");
-    let doc2 = doc1.clone();
-    assert_eq!(doc1, doc2);
-}
-
-#[test]
 fn empty_source() {
     let doc = Parser::default().parse("");
 

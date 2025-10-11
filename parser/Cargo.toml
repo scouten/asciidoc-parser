@@ -17,6 +17,7 @@ bytecount = "0.6.7"
 memchr = "2.6.4"
 percent-encoding = "2.3.2"
 regex = "1.11.1"
+self_cell = "1.2.0"
 thiserror = "2.0.1"
 
 [dev-dependencies]

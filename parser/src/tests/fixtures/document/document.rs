@@ -1,7 +1,6 @@
 use std::{cmp::PartialEq, fmt};
 
 use crate::{
-    HasSpan,
     blocks::IsBlock,
     tests::fixtures::{Span, blocks::Block, document::Header, warnings::Warning},
 };
