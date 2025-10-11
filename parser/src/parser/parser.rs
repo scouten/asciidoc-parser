@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, rc::Rc};
 
 use crate::{
     Document, HasSpan,
@@ -13,7 +13,7 @@ use crate::{
 /// The [`Parser`] struct and its related structs allow a caller to configure
 /// how AsciiDoc parsing occurs and then to initiate the parsing process.
 #[derive(Clone, Debug)]
-pub struct Parser<'p> {
+pub struct Parser {
     /// Attribute values at current state of parsing.
     pub(crate) attribute_values: HashMap<String, AttributeValue>,
 
@@ -25,14 +25,14 @@ pub struct Parser<'p> {
     ///
     /// Typically this is an [`HtmlSubstitutionRenderer`] but clients may
     /// provide alternative implementations.
-    pub(crate) renderer: &'p dyn InlineSubstitutionRenderer,
+    pub(crate) renderer: Rc<dyn InlineSubstitutionRenderer>,
 
     /// Specifies how to generate clean and secure paths relative to the parsing
     /// context.
     pub path_resolver: PathResolver,
 }
 
-impl<'p> Parser<'p> {
+impl Parser {
     /// Parse a UTF-8 string as an AsciiDoc document.
     ///
     /// The [`Document`] data structure returned by this call has a '`static`
@@ -237,6 +237,19 @@ impl<'p> Parser<'p> {
         self
     }
 
+    /// Replace the default [`InlineSubstitutionRenderer`] for this parser.
+    ///
+    /// The default implementation of [`InlineSubstitutionRenderer`] that is
+    /// provided is suitable for HTML5 rendering. If you are targeting a
+    /// different back-end rendering, you will need to provide your own
+    /// implementation and set it using this call before parsing.
+    pub fn with_inline_substitution_renderer<ISR: InlineSubstitutionRenderer + 'static>(
+        &mut self,
+        renderer: ISR,
+    ) {
+        self.renderer = Rc::new(renderer);
+    }
+
     /// Called from [`Header::parse()`] to accept or reject an attribute value.
     pub(crate) fn set_attribute_from_header<'src>(
         &mut self,
@@ -323,14 +336,12 @@ impl<'p> Parser<'p> {
     }
 }
 
-const DEFAULT_RENDERER: &'static dyn InlineSubstitutionRenderer = &HtmlSubstitutionRenderer {};
-
-impl Default for Parser<'_> {
+impl Default for Parser {
     fn default() -> Self {
         Self {
             attribute_values: built_in_attrs(),
             default_attribute_values: built_in_default_values(),
-            renderer: DEFAULT_RENDERER,
+            renderer: Rc::new(HtmlSubstitutionRenderer {}),
             path_resolver: PathResolver::default(),
         }
     }

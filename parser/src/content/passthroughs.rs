@@ -62,7 +62,7 @@ impl Passthroughs {
         passthroughs
     }
 
-    pub(crate) fn restore_to(&self, content: &mut Content<'_>, parser: &Parser<'_>) {
+    pub(crate) fn restore_to(&self, content: &mut Content<'_>, parser: &Parser) {
         if self.0.is_empty() {
             return;
         }
@@ -431,7 +431,7 @@ impl Replacer for InlinePassReplacer<'_> {
 }
 
 #[derive(Debug)]
-struct PassthroughRestoreReplacer<'p>(&'p Passthroughs, &'p Parser<'p>);
+struct PassthroughRestoreReplacer<'p>(&'p Passthroughs, &'p Parser);
 
 impl Replacer for PassthroughRestoreReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {

@@ -10,7 +10,7 @@ use crate::{
     parser::{IconRenderParams, ImageRenderParams, LinkRenderParams, LinkRenderType},
 };
 
-pub(super) fn apply_macros(content: &mut Content<'_>, parser: &'_ Parser) {
+pub(super) fn apply_macros(content: &mut Content<'_>, parser: &Parser) {
     let /* mut */ text = content.rendered().to_string();
     let found_square_bracket = text.contains('[');
     let found_colon = text.contains(':');
@@ -127,7 +127,7 @@ static INLINE_IMAGE_MACRO: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-struct InlineImageMacroReplacer<'p>(&'p Parser<'p>);
+struct InlineImageMacroReplacer<'p>(&'p Parser);
 
 impl Replacer for InlineImageMacroReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
@@ -224,7 +224,7 @@ static INLINE_LINK: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-struct InlineLinkReplacer<'p>(&'p Parser<'p>);
+struct InlineLinkReplacer<'p>(&'p Parser);
 
 impl Replacer for InlineLinkReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
@@ -434,7 +434,7 @@ static INLINE_LINK_MACRO: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-struct InlineLinkMacroReplacer<'p>(&'p Parser<'p>);
+struct InlineLinkMacroReplacer<'p>(&'p Parser);
 
 impl Replacer for InlineLinkMacroReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
@@ -654,7 +654,7 @@ static INLINE_EMAIL: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-struct InlineEmailReplacer<'p>(&'p Parser<'p>);
+struct InlineEmailReplacer<'p>(&'p Parser);
 
 impl Replacer for InlineEmailReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
@@ -731,7 +731,7 @@ static INLINE_ANCHOR: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-struct InlineAnchorReplacer<'p>(&'p Parser<'p>);
+struct InlineAnchorReplacer<'p>(&'p Parser);
 
 impl Replacer for InlineAnchorReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
