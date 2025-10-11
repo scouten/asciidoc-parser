@@ -18,8 +18,14 @@ use crate::{
 /// The document can be configured using a document header. The header is not a
 /// block itself, but contributes metadata to the document, such as the document
 /// title and document attributes.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct Document<'src> {
+    internal: Internal<'src>,
+}
+
+/// Internal implementation struct containing the actual data members.
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct Internal<'src> {
     header: Header<'src>,
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
@@ -68,21 +74,23 @@ impl<'src> Document<'src> {
         }
 
         Self {
-            header,
-            blocks: maw_blocks.item.item,
-            source: source.trim_trailing_whitespace(),
-            warnings,
+            internal: Internal {
+                header,
+                blocks: maw_blocks.item.item,
+                source: source.trim_trailing_whitespace(),
+                warnings,
+            },
         }
     }
 
     /// Return the document header.
     pub fn header(&'src self) -> &'src Header<'src> {
-        &self.header
+        &self.internal.header
     }
 
     /// Return an iterator over any warnings found during parsing.
     pub fn warnings(&'src self) -> Iter<'src, Warning<'src>> {
-        self.warnings.iter()
+        self.internal.warnings.iter()
     }
 }
 
@@ -96,7 +104,7 @@ impl<'src> IsBlock<'src> for Document<'src> {
     }
 
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
-        self.blocks.iter()
+        self.internal.blocks.iter()
     }
 
     fn title_source(&'src self) -> Option<Span<'src>> {
@@ -121,6 +129,17 @@ impl<'src> IsBlock<'src> for Document<'src> {
 
 impl<'src> HasSpan<'src> for Document<'src> {
     fn span(&self) -> Span<'src> {
-        self.source
+        self.internal.source
+    }
+}
+
+impl<'src> std::fmt::Debug for Document<'src> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Document")
+            .field("header", &self.internal.header)
+            .field("blocks", &self.internal.blocks)
+            .field("source", &self.internal.source)
+            .field("warnings", &self.internal.warnings)
+            .finish()
     }
 }
