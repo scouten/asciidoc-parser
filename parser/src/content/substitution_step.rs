@@ -56,7 +56,7 @@ impl SubstitutionStep {
     ) {
         match self {
             Self::SpecialCharacters => {
-                apply_special_characters(content, parser.renderer);
+                apply_special_characters(content, &*parser.renderer);
             }
             Self::Quotes => {
                 apply_quotes(content, parser);
@@ -65,7 +65,7 @@ impl SubstitutionStep {
                 apply_attributes(content, parser);
             }
             Self::CharacterReplacements => {
-                apply_character_replacements(content, parser.renderer);
+                apply_character_replacements(content, &*parser.renderer);
             }
             Self::Macros => {
                 super::macros::apply_macros(content, parser);
@@ -296,7 +296,7 @@ static QUOTE_SUBS: LazyLock<Vec<QuoteSub>> = LazyLock::new(|| {
 struct QuoteReplacer<'r> {
     type_: QuoteType,
     scope: QuoteScope,
-    parser: &'r Parser<'r>,
+    parser: &'r Parser,
 }
 
 impl LookaheadReplacer for QuoteReplacer<'_> {
@@ -451,7 +451,7 @@ static ATTRIBUTE_REFERENCE: LazyLock<Regex> = LazyLock::new(|| {
 });
 
 #[derive(Debug)]
-struct AttributeReplacer<'p>(&'p Parser<'p>);
+struct AttributeReplacer<'p>(&'p Parser);
 
 impl Replacer for AttributeReplacer<'_> {
     fn replace_append(&mut self, caps: &Captures<'_>, dest: &mut String) {
@@ -721,7 +721,7 @@ fn apply_post_replacements(
             return;
         }
 
-        let replacer = PostReplacementReplacer(parser.renderer);
+        let replacer = PostReplacementReplacer(&*parser.renderer);
 
         if let Cow::Owned(new_result) = HARD_LINE_BREAK.replace_all(rendered, replacer) {
             content.rendered = new_result.into();

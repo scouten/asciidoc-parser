@@ -270,7 +270,7 @@ pub struct ImageRenderParams<'a> {
 
     /// Parser. The rendered may find document settings (such as an image
     /// directory) in the parser's document attributes.
-    pub parser: &'a Parser<'a>,
+    pub parser: &'a Parser,
 }
 
 /// Provides parsed parameters for an icon to be rendered.
@@ -290,7 +290,7 @@ pub struct IconRenderParams<'a> {
 
     /// Parser. The rendered may find document settings (such as an image
     /// directory) in the parser's document attributes.
-    pub parser: &'a Parser<'a>,
+    pub parser: &'a Parser,
 }
 
 /// Provides parsed parameters for an icon to be rendered.
@@ -316,7 +316,7 @@ pub struct LinkRenderParams<'a> {
 
     /// Parser. The rendered may find document settings (such as an image
     /// directory) in the parser's document attributes.
-    pub parser: &'a Parser<'a>,
+    pub parser: &'a Parser,
 }
 
 /// What type of link is being rendered?

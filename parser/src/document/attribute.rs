@@ -37,10 +37,7 @@ pub struct Attribute<'src> {
 }
 
 impl<'src> Attribute<'src> {
-    pub(crate) fn parse(
-        source: Span<'src>,
-        parser: &Parser<'_>,
-    ) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>, parser: &Parser) -> Option<MatchedItem<'src, Self>> {
         let attr_line = source.take_line_with_continuation()?;
         let colon = attr_line.item.take_prefix(":")?;
 
