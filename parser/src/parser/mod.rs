@@ -5,6 +5,9 @@ mod attribute_value;
 pub(crate) use attribute_value::AttributeValue;
 pub use attribute_value::{AllowableValue, ModificationContext};
 
+mod include_file_handler;
+pub use include_file_handler::IncludeFileHandler;
+
 mod inline_substitution_renderer;
 pub use inline_substitution_renderer::{
     CharacterReplacementType, HtmlSubstitutionRenderer, IconRenderParams, ImageRenderParams,
