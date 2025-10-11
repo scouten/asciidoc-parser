@@ -20,6 +20,11 @@ use crate::{
 /// The document can be configured using a document header. The header is not a
 /// block itself, but contributes metadata to the document, such as the document
 /// title and document attributes.
+///
+/// The `Document` structure is a self-contained package of the original content
+/// that was parsed and the data structures that describe that parsed content.
+/// The API functions on this struct can be used to understand the parse
+/// results.
 #[derive(Eq, PartialEq)]
 pub struct Document<'src> {
     internal: Internal,
@@ -47,36 +52,6 @@ self_cell! {
 }
 
 impl<'src> Document<'src> {
-    /// Parse a UTF-8 string as an AsciiDoc document.
-    ///
-    /// Note that the document references the underlying source string and
-    /// necessarily has the same lifetime as the source.
-    ///
-    /// The `Document` data structure returned by this call and nearly all data
-    /// structures contained within it are gated by the lifetime of the `source`
-    /// text passed in to this function. For that reason all of those data
-    /// structures are given the lifetime `'src`.
-    ///
-    /// **IMPORTANT:** The AsciiDoc language documentation states that UTF-16
-    /// encoding is allowed if a byte-order-mark (BOM) is present at the
-    /// start of a file. This format is not directly supported by the
-    /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
-    /// UTF-8 prior to parsing.
-    ///
-    /// The `parser` reference is used during parsing to mutate parser state
-    /// (such as setting document attributes) but no reference to the parser
-    /// is retained in the returned `Document`. The parser borrow is released
-    /// when this function returns.
-    ///
-    /// # Warnings, not errors
-    ///
-    /// Any UTF-8 string is a valid AsciiDoc document, so this function does not
-    /// return an [`Option`] or [`Result`] data type. There may be any number of
-    /// character sequences that have ambiguous or potentially unintended
-    /// meanings. For that reason, a caller is advised to review the warnings
-    /// provided via the [`warnings()`] iterator.
-    ///
-    /// [`warnings()`]: Self::warnings
     pub(crate) fn parse(source: &str, parser: &mut Parser) -> Self {
         let owned_source = source.to_string();
 

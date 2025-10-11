@@ -35,13 +35,14 @@ pub struct Parser<'p> {
 impl<'p> Parser<'p> {
     /// Parse a UTF-8 string as an AsciiDoc document.
     ///
-    /// Note that the document references the underlying source string and
-    /// necessarily has the same lifetime as the source.
+    /// The [`Document`] data structure returned by this call has a '`static`
+    /// lifetime; this is an implementation detail. It retains a copy of the
+    /// `source` string that was passed in, but it is not tied to the lifetime
+    /// of that string.
     ///
-    /// The [`Document`] data structure returned by this call and nearly all
-    /// data structures contained within it are gated by the lifetime of the
-    /// `source` text passed in to this function. For that reason all of
-    /// those data structures are given the lifetime `'src`.
+    /// Nearly all of the data structures contained within the [`Document`]
+    /// structure are tied to the lifetime of the document and have a `'src`
+    /// lifetime to signal their dependency on the source document.
     ///
     /// **IMPORTANT:** The AsciiDoc language documentation states that UTF-16
     /// encoding is allowed if a byte-order-mark (BOM) is present at the
@@ -49,8 +50,9 @@ impl<'p> Parser<'p> {
     /// `asciidoc-parser` crate. Any UTF-16 content must be re-encoded as
     /// UTF-8 prior to parsing.
     ///
-    /// **IMPORTANT:** The `Parser` struct will be updated with attributes and
-    /// similar values discovered during parsing.
+    /// The `Parser` struct will be updated with document attribute values
+    /// discovered during parsing. These values may be inspected using
+    /// [`attribute_value()`].
     ///
     /// # Warnings, not errors
     ///
@@ -61,6 +63,7 @@ impl<'p> Parser<'p> {
     /// provided via the [`warnings()`] iterator.
     ///
     /// [`warnings()`]: Document::warnings
+    /// [`attribute_value()`]: Self::attribute_value
     pub fn parse(&mut self, source: &str) -> Document<'static> {
         // The mutable borrow of self ends when Document::parse returns,
         // ensuring no mutable reference to Parser escapes with the Document.
