@@ -11,14 +11,6 @@ use crate::{
 };
 
 #[test]
-fn impl_clone() {
-    // Silly test to mark the #[derive(...)] line as covered.
-    let doc1 = Parser::default().parse("");
-    let doc2 = doc1.clone();
-    assert_eq!(doc1, doc2);
-}
-
-#[test]
 fn empty_source() {
     let doc = Parser::default().parse("");
 
@@ -788,5 +780,96 @@ fn err_bad_header_and_bad_macro() {
                 },
             ],
         }
+    );
+}
+
+#[test]
+fn impl_debug() {
+    let doc = Parser::default().parse("= Example Title\n\nabc\n\ndef");
+
+    eprintln!("{doc:#?}");
+
+    assert_eq!(
+        format!("{doc:#?}"),
+        r#"Document {
+    header: Header {
+        title_source: Some(
+            Span {
+                data: "Example Title",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },
+        ),
+        title: Some(
+            "Example Title",
+        ),
+        attributes: [],
+        author_line: None,
+        revision_line: None,
+        comments: [],
+        source: Span {
+            data: "= Example Title",
+            line: 1,
+            col: 1,
+            offset: 0,
+        },
+    },
+    blocks: [
+        Block::Simple(
+            SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "abc",
+                        line: 3,
+                        col: 1,
+                        offset: 17,
+                    },
+                    rendered: "abc",
+                },
+                source: Span {
+                    data: "abc",
+                    line: 3,
+                    col: 1,
+                    offset: 17,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },
+        ),
+        Block::Simple(
+            SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "def",
+                        line: 5,
+                        col: 1,
+                        offset: 22,
+                    },
+                    rendered: "def",
+                },
+                source: Span {
+                    data: "def",
+                    line: 5,
+                    col: 1,
+                    offset: 22,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            },
+        ),
+    ],
+    source: Span {
+        data: "= Example Title\n\nabc\n\ndef",
+        line: 1,
+        col: 1,
+        offset: 0,
+    },
+    warnings: [],
+}"#
     );
 }
