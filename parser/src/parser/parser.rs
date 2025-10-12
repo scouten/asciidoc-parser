@@ -27,6 +27,9 @@ pub struct Parser {
     /// provide alternative implementations.
     pub(crate) renderer: Rc<dyn InlineSubstitutionRenderer>,
 
+    /// Specifies the name of the primary file to be parsed.
+    pub(crate) primary_file_name: Option<String>,
+
     /// Specifies how to generate clean and secure paths relative to the parsing
     /// context.
     pub path_resolver: PathResolver,
@@ -252,6 +255,21 @@ impl Parser {
         self
     }
 
+    /// Sets the name of the primary file to be parsed when [`parse()`] is
+    /// called.
+    ///
+    /// This name will be used for any error messages detected in this file and
+    /// also will be passed to [`IncludeFileHandler::resolve_target()`] as the
+    /// `source` argument for any `include::` file resolution requests from this
+    /// file.
+    ///
+    /// [`parse()`]: Self::parse
+    pub fn with_primary_file_name<S: AsRef<str>>(mut self, name: S) -> Self {
+        self.primary_file_name = Some(name.as_ref().to_owned());
+
+        self
+    }
+
     /// Called from [`Header::parse()`] to accept or reject an attribute value.
     pub(crate) fn set_attribute_from_header<'src>(
         &mut self,
@@ -344,6 +362,7 @@ impl Default for Parser {
             attribute_values: built_in_attrs(),
             default_attribute_values: built_in_default_values(),
             renderer: Rc::new(HtmlSubstitutionRenderer {}),
+            primary_file_name: None,
             path_resolver: PathResolver::default(),
         }
     }
