@@ -244,10 +244,12 @@ impl Parser {
     /// different back-end rendering, you will need to provide your own
     /// implementation and set it using this call before parsing.
     pub fn with_inline_substitution_renderer<ISR: InlineSubstitutionRenderer + 'static>(
-        &mut self,
+        mut self,
         renderer: ISR,
-    ) {
+    ) -> Self {
         self.renderer = Rc::new(renderer);
+
+        self
     }
 
     /// Called from [`Header::parse()`] to accept or reject an attribute value.
