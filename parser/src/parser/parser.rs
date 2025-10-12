@@ -264,6 +264,7 @@ impl Parser {
     /// file.
     ///
     /// [`parse()`]: Self::parse
+    /// [`IncludeFileHandler::resolve_target()`]: crate::parser::IncludeFileHandler::resolve_target
     pub fn with_primary_file_name<S: AsRef<str>>(mut self, name: S) -> Self {
         self.primary_file_name = Some(name.as_ref().to_owned());
 
