@@ -26,14 +26,15 @@ pub(crate) struct SourceMap {
 pub struct SourceLine(pub Option<String>, pub usize);
 
 impl SourceMap {
-    pub(crate) fn append(&mut self, key: usize, value: SourceLine) {
+    pub(crate) fn append(&mut self, preprocessed_line: usize, source_line: SourceLine) {
         if let Some((last_key, _)) = self.data.last() {
             assert!(
-                key > *last_key,
-                "SourceMap: keys must be appended in increasing order (got {key}, last {last_key})"
+                preprocessed_line > *last_key,
+                "SourceMap: preprocessed line numbers must be appended in increasing order (got {preprocessed_line}, last {last_key})"
             );
         }
-        self.data.push((key, value));
+
+        self.data.push((preprocessed_line, source_line));
     }
 
     /// Given a 1-based line number in the preprocessed source file, translate
