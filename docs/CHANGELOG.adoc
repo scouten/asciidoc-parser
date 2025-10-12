@@ -9,6 +9,7 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 Changed::
 * Clarify when the first line of a block is interpreted as a block attribute line
 * Clarify how the processor processes character references
+* Emphasize that writing in a CJK language necessitate the need for using unconstrained markup.
 
 Fixed::
 * Fix error in description of unlocked vs locked document attributes
