@@ -136,8 +136,7 @@ impl InlineSubstitutionRenderer for TestRenderer {
 
 #[test]
 fn with_inline_substitution_renderer() {
-    let mut parser = Parser::default();
-    parser.with_inline_substitution_renderer(TestRenderer);
+    let mut parser = Parser::default().with_inline_substitution_renderer(TestRenderer);
 
     // Parse a simple document with special characters.
     let doc = parser.parse("Hello & goodbye < world > test");
