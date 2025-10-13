@@ -28,5 +28,39 @@ pub(crate) fn preprocess(source: &str, parser: &Parser) -> (String, SourceMap) {
         return (source.to_owned(), source_map);
     }
 
-    todo!("May contain preprocessor directives -- look more closely");
+    // We use a temporary clone of the parser to track document attribute values
+    // while parsing. These get recalculated again later when doing the full
+    // document parsing.
+    let mut temp_parser = parser.clone();
+    let mut state = PreprocessorState::new(&mut temp_parser);
+    state.process_adoc_include(source, parser.primary_file_name.as_deref());
+
+    (state.output, state.source_map)
+}
+
+#[derive(Debug)]
+struct PreprocessorState<'p> {
+    parser: &'p mut Parser,
+    in_document_header: bool,
+    include_depth: usize,
+    output_line_number: usize,
+    output: String,
+    source_map: SourceMap,
+}
+
+impl<'p> PreprocessorState<'p> {
+    fn new(parser: &'p mut Parser) -> Self {
+        Self {
+            parser,
+            in_document_header: true,
+            include_depth: 0,
+            output_line_number: 1,
+            output: String::new(),
+            source_map: SourceMap::default(),
+        }
+    }
+
+    fn process_adoc_include(&mut self, source: &str, file_name: Option<&str>) {
+        todo!();
+    }
 }
