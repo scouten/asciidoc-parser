@@ -60,6 +60,7 @@ For attributes that allow it (which includes general purpose attributes), the at
 
 WARNING: An attribute entry should not be declared inside the boundaries of a delimited block.
 When an attribute entry is declared inside a delimited block, the behavior is undefined.
+What's certain is that preprocessor directives (i.e., include directive, conditional directives) cannot see attributes defined inside a delimited block.
 
 When an attribute is defined in the document header using an attribute entry, that's referred to as a header attribute.
 A header attribute is available to the entire document until it is unset.
