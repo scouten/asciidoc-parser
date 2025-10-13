@@ -84,8 +84,8 @@ impl Parser {
     /// [`warnings()`]: Document::warnings
     /// [`attribute_value()`]: Self::attribute_value
     pub fn parse(&mut self, source: &str) -> Document<'static> {
-        let (preprocessed_source, _source_map) = preprocess(source, self);
-        Document::parse(&preprocessed_source, self)
+        let (preprocessed_source, source_map) = preprocess(source, self);
+        Document::parse(&preprocessed_source, source_map, self)
     }
 
     /// Retrieves the current interpreted value of a [document attribute].

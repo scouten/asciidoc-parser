@@ -8,8 +8,8 @@ use std::fmt;
 /// to construct it. Line numbers here are 1-based.
 ///
 /// [`Span`]: crate::Span
-#[derive(Clone, Default)]
-pub(crate) struct SourceMap {
+#[derive(Clone, Default, Eq, PartialEq)]
+pub struct SourceMap {
     data: Vec<(usize, SourceLine)>,
 }
 
@@ -35,7 +35,7 @@ impl SourceMap {
     /// Given a 1-based line number in the preprocessed source file, translate
     /// that to a file name and line number as original inputs to the parsing
     /// process.
-    pub(crate) fn original_file_and_line(&self, key: usize) -> Option<SourceLine> {
+    pub fn original_file_and_line(&self, key: usize) -> Option<SourceLine> {
         match self.data.binary_search_by_key(&key, |(k, _)| *k) {
             Ok(i) => self.data.get(i).map(|(k, v)| v.clone()),
             Err(0) => None,

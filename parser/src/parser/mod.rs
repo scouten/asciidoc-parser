@@ -24,6 +24,4 @@ pub use path_resolver::PathResolver;
 pub(crate) mod preprocessor;
 
 mod source_map;
-pub use source_map::SourceLine;
-#[allow(unused)] // TEMPORARY while building
-pub(crate) use source_map::SourceMap;
+pub use source_map::{SourceLine, SourceMap};

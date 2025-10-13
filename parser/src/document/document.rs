@@ -9,6 +9,7 @@ use crate::{
     attributes::Attrlist,
     blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until},
     document::Header,
+    parser::SourceMap,
     strings::CowStr,
     warnings::Warning,
 };
@@ -39,6 +40,7 @@ struct InternalDependent<'src> {
     blocks: Vec<Block<'src>>,
     source: Span<'src>,
     warnings: Vec<Warning<'src>>,
+    source_map: SourceMap,
 }
 
 self_cell! {
@@ -52,7 +54,7 @@ self_cell! {
 }
 
 impl<'src> Document<'src> {
-    pub(crate) fn parse(source: &str, parser: &mut Parser) -> Self {
+    pub(crate) fn parse(source: &str, source_map: SourceMap, parser: &mut Parser) -> Self {
         let owned_source = source.to_string();
 
         let internal = Internal::new(owned_source, |owned_src| {
@@ -75,6 +77,7 @@ impl<'src> Document<'src> {
                 blocks: maw_blocks.item.item,
                 source: source.trim_trailing_whitespace(),
                 warnings,
+                source_map,
             }
         });
 
@@ -97,6 +100,11 @@ impl<'src> Document<'src> {
     /// Return a [`Span`] describing the entire document source.
     pub fn span(&self) -> Span<'_> {
         self.internal.borrow_dependent().source
+    }
+
+    /// Return the source map that tracks original file locations.
+    pub fn source_map(&self) -> &SourceMap {
+        &self.internal.borrow_dependent().source_map
     }
 }
 
@@ -141,6 +149,7 @@ impl std::fmt::Debug for Document<'_> {
             .field("blocks", &dependent.blocks)
             .field("source", &dependent.source)
             .field("warnings", &dependent.warnings)
+            .field("source_map", &dependent.source_map)
             .finish()
     }
 }
