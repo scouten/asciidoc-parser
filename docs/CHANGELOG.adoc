@@ -4,12 +4,17 @@ This document summarizes the changes introduced to the AsciiDoc Language Documen
 For a detailed view of what's changed, refer to the repository's
 https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
+== Published Q3 2025
+
+Changed::
+* Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
+* Clarify that a nested list item is not an interrupting line for an attached paragraph
+
 == Published Q2 2025
 
 Changed::
 * Clarify when the first line of a block is interpreted as a block attribute line
 * Clarify how the processor processes character references
-* Emphasize that writing in a CJK language necessitate the need for using unconstrained markup.
 
 Fixed::
 * Fix error in description of unlocked vs locked document attributes
