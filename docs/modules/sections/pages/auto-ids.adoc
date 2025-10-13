@@ -13,19 +13,22 @@ The AsciiDoc processor builds an ID from the title using the following order of 
 * Inline formatting is applied (in title substitution order).
 * All characters are converted to lowercase.
 * The value of the xref:id-prefix-and-separator.adoc#prefix[idprefix attribute] (`+_+` by default) is prepended.
-* Character references, HTML/XML tags (not their contents), and invalid ID characters are removed.
-** Refer to the {url-ntname}[NT-Name^] section of the XML specification for a list of valid ID characters.
+* Character references, HTML/XML tags (not their contents), and non-word characters (except for space, hyphen, and period) are removed.
 * Spaces, hyphens, and periods are replaced with the value of the xref:id-prefix-and-separator.adoc#separator[idseparator attribute] (`+_+` by default)
 * Repeating separator characters are condensed.
 * If necessary, a sequence number is appended until the ID is unique within the document.
 
-Given the following section title:
+The generated ID can be expected to be safe to use in an HTML document.
+However, it's important to understand that the generated ID does not necessarily conform to an {url-ntname}[NT-Name^], as required by the XML specification.
+If you intend to produce DocBook from your AsciiDoc document(s), and your section titles uses word characters that are not permitted in an XML ID, the onus is on you to either provide an explicit ID that is conforming, or encode those invalid ID characters using a character reference (e.g., `\&#x2161;`).
+
+With those rules in mind, given the following section title:
 
 ----
 == Wiley & Sons, Inc.
 ----
 
-The processor will produce the following ID:
+the processor will produce the following ID:
 
 ....
 _wiley_sons_inc
@@ -33,7 +36,7 @@ _wiley_sons_inc
 
 You can toggle ID autogeneration on and off using `sectids` and xref:id-prefix-and-separator.adoc[customize the ID prefix and word separator].
 
-CAUTION: If the title contains a forward looking xref (i.e., an xref to an element that comes later in document order), you must either assign a custom ID to the block or <<disable,disable ID generation>> around the title.
+CAUTION: If the section title contains a forward looking xref (i.e., an xref to an element that comes later in document order), you must either assign a custom ID to the block or <<disable,disable ID generation>> around the title.
 Otherwise, the AsciiDoc processor may warn that the reference is invalid.
 This happens because, in order to generate an ID, the processor must convert the title.
 This conversion happens before the processor has visited the target element.
