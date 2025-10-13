@@ -8,6 +8,7 @@ use crate::{
     Parser, Span,
     attributes::{Attrlist, AttrlistContext},
     parser::{SourceLine, SourceMap},
+    span::MatchedItem,
 };
 
 /// Given a root file (initial input to `Parser::parse`), convert this into a
@@ -69,12 +70,18 @@ impl<'p> PreprocessorState<'p> {
         self.include_depth += 1;
 
         let mut has_reported_file = false;
-        for (source_line_number, line) in source.lines().enumerate() {
-            // Rust uses 0-based numbering; our reporting uses 1-based numbering.
-            let source_line_number = source_line_number + 1;
+        let mut source_span = Span::new(source);
+
+        while !source_span.is_empty() {
+            let original_source = source_span;
+
+            let MatchedItem { item: line, after } = source_span.take_line();
+            source_span = after;
+
+            let source_line_number = line.line();
 
             if line.starts_with("include::")
-                && let Some(caps) = INCLUDE_DIRECTIVE.captures(line)
+                && let Some(caps) = INCLUDE_DIRECTIVE.captures(line.data())
             {
                 let target = &caps[1];
 
@@ -103,7 +110,8 @@ impl<'p> PreprocessorState<'p> {
                     self.output_line_number += 1;
                     self.output.push_str(&format!(
                         "Unresolved directive in {file_name} - {line}\n",
-                        file_name = file_name.unwrap_or("(root file)")
+                        file_name = file_name.unwrap_or("(root file)",),
+                        line = line.data(),
                     ));
                 }
             } else {
@@ -117,7 +125,7 @@ impl<'p> PreprocessorState<'p> {
                 }
 
                 self.output_line_number += 1;
-                self.output.push_str(line);
+                self.output.push_str(line.data());
                 self.output.push('\n');
             }
         }
