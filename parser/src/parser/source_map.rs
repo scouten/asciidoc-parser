@@ -47,20 +47,6 @@ impl SourceMap {
     }
 }
 
-/*
-/// Allow building from any iterator of `(usize, SourceLine)`.
-impl FromIterator<(usize, SourceLine)> for SourceMap {
-    fn from_iter<I: IntoIterator<Item = (usize, SourceLine)>>(iter: I) -> Self {
-        let mut data: Vec<_> = iter.into_iter().collect();
-        assert!(
-            data.windows(2).all(|w| w[0].0 <= w[1].0),
-            "SourceMap: input must be sorted by key"
-        );
-        Self { data }
-    }
-}
-*/
-
 impl fmt::Debug for SourceMap {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_map()
