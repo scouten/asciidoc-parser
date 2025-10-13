@@ -5,7 +5,7 @@ use crate::{
     document::{Attribute, InterpretedValue},
     parser::{
         AllowableValue, AttributeValue, HtmlSubstitutionRenderer, InlineSubstitutionRenderer,
-        ModificationContext, PathResolver,
+        ModificationContext, PathResolver, preprocessor::preprocess,
     },
     warnings::{Warning, WarningType},
 };
@@ -68,10 +68,8 @@ impl Parser {
     /// [`warnings()`]: Document::warnings
     /// [`attribute_value()`]: Self::attribute_value
     pub fn parse(&mut self, source: &str) -> Document<'static> {
-        // The mutable borrow of self ends when Document::parse returns,
-        // ensuring no mutable reference to Parser escapes with the Document.
-        // The Document is self-contained and owns its source string internally.
-        Document::parse(source, self)
+        let (preprocessed_source, _source_map) = preprocess(source, self);
+        Document::parse(&preprocessed_source, self)
     }
 
     /// Retrieves the current interpreted value of a [document attribute].

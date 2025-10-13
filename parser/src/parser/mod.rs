@@ -21,6 +21,8 @@ pub use parser::Parser;
 mod path_resolver;
 pub use path_resolver::PathResolver;
 
+mod preprocessor;
+
 mod source_map;
 pub use source_map::SourceLine;
 #[allow(unused)] // TEMPORARY while building
