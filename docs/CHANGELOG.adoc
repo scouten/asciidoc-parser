@@ -6,6 +6,9 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
 == Published Q3 2025
 
+Added::
+* Add example of when to use per-line hardbreaks instead of the hardbreaks option
+
 Changed::
 * Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
 * Clarify that a nested list item is not an interrupting line for an attached paragraph
