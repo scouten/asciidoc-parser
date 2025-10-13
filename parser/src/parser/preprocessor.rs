@@ -1,7 +1,12 @@
 #![allow(unused)] // TEMPORARY while building
 
+use std::sync::LazyLock;
+
+use regex::Regex;
+
 use crate::{
-    Parser,
+    Parser, Span,
+    attributes::{Attrlist, AttrlistContext},
     parser::{SourceLine, SourceMap},
 };
 
@@ -61,6 +66,92 @@ impl<'p> PreprocessorState<'p> {
     }
 
     fn process_adoc_include(&mut self, source: &str, file_name: Option<&str>) {
-        todo!();
+        self.include_depth += 1;
+
+        let mut has_reported_file = false;
+        for (source_line_number, line) in source.lines().enumerate() {
+            // Rust uses 0-based numbering; our reporting uses 1-based numbering.
+            let source_line_number = source_line_number + 1;
+
+            if line.starts_with("include::")
+                && let Some(caps) = INCLUDE_DIRECTIVE.captures(line)
+            {
+                let target = &caps[1];
+
+                let attrlist = caps
+                    .get(2)
+                    .map(|attrlist| {
+                        let span = Span::new(attrlist.as_str());
+                        Attrlist::parse(span, self.parser, AttrlistContext::Inline)
+                            .item
+                            .item
+                    })
+                    .unwrap_or_default();
+
+                if let Some(include_text) =
+                    self.parser.include_file_handler.as_ref().and_then(|ifh| {
+                        ifh.resolve_target(file_name, target, &attrlist, self.parser)
+                    })
+                {
+                    // TO DO: Use process_adoc_include or (TBD) depending on
+                    // whether it's an Asciidoc file type.
+                    self.process_adoc_include(&include_text, Some(target));
+
+                    // Re-report the including file if there's more content.
+                    has_reported_file = false;
+                } else {
+                    self.output_line_number += 1;
+                    self.output.push_str(&format!(
+                        "Unresolved directive in {file_name} - {line}\n",
+                        file_name = file_name.unwrap_or("(root file)")
+                    ));
+                }
+            } else {
+                // If none of the above apply, add the line to output.
+                if !has_reported_file {
+                    has_reported_file = true;
+                    self.source_map.append(
+                        self.output_line_number,
+                        SourceLine(to_owned(file_name), source_line_number),
+                    );
+                }
+
+                self.output_line_number += 1;
+                self.output.push_str(line);
+                self.output.push('\n');
+            }
+        }
+
+        self.include_depth -= 1;
     }
 }
+
+fn to_owned(maybe_file_name: Option<&str>) -> Option<String> {
+    maybe_file_name.map(|n| n.to_string())
+}
+
+static INCLUDE_DIRECTIVE: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(
+        r#"(?x)                      # Extended (verbose) mode
+
+        ^                           # Start of string
+
+        include::                   # Literal 'include::' macro prefix
+
+        (                           # (1) Target path
+            [^\s\[]                   #   First char: not space or '['
+            (?: [^\[]* [^\s\[] )?     #   Optional middle part ending with non-space/non-'['
+        )                           # end capture group 1
+
+        \[                          # Literal '[' starting the attributes block
+
+        ([^\]].+)?                  # (2) Optional contents inside brackets (lazy by default)
+
+        \]                          # Literal closing bracket
+
+        $                           # End of line
+        "#,
+    )
+    .unwrap()
+});
