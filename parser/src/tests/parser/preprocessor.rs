@@ -235,7 +235,7 @@ fn empty_file_with_include() {
     );
 
     // Since the main file only contains an include directive,
-    // all content comes from the included file
+    // all content comes from the included file.
     assert_eq!(
         source_map.original_file_and_line(1),
         Some(SourceLine(Some("entire-doc.adoc".to_owned()), 1))
@@ -296,5 +296,232 @@ fn multiple_includes_same_line() {
     assert_eq!(
         source_map.original_file_and_line(1),
         Some(SourceLine(Some("main.adoc".to_owned()), 1))
+    );
+}
+
+#[test]
+fn attribute_substitution_in_include_target() {
+    let source =
+        ":fixturesdir: fixtures\n:ext: adoc\n\ninclude::{fixturesdir}/include-file.{ext}[]";
+
+    let handler = InlineFileHandler::from_pairs([(
+        "fixtures/include-file.adoc",
+        "This is included content.",
+    )]);
+
+    let parser = Parser::default()
+        .with_primary_file_name("main.adoc")
+        .with_include_file_handler(handler);
+
+    let (processed_source, source_map) = preprocess(source, &parser);
+
+    assert_eq!(
+        processed_source,
+        ":fixturesdir: fixtures\n:ext: adoc\n\nThis is included content.\n"
+    );
+
+    assert_eq!(
+        source_map.original_file_and_line(1),
+        Some(SourceLine(Some("main.adoc".to_owned()), 1))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(2),
+        Some(SourceLine(Some("main.adoc".to_owned()), 2))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(3),
+        Some(SourceLine(Some("main.adoc".to_owned()), 3))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(4),
+        Some(SourceLine(Some("fixtures/include-file.adoc".to_owned()), 1))
+    );
+}
+
+#[test]
+fn multiple_attribute_substitution_in_include_target() {
+    let source = ":dir: chapters\n:filename: intro\n:extension: adoc\n\ninclude::{dir}/{filename}.{extension}[]";
+
+    let handler = InlineFileHandler::from_pairs([(
+        "chapters/intro.adoc",
+        "= Introduction\n\nWelcome to the guide.",
+    )]);
+
+    let parser = Parser::default()
+        .with_primary_file_name("main.adoc")
+        .with_include_file_handler(handler);
+
+    let (processed_source, source_map) = preprocess(source, &parser);
+
+    assert_eq!(
+        processed_source,
+        ":dir: chapters\n:filename: intro\n:extension: adoc\n\n= Introduction\n\nWelcome to the guide.\n"
+    );
+
+    assert_eq!(
+        source_map.original_file_and_line(5),
+        Some(SourceLine(Some("chapters/intro.adoc".to_owned()), 1))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(6),
+        Some(SourceLine(Some("chapters/intro.adoc".to_owned()), 2))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(7),
+        Some(SourceLine(Some("chapters/intro.adoc".to_owned()), 3))
+    );
+}
+
+#[test]
+fn missing_attribute_in_include_target() {
+    let source = ":fixturesdir: fixtures\n\ninclude::{fixturesdir}/include-file.{missingext}[]";
+
+    let handler = InlineFileHandler::from_pairs([
+        (
+            "fixtures/include-file.adoc",
+            "This content won't be included.",
+        ),
+        ("fixtures/include-file.", "This shouldn't match either."),
+    ]);
+
+    let parser = Parser::default()
+        .with_primary_file_name("main.adoc")
+        .with_include_file_handler(handler);
+
+    let (processed_source, source_map) = preprocess(source, &parser);
+
+    assert_eq!(
+        processed_source,
+        ":fixturesdir: fixtures\n\nUnresolved directive in main.adoc - include::{fixturesdir}/include-file.{missingext}[]\n"
+    );
+
+    assert_eq!(
+        source_map.original_file_and_line(1),
+        Some(SourceLine(Some("main.adoc".to_owned()), 1))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(2),
+        Some(SourceLine(Some("main.adoc".to_owned()), 2))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(3),
+        Some(SourceLine(Some("main.adoc".to_owned()), 3))
+    );
+}
+
+#[test]
+fn attribute_substitution_with_nested_includes() {
+    let source = ":basedir: content\n:format: adoc\n\ninclude::{basedir}/main.{format}[]";
+
+    let handler = InlineFileHandler::from_pairs([
+        (
+            "content/main.adoc",
+            ":partdir: parts\n\n== Main Chapter\n\ninclude::{partdir}/section1.{format}[]",
+        ),
+        (
+            "parts/section1.adoc",
+            "=== Section 1\n\nSection content here.",
+        ),
+    ]);
+
+    let parser = Parser::default()
+        .with_primary_file_name("main.adoc")
+        .with_include_file_handler(handler);
+
+    let (processed_source, source_map) = preprocess(source, &parser);
+
+    assert_eq!(
+        processed_source,
+        ":basedir: content\n:format: adoc\n\n:partdir: parts\n\n== Main Chapter\n\n=== Section 1\n\nSection content here.\n"
+    );
+
+    assert_eq!(
+        source_map.original_file_and_line(8),
+        Some(SourceLine(Some("parts/section1.adoc".to_owned()), 1))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(9),
+        Some(SourceLine(Some("parts/section1.adoc".to_owned()), 2))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(10),
+        Some(SourceLine(Some("parts/section1.adoc".to_owned()), 3))
+    );
+}
+
+#[test]
+#[ignore]
+fn attribute_substitution_in_target_with_attrlist() {
+    // TODO: Implement tag handling.
+    let source = ":srcdir: examples\n:lang: java\n\ninclude::{srcdir}/hello.{lang}[tag=main]";
+
+    let handler = InlineFileHandler::from_pairs([(
+        "examples/hello.java",
+        "// tag::main\npublic class Hello {}\n// end::main",
+    )]);
+
+    let parser = Parser::default()
+        .with_primary_file_name("main.adoc")
+        .with_include_file_handler(handler);
+
+    let (processed_source, source_map) = preprocess(source, &parser);
+
+    assert_eq!(
+        processed_source,
+        ":srcdir: examples\n:lang: java\n\n// tag::main\npublic class Hello {}\n// end::main\n"
+    );
+
+    assert_eq!(
+        source_map.original_file_and_line(4),
+        Some(SourceLine(Some("examples/hello.java".to_owned()), 1))
+    );
+}
+
+#[test]
+fn attribute_substitution_with_multiline_attribute() {
+    let source = ":longpath: very/long/path/to/some/ \\\nsubdirectory\n:ext: adoc\n\ninclude::{longpath}/file.{ext}[]";
+
+    // TODO: This should be "very/long/path/to/some/subdirectory/file.adoc" (without
+    // space) but the current Attribute::parse() incorrectly preserves the space
+    // before the backslash in multi-line attribute continuation. This is a bug
+    // that should be fixed.
+    let handler = InlineFileHandler::from_pairs([(
+        "very/long/path/to/some/ subdirectory/file.adoc",
+        "Multi-line attribute worked!",
+    )]);
+
+    let parser = Parser::default()
+        .with_primary_file_name("main.adoc")
+        .with_include_file_handler(handler);
+
+    let (processed_source, source_map) = preprocess(source, &parser);
+
+    assert_eq!(
+        processed_source,
+        ":longpath: very/long/path/to/some/ \\\nsubdirectory\n:ext: adoc\n\nMulti-line attribute worked!\n"
+    );
+
+    assert_eq!(
+        source_map.original_file_and_line(1),
+        Some(SourceLine(Some("main.adoc".to_owned()), 1))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(2),
+        Some(SourceLine(Some("main.adoc".to_owned()), 2))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(3),
+        Some(SourceLine(Some("main.adoc".to_owned()), 3))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(4),
+        Some(SourceLine(Some("main.adoc".to_owned()), 4))
+    );
+    assert_eq!(
+        source_map.original_file_and_line(5),
+        Some(SourceLine(
+            Some("very/long/path/to/some/ subdirectory/file.adoc".to_owned()),
+            1
+        ))
     );
 }
