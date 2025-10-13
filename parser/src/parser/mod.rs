@@ -21,7 +21,7 @@ pub use parser::Parser;
 mod path_resolver;
 pub use path_resolver::PathResolver;
 
-mod preprocessor;
+pub(crate) mod preprocessor;
 
 mod source_map;
 pub use source_map::SourceLine;

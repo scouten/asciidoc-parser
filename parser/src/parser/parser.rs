@@ -4,8 +4,8 @@ use crate::{
     Document, HasSpan,
     document::{Attribute, InterpretedValue},
     parser::{
-        AllowableValue, AttributeValue, HtmlSubstitutionRenderer, InlineSubstitutionRenderer,
-        ModificationContext, PathResolver, preprocessor::preprocess,
+        AllowableValue, AttributeValue, HtmlSubstitutionRenderer, IncludeFileHandler,
+        InlineSubstitutionRenderer, ModificationContext, PathResolver, preprocessor::preprocess,
     },
     warnings::{Warning, WarningType},
 };
@@ -33,6 +33,9 @@ pub struct Parser {
     /// Specifies how to generate clean and secure paths relative to the parsing
     /// context.
     pub path_resolver: PathResolver,
+
+    /// Handler for resolving include:: directives.
+    pub(crate) include_file_handler: Option<Rc<dyn IncludeFileHandler>>,
 }
 
 impl Parser {
@@ -269,6 +272,22 @@ impl Parser {
         self
     }
 
+    /// Sets the [`IncludeFileHandler`] for this parser.
+    ///
+    /// The include file handler is responsible for resolving `include::`
+    /// directives encountered during preprocessing. If no handler is provided,
+    /// include directives will be ignored.
+    ///
+    /// [`IncludeFileHandler`]: crate::parser::IncludeFileHandler
+    pub fn with_include_file_handler<IFH: IncludeFileHandler + 'static>(
+        mut self,
+        handler: IFH,
+    ) -> Self {
+        self.include_file_handler = Some(Rc::new(handler));
+
+        self
+    }
+
     /// Called from [`Header::parse()`] to accept or reject an attribute value.
     pub(crate) fn set_attribute_from_header<'src>(
         &mut self,
@@ -363,6 +382,7 @@ impl Default for Parser {
             renderer: Rc::new(HtmlSubstitutionRenderer {}),
             primary_file_name: None,
             path_resolver: PathResolver::default(),
+            include_file_handler: None,
         }
     }
 }

@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 use crate::{Parser, attributes::Attrlist};
 
 /// An `IncludeFileHandler` is responsible for providing the text content for an
@@ -7,7 +9,7 @@ use crate::{Parser, attributes::Attrlist};
 /// include file resolution is handled.
 ///
 /// [`Parser`]: crate::Parser
-pub trait IncludeFileHandler {
+pub trait IncludeFileHandler: Debug {
     /// Provide the file content for an `include::` directive, if available.
     ///
     /// # Parameters
