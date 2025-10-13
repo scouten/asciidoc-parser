@@ -38,6 +38,19 @@ pub struct Parser {
     pub(crate) include_file_handler: Option<Rc<dyn IncludeFileHandler>>,
 }
 
+impl Default for Parser {
+    fn default() -> Self {
+        Self {
+            attribute_values: built_in_attrs(),
+            default_attribute_values: built_in_default_values(),
+            renderer: Rc::new(HtmlSubstitutionRenderer {}),
+            primary_file_name: None,
+            path_resolver: PathResolver::default(),
+            include_file_handler: None,
+        }
+    }
+}
+
 impl Parser {
     /// Parse a UTF-8 string as an AsciiDoc document.
     ///
@@ -368,19 +381,6 @@ impl Parser {
         };
 
         self.attribute_values.insert(attr_name, attribute_value);
-    }
-}
-
-impl Default for Parser {
-    fn default() -> Self {
-        Self {
-            attribute_values: built_in_attrs(),
-            default_attribute_values: built_in_default_values(),
-            renderer: Rc::new(HtmlSubstitutionRenderer {}),
-            primary_file_name: None,
-            path_resolver: PathResolver::default(),
-            include_file_handler: None,
-        }
     }
 }
 
