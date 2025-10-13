@@ -44,7 +44,6 @@ pub trait IncludeFileHandler: Debug {
         source: Option<&str>,
         target: &str,
         attrlist: &Attrlist<'src>,
-        encoding: Option<&str>,
         parser: &Parser,
     ) -> Option<String>;
 }

@@ -19,7 +19,6 @@ impl IncludeFileHandler for InlineFileHandler {
         _source: Option<&str>,
         target: &str,
         _attrlist: &Attrlist<'src>,
-        _encoding: Option<&str>,
         _parser: &Parser,
     ) -> Option<String> {
         self.0.get(target).map(|v| v.to_string())
