@@ -25,6 +25,7 @@
 
 mod attributes;
 mod blocks;
+mod directives;
 mod document;
 mod macros;
 mod pass;
