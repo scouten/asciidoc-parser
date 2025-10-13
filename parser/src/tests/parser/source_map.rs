@@ -57,3 +57,14 @@ fn multiple_entries() {
     assert_eq!(sm.original_file_and_line(30), Some(SourceLine(None, 11)));
     assert_eq!(sm.original_file_and_line(40), Some(SourceLine(None, 21)));
 }
+
+#[test]
+fn impl_debug() {
+    let mut sm = SourceMap::default();
+    sm.append(1, SourceLine(None, 1));
+
+    assert_eq!(
+        format!("{sm:#?}"),
+        "{\n    1: SourceLine(\n        None,\n        1,\n    ),\n}"
+    );
+}

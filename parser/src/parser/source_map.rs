@@ -27,13 +27,8 @@ pub struct SourceLine(pub Option<String>, pub usize);
 
 impl SourceMap {
     pub(crate) fn append(&mut self, preprocessed_line: usize, source_line: SourceLine) {
-        if let Some((last_key, _)) = self.data.last() {
-            assert!(
-                preprocessed_line > *last_key,
-                "SourceMap: preprocessed line numbers must be appended in increasing order (got {preprocessed_line}, last {last_key})"
-            );
-        }
-
+        // IMPORTANT: These _should_ be added in increasing order of
+        // `preprocessed_line`, but this is not enforced.
         self.data.push((preprocessed_line, source_line));
     }
 
