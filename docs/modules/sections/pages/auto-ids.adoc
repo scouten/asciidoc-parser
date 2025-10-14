@@ -28,7 +28,7 @@ With those rules in mind, given the following section title:
 == Wiley & Sons, Inc.
 ----
 
-the processor will produce the following ID:
+The processor will produce the following ID:
 
 ....
 _wiley_sons_inc
