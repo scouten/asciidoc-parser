@@ -1,4 +1,8 @@
-use crate::{Parser, parser::SourceLine, tests::prelude::*};
+use crate::{
+    Parser,
+    parser::SourceLine,
+    tests::prelude::{inline_file_handler::InlineFileHandler, *},
+};
 
 track_file!("docs/modules/directives/pages/include-multiple-times-in-same-document.adoc");
 
