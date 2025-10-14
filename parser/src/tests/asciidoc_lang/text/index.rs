@@ -42,7 +42,7 @@ Formatting pairs can be nested, but they cannot be overlapped.
 If the pairs are overlapped, the behavior is unspecified and the AsciiDoc processor may produce malformed output.
 
 A formatting pair is defined as either constrained or unconstrained, depending on where it's allowed to be applied.
-An unconstrained pair can be applied anywhere, whereas the application of a constrained pair is more limited.
+An unconstrained pair can be applied anywhere, whereas the application of a constrained pair is more restrictive.
 
 "#
     );
@@ -77,8 +77,7 @@ This stuff is *strong*!
 
 As you can see, the constrained pair offers a more succinct markup at the tradeoff of having more limited (constrained) use.
 However, it should suffice in most cases, so the abbreviated markup is a benefit.
-You can think of a constrained pair as being a weaker markup than an unconstrained pair.
-
+You can think of a constrained pair as being a weaker markup hint than an unconstrained pair.
 "#
         );
 
@@ -155,7 +154,7 @@ The man page, short for **man**ual page, is a form of software documentation.
 ----
 
 The unconstrained pair provides a more brute force approach to formatting at the tradeoff of being more verbose.
-You'll typically switch to an unconstrained pair when a constrained pair doesn't do the trick.
+You'll typically switch to an unconstrained pair when a constrained pair isn't sufficient, or when you are writing in a CJK like such as Chinese.
 See xref:troubleshoot-unconstrained-formatting.adoc#use-unconstrained[When should I use an unconstrained pair?] for more examples of when to use an unconstrained pair.
 
 "#

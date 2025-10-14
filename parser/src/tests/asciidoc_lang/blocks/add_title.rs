@@ -90,6 +90,9 @@ This is the content of the sidebar block.
 
 non_normative!(
     r#"
+CAUTION: The block title line should not be confused with an ordered list item that uses the `.` marker.
+A block title line has no space after the `.`, whereas the space after a list marker is required.
+
 The next sections will show how to add titles to delimited blocks and blocks with attribute lists.
 
 "#

@@ -110,8 +110,13 @@ The second macro is the same as the first, but written out in longhand form.
 
 The first positional attribute on all blocks (including sections) is special.
 It's used to define the xref:blocks:index.adoc#block-style[block style].
-It also supports a shorthand syntax for defining the ID, role, and options attributes.
-This shorthand syntax can also be used on formatted text, even though formatted text doesn't technically support attributes.
+It also supports a shorthand notation for defining the ID, role, and options attributes.
+This shorthand notation can also be used on formatted text, even though formatted text doesn't technically support attributes.
+
+To be clear, the shorthand notation is allowed in two places:
+
+* The first positional attribute in block attribute line (i.e., the location of the block style)
+* The text inside the brackets of formatted text (which is otherwise treated as the role)
 
 The attribute shorthand is inspired by the HAML and Slim template languages as a way of saving the author some typing.
 Instead of having to use the longhand form of a name attribute, it's possible to compress the assignment to a value prefixed by a special marker.
@@ -129,7 +134,7 @@ The order of the entries does not matter, except for the style, which must come 
 
         verifies!(
             r#"
-Here's an example that shows how to set an ID on a section using this shorthand syntax:
+Here's an example that shows how to set an ID on a section using this shorthand notation:
 
 ----
 [#custom-id]
@@ -194,7 +199,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
         verifies!(
             r#"
 The shorthand entry must follow the block style, if present.
-Here's an example that shows how to set an ID on an appendix section using this shorthand syntax:
+Here's an example that shows how to set an ID on an appendix section using this shorthand notation:
 
 ----
 [appendix#custom-id]
@@ -260,7 +265,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
 
         verifies!(
             r#"
-Here's an example of a block that uses the shorthand syntax to set the ID, a role, and an option for a list.
+Here's an example of a block that uses the shorthand notation to set the ID, a role, and an option for a list.
 Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and sets the option `incremental`.
 
 ----
@@ -398,7 +403,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
 
         verifies!(
             r#"
-This shorthand syntax also appears on formatted text.
+This shorthand notation also appears on formatted text.
 Here's an example that shows how to set the ID and add a role to a strong phrase.
 Specifically, this syntax sets the ID to `free-world` and adds the `goals` role.
 
@@ -406,7 +411,7 @@ Specifically, this syntax sets the ID to `free-world` and adds the `goals` role.
 [#free-world.goals]*free the world*
 ----
 
-Formatted text does not support a style, so the first and only positional attribute is always the shorthand syntax.
+Formatted text does not support a style, so the first and only positional attribute is always the shorthand notation.
 
 "#
         );
