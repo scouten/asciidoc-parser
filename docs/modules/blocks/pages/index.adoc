@@ -268,6 +268,11 @@ These metadata lines are as follows:
 * An optional set of roles
 * An optional set of options
 
+CAUTION: If the first line of a block begins with `[` and ends with `]`, that line will be interpretted as a block attribute line.
+It does not matter what text is contained between those brackets.
+For example, if the first description list term starts with `[` and definition on the same line ends with `]`, it will not appear to the parser as a description list entry, but rather as a block attribute line.
+To workaround this interpretation of the source, you need to move the trailing `]` (and whatever goes with it) to the next line.
+
 For example, consider a sidebar block with a title and ID:
 
 ----
