@@ -68,7 +68,7 @@ include::example$complex.adoc[tag=cont]
 Using a list continuation, you can attach any number of block elements to a list item.
 Unless the block is inside a delimited block which itself has been attached, each block must be preceded by a list continuation to form a chain of blocks.
 
-Here's an example that attaches both a listing block and an admonition paragraph to the first list item:
+Here's an example that attaches both a listing block and a paragraph to the first list item:
 
 [source]
 ....
@@ -81,6 +81,17 @@ Here's how the source is rendered:
 ====
 include::example$complex.adoc[tag=complex]
 ====
+
+Notice that we inserted an empty line after the attached paragraph block.
+That's because only a sibling list item can interrupt a paragraph.
+If the next list item had been a nested list item instead of a sibling, this empty line would have been required.
+Otherwise, the nested list marker and text would have just become the next line of the paragraph.
+For consistency, a best practice is to always include an empty line at the end of a complex list item.
+That way, you never have to remember when it's required.
+
+IMPORTANT: A sibling or nested list item acts as an interrupting line for the principal text of a list item.
+Only a sibling list item acts as an interrupting line for an attached block, such as a paragraph.
+(The AsciiDoc Language working group has decided that the latter exception will be removed, so it's best not to depend on it.)
 
 If you're attaching more than one block to a list item, you're strongly encouraged to wrap the content inside an open block.
 That way, you only need a single list continuation line to attach the open block to the list item.

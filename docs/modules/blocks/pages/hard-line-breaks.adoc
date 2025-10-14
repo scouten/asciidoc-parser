@@ -69,6 +69,18 @@ line four
 
 Note that `empty` is a built-in document attribute in AsciiDoc.
 
+If you're writing a story with dialogue, and you want to prefix the dialogue lines with `--`, the per-line syntax is the most appropriate choice.
+For example:
+
+[source]
+----
+-- Come here! -- I said. +
+-- What is it? -- replied Lance.
+----
+
+If you were to use the `hardbreaks` option instead, the second `--` would not only be substituted with an endash, it would also consume the preceding newline.
+As a result, both lines in the source would end up appearing on the same line in the output.
+
 [#per-line]
 == Inline line break syntax
 
