@@ -1,4 +1,3 @@
-#![allow(unused)] // TEMPORARY while building
 use std::{borrow::Cow, sync::LazyLock};
 
 use regex::{Regex, Replacer};
