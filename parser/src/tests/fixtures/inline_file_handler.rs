@@ -1,5 +1,3 @@
-#![allow(unused)] // TEMPORARY while building
-
 use std::collections::HashMap;
 
 use crate::{Parser, attributes::Attrlist, parser::IncludeFileHandler};
