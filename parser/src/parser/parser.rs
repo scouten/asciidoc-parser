@@ -4,8 +4,8 @@ use crate::{
     Document, HasSpan,
     document::{Attribute, InterpretedValue},
     parser::{
-        AllowableValue, AttributeValue, HtmlSubstitutionRenderer, InlineSubstitutionRenderer,
-        ModificationContext, PathResolver,
+        AllowableValue, AttributeValue, HtmlSubstitutionRenderer, IncludeFileHandler,
+        InlineSubstitutionRenderer, ModificationContext, PathResolver, preprocessor::preprocess,
     },
     warnings::{Warning, WarningType},
 };
@@ -27,9 +27,28 @@ pub struct Parser {
     /// provide alternative implementations.
     pub(crate) renderer: Rc<dyn InlineSubstitutionRenderer>,
 
+    /// Specifies the name of the primary file to be parsed.
+    pub(crate) primary_file_name: Option<String>,
+
     /// Specifies how to generate clean and secure paths relative to the parsing
     /// context.
     pub path_resolver: PathResolver,
+
+    /// Handler for resolving include:: directives.
+    pub(crate) include_file_handler: Option<Rc<dyn IncludeFileHandler>>,
+}
+
+impl Default for Parser {
+    fn default() -> Self {
+        Self {
+            attribute_values: built_in_attrs(),
+            default_attribute_values: built_in_default_values(),
+            renderer: Rc::new(HtmlSubstitutionRenderer {}),
+            primary_file_name: None,
+            path_resolver: PathResolver::default(),
+            include_file_handler: None,
+        }
+    }
 }
 
 impl Parser {
@@ -65,10 +84,8 @@ impl Parser {
     /// [`warnings()`]: Document::warnings
     /// [`attribute_value()`]: Self::attribute_value
     pub fn parse(&mut self, source: &str) -> Document<'static> {
-        // The mutable borrow of self ends when Document::parse returns,
-        // ensuring no mutable reference to Parser escapes with the Document.
-        // The Document is self-contained and owns its source string internally.
-        Document::parse(source, self)
+        let (preprocessed_source, source_map) = preprocess(source, self);
+        Document::parse(&preprocessed_source, source_map, self)
     }
 
     /// Retrieves the current interpreted value of a [document attribute].
@@ -248,7 +265,36 @@ impl Parser {
         renderer: ISR,
     ) -> Self {
         self.renderer = Rc::new(renderer);
+        self
+    }
 
+    /// Sets the name of the primary file to be parsed when [`parse()`] is
+    /// called.
+    ///
+    /// This name will be used for any error messages detected in this file and
+    /// also will be passed to [`IncludeFileHandler::resolve_target()`] as the
+    /// `source` argument for any `include::` file resolution requests from this
+    /// file.
+    ///
+    /// [`parse()`]: Self::parse
+    /// [`IncludeFileHandler::resolve_target()`]: crate::parser::IncludeFileHandler::resolve_target
+    pub fn with_primary_file_name<S: AsRef<str>>(mut self, name: S) -> Self {
+        self.primary_file_name = Some(name.as_ref().to_owned());
+        self
+    }
+
+    /// Sets the [`IncludeFileHandler`] for this parser.
+    ///
+    /// The include file handler is responsible for resolving `include::`
+    /// directives encountered during preprocessing. If no handler is provided,
+    /// include directives will be ignored.
+    ///
+    /// [`IncludeFileHandler`]: crate::parser::IncludeFileHandler
+    pub fn with_include_file_handler<IFH: IncludeFileHandler + 'static>(
+        mut self,
+        handler: IFH,
+    ) -> Self {
+        self.include_file_handler = Some(Rc::new(handler));
         self
     }
 
@@ -335,17 +381,6 @@ impl Parser {
         };
 
         self.attribute_values.insert(attr_name, attribute_value);
-    }
-}
-
-impl Default for Parser {
-    fn default() -> Self {
-        Self {
-            attribute_values: built_in_attrs(),
-            default_attribute_values: built_in_default_values(),
-            renderer: Rc::new(HtmlSubstitutionRenderer {}),
-            path_resolver: PathResolver::default(),
-        }
     }
 }
 
