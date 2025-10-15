@@ -65,6 +65,6 @@ fn impl_debug() {
 
     assert_eq!(
         format!("{sm:#?}"),
-        "{\n    1: SourceLine(\n        None,\n        1,\n    ),\n}"
+        "[\n    (\n        1,\n        SourceLine(\n            None,\n            1,\n        ),\n    ),\n]"
     );
 }

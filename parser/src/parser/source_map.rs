@@ -7,9 +7,7 @@ use std::fmt;
 ///
 /// [`Span`]: crate::Span
 #[derive(Clone, Default, Eq, PartialEq)]
-pub struct SourceMap {
-    data: Vec<(usize, SourceLine)>,
-}
+pub struct SourceMap(pub Vec<(usize, SourceLine)>);
 
 /// A `SourceLine` represents the original file and line number where a line of
 /// Asciidoc text was found before [include file] and [conditional]
@@ -27,18 +25,18 @@ impl SourceMap {
     pub(crate) fn append(&mut self, preprocessed_line: usize, source_line: SourceLine) {
         // IMPORTANT: These _should_ be added in increasing order of
         // `preprocessed_line`, but this is not enforced.
-        self.data.push((preprocessed_line, source_line));
+        self.0.push((preprocessed_line, source_line));
     }
 
     /// Given a 1-based line number in the preprocessed source file, translate
     /// that to a file name and line number as original inputs to the parsing
     /// process.
     pub fn original_file_and_line(&self, key: usize) -> Option<SourceLine> {
-        match self.data.binary_search_by_key(&key, |(k, _)| *k) {
-            Ok(i) => self.data.get(i).map(|(_k, v)| v.clone()),
+        match self.0.binary_search_by_key(&key, |(k, _)| *k) {
+            Ok(i) => self.0.get(i).map(|(_k, v)| v.clone()),
             Err(0) => Some(SourceLine(None, key)),
             Err(i) => self
-                .data
+                .0
                 .get(i - 1)
                 .map(|(k, v)| SourceLine(v.0.clone(), v.1 + key - k)),
         }
@@ -47,8 +45,8 @@ impl SourceMap {
 
 impl fmt::Debug for SourceMap {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_map()
-            .entries(self.data.iter().map(|(k, v)| (k, v)))
+        f.debug_list()
+            .entries(self.0.iter().map(|(k, v)| (k, v)))
             .finish()
     }
 }

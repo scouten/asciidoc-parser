@@ -870,7 +870,7 @@ fn impl_debug() {
         offset: 0,
     },
     warnings: [],
-    source_map: {},
+    source_map: [],
 }"#
     );
 }

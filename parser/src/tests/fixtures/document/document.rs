@@ -71,5 +71,9 @@ fn fixture_eq_observed(fixture: &Document, observed: &crate::Document) -> bool {
         }
     }
 
+    if observed.source_map().0.len() != 0 {
+        false;
+    }
+
     true
 }
