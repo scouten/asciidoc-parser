@@ -3,7 +3,7 @@ use crate::parser::{SourceLine, SourceMap};
 #[test]
 fn empty() {
     let sm = SourceMap::default();
-    assert_eq!(sm.original_file_and_line(1), None);
+    assert_eq!(sm.original_file_and_line(1), Some(SourceLine(None, 1)));
 }
 
 #[test]
@@ -11,7 +11,7 @@ fn one_entry() {
     let mut sm = SourceMap::default();
     sm.append(1, SourceLine(None, 1));
 
-    assert_eq!(sm.original_file_and_line(0), None);
+    assert_eq!(sm.original_file_and_line(0), Some(SourceLine(None, 0)));
     assert_eq!(sm.original_file_and_line(1), Some(SourceLine(None, 1)));
     assert_eq!(sm.original_file_and_line(4), Some(SourceLine(None, 4)));
 

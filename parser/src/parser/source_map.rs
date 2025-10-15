@@ -36,7 +36,7 @@ impl SourceMap {
     pub fn original_file_and_line(&self, key: usize) -> Option<SourceLine> {
         match self.data.binary_search_by_key(&key, |(k, _)| *k) {
             Ok(i) => self.data.get(i).map(|(_k, v)| v.clone()),
-            Err(0) => None,
+            Err(0) => Some(SourceLine(None, key)),
             Err(i) => self
                 .data
                 .get(i - 1)

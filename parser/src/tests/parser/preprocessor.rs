@@ -11,7 +11,10 @@ fn no_preprocessor_directives() {
 
     let (processed_source, source_map) = preprocess(source, &parser);
 
-    assert_eq!(processed_source, source);
+    assert_eq!(
+        processed_source,
+        "= Document Title\n\nThis is a simple document with no includes or conditionals.\n"
+    );
 
     assert_eq!(
         source_map.original_file_and_line(1),
