@@ -27,11 +27,9 @@ pub(crate) fn preprocess(source: &str, parser: &Parser) -> (String, SourceMap) {
         && !source.starts_with("if")
         && !source.contains("\ninclude::")
         && !source.contains("\nif")
+        && parser.primary_file_name.is_none()
     {
-        let mut source_map = SourceMap::default();
-        source_map.append(1, SourceLine(parser.primary_file_name.clone(), 1));
-
-        return (source.to_owned(), source_map);
+        return (source.to_owned(), SourceMap::default());
     }
 
     // We use a temporary clone of the parser to track document attribute values
@@ -71,7 +69,7 @@ impl<'p> PreprocessorState<'p> {
     fn process_adoc_include(&mut self, source: &str, file_name: Option<&str>) {
         self.include_depth += 1;
 
-        let mut has_reported_file = false;
+        let mut has_reported_file = file_name.is_none();
         let mut source_span = Span::new(source);
 
         while !source_span.is_empty() {
