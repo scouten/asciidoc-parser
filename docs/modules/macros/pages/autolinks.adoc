@@ -34,6 +34,19 @@ You'll often see <https://example.org> used in examples.
 
 To accommodate this convention, the AsciiDoc processor will still recognize the URL as an autolink, but will discard the angle brackets in the output (as they are not deemed significant).
 
+The angled brackets are also a convenient way to delinate the boundaries of the URL.
+If the bare URL is capturing more characters than it should, you can mark the boundaries explicitly using the angle brackets.
+
+[source]
+----
+<https://google.com> -- where you find stuff
+----
+
+Without the angle brackets delinating the boundaries of the URL, the emdash gets caught up in the URL.
+This happens because the replacements substitution is applied before the macros substitution.
+So instead of the URL being followed by a space, it's followed directly by the emdash.
+The angle brackets ensures it does get included in the URL.
+
 Any link created from a bare URL (i.e., an autolink) automatically gets assigned the "bare" role.
 This allows the theming system (e.g., CSS) to recognize autolinks (and other bare URLs) and style them distinctly.
 
