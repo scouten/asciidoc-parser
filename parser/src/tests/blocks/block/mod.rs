@@ -105,25 +105,29 @@ mod error_cases {
     #[test]
     fn missing_block_after_title_line() {
         let mut parser = Parser::default();
+        let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
-        let MatchAndWarnings { item: mi, warnings } = crate::blocks::SectionBlock::parse(
+        let mi = crate::blocks::SectionBlock::parse(
             &BlockMetadata::new("=== Section Title\n\nabc\n\n.ancestor section== Section 2\n\ndef"),
             &mut parser,
+            &mut warnings,
         )
         .unwrap();
 
-        assert_eq!(mi.item.content_model(), ContentModel::Compound);
-        assert_eq!(mi.item.raw_context().deref(), "section");
-        assert_eq!(mi.item.resolved_context().deref(), "section");
-        assert!(mi.item.declared_style().is_none());
-        assert!(mi.item.id().is_none());
-        assert!(mi.item.roles().is_empty());
-        assert!(mi.item.options().is_empty());
-        assert!(mi.item.title_source().is_none());
-        assert!(mi.item.title().is_none());
-        assert!(mi.item.anchor().is_none());
-        assert!(mi.item.attrlist().is_none());
-        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+        let item = &mi.item;
+
+        assert_eq!(item.content_model(), ContentModel::Compound);
+        assert_eq!(item.raw_context().deref(), "section");
+        assert_eq!(item.resolved_context().deref(), "section");
+        assert!(item.declared_style().is_none());
+        assert!(item.id().is_none());
+        assert!(item.roles().is_empty());
+        assert!(item.options().is_empty());
+        assert!(item.title_source().is_none());
+        assert!(item.title().is_none());
+        assert!(item.anchor().is_none());
+        assert!(item.attrlist().is_none());
+        assert_eq!(item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
             mi.item,

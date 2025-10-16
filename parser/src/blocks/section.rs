@@ -9,7 +9,7 @@ use crate::{
     content::{Content, SubstitutionGroup},
     span::MatchedItem,
     strings::CowStr,
-    warnings::MatchAndWarnings,
+    warnings::Warning,
 };
 
 /// Sections partition the document into a content hierarchy. A section is an
@@ -35,37 +35,37 @@ impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
         metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
-    ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
+        warnings: &mut Vec<Warning<'src>>,
+    ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.discard_empty_lines();
-        let level = parse_title_line(source)?;
+        let level_and_title = parse_title_line(source)?;
 
-        let maw_blocks = parse_blocks_until(
-            level.after,
-            |i| peer_or_ancestor_section(*i, level.item.0),
+        let mut maw_blocks = parse_blocks_until(
+            level_and_title.after,
+            |i| peer_or_ancestor_section(*i, level_and_title.item.0),
             parser,
         );
 
         let blocks = maw_blocks.item;
         let source = metadata.source.trim_remainder(blocks.after);
 
-        let mut section_title = Content::from(level.item.1);
+        let mut section_title = Content::from(level_and_title.item.1);
         SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
 
-        Some(MatchAndWarnings {
-            item: MatchedItem {
-                item: Self {
-                    level: level.item.0,
-                    section_title,
-                    blocks: blocks.item,
-                    source: source.trim_trailing_whitespace(),
-                    title_source: metadata.title_source,
-                    title: metadata.title.clone(),
-                    anchor: metadata.anchor,
-                    attrlist: metadata.attrlist.clone(),
-                },
-                after: blocks.after,
+        warnings.append(&mut maw_blocks.warnings);
+
+        Some(MatchedItem {
+            item: Self {
+                level: level_and_title.item.0,
+                section_title,
+                blocks: blocks.item,
+                source: source.trim_trailing_whitespace(),
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                attrlist: metadata.attrlist.clone(),
             },
-            warnings: maw_blocks.warnings,
+            after: blocks.after,
         })
     }
 
