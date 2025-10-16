@@ -149,7 +149,7 @@ fn parse_title_line<'src>(
 
     if count == 1 {
         warnings.push(Warning {
-            source: source,
+            source,
             warning: WarningType::Level0SectionHeadingNotSupported,
         });
 
@@ -158,7 +158,7 @@ fn parse_title_line<'src>(
 
     if count > 6 {
         warnings.push(Warning {
-            source: source,
+            source,
             warning: WarningType::SectionHeadingLevelExceedsMaximum(count - 1),
         });
 
