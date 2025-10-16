@@ -64,6 +64,12 @@ pub enum WarningType {
 
     #[error("Attribute {0:?} can not be modified by document")]
     AttributeValueIsLocked(String),
+
+    #[error("Level 0 section headings not supported")]
+    Level0SectionHeadingNotSupported,
+
+    #[error("Section heading level skipped (expected {0}, found {1})")]
+    SectionHeadingLevelSkipped(usize, usize),
 }
 
 impl std::fmt::Debug for WarningType {
@@ -111,6 +117,16 @@ impl std::fmt::Debug for WarningType {
             WarningType::AttributeValueIsLocked(value) => f
                 .debug_tuple("WarningType::AttributeValueIsLocked")
                 .field(value)
+                .finish(),
+
+            WarningType::Level0SectionHeadingNotSupported => {
+                write!(f, "WarningType::Level0SectionHeadingNotSupported")
+            }
+
+            WarningType::SectionHeadingLevelSkipped(expected, found) => f
+                .debug_tuple("WarningType::SectionHeadingLevelSkipped")
+                .field(expected)
+                .field(found)
                 .finish(),
         }
     }
