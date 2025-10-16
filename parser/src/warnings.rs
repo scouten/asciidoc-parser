@@ -70,6 +70,9 @@ pub enum WarningType {
 
     #[error("Section heading level skipped (expected {0}, found {1})")]
     SectionHeadingLevelSkipped(usize, usize),
+
+    #[error("Section heading level exceeds maximum (maximum 5, found {0})")]
+    SectionHeadingLevelExceedsMaximum(usize),
 }
 
 impl std::fmt::Debug for WarningType {
@@ -126,6 +129,11 @@ impl std::fmt::Debug for WarningType {
             WarningType::SectionHeadingLevelSkipped(expected, found) => f
                 .debug_tuple("WarningType::SectionHeadingLevelSkipped")
                 .field(expected)
+                .field(found)
+                .finish(),
+
+            WarningType::SectionHeadingLevelExceedsMaximum(found) => f
+                .debug_tuple("WarningType::SectionHeadingLevelExceedsMaximum")
                 .field(found)
                 .finish(),
         }
