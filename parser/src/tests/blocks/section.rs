@@ -801,3 +801,72 @@ fn section_title_with_special_chars() {
         "Section with &lt;brackets&gt; &amp; ampersands"
     );
 }
+
+#[test]
+fn err_level_0_section_heading() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let result = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("= Document Title"),
+        &mut parser,
+        &mut warnings,
+    );
+
+    assert!(result.is_none());
+    assert_eq!(
+        warnings,
+        vec![Warning {
+            source: Span {
+                data: "= Document Title",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warning: WarningType::Level0SectionHeadingNotSupported,
+        }]
+    );
+}
+
+#[test]
+fn err_section_heading_level_exceeds_maximum() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let result = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("======= Level 6 Section"),
+        &mut parser,
+        &mut warnings,
+    );
+
+    assert!(result.is_none());
+    assert_eq!(
+        warnings,
+        vec![Warning {
+            source: Span {
+                data: "======= Level 6 Section",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warning: WarningType::SectionHeadingLevelExceedsMaximum(6),
+        }]
+    );
+}
+
+#[test]
+fn valid_maximum_level_5_section() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("====== Level 5 Section"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
+
+    assert!(warnings.is_empty());
+    assert_eq!(mi.item.level(), 5);
+    assert_eq!(mi.item.section_title(), "Level 5 Section");
+}
