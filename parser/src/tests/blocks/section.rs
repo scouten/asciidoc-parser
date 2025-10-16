@@ -814,6 +814,7 @@ fn err_level_0_section_heading() {
     );
 
     assert!(result.is_none());
+
     assert_eq!(
         warnings,
         vec![Warning {
@@ -840,6 +841,7 @@ fn err_section_heading_level_exceeds_maximum() {
     );
 
     assert!(result.is_none());
+
     assert_eq!(
         warnings,
         vec![Warning {
