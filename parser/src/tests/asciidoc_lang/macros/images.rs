@@ -153,6 +153,7 @@ include::example$image.adoc[tag=base]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -239,6 +240,7 @@ include::example$image.adoc[tag=alt]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -324,6 +326,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -456,6 +459,7 @@ include::example$image.adoc[tag=attr]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

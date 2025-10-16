@@ -101,6 +101,7 @@ Thus, it's important to use the underscore separator to ensure there are no more
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -192,6 +193,7 @@ image::author-line-with-compound-names.png[Compound author names displayed in th
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -322,6 +324,7 @@ image::reference-compound-names.png[Compound author names displayed in the docum
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -458,6 +461,7 @@ image::author-attribute-with-compound-name.png[Compound author name displayed in
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }

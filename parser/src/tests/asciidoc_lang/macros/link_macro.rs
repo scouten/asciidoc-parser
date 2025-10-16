@@ -89,6 +89,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -182,6 +183,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -249,6 +251,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -337,6 +340,7 @@ link:report.pdf[Get Report]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -413,6 +417,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -477,6 +482,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -541,6 +547,7 @@ link:My%20Documents/report.pdf[Get Report]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -617,6 +624,7 @@ link:Avengers%3A%20Endgame.html[]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -685,6 +693,7 @@ link:++https://example.org/now_this__link_works.html++[]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -751,6 +760,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -817,6 +827,7 @@ link:file:///home/username[Your files]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

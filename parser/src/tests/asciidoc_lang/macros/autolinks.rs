@@ -82,6 +82,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -141,6 +142,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -200,6 +202,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -259,6 +262,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -319,6 +323,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -389,6 +394,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -460,6 +466,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -536,6 +543,7 @@ For email address which do not conform to these restriction, you can use the xre
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -637,6 +645,7 @@ The URL and email address will both be shown in plain text.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -719,6 +728,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

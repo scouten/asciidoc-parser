@@ -210,6 +210,7 @@ image::reference-author.png[Reference the built-in attributes for an author,role
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -473,6 +474,7 @@ image::reference-multiple-authors.png[Reference the built-in attributes for mult
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }

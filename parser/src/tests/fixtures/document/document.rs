@@ -2,7 +2,9 @@ use std::{cmp::PartialEq, fmt};
 
 use crate::{
     blocks::IsBlock,
-    tests::fixtures::{Span, blocks::Block, document::Header, warnings::Warning},
+    tests::fixtures::{
+        Span, blocks::Block, document::Header, parser::SourceMap, warnings::Warning,
+    },
 };
 
 #[derive(Eq, PartialEq)]
@@ -11,6 +13,7 @@ pub(crate) struct Document {
     pub blocks: &'static [Block],
     pub source: Span,
     pub warnings: &'static [Warning],
+    pub source_map: SourceMap,
 }
 
 impl fmt::Debug for Document {
@@ -20,6 +23,7 @@ impl fmt::Debug for Document {
             .field("blocks", &self.blocks)
             .field("source", &self.source)
             .field("warnings", &self.warnings)
+            .field("source_map", &self.source_map)
             .finish()
     }
 }
@@ -71,5 +75,5 @@ fn fixture_eq_observed(fixture: &Document, observed: &crate::Document) -> bool {
         }
     }
 
-    true
+    &fixture.source_map == observed.source_map()
 }

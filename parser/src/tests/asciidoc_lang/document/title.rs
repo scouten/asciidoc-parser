@@ -97,6 +97,7 @@ image::document-title.png[Title of document]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -224,6 +225,7 @@ The `doctitle` attribute can also be explicitly set and assigned a value using a
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

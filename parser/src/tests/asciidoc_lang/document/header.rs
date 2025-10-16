@@ -72,6 +72,7 @@ In other words, the document must start with a document header if it has one.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -177,6 +178,7 @@ These implicit content lines are used to assign xref:author-information.adoc[] a
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -360,6 +362,7 @@ Since the document title is optional, it's possible for the header to only consi
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -488,6 +491,7 @@ Any attributes defined below the first empty line are not part of the document h
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

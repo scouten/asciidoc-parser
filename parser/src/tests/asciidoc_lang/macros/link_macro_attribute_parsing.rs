@@ -85,6 +85,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -163,6 +164,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -230,6 +232,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -296,6 +299,7 @@ https://example.org["1=2 posits the problem of inequality"]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -363,6 +367,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -439,6 +444,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -530,6 +536,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -602,6 +609,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -682,6 +690,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -748,6 +757,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -815,6 +825,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -882,6 +893,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -947,6 +959,7 @@ link:post.html[My Post,opts=nofollow]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1018,6 +1031,7 @@ include::example$url.adoc[tag=linkattrs-s]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1092,6 +1106,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1156,6 +1171,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

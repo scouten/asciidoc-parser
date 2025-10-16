@@ -138,6 +138,7 @@ include::example$image.adoc[tag=float]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -207,6 +208,7 @@ include::example$image.adoc[tag=in-float]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -332,6 +334,7 @@ include::example$image.adoc[tag=role]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -397,6 +400,7 @@ include::example$image.adoc[tag=in-role]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

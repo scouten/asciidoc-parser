@@ -159,6 +159,7 @@ image::sunset.jpg[Sunset]
                     offset: 0
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -223,6 +224,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     offset: 0
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
 

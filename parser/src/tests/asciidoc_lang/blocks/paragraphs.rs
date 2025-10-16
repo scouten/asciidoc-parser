@@ -112,6 +112,7 @@ include::example$paragraph.adoc[tag=para]
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }

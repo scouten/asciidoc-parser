@@ -113,6 +113,7 @@ image::flower.jpg[Flower,640,480]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -202,6 +203,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

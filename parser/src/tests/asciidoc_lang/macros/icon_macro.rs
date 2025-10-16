@@ -96,6 +96,7 @@ icon:heart[2x,role=red]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

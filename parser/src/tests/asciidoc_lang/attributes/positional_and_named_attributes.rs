@@ -465,6 +465,7 @@ Formatted text does not support a style, so the first and only positional attrib
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -555,6 +556,7 @@ A named attribute consists of a name and a value separated by an `=` character (
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -631,6 +633,7 @@ In all other cases, the surrounding quotes are optional.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -708,6 +711,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -787,6 +791,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -888,6 +893,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -990,6 +996,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1053,6 +1060,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1134,6 +1142,7 @@ For subsequent attributes, any leading space or tab characters are skipped.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1217,6 +1226,7 @@ Space and tab characters around the equals sign (=) and at the end of the value 
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1304,6 +1314,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1391,6 +1402,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1485,6 +1497,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                     },
                     warning: WarningType::AttributeValueMissingTerminatingQuote,
                 },],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1571,6 +1584,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1665,6 +1679,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                     },
                     warning: WarningType::AttributeValueMissingTerminatingQuote,
                 },],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1751,6 +1766,7 @@ If there is a closing single quote, the enclosing single quote characters are re
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1846,6 +1862,7 @@ If there is a closing single quote, and the first character is not an escaped si
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -1947,6 +1964,7 @@ That's because the parser already knows to look for the closing square bracket a
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -2011,6 +2029,7 @@ There are some exceptions to this rule, such as a link macro in a footnote, whic
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

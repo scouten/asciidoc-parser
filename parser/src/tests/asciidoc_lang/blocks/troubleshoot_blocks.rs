@@ -96,6 +96,7 @@ It will be styled as a sidebar.
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -190,6 +191,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 },
                 warning: WarningType::UnterminatedDelimitedBlock,
             },],
+            source_map: SourceMap(&[]),
         }
     );
 }
