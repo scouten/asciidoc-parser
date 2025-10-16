@@ -51,6 +51,7 @@ fn empty_source() {
             },
             blocks: &[],
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -82,6 +83,7 @@ fn only_spaces() {
             },
             blocks: &[],
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -134,6 +136,7 @@ fn one_simple_block() {
                 attrlist: None,
             })],
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 
@@ -210,6 +213,7 @@ fn two_simple_blocks() {
                 })
             ],
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -289,6 +293,7 @@ fn two_blocks_and_title() {
                 offset: 0
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -370,6 +375,7 @@ fn blank_lines_before_header() {
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -456,6 +462,7 @@ fn blank_lines_and_comment_before_header() {
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -512,6 +519,7 @@ fn extra_space_before_title() {
                 offset: 0
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -601,6 +609,7 @@ fn err_bad_header() {
                 },
                 warning: WarningType::DocumentHeaderNotTerminated,
             },],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -779,6 +788,7 @@ fn err_bad_header_and_bad_macro() {
                     warning: WarningType::EmptyAttributeValue,
                 },
             ],
+            source_map: SourceMap(&[]),
         }
     );
 }

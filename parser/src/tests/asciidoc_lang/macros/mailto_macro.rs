@@ -87,6 +87,7 @@ mailto:join@discuss.example.org[Subscribe]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -151,6 +152,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -217,6 +219,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -307,6 +310,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -375,6 +379,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -440,6 +445,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -504,6 +510,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -568,6 +575,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

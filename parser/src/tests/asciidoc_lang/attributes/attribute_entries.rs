@@ -158,6 +158,7 @@ At the end of the value, press kbd:[Enter].
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 
@@ -250,6 +251,7 @@ That means you don't need to escape special characters such in an HTML tag.
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -344,6 +346,7 @@ Attribute references in the value of an attribute entry are resolved immediately
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 
@@ -415,6 +418,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 

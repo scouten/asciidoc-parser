@@ -1,6 +1,7 @@
+use pretty_assertions_sorted::assert_eq;
+
 use crate::{
     Parser,
-    parser::SourceLine,
     tests::prelude::{inline_file_handler::InlineFileHandler, *},
 };
 
@@ -300,6 +301,11 @@ The single quotes around the variable name in the assignment are required to for
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[
+                (6, SourceLine(Some("fragment-chain.adoc",), 1,),),
+                (10, SourceLine(None, 7,),),
+                (14, SourceLine(Some("fragment-chain.adoc",), 1,),),
+            ],)
         }
     );
 
@@ -313,76 +319,100 @@ The single quotes around the variable name in the assignment are required to for
     // Main document lines.
     assert_eq!(
         source_map.original_file_and_line(1),
-        Some(SourceLine(None, 1)) // = Bike Manual
+        Some(crate::parser::SourceLine(None, 1)) // = Bike Manual
     );
     assert_eq!(
         source_map.original_file_and_line(2),
-        Some(SourceLine(None, 2)) // blank line
+        Some(crate::parser::SourceLine(None, 2)) // blank line
     );
     assert_eq!(
         source_map.original_file_and_line(3),
-        Some(SourceLine(None, 3)) // :chapter: operation
+        Some(crate::parser::SourceLine(None, 3)) // :chapter: operation
     );
     assert_eq!(
         source_map.original_file_and_line(4),
-        Some(SourceLine(None, 4)) // == Operation
+        Some(crate::parser::SourceLine(None, 4)) // == Operation
     );
     assert_eq!(
         source_map.original_file_and_line(5),
-        Some(SourceLine(None, 5)) // blank line
+        Some(crate::parser::SourceLine(None, 5)) // blank line
     );
 
     // First inclusion of fragment-chain.adoc.
     assert_eq!(
         source_map.original_file_and_line(6),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 1)) // [id=chain-{chapter}]
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            1
+        )) // [id=chain-{chapter}]
     );
     assert_eq!(
         source_map.original_file_and_line(7),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 2)) // === Chain
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            2
+        )) // === Chain
     );
     assert_eq!(
         source_map.original_file_and_line(8),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 3)) // blank line
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            3
+        )) // blank line
     );
     assert_eq!(
         source_map.original_file_and_line(9),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 4)) // See xref:chain-{chapter}[].
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            4
+        )) // See xref:chain-{chapter}[].
     );
 
     // Main document continues.
     assert_eq!(
         source_map.original_file_and_line(10),
-        Some(SourceLine(None, 7)) // blank line after first include
+        Some(crate::parser::SourceLine(None, 7)) // blank line after first include
     );
     assert_eq!(
         source_map.original_file_and_line(11),
-        Some(SourceLine(None, 8)) // :chapter: maintenance
+        Some(crate::parser::SourceLine(None, 8)) // :chapter: maintenance
     );
     assert_eq!(
         source_map.original_file_and_line(12),
-        Some(SourceLine(None, 9)) // == Maintenance
+        Some(crate::parser::SourceLine(None, 9)) // == Maintenance
     );
     assert_eq!(
         source_map.original_file_and_line(13),
-        Some(SourceLine(None, 10)) // blank line
+        Some(crate::parser::SourceLine(None, 10)) // blank line
     );
 
     // Second inclusion of fragment-chain.adoc.
     assert_eq!(
         source_map.original_file_and_line(14),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 1)) // [id=chain-{chapter}]
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            1
+        )) // [id=chain-{chapter}]
     );
     assert_eq!(
         source_map.original_file_and_line(15),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 2)) // === Chain
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            2
+        )) // === Chain
     );
     assert_eq!(
         source_map.original_file_and_line(16),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 3)) // blank line
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            3
+        )) // blank line
     );
     assert_eq!(
         source_map.original_file_and_line(17),
-        Some(SourceLine(Some("fragment-chain.adoc".to_owned()), 4)) // See xref:chain-{chapter}[].
+        Some(crate::parser::SourceLine(
+            Some("fragment-chain.adoc".to_owned()),
+            4
+        )) // See xref:chain-{chapter}[].
     );
 }

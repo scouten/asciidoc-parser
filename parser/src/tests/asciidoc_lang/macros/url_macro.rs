@@ -100,6 +100,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -169,6 +170,7 @@ The more typical reason, however, is to specify custom link text.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -251,6 +253,7 @@ include::example$url.adoc[tag=irc]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -317,6 +320,7 @@ include::example$url.adoc[tag=text]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -395,6 +399,7 @@ include::example$url.adoc[tag=css]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

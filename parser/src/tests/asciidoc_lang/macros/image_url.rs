@@ -114,6 +114,7 @@ include::example$image.adoc[tag=url]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -187,6 +188,7 @@ include::example$image.adoc[tag=in-url]
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

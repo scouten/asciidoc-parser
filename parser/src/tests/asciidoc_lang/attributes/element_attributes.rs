@@ -306,6 +306,7 @@ If this happens, append `+{empty}+` to the end of the line to disrupt the syntax
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -455,6 +456,7 @@ Specifically, it does not support named attributes, only the attribute shorthand
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

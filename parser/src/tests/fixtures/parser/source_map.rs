@@ -1,7 +1,7 @@
 use crate::tests::fixtures::parser::SourceLine;
 
 #[derive(Debug, Eq, PartialEq)]
-pub(crate) struct SourceMap(&'static [(usize, SourceLine)]);
+pub(crate) struct SourceMap(pub &'static [(usize, SourceLine)]);
 
 impl<'src> PartialEq<crate::parser::SourceMap> for SourceMap {
     fn eq(&self, other: &crate::parser::SourceMap) -> bool {

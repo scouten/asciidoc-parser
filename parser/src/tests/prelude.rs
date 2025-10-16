@@ -3,6 +3,6 @@
 // I'm making an exception.
 
 pub(crate) use crate::tests::{
-    fixtures::{attributes::*, blocks::*, content::*, document::*, warnings::*, *},
+    fixtures::{attributes::*, blocks::*, content::*, document::*, parser::*, warnings::*, *},
     sdd::*,
 };

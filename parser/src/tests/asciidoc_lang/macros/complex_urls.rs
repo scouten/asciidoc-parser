@@ -97,6 +97,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -150,6 +151,7 @@ fn pass_macro() {
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -204,6 +206,7 @@ fn double_plus_inline_macro() {
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }

@@ -194,6 +194,7 @@ Actually, please don't.
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -273,6 +274,7 @@ Our servers don't like them either.
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -390,6 +392,7 @@ In the path /items/\{id}, id is a path parameter.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -453,6 +456,7 @@ If the syntax that follows the backslash does not match an attribute reference, 
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -552,6 +556,7 @@ In the path +/items/{id}+, id is a path parameter.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -615,6 +620,7 @@ All the text between the passthrough enclosure will get passed through to the ou
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

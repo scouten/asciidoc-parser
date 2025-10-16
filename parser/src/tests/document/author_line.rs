@@ -995,6 +995,7 @@ fn comprehensive_author_attribute_test() {
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }

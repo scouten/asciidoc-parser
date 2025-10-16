@@ -133,6 +133,7 @@ Depending on the capabilities of the web application, the space character can be
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }
@@ -250,6 +251,7 @@ The prefix will still be present in the link target.
                     offset: 0,
                 },
                 warnings: &[],
+                source_map: SourceMap(&[]),
             }
         );
     }

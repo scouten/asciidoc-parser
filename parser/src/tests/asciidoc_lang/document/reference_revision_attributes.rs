@@ -147,6 +147,7 @@ image::reference-revision-line.png["Revision line and rendered revision referenc
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }
@@ -337,6 +338,7 @@ If you don't want the default version label to be displayed in the byline, xref:
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 }

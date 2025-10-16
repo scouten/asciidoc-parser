@@ -208,6 +208,7 @@ This is more content in the sidebar block.
                 offset: 0,
             },
             warnings: &[],
+            source_map: SourceMap(&[]),
         }
     );
 
