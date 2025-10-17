@@ -200,11 +200,11 @@ impl<'src> Block<'src> {
             // error out on a parse failure.
         }
 
-        if line.item.starts_with('=')
+        if (line.item.starts_with('=') || line.item.starts_with('#'))
             && let Some(mi_section_block) = SectionBlock::parse(&metadata, parser, &mut warnings)
         {
-            // A line starting with `=` might be some other kind of block, so we continue
-            // quietly if `SectionBlock` parser rejects this block.
+            // A line starting with `=` or `#` might be some other kind of block, so we
+            // continue quietly if `SectionBlock` parser rejects this block.
 
             return MatchAndWarnings {
                 item: Some(MatchedItem {

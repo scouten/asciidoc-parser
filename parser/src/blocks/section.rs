@@ -143,9 +143,16 @@ fn parse_title_line<'src>(
 
     let mut count = 0;
 
-    while let Some(mi) = line.take_prefix("=") {
-        count += 1;
-        line = mi.after;
+    if line.starts_with('=') {
+        while let Some(mi) = line.take_prefix("=") {
+            count += 1;
+            line = mi.after;
+        }
+    } else {
+        while let Some(mi) = line.take_prefix("#") {
+            count += 1;
+            line = mi.after;
+        }
     }
 
     if count == 1 {
