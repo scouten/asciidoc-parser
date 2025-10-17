@@ -14,10 +14,14 @@ use crate::{
 fn impl_clone() {
     // Silly test to mark the #[derive(...)] line as covered.
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
-    let b1 =
-        crate::blocks::SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser)
-            .unwrap();
+    let b1 = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Section Title"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
 
     let b2 = b1.item.clone();
     assert_eq!(b1.item, b2);
@@ -26,40 +30,66 @@ fn impl_clone() {
 #[test]
 fn err_empty_source() {
     let mut parser = Parser::default();
-    assert!(crate::blocks::SectionBlock::parse(&BlockMetadata::new(""), &mut parser).is_none());
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    assert!(
+        crate::blocks::SectionBlock::parse(&BlockMetadata::new(""), &mut parser, &mut warnings)
+            .is_none()
+    );
 }
 
 #[test]
 fn err_only_spaces() {
     let mut parser = Parser::default();
-    assert!(crate::blocks::SectionBlock::parse(&BlockMetadata::new("    "), &mut parser).is_none());
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    assert!(
+        crate::blocks::SectionBlock::parse(&BlockMetadata::new("    "), &mut parser, &mut warnings)
+            .is_none()
+    );
 }
 
 #[test]
 fn err_not_section() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
     assert!(
-        crate::blocks::SectionBlock::parse(&BlockMetadata::new("blah blah"), &mut parser).is_none()
+        crate::blocks::SectionBlock::parse(
+            &BlockMetadata::new("blah blah"),
+            &mut parser,
+            &mut warnings
+        )
+        .is_none()
     );
 }
 
 #[test]
 fn err_missing_space_before_title() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
     assert!(
-        crate::blocks::SectionBlock::parse(&BlockMetadata::new("=blah blah"), &mut parser)
-            .is_none()
+        crate::blocks::SectionBlock::parse(
+            &BlockMetadata::new("=blah blah"),
+            &mut parser,
+            &mut warnings
+        )
+        .is_none()
     );
 }
 
 #[test]
 fn simplest_section_block() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
-    let mi =
-        crate::blocks::SectionBlock::parse(&BlockMetadata::new("== Section Title"), &mut parser)
-            .unwrap()
-            .unwrap_if_no_warnings();
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Section Title"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -115,13 +145,14 @@ fn simplest_section_block() {
 #[test]
 fn has_child_block() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
     let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nabc"),
         &mut parser,
+        &mut warnings,
     )
-    .unwrap()
-    .unwrap_if_no_warnings();
+    .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -197,13 +228,14 @@ fn has_child_block() {
 #[test]
 fn has_macro_block_with_extra_blank_line() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
     let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,height=400]\n\n"),
         &mut parser,
+        &mut warnings,
     )
-    .unwrap()
-    .unwrap_if_no_warnings();
+    .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -303,14 +335,14 @@ fn has_macro_block_with_extra_blank_line() {
 #[test]
 fn has_child_block_with_errors() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
-    let maw = crate::blocks::SectionBlock::parse(
+    let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
         &mut parser,
+        &mut warnings,
     )
     .unwrap();
-
-    let mi = maw.item.clone();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -407,7 +439,7 @@ fn has_child_block_with_errors() {
     );
 
     assert_eq!(
-        maw.warnings,
+        warnings,
         vec![Warning {
             source: Span {
                 data: "alt=Sunset,width=300,,height=400",
@@ -423,13 +455,14 @@ fn has_child_block_with_errors() {
 #[test]
 fn dont_stop_at_child_section() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
     let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nabc\n\n=== Section 2\n\ndef"),
         &mut parser,
+        &mut warnings,
     )
-    .unwrap()
-    .unwrap_if_no_warnings();
+    .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -550,13 +583,14 @@ fn dont_stop_at_child_section() {
 #[test]
 fn stop_at_peer_section() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
     let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section Title\n\nabc\n\n== Section 2\n\ndef"),
         &mut parser,
+        &mut warnings,
     )
-    .unwrap()
-    .unwrap_if_no_warnings();
+    .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -632,13 +666,14 @@ fn stop_at_peer_section() {
 #[test]
 fn stop_at_ancestor_section() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
     let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("=== Section Title\n\nabc\n\n== Section 2\n\ndef"),
         &mut parser,
+        &mut warnings,
     )
-    .unwrap()
-    .unwrap_if_no_warnings();
+    .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
     assert_eq!(mi.item.raw_context().deref(), "section");
@@ -714,13 +749,14 @@ fn stop_at_ancestor_section() {
 #[test]
 fn section_title_with_markup() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
     let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section with *bold* text"),
         &mut parser,
+        &mut warnings,
     )
-    .unwrap()
-    .unwrap_if_no_warnings();
+    .unwrap();
 
     assert_eq!(
         mi.item.section_title_source(),
@@ -741,13 +777,14 @@ fn section_title_with_markup() {
 #[test]
 fn section_title_with_special_chars() {
     let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
     let mi = crate::blocks::SectionBlock::parse(
         &BlockMetadata::new("== Section with <brackets> & ampersands"),
         &mut parser,
+        &mut warnings,
     )
-    .unwrap()
-    .unwrap_if_no_warnings();
+    .unwrap();
 
     assert_eq!(
         mi.item.section_title_source(),
@@ -763,4 +800,87 @@ fn section_title_with_special_chars() {
         mi.item.section_title(),
         "Section with &lt;brackets&gt; &amp; ampersands"
     );
+}
+
+#[test]
+fn err_level_0_section_heading() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let result = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("= Document Title"),
+        &mut parser,
+        &mut warnings,
+    );
+
+    assert!(result.is_none());
+
+    assert_eq!(
+        warnings,
+        vec![Warning {
+            source: Span {
+                data: "= Document Title",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warning: WarningType::Level0SectionHeadingNotSupported,
+        }]
+    );
+}
+
+#[test]
+fn err_section_heading_level_exceeds_maximum() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let result = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("======= Level 6 Section"),
+        &mut parser,
+        &mut warnings,
+    );
+
+    assert!(result.is_none());
+
+    assert_eq!(
+        warnings,
+        vec![Warning {
+            source: Span {
+                data: "======= Level 6 Section",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warning: WarningType::SectionHeadingLevelExceedsMaximum(6),
+        }]
+    );
+}
+
+#[test]
+fn valid_maximum_level_5_section() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("====== Level 5 Section"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
+
+    assert_eq!(
+        warnings,
+        [Warning {
+            source: Span {
+                data: "====== Level 5 Section",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warning: WarningType::SectionHeadingLevelSkipped(1, 5,),
+        },]
+    );
+
+    assert_eq!(mi.item.level(), 5);
+    assert_eq!(mi.item.section_title(), "Level 5 Section");
 }

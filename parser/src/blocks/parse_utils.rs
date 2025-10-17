@@ -9,11 +9,11 @@ use crate::{
 /// reached.
 pub(crate) fn parse_blocks_until<'src, F>(
     mut source: Span<'src>,
-    f: F,
+    mut f: F,
     parser: &mut Parser,
 ) -> MatchAndWarnings<'src, MatchedItem<'src, Vec<Block<'src>>>>
 where
-    F: Fn(&Span<'src>) -> bool,
+    F: FnMut(&Span<'src>) -> bool,
 {
     let mut blocks: Vec<Block<'src>> = vec![];
     let mut warnings: Vec<Warning<'src>> = vec![];

@@ -201,19 +201,15 @@ impl<'src> Block<'src> {
         }
 
         if line.item.starts_with('=')
-            && let Some(mut maw_section_block) = SectionBlock::parse(&metadata, parser)
+            && let Some(mi_section_block) = SectionBlock::parse(&metadata, parser, &mut warnings)
         {
             // A line starting with `=` might be some other kind of block, so we continue
             // quietly if `SectionBlock` parser rejects this block.
 
-            if !maw_section_block.warnings.is_empty() {
-                warnings.append(&mut maw_section_block.warnings);
-            }
-
             return MatchAndWarnings {
                 item: Some(MatchedItem {
-                    item: Self::Section(maw_section_block.item.item),
-                    after: maw_section_block.item.after,
+                    item: Self::Section(mi_section_block.item),
+                    after: mi_section_block.after,
                 }),
                 warnings,
             };

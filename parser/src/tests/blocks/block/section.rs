@@ -7,16 +7,17 @@ use crate::{
     blocks::{ContentModel, IsBlock, MediaType},
     content::SubstitutionGroup,
     tests::prelude::*,
-    warnings::WarningType,
+    warnings::{MatchAndWarnings, WarningType},
 };
 
 #[test]
 fn err_missing_space_before_title() {
     let mut parser = Parser::default();
 
-    let mi = crate::blocks::Block::parse(crate::Span::new("=blah blah"), &mut parser)
-        .unwrap_if_no_warnings()
-        .unwrap();
+    let MatchAndWarnings { warnings, item } =
+        crate::blocks::Block::parse(crate::Span::new("=blah blah"), &mut parser);
+
+    let mi = item.unwrap();
 
     assert_eq!(
         mi.item,
@@ -61,6 +62,19 @@ fn err_missing_space_before_title() {
             col: 11,
             offset: 10
         }
+    );
+
+    assert_eq!(
+        warnings,
+        [Warning {
+            source: Span {
+                data: "=blah blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            warning: WarningType::Level0SectionHeadingNotSupported,
+        },]
     );
 }
 

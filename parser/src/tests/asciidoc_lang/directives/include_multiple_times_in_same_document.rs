@@ -3,6 +3,7 @@ use pretty_assertions_sorted::assert_eq;
 use crate::{
     Parser,
     tests::prelude::{inline_file_handler::InlineFileHandler, *},
+    warnings::WarningType,
 };
 
 track_file!("docs/modules/directives/pages/include-multiple-times-in-same-document.adoc");
@@ -300,7 +301,26 @@ The single quotes around the variable name in the assignment are required to for
                 col: 1,
                 offset: 0,
             },
-            warnings: &[],
+            warnings: &[
+                Warning {
+                    source: Span {
+                        data: "=== Chain",
+                        line: 7,
+                        col: 1,
+                        offset: 70,
+                    },
+                    warning: WarningType::SectionHeadingLevelSkipped(1, 2),
+                },
+                Warning {
+                    source: Span {
+                        data: "=== Chain",
+                        line: 15,
+                        col: 1,
+                        offset: 169,
+                    },
+                    warning: WarningType::SectionHeadingLevelSkipped(1, 2),
+                }
+            ],
             source_map: SourceMap(&[
                 (6, SourceLine(Some("fragment-chain.adoc",), 1,),),
                 (10, SourceLine(None, 7,),),

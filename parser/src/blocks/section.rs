@@ -9,7 +9,7 @@ use crate::{
     content::{Content, SubstitutionGroup},
     span::MatchedItem,
     strings::CowStr,
-    warnings::MatchAndWarnings,
+    warnings::{Warning, WarningType},
 };
 
 /// Sections partition the document into a content hierarchy. A section is an
@@ -35,37 +35,37 @@ impl<'src> SectionBlock<'src> {
     pub(crate) fn parse(
         metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
-    ) -> Option<MatchAndWarnings<'src, MatchedItem<'src, Self>>> {
+        warnings: &mut Vec<Warning<'src>>,
+    ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.discard_empty_lines();
-        let level = parse_title_line(source)?;
+        let level_and_title = parse_title_line(source, 0, warnings)?;
 
-        let maw_blocks = parse_blocks_until(
-            level.after,
-            |i| peer_or_ancestor_section(*i, level.item.0),
+        let mut maw_blocks = parse_blocks_until(
+            level_and_title.after,
+            |i| peer_or_ancestor_section(*i, level_and_title.item.0, warnings),
             parser,
         );
 
         let blocks = maw_blocks.item;
         let source = metadata.source.trim_remainder(blocks.after);
 
-        let mut section_title = Content::from(level.item.1);
+        let mut section_title = Content::from(level_and_title.item.1);
         SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
 
-        Some(MatchAndWarnings {
-            item: MatchedItem {
-                item: Self {
-                    level: level.item.0,
-                    section_title,
-                    blocks: blocks.item,
-                    source: source.trim_trailing_whitespace(),
-                    title_source: metadata.title_source,
-                    title: metadata.title.clone(),
-                    anchor: metadata.anchor,
-                    attrlist: metadata.attrlist.clone(),
-                },
-                after: blocks.after,
+        warnings.append(&mut maw_blocks.warnings);
+
+        Some(MatchedItem {
+            item: Self {
+                level: level_and_title.item.0,
+                section_title,
+                blocks: blocks.item,
+                source: source.trim_trailing_whitespace(),
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                attrlist: metadata.attrlist.clone(),
             },
-            warnings: maw_blocks.warnings,
+            after: blocks.after,
         })
     }
 
@@ -130,12 +130,15 @@ impl<'src> HasSpan<'src> for SectionBlock<'src> {
     }
 }
 
-fn parse_title_line(source: Span<'_>) -> Option<MatchedItem<'_, (usize, Span<'_>)>> {
+fn parse_title_line<'src>(
+    source: Span<'src>,
+    parent_level: usize,
+    warnings: &mut Vec<Warning<'src>>,
+) -> Option<MatchedItem<'src, (usize, Span<'src>)>> {
     let mi = source.take_non_empty_line()?;
     let mut line = mi.item;
 
     // TO DO: Also support Markdown-style `#` markers.
-    // TO DO: Enforce maximum of 6 `=` or `#` markers.
     // TO DO: Disallow empty title.
 
     let mut count = 0;
@@ -145,7 +148,32 @@ fn parse_title_line(source: Span<'_>) -> Option<MatchedItem<'_, (usize, Span<'_>
         line = mi.after;
     }
 
+    if count == 1 {
+        warnings.push(Warning {
+            source: source.take_normalized_line().item,
+            warning: WarningType::Level0SectionHeadingNotSupported,
+        });
+
+        return None;
+    }
+
+    if count > 6 {
+        warnings.push(Warning {
+            source: source.take_normalized_line().item,
+            warning: WarningType::SectionHeadingLevelExceedsMaximum(count - 1),
+        });
+
+        return None;
+    }
+
     let title = line.take_required_whitespace()?;
+
+    if count > parent_level + 2 {
+        warnings.push(Warning {
+            source: source.take_normalized_line().item,
+            warning: WarningType::SectionHeadingLevelSkipped(parent_level + 1, count - 1),
+        });
+    }
 
     Some(MatchedItem {
         item: (count - 1, title.after),
@@ -153,8 +181,12 @@ fn parse_title_line(source: Span<'_>) -> Option<MatchedItem<'_, (usize, Span<'_>
     })
 }
 
-fn peer_or_ancestor_section(source: Span<'_>, level: usize) -> bool {
-    if let Some(mi) = parse_title_line(source) {
+fn peer_or_ancestor_section<'src>(
+    source: Span<'src>,
+    level: usize,
+    warnings: &mut Vec<Warning<'src>>,
+) -> bool {
+    if let Some(mi) = parse_title_line(source, level, warnings) {
         mi.item.0 <= level
     } else {
         false

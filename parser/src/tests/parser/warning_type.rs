@@ -150,4 +150,34 @@ mod impl_debug {
             "WarningType::AttributeValueIsLocked(\"attr\\nwith\\nnewlines\")"
         );
     }
+
+    #[test]
+    fn level0_section_heading_not_supported() {
+        let warning = WarningType::Level0SectionHeadingNotSupported;
+        let debug_output = format!("{:?}", warning);
+        assert_eq!(
+            debug_output,
+            "WarningType::Level0SectionHeadingNotSupported"
+        );
+    }
+
+    #[test]
+    fn section_heading_level_skipped() {
+        let warning = WarningType::SectionHeadingLevelSkipped(2, 4);
+        let debug_output = format!("{:?}", warning);
+        assert_eq!(
+            debug_output,
+            "WarningType::SectionHeadingLevelSkipped(2, 4)"
+        );
+    }
+
+    #[test]
+    fn section_heading_level_exceeds_maximum() {
+        let warning = WarningType::SectionHeadingLevelExceedsMaximum(6);
+        let debug_output = format!("{:?}", warning);
+        assert_eq!(
+            debug_output,
+            "WarningType::SectionHeadingLevelExceedsMaximum(6)"
+        );
+    }
 }
