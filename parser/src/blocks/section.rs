@@ -38,7 +38,7 @@ impl<'src> SectionBlock<'src> {
         warnings: &mut Vec<Warning<'src>>,
     ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.discard_empty_lines();
-        let level_and_title = parse_title_line(source, warnings)?;
+        let level_and_title = parse_title_line(source, 0, warnings)?;
 
         let mut maw_blocks = parse_blocks_until(
             level_and_title.after,
@@ -132,6 +132,7 @@ impl<'src> HasSpan<'src> for SectionBlock<'src> {
 
 fn parse_title_line<'src>(
     source: Span<'src>,
+    parent_level: usize,
     warnings: &mut Vec<Warning<'src>>,
 ) -> Option<MatchedItem<'src, (usize, Span<'src>)>> {
     let mi = source.take_non_empty_line()?;
@@ -149,7 +150,7 @@ fn parse_title_line<'src>(
 
     if count == 1 {
         warnings.push(Warning {
-            source,
+            source: source.take_normalized_line().item,
             warning: WarningType::Level0SectionHeadingNotSupported,
         });
 
@@ -158,7 +159,7 @@ fn parse_title_line<'src>(
 
     if count > 6 {
         warnings.push(Warning {
-            source,
+            source: source.take_normalized_line().item,
             warning: WarningType::SectionHeadingLevelExceedsMaximum(count - 1),
         });
 
@@ -166,6 +167,13 @@ fn parse_title_line<'src>(
     }
 
     let title = line.take_required_whitespace()?;
+
+    if count > parent_level + 2 {
+        warnings.push(Warning {
+            source: source.take_normalized_line().item,
+            warning: WarningType::SectionHeadingLevelSkipped(parent_level + 1, count - 1),
+        });
+    }
 
     Some(MatchedItem {
         item: (count - 1, title.after),
@@ -178,7 +186,7 @@ fn peer_or_ancestor_section<'src>(
     level: usize,
     warnings: &mut Vec<Warning<'src>>,
 ) -> bool {
-    if let Some(mi) = parse_title_line(source, warnings) {
+    if let Some(mi) = parse_title_line(source, level, warnings) {
         mi.item.0 <= level
     } else {
         false
