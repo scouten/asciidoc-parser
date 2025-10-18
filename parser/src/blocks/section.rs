@@ -167,7 +167,7 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
             .map(|a| a.data())
             .or_else(|| self.attrlist().and_then(|attrlist| attrlist.id()))
             // Fall back to auto-generated ID if no explicit ID is set
-            .or_else(|| self.section_id.as_deref())
+            .or(self.section_id.as_deref())
     }
 }
 
@@ -274,6 +274,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 
     let mut gen_id = format!("{}{}", idprefix, title.to_lowercase());
 
+    #[allow(clippy::unwrap_used)]
     static INVALID_SECTION_ID_CHARS: LazyLock<Regex> = LazyLock::new(|| {
         Regex::new(r"<[^>]+>|&(?:[a-z][a-z]+\d{0,2}|#\d{2,5}|#x[\da-f]{2,4});|[^ \w\-.]+").unwrap()
     });
@@ -293,9 +294,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
         if sep == '-' || sep == '.' {
             // For hyphen/period separators, replace spaces and dots/hyphens accordingly.
             gen_id = gen_id
-                .replace(' ', &sep_str)
-                .replace('.', &sep_str)
-                .replace('-', &sep_str);
+                .replace([' ', '.', '-'], &sep_str);
         } else {
             // For other separators, replace space, period, and hyphen.
             gen_id = gen_id.replace([' ', '.', '-'], &sep_str);
