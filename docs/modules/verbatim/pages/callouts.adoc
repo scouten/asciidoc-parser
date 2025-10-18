@@ -26,6 +26,44 @@ include::example$callout.adoc[tag=basic]
 Since callout numbers can interfere with the syntax of the code they are annotating, an AsciiDoc processor provides several features to hide the callout numbers from both the source and the converted document.
 The sections that follow detail these features.
 
+== Automatic numbering
+
+Just like ordered lists, it's possible to allow the processor to automatically number the callouts.
+To leverage this capability, you replace the numbers in each callout with a dot (e.g., `<.>`).
+Each time the processor comes across a callout in either the verbatim block or the callout list, it selects the next number in the sequence (scoped to that block), starting from 1.
+
+Let's return to the previous example to see how it looks if we use automatic numbering.
+
+.Callout syntax with automatic numbering
+[source#ex-auto,subs=-callouts]
+....
+include::example$callout.adoc[tag=auto]
+....
+
+The result is exactly the same as before.
+
+=== Mixed numbering
+
+The `<.>` callouts are automatically numbered based on their sequence among other `<.>`, not any callouts that have an explicit number.
+In other words, the automatic numbering is not aware of any explicit numbering.
+Therefore, you should generally avoid mixing them.
+
+However, if you want to repeat a number in the verbatim block, then you can use an explicit number to create additional occurrences of that callout number.
+
+Let's consider an example:
+
+.Callout syntax with mixed numbering
+[source#ex-auto-repeat,subs=-callouts]
+....
+include::example$callout.adoc[tag=auto-repeat]
+....
+
+The result of <<ex-auto-repeat>> is rendered below.
+
+include::example$callout.adoc[tag=auto-repeat]
+
+The risk of this approach is that you have to keep track of which numbers are being assigned automatically.
+
 == Copy and paste friendly callouts
 
 If you add callout numbers to example code in a verbatim (e.g., source) block, and a reader selects that source code in the generated HTML, we don't want the callout numbers to get caught up in the copied text.
