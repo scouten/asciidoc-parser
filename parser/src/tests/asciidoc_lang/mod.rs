@@ -30,5 +30,6 @@ mod document;
 mod macros;
 mod pass;
 mod root;
+mod sections;
 mod subs;
 mod text;
