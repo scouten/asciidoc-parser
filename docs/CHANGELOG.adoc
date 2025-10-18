@@ -9,6 +9,7 @@ https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 Added::
 * Add example of when to use per-line hardbreaks instead of the hardbreaks option
 * Add example of using angle brackets to delinate the boundaries of a bare URL / autolink
+* Add `imagesdir` as an element attribute on image macros
 
 Changed::
 * Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
