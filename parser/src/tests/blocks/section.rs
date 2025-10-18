@@ -1901,3 +1901,42 @@ fn section_id_generation_with_empty_prefix() {
         panic!("Expected section block");
     }
 }
+
+#[test]
+fn section_id_generation_removes_trailing_separator() {
+    let input = ":idseparator: -\n\n== Section Title-";
+    let mut parser = Parser::default();
+    let document = parser.parse(input);
+
+    if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+        assert_eq!(section.id(), Some("_section-title"));
+    } else {
+        panic!("Expected section block");
+    }
+}
+
+#[test]
+fn section_id_generation_removes_leading_separator_when_prefix_empty() {
+    let input = ":idprefix:\n:idseparator: -\n\n== -Section Title";
+    let mut parser = Parser::default();
+    let document = parser.parse(input);
+
+    if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+        assert_eq!(section.id(), Some("section-title"));
+    } else {
+        panic!("Expected section block");
+    }
+}
+
+#[test]
+fn section_id_generation_handles_multiple_trailing_separators() {
+    let input = ":idseparator: _\n\n== Title with Multiple Dots...";
+    let mut parser = Parser::default();
+    let document = parser.parse(input);
+
+    if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+        assert_eq!(section.id(), Some("_title_with_multiple_dots"));
+    } else {
+        panic!("Expected section block");
+    }
+}
