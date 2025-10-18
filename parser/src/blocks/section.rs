@@ -64,7 +64,9 @@ impl<'src> SectionBlock<'src> {
         let mut section_title = Content::from(level_and_title.item.1);
         SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
 
-        // TODO (https://github.com/scouten/asciidoc-parser/issues/411): Track section ID whether automatically generated or manually specified and warn on conflicts.
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/411):
+        // Track section ID whether automatically generated or manually specified and
+        // warn on conflicts.
 
         let section_id = if metadata.anchor.is_none()
             && metadata
