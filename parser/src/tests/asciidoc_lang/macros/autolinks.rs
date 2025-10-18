@@ -400,7 +400,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
     }
 
     #[test]
-    fn angle_brackets() {
+    fn angle_brackets_1() {
         verifies!(
             r#"
 In plain text documents, a bare URL is often enclosed in angle brackets.
@@ -411,9 +411,6 @@ You'll often see <https://example.org> used in examples.
 ----
 
 To accommodate this convention, the AsciiDoc processor will still recognize the URL as an autolink, but will discard the angle brackets in the output (as they are not deemed significant).
-
-Any link created from a bare URL (i.e., an autolink) automatically gets assigned the "bare" role.
-This allows the theming system (e.g., CSS) to recognize autolinks (and other bare URLs) and style them distinctly.
 
 "#
         );
@@ -461,6 +458,81 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                 },),],
                 source: Span {
                     data: "You'll often see <https://example.org> used in examples.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+            }
+        );
+    }
+
+    #[test]
+    fn angle_brackets_2() {
+        verifies!(
+            r#"
+The angled brackets are also a convenient way to delinate the boundaries of the URL.
+If the bare URL is capturing more characters than it should, you can mark the boundaries explicitly using the angle brackets.
+
+[source]
+----
+<https://google.com> -- where you find stuff
+----
+
+Without the angle brackets delinating the boundaries of the URL, the emdash gets caught up in the URL.
+This happens because the replacements substitution is applied before the macros substitution.
+So instead of the URL being followed by a space, it's followed directly by the emdash.
+The angle brackets ensures it does get included in the URL.
+
+Any link created from a bare URL (i.e., an autolink) automatically gets assigned the "bare" role.
+This allows the theming system (e.g., CSS) to recognize autolinks (and other bare URLs) and style them distinctly.
+
+"#
+        );
+
+        let doc = Parser::default().parse("<https://google.com> -- where you find stuff");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "<https://google.com> -- where you find stuff",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "<a href=\"https://google.com\" class=\"bare\">https://google.com</a>&#8201;&#8212;&#8201;where you find stuff",
+                    },
+                    source: Span {
+                        data: "<https://google.com> -- where you find stuff",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "<https://google.com> -- where you find stuff",
                     line: 1,
                     col: 1,
                     offset: 0,
