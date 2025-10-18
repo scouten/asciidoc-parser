@@ -293,8 +293,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
         // Replace spaces, hyphens, and periods with separator.
         if sep == '-' || sep == '.' {
             // For hyphen/period separators, replace spaces and dots/hyphens accordingly.
-            gen_id = gen_id
-                .replace([' ', '.', '-'], &sep_str);
+            gen_id = gen_id.replace([' ', '.', '-'], &sep_str);
         } else {
             // For other separators, replace space, period, and hyphen.
             gen_id = gen_id.replace([' ', '.', '-'], &sep_str);
