@@ -283,37 +283,25 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
         .replace_all(&gen_id, "")
         .to_string();
 
-    if idseparator.is_empty() {
-        gen_id = gen_id.replace(' ', "");
-    } else {
-        // Take only first character of separator if multiple provided.
-        let sep = idseparator.chars().next().unwrap_or('_');
-        let sep_str = sep.to_string();
+    // Take only first character of separator if multiple provided.
+    let sep = idseparator
+        .chars()
+        .next()
+        .map(|s| s.to_string())
+        .unwrap_or_default();
 
-        // Replace spaces, hyphens, and periods with separator.
-        if sep == '-' || sep == '.' {
-            // For hyphen/period separators, replace spaces and dots/hyphens accordingly.
-            gen_id = gen_id.replace([' ', '.', '-'], &sep_str);
-        } else {
-            // For other separators, replace space, period, and hyphen.
-            gen_id = gen_id.replace([' ', '.', '-'], &sep_str);
-        }
+    gen_id = gen_id.replace([' ', '.', '-'], &sep);
 
-        // Remove repeating separator characters.
-        while gen_id.contains(&format!("{}{}", sep_str, sep_str)) {
-            gen_id = gen_id.replace(&format!("{}{}", sep_str, sep_str), &sep_str);
-        }
+    while gen_id.contains(&format!("{}{}", sep, sep)) {
+        gen_id = gen_id.replace(&format!("{}{}", sep, sep), &sep);
+    }
 
-        // Remove trailing separator.
-        if gen_id.ends_with(&sep_str) {
-            gen_id.pop();
-        }
+    if gen_id.ends_with(&sep) {
+        gen_id.pop();
+    }
 
-        // If `idprefix` is empty and generated ID starts with separator, remove leading
-        // separator.
-        if idprefix.is_empty() && gen_id.starts_with(&sep_str) {
-            gen_id = gen_id[sep_str.len()..].to_string();
-        }
+    if idprefix.is_empty() && gen_id.starts_with(&sep) {
+        gen_id = gen_id[sep.len()..].to_string();
     }
 
     gen_id
