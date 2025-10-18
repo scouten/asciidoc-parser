@@ -7,6 +7,7 @@ You can style all of the content in an individual cell by adding a style operato
 include::partial$style-operators.adoc[]
 
 When a style operator isn't explicitly assigned to a cell specifier (or xref:format-column-content.adoc[column specifier]), the cell falls back to the default (`d`) style and is processed as regular paragraph text.
+(The explicit `d` style is only needed if you want to revert the cell style based to a normal (default) cell when a style is applied to the column.)
 
 == Apply a style to a table cell
 
