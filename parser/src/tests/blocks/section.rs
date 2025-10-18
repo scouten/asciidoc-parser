@@ -868,18 +868,7 @@ fn valid_maximum_level_5_section() {
     )
     .unwrap();
 
-    assert_eq!(
-        warnings,
-        [Warning {
-            source: Span {
-                data: "====== Level 5 Section",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            warning: WarningType::SectionHeadingLevelSkipped(1, 5,),
-        },]
-    );
+    assert!(warnings.is_empty());
 
     assert_eq!(mi.item.level(), 5);
     assert_eq!(mi.item.section_title(), "Level 5 Section");
@@ -1691,18 +1680,7 @@ fn md_valid_maximum_level_5_section() {
     )
     .unwrap();
 
-    assert_eq!(
-        warnings,
-        [Warning {
-            source: Span {
-                data: "###### Level 5 Section",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            warning: WarningType::SectionHeadingLevelSkipped(1, 5,),
-        },]
-    );
+    assert!(warnings.is_empty());
 
     assert_eq!(mi.item.level(), 5);
     assert_eq!(mi.item.section_title(), "Level 5 Section");

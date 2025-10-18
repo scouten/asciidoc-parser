@@ -38,11 +38,20 @@ impl<'src> SectionBlock<'src> {
         warnings: &mut Vec<Warning<'src>>,
     ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.discard_empty_lines();
-        let level_and_title = parse_title_line(source, 0, warnings)?;
+        let level_and_title = parse_title_line(source, warnings)?;
+
+        let mut most_recent_level = level_and_title.item.0;
 
         let mut maw_blocks = parse_blocks_until(
             level_and_title.after,
-            |i| peer_or_ancestor_section(*i, level_and_title.item.0, warnings),
+            |i| {
+                peer_or_ancestor_section(
+                    *i,
+                    level_and_title.item.0,
+                    &mut most_recent_level,
+                    warnings,
+                )
+            },
             parser,
         );
 
@@ -132,13 +141,11 @@ impl<'src> HasSpan<'src> for SectionBlock<'src> {
 
 fn parse_title_line<'src>(
     source: Span<'src>,
-    parent_level: usize,
     warnings: &mut Vec<Warning<'src>>,
 ) -> Option<MatchedItem<'src, (usize, Span<'src>)>> {
     let mi = source.take_non_empty_line()?;
     let mut line = mi.item;
 
-    // TO DO: Also support Markdown-style `#` markers.
     // TO DO: Disallow empty title.
 
     let mut count = 0;
@@ -175,13 +182,6 @@ fn parse_title_line<'src>(
 
     let title = line.take_required_whitespace()?;
 
-    if count > parent_level + 2 {
-        warnings.push(Warning {
-            source: source.take_normalized_line().item,
-            warning: WarningType::SectionHeadingLevelSkipped(parent_level + 1, count - 1),
-        });
-    }
-
     Some(MatchedItem {
         item: (count - 1, title.after),
         after: mi.after,
@@ -191,9 +191,21 @@ fn parse_title_line<'src>(
 fn peer_or_ancestor_section<'src>(
     source: Span<'src>,
     level: usize,
+    most_recent_level: &mut usize,
     warnings: &mut Vec<Warning<'src>>,
 ) -> bool {
-    if let Some(mi) = parse_title_line(source, level, warnings) {
+    if let Some(mi) = parse_title_line(source, warnings) {
+        let found_level = mi.item.0;
+
+        if found_level > *most_recent_level + 1 {
+            warnings.push(Warning {
+                source: source.take_normalized_line().item,
+                warning: WarningType::SectionHeadingLevelSkipped(*most_recent_level, found_level),
+            });
+        }
+
+        *most_recent_level = found_level;
+
         mi.item.0 <= level
     } else {
         false

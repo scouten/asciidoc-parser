@@ -233,26 +233,15 @@ mod error_cases {
 
         assert_eq!(
             warnings,
-            vec![
-                Warning {
-                    source: Span {
-                        data: "=== Section Title",
-                        line: 1,
-                        col: 1,
-                        offset: 0,
-                    },
-                    warning: WarningType::SectionHeadingLevelSkipped(1, 2,),
+            vec![Warning {
+                source: Span {
+                    data: ".ancestor section== Section 2\n\ndef",
+                    line: 5,
+                    col: 1,
+                    offset: 24,
                 },
-                Warning {
-                    source: Span {
-                        data: ".ancestor section== Section 2\n\ndef",
-                        line: 5,
-                        col: 1,
-                        offset: 24,
-                    },
-                    warning: WarningType::MissingBlockAfterTitleOrAttributeList,
-                },
-            ]
+                warning: WarningType::MissingBlockAfterTitleOrAttributeList,
+            },]
         );
     }
 
@@ -431,26 +420,15 @@ mod error_cases {
 
         assert_eq!(
             warnings,
-            vec![
-                Warning {
-                    source: Span {
-                        data: "alt=\"Sunset\"width=300",
-                        line: 1,
-                        col: 2,
-                        offset: 1,
-                    },
-                    warning: WarningType::MissingCommaAfterQuotedAttributeValue,
+            vec![Warning {
+                source: Span {
+                    data: "alt=\"Sunset\"width=300",
+                    line: 1,
+                    col: 2,
+                    offset: 1,
                 },
-                Warning {
-                    source: Span {
-                        data: "=== Section Title (except it isn't)",
-                        line: 2,
-                        col: 1,
-                        offset: 24,
-                    },
-                    warning: WarningType::SectionHeadingLevelSkipped(1, 2,),
-                },
-            ]
+                warning: WarningType::MissingCommaAfterQuotedAttributeValue,
+            },]
         );
     }
 
