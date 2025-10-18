@@ -73,7 +73,7 @@ impl<'src> SectionBlock<'src> {
                 .attrlist
                 .as_ref()
                 .map(|a| a.id().is_none())
-                .unwrap_or(false)
+                .unwrap_or(true)
             && parser.is_attribute_set("sectids")
         {
             Some(generate_section_id(section_title.rendered(), parser))

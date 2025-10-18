@@ -218,7 +218,7 @@ include::example$section.adoc[tag=b-base]
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: Some("_another_Level_1_section_title"),
+                    section_id: Some("_another_level_1_section_title"),
                 },),
             ],
             source: Span {
@@ -544,7 +544,7 @@ That means the outline of a Markdown document will be converted just fine as an 
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: Some("_level_1_section_tsitle"),
+                    section_id: Some("_level_1_section_title"),
                 },),
                 Block::Section(SectionBlock {
                     level: 1,

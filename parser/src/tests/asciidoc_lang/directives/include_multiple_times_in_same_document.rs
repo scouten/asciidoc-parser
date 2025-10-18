@@ -203,7 +203,7 @@ The single quotes around the variable name in the assignment are required to for
                                 offset: 50,
                             },
                         },),
-                        section_id: Some("_chain"),
+                        section_id: None,
                     },),],
                     source: Span {
                         data: "== Operation\n\n[id=chain-{chapter}]\n=== Chain\n\nSee xref:chain-{chapter}[].\n\n:chapter: maintenance",
@@ -283,7 +283,7 @@ The single quotes around the variable name in the assignment are required to for
                                 offset: 149,
                             },
                         },),
-                        section_id: Some("_chain"),
+                        section_id: None,
                     },),],
                     source: Span {
                         data: "== Maintenance\n\n[id=chain-{chapter}]\n=== Chain\n\nSee xref:chain-{chapter}[].",
