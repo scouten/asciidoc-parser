@@ -109,6 +109,13 @@ To scope the float, use a xref:image-position.adoc#control-float[float group].
 |The role is preferred to specify the float position for an image.
 Role shorthand (`.`) can only be used in block attribute list above a block image.
 
+|`imagesdir`
+|empty, filesystem path, or base URL
+|`imagesdir=ch1/images`
+|Overrides the `imagesdir` set on the document.
+If not specified, the `imagesdir` from the document is used.
+(Not supported until Asciidoctor 2.1).
+
 |`opts`
 |Additional options for link creation and SVG targets.
 |`image::sunset.jpg[Sunset, link=https://example.org, opts=nofollow]`
