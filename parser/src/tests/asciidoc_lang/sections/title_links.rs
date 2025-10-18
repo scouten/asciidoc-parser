@@ -1,0 +1,24 @@
+use crate::tests::prelude::*;
+
+track_file!("docs/modules/document/pages/title-links.adoc");
+
+// Treating the entire file as non-normative because we don't do rendering
+// within the asciidoc-parser crate.
+
+non_normative!(
+    r#"
+= Activate Section Title Links
+
+[#link]
+== Turn section titles into links
+
+To turn section titles into links, enable the `sectlinks` attribute.
+The default Asciidoctor stylesheet displays linked section titles with the same color and styles as unlinked section titles.
+
+[#anchor]
+== Add &#167; to section titles
+
+When the `sectanchors` attribute is enabled on a document, an anchor (empty link) is added before the section title.
+The default Asciidoctor stylesheet renders the anchor as a section entity (*&#167;*) that floats to the left of the section title.
+"#
+);
