@@ -1,4 +1,6 @@
-use std::slice::Iter;
+use std::{slice::Iter, sync::LazyLock};
+
+use regex::Regex;
 
 use crate::{
     HasSpan, Parser, Span,
@@ -29,6 +31,7 @@ pub struct SectionBlock<'src> {
     title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
+    section_id: Option<String>,
 }
 
 impl<'src> SectionBlock<'src> {
@@ -61,6 +64,14 @@ impl<'src> SectionBlock<'src> {
         let mut section_title = Content::from(level_and_title.item.1);
         SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
 
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/411): Track section ID whether automatically generated or manually specified and warn on conflicts.
+
+        let section_id = if metadata.anchor.is_none() && parser.is_attribute_set("sectids") {
+            Some(generate_section_id(section_title.rendered(), parser))
+        } else {
+            None
+        };
+
         warnings.append(&mut maw_blocks.warnings);
 
         Some(MatchedItem {
@@ -73,6 +84,7 @@ impl<'src> SectionBlock<'src> {
                 title: metadata.title.clone(),
                 anchor: metadata.anchor,
                 attrlist: metadata.attrlist.clone(),
+                section_id,
             },
             after: blocks.after,
         })
@@ -130,6 +142,15 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         self.attrlist.as_ref()
+    }
+
+    fn id(&'src self) -> Option<&'src str> {
+        // First try the default implementation (explicit IDs from anchor or attrlist)
+        self.anchor()
+            .map(|a| a.data())
+            .or_else(|| self.attrlist().and_then(|attrlist| attrlist.id()))
+            // Fall back to auto-generated ID if no explicit ID is set
+            .or_else(|| self.section_id.as_deref())
     }
 }
 
@@ -210,4 +231,75 @@ fn peer_or_ancestor_section<'src>(
     } else {
         false
     }
+}
+
+/// Generate a section ID from the section title.
+///
+/// This function is called when (1) no `id` attribute is specified explicitly,
+/// and (2) the `sectids` document attribute is set.
+///
+/// The ID is generated as described in the AsciiDoc language definition in [How
+/// a section ID is computed].
+///
+/// [How a section ID is computed](https://docs.asciidoctor.org/asciidoc/latest/sections/auto-ids/)
+fn generate_section_id(title: &str, parser: &Parser) -> String {
+    let idprefix = parser
+        .attribute_value("idprefix")
+        .as_maybe_str()
+        .unwrap_or_default()
+        .to_owned();
+
+    let idseparator = parser
+        .attribute_value("idseparator")
+        .as_maybe_str()
+        .unwrap_or_default()
+        .to_owned();
+
+    let mut gen_id = format!("{}{}", idprefix, title.to_lowercase());
+
+    static INVALID_SECTION_ID_CHARS: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r"<[^>]+>|&(?:[a-z][a-z]+\d{0,2}|#\d{2,5}|#x[\da-f]{2,4});|[^ \w\-.]+").unwrap()
+    });
+
+    gen_id = INVALID_SECTION_ID_CHARS
+        .replace_all(&gen_id, "")
+        .to_string();
+
+    if idseparator.is_empty() {
+        gen_id = gen_id.replace(' ', "");
+    } else {
+        // Take only first character of separator if multiple provided.
+        let sep = idseparator.chars().next().unwrap_or('_');
+        let sep_str = sep.to_string();
+
+        // Replace spaces, hyphens, and periods with separator.
+        if sep == '-' || sep == '.' {
+            // For hyphen/period separators, replace spaces and dots/hyphens accordingly.
+            gen_id = gen_id
+                .replace(' ', &sep_str)
+                .replace('.', &sep_str)
+                .replace('-', &sep_str);
+        } else {
+            // For other separators, replace space, period, and hyphen.
+            gen_id = gen_id.replace([' ', '.', '-'], &sep_str);
+        }
+
+        // Remove repeating separator characters.
+        while gen_id.contains(&format!("{}{}", sep_str, sep_str)) {
+            gen_id = gen_id.replace(&format!("{}{}", sep_str, sep_str), &sep_str);
+        }
+
+        // Remove trailing separator.
+        if gen_id.ends_with(&sep_str) {
+            gen_id.pop();
+        }
+
+        // If `idprefix` is empty and generated ID starts with separator, remove leading
+        // separator.
+        if idprefix.is_empty() && gen_id.starts_with(&sep_str) {
+            gen_id = gen_id[sep_str.len()..].to_string();
+        }
+    }
+
+    gen_id
 }
