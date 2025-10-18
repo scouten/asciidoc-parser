@@ -5,7 +5,9 @@ use crate::{
     document::{Attribute, InterpretedValue},
     parser::{
         AllowableValue, AttributeValue, HtmlSubstitutionRenderer, IncludeFileHandler,
-        InlineSubstitutionRenderer, ModificationContext, PathResolver, preprocessor::preprocess,
+        InlineSubstitutionRenderer, ModificationContext, PathResolver,
+        built_in_attrs::{built_in_attrs, built_in_default_values},
+        preprocessor::preprocess,
     },
     warnings::{Warning, WarningType},
 };
@@ -382,94 +384,4 @@ impl Parser {
 
         self.attribute_values.insert(attr_name, attribute_value);
     }
-}
-
-fn built_in_attrs() -> HashMap<String, AttributeValue> {
-    let mut attrs: HashMap<String, AttributeValue> = HashMap::new();
-
-    attrs.insert(
-        "empty".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::ApiOnly,
-            value: InterpretedValue::Value("".into()),
-        },
-    );
-
-    attrs.insert(
-        "sp".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::ApiOnly,
-            value: InterpretedValue::Value(" ".into()),
-        },
-    );
-
-    attrs.insert(
-        "deg".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::ApiOnly,
-            value: InterpretedValue::Value("&#176;".into()),
-        },
-    );
-
-    attrs.insert(
-        "plus".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::ApiOnly,
-            value: InterpretedValue::Value("&#43;".into()),
-        },
-    );
-
-    attrs.insert(
-        "toc".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::ApiOrHeader,
-            value: InterpretedValue::Unset,
-        },
-    );
-
-    attrs.insert(
-        "sectids".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Empty,
-            modification_context: ModificationContext::Anywhere,
-            value: InterpretedValue::Set,
-        },
-    );
-
-    attrs.insert(
-        "example-caption".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::Anywhere,
-            value: InterpretedValue::Set,
-        },
-    );
-
-    // TO DO: Replace ./images with value of imagesdir if that is non-default.
-    attrs.insert(
-        "iconsdir".to_owned(),
-        AttributeValue {
-            allowable_value: AllowableValue::Any,
-            modification_context: ModificationContext::Anywhere,
-            value: InterpretedValue::Set,
-        },
-    );
-
-    attrs
-}
-
-fn built_in_default_values() -> HashMap<String, String> {
-    let mut defaults: HashMap<String, String> = HashMap::new();
-
-    defaults.insert("example-caption".to_owned(), "Example".to_owned());
-    defaults.insert("iconsdir".to_owned(), "./images/icons".to_owned());
-    defaults.insert("sectnums".to_owned(), "all".to_owned());
-    defaults.insert("toc".to_owned(), "auto".to_owned());
-
-    defaults
 }
