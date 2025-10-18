@@ -5,6 +5,8 @@ mod attribute_value;
 pub(crate) use attribute_value::AttributeValue;
 pub use attribute_value::{AllowableValue, ModificationContext};
 
+mod built_in_attrs;
+
 mod include_file_handler;
 pub use include_file_handler::IncludeFileHandler;
 
