@@ -120,7 +120,7 @@ mod error_cases {
         assert_eq!(item.raw_context().deref(), "section");
         assert_eq!(item.resolved_context().deref(), "section");
         assert!(item.declared_style().is_none());
-        assert!(item.id().is_none());
+        assert_eq!(item.id().unwrap(), "_section_title");
         assert!(item.roles().is_empty());
         assert!(item.options().is_empty());
         assert!(item.title_source().is_none());
