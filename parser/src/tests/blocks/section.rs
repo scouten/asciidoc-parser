@@ -868,18 +868,7 @@ fn valid_maximum_level_5_section() {
     )
     .unwrap();
 
-    assert_eq!(
-        warnings,
-        [Warning {
-            source: Span {
-                data: "====== Level 5 Section",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            warning: WarningType::SectionHeadingLevelSkipped(1, 5,),
-        },]
-    );
+    assert!(warnings.is_empty());
 
     assert_eq!(mi.item.level(), 5);
     assert_eq!(mi.item.section_title(), "Level 5 Section");
@@ -1691,19 +1680,117 @@ fn md_valid_maximum_level_5_section() {
     )
     .unwrap();
 
-    assert_eq!(
-        warnings,
-        [Warning {
-            source: Span {
-                data: "###### Level 5 Section",
-                line: 1,
-                col: 1,
-                offset: 0,
-            },
-            warning: WarningType::SectionHeadingLevelSkipped(1, 5,),
-        },]
-    );
+    assert!(warnings.is_empty());
 
     assert_eq!(mi.item.level(), 5);
     assert_eq!(mi.item.section_title(), "Level 5 Section");
+}
+
+#[test]
+fn warn_section_level_skipped_asciidoc() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Level 1\n\n==== Level 3 (skipped level 2)"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
+
+    assert_eq!(mi.item.level(), 1);
+    assert_eq!(mi.item.section_title(), "Level 1");
+    assert_eq!(mi.item.nested_blocks().len(), 1);
+
+    assert_eq!(
+        warnings,
+        vec![Warning {
+            source: Span {
+                data: "==== Level 3 (skipped level 2)",
+                line: 3,
+                col: 1,
+                offset: 12,
+            },
+            warning: WarningType::SectionHeadingLevelSkipped(1, 3),
+        }]
+    );
+}
+
+#[test]
+fn warn_section_level_skipped_markdown() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("## Level 1\n\n#### Level 3 (skipped level 2)"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
+
+    assert_eq!(mi.item.level(), 1);
+    assert_eq!(mi.item.section_title(), "Level 1");
+    assert_eq!(mi.item.nested_blocks().len(), 1);
+
+    assert_eq!(
+        warnings,
+        vec![Warning {
+            source: Span {
+                data: "#### Level 3 (skipped level 2)",
+                line: 3,
+                col: 1,
+                offset: 12,
+            },
+            warning: WarningType::SectionHeadingLevelSkipped(1, 3),
+        }]
+    );
+}
+
+#[test]
+fn warn_multiple_section_levels_skipped() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Level 1\n\n===== Level 4 (skipped levels 2 and 3)"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
+
+    assert_eq!(mi.item.level(), 1);
+    assert_eq!(mi.item.section_title(), "Level 1");
+    assert_eq!(mi.item.nested_blocks().len(), 1);
+
+    assert_eq!(
+        warnings,
+        vec![Warning {
+            source: Span {
+                data: "===== Level 4 (skipped levels 2 and 3)",
+                line: 3,
+                col: 1,
+                offset: 12,
+            },
+            warning: WarningType::SectionHeadingLevelSkipped(1, 4),
+        }]
+    );
+}
+
+#[test]
+fn no_warning_for_consecutive_section_levels() {
+    let mut parser = Parser::default();
+    let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+    let mi = crate::blocks::SectionBlock::parse(
+        &BlockMetadata::new("== Level 1\n\n=== Level 2 (no skip)"),
+        &mut parser,
+        &mut warnings,
+    )
+    .unwrap();
+
+    assert_eq!(mi.item.level(), 1);
+    assert_eq!(mi.item.section_title(), "Level 1");
+    assert_eq!(mi.item.nested_blocks().len(), 1);
+
+    assert!(warnings.is_empty());
 }
