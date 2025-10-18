@@ -202,6 +202,7 @@ image::reference-author.png[Reference the built-in attributes for an author,role
                 title: None,
                 anchor: None,
                 attrlist: None,
+                section_id: Some("_about_kismet_r_lee"),
             },),],
             source: Span {
                 data: "= The Intrepid Chronicles\n:author: Kismet R. Lee\n:email: kismet@asciidoctor.org\n\n== About {author}\n\nYou can contact {firstname} at {email}.\n\nP.S. Don't ask what the {middlename} stands for; it's a secret.\n{authorinitials}",

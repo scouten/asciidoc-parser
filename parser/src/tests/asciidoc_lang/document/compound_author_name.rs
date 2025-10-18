@@ -453,6 +453,7 @@ image::author-attribute-with-compound-name.png[Compound author name displayed in
                 title: None,
                 anchor: None,
                 attrlist: None,
+                section_id: Some("_about_mara_moss_wirribi"),
             },),],
             source: Span {
                 data: "= Quantum Networks\n:author: Mara_Moss Wirribi\n\n== About {author}\n\n{firstname} lives on the Bellarine Peninsula near Geelong, Australia.",

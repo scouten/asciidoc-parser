@@ -218,6 +218,7 @@ mod error_cases {
                 title: None,
                 anchor: None,
                 attrlist: None,
+                section_id: Some("_section_title"),
             }
         );
 
@@ -405,6 +406,7 @@ mod error_cases {
                         offset: 1,
                     },
                 },),
+                section_id: Some("_section_title_except_it_isnt"),
             },)
         );
 

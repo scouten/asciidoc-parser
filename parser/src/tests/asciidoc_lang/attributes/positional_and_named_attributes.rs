@@ -191,6 +191,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                         offset: 1,
                     },
                 },),
+                section_id: None,
             },)
         );
 
@@ -256,6 +257,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                         offset: 1,
                     },
                 },),
+                section_id: None,
             },)
         );
 

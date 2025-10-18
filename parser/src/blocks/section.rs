@@ -66,7 +66,14 @@ impl<'src> SectionBlock<'src> {
 
         // TODO (https://github.com/scouten/asciidoc-parser/issues/411): Track section ID whether automatically generated or manually specified and warn on conflicts.
 
-        let section_id = if metadata.anchor.is_none() && parser.is_attribute_set("sectids") {
+        let section_id = if metadata.anchor.is_none()
+            && metadata
+                .attrlist
+                .as_ref()
+                .map(|a| a.id().is_none())
+                .unwrap_or(false)
+            && parser.is_attribute_set("sectids")
+        {
             Some(generate_section_id(section_title.rendered(), parser))
         } else {
             None
@@ -112,6 +119,14 @@ impl<'src> SectionBlock<'src> {
     /// applied.
     pub fn section_title(&'src self) -> &'src str {
         self.section_title.rendered()
+    }
+
+    /// Accessor intended to be used for testing only. Use the `id()` accessor
+    /// in the `IsBlock` to retrieve the effective ID for this block, which
+    /// considers both auto-generated IDs and manually-set IDs.
+    #[cfg(test)]
+    pub(crate) fn section_id(&'src self) -> Option<&'src str> {
+        self.section_id.as_deref()
     }
 }
 

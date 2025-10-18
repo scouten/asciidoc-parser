@@ -123,6 +123,7 @@ fn simplest_section_block() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         })
     );
 
@@ -204,6 +205,7 @@ fn has_child_block() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         })
     );
 
@@ -323,6 +325,7 @@ fn title() {
             title: Some("other section title"),
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         })
     );
 
@@ -478,6 +481,7 @@ fn warn_child_attrlist_has_extra_comma() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         })
     );
 

@@ -760,6 +760,7 @@ fn err_bad_header_and_bad_macro() {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                section_id: Some("_section_title"),
                 },
             )],
             source: Span {

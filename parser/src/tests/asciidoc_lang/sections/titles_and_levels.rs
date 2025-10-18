@@ -146,6 +146,7 @@ include::example$section.adoc[tag=b-base]
                                     title: None,
                                     anchor: None,
                                     attrlist: None,
+                                    section_id: Some("_level_5_section_title"),
                                 },),],
                                 source: Span {
                                     data: "===== Level 4 Section Title\n\n====== Level 5 Section Title",
@@ -157,6 +158,7 @@ include::example$section.adoc[tag=b-base]
                                 title: None,
                                 anchor: None,
                                 attrlist: None,
+                                section_id: Some("_level_4_section_title"),
                             },),],
                             source: Span {
                                 data: "==== Level 3 Section Title\n\n===== Level 4 Section Title\n\n====== Level 5 Section Title",
@@ -168,6 +170,7 @@ include::example$section.adoc[tag=b-base]
                             title: None,
                             anchor: None,
                             attrlist: None,
+                            section_id: Some("_level_3_section_title"),
                         },),],
                         source: Span {
                             data: "=== Level 2 Section Title\n\n==== Level 3 Section Title\n\n===== Level 4 Section Title\n\n====== Level 5 Section Title",
@@ -179,6 +182,7 @@ include::example$section.adoc[tag=b-base]
                         title: None,
                         anchor: None,
                         attrlist: None,
+                        section_id: Some("_level_2_section_title"),
                     },),],
                     source: Span {
                         data: "== Level 1 Section Title\n\n=== Level 2 Section Title\n\n==== Level 3 Section Title\n\n===== Level 4 Section Title\n\n====== Level 5 Section Title",
@@ -190,6 +194,7 @@ include::example$section.adoc[tag=b-base]
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_level_1_section_title"),
                 },),
                 Block::Section(SectionBlock {
                     level: 1,
@@ -213,6 +218,7 @@ include::example$section.adoc[tag=b-base]
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_another_Level_1_section_title"),
                 },),
             ],
             source: Span {
@@ -343,6 +349,7 @@ include::example$section.adoc[tag=content]
                         title: None,
                         anchor: None,
                         attrlist: None,
+                        section_id: Some("_illegal_nested_section_violates_rule_2"),
                     },),],
                     source: Span {
                         data: "== First Section\n\n==== Illegal Nested Section (violates rule #2)",
@@ -354,6 +361,7 @@ include::example$section.adoc[tag=content]
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_first_section"),
                 },),
             ],
             source: Span {
@@ -488,6 +496,7 @@ That means the outline of a Markdown document will be converted just fine as an 
                                     title: None,
                                     anchor: None,
                                     attrlist: None,
+                                    section_id: Some("_level_5_section_title"),
                                 },),],
                                 source: Span {
                                     data: "##### Level 4 Section Title\n\n###### Level 5 Section Title",
@@ -499,6 +508,7 @@ That means the outline of a Markdown document will be converted just fine as an 
                                 title: None,
                                 anchor: None,
                                 attrlist: None,
+                                section_id: Some("_level_4_section_title"),
                             },),],
                             source: Span {
                                 data: "#### Level 3 Section Title\n\n##### Level 4 Section Title\n\n###### Level 5 Section Title",
@@ -510,6 +520,7 @@ That means the outline of a Markdown document will be converted just fine as an 
                             title: None,
                             anchor: None,
                             attrlist: None,
+                            section_id: Some("_level_3_section_title"),
                         },),],
                         source: Span {
                             data: "### Level 2 Section Title\n\n#### Level 3 Section Title\n\n##### Level 4 Section Title\n\n###### Level 5 Section Title",
@@ -521,6 +532,7 @@ That means the outline of a Markdown document will be converted just fine as an 
                         title: None,
                         anchor: None,
                         attrlist: None,
+                        section_id: Some("_level_2_section_title"),
                     },),],
                     source: Span {
                         data: "## Level 1 Section Title\n\n### Level 2 Section Title\n\n#### Level 3 Section Title\n\n##### Level 4 Section Title\n\n###### Level 5 Section Title",
@@ -532,6 +544,7 @@ That means the outline of a Markdown document will be converted just fine as an 
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_level_1_section_tsitle"),
                 },),
                 Block::Section(SectionBlock {
                     level: 1,
@@ -555,6 +568,7 @@ That means the outline of a Markdown document will be converted just fine as an 
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_another_level_1_section_title"),
                 },),
             ],
             source: Span {

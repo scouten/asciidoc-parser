@@ -128,6 +128,7 @@ fn simplest_section_block() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -211,6 +212,7 @@ fn has_child_block() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -318,6 +320,7 @@ fn has_macro_block_with_extra_blank_line() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -425,6 +428,7 @@ fn has_child_block_with_errors() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -554,6 +558,7 @@ fn dont_stop_at_child_section() {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_2"),
                 })
             ],
             source: Span {
@@ -566,6 +571,7 @@ fn dont_stop_at_child_section() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -649,6 +655,7 @@ fn stop_at_peer_section() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -732,6 +739,7 @@ fn stop_at_ancestor_section() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -940,6 +948,7 @@ fn md_simplest_section_block() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -1023,6 +1032,7 @@ fn md_has_child_block() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -1130,6 +1140,7 @@ fn md_has_macro_block_with_extra_blank_line() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -1237,6 +1248,7 @@ fn md_has_child_block_with_errors() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -1366,6 +1378,7 @@ fn md_dont_stop_at_child_section() {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_2"),
                 })
             ],
             source: Span {
@@ -1378,6 +1391,7 @@ fn md_dont_stop_at_child_section() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -1461,6 +1475,7 @@ fn md_stop_at_peer_section() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
@@ -1544,6 +1559,7 @@ fn md_stop_at_ancestor_section() {
             title: None,
             anchor: None,
             attrlist: None,
+            section_id: Some("_section_title"),
         }
     );
 
