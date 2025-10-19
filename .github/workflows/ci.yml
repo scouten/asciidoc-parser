@@ -50,7 +50,9 @@ jobs:
         run: cargo llvm-cov --workspace --all-features --lcov --ignore-filename-regex tests --output-path lcov.info
 
       - name: Remove test code from coverage reports
-        run: python3 .github/scripts/filter_lcov.py
+        run: |
+          python3 .github/scripts/filter_lcov.py
+          mv lcov.filtered.info lcov.info
 
       # Tokens aren't available for PRs originating from forks,
       # so we don't attempt to upload code coverage in that case.
@@ -64,7 +66,6 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: lcov.filtered.info
           fail_ci_if_error: true
           verbose: true
 
