@@ -48,3 +48,6 @@ pub use section::SectionBlock;
 
 mod simple;
 pub use simple::SimpleBlock;
+
+#[cfg(test)]
+mod tests;

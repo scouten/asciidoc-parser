@@ -1,3 +1,9 @@
+//! This module contains tests related to each of the cases of the `Block` enum.
+//! Many of these tests are repeated from the tests for the individual block
+//! types.
+
+#![allow(clippy::unwrap_used)]
+
 mod compound_delimited;
 mod media;
 mod raw_delimited;
