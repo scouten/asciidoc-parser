@@ -50,7 +50,7 @@ jobs:
         run: cargo llvm-cov --workspace --all-features --lcov --ignore-filename-regex tests --output-path lcov.info
 
       - name: Remove test code from coverage reports
-        uses: scouten/uncover-tests@v1.0.1
+        uses: scouten/uncover-tests@v1.1.0
 
       # Tokens aren't available for PRs originating from forks,
       # so we don't attempt to upload code coverage in that case.
