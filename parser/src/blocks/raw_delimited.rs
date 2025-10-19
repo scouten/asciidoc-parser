@@ -652,7 +652,6 @@ mod tests {
         #[test]
         fn multiple_lines() {
             let mut parser = Parser::default();
-
             assert!(
                 crate::blocks::RawDelimitedBlock::parse(
                     &BlockMetadata::new("====\nline1  \nline2\n===="),
@@ -676,6 +675,7 @@ mod tests {
         #[test]
         fn empty() {
             let mut parser = Parser::default();
+
             let maw = crate::blocks::RawDelimitedBlock::parse(
                 &BlockMetadata::new("----\n----"),
                 &mut parser,

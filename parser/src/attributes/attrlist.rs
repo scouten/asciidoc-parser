@@ -1337,9 +1337,7 @@ mod tests {
 
             assert!(mi.item.named_attribute("foo").is_none());
             assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
-
             assert_eq!(mi.item.id().unwrap(), "goals");
-
             assert!(mi.item.roles().is_empty());
 
             assert_eq!(
@@ -1418,7 +1416,6 @@ mod tests {
             );
 
             assert_eq!(mi.item.id().unwrap(), "goals");
-
             assert!(mi.item.roles().is_empty());
 
             assert_eq!(
@@ -1561,10 +1558,8 @@ mod tests {
 
             let roles = mi.item.roles();
             let mut roles = roles.iter();
-
             assert_eq!(roles.next().unwrap(), &"rolename");
-
-            assert!(roles.next().is_none(),);
+            assert!(roles.next().is_none());
 
             assert_eq!(
                 mi.item.span(),
@@ -1680,13 +1675,9 @@ mod tests {
 
             let roles = mi.item.roles();
             let mut roles = roles.iter();
-
             assert_eq!(roles.next().unwrap(), &"role1");
-
             assert_eq!(roles.next().unwrap(), &"role2");
-
             assert_eq!(roles.next().unwrap(), &"role3");
-
             assert!(roles.next().is_none(),);
 
             assert_eq!(
@@ -1744,13 +1735,9 @@ mod tests {
 
             let roles = mi.item.roles();
             let mut roles = roles.iter();
-
             assert_eq!(roles.next().unwrap(), &"role1");
-
             assert_eq!(roles.next().unwrap(), &"role2");
-
             assert_eq!(roles.next().unwrap(), &"role3");
-
             assert!(roles.next().is_none(),);
 
             assert_eq!(
@@ -1900,7 +1887,6 @@ mod tests {
 
             let roles = mi.item.roles();
             let mut roles = roles.iter();
-
             assert_eq!(roles.next().unwrap(), &"role1");
             assert_eq!(roles.next().unwrap(), &"role2");
             assert_eq!(roles.next().unwrap(), &"role3");
@@ -1966,7 +1952,6 @@ mod tests {
 
             let roles = mi.item.roles();
             let mut roles = roles.iter();
-
             assert_eq!(roles.next().unwrap(), &"sh1");
             assert_eq!(roles.next().unwrap(), &"sh2");
             assert_eq!(roles.next().unwrap(), &"na1");
@@ -2075,9 +2060,7 @@ mod tests {
 
             let options = mi.item.options();
             let mut options = options.iter();
-
             assert_eq!(options.next().unwrap(), &"option",);
-
             assert!(options.next().is_none());
 
             assert!(mi.item.has_option("option"));
@@ -2138,7 +2121,6 @@ mod tests {
 
             let options = mi.item.options();
             let mut options = options.iter();
-
             assert_eq!(options.next().unwrap(), &"option1");
             assert_eq!(options.next().unwrap(), &"option2");
             assert_eq!(options.next().unwrap(), &"option3");
@@ -2226,7 +2208,6 @@ mod tests {
 
             let options = mi.item.options();
             let mut options = options.iter();
-
             assert_eq!(options.next().unwrap(), &"option1");
             assert!(options.next().is_none());
 
@@ -2300,7 +2281,6 @@ mod tests {
 
             let options = mi.item.options();
             let mut options = options.iter();
-
             assert_eq!(options.next().unwrap(), &"option1");
             assert!(options.next().is_none());
 
@@ -2375,7 +2355,6 @@ mod tests {
 
             let options = mi.item.options();
             let mut options = options.iter();
-
             assert_eq!(options.next().unwrap(), &"option1");
             assert_eq!(options.next().unwrap(), &"option2");
             assert_eq!(options.next().unwrap(), &"option3");
@@ -2446,7 +2425,6 @@ mod tests {
 
             let options = mi.item.options();
             let mut options = options.iter();
-
             assert_eq!(options.next().unwrap(), &"sh1");
             assert_eq!(options.next().unwrap(), &"sh2");
             assert_eq!(options.next().unwrap(), &"na1");

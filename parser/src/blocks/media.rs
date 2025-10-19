@@ -232,7 +232,6 @@ mod tests {
     #[test]
     fn err_empty_source() {
         let mut parser = Parser::default();
-
         assert!(
             crate::blocks::MediaBlock::parse(&BlockMetadata::new(""), &mut parser)
                 .unwrap_if_no_warnings()
@@ -243,7 +242,6 @@ mod tests {
     #[test]
     fn err_only_spaces() {
         let mut parser = Parser::default();
-
         assert!(
             crate::blocks::MediaBlock::parse(&BlockMetadata::new("    "), &mut parser)
                 .unwrap_if_no_warnings()
@@ -314,7 +312,6 @@ mod tests {
     #[test]
     fn err_unknown_type() {
         let mut parser = Parser::default();
-
         assert!(
             crate::blocks::MediaBlock::parse(&BlockMetadata::new("imagex::bar[]"), &mut parser)
                 .unwrap_if_no_warnings()
@@ -325,7 +322,6 @@ mod tests {
     #[test]
     fn err_no_attr_list() {
         let mut parser = Parser::default();
-
         assert!(
             crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::bar"), &mut parser)
                 .unwrap_if_no_warnings()
@@ -336,7 +332,6 @@ mod tests {
     #[test]
     fn err_attr_list_not_closed() {
         let mut parser = Parser::default();
-
         assert!(
             crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::bar[blah"), &mut parser)
                 .unwrap_if_no_warnings()
@@ -347,7 +342,6 @@ mod tests {
     #[test]
     fn err_unexpected_after_attr_list() {
         let mut parser = Parser::default();
-
         assert!(
             crate::blocks::MediaBlock::parse(
                 &BlockMetadata::new("image::bar[blah]bonus"),
@@ -363,7 +357,6 @@ mod tests {
         let mut parser = Parser::default();
 
         let mi = crate::blocks::MediaBlock::parse(&BlockMetadata::new("image::[]"), &mut parser);
-
         assert!(mi.item.is_none());
 
         assert_eq!(

@@ -481,7 +481,6 @@ mod tests {
         #[test]
         fn multiple_lines() {
             let mut parser = Parser::default();
-
             assert!(
                 crate::blocks::CompoundDelimitedBlock::parse(
                     &BlockMetadata::new("////\nline1  \nline2\n////"),
@@ -511,6 +510,7 @@ mod tests {
                 &mut parser,
             )
             .unwrap();
+
             let mi = maw.item.unwrap().clone();
 
             assert_eq!(
@@ -871,7 +871,6 @@ mod tests {
         #[test]
         fn multiple_lines() {
             let mut parser = Parser::default();
-
             assert!(
                 crate::blocks::CompoundDelimitedBlock::parse(
                     &BlockMetadata::new("----\nline1  \nline2\n----"),
@@ -900,7 +899,6 @@ mod tests {
         #[test]
         fn multiple_lines() {
             let mut parser = Parser::default();
-
             assert!(
                 crate::blocks::CompoundDelimitedBlock::parse(
                     &BlockMetadata::new("....\nline1  \nline2\n...."),
@@ -930,6 +928,7 @@ mod tests {
                 &mut parser,
             )
             .unwrap();
+
             let mi = maw.item.unwrap().clone();
 
             assert_eq!(
@@ -1266,6 +1265,7 @@ mod tests {
                 &mut parser,
             )
             .unwrap();
+
             let mi = maw.item.unwrap().clone();
 
             assert_eq!(
@@ -1708,7 +1708,6 @@ mod tests {
         #[test]
         fn multiple_lines() {
             let mut parser = Parser::default();
-
             assert!(
                 crate::blocks::CompoundDelimitedBlock::parse(
                     &BlockMetadata::new("++++\nline1  \nline2\n++++"),
@@ -1738,6 +1737,7 @@ mod tests {
                 &mut parser,
             )
             .unwrap();
+
             let mi = maw.item.unwrap().clone();
 
             assert_eq!(
