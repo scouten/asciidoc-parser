@@ -12,6 +12,7 @@ Added::
 * Add `imagesdir` as an element attribute on image macros
 * Document the syntax and behavior of callouts with automatic numbering
 * Document equation numbering and referencing for LaTeX stem blocks
+* Document cxx attribute as preferred alternative to cpp
 
 Changed::
 * Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
