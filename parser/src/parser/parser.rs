@@ -2,7 +2,7 @@ use std::{collections::HashMap, rc::Rc};
 
 use crate::{
     Document, HasSpan,
-    document::{Attribute, InterpretedValue},
+    document::{Attribute, Catalog, InterpretedValue},
     parser::{
         AllowableValue, AttributeValue, HtmlSubstitutionRenderer, IncludeFileHandler,
         InlineSubstitutionRenderer, ModificationContext, PathResolver,
@@ -38,6 +38,11 @@ pub struct Parser {
 
     /// Handler for resolving include:: directives.
     pub(crate) include_file_handler: Option<Rc<dyn IncludeFileHandler>>,
+
+    /// Document catalog for tracking referenceable elements during parsing.
+    /// This is created during parsing and transferred to the Document when
+    /// complete.
+    catalog: Option<Catalog<'static>>,
 }
 
 impl Default for Parser {
@@ -49,6 +54,7 @@ impl Default for Parser {
             primary_file_name: None,
             path_resolver: PathResolver::default(),
             include_file_handler: None,
+            catalog: None,
         }
     }
 }
@@ -87,6 +93,11 @@ impl Parser {
     /// [`attribute_value()`]: Self::attribute_value
     pub fn parse(&mut self, source: &str) -> Document<'static> {
         let (preprocessed_source, source_map) = preprocess(source, self);
+
+        // NOTE: `Document::parse` will transfer the catalog to itself at the end of the
+        // parsing operation.
+        self.catalog = Some(Catalog::new());
+
         Document::parse(&preprocessed_source, source_map, self)
     }
 
@@ -184,6 +195,32 @@ impl Parser {
             .insert(name.as_ref().to_lowercase(), attribute_value);
 
         self
+    }
+
+    /// Returns a mutable reference to the document catalog.
+    ///
+    /// This is used during parsing to allow code within `Document::parse` to
+    /// register and access referenceable elements. The catalog should only be
+    /// available during active parsing.
+    ///
+    /// # Example usage during parsing
+    /// ```ignore
+    /// // Within block parsing code:
+    /// if let Some(catalog) = parser.catalog_mut() {
+    ///     catalog.register_ref("my-anchor", Some(span), Some("My Anchor"), RefType::Anchor)?;
+    /// }
+    /// ```
+    #[allow(dead_code)] // TEMPORARY: Will be used by parsing code.
+    pub(crate) fn catalog_mut(&mut self) -> Option<&mut Catalog<'static>> {
+        self.catalog.as_mut()
+    }
+
+    /// Takes the catalog from the parser, transferring ownership.
+    ///
+    /// This is used by `Document::parse` to transfer the catalog from the
+    /// parser to the document at the end of parsing.
+    pub(crate) fn take_catalog(&mut self) -> Catalog<'static> {
+        self.catalog.take().unwrap_or_else(Catalog::new)
     }
 
     /* Comment out until we're prepared to use and test this.
@@ -469,6 +506,17 @@ mod tests {
         );
 
         assert_eq!(parser.attribute_value("sp"), InterpretedValue::Value(" "));
+    }
+
+    #[test]
+    fn catalog_transferred_to_document() {
+        let mut parser = Parser::default();
+        let doc = parser.parse("= Test Document\n\nSome content");
+
+        let catalog = doc.catalog();
+        assert!(catalog.is_empty());
+
+        assert!(parser.catalog.is_none());
     }
 
     /// A simple test renderer that modifies special characters differently

@@ -10,7 +10,7 @@ use crate::Span;
 /// via cross-references, including anchors, sections, and bibliography entries.
 /// It provides functionality for registering new references, resolving
 /// reference text to IDs, and detecting duplicate IDs.
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Catalog<'src> {
     /// Primary registry mapping IDs to reference entries.
     refs: HashMap<String, RefEntry<'src>>,

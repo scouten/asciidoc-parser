@@ -79,7 +79,7 @@ impl<'src> Document<'src> {
                 source: source.trim_trailing_whitespace(),
                 warnings,
                 source_map,
-                catalog: Catalog::new(),
+                catalog: parser.take_catalog(),
             }
         });
 
