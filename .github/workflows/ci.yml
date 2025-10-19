@@ -49,6 +49,9 @@ jobs:
       - name: Generate code coverage
         run: cargo llvm-cov --workspace --all-features --lcov --ignore-filename-regex tests --output-path lcov.info
 
+      - name: Remove test code from coverage reports
+        uses: scouten/uncover-tests@v1
+
       # Tokens aren't available for PRs originating from forks,
       # so we don't attempt to upload code coverage in that case.
       - name: Upload code coverage results
@@ -61,6 +64,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: lcov.filtered.info
           fail_ci_if_error: true
           verbose: true
 
