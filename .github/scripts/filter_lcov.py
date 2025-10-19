@@ -3,75 +3,93 @@ import os
 import re
 import sys
 
+# Locate all crate roots dynamically.
+
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-SRC_DIR = os.path.join(ROOT, "src")
+
+def find_source_roots(root):
+    """Find all subdirectories that contain Cargo.toml + src/."""
+    src_dirs = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        if "Cargo.toml" in filenames and "src" in dirnames:
+            src_dirs.append(os.path.join(dirpath, "src"))
+    return src_dirs
+
+SRC_DIRS = find_source_roots(ROOT)
+if not SRC_DIRS:
+    print("⚠️  No src directories found under repository root", file=sys.stderr)
+else:
+    print(f"🔎 Found source roots: {', '.join(SRC_DIRS)}", file=sys.stderr)
 
 TEST_FN_PATTERN = re.compile(r"^\s*#\[test\]\s*$")
 FN_DEF_PATTERN = re.compile(r"^\s*fn\s+([A-Za-z0-9_]+)")
 
-# Matches #[cfg(test)] with optional spaces
+# Matches #[cfg(test)] with optional spaces.
 TEST_MOD_PATTERN = re.compile(r"^\s*#\[cfg\s*\(\s*test\s*\)\s*\]")
-# Matches mod tests { possibly with spaces
+
+# Matches mod tests { possibly with spaces.
 MOD_DEF_PATTERN = re.compile(r"^\s*mod\s+tests\s*\{")
 
-
 def normalize_path(p: str) -> str:
-    """Normalize paths so LCOV and source file keys match."""
+    """Normalize LCOV and filesystem paths for consistent matching."""
     if "/src/" in p:
         return p[p.find("/src/") :]
     return os.path.basename(p)
 
-
-def find_test_functions(root=SRC_DIR):
-    """Return a set of #[test] function names."""
+def find_test_functions():
+    """Return a set of #[test] function names across all src directories."""
     tests = set()
-    for dirpath, _, filenames in os.walk(root):
-        for fname in filenames:
-            if not fname.endswith(".rs"):
-                continue
-            path = os.path.join(dirpath, fname)
-            with open(path, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-            for i, line in enumerate(lines[:-1]):
-                if TEST_FN_PATTERN.match(line):
-                    m = FN_DEF_PATTERN.match(lines[i + 1])
-                    if m:
-                        tests.add(m.group(1))
+    for src_dir in SRC_DIRS:
+        for dirpath, _, filenames in os.walk(src_dir):
+            for fname in filenames:
+                if not fname.endswith(".rs"):
+                    continue
+                path = os.path.join(dirpath, fname)
+                with open(path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                for i, line in enumerate(lines[:-1]):
+                    if TEST_FN_PATTERN.match(line):
+                        m = FN_DEF_PATTERN.match(lines[i + 1])
+                        if m:
+                            tests.add(m.group(1))
     return tests
 
-def find_test_module_ranges(root=SRC_DIR):
+def find_test_module_ranges():
     """Return {filepath: [(start_line, end_line), ...]} for #[cfg(test)] mod tests blocks."""
     mod_ranges = {}
-    for dirpath, _, filenames in os.walk(root):
-        for fname in filenames:
-            if not fname.endswith(".rs"):
-                continue
-            path = os.path.join(dirpath, fname)
-            with open(path, "r", encoding="utf-8") as f:
-                lines = f.readlines()
+    for src_dir in SRC_DIRS:
+        for dirpath, _, filenames in os.walk(src_dir):
+            for fname in filenames:
+                if not fname.endswith(".rs"):
+                    continue
+                path = os.path.join(dirpath, fname)
+                with open(path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
 
-            i = 0
-            ranges = []
-            while i < len(lines):
-                # Look for #[cfg(test)] line
-                if TEST_MOD_PATTERN.match(lines[i]):
-                    # Look ahead up to 5 lines for "mod tests {"
-                    for j in range(i + 1, min(i + 6, len(lines))):
-                        if MOD_DEF_PATTERN.match(lines[j]):
-                            start = j + 1
-                            depth = 1
-                            k = start
-                            while k < len(lines) and depth > 0:
-                                depth += lines[k].count("{")
-                                depth -= lines[k].count("}")
-                                k += 1
-                            end = k
-                            ranges.append((start + 1, end))
-                            i = k
-                            break
-                i += 1
-            if ranges:
-                mod_ranges[normalize_path(path)] = ranges
+                i = 0
+                ranges = []
+                while i < len(lines):
+
+                    # Look for #[cfg(test)].
+                    if TEST_MOD_PATTERN.match(lines[i]):
+
+                        # Look ahead up to 5 lines for "mod tests {".
+                        for j in range(i + 1, min(i + 6, len(lines))):
+                            if MOD_DEF_PATTERN.match(lines[j]):
+                                start = j + 1
+                                depth = 1
+                                k = start
+                                while k < len(lines) and depth > 0:
+                                    depth += lines[k].count("{")
+                                    depth -= lines[k].count("}")
+                                    k += 1
+                                end = k
+                                ranges.append((start + 1, end))
+                                i = k
+                                break
+                    i += 1
+                if ranges:
+                    mod_ranges[normalize_path(path)] = ranges
     return mod_ranges
 
 def in_test_module(file_path, line_num, test_mod_ranges):
@@ -101,7 +119,7 @@ def filter_lcov(infile, outfile, test_funcs, test_mod_ranges):
         if skip_block:
             continue
 
-        # Remove function-level data
+        # Remove function-level data.
         if line.startswith(("FN:", "FNDA:")):
             fn_name = line.strip().split(",")[-1]
             if fn_name in test_funcs:
@@ -112,7 +130,7 @@ def filter_lcov(infile, outfile, test_funcs, test_mod_ranges):
                 excluded_fns += 1
                 continue
 
-        # Remove line coverage inside test modules
+        # Remove line coverage inside test modules.
         if line.startswith("DA:"):
             parts = line.strip().split(",")
             try:
