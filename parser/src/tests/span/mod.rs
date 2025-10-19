@@ -73,7 +73,6 @@ mod split_at_match_non_empty {
     }
 }
 
-mod matched_item;
 mod parse_result;
 mod primitives;
 mod split;
