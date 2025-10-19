@@ -1,4 +1,3 @@
-mod author_line;
 mod document;
 mod header;
 mod interpreted_value;
