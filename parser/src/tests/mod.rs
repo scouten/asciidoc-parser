@@ -7,7 +7,6 @@
 
 mod asciidoc_lang;
 mod asciidoctor_rb;
-mod document;
 pub(crate) mod fixtures;
 mod internal;
 mod parser;
