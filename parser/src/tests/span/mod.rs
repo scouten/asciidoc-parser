@@ -1,2 +1,1 @@
-mod take;
 mod trim;
