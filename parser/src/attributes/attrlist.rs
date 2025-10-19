@@ -415,6 +415,7 @@ pub(crate) enum AttrlistContext {
 
 #[cfg(test)]
 mod tests {
+    #[allow(clippy::unwrap_used)]
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
