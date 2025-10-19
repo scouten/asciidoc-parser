@@ -258,6 +258,7 @@ impl fmt::Debug for CowStr<'_> {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::panic)]
     #![allow(clippy::unwrap_used)]
 
     mod string_too_long_err {

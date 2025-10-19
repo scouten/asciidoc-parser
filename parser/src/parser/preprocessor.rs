@@ -254,7 +254,7 @@ static ATTRIBUTE_REFERENCE: LazyLock<Regex> = LazyLock::new(|| {
 
 #[cfg(test)]
 mod tests {
-    #![allow(clippy::unused)]
+    #![allow(clippy::unwrap_used)]
 
     use crate::{
         Parser,

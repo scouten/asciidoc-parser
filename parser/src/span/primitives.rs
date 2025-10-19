@@ -175,7 +175,7 @@ impl<'src> Span<'src> {
 
 #[cfg(test)]
 mod tests {
-    #![allow(clippy::unused)]
+    #![allow(clippy::unwrap_used)]
 
     mod take_ident {
         use pretty_assertions_sorted::assert_eq;
