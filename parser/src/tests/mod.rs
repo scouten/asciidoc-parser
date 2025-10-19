@@ -8,7 +8,6 @@
 mod asciidoc_lang;
 mod asciidoctor_rb;
 pub(crate) mod fixtures;
-mod parser;
 pub(crate) mod prelude;
 pub(crate) mod sdd;
 mod span;
