@@ -18,6 +18,7 @@ Changed::
 * Clarify that a nested list item is not an interrupting line for an attached paragraph
 * Document the additional requirement in Firefox to view an embedded YouTube video
 * Clarify that auto-generated section IDs can be expected to be safe to use in HTML, but not necessarily XML; document workarounds
+* Clarify that using explicit numbering to alter start value of ordered list was introduced in Asciidoctor 2.1.0
 
 == Published Q2 2025
 
