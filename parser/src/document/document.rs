@@ -8,7 +8,7 @@ use crate::{
     Parser, Span,
     attributes::Attrlist,
     blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until},
-    document::Header,
+    document::{Catalog, Header},
     parser::SourceMap,
     strings::CowStr,
     warnings::Warning,
@@ -41,6 +41,7 @@ struct InternalDependent<'src> {
     source: Span<'src>,
     warnings: Vec<Warning<'src>>,
     source_map: SourceMap,
+    catalog: Catalog<'src>,
 }
 
 self_cell! {
@@ -78,6 +79,7 @@ impl<'src> Document<'src> {
                 source: source.trim_trailing_whitespace(),
                 warnings,
                 source_map,
+                catalog: Catalog::new(),
             }
         });
 
@@ -105,6 +107,11 @@ impl<'src> Document<'src> {
     /// Return the source map that tracks original file locations.
     pub fn source_map(&self) -> &SourceMap {
         &self.internal.borrow_dependent().source_map
+    }
+
+    /// Return the document catalog for accessing referenceable elements.
+    pub fn catalog(&self) -> &Catalog<'_> {
+        &self.internal.borrow_dependent().catalog
     }
 }
 
@@ -150,6 +157,7 @@ impl std::fmt::Debug for Document<'_> {
             .field("source", &dependent.source)
             .field("warnings", &dependent.warnings)
             .field("source_map", &dependent.source_map)
+            .field("catalog", &dependent.catalog)
             .finish()
     }
 }
@@ -1043,6 +1051,10 @@ mod tests {
     },
     warnings: [],
     source_map: [],
+    catalog: Catalog {
+        refs: {},
+        reftext_to_id: {},
+    },
 }"#
         );
     }

@@ -1,0 +1,285 @@
+#![allow(unused)] // TEMPORARY while building
+
+use std::collections::HashMap;
+
+use crate::Span;
+
+/// Document catalog for tracking referenceable elements.
+///
+/// The catalog maintains a registry of all elements that can be referenced
+/// via cross-references, including anchors, sections, and bibliography entries.
+/// It provides functionality for registering new references, resolving
+/// reference text to IDs, and detecting duplicate IDs.
+#[derive(Debug, Eq, PartialEq)]
+pub struct Catalog<'src> {
+    /// Primary registry mapping IDs to reference entries.
+    refs: HashMap<String, RefEntry<'src>>,
+
+    /// Reverse lookup cache: reftext -> ID (lazy-initialized).
+    reftext_to_id: HashMap<String, String>,
+}
+
+impl<'src> Catalog<'src> {
+    pub(crate) fn new() -> Self {
+        Self {
+            refs: HashMap::new(),
+            reftext_to_id: HashMap::new(),
+        }
+    }
+
+    /// Register a new referenceable element in the catalog.
+    ///
+    /// # Arguments
+    /// * `id` - The unique identifier for the element
+    /// * `span` - Location of the element in the source
+    /// * `reftext` - Optional reference text for the element
+    /// * `ref_type` - Type of referenceable element
+    ///
+    /// # Returns
+    /// * `Ok(())` if the element was successfully registered
+    /// * `Err(DuplicateIdError)` if the ID is already in use
+    pub(crate) fn register_ref(
+        &mut self,
+        id: &str,
+        span: Span<'src>,
+        reftext: Option<&str>,
+        ref_type: RefType,
+    ) -> Result<(), DuplicateIdError> {
+        if self.refs.contains_key(id) {
+            return Err(DuplicateIdError(id.to_string()));
+        }
+
+        let entry = RefEntry {
+            id: id.to_string(),
+            span,
+            reftext: reftext.map(|s| s.to_owned()),
+            ref_type,
+        };
+
+        self.refs.insert(id.to_string(), entry);
+
+        if let Some(reftext) = reftext {
+            self.reftext_to_id
+                .entry(reftext.to_string())
+                .or_insert_with(|| id.to_string());
+        }
+
+        Ok(())
+    }
+
+    /// Returns a reference entry by ID, if it exists.
+    pub fn get_ref(&self, id: &str) -> Option<&RefEntry<'src>> {
+        self.refs.get(id)
+    }
+
+    /// Returns `true` if an ID is already registered in the catalog.
+    pub fn contains_id(&self, id: &str) -> bool {
+        self.refs.contains_key(id)
+    }
+
+    /// Resolve reference text to an ID, if possible.
+    pub fn resolve_id(&self, reftext: &str) -> Option<String> {
+        self.reftext_to_id.get(reftext).cloned()
+    }
+
+    /// Generate a unique ID based on a base ID.
+    ///
+    /// If the base ID is not in use, it is returned as-is.
+    /// Otherwise, numeric suffixes are appended until a unique ID is found.
+    pub(crate) fn generate_unique_id(&self, base_id: &str) -> String {
+        if !self.contains_id(base_id) {
+            return base_id.to_string();
+        }
+
+        let mut counter = 2;
+        loop {
+            let candidate = format!("{}-{}", base_id, counter);
+            if !self.contains_id(&candidate) {
+                return candidate;
+            }
+            counter += 1;
+        }
+    }
+
+    /// Returns an iterator over all registered reference IDs.
+    pub fn ids(&self) -> impl Iterator<Item = &String> {
+        self.refs.keys()
+    }
+
+    /// Returns an iterator over all reference entries
+    pub fn entries(&self) -> impl Iterator<Item = (&String, &RefEntry<'src>)> {
+        self.refs.iter()
+    }
+
+    /// Returns the number of registered references.
+    pub fn len(&self) -> usize {
+        self.refs.len()
+    }
+
+    /// Returns true if the catalog contains no registered references.
+    pub fn is_empty(&self) -> bool {
+        self.refs.is_empty()
+    }
+}
+
+/// Type of referenceable element in the document.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum RefType {
+    /// Standard anchor element (`[[id]]` or `[[id,reftext]]`).
+    Anchor,
+
+    /// Section heading that can be referenced.
+    Section,
+
+    /// Bibliography reference (`[[[id]]]` or `[[[id,reftext]]]`).
+    Bibliography,
+}
+
+/// Entry in the document catalog representing a referenceable element.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RefEntry<'src> {
+    /// The unique identifier for this element.
+    pub id: String,
+
+    /// Location of this element in the source document.
+    pub span: Span<'src>,
+
+    /// Reference text for this element (explicit or computed).
+    pub reftext: Option<String>,
+
+    /// Type of referenceable element.
+    pub ref_type: RefType,
+}
+
+/// Error that occurs when attempting to register a duplicate ID.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct DuplicateIdError(pub(crate) String);
+
+impl std::fmt::Display for DuplicateIdError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "ID '{}' already registered", self.0)
+    }
+}
+
+impl std::error::Error for DuplicateIdError {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new_catalog_is_empty() {
+        let catalog = Catalog::new();
+        assert!(catalog.is_empty());
+        assert_eq!(catalog.len(), 0);
+    }
+
+    #[test]
+    fn register_ref_success() {
+        let mut catalog = Catalog::new();
+        let span = Span::new("test content");
+
+        let result = catalog.register_ref("test-id", span, Some("Test Reference"), RefType::Anchor);
+
+        assert!(result.is_ok());
+        assert_eq!(catalog.len(), 1);
+        assert!(catalog.contains_id("test-id"));
+    }
+
+    #[test]
+    fn register_duplicate_id_fails() {
+        let mut catalog = Catalog::new();
+        let span = Span::new("test content");
+
+        // Register first reference.
+        catalog
+            .register_ref("test-id", span, Some("First"), RefType::Anchor)
+            .unwrap();
+
+        // Attempt to register duplicate.
+        let result = catalog.register_ref("test-id", span, Some("Second"), RefType::Section);
+
+        let error = result.unwrap_err();
+        assert_eq!(error.0, "test-id");
+    }
+
+    #[test]
+    fn get_ref() {
+        let mut catalog = Catalog::new();
+        let span = Span::new("test content");
+
+        catalog
+            .register_ref(
+                "test-id",
+                span,
+                Some("Test Reference"),
+                RefType::Bibliography,
+            )
+            .unwrap();
+
+        let entry = catalog.get_ref("test-id").unwrap();
+        assert_eq!(entry.id, "test-id");
+        assert_eq!(entry.reftext, Some("Test Reference".to_string()));
+        assert_eq!(entry.ref_type, RefType::Bibliography);
+
+        assert!(catalog.get_ref("nonexistent").is_none());
+    }
+
+    #[test]
+    fn resolve_id() {
+        let mut catalog = Catalog::new();
+        let span = Span::new("test content");
+
+        catalog
+            .register_ref("anchor1", span, Some("Reference Text"), RefType::Anchor)
+            .unwrap();
+
+        catalog
+            .register_ref("anchor2", span, Some("Another Reference"), RefType::Section)
+            .unwrap();
+
+        assert_eq!(
+            catalog.resolve_id("Reference Text"),
+            Some("anchor1".to_string())
+        );
+        assert_eq!(
+            catalog.resolve_id("Another Reference"),
+            Some("anchor2".to_string())
+        );
+        assert_eq!(catalog.resolve_id("Nonexistent"), None);
+    }
+
+    #[test]
+    fn generate_unique_id() {
+        let mut catalog = Catalog::new();
+        let span = Span::new("test content");
+
+        assert_eq!(catalog.generate_unique_id("available"), "available");
+
+        catalog
+            .register_ref("taken", span, None, RefType::Anchor)
+            .unwrap();
+        catalog
+            .register_ref("taken-2", span, None, RefType::Anchor)
+            .unwrap();
+
+        assert_eq!(catalog.generate_unique_id("taken"), "taken-3");
+    }
+
+    #[test]
+    fn resolve_id_first_wins_on_duplicates() {
+        let mut catalog = Catalog::new();
+        let span = Span::new("test content");
+
+        // Register two different IDs with same reftext.
+        catalog
+            .register_ref("first", span, Some("Same Text"), RefType::Anchor)
+            .unwrap();
+
+        catalog
+            .register_ref("second", span, Some("Same Text"), RefType::Section)
+            .unwrap();
+
+        assert_eq!(catalog.resolve_id("Same Text"), Some("first".to_string()));
+    }
+}
