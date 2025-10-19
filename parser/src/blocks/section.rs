@@ -214,7 +214,7 @@ fn peer_or_ancestor_section<'src>(
 
 #[cfg(test)]
 mod tests {
-    #![allow(clippy::unwrap)]
+    #![allow(clippy::unwrap_used)]
 
     use std::ops::Deref;
 

@@ -199,7 +199,7 @@ impl<'src> HasSpan<'src> for RawDelimitedBlock<'src> {
 
 #[cfg(test)]
 mod tests {
-    #![allow(clippy::unwrap)]
+    #![allow(clippy::unwrap_unused)]
 
     mod is_valid_delimiter {
         use crate::blocks::RawDelimitedBlock;

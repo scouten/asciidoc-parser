@@ -200,7 +200,7 @@ impl<'src> HasSpan<'src> for MediaBlock<'src> {
 
 #[cfg(test)]
 mod tests {
-    #![allow(clippy::unwrap)]
+    #![allow(clippy::unwrap_used)]
 
     use std::ops::Deref;
 

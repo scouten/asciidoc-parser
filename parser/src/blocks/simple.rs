@@ -110,7 +110,7 @@ impl<'src> HasSpan<'src> for SimpleBlock<'src> {
 
 #[cfg(test)]
 mod tests {
-    #![allow(clippy::unwrap)]
+    #![allow(clippy::unwrap_used)]
 
     use std::ops::Deref;
 
