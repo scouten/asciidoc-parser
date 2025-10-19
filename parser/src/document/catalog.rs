@@ -31,7 +31,8 @@ impl<'src> Catalog<'src> {
     ///
     /// # Arguments
     /// * `id` - The unique identifier for the element
-    /// * `span` - Location of the element in the source
+    /// * `span` - Location of the element in the source (should be specified
+    ///   for block elements)
     /// * `reftext` - Optional reference text for the element
     /// * `ref_type` - Type of referenceable element
     ///
@@ -41,7 +42,7 @@ impl<'src> Catalog<'src> {
     pub(crate) fn register_ref(
         &mut self,
         id: &str,
-        span: Span<'src>,
+        span: Option<Span<'src>>,
         reftext: Option<&str>,
         ref_type: RefType,
     ) -> Result<(), DuplicateIdError> {
@@ -141,8 +142,9 @@ pub struct RefEntry<'src> {
     /// The unique identifier for this element.
     pub id: String,
 
-    /// Location of this element in the source document.
-    pub span: Span<'src>,
+    /// Location of this element in the source document (only available for
+    /// block elements).
+    pub span: Option<Span<'src>>,
 
     /// Reference text for this element (explicit or computed).
     pub reftext: Option<String>,
@@ -179,7 +181,12 @@ mod tests {
         let mut catalog = Catalog::new();
         let span = Span::new("test content");
 
-        let result = catalog.register_ref("test-id", span, Some("Test Reference"), RefType::Anchor);
+        let result = catalog.register_ref(
+            "test-id",
+            Some(span),
+            Some("Test Reference"),
+            RefType::Anchor,
+        );
 
         assert!(result.is_ok());
         assert_eq!(catalog.len(), 1);
@@ -193,11 +200,11 @@ mod tests {
 
         // Register first reference.
         catalog
-            .register_ref("test-id", span, Some("First"), RefType::Anchor)
+            .register_ref("test-id", Some(span), Some("First"), RefType::Anchor)
             .unwrap();
 
         // Attempt to register duplicate.
-        let result = catalog.register_ref("test-id", span, Some("Second"), RefType::Section);
+        let result = catalog.register_ref("test-id", Some(span), Some("Second"), RefType::Section);
 
         let error = result.unwrap_err();
         assert_eq!(error.0, "test-id");
@@ -211,7 +218,7 @@ mod tests {
         catalog
             .register_ref(
                 "test-id",
-                span,
+                Some(span),
                 Some("Test Reference"),
                 RefType::Bibliography,
             )
@@ -231,11 +238,21 @@ mod tests {
         let span = Span::new("test content");
 
         catalog
-            .register_ref("anchor1", span, Some("Reference Text"), RefType::Anchor)
+            .register_ref(
+                "anchor1",
+                Some(span),
+                Some("Reference Text"),
+                RefType::Anchor,
+            )
             .unwrap();
 
         catalog
-            .register_ref("anchor2", span, Some("Another Reference"), RefType::Section)
+            .register_ref(
+                "anchor2",
+                Some(span),
+                Some("Another Reference"),
+                RefType::Section,
+            )
             .unwrap();
 
         assert_eq!(
@@ -257,10 +274,10 @@ mod tests {
         assert_eq!(catalog.generate_unique_id("available"), "available");
 
         catalog
-            .register_ref("taken", span, None, RefType::Anchor)
+            .register_ref("taken", Some(span), None, RefType::Anchor)
             .unwrap();
         catalog
-            .register_ref("taken-2", span, None, RefType::Anchor)
+            .register_ref("taken-2", Some(span), None, RefType::Anchor)
             .unwrap();
 
         assert_eq!(catalog.generate_unique_id("taken"), "taken-3");
@@ -273,11 +290,11 @@ mod tests {
 
         // Register two different IDs with same reftext.
         catalog
-            .register_ref("first", span, Some("Same Text"), RefType::Anchor)
+            .register_ref("first", Some(span), Some("Same Text"), RefType::Anchor)
             .unwrap();
 
         catalog
-            .register_ref("second", span, Some("Same Text"), RefType::Section)
+            .register_ref("second", Some(span), Some("Same Text"), RefType::Section)
             .unwrap();
 
         assert_eq!(catalog.resolve_id("Same Text"), Some("first".to_string()));
