@@ -75,7 +75,6 @@ impl<'src> SectionBlock<'src> {
             attrlist: metadata.attrlist.clone(),
         };
 
-        // Register section with catalog if `sectids` is set and the section has an ID.
         if parser.is_attribute_set("sectids")
             && let Some(id) = section.id()
             && let Some(catalog) = parser.catalog_mut()
@@ -83,7 +82,6 @@ impl<'src> SectionBlock<'src> {
             if let Err(_duplicate_error) =
                 catalog.register_ref(id, section.title(), RefType::Section)
             {
-                // If registration fails due to duplicate ID, issue a warning.
                 warnings.push(Warning {
                     source: section.source,
                     warning: WarningType::DuplicateId(id.to_string()),
