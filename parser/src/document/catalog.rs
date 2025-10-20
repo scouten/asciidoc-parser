@@ -98,22 +98,25 @@ impl Catalog {
         }
     }
 
+    /* Disabling for now until I know if we'll need these.
+
     /// Returns an iterator over all registered reference IDs.
     pub fn ids(&self) -> impl Iterator<Item = &String> {
         self.refs.keys()
     }
 
-    /// Returns an iterator over all reference entries
+    /// Returns an iterator over all reference entries.
     pub fn entries(&self) -> impl Iterator<Item = (&String, &RefEntry)> {
         self.refs.iter()
     }
+    */
 
     /// Returns the number of registered references.
     pub fn len(&self) -> usize {
         self.refs.len()
     }
 
-    /// Returns true if the catalog contains no registered references.
+    /// Returns `true` if the catalog contains no registered references.
     pub fn is_empty(&self) -> bool {
         self.refs.is_empty()
     }
@@ -266,5 +269,11 @@ mod tests {
             .unwrap();
 
         assert_eq!(catalog.resolve_id("Same Text"), Some("first".to_string()));
+    }
+
+    #[test]
+    fn duplicate_id_error_impl_display() {
+        let did_error = DuplicateIdError("foo".to_string());
+        assert_eq!(did_error.to_string(), "ID 'foo' already registered");
     }
 }
