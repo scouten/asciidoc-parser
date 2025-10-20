@@ -80,12 +80,12 @@ impl<'src> SectionBlock<'src> {
             && let Some(catalog) = parser.catalog_mut()
             && let Err(_duplicate_error) =
                 catalog.register_ref(id, section.title(), RefType::Section)
-            {
-                warnings.push(Warning {
-                    source: section.source,
-                    warning: WarningType::DuplicateId(id.to_string()),
-                });
-            }
+        {
+            warnings.push(Warning {
+                source: section.source,
+                warning: WarningType::DuplicateId(id.to_string()),
+            });
+        }
 
         Some(MatchedItem {
             item: section,
