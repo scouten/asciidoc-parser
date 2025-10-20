@@ -11,7 +11,7 @@ pub struct Catalog {
     /// Primary registry mapping IDs to reference entries.
     refs: HashMap<String, RefEntry>,
 
-    /// Reverse lookup cache: reftext -> ID (lazy-initialized).
+    /// Reverse lookup cache: reftext -> ID.
     reftext_to_id: HashMap<String, String>,
 }
 
