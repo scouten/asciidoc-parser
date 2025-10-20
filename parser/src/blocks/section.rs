@@ -78,8 +78,7 @@ impl<'src> SectionBlock<'src> {
         if parser.is_attribute_set("sectids")
             && let Some(id) = section.id()
             && let Some(catalog) = parser.catalog_mut()
-        {
-            if let Err(_duplicate_error) =
+            && let Err(_duplicate_error) =
                 catalog.register_ref(id, section.title(), RefType::Section)
             {
                 warnings.push(Warning {
@@ -87,7 +86,6 @@ impl<'src> SectionBlock<'src> {
                     warning: WarningType::DuplicateId(id.to_string()),
                 });
             }
-        }
 
         Some(MatchedItem {
             item: section,
