@@ -65,6 +65,9 @@ pub enum WarningType {
     #[error("Attribute {0:?} can not be modified by document")]
     AttributeValueIsLocked(String),
 
+    #[error("Duplicate ID: {0:?} is already registered")]
+    DuplicateId(String),
+
     #[error("Level 0 section headings not supported")]
     Level0SectionHeadingNotSupported,
 
@@ -121,6 +124,10 @@ impl std::fmt::Debug for WarningType {
                 .debug_tuple("WarningType::AttributeValueIsLocked")
                 .field(value)
                 .finish(),
+
+            WarningType::DuplicateId(id) => {
+                f.debug_tuple("WarningType::DuplicateId").field(id).finish()
+            }
 
             WarningType::Level0SectionHeadingNotSupported => {
                 write!(f, "WarningType::Level0SectionHeadingNotSupported")

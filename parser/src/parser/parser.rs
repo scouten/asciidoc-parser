@@ -42,7 +42,7 @@ pub struct Parser {
     /// Document catalog for tracking referenceable elements during parsing.
     /// This is created during parsing and transferred to the Document when
     /// complete.
-    catalog: Option<Catalog<'static>>,
+    catalog: Option<Catalog>,
 }
 
 impl Default for Parser {
@@ -210,8 +210,7 @@ impl Parser {
     ///     catalog.register_ref("my-anchor", Some(span), Some("My Anchor"), RefType::Anchor)?;
     /// }
     /// ```
-    #[allow(dead_code)] // TEMPORARY: Will be used by parsing code.
-    pub(crate) fn catalog_mut(&mut self) -> Option<&mut Catalog<'static>> {
+    pub(crate) fn catalog_mut(&mut self) -> Option<&mut Catalog> {
         self.catalog.as_mut()
     }
 
@@ -219,7 +218,7 @@ impl Parser {
     ///
     /// This is used by `Document::parse` to transfer the catalog from the
     /// parser to the document at the end of parsing.
-    pub(crate) fn take_catalog(&mut self) -> Catalog<'static> {
+    pub(crate) fn take_catalog(&mut self) -> Catalog {
         self.catalog.take().unwrap_or_else(Catalog::new)
     }
 
@@ -517,6 +516,20 @@ mod tests {
         assert!(catalog.is_empty());
 
         assert!(parser.catalog.is_none());
+    }
+
+    #[test]
+    fn block_ids_registered_in_catalog() {
+        let mut parser = Parser::default();
+        let doc = parser.parse("= Test Document\n\n[#my-block]\nSome content with an ID");
+
+        let catalog = doc.catalog();
+        assert!(!catalog.is_empty());
+        assert!(catalog.contains_id("my-block"));
+
+        let entry = catalog.get_ref("my-block").unwrap();
+        assert_eq!(entry.id, "my-block");
+        assert_eq!(entry.ref_type, crate::document::RefType::Anchor);
     }
 
     /// A simple test renderer that modifies special characters differently

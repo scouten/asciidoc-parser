@@ -41,7 +41,7 @@ struct InternalDependent<'src> {
     source: Span<'src>,
     warnings: Vec<Warning<'src>>,
     source_map: SourceMap,
-    catalog: Catalog<'src>,
+    catalog: Catalog,
 }
 
 self_cell! {
@@ -110,7 +110,7 @@ impl<'src> Document<'src> {
     }
 
     /// Return the document catalog for accessing referenceable elements.
-    pub fn catalog(&self) -> &Catalog<'_> {
+    pub fn catalog(&self) -> &Catalog {
         &self.internal.borrow_dependent().catalog
     }
 }

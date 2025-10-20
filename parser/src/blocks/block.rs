@@ -8,7 +8,7 @@ use crate::{
         SimpleBlock, metadata::BlockMetadata,
     },
     content::SubstitutionGroup,
-    document::Attribute,
+    document::{Attribute, RefType},
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -105,12 +105,20 @@ impl<'src> Block<'src> {
                 after,
             }) = SimpleBlock::parse_fast(source, parser)
         {
+            let mut warnings = vec![];
+            let block = Self::Simple(simple_block);
+
+            Self::register_block_id(
+                block.id(),
+                block.title(),
+                block.span(),
+                parser,
+                &mut warnings,
+            );
+
             return MatchAndWarnings {
-                item: Some(MatchedItem {
-                    item: Self::Simple(simple_block),
-                    after,
-                }),
-                warnings: vec![],
+                item: Some(MatchedItem { item: block, after }),
+                warnings,
             };
         }
 
@@ -145,9 +153,19 @@ impl<'src> Block<'src> {
                 warnings.append(&mut rdb_maw.warnings);
             }
 
+            let block = Self::RawDelimited(rdb.item);
+
+            Self::register_block_id(
+                block.id(),
+                block.title(),
+                block.span(),
+                parser,
+                &mut warnings,
+            );
+
             return MatchAndWarnings {
                 item: Some(MatchedItem {
-                    item: Self::RawDelimited(rdb.item),
+                    item: block,
                     after: rdb.after,
                 }),
                 warnings,
@@ -161,9 +179,19 @@ impl<'src> Block<'src> {
                 warnings.append(&mut cdb_maw.warnings);
             }
 
+            let block = Self::CompoundDelimited(cdb.item);
+
+            Self::register_block_id(
+                block.id(),
+                block.title(),
+                block.span(),
+                parser,
+                &mut warnings,
+            );
+
             return MatchAndWarnings {
                 item: Some(MatchedItem {
-                    item: Self::CompoundDelimited(cdb.item),
+                    item: block,
                     after: cdb.after,
                 }),
                 warnings,
@@ -187,9 +215,19 @@ impl<'src> Block<'src> {
                     warnings.append(&mut media_block_maw.warnings);
                 }
 
+                let block = Self::Media(media_block.item);
+
+                Self::register_block_id(
+                    block.id(),
+                    block.title(),
+                    block.span(),
+                    parser,
+                    &mut warnings,
+                );
+
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
-                        item: Self::Media(media_block.item),
+                        item: block,
                         after: media_block.after,
                     }),
                     warnings,
@@ -242,13 +280,51 @@ impl<'src> Block<'src> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
-        MatchAndWarnings {
+        let mut result = MatchAndWarnings {
             item: SimpleBlock::parse(&metadata, parser).map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
                 after: mi.after,
             }),
             warnings,
+        };
+
+        if let Some(ref matched_item) = result.item {
+            Self::register_block_id(
+                matched_item.item.id(),
+                matched_item.item.title(),
+                matched_item.item.span(),
+                parser,
+                &mut result.warnings,
+            );
         }
+
+        result
+    }
+
+    /// Register a block's ID with the catalog if the block has an ID.
+    ///
+    /// This should be called for all block types except SectionBlock,
+    /// which handles its own catalog registration.
+    fn register_block_id(
+        id: Option<&str>,
+        title: Option<&str>,
+        span: Span<'src>,
+        parser: &mut Parser,
+        warnings: &mut Vec<Warning<'src>>,
+    ) {
+        if let Some(id) = id
+            && let Some(catalog) = parser.catalog_mut()
+                && let Err(_duplicate_error) = catalog.register_ref(
+                    id,
+                    title, // Use block title as reftext if available
+                    RefType::Anchor,
+                ) {
+                    // If registration fails due to duplicate ID, issue a warning.
+                    warnings.push(Warning {
+                        source: span,
+                        warning: WarningType::DuplicateId(id.to_string()),
+                    });
+                }
     }
 }
 
