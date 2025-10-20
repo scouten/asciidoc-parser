@@ -303,7 +303,7 @@ impl<'src> Block<'src> {
 
     /// Register a block's ID with the catalog if the block has an ID.
     ///
-    /// This should be called for all block types except SectionBlock,
+    /// This should be called for all block types except `SectionBlock`,
     /// which handles its own catalog registration.
     fn register_block_id(
         id: Option<&str>,
