@@ -63,7 +63,7 @@ IMPORTANT: Sign off before stepping away from your computer.
 // tag::b-bl[]
 [NOTE]
 ====
-An admonition block may contain complex content.
+An admonition block may contain compound content.
 
 .A list
 - one

@@ -47,7 +47,7 @@ list continuation:: a plus sign (`{plus}`) on a line by itself
 
  $ cd projects/my-book
 
-* AsciiDoc lists may contain any complex content.
+* AsciiDoc lists may contain any compound content.
 +
 |===
 |Column 1, Header Row |Column 2, Header Row

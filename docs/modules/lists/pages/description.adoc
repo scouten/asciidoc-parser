@@ -90,4 +90,4 @@ Here's how the list is rendered:
 include::example$description.adoc[tag=3-mix]
 ====
 
-You can include more xref:continuation.adoc[complex content in a list item] as well.
+You can include more xref:continuation.adoc[compound content in a list item] as well.

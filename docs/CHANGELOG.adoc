@@ -16,6 +16,7 @@ Added::
 * Add warning stating that AsciiDoc processing can allow inline elements to be interleaved, leading to invalid or illogical output, but that it is being addressed by the specification
 
 Changed::
+* Use the term "compound" instead of "complex" to describe a list item that has attached blocks
 * Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
 * Clarify that a nested list item is not an interrupting line for an attached paragraph
 * Document the additional requirement in Firefox to view an embedded YouTube video
