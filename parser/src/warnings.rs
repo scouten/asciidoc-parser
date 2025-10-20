@@ -353,6 +353,13 @@ mod tests {
             }
 
             #[test]
+            fn duplicate_id() {
+                let warning = WarningType::DuplicateId("foo".to_owned());
+                let debug_output = format!("{:?}", warning);
+                assert_eq!(debug_output, "WarningType::DuplicateId(\"foo\")");
+            }
+
+            #[test]
             fn level0_section_heading_not_supported() {
                 let warning = WarningType::Level0SectionHeadingNotSupported;
                 let debug_output = format!("{:?}", warning);
