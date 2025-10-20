@@ -13,6 +13,7 @@ Added::
 * Document the syntax and behavior of callouts with automatic numbering
 * Document equation numbering and referencing for LaTeX stem blocks
 * Document cxx attribute as preferred alternative to cpp
+* Add warning stating that AsciiDoc processing can allow inline elements to be interleaved, leading to invalid or illogical output, but that it is being addressed by the specification
 
 Changed::
 * Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
