@@ -1,8 +1,4 @@
-#![allow(unused)] // TEMPORARY while building
-
 use std::collections::HashMap;
-
-use crate::Span;
 
 /// Document catalog for tracking referenceable elements.
 ///
@@ -83,6 +79,7 @@ impl Catalog {
     ///
     /// If the base ID is not in use, it is returned as-is.
     /// Otherwise, numeric suffixes are appended until a unique ID is found.
+    #[allow(unused)]
     pub(crate) fn generate_unique_id(&self, base_id: &str) -> String {
         if !self.contains_id(base_id) {
             return base_id.to_string();
