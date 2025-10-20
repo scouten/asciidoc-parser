@@ -314,17 +314,18 @@ impl<'src> Block<'src> {
     ) {
         if let Some(id) = id
             && let Some(catalog) = parser.catalog_mut()
-                && let Err(_duplicate_error) = catalog.register_ref(
-                    id,
-                    title, // Use block title as reftext if available
-                    RefType::Anchor,
-                ) {
-                    // If registration fails due to duplicate ID, issue a warning.
-                    warnings.push(Warning {
-                        source: span,
-                        warning: WarningType::DuplicateId(id.to_string()),
-                    });
-                }
+            && let Err(_duplicate_error) = catalog.register_ref(
+                id,
+                title, // Use block title as reftext if available
+                RefType::Anchor,
+            )
+        {
+            // If registration fails due to duplicate ID, issue a warning.
+            warnings.push(Warning {
+                source: span,
+                warning: WarningType::DuplicateId(id.to_string()),
+            });
+        }
     }
 }
 
