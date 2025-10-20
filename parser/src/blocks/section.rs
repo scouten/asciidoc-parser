@@ -7,6 +7,7 @@ use crate::{
         Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
     },
     content::{Content, SubstitutionGroup},
+    document::RefType,
     span::MatchedItem,
     strings::CowStr,
     warnings::{Warning, WarningType},
@@ -63,17 +64,35 @@ impl<'src> SectionBlock<'src> {
 
         warnings.append(&mut maw_blocks.warnings);
 
+        let section = Self {
+            level: level_and_title.item.0,
+            section_title,
+            blocks: blocks.item,
+            source: source.trim_trailing_whitespace(),
+            title_source: metadata.title_source,
+            title: metadata.title.clone(),
+            anchor: metadata.anchor,
+            attrlist: metadata.attrlist.clone(),
+        };
+
+        // Register section with catalog if `sectids` is set and the section has an ID.
+        if parser.is_attribute_set("sectids")
+            && let Some(id) = section.id()
+            && let Some(catalog) = parser.catalog_mut()
+        {
+            if let Err(_duplicate_error) =
+                catalog.register_ref(id, section.title(), RefType::Section)
+            {
+                // If registration fails due to duplicate ID, issue a warning.
+                warnings.push(Warning {
+                    source: section.source,
+                    warning: WarningType::DuplicateId(id.to_string()),
+                });
+            }
+        }
+
         Some(MatchedItem {
-            item: Self {
-                level: level_and_title.item.0,
-                section_title,
-                blocks: blocks.item,
-                source: source.trim_trailing_whitespace(),
-                title_source: metadata.title_source,
-                title: metadata.title.clone(),
-                anchor: metadata.anchor,
-                attrlist: metadata.attrlist.clone(),
-            },
+            item: section,
             after: blocks.after,
         })
     }
