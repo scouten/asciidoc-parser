@@ -795,7 +795,7 @@ See xref:sections:auto-ids.adoc#disable[Disable automatic ID generation].
 |Turns on xref:toc:index.adoc[table of contents] and specifies xref:toc:position.adoc[its location].
 
 |toclevels
-|1{endash}5 +
+|0{endash}5 +
 (`2`)
 |{n}
 |{y}
