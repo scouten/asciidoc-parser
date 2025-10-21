@@ -60,6 +60,57 @@ impl Catalog {
         Ok(())
     }
 
+    /// Generate a unique ID based on a base ID and register it in the catalog.
+    ///
+    /// If the base ID is not in use, it is returned as-is. Otherwise, numeric
+    /// suffixes are appended until a unique ID is found. The generated ID is
+    /// then registered in the catalog with the provided parameters.
+    ///
+    /// # Arguments
+    /// * `base_id` - The base identifier to use
+    /// * `reftext` - Optional reference text for the element
+    /// * `ref_type` - Type of referenceable element
+    ///
+    /// # Returns
+    /// The unique ID that was generated and registered.
+    #[allow(unused)]
+    pub(crate) fn generate_and_register_unique_id(
+        &mut self,
+        base_id: &str,
+        reftext: Option<&str>,
+        ref_type: RefType,
+    ) -> String {
+        let unique_id = if !self.contains_id(base_id) {
+            base_id.to_string()
+        } else {
+            let mut counter = 2;
+            loop {
+                let candidate = format!("{}-{}", base_id, counter);
+                if !self.contains_id(&candidate) {
+                    break candidate;
+                }
+                counter += 1;
+            }
+        };
+
+        // Register the generated unique ID.
+        let entry = RefEntry {
+            id: unique_id.clone(),
+            reftext: reftext.map(|s| s.to_owned()),
+            ref_type,
+        };
+
+        self.refs.insert(unique_id.clone(), entry);
+
+        if let Some(reftext) = reftext {
+            self.reftext_to_id
+                .entry(reftext.to_string())
+                .or_insert_with(|| unique_id.clone());
+        }
+
+        unique_id
+    }
+
     /// Returns a reference entry by ID, if it exists.
     pub fn get_ref(&self, id: &str) -> Option<&RefEntry> {
         self.refs.get(id)
@@ -73,26 +124,6 @@ impl Catalog {
     /// Resolve reference text to an ID, if possible.
     pub fn resolve_id(&self, reftext: &str) -> Option<String> {
         self.reftext_to_id.get(reftext).cloned()
-    }
-
-    /// Generate a unique ID based on a base ID.
-    ///
-    /// If the base ID is not in use, it is returned as-is.
-    /// Otherwise, numeric suffixes are appended until a unique ID is found.
-    #[allow(unused)]
-    pub(crate) fn generate_unique_id(&self, base_id: &str) -> String {
-        if !self.contains_id(base_id) {
-            return base_id.to_string();
-        }
-
-        let mut counter = 2;
-        loop {
-            let candidate = format!("{}-{}", base_id, counter);
-            if !self.contains_id(&candidate) {
-                return candidate;
-            }
-            counter += 1;
-        }
     }
 
     /* Disabling for now until I know if we'll need these.
@@ -198,6 +229,36 @@ mod tests {
     }
 
     #[test]
+    fn generate_and_register_unique_id() {
+        let mut catalog = Catalog::new();
+
+        // Test with available ID.
+        let id1 = catalog.generate_and_register_unique_id(
+            "available",
+            Some("Available Ref"),
+            RefType::Anchor,
+        );
+        assert_eq!(id1, "available");
+        assert!(catalog.contains_id("available"));
+        assert_eq!(
+            catalog.resolve_id("Available Ref"),
+            Some("available".to_string())
+        );
+
+        // Test with taken IDs.
+        catalog
+            .register_ref("taken", None, RefType::Anchor)
+            .unwrap();
+        catalog
+            .register_ref("taken-2", None, RefType::Anchor)
+            .unwrap();
+
+        let id2 = catalog.generate_and_register_unique_id("taken", None, RefType::Section);
+        assert_eq!(id2, "taken-3");
+        assert!(catalog.contains_id("taken-3"));
+    }
+
+    #[test]
     fn get_ref() {
         let mut catalog = Catalog::new();
 
@@ -234,22 +295,6 @@ mod tests {
             Some("anchor2".to_string())
         );
         assert_eq!(catalog.resolve_id("Nonexistent"), None);
-    }
-
-    #[test]
-    fn generate_unique_id() {
-        let mut catalog = Catalog::new();
-
-        assert_eq!(catalog.generate_unique_id("available"), "available");
-
-        catalog
-            .register_ref("taken", None, RefType::Anchor)
-            .unwrap();
-        catalog
-            .register_ref("taken-2", None, RefType::Anchor)
-            .unwrap();
-
-        assert_eq!(catalog.generate_unique_id("taken"), "taken-3");
     }
 
     #[test]
