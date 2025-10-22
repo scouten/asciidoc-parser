@@ -1,3 +1,9 @@
+//! This module contains tests related to each of the cases of the `Block` enum.
+//! Many of these tests are repeated from the tests for the individual block
+//! types.
+
+#![allow(clippy::unwrap_used)]
+
 mod compound_delimited;
 mod media;
 mod raw_delimited;
@@ -478,5 +484,29 @@ mod error_cases {
                 offset: 0,
             }
         );
+    }
+
+    #[test]
+    fn duplicate_id_warning() {
+        let mut parser = Parser::default();
+
+        let doc = parser.parse("[#this_one]\nBlah\n\n[#this_one]\nAgain");
+
+        let mut warnings = doc.warnings();
+
+        assert_eq!(
+            warnings.next().unwrap(),
+            Warning {
+                source: Span {
+                    data: "[#this_one]\nAgain",
+                    line: 4,
+                    col: 1,
+                    offset: 18,
+                },
+                warning: WarningType::DuplicateId("this_one".to_owned(),),
+            }
+        );
+
+        assert!(warnings.next().is_none());
     }
 }

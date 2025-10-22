@@ -63,3 +63,29 @@ where
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::unwrap_used)]
+
+    use pretty_assertions_sorted::assert_eq;
+
+    mod impl_default {
+
+        #[test]
+        fn default() {
+            use crate::span::MatchedItem;
+
+            let mi: MatchedItem<'_, String> = MatchedItem::default();
+            assert_eq!(mi.item, "".to_owned());
+        }
+    }
+
+    #[test]
+    fn impl_clone_eq() {
+        let span = crate::Span::new("abc");
+        let mi1 = span.into_parse_result(2);
+        let mi2 = mi1;
+        assert_eq!(mi1, mi2);
+    }
+}

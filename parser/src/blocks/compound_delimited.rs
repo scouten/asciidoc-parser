@@ -171,3 +171,1912 @@ impl<'src> HasSpan<'src> for CompoundDelimitedBlock<'src> {
         self.source
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::unwrap_used)]
+
+    mod is_valid_delimiter {
+        use crate::blocks::CompoundDelimitedBlock;
+
+        #[test]
+        fn comment() {
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("////")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("/////")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("/////////")
+            ));
+
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("///")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("//-/")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("////-")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("//////////x")
+            ));
+        }
+
+        #[test]
+        fn example() {
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("====")
+            ));
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("=====")
+            ));
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("=======")
+            ));
+
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("===")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("==-=")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("====-")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("==========x")
+            ));
+        }
+
+        #[test]
+        fn listing() {
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("----")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("-----")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("---------")
+            ));
+        }
+
+        #[test]
+        fn literal() {
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("....")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new(".....")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new(".........")
+            ));
+        }
+
+        #[test]
+        fn sidebar() {
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("****")
+            ));
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("*****")
+            ));
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("*********")
+            ));
+
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("***")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("**-*")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("****-")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("**********x")
+            ));
+        }
+
+        #[test]
+        fn table() {
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("|===")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new(",===")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new(":===")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("!===")
+            ));
+        }
+
+        #[test]
+        fn pass() {
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("++++")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("+++++")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("+++++++++")
+            ));
+        }
+
+        #[test]
+        fn quote() {
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("____")
+            ));
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("_____")
+            ));
+            assert!(CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("_________")
+            ));
+
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("___")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("__-_")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("____-")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("_________x")
+            ));
+        }
+    }
+
+    mod parse {
+        use pretty_assertions_sorted::assert_eq;
+
+        use crate::{
+            Parser, blocks::metadata::BlockMetadata, tests::prelude::*, warnings::WarningType,
+        };
+
+        #[test]
+        fn err_invalid_delimiter() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(&BlockMetadata::new(""), &mut parser)
+                    .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("///"),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("////x"),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("--x"),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("****x"),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("__\n__"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+
+        #[test]
+        fn err_unterminated() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("====\nblah blah blah"),
+                &mut parser,
+            )
+            .unwrap();
+
+            assert_eq!(
+                maw.item.unwrap().item,
+                CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "blah blah blah",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            rendered: "blah blah blah",
+                        },
+                        source: Span {
+                            data: "blah blah blah",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "example",
+                    source: Span {
+                        data: "====\nblah blah blah",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },
+            );
+
+            assert_eq!(
+                maw.warnings,
+                vec![Warning {
+                    source: Span {
+                        data: "====",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warning: WarningType::UnterminatedDelimitedBlock,
+                }]
+            );
+        }
+    }
+
+    mod comment {
+        use crate::{Parser, blocks::metadata::BlockMetadata};
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("////\n////"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+
+        #[test]
+        fn multiple_lines() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("////\nline1  \nline2\n////"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+    }
+
+    mod example {
+        use pretty_assertions_sorted::assert_eq;
+
+        use crate::{
+            Parser,
+            blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+            content::SubstitutionGroup,
+            tests::prelude::*,
+        };
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("====\n===="),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[],
+                    context: "example",
+                    source: Span {
+                        data: "====\n====",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "example");
+            assert_eq!(mi.item.resolved_context().as_ref(), "example");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.nested_blocks().next().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+        }
+
+        #[test]
+        fn multiple_blocks() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("====\nblock1\n\nblock2\n===="),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block2",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 13,
+                                },
+                                rendered: "block2",
+                            },
+                            source: Span {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    context: "example",
+                    source: Span {
+                        data: "====\nblock1\n\nblock2\n====",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "example");
+            assert_eq!(mi.item.resolved_context().as_ref(), "example");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                        rendered: "block2",
+                    },
+                    source: Span {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert!(blocks.next().is_none());
+        }
+
+        #[test]
+        fn nested_blocks() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("====\nblock1\n\n=====\nblock2\n=====\n===="),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::CompoundDelimited(CompoundDelimitedBlock {
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "block2",
+                                        line: 5,
+                                        col: 1,
+                                        offset: 19,
+                                    },
+                                    rendered: "block2",
+                                },
+                                source: Span {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                attrlist: None,
+                            },),],
+                            context: "example",
+                            source: Span {
+                                data: "=====\nblock2\n=====",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        })
+                    ],
+                    context: "example",
+                    source: Span {
+                        data: "====\nblock1\n\n=====\nblock2\n=====\n====",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "example");
+            assert_eq!(mi.item.resolved_context().as_ref(), "example");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::CompoundDelimited(CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
+                            rendered: "block2",
+                        },
+                        source: Span {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "example",
+                    source: Span {
+                        data: "=====\nblock2\n=====",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                })
+            );
+
+            assert!(blocks.next().is_none());
+        }
+    }
+
+    mod listing {
+        use crate::{Parser, blocks::metadata::BlockMetadata};
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("----\n----"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+
+        #[test]
+        fn multiple_lines() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("----\nline1  \nline2\n----"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+    }
+
+    mod literal {
+        use crate::{Parser, blocks::metadata::BlockMetadata};
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("....\n...."),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+
+        #[test]
+        fn multiple_lines() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("....\nline1  \nline2\n...."),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+    }
+
+    mod open {
+        use pretty_assertions_sorted::assert_eq;
+
+        use crate::{
+            Parser,
+            blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+            content::SubstitutionGroup,
+            tests::prelude::*,
+        };
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("--\n--"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[],
+                    context: "open",
+                    source: Span {
+                        data: "--\n--",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "open");
+            assert_eq!(mi.item.resolved_context().as_ref(), "open");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.nested_blocks().next().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+        }
+
+        #[test]
+        fn multiple_blocks() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("--\nblock1\n\nblock2\n--"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 3,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 3,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block2",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 11,
+                                },
+                                rendered: "block2",
+                            },
+                            source: Span {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 11,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    context: "open",
+                    source: Span {
+                        data: "--\nblock1\n\nblock2\n--",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "open");
+            assert_eq!(mi.item.resolved_context().as_ref(), "open");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 3,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
+                        rendered: "block2",
+                    },
+                    source: Span {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 11,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert!(blocks.next().is_none());
+        }
+
+        #[test]
+        fn nested_blocks() {
+            // Spec says three hyphens does NOT mark an open block.
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("--\nblock1\n\n---\nblock2\n---\n--"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 3,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 3,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "---\nblock2\n---",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 11,
+                                },
+                                rendered: "---\nblock2\n---",
+                            },
+                            source: Span {
+                                data: "---\nblock2\n---",
+                                line: 4,
+                                col: 1,
+                                offset: 11,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        })
+                    ],
+                    context: "open",
+                    source: Span {
+                        data: "--\nblock1\n\n---\nblock2\n---\n--",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "open");
+            assert_eq!(mi.item.resolved_context().as_ref(), "open");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 3,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 3,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "---\nblock2\n---",
+                            line: 4,
+                            col: 1,
+                            offset: 11,
+                        },
+                        rendered: "---\nblock2\n---",
+                    },
+                    source: Span {
+                        data: "---\nblock2\n---",
+                        line: 4,
+                        col: 1,
+                        offset: 11,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                })
+            );
+
+            assert!(blocks.next().is_none());
+        }
+    }
+
+    mod sidebar {
+        use pretty_assertions_sorted::assert_eq;
+
+        use crate::{
+            Parser,
+            blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+            content::SubstitutionGroup,
+            tests::prelude::*,
+        };
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("****\n****"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[],
+                    context: "sidebar",
+                    source: Span {
+                        data: "****\n****",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "sidebar");
+            assert_eq!(mi.item.resolved_context().as_ref(), "sidebar");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.nested_blocks().next().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+        }
+
+        #[test]
+        fn multiple_blocks() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("****\nblock1\n\nblock2\n****"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block2",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 13,
+                                },
+                                rendered: "block2",
+                            },
+                            source: Span {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    context: "sidebar",
+                    source: Span {
+                        data: "****\nblock1\n\nblock2\n****",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "sidebar");
+            assert_eq!(mi.item.resolved_context().as_ref(), "sidebar");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                        rendered: "block2",
+                    },
+                    source: Span {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert!(blocks.next().is_none());
+        }
+
+        #[test]
+        fn nested_blocks() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("****\nblock1\n\n*****\nblock2\n*****\n****"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::CompoundDelimited(CompoundDelimitedBlock {
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "block2",
+                                        line: 5,
+                                        col: 1,
+                                        offset: 19,
+                                    },
+                                    rendered: "block2",
+                                },
+                                source: Span {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                attrlist: None,
+                            },),],
+                            context: "sidebar",
+                            source: Span {
+                                data: "*****\nblock2\n*****",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        })
+                    ],
+                    context: "sidebar",
+                    source: Span {
+                        data: "****\nblock1\n\n*****\nblock2\n*****\n****",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "sidebar");
+            assert_eq!(mi.item.resolved_context().as_ref(), "sidebar");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::CompoundDelimited(CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
+                            rendered: "block2",
+                        },
+                        source: Span {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "sidebar",
+                    source: Span {
+                        data: "*****\nblock2\n*****",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                })
+            );
+
+            assert!(blocks.next().is_none());
+        }
+    }
+
+    mod table {
+        use crate::{Parser, blocks::metadata::BlockMetadata};
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("|===\n|==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new(",===\n,==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new(":===\n:==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("!===\n!==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+
+        #[test]
+        fn multiple_lines() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("|===\nline1  \nline2\n|==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new(",===\nline1  \nline2\n,==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new(":===\nline1  \nline2\n:==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("!===\nline1  \nline2\n!==="),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+    }
+
+    mod pass {
+        use crate::{Parser, blocks::metadata::BlockMetadata};
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("++++\n++++"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+
+        #[test]
+        fn multiple_lines() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("++++\nline1  \nline2\n++++"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+    }
+
+    mod quote {
+        use pretty_assertions_sorted::assert_eq;
+
+        use crate::{
+            Parser,
+            blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+            content::SubstitutionGroup,
+            tests::prelude::*,
+        };
+
+        #[test]
+        fn empty() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("____\n____"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[],
+                    context: "quote",
+                    source: Span {
+                        data: "____\n____",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "quote");
+            assert_eq!(mi.item.resolved_context().as_ref(), "quote");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.nested_blocks().next().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+        }
+
+        #[test]
+        fn multiple_blocks() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("____\nblock1\n\nblock2\n____"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block2",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 13,
+                                },
+                                rendered: "block2",
+                            },
+                            source: Span {
+                                data: "block2",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    context: "quote",
+                    source: Span {
+                        data: "____\nblock1\n\nblock2\n____",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "quote");
+            assert_eq!(mi.item.resolved_context().as_ref(), "quote");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block2",
+                            line: 4,
+                            col: 1,
+                            offset: 13,
+                        },
+                        rendered: "block2",
+                    },
+                    source: Span {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert!(blocks.next().is_none());
+        }
+
+        #[test]
+        fn nested_blocks() {
+            let mut parser = Parser::default();
+
+            let maw = crate::blocks::CompoundDelimitedBlock::parse(
+                &BlockMetadata::new("____\nblock1\n\n_____\nblock2\n_____\n____"),
+                &mut parser,
+            )
+            .unwrap();
+
+            let mi = maw.item.unwrap().clone();
+
+            assert_eq!(
+                mi.item,
+                CompoundDelimitedBlock {
+                    blocks: &[
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "block1",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 5,
+                                },
+                                rendered: "block1",
+                            },
+                            source: Span {
+                                data: "block1",
+                                line: 2,
+                                col: 1,
+                                offset: 5,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        },),
+                        Block::CompoundDelimited(CompoundDelimitedBlock {
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "block2",
+                                        line: 5,
+                                        col: 1,
+                                        offset: 19,
+                                    },
+                                    rendered: "block2",
+                                },
+                                source: Span {
+                                    data: "block2",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                attrlist: None,
+                            },),],
+                            context: "quote",
+                            source: Span {
+                                data: "_____\nblock2\n_____",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            attrlist: None,
+                        })
+                    ],
+                    context: "quote",
+                    source: Span {
+                        data: "____\nblock1\n\n_____\nblock2\n_____\n____",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                }
+            );
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().as_ref(), "quote");
+            assert_eq!(mi.item.resolved_context().as_ref(), "quote");
+            assert!(mi.item.declared_style().is_none());
+            assert!(mi.item.id().is_none());
+            assert!(mi.item.roles().is_empty());
+            assert!(mi.item.options().is_empty());
+            assert!(mi.item.title_source().is_none());
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+            let mut blocks = mi.item.nested_blocks();
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "block1",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "block1",
+                    },
+                    source: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                },)
+            );
+
+            assert_eq!(
+                blocks.next().unwrap(),
+                &Block::CompoundDelimited(CompoundDelimitedBlock {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "block2",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
+                            rendered: "block2",
+                        },
+                        source: Span {
+                            data: "block2",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                    },),],
+                    context: "quote",
+                    source: Span {
+                        data: "_____\nblock2\n_____",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    attrlist: None,
+                })
+            );
+
+            assert!(blocks.next().is_none());
+        }
+    }
+}

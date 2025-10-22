@@ -9,6 +9,11 @@ pub use author::Author;
 mod author_line;
 pub use author_line::AuthorLine;
 
+mod catalog;
+#[allow(unused)] // TEMPORARY while building
+pub(crate) use catalog::DuplicateIdError;
+pub use catalog::{Catalog, RefEntry, RefType};
+
 mod document;
 pub use document::Document;
 
