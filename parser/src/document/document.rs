@@ -930,7 +930,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                                            section_id: None,
+                    section_id: Some("_section_title"),
                 },
             )],
             source: Span {

@@ -440,7 +440,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -473,7 +473,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -504,7 +504,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -557,7 +557,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -590,7 +590,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -667,7 +667,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -700,7 +700,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -777,7 +777,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -821,7 +821,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -907,7 +907,7 @@ mod tests {
                             title: None,
                             anchor: None,
                             attrlist: None,
-                            section_id: None,
+                            section_id: Some("_section_2"),
                         })
                     ],
                     source: Span {
@@ -920,7 +920,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -951,7 +951,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1004,7 +1004,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1035,7 +1035,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1088,7 +1088,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1129,6 +1129,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with <strong>bold</strong> text"
             );
+
+            assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
         #[test]
@@ -1157,6 +1159,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with &lt;brackets&gt; &amp; ampersands"
             );
+
+            assert_eq!(mi.item.id().unwrap(), "_section_with_brackets_ampersands");
         }
 
         #[test]
@@ -1229,6 +1233,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
         #[test]
@@ -1246,6 +1251,7 @@ mod tests {
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
             assert_eq!(mi.item.nested_blocks().len(), 1);
+            assert_eq!(mi.item.id().unwrap(), "_level_1");
 
             assert_eq!(
                 warnings,
@@ -1306,7 +1312,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1339,7 +1345,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1370,7 +1376,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1423,7 +1429,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1456,7 +1462,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1533,7 +1539,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1566,7 +1572,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1643,7 +1649,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1687,7 +1693,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1773,7 +1779,7 @@ mod tests {
                             title: None,
                             anchor: None,
                             attrlist: None,
-                            section_id: None,
+                            section_id: Some("_section_2"),
                         })
                     ],
                     source: Span {
@@ -1786,7 +1792,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1817,7 +1823,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1870,7 +1876,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1901,7 +1907,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1954,7 +1960,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
-                    section_id: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1995,6 +2001,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with <strong>bold</strong> text"
             );
+
+            assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
         #[test]
@@ -2095,6 +2103,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
         #[test]
@@ -2112,6 +2121,7 @@ mod tests {
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
             assert_eq!(mi.item.nested_blocks().len(), 1);
+            assert_eq!(mi.item.id().unwrap(), "_level_1");
 
             assert_eq!(
                 warnings,
@@ -2143,6 +2153,7 @@ mod tests {
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
         assert_eq!(mi.item.nested_blocks().len(), 1);
+        assert_eq!(mi.item.id().unwrap(), "_level_1");
 
         assert_eq!(
             warnings,
@@ -2173,6 +2184,7 @@ mod tests {
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
         assert_eq!(mi.item.nested_blocks().len(), 1);
+        assert_eq!(mi.item.id().unwrap(), "_level_1");
 
         assert!(warnings.is_empty());
     }
