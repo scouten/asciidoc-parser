@@ -2188,4 +2188,134 @@ mod tests {
 
         assert!(warnings.is_empty());
     }
+
+    #[test]
+    fn section_id_generation_basic() {
+        let input = "== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section_one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_special_characters() {
+        let input = "== We're back! & Company";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_were_back_company"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_entities() {
+        let input = "== Ben &amp; Jerry &#34;Ice Cream&#34;";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_ben_jerry_ice_cream"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_disabled_when_sectids_unset() {
+        let input = ":!sectids:\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), None);
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_custom_prefix() {
+        let input = ":idprefix: id_\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("id_section_one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_custom_separator() {
+        let input = ":idseparator: -\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section-one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_empty_prefix() {
+        let input = ":idprefix:\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("section_one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_removes_trailing_separator() {
+        let input = ":idseparator: -\n\n== Section Title-";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section-title"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_removes_leading_separator_when_prefix_empty() {
+        let input = ":idprefix:\n:idseparator: -\n\n== -Section Title";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("section-title"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_handles_multiple_trailing_separators() {
+        let input = ":idseparator: _\n\n== Title with Multiple Dots...";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_title_with_multiple_dots"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
 }
