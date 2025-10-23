@@ -73,7 +73,6 @@ impl Catalog {
     ///
     /// # Returns
     /// The unique ID that was generated and registered.
-    #[allow(unused)]
     pub(crate) fn generate_and_register_unique_id(
         &mut self,
         base_id: &str,

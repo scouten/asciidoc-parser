@@ -65,50 +65,54 @@ impl<'src> SectionBlock<'src> {
         let mut section_title = Content::from(level_and_title.item.1);
         SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
 
-        // TODO (https://github.com/scouten/asciidoc-parser/issues/411):
-        // Track section ID whether automatically generated or manually specified and
-        // warn on conflicts.
+        eprintln!("SECTIDS = {}", parser.is_attribute_set("sectids"));
 
-        let section_id = if metadata.anchor.is_none()
+        eprintln!(
+            "HAS NO ID = {}",
+            metadata
+                .attrlist
+                .as_ref()
+                .map(|a| a.id().is_none())
+                .unwrap_or(true)
+        );
+
+        let proposed_base_id = generate_section_id(section_title.rendered(), parser);
+
+        let section_id = if parser.is_attribute_set("sectids")
+            && dbg!(true)
             && metadata
                 .attrlist
                 .as_ref()
                 .map(|a| a.id().is_none())
                 .unwrap_or(true)
-            && parser.is_attribute_set("sectids")
+            && dbg!(true)
+            && let Some(catalog) = parser.catalog_mut()
+            && dbg!(true)
         {
-            Some(generate_section_id(section_title.rendered(), parser))
+            eprintln!("HELLO?");
+            Some(catalog.generate_and_register_unique_id(
+                &proposed_base_id,
+                Some(section_title.rendered()),
+                RefType::Section,
+            ))
         } else {
             None
         };
 
         warnings.append(&mut maw_blocks.warnings);
 
-        let mut section = Self {
-            level: level_and_title.item.0,
-            section_title,
-            blocks: blocks.item,
-            source: source.trim_trailing_whitespace(),
-            title_source: metadata.title_source,
-            title: metadata.title.clone(),
-            anchor: metadata.anchor,
-            attrlist: metadata.attrlist.clone(),
-            section_id: None,
-        };
-
-        if parser.is_attribute_set("sectids")
-            && let Some(proposed_id) = section_id
-            && let Some(catalog) = parser.catalog_mut()
-        {
-            section.section_id = Some(catalog.generate_and_register_unique_id(
-                &proposed_id,
-                section.title(),
-                RefType::Section,
-            ));
-        }
-
         Some(MatchedItem {
-            item: section,
+            item: Self {
+                level: level_and_title.item.0,
+                section_title,
+                blocks: blocks.item,
+                source: source.trim_trailing_whitespace(),
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                attrlist: metadata.attrlist.clone(),
+                section_id,
+            },
             after: blocks.after,
         })
     }
@@ -264,7 +268,7 @@ fn peer_or_ancestor_section<'src>(
     }
 }
 
-/// Generate a section ID from the section title.
+/// Propose a section ID from the section title.
 ///
 /// This function is called when (1) no `id` attribute is specified explicitly,
 /// and (2) the `sectids` document attribute is set.

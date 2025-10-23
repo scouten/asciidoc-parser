@@ -54,7 +54,7 @@ impl Default for Parser {
             primary_file_name: None,
             path_resolver: PathResolver::default(),
             include_file_handler: None,
-            catalog: None,
+            catalog: Some(Catalog::new()),
         }
     }
 }
@@ -96,7 +96,9 @@ impl Parser {
 
         // NOTE: `Document::parse` will transfer the catalog to itself at the end of the
         // parsing operation.
-        self.catalog = Some(Catalog::new());
+        if self.catalog.is_none() {
+            self.catalog = Some(Catalog::new());
+        }
 
         Document::parse(&preprocessed_source, source_map, self)
     }
