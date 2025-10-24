@@ -453,11 +453,14 @@ mod tests {
     #[test]
     fn creates_catalog_if_needed() {
         let mut p = Parser::default();
-        let _ = p.take_catalog();
-
-        let doc = p.parse("= Hello, World!\n\n== Section Title");
+        let doc = p.parse("= Hello, World!\n\n== First Section Title");
         let cat = doc.catalog();
-        assert!(cat.refs.contains_key("_section_title"));
+        assert!(cat.refs.contains_key("_first_section_title"));
+
+        let doc = p.parse("= Hello, World!\n\n== Second Section Title");
+        let cat = doc.catalog();
+        assert!(!cat.refs.contains_key("_first_section_title"));
+        assert!(cat.refs.contains_key("_second_section_title"));
     }
 
     #[test]
