@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*, warnings::WarningType};
+use crate::{Parser, document::RefType, tests::prelude::*, warnings::WarningType};
 
 track_file!("docs/modules/sections/pages/titles-and-levels.adoc");
 
@@ -229,6 +231,69 @@ include::example$section.adoc[tag=b-base]
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog {
+                refs: HashMap::from([
+                    (
+                        "_level_2_section_title",
+                        RefEntry {
+                            id: "_level_2_section_title",
+                            reftext: Some("Level 2 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_4_section_title",
+                        RefEntry {
+                            id: "_level_4_section_title",
+                            reftext: Some("Level 4 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_another_level_1_section_title",
+                        RefEntry {
+                            id: "_another_level_1_section_title",
+                            reftext: Some("Another Level 1 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_3_section_title",
+                        RefEntry {
+                            id: "_level_3_section_title",
+                            reftext: Some("Level 3 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_1_section_title",
+                        RefEntry {
+                            id: "_level_1_section_title",
+                            reftext: Some("Level 1 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_5_section_title",
+                        RefEntry {
+                            id: "_level_5_section_title",
+                            reftext: Some("Level 5 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                ]),
+                reftext_to_id: HashMap::from([
+                    ("Level 3 Section Title", "_level_3_section_title"),
+                    ("Level 1 Section Title", "_level_1_section_title"),
+                    ("Level 5 Section Title", "_level_5_section_title"),
+                    ("Level 4 Section Title", "_level_4_section_title"),
+                    (
+                        "Another Level 1 Section Title",
+                        "_another_level_1_section_title"
+                    ),
+                    ("Level 2 Section Title", "_level_2_section_title"),
+                ]),
+            },
         }
     );
 }
@@ -391,6 +456,33 @@ include::example$section.adoc[tag=content]
                 },
             ],
             source_map: SourceMap(&[]),
+            catalog: Catalog {
+                refs: HashMap::from([
+                    (
+                        "_first_section",
+                        RefEntry {
+                            id: "_first_section",
+                            reftext: Some("First Section",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_illegal_nested_section_violates_rule_2",
+                        RefEntry {
+                            id: "_illegal_nested_section_violates_rule_2",
+                            reftext: Some("Illegal Nested Section (violates rule #2)",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                ]),
+                reftext_to_id: HashMap::from([
+                    ("First Section", "_first_section"),
+                    (
+                        "Illegal Nested Section (violates rule #2)",
+                        "_illegal_nested_section_violates_rule_2"
+                    ),
+                ]),
+            },
         }
     );
 }
@@ -579,6 +671,69 @@ That means the outline of a Markdown document will be converted just fine as an 
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog {
+                refs: HashMap::from([
+                    (
+                        "_level_1_section_title",
+                        RefEntry {
+                            id: "_level_1_section_title",
+                            reftext: Some("Level 1 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_another_level_1_section_title",
+                        RefEntry {
+                            id: "_another_level_1_section_title",
+                            reftext: Some("Another Level 1 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_5_section_title",
+                        RefEntry {
+                            id: "_level_5_section_title",
+                            reftext: Some("Level 5 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_4_section_title",
+                        RefEntry {
+                            id: "_level_4_section_title",
+                            reftext: Some("Level 4 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_3_section_title",
+                        RefEntry {
+                            id: "_level_3_section_title",
+                            reftext: Some("Level 3 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "_level_2_section_title",
+                        RefEntry {
+                            id: "_level_2_section_title",
+                            reftext: Some("Level 2 Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                ]),
+                reftext_to_id: HashMap::from([
+                    ("Level 4 Section Title", "_level_4_section_title"),
+                    ("Level 2 Section Title", "_level_2_section_title"),
+                    (
+                        "Another Level 1 Section Title",
+                        "_another_level_1_section_title"
+                    ),
+                    ("Level 5 Section Title", "_level_5_section_title"),
+                    ("Level 1 Section Title", "_level_1_section_title"),
+                    ("Level 3 Section Title", "_level_3_section_title"),
+                ]),
+            },
         }
     );
 }

@@ -468,6 +468,7 @@ Formatted text does not support a style, so the first and only positional attrib
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -559,6 +560,7 @@ A named attribute consists of a name and a value separated by an `=` character (
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -636,6 +638,7 @@ In all other cases, the surrounding quotes are optional.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -714,6 +717,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -794,6 +798,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -896,6 +901,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -999,6 +1005,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1063,6 +1070,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1145,6 +1153,7 @@ For subsequent attributes, any leading space or tab characters are skipped.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1229,6 +1238,7 @@ Space and tab characters around the equals sign (=) and at the end of the value 
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1317,6 +1327,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1405,6 +1416,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1500,6 +1512,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                     warning: WarningType::AttributeValueMissingTerminatingQuote,
                 },],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1587,6 +1600,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1682,6 +1696,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                     warning: WarningType::AttributeValueMissingTerminatingQuote,
                 },],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1769,6 +1784,7 @@ If there is a closing single quote, the enclosing single quote characters are re
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1865,6 +1881,7 @@ If there is a closing single quote, and the first character is not an escaped si
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1967,6 +1984,7 @@ That's because the parser already knows to look for the closing square bracket a
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -2032,6 +2050,7 @@ There are some exceptions to this rule, such as a link macro in a footnote, whic
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

@@ -90,6 +90,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -184,6 +185,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -252,6 +254,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -341,6 +344,7 @@ link:report.pdf[Get Report]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -418,6 +422,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -483,6 +488,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -548,6 +554,7 @@ link:My%20Documents/report.pdf[Get Report]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -625,6 +632,7 @@ link:Avengers%3A%20Endgame.html[]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -694,6 +702,7 @@ link:++https://example.org/now_this__link_works.html++[]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -761,6 +770,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -828,6 +838,7 @@ link:file:///home/username[Your files]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

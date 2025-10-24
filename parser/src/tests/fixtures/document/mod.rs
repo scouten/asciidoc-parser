@@ -21,11 +21,17 @@ pub(crate) use author::Author;
 mod author_line;
 pub(crate) use author_line::AuthorLine;
 
+mod catalog;
+pub(crate) use catalog::Catalog;
+
 mod document;
 pub(crate) use document::Document;
 
 mod header;
 pub(crate) use header::Header;
+
+mod ref_entry;
+pub(crate) use ref_entry::RefEntry;
 
 mod revision_line;
 pub(crate) use revision_line::RevisionLine;

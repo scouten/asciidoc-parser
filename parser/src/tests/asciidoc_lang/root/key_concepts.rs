@@ -160,6 +160,7 @@ image::sunset.jpg[Sunset]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -225,6 +226,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
 

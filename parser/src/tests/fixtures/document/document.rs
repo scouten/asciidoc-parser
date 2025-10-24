@@ -3,7 +3,11 @@ use std::{cmp::PartialEq, fmt};
 use crate::{
     blocks::IsBlock,
     tests::fixtures::{
-        Span, blocks::Block, document::Header, parser::SourceMap, warnings::Warning,
+        Span,
+        blocks::Block,
+        document::{Catalog, Header},
+        parser::SourceMap,
+        warnings::Warning,
     },
 };
 
@@ -14,6 +18,7 @@ pub(crate) struct Document {
     pub source: Span,
     pub warnings: &'static [Warning],
     pub source_map: SourceMap,
+    pub catalog: Catalog,
 }
 
 impl fmt::Debug for Document {
@@ -24,6 +29,7 @@ impl fmt::Debug for Document {
             .field("source", &self.source)
             .field("warnings", &self.warnings)
             .field("source_map", &self.source_map)
+            .field("catalog", &self.catalog)
             .finish()
     }
 }
@@ -75,5 +81,5 @@ fn fixture_eq_observed(fixture: &Document, observed: &crate::Document) -> bool {
         }
     }
 
-    &fixture.source_map == observed.source_map()
+    &fixture.source_map == observed.source_map() && &fixture.catalog == observed.catalog()
 }

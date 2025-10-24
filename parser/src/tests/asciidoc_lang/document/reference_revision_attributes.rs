@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*};
+use crate::{Parser, document::RefType, tests::prelude::*};
 
 track_file!("docs/modules/document/pages/reference-revision-attributes.adoc");
 
@@ -149,6 +151,17 @@ image::reference-revision-line.png["Revision line and rendered revision referenc
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog {
+                refs: HashMap::from([(
+                    "_colophon",
+                    RefEntry {
+                        id: "_colophon",
+                        reftext: Some("Colophon",),
+                        ref_type: RefType::Section,
+                    }
+                ),]),
+                reftext_to_id: HashMap::from([("Colophon", "_colophon"),]),
+            },
         }
     );
 }
@@ -341,6 +354,17 @@ If you don't want the default version label to be displayed in the byline, xref:
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog {
+                refs: HashMap::from([(
+                    "_colophon",
+                    RefEntry {
+                        id: "_colophon",
+                        reftext: Some("Colophon",),
+                        ref_type: RefType::Section,
+                    }
+                ),]),
+                reftext_to_id: HashMap::from([("Colophon", "_colophon"),]),
+            },
         }
     );
 }

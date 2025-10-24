@@ -1,7 +1,10 @@
+use std::collections::HashMap;
+
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
+    document::RefType,
     tests::prelude::{inline_file_handler::InlineFileHandler, *},
 };
 
@@ -309,7 +312,31 @@ The single quotes around the variable name in the assignment are required to for
                 (6, SourceLine(Some("fragment-chain.adoc",), 1,),),
                 (10, SourceLine(None, 7,),),
                 (14, SourceLine(Some("fragment-chain.adoc",), 1,),),
-            ],)
+            ],),
+            catalog: Catalog {
+                refs: HashMap::from([
+                    (
+                        "_maintenance",
+                        RefEntry {
+                            id: "_maintenance",
+                            reftext: Some("Maintenance",),
+                            ref_type: RefType::Section
+                        }
+                    ),
+                    (
+                        "_operation",
+                        RefEntry {
+                            id: "_operation",
+                            reftext: Some("Operation",),
+                            ref_type: RefType::Section,
+                        },
+                    )
+                ]),
+                reftext_to_id: HashMap::from([
+                    ("Maintenance", "_maintenance"),
+                    ("Operation", "_operation"),
+                ])
+            },
         }
     );
 

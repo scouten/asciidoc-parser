@@ -73,6 +73,7 @@ In other words, the document must start with a document header if it has one.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -179,6 +180,7 @@ These implicit content lines are used to assign xref:author-information.adoc[] a
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -363,6 +365,7 @@ Since the document title is optional, it's possible for the header to only consi
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -492,6 +495,7 @@ Any attributes defined below the first empty line are not part of the document h
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

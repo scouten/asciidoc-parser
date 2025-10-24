@@ -209,6 +209,7 @@ This is more content in the sidebar block.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 

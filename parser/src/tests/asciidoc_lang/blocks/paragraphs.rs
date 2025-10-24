@@ -113,6 +113,7 @@ include::example$paragraph.adoc[tag=para]
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }

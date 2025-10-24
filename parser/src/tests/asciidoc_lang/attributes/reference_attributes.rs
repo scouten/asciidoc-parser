@@ -195,6 +195,7 @@ Actually, please don't.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -275,6 +276,7 @@ Our servers don't like them either.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -393,6 +395,7 @@ In the path /items/\{id}, id is a path parameter.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -457,6 +460,7 @@ If the syntax that follows the backslash does not match an attribute reference, 
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -557,6 +561,7 @@ In the path +/items/{id}+, id is a path parameter.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -621,6 +626,7 @@ All the text between the passthrough enclosure will get passed through to the ou
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

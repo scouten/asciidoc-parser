@@ -307,6 +307,7 @@ If this happens, append `+{empty}+` to the end of the line to disrupt the syntax
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -457,6 +458,7 @@ Specifically, it does not support named attributes, only the attribute shorthand
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

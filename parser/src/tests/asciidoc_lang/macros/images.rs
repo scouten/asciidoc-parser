@@ -14,9 +14,11 @@ The block form uses two colons (`::`), whereas the inline form only uses one (`:
 );
 
 mod block_image_macro {
+    use std::collections::HashMap;
+
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::MediaType, tests::prelude::*};
+    use crate::{Parser, blocks::MediaType, document::RefType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -154,6 +156,7 @@ include::example$image.adoc[tag=base]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -241,6 +244,7 @@ include::example$image.adoc[tag=alt]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -327,6 +331,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -460,6 +465,17 @@ include::example$image.adoc[tag=attr]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([(
+                        "img-sunset",
+                        RefEntry {
+                            id: "img-sunset",
+                            reftext: Some("A mountain sunset",),
+                            ref_type: RefType::Anchor,
+                        }
+                    ),]),
+                    reftext_to_id: HashMap::from([("A mountain sunset", "img-sunset"),]),
+                },
             }
         );
     }
