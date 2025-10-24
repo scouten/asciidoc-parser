@@ -451,6 +451,16 @@ mod tests {
     }
 
     #[test]
+    fn creates_catalog_if_needed() {
+        let mut p = Parser::default();
+        let _ = p.take_catalog();
+
+        let doc = p.parse("= Hello, World!\n\n== Section Title");
+        let cat = doc.catalog();
+        assert!(cat.refs.contains_key("_section_title"));
+    }
+
+    #[test]
     fn with_intrinsic_attribute() {
         let p =
             Parser::default().with_intrinsic_attribute("foo", "bar", ModificationContext::Anywhere);
