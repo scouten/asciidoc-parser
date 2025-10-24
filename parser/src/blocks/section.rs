@@ -65,17 +65,6 @@ impl<'src> SectionBlock<'src> {
         let mut section_title = Content::from(level_and_title.item.1);
         SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
 
-        eprintln!("SECTIDS = {}", parser.is_attribute_set("sectids"));
-
-        eprintln!(
-            "HAS NO ID = {}",
-            metadata
-                .attrlist
-                .as_ref()
-                .map(|a| a.id().is_none())
-                .unwrap_or(true)
-        );
-
         let proposed_base_id = generate_section_id(section_title.rendered(), parser);
 
         let section_id = if parser.is_attribute_set("sectids")
@@ -89,7 +78,6 @@ impl<'src> SectionBlock<'src> {
             && let Some(catalog) = parser.catalog_mut()
             && dbg!(true)
         {
-            eprintln!("HELLO?");
             Some(catalog.generate_and_register_unique_id(
                 &proposed_base_id,
                 Some(section_title.rendered()),
