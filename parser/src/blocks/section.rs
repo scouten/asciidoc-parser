@@ -315,6 +315,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::panic)]
     #![allow(clippy::unwrap_used)]
 
     use pretty_assertions_sorted::assert_eq;

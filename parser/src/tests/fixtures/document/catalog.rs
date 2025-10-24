@@ -2,7 +2,7 @@ use std::{cmp::PartialEq, collections::HashMap, fmt};
 
 use crate::tests::fixtures::document::RefEntry;
 
-#[derive(Eq, PartialEq)]
+#[derive(Default, Eq, PartialEq)]
 pub(crate) struct Catalog {
     pub(crate) refs: HashMap<&'static str, RefEntry>,
     pub(crate) reftext_to_id: HashMap<&'static str, &'static str>,
@@ -14,15 +14,6 @@ impl fmt::Debug for Catalog {
             .field("refs", &self.refs)
             .field("reftext_to_id", &self.reftext_to_id)
             .finish()
-    }
-}
-
-impl Default for Catalog {
-    fn default() -> Self {
-        Self {
-            refs: HashMap::default(),
-            reftext_to_id: HashMap::default(),
-        }
     }
 }
 
