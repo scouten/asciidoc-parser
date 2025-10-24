@@ -54,7 +54,7 @@ impl Default for Parser {
             primary_file_name: None,
             path_resolver: PathResolver::default(),
             include_file_handler: None,
-            catalog: None,
+            catalog: Some(Catalog::new()),
         }
     }
 }
@@ -96,7 +96,9 @@ impl Parser {
 
         // NOTE: `Document::parse` will transfer the catalog to itself at the end of the
         // parsing operation.
-        self.catalog = Some(Catalog::new());
+        if self.catalog.is_none() {
+            self.catalog = Some(Catalog::new());
+        }
 
         Document::parse(&preprocessed_source, source_map, self)
     }
@@ -446,6 +448,19 @@ mod tests {
     fn default_is_unset() {
         let p = Parser::default();
         assert_eq!(p.attribute_value("foo"), InterpretedValue::Unset);
+    }
+
+    #[test]
+    fn creates_catalog_if_needed() {
+        let mut p = Parser::default();
+        let doc = p.parse("= Hello, World!\n\n== First Section Title");
+        let cat = doc.catalog();
+        assert!(cat.refs.contains_key("_first_section_title"));
+
+        let doc = p.parse("= Hello, World!\n\n== Second Section Title");
+        let cat = doc.catalog();
+        assert!(!cat.refs.contains_key("_first_section_title"));
+        assert!(cat.refs.contains_key("_second_section_title"));
     }
 
     #[test]

@@ -97,6 +97,7 @@ icon:heart[2x,role=red]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

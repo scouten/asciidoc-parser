@@ -1,7 +1,10 @@
+use std::collections::HashMap;
+
 use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
+    document::RefType,
     tests::prelude::{inline_file_handler::InlineFileHandler, *},
 };
 
@@ -203,6 +206,7 @@ The single quotes around the variable name in the assignment are required to for
                                 offset: 50,
                             },
                         },),
+                        section_id: None,
                     },),],
                     source: Span {
                         data: "== Operation\n\n[id=chain-{chapter}]\n=== Chain\n\nSee xref:chain-{chapter}[].\n\n:chapter: maintenance",
@@ -214,6 +218,7 @@ The single quotes around the variable name in the assignment are required to for
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_operation"),
                 },),
                 Block::Section(SectionBlock {
                     level: 1,
@@ -281,6 +286,7 @@ The single quotes around the variable name in the assignment are required to for
                                 offset: 149,
                             },
                         },),
+                        section_id: None,
                     },),],
                     source: Span {
                         data: "== Maintenance\n\n[id=chain-{chapter}]\n=== Chain\n\nSee xref:chain-{chapter}[].",
@@ -292,6 +298,7 @@ The single quotes around the variable name in the assignment are required to for
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_maintenance"),
                 },),
             ],
             source: Span {
@@ -305,7 +312,31 @@ The single quotes around the variable name in the assignment are required to for
                 (6, SourceLine(Some("fragment-chain.adoc",), 1,),),
                 (10, SourceLine(None, 7,),),
                 (14, SourceLine(Some("fragment-chain.adoc",), 1,),),
-            ],)
+            ],),
+            catalog: Catalog {
+                refs: HashMap::from([
+                    (
+                        "_maintenance",
+                        RefEntry {
+                            id: "_maintenance",
+                            reftext: Some("Maintenance",),
+                            ref_type: RefType::Section
+                        }
+                    ),
+                    (
+                        "_operation",
+                        RefEntry {
+                            id: "_operation",
+                            reftext: Some("Operation",),
+                            ref_type: RefType::Section,
+                        },
+                    )
+                ]),
+                reftext_to_id: HashMap::from([
+                    ("Maintenance", "_maintenance"),
+                    ("Operation", "_operation"),
+                ])
+            },
         }
     );
 

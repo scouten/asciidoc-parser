@@ -88,6 +88,7 @@ mailto:join@discuss.example.org[Subscribe]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -153,6 +154,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -220,6 +222,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -311,6 +314,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -380,6 +384,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -446,6 +451,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -511,6 +517,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -576,6 +583,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

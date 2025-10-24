@@ -102,6 +102,7 @@ Directly after each author's last name or optional email, enter a semicolon (`;`
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -186,6 +187,7 @@ This limitation may be lifted in the future.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -284,6 +286,7 @@ The information for each author can also be xref:reference-author-attributes.ado
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -358,6 +361,7 @@ AsciiDoc&#174;{empty} WG; Another Author
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -456,6 +460,7 @@ Even though the character reference is escaped, the segments of the author name 
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }

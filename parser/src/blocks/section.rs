@@ -1,4 +1,6 @@
-use std::slice::Iter;
+use std::{slice::Iter, sync::LazyLock};
+
+use regex::Regex;
 
 use crate::{
     HasSpan, Parser, Span,
@@ -30,6 +32,7 @@ pub struct SectionBlock<'src> {
     title: Option<String>,
     anchor: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
+    section_id: Option<String>,
 }
 
 impl<'src> SectionBlock<'src> {
@@ -62,28 +65,42 @@ impl<'src> SectionBlock<'src> {
         let mut section_title = Content::from(level_and_title.item.1);
         SubstitutionGroup::Title.apply(&mut section_title, parser, metadata.attrlist.as_ref());
 
-        warnings.append(&mut maw_blocks.warnings);
+        let proposed_base_id = generate_section_id(section_title.rendered(), parser);
 
-        let section = Self {
-            level: level_and_title.item.0,
-            section_title,
-            blocks: blocks.item,
-            source: source.trim_trailing_whitespace(),
-            title_source: metadata.title_source,
-            title: metadata.title.clone(),
-            anchor: metadata.anchor,
-            attrlist: metadata.attrlist.clone(),
+        let section_id = if parser.is_attribute_set("sectids")
+            && dbg!(true)
+            && metadata
+                .attrlist
+                .as_ref()
+                .map(|a| a.id().is_none())
+                .unwrap_or(true)
+            && dbg!(true)
+            && let Some(catalog) = parser.catalog_mut()
+            && dbg!(true)
+        {
+            Some(catalog.generate_and_register_unique_id(
+                &proposed_base_id,
+                Some(section_title.rendered()),
+                RefType::Section,
+            ))
+        } else {
+            None
         };
 
-        if parser.is_attribute_set("sectids")
-            && let Some(id) = section.id()
-            && let Some(catalog) = parser.catalog_mut()
-        {
-            catalog.generate_and_register_unique_id(id, section.title(), RefType::Section);
-        }
+        warnings.append(&mut maw_blocks.warnings);
 
         Some(MatchedItem {
-            item: section,
+            item: Self {
+                level: level_and_title.item.0,
+                section_title,
+                blocks: blocks.item,
+                source: source.trim_trailing_whitespace(),
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                attrlist: metadata.attrlist.clone(),
+                section_id,
+            },
             after: blocks.after,
         })
     }
@@ -110,6 +127,14 @@ impl<'src> SectionBlock<'src> {
     /// applied.
     pub fn section_title(&'src self) -> &'src str {
         self.section_title.rendered()
+    }
+
+    /// Accessor intended to be used for testing only. Use the `id()` accessor
+    /// in the `IsBlock` to retrieve the effective ID for this block, which
+    /// considers both auto-generated IDs and manually-set IDs.
+    #[cfg(test)]
+    pub(crate) fn section_id(&'src self) -> Option<&'src str> {
+        self.section_id.as_deref()
     }
 }
 
@@ -140,6 +165,15 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         self.attrlist.as_ref()
+    }
+
+    fn id(&'src self) -> Option<&'src str> {
+        // First try the default implementation (explicit IDs from anchor or attrlist)
+        self.anchor()
+            .map(|a| a.data())
+            .or_else(|| self.attrlist().and_then(|attrlist| attrlist.id()))
+            // Fall back to auto-generated ID if no explicit ID is set
+            .or(self.section_id.as_deref())
     }
 }
 
@@ -222,8 +256,66 @@ fn peer_or_ancestor_section<'src>(
     }
 }
 
+/// Propose a section ID from the section title.
+///
+/// This function is called when (1) no `id` attribute is specified explicitly,
+/// and (2) the `sectids` document attribute is set.
+///
+/// The ID is generated as described in the AsciiDoc language definition in [How
+/// a section ID is computed].
+///
+/// [How a section ID is computed](https://docs.asciidoctor.org/asciidoc/latest/sections/auto-ids/)
+fn generate_section_id(title: &str, parser: &Parser) -> String {
+    let idprefix = parser
+        .attribute_value("idprefix")
+        .as_maybe_str()
+        .unwrap_or_default()
+        .to_owned();
+
+    let idseparator = parser
+        .attribute_value("idseparator")
+        .as_maybe_str()
+        .unwrap_or_default()
+        .to_owned();
+
+    let mut gen_id = format!("{}{}", idprefix, title.to_lowercase());
+
+    #[allow(clippy::unwrap_used)]
+    static INVALID_SECTION_ID_CHARS: LazyLock<Regex> = LazyLock::new(|| {
+        Regex::new(r"<[^>]+>|&(?:[a-z][a-z]+\d{0,2}|#\d{2,5}|#x[\da-f]{2,4});|[^ \w\-.]+").unwrap()
+    });
+
+    gen_id = INVALID_SECTION_ID_CHARS
+        .replace_all(&gen_id, "")
+        .to_string();
+
+    // Take only first character of separator if multiple provided.
+    let sep = idseparator
+        .chars()
+        .next()
+        .map(|s| s.to_string())
+        .unwrap_or_default();
+
+    gen_id = gen_id.replace([' ', '.', '-'], &sep);
+
+    while gen_id.contains(&format!("{}{}", sep, sep)) {
+        gen_id = gen_id.replace(&format!("{}{}", sep, sep), &sep);
+    }
+
+    if gen_id.ends_with(&sep) {
+        gen_id.pop();
+    }
+
+    if idprefix.is_empty() && gen_id.starts_with(&sep) {
+        gen_id = gen_id[sep.len()..].to_string();
+    }
+
+    gen_id
+}
+
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::panic)]
     #![allow(clippy::unwrap_used)]
 
     use pretty_assertions_sorted::assert_eq;
@@ -337,7 +429,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -370,6 +462,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -400,7 +493,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -453,6 +546,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -485,7 +579,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -562,6 +656,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -594,7 +689,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -671,6 +766,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -714,7 +810,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -800,6 +896,7 @@ mod tests {
                             title: None,
                             anchor: None,
                             attrlist: None,
+                            section_id: Some("_section_2"),
                         })
                     ],
                     source: Span {
@@ -812,6 +909,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -842,7 +940,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -895,6 +993,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -925,7 +1024,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -978,6 +1077,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1018,6 +1118,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with <strong>bold</strong> text"
             );
+
+            assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
         #[test]
@@ -1046,6 +1148,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with &lt;brackets&gt; &amp; ampersands"
             );
+
+            assert_eq!(mi.item.id().unwrap(), "_section_with_brackets_ampersands");
         }
 
         #[test]
@@ -1118,6 +1222,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
         #[test]
@@ -1135,6 +1240,7 @@ mod tests {
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
             assert_eq!(mi.item.nested_blocks().len(), 1);
+            assert_eq!(mi.item.id().unwrap(), "_level_1");
 
             assert_eq!(
                 warnings,
@@ -1195,7 +1301,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1228,6 +1334,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1258,7 +1365,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1311,6 +1418,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1343,7 +1451,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1420,6 +1528,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1452,7 +1561,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1529,6 +1638,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1572,7 +1682,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1658,6 +1768,7 @@ mod tests {
                             title: None,
                             anchor: None,
                             attrlist: None,
+                            section_id: Some("_section_2"),
                         })
                     ],
                     source: Span {
@@ -1670,6 +1781,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1700,7 +1812,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1753,6 +1865,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1783,7 +1896,7 @@ mod tests {
             assert_eq!(mi.item.raw_context().deref(), "section");
             assert_eq!(mi.item.resolved_context().deref(), "section");
             assert!(mi.item.declared_style().is_none());
-            assert!(mi.item.id().is_none());
+            assert_eq!(mi.item.id().unwrap(), "_section_title");
             assert!(mi.item.roles().is_empty());
             assert!(mi.item.options().is_empty());
             assert!(mi.item.title_source().is_none());
@@ -1836,6 +1949,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 }
             );
 
@@ -1876,6 +1990,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with <strong>bold</strong> text"
             );
+
+            assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
         #[test]
@@ -1976,6 +2092,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
         #[test]
@@ -1993,6 +2110,7 @@ mod tests {
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
             assert_eq!(mi.item.nested_blocks().len(), 1);
+            assert_eq!(mi.item.id().unwrap(), "_level_1");
 
             assert_eq!(
                 warnings,
@@ -2024,6 +2142,7 @@ mod tests {
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
         assert_eq!(mi.item.nested_blocks().len(), 1);
+        assert_eq!(mi.item.id().unwrap(), "_level_1");
 
         assert_eq!(
             warnings,
@@ -2054,7 +2173,138 @@ mod tests {
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
         assert_eq!(mi.item.nested_blocks().len(), 1);
+        assert_eq!(mi.item.id().unwrap(), "_level_1");
 
         assert!(warnings.is_empty());
+    }
+
+    #[test]
+    fn section_id_generation_basic() {
+        let input = "== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section_one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_special_characters() {
+        let input = "== We're back! & Company";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_were_back_company"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_entities() {
+        let input = "== Ben &amp; Jerry &#34;Ice Cream&#34;";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_ben_jerry_ice_cream"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_disabled_when_sectids_unset() {
+        let input = ":!sectids:\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), None);
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_custom_prefix() {
+        let input = ":idprefix: id_\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("id_section_one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_custom_separator() {
+        let input = ":idseparator: -\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section-one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_with_empty_prefix() {
+        let input = ":idprefix:\n\n== Section One";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("section_one"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_removes_trailing_separator() {
+        let input = ":idseparator: -\n\n== Section Title-";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section-title"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_removes_leading_separator_when_prefix_empty() {
+        let input = ":idprefix:\n:idseparator: -\n\n== -Section Title";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("section-title"));
+        } else {
+            panic!("Expected section block");
+        }
+    }
+
+    #[test]
+    fn section_id_generation_handles_multiple_trailing_separators() {
+        let input = ":idseparator: _\n\n== Title with Multiple Dots...";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_title_with_multiple_dots"));
+        } else {
+            panic!("Expected section block");
+        }
     }
 }

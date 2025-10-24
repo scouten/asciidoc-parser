@@ -159,6 +159,7 @@ At the end of the value, press kbd:[Enter].
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 
@@ -252,6 +253,7 @@ That means you don't need to escape special characters such in an HTML tag.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -347,6 +349,7 @@ Attribute references in the value of an attribute entry are resolved immediately
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 
@@ -419,6 +422,7 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 

@@ -97,6 +97,7 @@ It will be styled as a sidebar.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -192,6 +193,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 warning: WarningType::UnterminatedDelimitedBlock,
             },],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }

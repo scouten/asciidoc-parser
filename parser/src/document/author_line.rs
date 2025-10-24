@@ -1065,6 +1065,7 @@ mod tests {
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

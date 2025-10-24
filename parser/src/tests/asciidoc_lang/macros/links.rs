@@ -134,6 +134,7 @@ Depending on the capabilities of the web application, the space character can be
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -252,6 +253,7 @@ The prefix will still be present in the link target.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

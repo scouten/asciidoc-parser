@@ -825,6 +825,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -880,6 +881,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -934,6 +936,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1008,6 +1011,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1064,6 +1068,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1120,6 +1125,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1195,6 +1201,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1256,6 +1263,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1310,6 +1318,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1385,6 +1394,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1460,6 +1470,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1520,6 +1531,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1574,6 +1586,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1628,6 +1641,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1683,6 +1697,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1738,6 +1753,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1792,6 +1808,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1846,6 +1863,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1900,6 +1918,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }
@@ -1954,6 +1973,7 @@ mod tests {
                     },
                     warnings: &[],
                     source_map: SourceMap(&[]),
+                    catalog: Catalog::default(),
                 }
             );
         }

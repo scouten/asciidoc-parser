@@ -103,6 +103,7 @@ fn revision_number_only() {
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -173,6 +174,7 @@ fn version_and_date() {
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -243,6 +245,7 @@ A `v` prefix before the version number is optional.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -313,6 +316,7 @@ fn version_and_remark() {
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -383,6 +387,7 @@ A `v` prefix before the version number is optional.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -453,6 +458,7 @@ fn version_date_and_remark() {
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -524,6 +530,7 @@ A `v` prefix before the version number is optional.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -611,6 +618,7 @@ The date can contain letters, numbers, symbols, and attribute references.
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -708,6 +716,7 @@ To display the letters or symbols in front of a revision number, xref:revision-a
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }

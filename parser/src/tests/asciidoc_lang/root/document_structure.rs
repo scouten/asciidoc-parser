@@ -89,6 +89,7 @@ This is a basic AsciiDoc document.
                 })],
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -185,6 +186,7 @@ This document contains two paragraphs.
                 ],
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -304,8 +306,9 @@ It also has a header that specifies the document title.
                     offset: 0
                 },
                 warnings: &[],
-                       source_map: SourceMap(&[]),
- }
+                source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
+            }
         );
     }
 
@@ -566,6 +569,7 @@ A single empty line separates the header from the body.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

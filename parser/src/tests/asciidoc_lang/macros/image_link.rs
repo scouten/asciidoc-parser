@@ -117,6 +117,7 @@ image::logo.png[Logo]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -201,6 +202,7 @@ image::logo.png[Logo,link=https://example.org]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -267,6 +269,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -385,6 +388,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

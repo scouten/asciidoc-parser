@@ -83,6 +83,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -143,6 +144,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -203,6 +205,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -263,6 +266,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -324,6 +328,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -395,6 +400,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -464,6 +470,7 @@ To accommodate this convention, the AsciiDoc processor will still recognize the 
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -539,6 +546,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -616,6 +624,7 @@ For email address which do not conform to these restriction, you can use the xre
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -718,6 +727,7 @@ The URL and email address will both be shown in plain text.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -801,6 +811,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

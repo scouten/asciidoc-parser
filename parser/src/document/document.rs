@@ -166,7 +166,7 @@ impl std::fmt::Debug for Document<'_> {
 mod tests {
     #![allow(clippy::unwrap_used)]
 
-    use std::ops::Deref;
+    use std::{collections::HashMap, ops::Deref};
 
     use pretty_assertions_sorted::assert_eq;
 
@@ -174,6 +174,7 @@ mod tests {
         Parser,
         blocks::{ContentModel, IsBlock, MediaType},
         content::SubstitutionGroup,
+        document::RefType,
         tests::prelude::*,
         warnings::WarningType,
     };
@@ -220,6 +221,7 @@ mod tests {
                 blocks: &[],
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -252,6 +254,7 @@ mod tests {
                 blocks: &[],
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -305,6 +308,7 @@ mod tests {
                 })],
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
 
@@ -382,6 +386,7 @@ mod tests {
                 ],
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -462,6 +467,7 @@ mod tests {
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -544,6 +550,7 @@ mod tests {
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -632,6 +639,7 @@ mod tests {
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -689,6 +697,7 @@ mod tests {
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -780,6 +789,7 @@ mod tests {
                     warning: WarningType::DocumentHeaderNotTerminated,
                 },],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -930,6 +940,7 @@ mod tests {
                     title: None,
                     anchor: None,
                     attrlist: None,
+                    section_id: Some("_section_title"),
                 },
             )],
             source: Span {
@@ -959,6 +970,20 @@ mod tests {
                 },
             ],
             source_map: SourceMap(&[]),
+            catalog: Catalog {
+                refs: HashMap::from([
+                    ("_section_title", RefEntry {
+                        id: "_section_title",
+                        reftext: Some(
+                            "Section Title",
+                        ),
+                        ref_type: RefType::Section,
+                    }),
+                ]),
+                reftext_to_id: HashMap::from([
+                    ("Section Title", "_section_title"),
+                ]),
+            }
         }
     );
     }

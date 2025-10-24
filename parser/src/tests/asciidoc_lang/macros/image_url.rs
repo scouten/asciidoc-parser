@@ -115,6 +115,7 @@ include::example$image.adoc[tag=url]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -189,6 +190,7 @@ include::example$image.adoc[tag=in-url]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

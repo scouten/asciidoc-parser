@@ -9,10 +9,10 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Catalog {
     /// Primary registry mapping IDs to reference entries.
-    refs: HashMap<String, RefEntry>,
+    pub(crate) refs: HashMap<String, RefEntry>,
 
     /// Reverse lookup cache: reftext -> ID.
-    reftext_to_id: HashMap<String, String>,
+    pub(crate) reftext_to_id: HashMap<String, String>,
 }
 
 impl Catalog {
@@ -73,7 +73,6 @@ impl Catalog {
     ///
     /// # Returns
     /// The unique ID that was generated and registered.
-    #[allow(unused)]
     pub(crate) fn generate_and_register_unique_id(
         &mut self,
         base_id: &str,

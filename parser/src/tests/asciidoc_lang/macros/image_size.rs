@@ -114,6 +114,7 @@ image::flower.jpg[Flower,640,480]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -204,6 +205,7 @@ image::flower.jpg[alt=Flower,width=640,height=480]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

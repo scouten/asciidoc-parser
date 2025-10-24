@@ -98,6 +98,7 @@ include::partial$ts-url-format.adoc[tag=sb]
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -152,6 +153,7 @@ fn pass_macro() {
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -207,6 +209,7 @@ fn double_plus_inline_macro() {
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }

@@ -139,6 +139,7 @@ include::example$image.adoc[tag=float]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -209,6 +210,7 @@ include::example$image.adoc[tag=in-float]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -335,6 +337,7 @@ include::example$image.adoc[tag=role]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -401,6 +404,7 @@ include::example$image.adoc[tag=in-role]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

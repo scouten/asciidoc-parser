@@ -102,6 +102,7 @@ The author line also accepts xref:multiple-authors.adoc[multiple authors].
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -183,6 +184,7 @@ The processor assigns the content on the author line to the built-in attributes 
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }

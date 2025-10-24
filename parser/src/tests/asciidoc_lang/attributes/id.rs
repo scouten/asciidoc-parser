@@ -599,6 +599,7 @@ The id (`#`) shorthand can be used on inline quoted text.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -666,15 +667,18 @@ The id (`#`) shorthand can be used on inline quoted text.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
 }
 
 mod anchor {
+    use std::collections::HashMap;
+
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, document::RefType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -747,6 +751,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
 
@@ -800,6 +805,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
 
@@ -853,6 +859,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
 
@@ -906,6 +913,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -968,6 +976,7 @@ The shorthand form in an attribute list does not impose this restriction.
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1053,6 +1062,17 @@ include::example$id.adoc[tag=block-id-shorthand]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([(
+                        "notice",
+                        RefEntry {
+                            id: "notice",
+                            reftext: None,
+                            ref_type: RefType::Anchor,
+                        }
+                    ),]),
+                    reftext_to_id: HashMap::default(),
+                },
             }
         );
     }
@@ -1127,6 +1147,17 @@ include::example$id.adoc[tag=block-id-brackets]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([(
+                        "notice",
+                        RefEntry {
+                            id: "notice",
+                            reftext: None,
+                            ref_type: RefType::Anchor,
+                        }
+                    ),]),
+                    reftext_to_id: HashMap::default(),
+                },
             }
         );
     }
@@ -1200,6 +1231,7 @@ include::example$id.adoc[tag=anchor-brackets]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1270,6 +1302,7 @@ include::example$id.adoc[tag=anchor-shorthand]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

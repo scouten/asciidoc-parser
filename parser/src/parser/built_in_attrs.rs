@@ -63,6 +63,24 @@ pub(super) fn built_in_attrs() -> HashMap<String, AttributeValue> {
     );
 
     attrs.insert(
+        "idprefix".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::Anywhere,
+            value: InterpretedValue::Value("_".into()),
+        },
+    );
+
+    attrs.insert(
+        "idseparator".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::Anywhere,
+            value: InterpretedValue::Value("_".into()),
+        },
+    );
+
+    attrs.insert(
         "example-caption".to_owned(),
         AttributeValue {
             allowable_value: AllowableValue::Any,

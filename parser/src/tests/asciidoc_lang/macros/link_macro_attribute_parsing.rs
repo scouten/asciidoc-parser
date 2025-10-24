@@ -86,6 +86,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -165,6 +166,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -233,6 +235,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -300,6 +303,7 @@ https://example.org["1=2 posits the problem of inequality"]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -368,6 +372,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -445,6 +450,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -537,6 +543,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -610,6 +617,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -691,6 +699,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -758,6 +767,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -826,6 +836,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -894,6 +905,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -960,6 +972,7 @@ link:post.html[My Post,opts=nofollow]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1032,6 +1045,7 @@ include::example$url.adoc[tag=linkattrs-s]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1107,6 +1121,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -1172,6 +1187,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }

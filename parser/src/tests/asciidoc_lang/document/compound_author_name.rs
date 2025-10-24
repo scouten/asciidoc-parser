@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*};
+use crate::{Parser, document::RefType, tests::prelude::*};
 
 track_file!("docs/modules/document/pages/compound-author-name.adoc");
 
@@ -102,6 +104,7 @@ Thus, it's important to use the underscore separator to ensure there are no more
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -194,6 +197,7 @@ image::author-line-with-compound-names.png[Compound author names displayed in th
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -325,6 +329,7 @@ image::reference-compound-names.png[Compound author names displayed in the docum
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog::default(),
         }
     );
 }
@@ -453,6 +458,7 @@ image::author-attribute-with-compound-name.png[Compound author name displayed in
                 title: None,
                 anchor: None,
                 attrlist: None,
+                section_id: Some("_about_mara_moss_wirribi"),
             },),],
             source: Span {
                 data: "= Quantum Networks\n:author: Mara_Moss Wirribi\n\n== About {author}\n\n{firstname} lives on the Bellarine Peninsula near Geelong, Australia.",
@@ -462,6 +468,20 @@ image::author-attribute-with-compound-name.png[Compound author name displayed in
             },
             warnings: &[],
             source_map: SourceMap(&[]),
+            catalog: Catalog {
+                refs: HashMap::from([(
+                    "_about_mara_moss_wirribi",
+                    RefEntry {
+                        id: "_about_mara_moss_wirribi",
+                        reftext: Some("About Mara_Moss Wirribi",),
+                        ref_type: RefType::Section,
+                    }
+                ),]),
+                reftext_to_id: HashMap::from([(
+                    "About Mara_Moss Wirribi",
+                    "_about_mara_moss_wirribi"
+                ),]),
+            },
         }
     );
 }

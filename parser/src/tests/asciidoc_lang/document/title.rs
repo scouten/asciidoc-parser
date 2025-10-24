@@ -98,6 +98,7 @@ image::document-title.png[Title of document]
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
@@ -226,6 +227,7 @@ The `doctitle` attribute can also be explicitly set and assigned a value using a
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
+                catalog: Catalog::default(),
             }
         );
     }
