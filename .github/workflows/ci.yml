@@ -236,8 +236,8 @@ jobs:
         # that are not in stable Rust as of this writing (Rust 1.88).
         uses: dtolnay/rust-toolchain@nightly
 
-      - name: Run cargo docs
-        run: cargo +nightly docs --no-deps --document-private-items
+      - name: Preflight cargo doc
+        run: cargo +nightly doc --no-deps --document-private-items
 
   cargo-deny:
     name: License / vulnerability audit
