@@ -87,7 +87,7 @@ impl<'src> SectionBlock<'src> {
                         .is_err()
                 {
                     warnings.push(Warning {
-                        source: metadata.block_start.take_normalized_line().item,
+                        source: metadata.source.trim_remainder(level_and_title.after),
                         warning: WarningType::DuplicateId(manual_id.to_string()),
                     });
                 }
@@ -249,7 +249,15 @@ fn peer_or_ancestor_section<'src>(
     most_recent_level: &mut usize,
     warnings: &mut Vec<Warning<'src>>,
 ) -> bool {
-    if let Some(mi) = parse_title_line(source, warnings) {
+    // Skip over any block metadata (title, anchor, attrlist) to find the actual
+    // section line. We create a temporary parser to avoid modifying the real
+    // parser state.
+    let mut temp_parser = Parser::default();
+    let source_after_metadata = BlockMetadata::parse(source, &mut temp_parser)
+        .item
+        .block_start;
+
+    if let Some(mi) = parse_title_line(source_after_metadata, warnings) {
         let found_level = mi.item.0;
 
         if found_level > *most_recent_level + 1 {
@@ -2322,5 +2330,29 @@ mod tests {
         } else {
             panic!("Expected section block");
         }
+    }
+
+    #[test]
+    fn warn_duplicate_manual_section_id() {
+        let input = "[#my_id]\n== First Section\n\n[#my_id]\n== Second Section";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        let mut warnings = document.warnings();
+
+        assert_eq!(
+            warnings.next().unwrap(),
+            Warning {
+                source: Span {
+                    data: "[#my_id]\n== Second Section",
+                    line: 4,
+                    col: 1,
+                    offset: 27,
+                },
+                warning: WarningType::DuplicateId("my_id".to_owned()),
+            }
+        );
+
+        assert!(warnings.next().is_none());
     }
 }

@@ -572,50 +572,24 @@ By doing so, you can disable ID generation for only certain sections and discret
                             },
                             rendered: "ID generation off",
                         },
-                        blocks: &[
-                            Block::DocumentAttribute(Attribute {
-                                name: Span {
-                                    data: "sectids",
-                                    line: 5,
-                                    col: 2,
-                                    offset: 54,
-                                },
-                                value_source: None,
-                                value: InterpretedValue::Set,
-                                source: Span {
-                                    data: ":sectids:",
-                                    line: 5,
-                                    col: 1,
-                                    offset: 53,
-                                },
-                            },),
-                            Block::Section(SectionBlock {
-                                level: 1,
-                                section_title: Content {
-                                    original: Span {
-                                        data: "ID generation on again",
-                                        line: 7,
-                                        col: 4,
-                                        offset: 67,
-                                    },
-                                    rendered: "ID generation on again",
-                                },
-                                blocks: &[],
-                                source: Span {
-                                    data: "== ID generation on again",
-                                    line: 7,
-                                    col: 1,
-                                    offset: 64,
-                                },
-                                title_source: None,
-                                title: None,
-                                anchor: None,
-                                attrlist: None,
-                                section_id: Some("_id_generation_on_again",),
-                            },),
-                        ],
+                        blocks: &[Block::DocumentAttribute(Attribute {
+                            name: Span {
+                                data: "sectids",
+                                line: 5,
+                                col: 2,
+                                offset: 54,
+                            },
+                            value_source: None,
+                            value: InterpretedValue::Set,
+                            source: Span {
+                                data: ":sectids:",
+                                line: 5,
+                                col: 1,
+                                offset: 53,
+                            },
+                        },),],
                         source: Span {
-                            data: "== ID generation off\n:sectids:\n\n== ID generation on again",
+                            data: "== ID generation off\n:sectids:",
                             line: 4,
                             col: 1,
                             offset: 32,
@@ -625,6 +599,30 @@ By doing so, you can disable ID generation for only certain sections and discret
                         anchor: None,
                         attrlist: None,
                         section_id: None,
+                    },),
+                    Block::Section(SectionBlock {
+                        level: 1,
+                        section_title: Content {
+                            original: Span {
+                                data: "ID generation on again",
+                                line: 7,
+                                col: 4,
+                                offset: 67,
+                            },
+                            rendered: "ID generation on again",
+                        },
+                        blocks: &[],
+                        source: Span {
+                            data: "== ID generation on again",
+                            line: 7,
+                            col: 1,
+                            offset: 64,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        attrlist: None,
+                        section_id: Some("_id_generation_on_again",),
                     },),
                 ],
                 source: Span {
