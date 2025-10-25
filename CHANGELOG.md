@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0](https://github.com/scouten/asciidoc-parser/compare/v0.10.0...v0.11.0)
+_25 October 2025_
+
+### Added
+
+* Implement auto-generation of section IDs when appropriate ([#412](https://github.com/scouten/asciidoc-parser/pull/412))
+* Implement a document catalog ([#414](https://github.com/scouten/asciidoc-parser/pull/414))
+* Support Markdown-style (`##`, etc) section headings ([#406](https://github.com/scouten/asciidoc-parser/pull/406))
+
+### Fixed
+
+* Don't warn on skipped section level at root of document ([#407](https://github.com/scouten/asciidoc-parser/pull/407))
+* Enforce limits on section levels ([#404](https://github.com/scouten/asciidoc-parser/pull/404))
+
 ## [0.10.0](https://github.com/scouten/asciidoc-parser/compare/v0.9.0...v0.10.0)
 _14 October 2025_
 
