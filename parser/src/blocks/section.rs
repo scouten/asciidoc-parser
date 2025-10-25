@@ -82,13 +82,12 @@ impl<'src> SectionBlock<'src> {
                 ))
             } else {
                 if let Some(manual_id) = manual_id
-                    && catalog.register_ref(
-                        manual_id,
-                        Some(section_title.rendered()),
-                        RefType::Section,
-                    ).is_err() {
-                        todo!("Handle duplicate ID assignment");
-                    }
+                    && catalog
+                        .register_ref(manual_id, Some(section_title.rendered()), RefType::Section)
+                        .is_err()
+                {
+                    todo!("Handle duplicate ID assignment");
+                }
                 None
             }
         } else {
