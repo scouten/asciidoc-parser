@@ -359,7 +359,6 @@ Unless empty, the value of the `idseparator` must be _exactly one valid ID chara
     fn remove_value() {
         verifies!(
             r#"
-
 If you don't want to use a separator, set the attribute to an empty value.
 
 [source]
