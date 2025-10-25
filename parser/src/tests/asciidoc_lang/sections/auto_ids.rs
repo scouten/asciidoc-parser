@@ -1,5 +1,4 @@
-#![allow(unused)]
-use crate::{Parser, document::RefType, tests::prelude::*, warnings::WarningType};
+use crate::tests::prelude::*;
 
 track_file!("docs/modules/sections/pages/auto-ids.adoc");
 
@@ -23,7 +22,7 @@ mod how_a_section_id_is_computed {
 
     use crate::{
         Parser, blocks::metadata::BlockMetadata, document::RefType, parser::ModificationContext,
-        tests::prelude::*, warnings::WarningType,
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -465,7 +464,7 @@ mod disable_automatic_section_id_generation {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, document::RefType, tests::prelude::*, warnings::WarningType};
+    use crate::{Parser, document::RefType, tests::prelude::*};
 
     non_normative!(
         r#"
