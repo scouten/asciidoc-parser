@@ -44,6 +44,10 @@ impl<'src> SectionBlock<'src> {
         let source = metadata.block_start.discard_empty_lines();
         let level_and_title = parse_title_line(source, warnings)?;
 
+        // Take a snapshot of `sectids` value before reading child blocks because
+        // the value might be altered while parsing.
+        let sectids = parser.is_attribute_set("sectids");
+
         let mut most_recent_level = level_and_title.item.0;
 
         let mut maw_blocks = parse_blocks_until(
@@ -67,16 +71,13 @@ impl<'src> SectionBlock<'src> {
 
         let proposed_base_id = generate_section_id(section_title.rendered(), parser);
 
-        let section_id = if parser.is_attribute_set("sectids")
-            && dbg!(true)
+        let section_id = if sectids
             && metadata
                 .attrlist
                 .as_ref()
                 .map(|a| a.id().is_none())
                 .unwrap_or(true)
-            && dbg!(true)
             && let Some(catalog) = parser.catalog_mut()
-            && dbg!(true)
         {
             Some(catalog.generate_and_register_unique_id(
                 &proposed_base_id,
@@ -278,11 +279,14 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
         .unwrap_or_default()
         .to_owned();
 
-    let mut gen_id = format!("{}{}", idprefix, title.to_lowercase());
+    let mut gen_id = title.to_lowercase().to_owned();
 
     #[allow(clippy::unwrap_used)]
     static INVALID_SECTION_ID_CHARS: LazyLock<Regex> = LazyLock::new(|| {
-        Regex::new(r"<[^>]+>|&(?:[a-z][a-z]+\d{0,2}|#\d{2,5}|#x[\da-f]{2,4});|[^ \w\-.]+").unwrap()
+        Regex::new(
+            r"<[^>]+>|&lt;[^&]*&gt;|&(?:[a-z][a-z]+\d{0,2}|#\d{2,5}|#x[\da-f]{2,4});|[^ \w\-.]+",
+        )
+        .unwrap()
     });
 
     gen_id = INVALID_SECTION_ID_CHARS
@@ -310,7 +314,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
         gen_id = gen_id[sep.len()..].to_string();
     }
 
-    gen_id
+    format!("{idprefix}{gen_id}")
 }
 
 #[cfg(test)]
@@ -1149,7 +1153,7 @@ mod tests {
                 "Section with &lt;brackets&gt; &amp; ampersands"
             );
 
-            assert_eq!(mi.item.id().unwrap(), "_section_with_brackets_ampersands");
+            assert_eq!(mi.item.id().unwrap(), "_section_with_ampersands");
         }
 
         #[test]
