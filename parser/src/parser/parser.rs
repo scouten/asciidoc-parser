@@ -339,6 +339,8 @@ impl Parser {
     }
 
     /// Called from [`Header::parse()`] to accept or reject an attribute value.
+    ///
+    /// [`Header::parse()`]: crate::document::Header::parse
     pub(crate) fn set_attribute_from_header<'src>(
         &mut self,
         attr: &Attribute<'src>,
@@ -378,6 +380,8 @@ impl Parser {
 
     /// Called from [`Header::parse()`] for a value that is derived from parsing
     /// the header (except for attribute lines).
+    ///
+    /// [`Header::parse()`]: crate::document::Header::parse
     pub(crate) fn set_attribute_by_value_from_header<N: AsRef<str>, V: AsRef<str>>(
         &mut self,
         name: N,
@@ -396,6 +400,8 @@ impl Parser {
 
     /// Called from [`Block::parse()`] to accept or reject an attribute value
     /// from a document (body) attribute.
+    ///
+    /// [`Block::parse()`]: crate::blocks::Block::parse
     pub(crate) fn set_attribute_from_body<'src>(
         &mut self,
         attr: &Attribute<'src>,

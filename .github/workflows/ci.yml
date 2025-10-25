@@ -215,6 +215,30 @@ jobs:
           RUSTDOCFLAGS: --cfg docsrs
           DOCS_RS: 1
 
+  internal_docs:
+    name: Verify internal crate documentation
+    if: |
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
+      github.event.pull_request.author_association == 'COLLABORATOR' ||
+      github.event.pull_request.author_association == 'MEMBER' ||
+      github.event.pull_request.user.login == 'dependabot[bot]' ||
+      contains(github.event.pull_request.labels.*.name, 'safe to test')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install nightly Rust toolchain
+        # Nightly is used here because we use doc_cfg features
+        # that are not in stable Rust as of this writing (Rust 1.88).
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Preflight cargo doc
+        run: cargo +nightly doc --no-deps --document-private-items
+
   cargo-deny:
     name: License / vulnerability audit
     if: |
