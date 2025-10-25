@@ -1,6 +1,6 @@
 use crate::tests::prelude::*;
 
-track_file!("docs/modules/sections/pages/auto-ids.adoc");
+track_file!("docs/modules/sections/pages/id-prefix-and-separator.adoc");
 
 non_normative!(
     r#"
