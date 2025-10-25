@@ -86,8 +86,12 @@ impl<'src> SectionBlock<'src> {
                         .register_ref(manual_id, Some(section_title.rendered()), RefType::Section)
                         .is_err()
                 {
-                    todo!("Handle duplicate ID assignment");
+                    warnings.push(Warning {
+                        source: metadata.block_start.take_normalized_line().item,
+                        warning: WarningType::DuplicateId(manual_id.to_string()),
+                    });
                 }
+
                 None
             }
         } else {
