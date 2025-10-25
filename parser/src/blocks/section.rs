@@ -71,19 +71,29 @@ impl<'src> SectionBlock<'src> {
 
         let proposed_base_id = generate_section_id(section_title.rendered(), parser);
 
-        let section_id = if sectids
-            && metadata
-                .attrlist
-                .as_ref()
-                .map(|a| a.id().is_none())
-                .unwrap_or(true)
-            && let Some(catalog) = parser.catalog_mut()
-        {
-            Some(catalog.generate_and_register_unique_id(
-                &proposed_base_id,
-                Some(section_title.rendered()),
-                RefType::Section,
-            ))
+        let manual_id = metadata.attrlist.as_ref().and_then(|a| a.id());
+
+        let section_id = if let Some(catalog) = parser.catalog_mut() {
+            if sectids && manual_id.is_none() {
+                Some(catalog.generate_and_register_unique_id(
+                    &proposed_base_id,
+                    Some(section_title.rendered()),
+                    RefType::Section,
+                ))
+            } else {
+                if let Some(manual_id) = manual_id
+                    && catalog
+                        .register_ref(manual_id, Some(section_title.rendered()), RefType::Section)
+                        .is_err()
+                {
+                    warnings.push(Warning {
+                        source: metadata.source.trim_remainder(level_and_title.after),
+                        warning: WarningType::DuplicateId(manual_id.to_string()),
+                    });
+                }
+
+                None
+            }
         } else {
             None
         };
@@ -131,8 +141,8 @@ impl<'src> SectionBlock<'src> {
     }
 
     /// Accessor intended to be used for testing only. Use the `id()` accessor
-    /// in the `IsBlock` to retrieve the effective ID for this block, which
-    /// considers both auto-generated IDs and manually-set IDs.
+    /// in the `IsBlock` trait to retrieve the effective ID for this block,
+    /// which considers both auto-generated IDs and manually-set IDs.
     #[cfg(test)]
     pub(crate) fn section_id(&'src self) -> Option<&'src str> {
         self.section_id.as_deref()
@@ -239,7 +249,15 @@ fn peer_or_ancestor_section<'src>(
     most_recent_level: &mut usize,
     warnings: &mut Vec<Warning<'src>>,
 ) -> bool {
-    if let Some(mi) = parse_title_line(source, warnings) {
+    // Skip over any block metadata (title, anchor, attrlist) to find the actual
+    // section line. We create a temporary parser to avoid modifying the real
+    // parser state.
+    let mut temp_parser = Parser::default();
+    let source_after_metadata = BlockMetadata::parse(source, &mut temp_parser)
+        .item
+        .block_start;
+
+    if let Some(mi) = parse_title_line(source_after_metadata, warnings) {
         let found_level = mi.item.0;
 
         if found_level > *most_recent_level + 1 {
@@ -2312,5 +2330,29 @@ mod tests {
         } else {
             panic!("Expected section block");
         }
+    }
+
+    #[test]
+    fn warn_duplicate_manual_section_id() {
+        let input = "[#my_id]\n== First Section\n\n[#my_id]\n== Second Section";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        let mut warnings = document.warnings();
+
+        assert_eq!(
+            warnings.next().unwrap(),
+            Warning {
+                source: Span {
+                    data: "[#my_id]\n== Second Section",
+                    line: 4,
+                    col: 1,
+                    offset: 27,
+                },
+                warning: WarningType::DuplicateId("my_id".to_owned()),
+            }
+        );
+
+        assert!(warnings.next().is_none());
     }
 }
