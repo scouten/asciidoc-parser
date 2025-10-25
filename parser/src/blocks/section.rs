@@ -302,16 +302,18 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 
     gen_id = gen_id.replace([' ', '.', '-'], &sep);
 
-    while gen_id.contains(&format!("{}{}", sep, sep)) {
-        gen_id = gen_id.replace(&format!("{}{}", sep, sep), &sep);
-    }
+    if !sep.is_empty() {
+        while gen_id.contains(&format!("{}{}", sep, sep)) {
+            gen_id = gen_id.replace(&format!("{}{}", sep, sep), &sep);
+        }
 
-    if gen_id.ends_with(&sep) {
-        gen_id.pop();
-    }
+        if gen_id.ends_with(&sep) {
+            gen_id.pop();
+        }
 
-    if idprefix.is_empty() && gen_id.starts_with(&sep) {
-        gen_id = gen_id[sep.len()..].to_string();
+        if idprefix.is_empty() && gen_id.starts_with(&sep) {
+            gen_id = gen_id[sep.len()..].to_string();
+        }
     }
 
     format!("{idprefix}{gen_id}")
