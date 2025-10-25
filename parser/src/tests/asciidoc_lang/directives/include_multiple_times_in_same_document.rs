@@ -316,6 +316,22 @@ The single quotes around the variable name in the assignment are required to for
             catalog: Catalog {
                 refs: HashMap::from([
                     (
+                        "chain-maintenance",
+                        RefEntry {
+                            id: "chain-maintenance",
+                            reftext: Some("Chain",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
+                        "chain-operation",
+                        RefEntry {
+                            id: "chain-operation",
+                            reftext: Some("Chain",),
+                            ref_type: RefType::Section,
+                        }
+                    ),
+                    (
                         "_maintenance",
                         RefEntry {
                             id: "_maintenance",
@@ -330,11 +346,12 @@ The single quotes around the variable name in the assignment are required to for
                             reftext: Some("Operation",),
                             ref_type: RefType::Section,
                         },
-                    )
+                    ),
                 ]),
                 reftext_to_id: HashMap::from([
                     ("Maintenance", "_maintenance"),
                     ("Operation", "_operation"),
+                    ("Chain", "chain-operation"),
                 ])
             },
         }
