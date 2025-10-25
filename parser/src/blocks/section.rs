@@ -71,19 +71,27 @@ impl<'src> SectionBlock<'src> {
 
         let proposed_base_id = generate_section_id(section_title.rendered(), parser);
 
-        let section_id = if sectids
-            && metadata
-                .attrlist
-                .as_ref()
-                .map(|a| a.id().is_none())
-                .unwrap_or(true)
-            && let Some(catalog) = parser.catalog_mut()
-        {
-            Some(catalog.generate_and_register_unique_id(
-                &proposed_base_id,
-                Some(section_title.rendered()),
-                RefType::Section,
-            ))
+        let manual_id = metadata.attrlist.as_ref().and_then(|a| a.id());
+
+        let section_id = if let Some(catalog) = parser.catalog_mut() {
+            if sectids && manual_id.is_none() {
+                Some(catalog.generate_and_register_unique_id(
+                    &proposed_base_id,
+                    Some(section_title.rendered()),
+                    RefType::Section,
+                ))
+            } else {
+                if let Some(manual_id) = manual_id {
+                    if let Err(_) = catalog.register_ref(
+                        manual_id,
+                        Some(section_title.rendered()),
+                        RefType::Section,
+                    ) {
+                        todo!("Handle duplicate ID assignment");
+                    }
+                }
+                None
+            }
         } else {
             None
         };
@@ -131,8 +139,8 @@ impl<'src> SectionBlock<'src> {
     }
 
     /// Accessor intended to be used for testing only. Use the `id()` accessor
-    /// in the `IsBlock` to retrieve the effective ID for this block, which
-    /// considers both auto-generated IDs and manually-set IDs.
+    /// in the `IsBlock` trait to retrieve the effective ID for this block,
+    /// which considers both auto-generated IDs and manually-set IDs.
     #[cfg(test)]
     pub(crate) fn section_id(&'src self) -> Option<&'src str> {
         self.section_id.as_deref()
