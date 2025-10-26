@@ -73,17 +73,23 @@ impl<'src> SectionBlock<'src> {
 
         let manual_id = metadata.attrlist.as_ref().and_then(|a| a.id());
 
+        let reftext = metadata
+            .attrlist
+            .as_ref()
+            .and_then(|a| a.named_attribute("reftext").map(|a| a.value()))
+            .unwrap_or_else(|| section_title.rendered());
+
         let section_id = if let Some(catalog) = parser.catalog_mut() {
             if sectids && manual_id.is_none() {
                 Some(catalog.generate_and_register_unique_id(
                     &proposed_base_id,
-                    Some(section_title.rendered()),
+                    Some(reftext),
                     RefType::Section,
                 ))
             } else {
                 if let Some(manual_id) = manual_id
                     && catalog
-                        .register_ref(manual_id, Some(section_title.rendered()), RefType::Section)
+                        .register_ref(manual_id, Some(reftext), RefType::Section)
                         .is_err()
                 {
                     warnings.push(Warning {
@@ -2354,5 +2360,44 @@ mod tests {
         );
 
         assert!(warnings.next().is_none());
+    }
+
+    #[test]
+    fn section_with_custom_reftext_attribute() {
+        let input = "[reftext=\"Custom Reference Text\"]\n== Section Title";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section_title"));
+        } else {
+            panic!("Expected section block");
+        }
+
+        let catalog = document.catalog();
+        let entry = catalog.get_ref("_section_title");
+        assert!(entry.is_some());
+        assert_eq!(
+            entry.unwrap().reftext,
+            Some("Custom Reference Text".to_string())
+        );
+    }
+
+    #[test]
+    fn section_without_reftext_uses_title() {
+        let input = "== Section Title";
+        let mut parser = Parser::default();
+        let document = parser.parse(input);
+
+        if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+            assert_eq!(section.id(), Some("_section_title"));
+        } else {
+            panic!("Expected section block");
+        }
+
+        let catalog = document.catalog();
+        let entry = catalog.get_ref("_section_title");
+        assert!(entry.is_some());
+        assert_eq!(entry.unwrap().reftext, Some("Section Title".to_string()));
     }
 }
