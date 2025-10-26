@@ -18,8 +18,13 @@ pub(crate) struct BlockMetadata<'src> {
     pub(crate) title: Option<String>,
 
     /// The block's anchor, if any. The span does not include the opening or
-    /// closing square brace pair.
+    /// closing square brace pair, nor reftext if it exists.
     pub(crate) anchor: Option<Span<'src>>,
+
+    /// The block anchor's reftext, if any. The span includes only the portion
+    /// from the first comma to just inside the closing square brace pair.
+    #[allow(unused)]
+    pub(crate) anchor_reftext: Option<Span<'src>>,
 
     /// The block's attribute list, if any.
     pub(crate) attrlist: Option<Attrlist<'src>>,
@@ -72,10 +77,16 @@ impl<'src> BlockMetadata<'src> {
         // Does this block have a block anchor?
         let mut anchor_maw = parse_maybe_block_anchor(block_start);
 
-        let (anchor, block_start) = if let Some(mi) = anchor_maw.item {
-            (Some(mi.item), mi.after)
+        let (anchor, reftext, block_start) = if let Some(mi) = anchor_maw.item {
+            if let Some(comma_split) = mi.item.split_at_match_non_empty(|c| c == ',') {
+                let anchor = comma_split.item;
+                let reftext = comma_split.after;
+                (Some(anchor), Some(reftext), mi.after)
+            } else {
+                (Some(mi.item), None, mi.after)
+            }
         } else {
-            (None, block_start)
+            (None, None, block_start)
         };
 
         if !anchor_maw.warnings.is_empty() {
@@ -106,6 +117,7 @@ impl<'src> BlockMetadata<'src> {
                 title_source,
                 title,
                 anchor,
+                anchor_reftext: reftext,
                 attrlist,
                 source,
                 block_start,
