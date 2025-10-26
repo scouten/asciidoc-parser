@@ -73,17 +73,23 @@ impl<'src> SectionBlock<'src> {
 
         let manual_id = metadata.attrlist.as_ref().and_then(|a| a.id());
 
+        let reftext = metadata
+            .attrlist
+            .as_ref()
+            .and_then(|a| a.named_attribute("reftext").map(|a| a.value()))
+            .unwrap_or_else(|| section_title.rendered());
+
         let section_id = if let Some(catalog) = parser.catalog_mut() {
             if sectids && manual_id.is_none() {
                 Some(catalog.generate_and_register_unique_id(
                     &proposed_base_id,
-                    Some(section_title.rendered()),
+                    Some(reftext),
                     RefType::Section,
                 ))
             } else {
                 if let Some(manual_id) = manual_id
                     && catalog
-                        .register_ref(manual_id, Some(section_title.rendered()), RefType::Section)
+                        .register_ref(manual_id, Some(reftext), RefType::Section)
                         .is_err()
                 {
                     warnings.push(Warning {
