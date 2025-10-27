@@ -80,6 +80,7 @@ This is a sidebar with an option assigned to it, named option.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -92,6 +93,7 @@ This is a sidebar with an option assigned to it, named option.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -168,6 +170,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -180,6 +183,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -265,6 +269,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
                         ElementAttribute {
@@ -356,6 +361,7 @@ This is a sidebar with an option assigned to it, named option.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -368,6 +374,7 @@ This is a sidebar with an option assigned to it, named option.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("opts"),
@@ -443,6 +450,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -455,6 +463,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("opts"),
@@ -540,6 +549,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
                         ElementAttribute {
@@ -648,6 +658,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -735,6 +746,7 @@ property 2:: does different stuff
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
                         ElementAttribute {

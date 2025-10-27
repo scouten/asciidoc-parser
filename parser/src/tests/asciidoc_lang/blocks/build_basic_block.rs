@@ -112,6 +112,7 @@ This is more content in the sidebar block.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
                 Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -135,6 +136,7 @@ This is more content in the sidebar block.
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),
                         Block::Media(MediaBlock {
@@ -164,6 +166,7 @@ This is more content in the sidebar block.
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),
                         Block::Simple(SimpleBlock {
@@ -185,6 +188,7 @@ This is more content in the sidebar block.
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),
                     ],
@@ -198,6 +202,7 @@ This is more content in the sidebar block.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
             ],
@@ -271,6 +276,7 @@ include::example$block.adoc[tag=opt-listing]
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,
@@ -338,6 +344,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,

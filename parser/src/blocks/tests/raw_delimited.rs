@@ -43,6 +43,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -74,6 +75,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -105,6 +107,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -136,6 +139,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -172,6 +176,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Verbatim,
             },)
@@ -233,6 +238,7 @@ mod comment {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::None,
             })
@@ -291,6 +297,7 @@ mod comment {
                 },),
                 title: Some("comment"),
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::None,
             })
@@ -356,6 +363,7 @@ mod comment {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::None,
             })
@@ -409,6 +417,7 @@ mod comment {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::None,
             })
@@ -471,6 +480,7 @@ mod listing {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Verbatim,
             })
@@ -524,6 +534,7 @@ mod listing {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Verbatim,
             })
@@ -593,6 +604,7 @@ mod listing {
                 },),
                 title: Some("listing title"),
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Verbatim,
             })
@@ -669,6 +681,7 @@ mod listing {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Verbatim,
             })
@@ -742,6 +755,7 @@ mod pass {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Pass,
             })
@@ -806,6 +820,7 @@ mod pass {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Pass,
             })
@@ -875,6 +890,7 @@ mod pass {
                 },),
                 title: Some("pass title"),
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Pass,
             })
@@ -951,6 +967,7 @@ mod pass {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 substitution_group: SubstitutionGroup::Pass,
             })

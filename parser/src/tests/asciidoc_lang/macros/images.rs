@@ -95,6 +95,7 @@ include::example$image.adoc[tag=base]
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Media(MediaBlock {
@@ -124,6 +125,7 @@ include::example$image.adoc[tag=base]
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -145,6 +147,7 @@ include::example$image.adoc[tag=base]
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -234,6 +237,7 @@ include::example$image.adoc[tag=alt]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -321,6 +325,7 @@ You can also give the image an ID, title, set its dimensions and make it a link.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -435,6 +440,7 @@ include::example$image.adoc[tag=attr]
                     },),
                     title: Some("A mountain sunset"),
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: Some(Attrlist {
                         attributes: &[
                             ElementAttribute {

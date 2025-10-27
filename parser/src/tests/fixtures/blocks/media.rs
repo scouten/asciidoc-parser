@@ -15,6 +15,7 @@ pub(crate) struct MediaBlock {
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub anchor: Option<Span>,
+    pub anchor_reftext: Option<Span>,
     pub attrlist: Option<Attrlist>,
 }
 
@@ -28,6 +29,7 @@ impl fmt::Debug for MediaBlock {
             .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
+            .field("anchor_reftext", &self.anchor_reftext)
             .field("attrlist", &self.attrlist)
             .finish()
     }
@@ -91,6 +93,17 @@ fn fixture_eq_observed(fixture: &MediaBlock, observed: &crate::blocks::MediaBloc
     if let Some(ref tcdb_anchor) = fixture.anchor
         && let Some(ref cdb_anchor) = observed.anchor()
         && tcdb_anchor != cdb_anchor
+    {
+        return false;
+    }
+
+    if fixture.anchor_reftext.is_some() != observed.anchor_reftext().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_anchor_reftext) = fixture.anchor_reftext
+        && let Some(ref observed_anchor_reftext) = observed.anchor_reftext()
+        && fixture_anchor_reftext != observed_anchor_reftext
     {
         return false;
     }

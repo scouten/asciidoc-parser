@@ -32,6 +32,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -63,6 +64,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -94,6 +96,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -125,6 +128,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -160,6 +164,7 @@ mod parse {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "example",
@@ -172,6 +177,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -222,6 +228,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -284,6 +291,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -305,6 +313,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -318,6 +327,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -355,6 +365,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -380,6 +391,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -431,6 +443,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -452,6 +465,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -470,6 +484,7 @@ mod example {
                 }),
                 title: Some("block title"),
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -519,6 +534,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -544,6 +560,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -595,6 +612,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -617,6 +635,7 @@ mod example {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },)],
                         context: "example",
@@ -629,6 +648,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },)
                 ],
@@ -642,6 +662,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -679,6 +700,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -705,6 +727,7 @@ mod example {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "example",
@@ -717,6 +740,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -765,6 +789,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -823,6 +848,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -844,6 +870,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -857,6 +884,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -894,6 +922,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -919,6 +948,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -969,6 +999,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -990,6 +1021,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },)
                 ],
@@ -1003,6 +1035,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1040,6 +1073,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1065,6 +1099,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1113,6 +1148,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1173,6 +1209,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -1194,6 +1231,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -1207,6 +1245,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1244,6 +1283,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1269,6 +1309,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1320,6 +1361,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -1342,6 +1384,7 @@ mod sidebar {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },)],
                         context: "sidebar",
@@ -1354,6 +1397,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -1367,6 +1411,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1404,6 +1449,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1430,6 +1476,7 @@ mod sidebar {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -1442,6 +1489,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1490,6 +1538,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1550,6 +1599,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -1571,6 +1621,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -1584,6 +1635,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1621,6 +1673,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1646,6 +1699,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1697,6 +1751,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -1719,6 +1774,7 @@ mod quote {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),],
                         context: "quote",
@@ -1731,6 +1787,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -1744,6 +1801,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1781,6 +1839,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1807,6 +1866,7 @@ mod quote {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "quote",
@@ -1819,6 +1879,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );

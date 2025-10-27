@@ -14,6 +14,7 @@ pub(crate) struct CompoundDelimitedBlock {
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub anchor: Option<Span>,
+    pub anchor_reftext: Option<Span>,
     pub attrlist: Option<Attrlist>,
 }
 
@@ -26,6 +27,7 @@ impl fmt::Debug for CompoundDelimitedBlock {
             .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
+            .field("anchor_reftext", &self.anchor_reftext)
             .field("attrlist", &self.attrlist)
             .finish()
     }
@@ -93,6 +95,18 @@ fn fixture_eq_observed(
     {
         return false;
     }
+
+    if fixture.anchor_reftext.is_some() != observed.anchor_reftext().is_some() {
+        return false;
+    }
+
+    if let Some(ref fixture_anchor_reftext) = fixture.anchor_reftext
+        && let Some(ref observed_anchor_reftext) = observed.anchor_reftext()
+        && fixture_anchor_reftext != observed_anchor_reftext
+    {
+        return false;
+    }
+
     if fixture.attrlist.is_some() != observed.attrlist().is_some() {
         return false;
     }

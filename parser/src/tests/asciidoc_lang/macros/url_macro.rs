@@ -91,6 +91,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -162,6 +163,7 @@ The more typical reason, however, is to specify custom link text.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -246,6 +248,7 @@ include::example$url.adoc[tag=irc]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -314,6 +317,7 @@ include::example$url.adoc[tag=text]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -394,6 +398,7 @@ include::example$url.adoc[tag=css]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

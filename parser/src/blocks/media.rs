@@ -17,6 +17,7 @@ pub struct MediaBlock<'src> {
     title_source: Option<Span<'src>>,
     title: Option<String>,
     anchor: Option<Span<'src>>,
+    anchor_reftext: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
 }
 
@@ -128,6 +129,7 @@ impl<'src> MediaBlock<'src> {
                     title_source: metadata.title_source,
                     title: metadata.title.clone(),
                     anchor: metadata.anchor,
+                    anchor_reftext: None,
                     attrlist: metadata.attrlist.clone(),
                 },
 
@@ -185,6 +187,10 @@ impl<'src> IsBlock<'src> for MediaBlock<'src> {
 
     fn anchor(&'src self) -> Option<Span<'src>> {
         self.anchor
+    }
+
+    fn anchor_reftext(&'src self) -> Option<Span<'src>> {
+        self.anchor_reftext
     }
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
@@ -410,6 +416,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             }
         );
@@ -476,6 +483,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             }
         );
@@ -528,6 +536,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             }
         );
@@ -589,6 +598,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             }
         );
@@ -663,6 +673,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             }
         );

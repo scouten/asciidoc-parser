@@ -297,6 +297,7 @@ image::reference-compound-names.png[Compound author names displayed in the docum
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
                 Block::Simple(SimpleBlock {
@@ -318,6 +319,7 @@ image::reference-compound-names.png[Compound author names displayed in the docum
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
             ],
@@ -446,6 +448,7 @@ image::author-attribute-with-compound-name.png[Compound author name displayed in
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -457,6 +460,7 @@ image::author-attribute-with-compound-name.png[Compound author name displayed in
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_about_mara_moss_wirribi"),
             },),],

@@ -163,6 +163,7 @@ Actually, please don't.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
                 Block::Simple(SimpleBlock {
@@ -184,6 +185,7 @@ Actually, please don't.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
             ],
@@ -266,6 +268,7 @@ Our servers don't like them either.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -385,6 +388,7 @@ In the path /items/\{id}, id is a path parameter.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -450,6 +454,7 @@ If the syntax that follows the backslash does not match an attribute reference, 
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -551,6 +556,7 @@ In the path +/items/{id}+, id is a path parameter.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -616,6 +622,7 @@ All the text between the passthrough enclosure will get passed through to the ou
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

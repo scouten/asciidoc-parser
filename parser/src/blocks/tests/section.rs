@@ -40,6 +40,7 @@ fn err_missing_space_before_title() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -122,6 +123,7 @@ fn simplest_section_block() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })
@@ -193,6 +195,7 @@ fn has_child_block() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })],
             source: Span {
@@ -204,6 +207,7 @@ fn has_child_block() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })
@@ -232,6 +236,7 @@ fn has_child_block() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -308,6 +313,7 @@ fn title() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })],
             source: Span {
@@ -324,6 +330,7 @@ fn title() {
             },),
             title: Some("other section title"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })
@@ -375,6 +382,7 @@ fn title() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -469,6 +477,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })],
             source: Span {
@@ -480,6 +489,7 @@ fn warn_child_attrlist_has_extra_comma() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })

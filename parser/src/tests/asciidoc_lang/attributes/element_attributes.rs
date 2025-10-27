@@ -217,6 +217,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
                         ElementAttribute {
@@ -297,6 +298,7 @@ If this happens, append `+{empty}+` to the end of the line to disrupt the syntax
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -387,6 +389,7 @@ name::target[first-positional,second-positional,named="value of named"]
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -448,6 +451,7 @@ Specifically, it does not support named attributes, only the attribute shorthand
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

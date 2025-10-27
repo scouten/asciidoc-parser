@@ -72,6 +72,7 @@ This text will be treated as verbatim content.
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             substitution_group: SubstitutionGroup::Verbatim,
         },)
@@ -123,6 +124,7 @@ The remaining lines define a block's content.
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             substitution_group: SubstitutionGroup::Verbatim,
         },)
@@ -226,6 +228,7 @@ That's so meta.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             context: "example",
@@ -238,6 +241,7 @@ That's so meta.
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         },)
     );
@@ -562,6 +566,7 @@ The document header is useful, but not required.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::RawDelimited(RawDelimitedBlock {
@@ -585,6 +590,7 @@ The document header is useful, but not required.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                         substitution_group: SubstitutionGroup::Verbatim,
                     },),
@@ -607,6 +613,7 @@ The document header is useful, but not required.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -620,6 +627,7 @@ The document header is useful, but not required.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -685,6 +693,7 @@ Live within the simulated reality without want or fear.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -707,6 +716,7 @@ Live within the simulated reality without want or fear.
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),],
                         context: "example",
@@ -724,6 +734,7 @@ Live within the simulated reality without want or fear.
                         },),
                         title: Some("Red Pill"),
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: Some(Attrlist {
                             attributes: &[ElementAttribute {
                                 name: None,
@@ -759,6 +770,7 @@ Live within the simulated reality without want or fear.
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),],
                         context: "example",
@@ -776,6 +788,7 @@ Live within the simulated reality without want or fear.
                         },),
                         title: Some("Blue Pill"),
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: Some(Attrlist {
                             attributes: &[ElementAttribute {
                                 name: None,
@@ -802,6 +815,7 @@ Live within the simulated reality without want or fear.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );

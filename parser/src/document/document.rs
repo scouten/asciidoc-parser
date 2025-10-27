@@ -142,6 +142,10 @@ impl<'src> IsBlock<'src> for Document<'src> {
         None
     }
 
+    fn anchor_reftext(&'src self) -> Option<Span<'src>> {
+        None
+    }
+
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         // Document attributes are reflected in the Header.
         None
@@ -304,6 +308,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 })],
                 warnings: &[],
@@ -360,6 +365,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     }),
                     Block::Simple(SimpleBlock {
@@ -381,6 +387,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -435,6 +442,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     }),
                     Block::Simple(SimpleBlock {
@@ -456,6 +464,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -518,6 +527,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -539,6 +549,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -607,6 +618,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -628,6 +640,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -687,6 +700,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 })],
                 source: Span {
@@ -771,6 +785,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 })],
                 source: Span {
@@ -866,6 +881,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 }
             ),
@@ -926,6 +942,7 @@ mod tests {
                                 title_source: None,
                                 title: None,
                                 anchor: None,
+                                anchor_reftext: None,
                                 attrlist: None,
                             },
                         ),
@@ -939,6 +956,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 },
@@ -1041,6 +1059,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },
         ),
@@ -1064,6 +1083,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },
         ),

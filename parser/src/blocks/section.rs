@@ -31,6 +31,7 @@ pub struct SectionBlock<'src> {
     title_source: Option<Span<'src>>,
     title: Option<String>,
     anchor: Option<Span<'src>>,
+    anchor_reftext: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
     section_id: Option<String>,
 }
@@ -115,6 +116,7 @@ impl<'src> SectionBlock<'src> {
                 title_source: metadata.title_source,
                 title: metadata.title.clone(),
                 anchor: metadata.anchor,
+                anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
                 section_id,
             },
@@ -178,6 +180,10 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 
     fn anchor(&'src self) -> Option<Span<'src>> {
         self.anchor
+    }
+
+    fn anchor_reftext(&'src self) -> Option<Span<'src>> {
+        self.anchor_reftext
     }
 
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
@@ -491,6 +497,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -564,6 +571,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -575,6 +583,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -674,6 +683,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -685,6 +695,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -784,6 +795,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -795,6 +807,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -882,6 +895,7 @@ mod tests {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         }),
                         Block::Section(SectionBlock {
@@ -914,6 +928,7 @@ mod tests {
                                 title_source: None,
                                 title: None,
                                 anchor: None,
+                                anchor_reftext: None,
                                 attrlist: None,
                             })],
                             source: Span {
@@ -925,6 +940,7 @@ mod tests {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                             section_id: Some("_section_2"),
                         })
@@ -938,6 +954,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1011,6 +1028,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -1022,6 +1040,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1095,6 +1114,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -1106,6 +1126,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1363,6 +1384,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1436,6 +1458,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -1447,6 +1470,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1546,6 +1570,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -1557,6 +1582,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1656,6 +1682,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -1667,6 +1694,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1754,6 +1782,7 @@ mod tests {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         }),
                         Block::Section(SectionBlock {
@@ -1786,6 +1815,7 @@ mod tests {
                                 title_source: None,
                                 title: None,
                                 anchor: None,
+                                anchor_reftext: None,
                                 attrlist: None,
                             })],
                             source: Span {
@@ -1797,6 +1827,7 @@ mod tests {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                             section_id: Some("_section_2"),
                         })
@@ -1810,6 +1841,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1883,6 +1915,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -1894,6 +1927,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }
@@ -1967,6 +2001,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })],
                     source: Span {
@@ -1978,6 +2013,7 @@ mod tests {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
                 }

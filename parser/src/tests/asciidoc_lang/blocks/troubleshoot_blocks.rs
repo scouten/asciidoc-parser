@@ -75,6 +75,7 @@ It will be styled as a sidebar.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -87,6 +88,7 @@ It will be styled as a sidebar.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -163,6 +165,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -175,6 +178,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {

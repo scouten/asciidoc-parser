@@ -23,7 +23,6 @@ pub(crate) struct BlockMetadata<'src> {
 
     /// The block anchor's reftext, if any. The span includes only the portion
     /// from the first comma to just inside the closing square brace pair.
-    #[allow(unused)]
     pub(crate) anchor_reftext: Option<Span<'src>>,
 
     /// The block's attribute list, if any.
@@ -78,7 +77,9 @@ impl<'src> BlockMetadata<'src> {
         let mut anchor_maw = parse_maybe_block_anchor(block_start);
 
         let (anchor, reftext, block_start) = if let Some(mi) = anchor_maw.item {
-            if let Some(comma_split) = mi.item.split_at_match_non_empty(|c| c == ',') {
+            if let Some(comma_split) = mi.item.split_at_match_non_empty(|c| c == ',')
+                && !comma_split.after.is_empty()
+            {
                 let anchor = comma_split.item;
                 let reftext = comma_split.after;
                 (Some(anchor), Some(reftext), mi.after)

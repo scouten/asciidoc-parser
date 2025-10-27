@@ -88,6 +88,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -143,6 +144,7 @@ fn pass_macro() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -199,6 +201,7 @@ fn double_plus_inline_macro() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {

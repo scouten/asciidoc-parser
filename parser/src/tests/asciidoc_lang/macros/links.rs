@@ -124,6 +124,7 @@ Depending on the capabilities of the web application, the space character can be
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -243,6 +244,7 @@ The prefix will still be present in the link target.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

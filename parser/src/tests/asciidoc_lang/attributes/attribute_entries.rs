@@ -149,6 +149,7 @@ At the end of the value, press kbd:[Enter].
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -243,6 +244,7 @@ That means you don't need to escape special characters such in an HTML tag.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -487,6 +489,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -516,6 +519,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -618,6 +622,7 @@ pass:a,q[{attribute-with-formatted-text}]
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -645,6 +650,7 @@ pass:a,q[{attribute-with-formatted-text}]
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );

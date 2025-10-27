@@ -74,6 +74,7 @@ fn single_line() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -142,6 +143,7 @@ fn multiple_lines() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -202,6 +204,7 @@ fn title() {
             },),
             title: Some("simple block"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -236,6 +239,7 @@ fn attrlist() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,
@@ -331,6 +335,7 @@ fn title_and_attrlist() {
             },),
             title: Some("title"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,
@@ -418,6 +423,7 @@ fn consumes_blank_lines_after() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -480,6 +486,7 @@ fn with_block_anchor() {
                 col: 3,
                 offset: 2,
             },),
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -574,6 +581,7 @@ fn err_empty_block_anchor() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         },)
     );
@@ -658,6 +666,7 @@ fn err_invalid_block_anchor() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         },)
     );
@@ -729,6 +738,7 @@ fn unterminated_block_anchor() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,

@@ -81,6 +81,7 @@ include::example$paragraph.adoc[tag=para]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
                 Block::Simple(SimpleBlock {
@@ -102,6 +103,7 @@ include::example$paragraph.adoc[tag=para]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
             ],

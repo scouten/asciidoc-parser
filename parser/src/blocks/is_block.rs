@@ -253,8 +253,11 @@ pub trait IsBlock<'src>: Debug + Eq + PartialEq {
     /// Returns the rendered title for this block, if present.
     fn title(&self) -> Option<&str>;
 
-    /// Returns the anchor for this bloc, if present.
+    /// Returns the anchor for this block, if present.
     fn anchor(&'src self) -> Option<Span<'src>>;
+
+    /// Returns the reference text for this block's anchor, if present.
+    fn anchor_reftext(&'src self) -> Option<Span<'src>>;
 
     /// Returns the attribute list for this block, if present.
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>>;

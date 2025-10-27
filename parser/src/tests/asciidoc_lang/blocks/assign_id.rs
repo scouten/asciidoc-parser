@@ -64,6 +64,7 @@ Content of delimited example block
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             context: "example",
@@ -76,6 +77,7 @@ Content of delimited example block
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,
@@ -161,6 +163,7 @@ Roads? Where we're going, we don't need roads.
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,
@@ -228,6 +231,7 @@ Roads? Where we're going, we don't need roads.
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[
                     ElementAttribute {

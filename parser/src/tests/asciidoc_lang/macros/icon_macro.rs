@@ -87,6 +87,7 @@ icon:heart[2x,role=red]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

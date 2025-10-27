@@ -66,6 +66,7 @@ This is the content of the sidebar block.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             context: "sidebar",
@@ -83,6 +84,7 @@ This is the content of the sidebar block.
             },),
             title: Some("This is the title of a sidebar block"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         },)
     );
@@ -163,6 +165,7 @@ Don't put a space between the dot and the first character of the title.
             },),
             title: Some("Terminal Output"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             substitution_group: SubstitutionGroup::Verbatim,
         },)
@@ -247,6 +250,7 @@ stages: [ init, verify, deploy ]
             },),
             title: Some("Specify GitLab CI stages"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[
                     ElementAttribute {
@@ -341,6 +345,7 @@ If you don't plant it in a container, it will take over your garden.
             },),
             title: Some("Mint"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: None,

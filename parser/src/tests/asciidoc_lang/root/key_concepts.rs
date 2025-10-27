@@ -150,6 +150,7 @@ image::sunset.jpg[Sunset]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 })],
                 source: Span {
@@ -216,6 +217,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 })],
                 source: Span {

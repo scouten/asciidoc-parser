@@ -396,6 +396,17 @@ impl<'src> IsBlock<'src> for Block<'src> {
         }
     }
 
+    fn anchor_reftext(&'src self) -> Option<Span<'src>> {
+        match self {
+            Self::Simple(b) => b.anchor_reftext(),
+            Self::Media(b) => b.anchor_reftext(),
+            Self::Section(b) => b.anchor_reftext(),
+            Self::RawDelimited(b) => b.anchor_reftext(),
+            Self::CompoundDelimited(b) => b.anchor_reftext(),
+            Self::DocumentAttribute(b) => b.anchor_reftext(),
+        }
+    }
+
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         match self {
             Self::Simple(b) => b.attrlist(),

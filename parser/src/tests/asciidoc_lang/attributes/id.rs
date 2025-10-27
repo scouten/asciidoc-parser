@@ -89,6 +89,7 @@ All the language requires in this case is that the value be non-empty.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -183,6 +184,7 @@ install the gem
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -263,6 +265,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -329,6 +332,7 @@ In the longhand syntax, you use a standard named attribute.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("id"),
@@ -400,6 +404,7 @@ In the block anchor syntax, you surround the name with double square brackets:
                     col: 3,
                     offset: 2,
                 },),
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -451,6 +456,7 @@ ____
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "quote",
@@ -463,6 +469,7 @@ ____
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[
                         ElementAttribute {
@@ -589,6 +596,7 @@ The id (`#`) shorthand can be used on inline quoted text.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -657,6 +665,7 @@ The id (`#`) shorthand can be used on inline quoted text.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -741,6 +750,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -795,6 +805,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -849,6 +860,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -903,6 +915,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -966,6 +979,7 @@ The shorthand form in an attribute list does not impose this restriction.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -1039,6 +1053,7 @@ include::example$id.adoc[tag=block-id-shorthand]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: Some(Attrlist {
                         attributes: &[ElementAttribute {
                             name: None,
@@ -1137,6 +1152,7 @@ include::example$id.adoc[tag=block-id-brackets]
                         col: 3,
                         offset: 2,
                     },),
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -1221,6 +1237,7 @@ include::example$id.adoc[tag=anchor-brackets]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -1292,6 +1309,7 @@ include::example$id.adoc[tag=anchor-shorthand]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

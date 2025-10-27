@@ -128,6 +128,10 @@ impl<'src> IsBlock<'src> for Attribute<'src> {
         None
     }
 
+    fn anchor_reftext(&'src self) -> Option<Span<'src>> {
+        None
+    }
+
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         None
     }
@@ -689,6 +693,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -718,6 +723,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -762,6 +768,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
