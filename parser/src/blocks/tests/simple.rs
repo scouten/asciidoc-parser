@@ -100,6 +100,7 @@ fn single_line() {
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -268,6 +269,7 @@ fn attrlist() {
     );
 
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
@@ -364,6 +366,7 @@ fn title_and_attrlist() {
     );
 
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
 
     assert_eq!(
         mi.item.attrlist().unwrap(),
@@ -523,6 +526,7 @@ fn with_block_anchor() {
         }
     );
 
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -608,6 +612,7 @@ fn err_empty_block_anchor() {
     assert!(mi.item.title().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -693,6 +698,7 @@ fn err_invalid_block_anchor() {
     assert!(mi.item.title().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
 
     assert_eq!(
@@ -778,6 +784,7 @@ fn unterminated_block_anchor() {
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
     assert_eq!(

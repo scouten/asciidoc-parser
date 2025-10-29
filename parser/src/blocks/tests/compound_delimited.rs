@@ -244,6 +244,7 @@ mod example {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -341,6 +342,7 @@ mod example {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -510,6 +512,7 @@ mod example {
         assert_eq!(mi.item.title().unwrap(), "block title");
 
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -676,6 +679,7 @@ mod example {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -804,6 +808,7 @@ mod open {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -898,6 +903,7 @@ mod open {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1049,6 +1055,7 @@ mod open {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1163,6 +1170,7 @@ mod sidebar {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -1259,6 +1267,7 @@ mod sidebar {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1425,6 +1434,7 @@ mod sidebar {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1553,6 +1563,7 @@ mod quote {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -1649,6 +1660,7 @@ mod quote {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1815,6 +1827,7 @@ mod quote {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();

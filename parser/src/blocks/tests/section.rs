@@ -97,6 +97,7 @@ fn simplest_section_block() {
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -160,6 +161,7 @@ fn has_child_block() {
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -357,6 +359,7 @@ fn title() {
     assert_eq!(mi.item.title().unwrap(), "other section title");
 
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
 
     let mut nested_blocks = mi.item.nested_blocks();

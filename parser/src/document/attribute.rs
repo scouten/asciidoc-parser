@@ -627,6 +627,7 @@ mod tests {
         assert!(block.title_source().is_none());
         assert!(block.title().is_none());
         assert!(block.anchor().is_none());
+        assert!(block.anchor_reftext().is_none());
         assert!(block.attrlist().is_none());
         assert_eq!(block.substitution_group(), SubstitutionGroup::Normal);
 

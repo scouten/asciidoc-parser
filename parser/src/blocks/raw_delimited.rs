@@ -503,6 +503,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
         }
@@ -558,6 +559,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
 
@@ -626,6 +628,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::None);
 
@@ -734,6 +737,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
         }
@@ -789,6 +793,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
 
@@ -870,6 +875,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
 
             assert_eq!(
                 mi.item.attrlist().unwrap(),
@@ -959,6 +965,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Verbatim);
 
@@ -1161,6 +1168,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
         }
@@ -1216,6 +1224,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
 
@@ -1284,6 +1293,7 @@ mod tests {
             assert!(mi.item.title_source().is_none());
             assert!(mi.item.title().is_none());
             assert!(mi.item.anchor().is_none());
+            assert!(mi.item.anchor_reftext().is_none());
             assert!(mi.item.attrlist().is_none());
             assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Pass);
 

@@ -132,6 +132,7 @@ mod error_cases {
         assert!(item.title_source().is_none());
         assert!(item.title().is_none());
         assert!(item.anchor().is_none());
+        assert!(item.anchor_reftext().is_none());
         assert!(item.attrlist().is_none());
         assert_eq!(item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -277,6 +278,7 @@ mod error_cases {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -340,6 +342,7 @@ mod error_cases {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(

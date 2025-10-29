@@ -196,6 +196,7 @@ mod tests {
         assert!(doc.title_source().is_none());
         assert!(doc.title().is_none());
         assert!(doc.anchor().is_none());
+        assert!(doc.anchor_reftext().is_none());
         assert!(doc.attrlist().is_none());
         assert_eq!(doc.substitution_group(), SubstitutionGroup::Normal);
 
@@ -318,6 +319,7 @@ mod tests {
         );
 
         assert!(doc.anchor().is_none());
+        assert!(doc.anchor_reftext().is_none());
     }
 
     #[test]
