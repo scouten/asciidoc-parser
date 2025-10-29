@@ -541,6 +541,196 @@ fn with_block_anchor() {
 }
 
 #[test]
+fn with_block_anchor_trailing_comma() {
+    let mut parser = Parser::default();
+
+    let mi = crate::blocks::Block::parse(
+        crate::Span::new("[[notice,]]\nThis paragraph gets a lot of attention.\n"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings()
+    .unwrap();
+
+    assert_eq!(
+        mi.item,
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
+                    data: "This paragraph gets a lot of attention.",
+                    line: 2,
+                    col: 1,
+                    offset: 12,
+                },
+                rendered: "This paragraph gets a lot of attention.",
+            },
+            source: Span {
+                data: "[[notice,]]\nThis paragraph gets a lot of attention.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title_source: None,
+            title: None,
+            anchor: Some(Span {
+                data: "notice",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },),
+            anchor_reftext: None,
+            attrlist: None,
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        Span {
+            data: "[[notice,]]\nThis paragraph gets a lot of attention.",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.raw_context().deref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().deref(), "paragraph");
+    assert!(mi.item.declared_style().is_none());
+    assert_eq!(mi.item.nested_blocks().next(), None);
+    assert_eq!(mi.item.id().unwrap(), "notice");
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
+    assert!(mi.item.title().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+    assert_eq!(
+        mi.item.anchor().unwrap(),
+        Span {
+            data: "notice",
+            line: 1,
+            col: 3,
+            offset: 2,
+        }
+    );
+
+    assert!(mi.item.anchor_reftext().is_none());
+    assert!(mi.item.attrlist().is_none());
+
+    assert_eq!(
+        mi.after,
+        Span {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 52
+        }
+    );
+}
+
+#[test]
+fn with_block_anchor_and_reftext() {
+    let mut parser = Parser::default();
+
+    let mi = crate::blocks::Block::parse(
+        crate::Span::new("[[notice,See Here!]]\nThis paragraph gets a lot of attention.\n"),
+        &mut parser,
+    )
+    .unwrap_if_no_warnings()
+    .unwrap();
+
+    assert_eq!(
+        mi.item,
+        Block::Simple(SimpleBlock {
+            content: Content {
+                original: Span {
+                    data: "This paragraph gets a lot of attention.",
+                    line: 2,
+                    col: 1,
+                    offset: 21,
+                },
+                rendered: "This paragraph gets a lot of attention.",
+            },
+            source: Span {
+                data: "[[notice,See Here!]]\nThis paragraph gets a lot of attention.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },
+            title_source: None,
+            title: None,
+            anchor: Some(Span {
+                data: "notice",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },),
+            anchor_reftext: Some(Span {
+                data: "See Here!",
+                line: 1,
+                col: 10,
+                offset: 9,
+            },),
+            attrlist: None,
+        })
+    );
+
+    assert_eq!(
+        mi.item.span(),
+        Span {
+            data: "[[notice,See Here!]]\nThis paragraph gets a lot of attention.",
+            line: 1,
+            col: 1,
+            offset: 0,
+        }
+    );
+
+    assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.raw_context().deref(), "paragraph");
+    assert_eq!(mi.item.resolved_context().deref(), "paragraph");
+    assert!(mi.item.declared_style().is_none());
+    assert_eq!(mi.item.nested_blocks().next(), None);
+    assert_eq!(mi.item.id().unwrap(), "notice");
+    assert!(mi.item.roles().is_empty());
+    assert!(mi.item.options().is_empty());
+    assert!(mi.item.title_source().is_none());
+    assert!(mi.item.title().is_none());
+    assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+
+    assert_eq!(
+        mi.item.anchor().unwrap(),
+        Span {
+            data: "notice",
+            line: 1,
+            col: 3,
+            offset: 2,
+        }
+    );
+
+    assert_eq!(
+        mi.item.anchor_reftext().unwrap(),
+        Span {
+            data: "See Here!",
+            line: 1,
+            col: 10,
+            offset: 9,
+        }
+    );
+
+    assert!(mi.item.attrlist().is_none());
+
+    assert_eq!(
+        mi.after,
+        Span {
+            data: "",
+            line: 3,
+            col: 1,
+            offset: 61
+        }
+    );
+}
+
+#[test]
 fn err_empty_block_anchor() {
     let mut parser = Parser::default();
 

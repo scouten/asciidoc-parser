@@ -75,15 +75,20 @@ impl<'src> BlockMetadata<'src> {
 
         // Does this block have a block anchor?
         let mut anchor_maw = parse_maybe_block_anchor(block_start);
+        let original_block_start = block_start;
 
-        let (anchor, reftext, block_start) = if let Some(mi) = anchor_maw.item {
-            if let Some(comma_split) = mi.item.split_at_match_non_empty(|c| c == ',')
-                && !comma_split.after.is_empty()
-            {
+        let (mut anchor, mut reftext, mut block_start) = if let Some(mi) = anchor_maw.item {
+            if let Some(comma_split) = mi.item.split_at_match_non_empty(|c| c == ',') {
                 let anchor = comma_split.item;
-                let reftext = comma_split.after;
-                (Some(anchor), Some(reftext), mi.after)
+                let reftext = if comma_split.after.len() > 1 {
+                    Some(comma_split.after.discard(1))
+                } else {
+                    None
+                };
+
+                (Some(anchor), reftext, mi.after)
             } else {
+                eprintln!("No reftext");
                 (Some(mi.item), None, mi.after)
             }
         } else {
@@ -92,6 +97,21 @@ impl<'src> BlockMetadata<'src> {
 
         if !anchor_maw.warnings.is_empty() {
             warnings.append(&mut anchor_maw.warnings);
+        }
+
+        // If anchor name doesn't match the XML "Name" pattern, discard the anchor name
+        // and issue a warning.
+        if let Some(anchor_span) = anchor
+            && !anchor_span.is_xml_name()
+        {
+            warnings.push(Warning {
+                source: anchor_span,
+                warning: WarningType::InvalidBlockAnchorName,
+            });
+
+            anchor = None;
+            reftext = None;
+            block_start = original_block_start;
         }
 
         // Does this block have an attribute list?
@@ -163,17 +183,6 @@ fn parse_maybe_block_anchor(
             warnings: vec![Warning {
                 source: anchor_src,
                 warning: WarningType::EmptyBlockAnchorName,
-            }],
-        };
-    }
-
-    // Warn if anchor name doesn't match the XML "Name" pattern.
-    if !anchor_src.is_xml_name() {
-        return MatchAndWarnings {
-            item: None,
-            warnings: vec![Warning {
-                source: anchor_src,
-                warning: WarningType::InvalidBlockAnchorName,
             }],
         };
     }
