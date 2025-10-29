@@ -453,7 +453,7 @@ fn consumes_blank_lines_after() {
 }
 
 #[test]
-fn with_block_anchor() {
+fn with_block_anchor_only() {
     let mut parser = Parser::default();
 
     let mi = crate::blocks::Block::parse(
@@ -544,24 +544,37 @@ fn with_block_anchor() {
 fn with_block_anchor_trailing_comma() {
     let mut parser = Parser::default();
 
-    let mi = crate::blocks::Block::parse(
+    let maw = crate::blocks::Block::parse(
         crate::Span::new("[[notice,]]\nThis paragraph gets a lot of attention.\n"),
         &mut parser,
-    )
-    .unwrap_if_no_warnings()
-    .unwrap();
+    );
+
+    assert_eq!(
+        maw.warnings,
+        [Warning {
+            source: Span {
+                data: "notice,",
+                line: 1,
+                col: 3,
+                offset: 2,
+            },
+            warning: WarningType::InvalidBlockAnchorName,
+        }]
+    );
+
+    let mi = maw.item.unwrap();
 
     assert_eq!(
         mi.item,
         Block::Simple(SimpleBlock {
             content: Content {
                 original: Span {
-                    data: "This paragraph gets a lot of attention.",
-                    line: 2,
+                    data: "[[notice,]]\nThis paragraph gets a lot of attention.",
+                    line: 1,
                     col: 1,
-                    offset: 12,
+                    offset: 0,
                 },
-                rendered: "This paragraph gets a lot of attention.",
+                rendered: "[[notice,]]\nThis paragraph gets a lot of attention.",
             },
             source: Span {
                 data: "[[notice,]]\nThis paragraph gets a lot of attention.",
@@ -571,12 +584,7 @@ fn with_block_anchor_trailing_comma() {
             },
             title_source: None,
             title: None,
-            anchor: Some(Span {
-                data: "notice",
-                line: 1,
-                col: 3,
-                offset: 2,
-            },),
+            anchor: None,
             anchor_reftext: None,
             attrlist: None,
         })
@@ -597,23 +605,13 @@ fn with_block_anchor_trailing_comma() {
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
     assert_eq!(mi.item.nested_blocks().next(), None);
-    assert_eq!(mi.item.id().unwrap(), "notice");
+    assert!(mi.item.id().is_none());
     assert!(mi.item.roles().is_empty());
     assert!(mi.item.options().is_empty());
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
-
-    assert_eq!(
-        mi.item.anchor().unwrap(),
-        Span {
-            data: "notice",
-            line: 1,
-            col: 3,
-            offset: 2,
-        }
-    );
-
+    assert!(mi.item.anchor().is_none());
     assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
 

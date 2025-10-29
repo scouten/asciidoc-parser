@@ -1,3 +1,5 @@
+use std::ops::{RangeFrom, RangeTo};
+
 use crate::{
     Parser, Span,
     attributes::{Attrlist, AttrlistContext},
@@ -78,17 +80,18 @@ impl<'src> BlockMetadata<'src> {
         let original_block_start = block_start;
 
         let (mut anchor, mut reftext, mut block_start) = if let Some(mi) = anchor_maw.item {
-            if let Some(comma_split) = mi.item.split_at_match_non_empty(|c| c == ',') {
-                let anchor = comma_split.item;
-                let reftext = if comma_split.after.len() > 1 {
-                    Some(comma_split.after.discard(1))
-                } else {
-                    None
-                };
+            if let Some(comma_position) = mi.item.position(|c| c == ',')
+                && comma_position < mi.item.len() - 1
+            {
+                let anchor = mi.item.slice_to(RangeTo {
+                    end: comma_position,
+                });
+                let reftext = mi.item.slice_from(RangeFrom {
+                    start: comma_position + 1,
+                });
 
-                (Some(anchor), reftext, mi.after)
+                (Some(anchor), Some(reftext), mi.after)
             } else {
-                eprintln!("No reftext");
                 (Some(mi.item), None, mi.after)
             }
         } else {
