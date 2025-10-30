@@ -1013,8 +1013,6 @@ mod tests {
     fn impl_debug() {
         let doc = Parser::default().parse("= Example Title\n\nabc\n\ndef");
 
-        eprintln!("{doc:#?}");
-
         assert_eq!(
             format!("{doc:#?}"),
             r#"Document {
@@ -1030,10 +1028,10 @@ mod tests {
         title: Some(
             "Example Title",
         ),
-        attributes: [],
+        attributes: &[],
         author_line: None,
         revision_line: None,
-        comments: [],
+        comments: &[],
         source: Span {
             data: "= Example Title",
             line: 1,

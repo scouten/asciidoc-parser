@@ -4,6 +4,7 @@ use crate::{
     HasSpan, Parser, Span,
     content::{Content, SubstitutionGroup},
     document::{Attribute, Author, AuthorLine, RevisionLine},
+    internal::debug::DebugSliceReference,
     span::MatchedItem,
     warnings::{MatchAndWarnings, Warning, WarningType},
 };
@@ -11,7 +12,7 @@ use crate::{
 /// An AsciiDoc document may begin with a document header. The document header
 /// encapsulates the document title, author and revision information,
 /// document-wide attributes, and other document metadata.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct Header<'src> {
     title_source: Option<Span<'src>>,
     title: Option<String>,
@@ -168,6 +169,20 @@ fn apply_header_subs(source: &str, parser: &Parser) -> String {
     SubstitutionGroup::Header.apply(&mut content, parser, None);
 
     content.rendered().to_string()
+}
+
+impl std::fmt::Debug for Header<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Header")
+            .field("title_source", &self.title_source)
+            .field("title", &self.title)
+            .field("attributes", &DebugSliceReference(&self.attributes))
+            .field("author_line", &self.author_line)
+            .field("revision_line", &self.revision_line)
+            .field("comments", &DebugSliceReference(&self.comments))
+            .field("source", &self.source)
+            .finish()
+    }
 }
 
 #[cfg(test)]
@@ -608,5 +623,38 @@ mod tests {
         assert_eq!(parser.attribute_value("email"), InterpretedValue::Unset);
 
         assert_eq!(parser.attribute_value("author"), InterpretedValue::Set);
+    }
+
+    #[test]
+    fn impl_debug() {
+        let doc = Parser::default().parse("= Example Title\n\nabc\n\ndef");
+        let header = doc.header();
+
+        assert_eq!(
+            format!("{header:#?}"),
+            r#"Header {
+    title_source: Some(
+        Span {
+            data: "Example Title",
+            line: 1,
+            col: 3,
+            offset: 2,
+        },
+    ),
+    title: Some(
+        "Example Title",
+    ),
+    attributes: &[],
+    author_line: None,
+    revision_line: None,
+    comments: &[],
+    source: Span {
+        data: "= Example Title",
+        line: 1,
+        col: 1,
+        offset: 0,
+    },
+}"#
+        );
     }
 }
