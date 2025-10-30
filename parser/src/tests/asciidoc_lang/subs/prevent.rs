@@ -35,7 +35,7 @@ mod escape_with_backslashes {
         // work properly.
         to_do_verifies!(
             r#"
-To prevent a punctuation character from being interpreted as an attribute reference or formatting syntax (e.g., +_+, +^+) in normal content, prepend the character with a backslash (`\`).
+To prevent a punctuation character from being interpreted as an attribute reference or formatting syntax (e.g., `+_+`, `+^+`) in normal content, prepend the character with a backslash (`\`).
 
 .Prevent unintended substitutions with a backslash in normal content
 [source#ex-backslash]

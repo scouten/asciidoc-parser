@@ -18,6 +18,8 @@ This page introduces the URL macro, when you would want to use it, and how it di
 );
 
 mod from_url_to_macro {
+    use std::collections::HashMap;
+
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{Parser, tests::prelude::*};
@@ -111,15 +113,13 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
     fn inside_quotes() {
         verifies!(
             r#"
-So why might you upgrade from a URL to a URL macro?
+So why might you graduate from a URL to a URL macro?
 One reason is to force the URL to be parsed when it would not normally be recognized, such as if it's enclosed in double quotes:
 
 [source]
 ----
 Type "https://asciidoctor.org[]" into the location bar of your browser.
 ----
-
-The more typical reason, however, is to specify custom link text.
 
 "#
         );
@@ -175,6 +175,81 @@ The more typical reason, however, is to specify custom link text.
                 warnings: &[],
                 source_map: SourceMap(&[]),
                 catalog: Catalog::default(),
+            }
+        );
+    }
+
+    #[test]
+    fn autolink_ended_too_soon() {
+        verifies!(
+            r#"
+Another is when the URL of an autolink is being ended too soon.
+The URL macro allows you to explicitly mark the boundary of the URL.
+
+[source]
+----
+Use http://example.com?menu=<value>[] to open to the menu named `<value>`.
+----
+
+A more common reason is to specify custom link text.
+
+"#
+        );
+
+        let doc = Parser::default()
+            .parse(r#"Use http://example.com?menu=<value>[] to open to the menu named `<value>`."#);
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Use http://example.com?menu=<value>[] to open to the menu named `<value>`.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "Use <a href=\"http://example.com?menu=&lt;value&gt;\" class=\"bare\">http://example.com?menu=&lt;value&gt;</a> to open to the menu named <code>&lt;value&gt;</code>.",
+                    },
+                    source: Span {
+                        data: "Use http://example.com?menu=<value>[] to open to the menu named `<value>`.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Use http://example.com?menu=<value>[] to open to the menu named `<value>`.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
             }
         );
     }

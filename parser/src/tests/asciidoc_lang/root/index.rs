@@ -10,7 +10,7 @@ non_normative!(
 
 == About AsciiDoc
 
-AsciiDoc is a lightweight and semantic markup language primarily designed for writing technical documentation.
+AsciiDoc is a lightweight, semantic markup language primarily designed for writing technical documentation.
 The language can be used to produce a variety of presentation-rich output formats, all from content encoded in a concise, human-readable, plain text format.
 
 The AsciiDoc syntax is intuitive because it builds on well-established, plain text conventions for marking up and structuring text.

@@ -29,6 +29,7 @@ mod subs_attribute {
 
 The substitutions that get applied to a block (and to certain inline elements) can be changed or modified using the `subs` element attribute.
 This attribute accepts a comma-separated list of substitution steps or groups.
+The list _replaces_ the substitutions normally applied to a block unless <<incremental,incremental substitutions>> are specified.
 
 The names of those substitution steps and groups are as follows:
 
@@ -379,7 +380,10 @@ mod set_subs_attribute_on_block {
         r#"
 w== Set the subs attribute on a block
 
-CAUTION: You should always prefer to use <<incremental,incremental substitutions>>, and only revert to exact substitutions when you require the additional control.
+CAUTION: You should almost always prefer to use <<incremental,incremental substitutions>>.
+Only switch to exact substitutions when you require very specific control.
+That's because setting the `subs` attribute on a block _only_ uses the substitutions specified.
+In contrast, incremental substitutions amends the default substitutions for that block.
 
 "#
     );

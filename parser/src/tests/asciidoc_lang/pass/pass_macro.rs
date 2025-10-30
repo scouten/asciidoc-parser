@@ -11,7 +11,12 @@ non_normative!(
     r#"
 = Inline Passthroughs
 
-AsciiDoc supports several inline passthrough macros.
+AsciiDoc supports several inline passthrough macros and shorthands.
+Inline passthroughs are designed to prevent subsitutions for regions of text, or to give you more fine-grained control over which substitutions are applied.
+
+WARNING: Due to the fact that inline syntax in AsciiDoc is processed using substitutions rather than a descending grammar, it's possible to create invalid interleaving of inline elements, or other adverse interactions, that leads to invalid or illogical output.
+The inline passthrough provides a bailout option to mitigate these entanglements.
+This problem is expected to be resolved properly by the AsciiDoc Language Specification, which will mandate that inline syntax is parsed as a tree rather than through substitutions (to the degree possible).
 
 "#
 );

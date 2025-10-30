@@ -16,6 +16,8 @@ Right now, we're just aiming to get a sense of what makes up an AsciiDoc documen
 );
 
 mod documents {
+    use std::collections::HashMap;
+
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{Parser, tests::prelude::*};
@@ -34,7 +36,8 @@ An AsciiDoc document may consist of only a single sentence (or even a single cha
     fn single_sentence() {
         verifies!(
             r#"
-The following example is a valid AsciiDoc document with a single paragraph containing a single sentence:
+The example below is a valid AsciiDoc document.
+It contains a single paragraph that consists of a single sentence.
 
 ----
 This is a basic AsciiDoc document.
@@ -99,11 +102,12 @@ This is a basic AsciiDoc document.
     fn multiple_paragraphs() {
         verifies!(
             r#"
-Of course, you can have more content than a single sentence.
+Of course, you can have more content than a single sentence!
 What we want to emphasize here is that it's simple to get started.
 
-An AsciiDoc document is a series of blocks stacked on top of one another (by line).
-These blocks are typically offset from one another by empty lines (though these may be optional in certain circumstances).
+An AsciiDoc document is a series of blocks stacked are stacked linewise.
+These blocks are typically offset from one another by an empty line.
+(While these empty lines aren't always required, we do recommend using them for readability.)
 
 To expand the previous document from one paragraph to two, you'd separate the two paragraphs by an empty line:
 
@@ -199,60 +203,73 @@ This document contains two paragraphs.
         verifies!(
             r#"
 An AsciiDoc document may begin with a document header.
-Although the document header is optional, it's often used because it allows you to specify the document title and to set document-wide configuration and reusable text in the form of document attributes.
+Although the document header is optional, it's often used because it allows you to specify a document title as well as document-wide configuration and reusable text in the form of document attributes.
 
 [source]
 ----
 = Document Title
+Author Name
 :reproducible:
 
 This is a basic AsciiDoc document by {author}.
 
 This document contains two paragraphs.
-It also has a header that specifies the document title.
+It also has a header that specifies the document title and some attibutes.
 ----
 
 "#
         );
 
+        let doc = Parser::default().parse(
+            "= Document Title\nAuthor Name\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title."
+        );
+
         assert_eq!(
-            Parser::default().parse(
-                "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title."
-            ),
+            doc,
             Document {
                 header: Header {
-                    title_source: Some(
-                        Span {
-                            data: "Document Title",
-                            line: 1,
-                            col: 3,
-                            offset: 2,
+                    title_source: Some(Span {
+                        data: "Document Title",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },),
+                    title: Some("Document Title",),
+                    attributes: &[Attribute {
+                        name: Span {
+                            data: "reproducible",
+                            line: 3,
+                            col: 2,
+                            offset: 30,
                         },
-                    ),
-                    title: Some("Document Title"),
-                    attributes: &[
-                        Attribute {
-                            name: Span {
-                                data: "reproducible",
-                                line: 2,
-                                col: 2,
-                                offset: 18,
-                            },
-                            value_source: None,
-                            value: InterpretedValue::Set,
-                            source: Span {
-                                data: ":reproducible:",
-                                line: 2,
-                                col: 1,
-                                offset: 17,
-                            },
+                        value_source: None,
+                        value: InterpretedValue::Set,
+                        source: Span {
+                            data: ":reproducible:",
+                            line: 3,
+                            col: 1,
+                            offset: 29,
                         },
-                    ],
-                author_line: None,
-                revision_line: None,
+                    },],
+                    author_line: Some(AuthorLine {
+                        authors: &[Author {
+                            name: "Author Name",
+                            firstname: "Author",
+                            middlename: None,
+                            lastname: Some("Name",),
+                            email: None,
+                        },],
+                        source: Span {
+                            data: "Author Name",
+                            line: 2,
+                            col: 1,
+                            offset: 17,
+                        },
+                    },),
+                    revision_line: None,
                     comments: &[],
                     source: Span {
-                        data: "= Document Title\n:reproducible:",
+                        data: "= Document Title\nAuthor Name\n:reproducible:",
                         line: 1,
                         col: 1,
                         offset: 0,
@@ -263,56 +280,59 @@ It also has a header that specifies the document title.
                         content: Content {
                             original: Span {
                                 data: "This is a basic AsciiDoc document by {author}.",
-                                line: 4,
+                                line: 5,
                                 col: 1,
-                                offset: 33,
+                                offset: 45,
                             },
-                            rendered: "This is a basic AsciiDoc document by {author}.",
+                            rendered: "This is a basic AsciiDoc document by Author Name.",
                         },
                         source: Span {
                             data: "This is a basic AsciiDoc document by {author}.",
-                            line: 4,
+                            line: 5,
                             col: 1,
-                            offset: 33,
+                            offset: 45,
                         },
                         title_source: None,
                         title: None,
                         anchor: None,
                         anchor_reftext: None,
                         attrlist: None,
-                    }),
+                    },),
                     Block::Simple(SimpleBlock {
                         content: Content {
                             original: Span {
                                 data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
-                                line: 6,
+                                line: 7,
                                 col: 1,
-                                offset: 81,
+                                offset: 93,
                             },
                             rendered: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
                         },
                         source: Span {
                             data: "This document contains two paragraphs.\nIt also has a header that specifies the document title.",
-                            line: 6,
+                            line: 7,
                             col: 1,
-                            offset: 81,
+                            offset: 93,
                         },
                         title_source: None,
                         title: None,
                         anchor: None,
                         anchor_reftext: None,
                         attrlist: None,
-                    })
+                    },),
                 ],
                 source: Span {
-                    data: "= Document Title\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title.",
+                    data: "= Document Title\nAuthor Name\n:reproducible:\n\nThis is a basic AsciiDoc document by {author}.\n\nThis document contains two paragraphs.\nIt also has a header that specifies the document title.",
                     line: 1,
                     col: 1,
-                    offset: 0
+                    offset: 0,
                 },
                 warnings: &[],
                 source_map: SourceMap(&[]),
-                catalog: Catalog::default(),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
             }
         );
     }
@@ -337,7 +357,7 @@ mod lines {
             r#"
 == Lines
 
-The line is a significant construct in AsciiDoc.
+The line is a significant building block in AsciiDoc.
 A line is defined as text that's separated on either side by either a newline character or the boundary of the document.
 Many aspects of the syntax must occupy a whole line.
 That's why we say AsciiDoc is a line-oriented language.
@@ -496,7 +516,7 @@ more value
         verifies!(
             r#"
 Empty lines can also be significant.
-A single empty line separates the header from the body.
+For example, a single empty line separates the header from the body.
 "#
         );
 
@@ -582,7 +602,7 @@ A single empty line separates the header from the body.
 
     non_normative!(
         r#"
-Many blocks are also separated by an empty line, as you saw in the two paragraph example earlier.
+Many blocks are also separated by an empty line, as you saw in the example earlier with two paragraphs.
 
 In contrast, lines within paragraph content are insignificant.
 Keep these points in mind as you're learning about the AsciiDoc syntax.
@@ -597,7 +617,7 @@ non_normative!(
 
 Blocks in an AsciiDoc document lay down the document structure.
 Some blocks may contain other blocks, so the document structure is inherently hierarchical (i.e., a tree structure).
-You can preview this section structure, for example, by enabling the automatic table of contents.
+You can inspect this section structure, for example, by enabling the automatic table of contents.
 Examples of blocks include paragraphs, sections, lists, delimited blocks, tables, and block macros.
 
 Blocks are easy to identify because they're usually offset from other blocks by an empty line (though not always required).
@@ -609,7 +629,8 @@ These metadata lines must be above and directly adjacent to the block itself.
 
 Sections, non-verbatim delimited blocks, and AsciiDoc table cells may contain other blocks.
 Despite the fact that blocks form a hierarchy, even nested blocks start at the left margin.
-By requiring blocks to start at the left margin, it avoids the tedium of having to track and maintain levels of indentation and makes the content more reusable.
+By requiring blocks to start at the left margin, it avoids the tedium of having to track and maintain levels of indentation.
+It also happens to make the content more reusable.
 
 == Text and inline elements
 
