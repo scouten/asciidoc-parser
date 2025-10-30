@@ -2181,8 +2181,6 @@ mod tests {
         .unwrap()
         .item;
 
-        eprintln!("{cdb:#?}");
-
         assert_eq!(
             format!("{cdb:#?}"),
             r#"CompoundDelimitedBlock {
