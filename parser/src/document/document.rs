@@ -1098,8 +1098,8 @@ mod tests {
     warnings: &[],
     source_map: SourceMap(&[]),
     catalog: Catalog {
-        refs: {},
-        reftext_to_id: {},
+        refs: HashMap::from(&[]),
+        reftext_to_id: HashMap::from(&[]),
     },
 }"#
         );
