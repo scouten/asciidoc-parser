@@ -45,9 +45,11 @@ impl SourceMap {
 
 impl fmt::Debug for SourceMap {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("SourceMap(&")?;
         f.debug_list()
             .entries(self.0.iter().map(|(k, v)| (k, v)))
-            .finish()
+            .finish()?;
+        f.write_str(")")
     }
 }
 
@@ -122,7 +124,7 @@ mod tests {
 
         assert_eq!(
             format!("{sm:#?}"),
-            "[\n    (\n        1,\n        SourceLine(\n            None,\n            1,\n        ),\n    ),\n]"
+            "SourceMap(&[\n    (\n        1,\n        SourceLine(\n            None,\n            1,\n        ),\n    ),\n])"
         );
     }
 }
