@@ -1,12 +1,14 @@
 use std::collections::HashMap;
 
+use crate::internal::debug::DebugHashMapFrom;
+
 /// Document catalog for tracking referenceable elements.
 ///
 /// The catalog maintains a registry of all elements that can be referenced
 /// via cross-references, including anchors, sections, and bibliography entries.
 /// It provides functionality for registering new references, resolving
 /// reference text to IDs, and detecting duplicate IDs.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct Catalog {
     /// Primary registry mapping IDs to reference entries.
     pub(crate) refs: HashMap<String, RefEntry>,
@@ -149,6 +151,14 @@ impl Catalog {
     }
 }
 
+impl std::fmt::Debug for Catalog {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Catalog")
+            .field("refs", &DebugHashMapFrom(&self.refs))
+            .field("reftext_to_id", &DebugHashMapFrom(&self.reftext_to_id))
+            .finish()
+    }
+}
 /// Type of referenceable element in the document.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RefType {
