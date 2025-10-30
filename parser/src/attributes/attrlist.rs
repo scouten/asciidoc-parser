@@ -4,6 +4,7 @@ use crate::{
     HasSpan, Parser, Span,
     attributes::{ElementAttribute, element_attribute::ParseShorthand},
     content::{Content, SubstitutionStep},
+    internal::debug::DebugSliceReference,
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -16,7 +17,7 @@ use crate::{
 /// entries, determines whether each entry is a positional or named attribute,
 /// parses the entry accordingly, and assigns the result as an attribute on the
 /// node.
-#[derive(Clone, Debug, Eq, PartialEq, Default)]
+#[derive(Clone, Eq, PartialEq, Default)]
 pub struct Attrlist<'src> {
     attributes: Vec<ElementAttribute<'src>>,
     anchor: Option<CowStr<'src>>,
@@ -403,6 +404,16 @@ impl<'src> Attrlist<'src> {
 impl<'src> HasSpan<'src> for Attrlist<'src> {
     fn span(&self) -> Span<'src> {
         self.source
+    }
+}
+
+impl std::fmt::Debug for Attrlist<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Attrlist")
+            .field("attributes", &DebugSliceReference(&self.attributes))
+            .field("anchor", &self.anchor)
+            .field("source", &self.source)
+            .finish()
     }
 }
 
@@ -2806,6 +2817,52 @@ mod tests {
                 col: 31,
                 offset: 30,
             }
+        );
+    }
+
+    #[test]
+    fn impl_debug() {
+        let p = Parser::default();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("Sunset,300,400"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
+
+        let attrlist = mi.item;
+
+        assert_eq!(
+            format!("{attrlist:#?}"),
+            r#"Attrlist {
+    attributes: &[
+        ElementAttribute {
+            name: None,
+            value: "Sunset",
+            shorthand_item_indices: [
+                0,
+            ],
+        },
+        ElementAttribute {
+            name: None,
+            value: "300",
+            shorthand_item_indices: [],
+        },
+        ElementAttribute {
+            name: None,
+            value: "400",
+            shorthand_item_indices: [],
+        },
+    ],
+    anchor: None,
+    source: Span {
+        data: "Sunset,300,400",
+        line: 1,
+        col: 1,
+        offset: 0,
+    },
+}"#
         );
     }
 }
