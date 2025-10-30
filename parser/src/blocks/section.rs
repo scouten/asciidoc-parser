@@ -10,6 +10,7 @@ use crate::{
     },
     content::{Content, SubstitutionGroup},
     document::RefType,
+    internal::debug::DebugSliceReference,
     span::MatchedItem,
     strings::CowStr,
     warnings::{Warning, WarningType},
@@ -19,7 +20,7 @@ use crate::{
 /// implicit enclosure. Each section begins with a title and ends at the next
 /// sibling section, ancestor section, or end of document. Nested section levels
 /// must be sequential.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct SectionBlock<'src> {
     level: usize,
     section_title: Content<'src>,
@@ -204,6 +205,23 @@ impl<'src> IsBlock<'src> for SectionBlock<'src> {
 impl<'src> HasSpan<'src> for SectionBlock<'src> {
     fn span(&self) -> Span<'src> {
         self.source
+    }
+}
+
+impl std::fmt::Debug for SectionBlock<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("SectionBlock")
+            .field("level", &self.level)
+            .field("section_title", &self.section_title)
+            .field("blocks", &DebugSliceReference(&self.blocks))
+            .field("source", &self.source)
+            .field("title_source", &self.title_source)
+            .field("title", &self.title)
+            .field("anchor", &self.anchor)
+            .field("anchor_reftext", &self.anchor_reftext)
+            .field("attrlist", &self.attrlist)
+            .field("section_id", &self.section_id)
+            .finish()
     }
 }
 
@@ -2448,5 +2466,50 @@ mod tests {
         let entry = catalog.get_ref("_section_title");
         assert!(entry.is_some());
         assert_eq!(entry.unwrap().reftext, Some("Section Title".to_string()));
+    }
+
+    #[test]
+    fn impl_debug() {
+        let mut parser = Parser::default();
+        let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+        let section = crate::blocks::SectionBlock::parse(
+            &BlockMetadata::new("== Section Title"),
+            &mut parser,
+            &mut warnings,
+        )
+        .unwrap()
+        .item;
+
+        assert_eq!(
+            format!("{section:#?}"),
+            r#"SectionBlock {
+    level: 1,
+    section_title: Content {
+        original: Span {
+            data: "Section Title",
+            line: 1,
+            col: 4,
+            offset: 3,
+        },
+        rendered: "Section Title",
+    },
+    blocks: &[],
+    source: Span {
+        data: "== Section Title",
+        line: 1,
+        col: 1,
+        offset: 0,
+    },
+    title_source: None,
+    title: None,
+    anchor: None,
+    anchor_reftext: None,
+    attrlist: None,
+    section_id: Some(
+        "_section_title",
+    ),
+}"#
+        );
     }
 }

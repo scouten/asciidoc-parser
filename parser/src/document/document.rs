@@ -9,6 +9,7 @@ use crate::{
     attributes::Attrlist,
     blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until},
     document::{Catalog, Header},
+    internal::debug::DebugSliceReference,
     parser::SourceMap,
     strings::CowStr,
     warnings::Warning,
@@ -157,9 +158,9 @@ impl std::fmt::Debug for Document<'_> {
         let dependent = self.internal.borrow_dependent();
         f.debug_struct("Document")
             .field("header", &dependent.header)
-            .field("blocks", &dependent.blocks)
+            .field("blocks", &DebugSliceReference(&dependent.blocks))
             .field("source", &dependent.source)
-            .field("warnings", &dependent.warnings)
+            .field("warnings", &DebugSliceReference(&dependent.warnings))
             .field("source_map", &dependent.source_map)
             .field("catalog", &dependent.catalog)
             .finish()
@@ -1012,8 +1013,6 @@ mod tests {
     fn impl_debug() {
         let doc = Parser::default().parse("= Example Title\n\nabc\n\ndef");
 
-        eprintln!("{doc:#?}");
-
         assert_eq!(
             format!("{doc:#?}"),
             r#"Document {
@@ -1029,10 +1028,10 @@ mod tests {
         title: Some(
             "Example Title",
         ),
-        attributes: [],
+        attributes: &[],
         author_line: None,
         revision_line: None,
-        comments: [],
+        comments: &[],
         source: Span {
             data: "= Example Title",
             line: 1,
@@ -1040,7 +1039,7 @@ mod tests {
             offset: 0,
         },
     },
-    blocks: [
+    blocks: &[
         Block::Simple(
             SimpleBlock {
                 content: Content {
@@ -1096,7 +1095,7 @@ mod tests {
         col: 1,
         offset: 0,
     },
-    warnings: [],
+    warnings: &[],
     source_map: SourceMap(&[]),
     catalog: Catalog {
         refs: {},
