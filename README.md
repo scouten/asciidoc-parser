@@ -37,6 +37,7 @@ I'm reading page-by-page, line-by-line, and writing tests to verify that the imp
 The following features are supported in the [Ruby implementation of Asciidoctor](https://github.com/asciidoctor/asciidoctor), on which this project is based, but are not supported -- and will likely never be supported -- in this crate:
 
 * Parsing UTF-16 content is not supported. (UTF-16 documents must be re-encoded to UTF-8 prior to parsing with this crate.)
+* [Document types](https://docs.asciidoctor.org/asciidoc/latest/document/doctype/) other than `article` are not supported. Specifically, features which are enabled for the `book` doctype are not supported.
 * The document attribute [`compat-mode`](https://docs.asciidoctor.org/asciidoctor/latest/migrate/asciidoc-py/#compatibility-mode) is not supported.
 * The parser has built-in support for HTML5 rendering similar to what is provided in Asciidoctor. Other back ends could be supported by other crates by implementing the `InlineSubstitutionRenderer` trait. They will not be directly supported in this crate.
 * Setting document attributes via the [inline attribute entry syntax](https://docs.asciidoctor.org/asciidoc/latest/attributes/inline-attribute-entries/) is not supported. (Note that this syntax is discouraged and may eventually be removed from the AsciiDoc language documentation.)
