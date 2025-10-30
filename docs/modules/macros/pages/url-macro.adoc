@@ -27,7 +27,7 @@ That's why we say "`URL macros`" and not just "`URL macro`".
 It's a family of macros.
 With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macros behave the same, and also behave the same as the xref:link-macro.adoc[link macro].
 
-So why might you upgrade from a URL to a URL macro?
+So why might you graduate from a URL to a URL macro?
 One reason is to force the URL to be parsed when it would not normally be recognized, such as if it's enclosed in double quotes:
 
 [source]
@@ -35,7 +35,15 @@ One reason is to force the URL to be parsed when it would not normally be recogn
 Type "https://asciidoctor.org[]" into the location bar of your browser.
 ----
 
-The more typical reason, however, is to specify custom link text.
+Another is when the URL of an autolink is being ended too soon.
+The URL macro allows you to explicitly mark the boundary of the URL.
+
+[source]
+----
+Use http://example.com?menu=<value>[] to open to the menu named `<value>`.
+----
+
+A more common reason is to specify custom link text.
 
 [#link-text]
 == Custom link text

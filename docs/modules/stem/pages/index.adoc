@@ -44,6 +44,7 @@ No substitutions are applied to the content within a stem macro or block.
 == Inline STEM content
 
 The best way to mark up an inline formula is to use the `stem` macro.
+The text between the square brackets of the inline stem macro acts as an implicit passthrough.
 
 .Inline stem macro syntax
 [source#ex-inline]
@@ -73,8 +74,9 @@ The result of <<ex-square-bracket>> is displayed below.
 include::example$stem.adoc[tag=in-sb]
 ====
 
-A stem macro is an implicit passthrough macro.
-That's why, despite the fact that the x expression matches the syntax of an attribute reference, you don't have to escape it.
+Since the inline stem macro is an implicit passthrough, the closing square bracket it the only character you have to escape.
+You don't have to worry about escaping other AsciiDoc syntax, such as attribute references.
+All such syntax is passed through to the STEM processor as is.
 
 [#block]
 == Block STEM content
@@ -253,3 +255,71 @@ Here's how the body of this example will be shown:
 =====
 include::example$stem.adoc[tag=multi-a-render]
 =====
+
+== Equation numbering
+
+When writing expresions in LaTeX, you can configure the STEM processor to add numbers to block equations.
+To do so, set the `eqnums` attribute on the document to empty (or `AMS`).
+Let's look at an example.
+
+[source]
+----
+= Document Title
+:stem: latexmath
+:eqnums:
+
+[stem]
+++++
+\begin{equation}
+x = y^2
+\end{equation}
+++++
+----
+
+The automatic numbering is only applied when the expression is contained within an `\{equation}` container (in fact, to all such containers in a stem block).
+
+If you want all expressions to be numbered, even those not designated as an equation, set the value of the `eqnums` attribute to `all`.
+Let's look at an example.
+
+[source]
+----
+= Document Title
+:stem: latexmath
+:eqnums: all
+
+[stem]
+++++
+x = y^2
+++++
+----
+
+In this case, the `\{equation}` container is not required.
+
+== Reference equations
+
+When writing expresions in LaTeX, you can reference an equation in a stem block using an inline stem macro.
+First, you need to add a label (aka ID) to the (ideally numbered) equation in a stem block using `\label` .
+
+[source]
+----
+= Document Title
+:stem: latexmath
+:eqnums:
+
+[stem]
+++++
+\begin{equation}
+\label{hypotenuse}
+c = \sqrt{a^2 + b^2}
+\end{equation}
+++++
+----
+
+Next, we reference that equation using `\eqref`.
+
+[source]
+----
+We can calculate the hypotenuse using stem:[\eqref{hypotenuse}].
+----
+
+You can also use `\eqref` within any LaTeX stem block.

@@ -25,7 +25,7 @@ Otherwise, you will get a warning.
 This differs from other lightweight markup languages.
 But there's a reason for it.
 
-Using explicit numbering is one way to adjust the numbering offset of a list.
+Using explicit numbering is one way to adjust the numbering offset of a list (only supported in Asciidoctor 2.1.0 or better).
 For instance, you can type:
 
 ----
@@ -39,7 +39,7 @@ You can use the `start` attribute on the list to define the number at which you 
 include::example$ordered.adoc[tag=base-start]
 ----
 
-The start value is always a positive integer value even when using a different numeration style such as loweralpha.
+The start value is always a positive integer value, even when using a different numeration style such as loweralpha.
 
 .When not to use the start attribute
 ****
@@ -52,7 +52,7 @@ Instead, use a list continuation between each block element you want to attach t
 The list continuation glues the blocks together within a given item and keeps them at the same level of indentation.
 
 * For details on how to use a list continuation, refer to the xref:continuation.adoc[] page.
-* For an example of the list continuation used in a complex ordered list, see the launch steps in https://github.com/aws-quickstart/quickstart-microsoft-sql-fci-fsx/blob/main/docs/partner_editable/deploy_steps.adoc[this .adoc file in GitHub^].
+* For an example of the list continuation used in an ordered list, see the launch steps in https://github.com/aws-quickstart/quickstart-microsoft-sql-fci-fsx/blob/main/docs/partner_editable/deploy_steps.adoc[this .adoc file in GitHub^].
 * To see how those launch steps look in the final output, see the https://aws-quickstart.github.io/quickstart-microsoft-sql-fci-fsx/#_launch_the_quick_start[Launch the Quick Start^] section of the generated deployment guide.
 The list continuations prevent step 2 from resetting to 1.
 They also prevent step 5, which is pulled in from a separate AsciiDoc file, from resetting to 1.

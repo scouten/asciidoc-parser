@@ -53,7 +53,7 @@ The result of <<ex-label>> is displayed below.
 
 include::example$admonition.adoc[tag=para]
 
-When you want to apply an admonition to complex content, set the label as a style attribute on a block.
+When you want to apply an admonition to compound content, set the label as a style attribute on a block.
 As seen in the next example, admonition labels are commonly set on example blocks.
 This behavior is referred to as *masquerading*.
 The label must be uppercase when set as an attribute on a block.

@@ -21,7 +21,7 @@ If you can't guarantee that all the included lines will be adjacent, you'll want
 This keeps all the include lines together, enclosed inside the boundaries of the block.
 You then attach this block to the list item using a list continuation (i.e., `+`).
 
-Here's an example of how to include complex content from another file into a list item:
+Here's an example of how to include compound content from another file into a list item:
 
 ----
 * {empty}

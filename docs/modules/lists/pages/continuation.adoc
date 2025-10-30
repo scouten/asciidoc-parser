@@ -1,12 +1,13 @@
-= Complex List Items
+= Compound List Items
 
-This page covers how to create lists that have complex list items.
+This page covers how to create lists that have compound list items.
 
-A [.term]*complex list item* is a list item that contains block content that follows the principal text (which may be empty).
-This is different from a list item whose principal text spans multiple lines, for which this page draws a distinction.
+A [.term]*compound list item* is a list item that has blocks attached to it, including paragraphs, which follow the (optionally empty) principal text.
+In other words, the list item contains block content.
+This scenario is different from a list item whose principal text merely spans multiple lines, a distinction which is further explained on this page.
 The page goes on to explain how to attach a block to a list item in an ancestor list.
 
-In additional to unordered and ordered lists, callout and description lists also support complex list items.
+In additional to unordered and ordered lists, callout and description lists also support compound list items.
 On this page, the term list item refers to any list item in an unordered, ordered, callout, and description list.
 For a description list, it refers specifically to the description of the list item (not the list item term).
 
@@ -77,7 +78,7 @@ include::example$complex.adoc[tag=complex]
 
 Here's how the source is rendered:
 
-.A list with complex content
+.A list with compound content
 ====
 include::example$complex.adoc[tag=complex]
 ====
@@ -86,7 +87,7 @@ Notice that we inserted an empty line after the attached paragraph block.
 That's because only a sibling list item can interrupt a paragraph.
 If the next list item had been a nested list item instead of a sibling, this empty line would have been required.
 Otherwise, the nested list marker and text would have just become the next line of the paragraph.
-For consistency, a best practice is to always include an empty line at the end of a complex list item.
+For consistency, a best practice is to always include an empty line at the end of a compound list item.
 That way, you never have to remember when it's required.
 
 IMPORTANT: A sibling or nested list item acts as an interrupting line for the principal text of a list item.
@@ -97,7 +98,7 @@ If you're attaching more than one block to a list item, you're strongly encourag
 That way, you only need a single list continuation line to attach the open block to the list item.
 Within the open block, you write like you normally would, no longer having to worry about adding list continuations between the blocks to keep them attached to the list item.
 
-Here's an example of wrapping complex list content in an open block:
+Here's an example of wrapping compound list content in an open block:
 
 [source]
 ....
@@ -106,7 +107,7 @@ include::example$complex.adoc[tag=complex-o]
 
 Here's how that content is rendered:
 
-.A list with complex content wrapped in an open block
+.A list with compound content wrapped in an open block
 ====
 include::example$complex.adoc[tag=complex-o]
 ====
@@ -133,7 +134,7 @@ If the principal text of a list item is empty, the node for the principal text i
 This is how you can get the first block (such as a listing block) to line up with the list marker.
 You can make the principal text empty by using the `+{empty}+` attribute reference.
 
-Here's an example of a list that has items with _only_ complex content.
+Here's an example of a list that has items with _only_ compound content.
 
 [source]
 ....
@@ -142,7 +143,7 @@ include::example$complex.adoc[tag=complex-only]
 
 Here's how the source is rendered:
 
-.A list with complex content
+.A list with compound content
 ====
 include::example$complex.adoc[tag=complex-only]
 ====
@@ -228,5 +229,5 @@ include::example$complex.adoc[tag=complex-grandparent]
 
 On this page, you learned that the principal text of a list item can span multiple contiguous lines, and that those lines can be indented for readability without affecting the output.
 You learned that you can attach any type of block content to a list item using the list continuation.
-You also learned that using this feature in combination with the open block makes it easier to create list items with complex content, to attach blocks to a parent list, or to drop the principal text.
+You also learned that using this feature in combination with the open block makes it easier to create list items with compound content, to attach blocks to a parent list, or to drop the principal text.
 Finally, you learned that you can use the ancestor list continuation to attach blocks to the current item in an ancestor list, and the risks with doing so.

@@ -57,6 +57,33 @@ end
 <3> Response block
 // end::basic[]
 
+// tag::auto[]
+[,ruby]
+----
+require 'sinatra' <.>
+
+get '/hi' do <.> <.>
+  "Hello World!"
+end
+----
+<.> Library import
+<.> URL mapping
+<.> Response block
+// end::auto[]
+
+// tag::auto-repeat[]
+[,ruby]
+----
+require 'asciidoctor' <.>
+
+puts Asciidoctor::VERSION <1>
+
+Asciidoctor.convert_file 'README.adoc' <.>
+----
+<.> The require statement exports the class from the gem to the global scope.
+<.> We can then call methods provided by that class.
+// end::auto-repeat[]
+
 // tag::b-src[]
 [source,ruby]
 ----

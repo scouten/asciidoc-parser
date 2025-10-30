@@ -6,8 +6,8 @@ Use the `lines` attribute to include individual lines or a range of lines (by li
 Use the `tags` attribute (or `tag` attribute for the singular case) to select lines that fall between regions marked with user-defined tags.
 
 When including multiple line ranges or multiple tags, each entry in the list must be separated by either a comma or a semi-colon.
-If commas are used, the entire value must be enclosed in quotes.
-You can eliminate this requirement by using the semi-colon as the data separator instead.
+If commas are used, the entire value must be enclosed in quotes (per attribute rules).
+You can eliminate the need for quotes by using the semi-colon as the data separator instead.
 
 == Tagging regions
 
@@ -18,6 +18,9 @@ In the include file, the tag directives (e.g., `tag::name[]` and `end::name[]`) 
 The tag name must not be empty and must consist exclusively of non-space characters.
 
 Typically, the tag directives will be placed after a line comment as defined by the language of the source file.
+This is especially important when using tags to include portions of an AsciiDoc document which may itself be converted.
+If the tag is not behind a line comment, the tag will be treated as regular content, which could disrupt the block structure, such as a table.
+
 For languages that only support circumfix comments, such as XML, you can enclose the tag directives between the circumfix comment markers, offset by a space on either side.
 For example, in XML files, you can use `+<!-- tag::name[] -->+` and `+<!-- end::name[] -->+`.
 

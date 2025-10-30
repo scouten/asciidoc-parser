@@ -127,7 +127,11 @@ d|``wj``^[3]^
 |;;
 |;;
 
-|cpp
+|cpp (deprecated)
+|C++
+|C++
+
+|cxx
 |C++
 |C++
 

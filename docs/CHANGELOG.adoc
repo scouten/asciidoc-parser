@@ -4,18 +4,25 @@ This document summarizes the changes introduced to the AsciiDoc Language Documen
 For a detailed view of what's changed, refer to the repository's
 https://github.com/asciidoctor/asciidoc-docs/commits/main[commit history].
 
-== Published Q3 2025
+== Published Q4 2025
 
 Added::
 * Add example of when to use per-line hardbreaks instead of the hardbreaks option
 * Add example of using angle brackets to delinate the boundaries of a bare URL / autolink
 * Add `imagesdir` as an element attribute on image macros
+* Document the syntax and behavior of callouts with automatic numbering
+* Document equation numbering and referencing for LaTeX stem blocks
+* Document cxx attribute as preferred alternative to cpp
+* Add warning stating that AsciiDoc processing can allow inline elements to be interleaved, leading to invalid or illogical output, but that it is being addressed by the specification
 
 Changed::
+* Document that the toclevels value ranges from 0-5 rather than 1-5 and that 0 is only relevant for a multipart book
+* Use the term "compound" instead of "complex" to describe a list item that has attached blocks
 * Emphasize that writing in a CJK language necessitate the need for using unconstrained markup
 * Clarify that a nested list item is not an interrupting line for an attached paragraph
 * Document the additional requirement in Firefox to view an embedded YouTube video
 * Clarify that auto-generated section IDs can be expected to be safe to use in HTML, but not necessarily XML; document workarounds
+* Clarify that using explicit numbering to alter start value of ordered list was introduced in Asciidoctor 2.1.0
 
 == Published Q2 2025
 
