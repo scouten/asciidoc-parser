@@ -6,6 +6,7 @@ use crate::{
     blocks::{
         Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
     },
+    internal::debug::DebugSliceReference,
     span::MatchedItem,
     strings::CowStr,
     warnings::{MatchAndWarnings, Warning, WarningType},
@@ -21,7 +22,7 @@ use crate::{
 /// | `--`      | Open         |
 /// | `****`    | Sidebar      |
 /// | `____`    | Quote        |
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 pub struct CompoundDelimitedBlock<'src> {
     blocks: Vec<Block<'src>>,
     context: CowStr<'src>,
@@ -178,9 +179,26 @@ impl<'src> HasSpan<'src> for CompoundDelimitedBlock<'src> {
     }
 }
 
+impl std::fmt::Debug for CompoundDelimitedBlock<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("CompoundDelimitedBlock")
+            .field("blocks", &DebugSliceReference(&self.blocks))
+            .field("context", &self.context)
+            .field("source", &self.source)
+            .field("title_source", &self.title_source)
+            .field("title", &self.title)
+            .field("anchor", &self.anchor)
+            .field("anchor_reftext", &self.anchor_reftext)
+            .field("attrlist", &self.attrlist)
+            .finish()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #![allow(clippy::unwrap_used)]
+
+    use crate::{Parser, blocks::metadata::BlockMetadata};
 
     mod is_valid_delimiter {
         use crate::blocks::CompoundDelimitedBlock;
@@ -2148,5 +2166,89 @@ mod tests {
 
             assert!(blocks.next().is_none());
         }
+    }
+
+    #[test]
+    fn impl_debug() {
+        let mut parser = Parser::default();
+
+        let cdb = crate::blocks::CompoundDelimitedBlock::parse(
+            &BlockMetadata::new("====\nblock1\n\nblock2\n===="),
+            &mut parser,
+        )
+        .unwrap()
+        .unwrap_if_no_warnings()
+        .unwrap()
+        .item;
+
+        eprintln!("{cdb:#?}");
+
+        assert_eq!(
+            format!("{cdb:#?}"),
+            r#"CompoundDelimitedBlock {
+    blocks: &[
+        Block::Simple(
+            SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "block1",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "block1",
+                },
+                source: Span {
+                    data: "block1",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            },
+        ),
+        Block::Simple(
+            SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "block2",
+                        line: 4,
+                        col: 1,
+                        offset: 13,
+                    },
+                    rendered: "block2",
+                },
+                source: Span {
+                    data: "block2",
+                    line: 4,
+                    col: 1,
+                    offset: 13,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            },
+        ),
+    ],
+    context: "example",
+    source: Span {
+        data: "====\nblock1\n\nblock2\n====",
+        line: 1,
+        col: 1,
+        offset: 0,
+    },
+    title_source: None,
+    title: None,
+    anchor: None,
+    anchor_reftext: None,
+    attrlist: None,
+}"#
+        );
     }
 }
