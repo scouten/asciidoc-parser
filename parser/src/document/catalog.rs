@@ -160,7 +160,7 @@ impl std::fmt::Debug for Catalog {
     }
 }
 /// Type of referenceable element in the document.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub enum RefType {
     /// Standard anchor element (`[[id]]` or `[[id,reftext]]`).
     Anchor,
@@ -170,6 +170,16 @@ pub enum RefType {
 
     /// Bibliography reference (`[[[id]]]` or `[[[id,reftext]]]`).
     Bibliography,
+}
+
+impl std::fmt::Debug for RefType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Anchor => f.write_str("RefType::Anchor"),
+            Self::Section => f.write_str("RefType::Section"),
+            Self::Bibliography => f.write_str("RefType::Bibliography"),
+        }
+    }
 }
 
 /// Entry in the document catalog representing a referenceable element.
@@ -326,5 +336,16 @@ mod tests {
     fn duplicate_id_error_impl_display() {
         let did_error = DuplicateIdError("foo".to_string());
         assert_eq!(did_error.to_string(), "ID 'foo' already registered");
+    }
+
+    #[test]
+    fn ref_type_impl_debug() {
+        assert_eq!(format!("{:#?}", RefType::Anchor), "RefType::Anchor");
+        assert_eq!(format!("{:#?}", RefType::Section), "RefType::Section");
+
+        assert_eq!(
+            format!("{:#?}", RefType::Bibliography),
+            "RefType::Bibliography"
+        );
     }
 }
