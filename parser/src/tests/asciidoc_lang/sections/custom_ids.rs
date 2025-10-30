@@ -520,7 +520,7 @@ fn assign_auxiliary_ids_2() {
 == Section Title[[secondary-id]][[tertiary-id]]
 ----
 
-        "#
+"#
     );
 
     let doc = Parser::default().parse("== Section Title[[secondary-id]][[tertiary-id]]");
@@ -616,7 +616,7 @@ These additional anchor points don't interfere with the declaration of the prima
 == [[secondary-id]][[tertiary-id]]Section Title
 ----
 
-        "#
+"#
     );
 
     let doc =
