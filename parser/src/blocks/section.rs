@@ -19,9 +19,6 @@ use crate::{
 /// implicit enclosure. Each section begins with a title and ends at the next
 /// sibling section, ancestor section, or end of document. Nested section levels
 /// must be sequential.
-///
-/// **WARNING:** This is a very preliminary implementation. There are many **TO
-/// DO** items in this code.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SectionBlock<'src> {
     level: usize,
@@ -72,7 +69,11 @@ impl<'src> SectionBlock<'src> {
 
         let proposed_base_id = generate_section_id(section_title.rendered(), parser);
 
-        let manual_id = metadata.attrlist.as_ref().and_then(|a| a.id());
+        let manual_id = metadata
+            .attrlist
+            .as_ref()
+            .and_then(|a| a.id())
+            .or_else(|| metadata.anchor.as_ref().map(|anchor| anchor.data()));
 
         let reftext = metadata
             .attrlist
@@ -212,8 +213,6 @@ fn parse_title_line<'src>(
 ) -> Option<MatchedItem<'src, (usize, Span<'src>)>> {
     let mi = source.take_non_empty_line()?;
     let mut line = mi.item;
-
-    // TO DO: Disallow empty title.
 
     let mut count = 0;
 
