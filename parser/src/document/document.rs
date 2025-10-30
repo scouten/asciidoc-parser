@@ -1097,7 +1097,7 @@ mod tests {
         offset: 0,
     },
     warnings: [],
-    source_map: [],
+    source_map: SourceMap(&[]),
     catalog: Catalog {
         refs: {},
         reftext_to_id: {},
