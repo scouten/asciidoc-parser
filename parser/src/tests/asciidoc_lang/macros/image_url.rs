@@ -105,6 +105,7 @@ include::example$image.adoc[tag=url]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -180,6 +181,7 @@ include::example$image.adoc[tag=in-url]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

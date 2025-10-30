@@ -94,6 +94,7 @@ image::logo.png[Logo]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: Some(Attrlist {
                         attributes: &[ElementAttribute {
                             name: Some("link",),
@@ -192,6 +193,7 @@ image::logo.png[Logo,link=https://example.org]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -259,6 +261,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -378,6 +381,7 @@ image::logo.png[Logo,link=https://example.org,window=_blank,opts=nofollow]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

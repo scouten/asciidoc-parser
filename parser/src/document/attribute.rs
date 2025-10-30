@@ -128,6 +128,10 @@ impl<'src> IsBlock<'src> for Attribute<'src> {
         None
     }
 
+    fn anchor_reftext(&'src self) -> Option<Span<'src>> {
+        None
+    }
+
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         None
     }
@@ -623,6 +627,7 @@ mod tests {
         assert!(block.title_source().is_none());
         assert!(block.title().is_none());
         assert!(block.anchor().is_none());
+        assert!(block.anchor_reftext().is_none());
         assert!(block.attrlist().is_none());
         assert_eq!(block.substitution_group(), SubstitutionGroup::Normal);
 
@@ -689,6 +694,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -718,6 +724,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -762,6 +769,7 @@ mod tests {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );

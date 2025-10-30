@@ -170,6 +170,7 @@ These implicit content lines are used to assign xref:author-information.adoc[] a
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 })],
                 source: Span {
@@ -355,6 +356,7 @@ Since the document title is optional, it's possible for the header to only consi
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -485,6 +487,7 @@ Any attributes defined below the first empty line are not part of the document h
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

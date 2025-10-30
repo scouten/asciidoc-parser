@@ -85,6 +85,7 @@ This is a basic AsciiDoc document.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 })],
                 warnings: &[],
@@ -160,6 +161,7 @@ This document contains two paragraphs.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     }),
                     Block::Simple(SimpleBlock {
@@ -181,6 +183,7 @@ This document contains two paragraphs.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -275,6 +278,7 @@ It also has a header that specifies the document title.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     }),
                     Block::Simple(SimpleBlock {
@@ -296,6 +300,7 @@ It also has a header that specifies the document title.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -559,6 +564,7 @@ A single empty line separates the header from the body.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

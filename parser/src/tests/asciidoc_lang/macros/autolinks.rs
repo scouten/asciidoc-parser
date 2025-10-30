@@ -73,6 +73,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -134,6 +135,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -195,6 +197,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -256,6 +259,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -318,6 +322,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -390,6 +395,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -460,6 +466,7 @@ To accommodate this convention, the AsciiDoc processor will still recognize the 
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -536,6 +543,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -614,6 +622,7 @@ For email address which do not conform to these restriction, you can use the xre
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -695,6 +704,7 @@ The URL and email address will both be shown in plain text.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -716,6 +726,7 @@ The URL and email address will both be shown in plain text.
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },)
                 ],
@@ -788,6 +799,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: Some(Attrlist {
                         attributes: &[ElementAttribute {
                             name: Some("subs",),

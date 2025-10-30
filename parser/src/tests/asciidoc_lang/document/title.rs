@@ -88,6 +88,7 @@ image::document-title.png[Title of document]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -217,6 +218,7 @@ The `doctitle` attribute can also be explicitly set and assigned a value using a
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

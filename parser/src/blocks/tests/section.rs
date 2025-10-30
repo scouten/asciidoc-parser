@@ -40,6 +40,7 @@ fn err_missing_space_before_title() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -96,6 +97,7 @@ fn simplest_section_block() {
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -122,6 +124,7 @@ fn simplest_section_block() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })
@@ -158,6 +161,7 @@ fn has_child_block() {
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -193,6 +197,7 @@ fn has_child_block() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })],
             source: Span {
@@ -204,6 +209,7 @@ fn has_child_block() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })
@@ -232,6 +238,7 @@ fn has_child_block() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -308,6 +315,7 @@ fn title() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })],
             source: Span {
@@ -324,6 +332,7 @@ fn title() {
             },),
             title: Some("other section title"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })
@@ -350,6 +359,7 @@ fn title() {
     assert_eq!(mi.item.title().unwrap(), "other section title");
 
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
 
     let mut nested_blocks = mi.item.nested_blocks();
@@ -375,6 +385,7 @@ fn title() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -469,6 +480,7 @@ fn warn_child_attrlist_has_extra_comma() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })],
             source: Span {
@@ -480,6 +492,7 @@ fn warn_child_attrlist_has_extra_comma() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
             section_id: Some("_section_title"),
         })

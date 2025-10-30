@@ -42,6 +42,7 @@ fn err_inline_syntax() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         }),
     );
@@ -96,6 +97,7 @@ fn err_no_attr_list() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         }),
     );
@@ -150,6 +152,7 @@ fn err_attr_list_not_closed() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -204,6 +207,7 @@ fn err_unexpected_after_attr_list() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -258,6 +262,7 @@ fn rejects_image_with_no_target() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         },)
     );
@@ -320,6 +325,7 @@ fn has_target() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -330,6 +336,7 @@ fn has_target() {
     assert!(mi.item.title_source().is_none());
     assert!(mi.item.title().is_none());
     assert!(mi.item.anchor().is_none());
+    assert!(mi.item.anchor_reftext().is_none());
     assert!(mi.item.attrlist().is_none());
     assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -395,6 +402,7 @@ fn has_target_and_macro_attrlist() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -476,6 +484,7 @@ fn warn_macro_attrlist_has_extra_comma() {
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );
@@ -558,6 +567,7 @@ fn has_title() {
             },),
             title: Some("macro title"),
             anchor: None,
+            anchor_reftext: None,
             attrlist: None,
         })
     );

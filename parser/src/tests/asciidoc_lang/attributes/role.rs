@@ -97,6 +97,7 @@ This is a sidebar with a role assigned to it, rolename.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -109,6 +110,7 @@ This is a sidebar with a role assigned to it, rolename.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -177,6 +179,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -189,6 +192,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -258,6 +262,7 @@ This is a sidebar with one role assigned to it, rolename.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -270,6 +275,7 @@ This is a sidebar with one role assigned to it, rolename.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("role"),
@@ -344,6 +350,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -356,6 +363,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("role"),

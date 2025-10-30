@@ -129,6 +129,7 @@ include::example$image.adoc[tag=float]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -200,6 +201,7 @@ include::example$image.adoc[tag=in-float]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -314,6 +316,7 @@ include::example$image.adoc[tag=role]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: Some(Attrlist {
                         attributes: &[ElementAttribute {
                             name: None,
@@ -394,6 +397,7 @@ include::example$image.adoc[tag=in-role]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

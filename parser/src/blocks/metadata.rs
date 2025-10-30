@@ -1,3 +1,5 @@
+use std::ops::{RangeFrom, RangeTo};
+
 use crate::{
     Parser, Span,
     attributes::{Attrlist, AttrlistContext},
@@ -18,8 +20,12 @@ pub(crate) struct BlockMetadata<'src> {
     pub(crate) title: Option<String>,
 
     /// The block's anchor, if any. The span does not include the opening or
-    /// closing square brace pair.
+    /// closing square brace pair, nor reftext if it exists.
     pub(crate) anchor: Option<Span<'src>>,
+
+    /// The block anchor's reftext, if any. The span includes only the portion
+    /// from the first comma to just inside the closing square brace pair.
+    pub(crate) anchor_reftext: Option<Span<'src>>,
 
     /// The block's attribute list, if any.
     pub(crate) attrlist: Option<Attrlist<'src>>,
@@ -71,15 +77,44 @@ impl<'src> BlockMetadata<'src> {
 
         // Does this block have a block anchor?
         let mut anchor_maw = parse_maybe_block_anchor(block_start);
+        let original_block_start = block_start;
 
-        let (anchor, block_start) = if let Some(mi) = anchor_maw.item {
-            (Some(mi.item), mi.after)
+        let (mut anchor, mut reftext, mut block_start) = if let Some(mi) = anchor_maw.item {
+            if let Some(comma_position) = mi.item.position(|c| c == ',')
+                && comma_position < mi.item.len() - 1
+            {
+                let anchor = mi.item.slice_to(RangeTo {
+                    end: comma_position,
+                });
+                let reftext = mi.item.slice_from(RangeFrom {
+                    start: comma_position + 1,
+                });
+
+                (Some(anchor), Some(reftext), mi.after)
+            } else {
+                (Some(mi.item), None, mi.after)
+            }
         } else {
-            (None, block_start)
+            (None, None, block_start)
         };
 
         if !anchor_maw.warnings.is_empty() {
             warnings.append(&mut anchor_maw.warnings);
+        }
+
+        // If anchor name doesn't match the XML "Name" pattern, discard the anchor name
+        // and issue a warning.
+        if let Some(anchor_span) = anchor
+            && !anchor_span.is_xml_name()
+        {
+            warnings.push(Warning {
+                source: anchor_span,
+                warning: WarningType::InvalidBlockAnchorName,
+            });
+
+            anchor = None;
+            reftext = None;
+            block_start = original_block_start;
         }
 
         // Does this block have an attribute list?
@@ -106,6 +141,7 @@ impl<'src> BlockMetadata<'src> {
                 title_source,
                 title,
                 anchor,
+                anchor_reftext: reftext,
                 attrlist,
                 source,
                 block_start,
@@ -150,17 +186,6 @@ fn parse_maybe_block_anchor(
             warnings: vec![Warning {
                 source: anchor_src,
                 warning: WarningType::EmptyBlockAnchorName,
-            }],
-        };
-    }
-
-    // Warn if anchor name doesn't match the XML "Name" pattern.
-    if !anchor_src.is_xml_name() {
-        return MatchAndWarnings {
-            item: None,
-            warnings: vec![Warning {
-                source: anchor_src,
-                warning: WarningType::InvalidBlockAnchorName,
             }],
         };
     }

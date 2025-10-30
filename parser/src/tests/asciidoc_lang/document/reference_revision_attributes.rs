@@ -116,6 +116,7 @@ image::reference-revision-line.png["Revision line and rendered revision referenc
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: Some(Attrlist {
                         attributes: &[ElementAttribute {
                             name: None,
@@ -140,6 +141,7 @@ image::reference-revision-line.png["Revision line and rendered revision referenc
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_colophon"),
             },),],
@@ -319,6 +321,7 @@ If you don't want the default version label to be displayed in the byline, xref:
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: Some(Attrlist {
                         attributes: &[ElementAttribute {
                             name: None,
@@ -343,6 +346,7 @@ If you don't want the default version label to be displayed in the byline, xref:
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_colophon"),
             },),],

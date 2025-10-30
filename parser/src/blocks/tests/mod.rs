@@ -132,6 +132,7 @@ mod error_cases {
         assert!(item.title_source().is_none());
         assert!(item.title().is_none());
         assert!(item.anchor().is_none());
+        assert!(item.anchor_reftext().is_none());
         assert!(item.attrlist().is_none());
         assert_eq!(item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -168,6 +169,7 @@ mod error_cases {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     }),
                     Block::Simple(SimpleBlock {
@@ -189,6 +191,7 @@ mod error_cases {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -210,6 +213,7 @@ mod error_cases {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -223,6 +227,7 @@ mod error_cases {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_section_title"),
             }
@@ -273,6 +278,7 @@ mod error_cases {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -297,6 +303,7 @@ mod error_cases {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -335,6 +342,7 @@ mod error_cases {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
         assert_eq!(
@@ -387,6 +395,7 @@ mod error_cases {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -398,6 +407,7 @@ mod error_cases {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("alt"),
@@ -471,6 +481,7 @@ mod error_cases {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );

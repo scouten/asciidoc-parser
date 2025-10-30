@@ -47,6 +47,7 @@ mod dispatcher {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -471,6 +472,7 @@ mod quotes {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -711,6 +713,7 @@ mod quotes {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -744,6 +747,7 @@ mod quotes {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -777,6 +781,7 @@ mod quotes {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -816,6 +821,7 @@ mod quotes {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1571,6 +1577,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1604,6 +1611,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1640,6 +1648,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1676,6 +1685,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1712,6 +1722,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1750,6 +1761,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1788,6 +1800,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1824,6 +1837,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1897,6 +1911,7 @@ mod macros {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },)
             );
@@ -1932,6 +1947,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1966,6 +1982,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2000,6 +2017,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2033,6 +2051,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2067,6 +2086,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2103,6 +2123,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2145,6 +2166,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2186,6 +2208,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2227,6 +2250,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2260,6 +2284,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2296,6 +2321,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2329,6 +2355,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2365,6 +2392,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2398,6 +2426,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2434,6 +2463,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2467,6 +2497,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2551,6 +2582,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2584,6 +2616,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2621,6 +2654,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2675,6 +2709,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2717,6 +2752,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2772,6 +2808,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2812,6 +2849,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2851,6 +2889,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2889,6 +2928,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2926,6 +2966,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -2965,6 +3006,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3007,6 +3049,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3049,6 +3092,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3090,6 +3134,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3127,6 +3172,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3164,6 +3210,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3201,6 +3248,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3238,6 +3286,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -3275,6 +3324,7 @@ mod macros {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -4591,6 +4641,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -4627,6 +4678,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -4663,6 +4715,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -4696,6 +4749,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -4838,6 +4892,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5051,6 +5106,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5158,6 +5214,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5194,6 +5251,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5231,6 +5289,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5267,6 +5326,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5365,6 +5425,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5401,6 +5462,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5435,6 +5497,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5470,6 +5533,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5504,6 +5568,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5540,6 +5605,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5573,6 +5639,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5606,6 +5673,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5640,6 +5708,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5677,6 +5746,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5718,6 +5788,7 @@ mod passthroughs {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5769,6 +5840,7 @@ mod replacements {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5803,6 +5875,7 @@ mod replacements {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -5923,6 +5996,7 @@ foo&#8201;&#8212;&#8201;"#;
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -6004,6 +6078,7 @@ mod post_replacements {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -6040,6 +6115,7 @@ mod post_replacements {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -6089,6 +6165,7 @@ mod post_replacements {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
@@ -6136,6 +6213,7 @@ mod post_replacements {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,

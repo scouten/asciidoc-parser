@@ -67,6 +67,7 @@ fn id() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -132,6 +133,7 @@ fn role() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -197,6 +199,7 @@ fn title() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -262,6 +265,7 @@ fn window() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -329,6 +333,7 @@ fn window_shorthand() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {
@@ -393,6 +398,7 @@ fn opts() {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },),],
             source: Span {

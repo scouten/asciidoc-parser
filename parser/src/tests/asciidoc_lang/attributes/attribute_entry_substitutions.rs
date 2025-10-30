@@ -161,6 +161,7 @@ You can inspect the value stored in an attribute using this trick:
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("subs"),
@@ -242,6 +243,7 @@ If the macro is absent, the value is processed with the header substitution grou
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: Some("subs"),
@@ -337,6 +339,7 @@ To play, you'll need {equipment}.
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -390,6 +393,7 @@ That's because, in contrast, substitutions are applied to the value of an attrib
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -453,6 +457,7 @@ This strategy is akin to post-processing the attribute value.
             title_source: None,
             title: None,
             anchor: None,
+            anchor_reftext: None,
             attrlist: Some(Attrlist {
                 attributes: &[ElementAttribute {
                     name: Some("subs"),

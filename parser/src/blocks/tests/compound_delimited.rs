@@ -32,6 +32,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -63,6 +64,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -94,6 +96,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -125,6 +128,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -160,6 +164,7 @@ mod parse {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "example",
@@ -172,6 +177,7 @@ mod parse {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -222,6 +228,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -237,6 +244,7 @@ mod example {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
         assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
 
@@ -284,6 +292,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -305,6 +314,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -318,6 +328,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -331,6 +342,7 @@ mod example {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -355,6 +367,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -380,6 +393,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -431,6 +445,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -452,6 +467,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -470,6 +486,7 @@ mod example {
                 }),
                 title: Some("block title"),
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -495,6 +512,7 @@ mod example {
         assert_eq!(mi.item.title().unwrap(), "block title");
 
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -519,6 +537,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -544,6 +563,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -595,6 +615,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -617,6 +638,7 @@ mod example {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },)],
                         context: "example",
@@ -629,6 +651,7 @@ mod example {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },)
                 ],
@@ -642,6 +665,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -655,6 +679,7 @@ mod example {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -679,6 +704,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -705,6 +731,7 @@ mod example {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "example",
@@ -717,6 +744,7 @@ mod example {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -765,6 +793,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -779,6 +808,7 @@ mod open {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -823,6 +853,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -844,6 +875,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -857,6 +889,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -870,6 +903,7 @@ mod open {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -894,6 +928,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -919,6 +954,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -969,6 +1005,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -990,6 +1027,7 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },)
                 ],
@@ -1003,6 +1041,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1016,6 +1055,7 @@ mod open {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1040,6 +1080,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1065,6 +1106,7 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1113,6 +1155,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1127,6 +1170,7 @@ mod sidebar {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -1173,6 +1217,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -1194,6 +1239,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -1207,6 +1253,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1220,6 +1267,7 @@ mod sidebar {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1244,6 +1292,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1269,6 +1318,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1320,6 +1370,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -1342,6 +1393,7 @@ mod sidebar {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },)],
                         context: "sidebar",
@@ -1354,6 +1406,7 @@ mod sidebar {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -1367,6 +1420,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1380,6 +1434,7 @@ mod sidebar {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1404,6 +1459,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1430,6 +1486,7 @@ mod sidebar {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "sidebar",
@@ -1442,6 +1499,7 @@ mod sidebar {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1490,6 +1548,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1504,6 +1563,7 @@ mod quote {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         assert_eq!(
@@ -1550,6 +1610,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -1571,6 +1632,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -1584,6 +1646,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1597,6 +1660,7 @@ mod quote {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1621,6 +1685,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1646,6 +1711,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1697,6 +1763,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::CompoundDelimited(CompoundDelimitedBlock {
@@ -1719,6 +1786,7 @@ mod quote {
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),],
                         context: "quote",
@@ -1731,6 +1799,7 @@ mod quote {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     })
                 ],
@@ -1744,6 +1813,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );
@@ -1757,6 +1827,7 @@ mod quote {
         assert!(mi.item.title_source().is_none());
         assert!(mi.item.title().is_none());
         assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
         assert!(mi.item.attrlist().is_none());
 
         let mut blocks = mi.item.nested_blocks();
@@ -1781,6 +1852,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             },)
         );
@@ -1807,6 +1879,7 @@ mod quote {
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 context: "quote",
@@ -1819,6 +1892,7 @@ mod quote {
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
             })
         );

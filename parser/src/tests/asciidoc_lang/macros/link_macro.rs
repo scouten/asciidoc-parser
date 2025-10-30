@@ -80,6 +80,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -175,6 +176,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -244,6 +246,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -334,6 +337,7 @@ link:report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -412,6 +416,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -478,6 +483,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -544,6 +550,7 @@ link:My%20Documents/report.pdf[Get Report]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -622,6 +629,7 @@ link:Avengers%3A%20Endgame.html[]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -692,6 +700,7 @@ link:++https://example.org/now_this__link_works.html++[]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -760,6 +769,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {
@@ -828,6 +838,7 @@ link:file:///home/username[Your files]
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),],
                 source: Span {

@@ -170,6 +170,7 @@ image::reference-author.png[Reference the built-in attributes for an author,role
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                     Block::Simple(SimpleBlock {
@@ -191,6 +192,7 @@ image::reference-author.png[Reference the built-in attributes for an author,role
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),
                 ],
@@ -203,6 +205,7 @@ image::reference-author.png[Reference the built-in attributes for an author,role
                 title_source: None,
                 title: None,
                 anchor: None,
+                anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_about_kismet_r_lee"),
             },),],
@@ -426,6 +429,7 @@ image::reference-multiple-authors.png[Reference the built-in attributes for mult
                     },),
                     title: Some("About B. Steppenwolf",),
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
                 Block::Simple(SimpleBlock {
@@ -452,6 +456,7 @@ image::reference-multiple-authors.png[Reference the built-in attributes for mult
                     },),
                     title: Some("About Pax Draeke",),
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
                 Block::Simple(SimpleBlock {
@@ -478,6 +483,7 @@ image::reference-multiple-authors.png[Reference the built-in attributes for mult
                     },),
                     title: Some("About Kismet R. Lee",),
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                 },),
             ],

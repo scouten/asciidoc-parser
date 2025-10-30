@@ -159,6 +159,7 @@ The single quotes around the variable name in the assignment are required to for
                                 title_source: None,
                                 title: None,
                                 anchor: None,
+                                anchor_reftext: None,
                                 attrlist: None,
                             },),
                             Block::DocumentAttribute(Attribute {
@@ -192,6 +193,7 @@ The single quotes around the variable name in the assignment are required to for
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: Some(Attrlist {
                             attributes: &[ElementAttribute {
                                 name: Some("id",),
@@ -217,6 +219,7 @@ The single quotes around the variable name in the assignment are required to for
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_operation"),
                 },),
@@ -261,6 +264,7 @@ The single quotes around the variable name in the assignment are required to for
                             title_source: None,
                             title: None,
                             anchor: None,
+                            anchor_reftext: None,
                             attrlist: None,
                         },),],
                         source: Span {
@@ -272,6 +276,7 @@ The single quotes around the variable name in the assignment are required to for
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: Some(Attrlist {
                             attributes: &[ElementAttribute {
                                 name: Some("id",),
@@ -297,6 +302,7 @@ The single quotes around the variable name in the assignment are required to for
                     title_source: None,
                     title: None,
                     anchor: None,
+                    anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_maintenance"),
                 },),

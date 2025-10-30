@@ -815,6 +815,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -871,6 +872,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -926,6 +928,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1001,6 +1004,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1058,6 +1062,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1115,6 +1120,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1191,6 +1197,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1253,6 +1260,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1308,6 +1316,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1384,6 +1393,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1460,6 +1470,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1521,6 +1532,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1576,6 +1588,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1631,6 +1644,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1687,6 +1701,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1743,6 +1758,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1798,6 +1814,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1853,6 +1870,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1908,6 +1926,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
@@ -1963,6 +1982,7 @@ mod tests {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        anchor_reftext: None,
                         attrlist: None,
                     },),],
                     source: Span {
