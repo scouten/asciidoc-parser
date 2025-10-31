@@ -1,4 +1,3 @@
-#![allow(unused)] // TEMPORARY
 use std::{fmt, slice::Iter, sync::LazyLock};
 
 use regex::Regex;
@@ -33,6 +32,7 @@ pub struct SectionBlock<'src> {
     anchor_reftext: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
     section_id: Option<String>,
+    section_number: Option<SectionNumber>,
 }
 
 impl<'src> SectionBlock<'src> {
@@ -108,11 +108,20 @@ impl<'src> SectionBlock<'src> {
             None
         };
 
+        let level = level_and_title.item.0;
+
+        let section_number = if parser.is_attribute_set("sectnums") && parser.sectnumlevels <= level
+        {
+            Some(parser.assign_section_number(level))
+        } else {
+            None
+        };
+
         warnings.append(&mut maw_blocks.warnings);
 
         Some(MatchedItem {
             item: Self {
-                level: level_and_title.item.0,
+                level,
                 section_title,
                 blocks: blocks.item,
                 source: source.trim_trailing_whitespace(),
@@ -122,6 +131,7 @@ impl<'src> SectionBlock<'src> {
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
                 section_id,
+                section_number,
             },
             after: blocks.after,
         })

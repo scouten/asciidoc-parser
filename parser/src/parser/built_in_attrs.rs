@@ -63,6 +63,24 @@ pub(super) fn built_in_attrs() -> HashMap<String, AttributeValue> {
     );
 
     attrs.insert(
+        "sectnums".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Empty,
+            modification_context: ModificationContext::Anywhere,
+            value: InterpretedValue::Unset,
+        },
+    );
+
+    attrs.insert(
+        "sectnumlevels".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOrHeader,
+            value: InterpretedValue::Value("3".into()),
+        },
+    );
+
+    attrs.insert(
         "idprefix".to_owned(),
         AttributeValue {
             allowable_value: AllowableValue::Any,
