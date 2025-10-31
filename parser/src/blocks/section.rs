@@ -383,7 +383,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 /// `sectnums` and `sectnumlevels` attributes as described in [Section Numbers].
 ///
 /// [Section Numbers]: https://docs.asciidoctor.org/asciidoc/latest/sections/numbers/
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Default, Eq, PartialEq)]
 pub struct SectionNumber {
     components: Vec<usize>,
 }
@@ -420,6 +420,14 @@ impl fmt::Display for SectionNumber {
                 .collect::<Vec<String>>()
                 .join("."),
         )
+    }
+}
+
+impl fmt::Debug for SectionNumber {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("SectionNumber")
+            .field("components", &DebugSliceReference(&self.components))
+            .finish()
     }
 }
 

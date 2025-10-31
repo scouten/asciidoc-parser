@@ -13,5 +13,9 @@ pub(crate) use raw_delimited::RawDelimitedBlock;
 mod section;
 pub(crate) use section::SectionBlock;
 
+mod section_number;
+#[allow(unused)] // TEMPORARY
+pub(crate) use section_number::SectionNumber;
+
 mod simple;
 pub(crate) use simple::SimpleBlock;
