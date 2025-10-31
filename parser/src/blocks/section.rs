@@ -395,7 +395,7 @@ impl SectionNumber {
     }
 
     /// Iterate over the components of the section number.
-    pub fn components<'a>(&'a self) -> &'a [usize] {
+    pub fn components(&self) -> &[usize] {
         &self.components
     }
 }
