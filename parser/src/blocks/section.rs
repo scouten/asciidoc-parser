@@ -2567,7 +2567,7 @@ mod tests {
             #[test]
             fn default() {
                 let sn = SectionNumber::default();
-                assert_eq!(sn.components, []);
+                assert_eq!(sn.components(), []);
                 assert_eq!(sn.to_string(), "");
             }
 
@@ -2575,7 +2575,7 @@ mod tests {
             fn level_1() {
                 let mut sn = SectionNumber::default();
                 sn.assign_next_number(1);
-                assert_eq!(sn.components, [1]);
+                assert_eq!(sn.components(), [1]);
                 assert_eq!(sn.to_string(), "1");
             }
 
@@ -2583,7 +2583,7 @@ mod tests {
             fn level_3() {
                 let mut sn = SectionNumber::default();
                 sn.assign_next_number(3);
-                assert_eq!(sn.components, [1, 1, 1]);
+                assert_eq!(sn.components(), [1, 1, 1]);
                 assert_eq!(sn.to_string(), "1.1.1");
             }
 
@@ -2592,7 +2592,7 @@ mod tests {
                 let mut sn = SectionNumber::default();
                 sn.assign_next_number(3);
                 sn.assign_next_number(1);
-                assert_eq!(sn.components, [2]);
+                assert_eq!(sn.components(), [2]);
                 assert_eq!(sn.to_string(), "2");
             }
 
@@ -2602,7 +2602,7 @@ mod tests {
                 sn.assign_next_number(3);
                 sn.assign_next_number(1);
                 sn.assign_next_number(2);
-                assert_eq!(sn.components, [2, 1]);
+                assert_eq!(sn.components(), [2, 1]);
                 assert_eq!(sn.to_string(), "2.1");
             }
         }
