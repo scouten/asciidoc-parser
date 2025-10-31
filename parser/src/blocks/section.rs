@@ -1,4 +1,5 @@
-use std::{slice::Iter, sync::LazyLock};
+#![allow(unused)] // TEMPORARY
+use std::{fmt, slice::Iter, sync::LazyLock};
 
 use regex::Regex;
 
@@ -364,6 +365,52 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
     }
 
     format!("{idprefix}{gen_id}")
+}
+
+/// Represents an assigned section number.
+///
+/// Section numbers aren't assigned by default, but can be enabled using the
+/// `sectnums` and `sectnumlevels` attributes as described in [Section Numbers].
+///
+/// [Section Numbers]: https://docs.asciidoctor.org/asciidoc/latest/sections/numbers/
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct SectionNumber {
+    components: Vec<usize>,
+}
+
+impl SectionNumber {
+    /// Generate the next section number for the specified level, based on this
+    /// section number.
+    ///
+    /// `level` should be between 1 and 5, though this is not enforced.
+    pub(crate) fn assign_next_number(&mut self, level: usize) {
+        // Drop any ID components beyond the desired level.
+        self.components.truncate(level);
+
+        if self.components.len() < level {
+            self.components.resize(level, 1);
+        } else if level > 0 {
+            self.components[level - 1] += 1;
+        }
+    }
+
+    /// Iterate over the components of the section number.
+    pub fn components(&self) -> &[usize] {
+        &self.components
+    }
+}
+
+impl fmt::Display for SectionNumber {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(
+            &self
+                .components
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join("."),
+        )
+    }
 }
 
 #[cfg(test)]
@@ -2511,5 +2558,53 @@ mod tests {
     ),
 }"#
         );
+    }
+
+    mod section_number {
+        mod assign_next_number {
+            use crate::blocks::section::SectionNumber;
+
+            #[test]
+            fn default() {
+                let sn = SectionNumber::default();
+                assert_eq!(sn.components(), []);
+                assert_eq!(sn.to_string(), "");
+            }
+
+            #[test]
+            fn level_1() {
+                let mut sn = SectionNumber::default();
+                sn.assign_next_number(1);
+                assert_eq!(sn.components(), [1]);
+                assert_eq!(sn.to_string(), "1");
+            }
+
+            #[test]
+            fn level_3() {
+                let mut sn = SectionNumber::default();
+                sn.assign_next_number(3);
+                assert_eq!(sn.components(), [1, 1, 1]);
+                assert_eq!(sn.to_string(), "1.1.1");
+            }
+
+            #[test]
+            fn level_3_then_1() {
+                let mut sn = SectionNumber::default();
+                sn.assign_next_number(3);
+                sn.assign_next_number(1);
+                assert_eq!(sn.components(), [2]);
+                assert_eq!(sn.to_string(), "2");
+            }
+
+            #[test]
+            fn level_3_then_1_then_2() {
+                let mut sn = SectionNumber::default();
+                sn.assign_next_number(3);
+                sn.assign_next_number(1);
+                sn.assign_next_number(2);
+                assert_eq!(sn.components(), [2, 1]);
+                assert_eq!(sn.to_string(), "2.1");
+            }
+        }
     }
 }
