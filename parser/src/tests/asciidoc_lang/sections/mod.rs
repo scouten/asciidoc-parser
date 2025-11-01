@@ -1,6 +1,11 @@
 mod auto_ids;
+mod colophon;
 mod custom_ids;
+mod dedication;
 mod id_prefix_and_separator;
 mod numbers;
+mod special_section_numbers;
+mod special_section_titles;
+mod styles;
 mod title_links;
 mod titles_and_levels;
