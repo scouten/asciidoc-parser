@@ -968,6 +968,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 },
             )],
             source: Span {

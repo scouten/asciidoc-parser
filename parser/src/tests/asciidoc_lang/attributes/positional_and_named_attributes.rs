@@ -193,6 +193,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                     },
                 },),
                 section_id: None,
+                section_number: None,
             },)
         );
 
@@ -260,6 +261,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                     },
                 },),
                 section_id: None,
+                section_number: None,
             },)
         );
 

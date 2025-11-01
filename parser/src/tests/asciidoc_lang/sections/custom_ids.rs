@@ -90,6 +90,7 @@ include::example$section.adoc[tag=with-anchor-shorthand]
                     },
                 },),
                 section_id: None,
+                section_number: None,
             },),],
             source: Span {
                 data: "[#tigers-subspecies]\n=== Subspecies of Tiger",
@@ -192,6 +193,7 @@ include::example$section.adoc[tag=with-anchor-and-reftext-shorthand]
                     },
                 },),
                 section_id: None,
+                section_number: None,
             },),],
             source: Span {
                 data: "[#tigers-subspecies,reftext=Subspecies]\n=== Subspecies of Tiger",
@@ -289,6 +291,7 @@ IMPORTANT: The value of the reftext attribute must be quoted if it contains spac
                     },
                 },),
                 section_id: None,
+                section_number: None,
             },),],
             source: Span {
                 data: "[#tigers-subspecies,reftext=\"Subspecies, etc.\"]\n=== Subspecies of Tiger",
@@ -380,6 +383,7 @@ include::example$section.adoc[tag=with-anchor-and-reftext]
                 },),
                 attrlist: None,
                 section_id: None,
+                section_number: None,
             },),],
             source: Span {
                 data: "[[tigers-subspecies,Subspecies]]\n=== Subspecies of Tiger",
@@ -481,6 +485,7 @@ Here's how to register auxiliary IDs using inline anchors when using an autogene
                 anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_section_title",),
+                section_number: None,
             },),],
             source: Span {
                 data: "== [[secondary-id]][[tertiary-id]]Section Title",
@@ -566,6 +571,7 @@ fn assign_auxiliary_ids_2() {
                 anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_section_title",),
+                section_number: None,
             },),],
             source: Span {
                 data: "== Section Title[[secondary-id]][[tertiary-id]]",
@@ -676,6 +682,7 @@ These additional anchor points don't interfere with the declaration of the prima
                     },
                 },),
                 section_id: None,
+                section_number: None,
             },),],
             source: Span {
                 data: "[#primary-id]\n== [[secondary-id]][[tertiary-id]]Section Title",

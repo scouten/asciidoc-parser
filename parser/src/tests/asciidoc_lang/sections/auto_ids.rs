@@ -326,6 +326,7 @@ The AsciiDoc processor builds an ID from the title using the following order of 
                         anchor_reftext: None,
                         attrlist: None,
                         section_id: Some("_duplicate_title",),
+                        section_number: None,
                     },),
                     Block::Section(SectionBlock {
                         level: 1,
@@ -372,6 +373,7 @@ The AsciiDoc processor builds an ID from the title using the following order of 
                         anchor_reftext: None,
                         attrlist: None,
                         section_id: Some("_duplicate_title-2",),
+                        section_number: None,
                     },),
                 ],
                 source: Span {
@@ -565,6 +567,7 @@ By doing so, you can disable ID generation for only certain sections and discret
                         anchor_reftext: None,
                         attrlist: None,
                         section_id: Some("_id_generation_on"),
+                        section_number: None,
                     },),
                     Block::Section(SectionBlock {
                         level: 1,
@@ -605,6 +608,7 @@ By doing so, you can disable ID generation for only certain sections and discret
                         anchor_reftext: None,
                         attrlist: None,
                         section_id: None,
+                        section_number: None,
                     },),
                     Block::Section(SectionBlock {
                         level: 1,
@@ -630,6 +634,7 @@ By doing so, you can disable ID generation for only certain sections and discret
                         anchor_reftext: None,
                         attrlist: None,
                         section_id: Some("_id_generation_on_again",),
+                        section_number: None,
                     },),
                 ],
                 source: Span {

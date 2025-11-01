@@ -168,6 +168,11 @@ impl<'src> SectionBlock<'src> {
     pub(crate) fn section_id(&'src self) -> Option<&'src str> {
         self.section_id.as_deref()
     }
+
+    /// Return the section number assigned to this section, if any.
+    pub fn section_number(&'src self) -> Option<&'src SectionNumber> {
+        self.section_number.as_ref()
+    }
 }
 
 impl<'src> IsBlock<'src> for SectionBlock<'src> {
@@ -232,6 +237,7 @@ impl std::fmt::Debug for SectionBlock<'_> {
             .field("anchor_reftext", &self.anchor_reftext)
             .field("attrlist", &self.attrlist)
             .field("section_id", &self.section_id)
+            .field("section_number", &self.section_number)
             .finish()
     }
 }
@@ -583,6 +589,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -670,6 +677,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -783,6 +791,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -896,6 +905,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1030,6 +1040,7 @@ mod tests {
                             anchor_reftext: None,
                             attrlist: None,
                             section_id: Some("_section_2"),
+                            section_number: None,
                         })
                     ],
                     source: Span {
@@ -1044,6 +1055,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1131,6 +1143,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1218,6 +1231,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1477,6 +1491,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1564,6 +1579,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1677,6 +1693,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1790,6 +1807,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1924,6 +1942,7 @@ mod tests {
                             anchor_reftext: None,
                             attrlist: None,
                             section_id: Some("_section_2"),
+                            section_number: None,
                         })
                     ],
                     source: Span {
@@ -1938,6 +1957,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -2025,6 +2045,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -2112,6 +2133,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -2574,6 +2596,7 @@ mod tests {
     section_id: Some(
         "_section_title",
     ),
+    section_number: None,
 }"#
         );
     }

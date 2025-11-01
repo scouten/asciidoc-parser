@@ -14,7 +14,6 @@ mod section;
 pub(crate) use section::SectionBlock;
 
 mod section_number;
-#[allow(unused)] // TEMPORARY
 pub(crate) use section_number::SectionNumber;
 
 mod simple;
