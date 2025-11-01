@@ -54,6 +54,12 @@ pub enum ModificationContext {
     /// (i.e., set by the API or in the document header).
     ApiOrHeader,
 
+    /// The attribute was set by API. It can not be overridden in the document
+    /// header, but can be set in the document body. Changing the attribute's
+    /// value only affects behavior for content that follows the assignment (in
+    /// document order).
+    ApiOrDocumentBody,
+
     /// The attribute can be set anywhere in the document. However, changing an
     /// attribute only affects behavior for content that follows the assignment
     /// (in document order).
