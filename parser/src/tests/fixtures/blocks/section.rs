@@ -150,8 +150,8 @@ fn fixture_eq_observed(fixture: &SectionBlock, observed: &crate::blocks::Section
     }
 
     if let Some(ref fixture_section_number) = fixture.section_number
-        && let Some(ref observed_section_number) = observed.section_number()
-        && fixture_section_number != *observed_section_number
+        && let Some(observed_section_number) = observed.section_number()
+        && *fixture_section_number != *observed_section_number
     {
         return false;
     }

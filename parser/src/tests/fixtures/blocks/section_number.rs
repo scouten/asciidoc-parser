@@ -10,7 +10,7 @@ pub(crate) struct SectionNumber {
 impl fmt::Debug for SectionNumber {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SectionNumber")
-            .field("components", &DebugSliceReference(&self.components))
+            .field("components", &DebugSliceReference(self.components))
             .finish()
     }
 }
