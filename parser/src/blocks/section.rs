@@ -63,14 +63,7 @@ impl<'src> SectionBlock<'src> {
 
         let mut maw_blocks = parse_blocks_until(
             level_and_title.after,
-            |i| {
-                peer_or_ancestor_section(
-                    *i,
-                    level,
-                    &mut most_recent_level,
-                    warnings,
-                )
-            },
+            |i| peer_or_ancestor_section(*i, level, &mut most_recent_level, warnings),
             parser,
         );
 
@@ -2558,7 +2551,10 @@ mod tests {
     }
 
     mod section_numbering {
-        use crate::{Parser, blocks::{Block, IsBlock}};
+        use crate::{
+            Parser,
+            blocks::{Block, IsBlock},
+        };
 
         #[test]
         fn single_section_with_sectnums() {
@@ -2640,34 +2636,46 @@ mod tests {
             let first = sections.next().unwrap();
             assert_eq!(first.section_number().unwrap().to_string(), "1");
 
-            let first_one = first.nested_blocks().filter_map(|block| {
-                if let Block::Section(section) = block {
-                    Some(section)
-                } else {
-                    None
-                }
-            }).next().unwrap();
+            let first_one = first
+                .nested_blocks()
+                .filter_map(|block| {
+                    if let Block::Section(section) = block {
+                        Some(section)
+                    } else {
+                        None
+                    }
+                })
+                .next()
+                .unwrap();
             assert_eq!(first_one.section_number().unwrap().to_string(), "1.1");
 
-            let first_two = first.nested_blocks().filter_map(|block| {
-                if let Block::Section(section) = block {
-                    Some(section)
-                } else {
-                    None
-                }
-            }).nth(1).unwrap();
+            let first_two = first
+                .nested_blocks()
+                .filter_map(|block| {
+                    if let Block::Section(section) = block {
+                        Some(section)
+                    } else {
+                        None
+                    }
+                })
+                .nth(1)
+                .unwrap();
             assert_eq!(first_two.section_number().unwrap().to_string(), "1.2");
 
             let second = sections.next().unwrap();
             assert_eq!(second.section_number().unwrap().to_string(), "2");
 
-            let second_one = second.nested_blocks().filter_map(|block| {
-                if let Block::Section(section) = block {
-                    Some(section)
-                } else {
-                    None
-                }
-            }).next().unwrap();
+            let second_one = second
+                .nested_blocks()
+                .filter_map(|block| {
+                    if let Block::Section(section) = block {
+                        Some(section)
+                    } else {
+                        None
+                    }
+                })
+                .next()
+                .unwrap();
             assert_eq!(second_one.section_number().unwrap().to_string(), "2.1");
         }
 
