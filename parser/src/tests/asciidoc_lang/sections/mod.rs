@@ -1,4 +1,5 @@
 mod auto_ids;
+mod colophon;
 mod custom_ids;
 mod id_prefix_and_separator;
 mod numbers;
