@@ -364,7 +364,8 @@ impl Parser {
 
         // Verify that we have permission to overwrite any existing attribute value.
         if let Some(existing_attr) = existing_attr
-            && existing_attr.modification_context == ModificationContext::ApiOnly
+            && (existing_attr.modification_context == ModificationContext::ApiOnly
+                || existing_attr.modification_context == ModificationContext::ApiOrDocumentBody)
         {
             warnings.push(Warning {
                 source: attr.span(),
@@ -423,7 +424,8 @@ impl Parser {
 
         // Verify that we have permission to overwrite any existing attribute value.
         if let Some(existing_attr) = self.attribute_values.get(&attr_name)
-            && existing_attr.modification_context != ModificationContext::Anywhere
+            && (existing_attr.modification_context != ModificationContext::Anywhere
+                && existing_attr.modification_context != ModificationContext::ApiOrDocumentBody)
         {
             warnings.push(Warning {
                 source: attr.span(),
