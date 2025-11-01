@@ -2,6 +2,7 @@ mod auto_ids;
 mod custom_ids;
 mod id_prefix_and_separator;
 mod numbers;
+mod special_section_numbers;
 mod special_section_titles;
 mod styles;
 mod title_links;
