@@ -2797,6 +2797,7 @@ mod tests {
                 let sn = SectionNumber::default();
                 assert_eq!(sn.components(), []);
                 assert_eq!(sn.to_string(), "");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[] }");
             }
 
             #[test]
@@ -2805,6 +2806,7 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [1]);
                 assert_eq!(sn.to_string(), "1");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[1] }");
             }
 
             #[test]
@@ -2813,6 +2815,10 @@ mod tests {
                 sn.assign_next_number(3);
                 assert_eq!(sn.components(), [1, 1, 1]);
                 assert_eq!(sn.to_string(), "1.1.1");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { components: &[1, 1, 1] }"
+                );
             }
 
             #[test]
@@ -2822,6 +2828,7 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [2]);
                 assert_eq!(sn.to_string(), "2");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2] }");
             }
 
             #[test]
@@ -2832,6 +2839,7 @@ mod tests {
                 sn.assign_next_number(2);
                 assert_eq!(sn.components(), [2, 1]);
                 assert_eq!(sn.to_string(), "2.1");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2, 1] }");
             }
         }
     }
