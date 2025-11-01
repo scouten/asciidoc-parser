@@ -65,6 +65,12 @@ impl<'src> Document<'src> {
             let mi = Header::parse(source, parser);
             let next = mi.item.after;
 
+            parser.sectnumlevels = parser
+                .attribute_value("sectnumlevels")
+                .as_maybe_str()
+                .and_then(|s| s.parse::<usize>().ok())
+                .unwrap_or(3);
+
             let header = mi.item.item;
             let mut warnings = mi.warnings;
 
@@ -962,6 +968,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 },
             )],
             source: Span {

@@ -13,5 +13,8 @@ pub(crate) use raw_delimited::RawDelimitedBlock;
 mod section;
 pub(crate) use section::SectionBlock;
 
+mod section_number;
+pub(crate) use section_number::SectionNumber;
+
 mod simple;
 pub(crate) use simple::SimpleBlock;

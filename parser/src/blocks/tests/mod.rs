@@ -230,6 +230,7 @@ mod error_cases {
                 anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_section_title"),
+                section_number: None,
             }
         );
 
@@ -423,6 +424,7 @@ mod error_cases {
                     },
                 },),
                 section_id: Some("_section_title_except_it_isnt"),
+                section_number: None,
             },)
         );
 

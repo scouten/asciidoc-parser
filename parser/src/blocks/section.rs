@@ -1,4 +1,3 @@
-#![allow(unused)] // TEMPORARY
 use std::{fmt, slice::Iter, sync::LazyLock};
 
 use regex::Regex;
@@ -33,6 +32,7 @@ pub struct SectionBlock<'src> {
     anchor_reftext: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
     section_id: Option<String>,
+    section_number: Option<SectionNumber>,
 }
 
 impl<'src> SectionBlock<'src> {
@@ -48,18 +48,22 @@ impl<'src> SectionBlock<'src> {
         // the value might be altered while parsing.
         let sectids = parser.is_attribute_set("sectids");
 
-        let mut most_recent_level = level_and_title.item.0;
+        let level = level_and_title.item.0;
+
+        // Assign section number BEFORE parsing child blocks so that sections are
+        // numbered in document order (parent before children).
+        let section_number = if parser.is_attribute_set("sectnums") && level <= parser.sectnumlevels
+        {
+            Some(parser.assign_section_number(level))
+        } else {
+            None
+        };
+
+        let mut most_recent_level = level;
 
         let mut maw_blocks = parse_blocks_until(
             level_and_title.after,
-            |i| {
-                peer_or_ancestor_section(
-                    *i,
-                    level_and_title.item.0,
-                    &mut most_recent_level,
-                    warnings,
-                )
-            },
+            |i| peer_or_ancestor_section(*i, level, &mut most_recent_level, warnings),
             parser,
         );
 
@@ -112,7 +116,7 @@ impl<'src> SectionBlock<'src> {
 
         Some(MatchedItem {
             item: Self {
-                level: level_and_title.item.0,
+                level,
                 section_title,
                 blocks: blocks.item,
                 source: source.trim_trailing_whitespace(),
@@ -122,6 +126,7 @@ impl<'src> SectionBlock<'src> {
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
                 section_id,
+                section_number,
             },
             after: blocks.after,
         })
@@ -157,6 +162,11 @@ impl<'src> SectionBlock<'src> {
     #[cfg(test)]
     pub(crate) fn section_id(&'src self) -> Option<&'src str> {
         self.section_id.as_deref()
+    }
+
+    /// Return the section number assigned to this section, if any.
+    pub fn section_number(&'src self) -> Option<&'src SectionNumber> {
+        self.section_number.as_ref()
     }
 }
 
@@ -222,6 +232,7 @@ impl std::fmt::Debug for SectionBlock<'_> {
             .field("anchor_reftext", &self.anchor_reftext)
             .field("attrlist", &self.attrlist)
             .field("section_id", &self.section_id)
+            .field("section_number", &self.section_number)
             .finish()
     }
 }
@@ -373,7 +384,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 /// `sectnums` and `sectnumlevels` attributes as described in [Section Numbers].
 ///
 /// [Section Numbers]: https://docs.asciidoctor.org/asciidoc/latest/sections/numbers/
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Default, Eq, PartialEq)]
 pub struct SectionNumber {
     components: Vec<usize>,
 }
@@ -410,6 +421,14 @@ impl fmt::Display for SectionNumber {
                 .collect::<Vec<String>>()
                 .join("."),
         )
+    }
+}
+
+impl fmt::Debug for SectionNumber {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("SectionNumber")
+            .field("components", &DebugSliceReference(&self.components))
+            .finish()
     }
 }
 
@@ -565,6 +584,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -652,6 +672,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -765,6 +786,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -878,6 +900,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1012,6 +1035,7 @@ mod tests {
                             anchor_reftext: None,
                             attrlist: None,
                             section_id: Some("_section_2"),
+                            section_number: None,
                         })
                     ],
                     source: Span {
@@ -1026,6 +1050,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1113,6 +1138,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1200,6 +1226,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1459,6 +1486,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1546,6 +1574,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1659,6 +1688,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1772,6 +1802,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -1906,6 +1937,7 @@ mod tests {
                             anchor_reftext: None,
                             attrlist: None,
                             section_id: Some("_section_2"),
+                            section_number: None,
                         })
                     ],
                     source: Span {
@@ -1920,6 +1952,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -2007,6 +2040,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -2094,6 +2128,7 @@ mod tests {
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_section_title"),
+                    section_number: None,
                 }
             );
 
@@ -2515,6 +2550,198 @@ mod tests {
         assert_eq!(entry.unwrap().reftext, Some("Section Title".to_string()));
     }
 
+    mod section_numbering {
+        use crate::{
+            Parser,
+            blocks::{Block, IsBlock},
+        };
+
+        #[test]
+        fn single_section_with_sectnums() {
+            let input = ":sectnums:\n\n== First Section";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            if let Some(Block::Section(section)) = document.nested_blocks().next() {
+                let section_number = section.section_number();
+                assert!(section_number.is_some());
+                assert_eq!(section_number.unwrap().to_string(), "1");
+                assert_eq!(section_number.unwrap().components(), [1]);
+            } else {
+                panic!("Expected section block");
+            }
+        }
+
+        #[test]
+        fn multiple_level_1_sections() {
+            let input = ":sectnums:\n\n== First Section\n\n== Second Section\n\n== Third Section";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            let mut sections = document.nested_blocks().filter_map(|block| {
+                if let Block::Section(section) = block {
+                    Some(section)
+                } else {
+                    None
+                }
+            });
+
+            let first = sections.next().unwrap();
+            assert_eq!(first.section_number().unwrap().to_string(), "1");
+
+            let second = sections.next().unwrap();
+            assert_eq!(second.section_number().unwrap().to_string(), "2");
+
+            let third = sections.next().unwrap();
+            assert_eq!(third.section_number().unwrap().to_string(), "3");
+        }
+
+        #[test]
+        fn nested_sections() {
+            let input = ":sectnums:\n\n== Level 1\n\n=== Level 2\n\n==== Level 3";
+            let document = Parser::default().parse(input);
+
+            if let Some(Block::Section(level1)) = document.nested_blocks().next() {
+                assert_eq!(level1.section_number().unwrap().to_string(), "1");
+
+                if let Some(Block::Section(level2)) = level1.nested_blocks().next() {
+                    assert_eq!(level2.section_number().unwrap().to_string(), "1.1");
+
+                    if let Some(Block::Section(level3)) = level2.nested_blocks().next() {
+                        assert_eq!(level3.section_number().unwrap().to_string(), "1.1.1");
+                    } else {
+                        panic!("Expected level 3 section");
+                    }
+                } else {
+                    panic!("Expected level 2 section");
+                }
+            } else {
+                panic!("Expected level 1 section");
+            }
+        }
+
+        #[test]
+        fn mixed_section_levels() {
+            let input = ":sectnums:\n\n== First\n\n=== First.One\n\n=== First.Two\n\n== Second\n\n=== Second.One";
+            let document = Parser::default().parse(input);
+
+            let mut sections = document.nested_blocks().filter_map(|block| {
+                if let Block::Section(section) = block {
+                    Some(section)
+                } else {
+                    None
+                }
+            });
+
+            let first = sections.next().unwrap();
+            assert_eq!(first.section_number().unwrap().to_string(), "1");
+
+            let first_one = first
+                .nested_blocks()
+                .filter_map(|block| {
+                    if let Block::Section(section) = block {
+                        Some(section)
+                    } else {
+                        None
+                    }
+                })
+                .next()
+                .unwrap();
+            assert_eq!(first_one.section_number().unwrap().to_string(), "1.1");
+
+            let first_two = first
+                .nested_blocks()
+                .filter_map(|block| {
+                    if let Block::Section(section) = block {
+                        Some(section)
+                    } else {
+                        None
+                    }
+                })
+                .nth(1)
+                .unwrap();
+            assert_eq!(first_two.section_number().unwrap().to_string(), "1.2");
+
+            let second = sections.next().unwrap();
+            assert_eq!(second.section_number().unwrap().to_string(), "2");
+
+            let second_one = second
+                .nested_blocks()
+                .filter_map(|block| {
+                    if let Block::Section(section) = block {
+                        Some(section)
+                    } else {
+                        None
+                    }
+                })
+                .next()
+                .unwrap();
+            assert_eq!(second_one.section_number().unwrap().to_string(), "2.1");
+        }
+
+        #[test]
+        fn sectnums_disabled() {
+            let input = "== First Section\n\n== Second Section";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            for block in document.nested_blocks() {
+                if let Block::Section(section) = block {
+                    assert!(section.section_number().is_none());
+                }
+            }
+        }
+
+        #[test]
+        fn sectnums_explicitly_unset() {
+            let input = ":!sectnums:\n\n== First Section\n\n== Second Section";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            for block in document.nested_blocks() {
+                if let Block::Section(section) = block {
+                    assert!(section.section_number().is_none());
+                }
+            }
+        }
+
+        #[test]
+        fn deep_nesting() {
+            let input = ":sectnums:\n:sectnumlevels: 5\n\n== Level 1\n\n=== Level 2\n\n==== Level 3\n\n===== Level 4\n\n====== Level 5";
+            let document = Parser::default().parse(input);
+
+            if let Some(Block::Section(l1)) = document.nested_blocks().next() {
+                assert_eq!(l1.section_number().unwrap().to_string(), "1");
+
+                if let Some(Block::Section(l2)) = l1.nested_blocks().next() {
+                    assert_eq!(l2.section_number().unwrap().to_string(), "1.1");
+
+                    if let Some(Block::Section(l3)) = l2.nested_blocks().next() {
+                        assert_eq!(l3.section_number().unwrap().to_string(), "1.1.1");
+
+                        if let Some(Block::Section(l4)) = l3.nested_blocks().next() {
+                            assert_eq!(l4.section_number().unwrap().to_string(), "1.1.1.1");
+
+                            if let Some(Block::Section(l5)) = l4.nested_blocks().next() {
+                                assert_eq!(l5.section_number().unwrap().to_string(), "1.1.1.1.1");
+                            } else {
+                                panic!("Expected level 5 section");
+                            }
+                        } else {
+                            panic!("Expected level 4 section");
+                        }
+                    } else {
+                        panic!("Expected level 3 section");
+                    }
+                } else {
+                    panic!("Expected level 2 section");
+                }
+            } else {
+                panic!("Expected level 1 section");
+            }
+        }
+    }
+
     #[test]
     fn impl_debug() {
         let mut parser = Parser::default();
@@ -2556,6 +2783,7 @@ mod tests {
     section_id: Some(
         "_section_title",
     ),
+    section_number: None,
 }"#
         );
     }
@@ -2569,6 +2797,7 @@ mod tests {
                 let sn = SectionNumber::default();
                 assert_eq!(sn.components(), []);
                 assert_eq!(sn.to_string(), "");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[] }");
             }
 
             #[test]
@@ -2577,6 +2806,7 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [1]);
                 assert_eq!(sn.to_string(), "1");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[1] }");
             }
 
             #[test]
@@ -2585,6 +2815,10 @@ mod tests {
                 sn.assign_next_number(3);
                 assert_eq!(sn.components(), [1, 1, 1]);
                 assert_eq!(sn.to_string(), "1.1.1");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { components: &[1, 1, 1] }"
+                );
             }
 
             #[test]
@@ -2594,6 +2828,7 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [2]);
                 assert_eq!(sn.to_string(), "2");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2] }");
             }
 
             #[test]
@@ -2604,6 +2839,7 @@ mod tests {
                 sn.assign_next_number(2);
                 assert_eq!(sn.components(), [2, 1]);
                 assert_eq!(sn.to_string(), "2.1");
+                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2, 1] }");
             }
         }
     }

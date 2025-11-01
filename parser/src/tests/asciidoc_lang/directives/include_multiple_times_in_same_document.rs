@@ -209,6 +209,7 @@ The single quotes around the variable name in the assignment are required to for
                             },
                         },),
                         section_id: None,
+                        section_number: None,
                     },),],
                     source: Span {
                         data: "== Operation\n\n[id=chain-{chapter}]\n=== Chain\n\nSee xref:chain-{chapter}[].\n\n:chapter: maintenance",
@@ -222,6 +223,7 @@ The single quotes around the variable name in the assignment are required to for
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_operation"),
+                    section_number: None,
                 },),
                 Block::Section(SectionBlock {
                     level: 1,
@@ -292,6 +294,7 @@ The single quotes around the variable name in the assignment are required to for
                             },
                         },),
                         section_id: None,
+                        section_number: None,
                     },),],
                     source: Span {
                         data: "== Maintenance\n\n[id=chain-{chapter}]\n=== Chain\n\nSee xref:chain-{chapter}[].",
@@ -305,6 +308,7 @@ The single quotes around the variable name in the assignment are required to for
                     anchor_reftext: None,
                     attrlist: None,
                     section_id: Some("_maintenance"),
+                    section_number: None,
                 },),
             ],
             source: Span {

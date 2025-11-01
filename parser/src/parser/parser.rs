@@ -2,6 +2,7 @@ use std::{collections::HashMap, rc::Rc};
 
 use crate::{
     Document, HasSpan,
+    blocks::SectionNumber,
     document::{Attribute, Catalog, InterpretedValue},
     parser::{
         AllowableValue, AttributeValue, HtmlSubstitutionRenderer, IncludeFileHandler,
@@ -43,6 +44,12 @@ pub struct Parser {
     /// This is created during parsing and transferred to the Document when
     /// complete.
     catalog: Option<Catalog>,
+
+    /// Most recently-assigned section number.
+    pub(crate) last_section_number: SectionNumber,
+
+    /// Saved copy of sectnumlevels at end of document header.
+    pub(crate) sectnumlevels: usize,
 }
 
 impl Default for Parser {
@@ -55,6 +62,8 @@ impl Default for Parser {
             path_resolver: PathResolver::default(),
             include_file_handler: None,
             catalog: Some(Catalog::new()),
+            last_section_number: SectionNumber::default(),
+            sectnumlevels: 3,
         }
     }
 }
@@ -99,6 +108,9 @@ impl Parser {
         if self.catalog.is_none() {
             self.catalog = Some(Catalog::new());
         }
+
+        // Reset section numbering for each new document.
+        self.last_section_number = SectionNumber::default();
 
         Document::parse(&preprocessed_source, source_map, self)
     }
@@ -427,6 +439,12 @@ impl Parser {
         };
 
         self.attribute_values.insert(attr_name, attribute_value);
+    }
+
+    /// Assign the next section number for a given level.
+    pub(crate) fn assign_section_number(&mut self, level: usize) -> SectionNumber {
+        self.last_section_number.assign_next_number(level);
+        self.last_section_number.clone()
     }
 }
 

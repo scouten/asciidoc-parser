@@ -144,6 +144,7 @@ image::reference-revision-line.png["Revision line and rendered revision referenc
                 anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_colophon"),
+                section_number: None,
             },),],
             source: Span {
                 data: "= The Intrepid Chronicles\nKismet Lee\nv8.3, July 29, 2025: Summertime!\n\n== Colophon\n\n[%hardbreaks]\nRevision number: {revnumber}\nRevision date: {revdate}\nRevision notes: {revremark}",
@@ -349,6 +350,7 @@ If you don't want the default version label to be displayed in the byline, xref:
                 anchor_reftext: None,
                 attrlist: None,
                 section_id: Some("_colophon"),
+                section_number: None,
             },),],
             source: Span {
                 data: "= The Intrepid Chronicles\nKismet Lee\n:revnumber: v8.3\n:revdate: July 29, 2025\n:revremark: Summertime!\n\n== Colophon\n\n[%hardbreaks]\nRevision number: {revnumber}\nRevision date: {revdate}\nRevision notes: {revremark}",
