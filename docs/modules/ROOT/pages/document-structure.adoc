@@ -21,7 +21,7 @@ This is a basic AsciiDoc document.
 Of course, you can have more content than a single sentence!
 What we want to emphasize here is that it's simple to get started.
 
-An AsciiDoc document is a series of blocks stacked are stacked linewise.
+An AsciiDoc document is a series of blocks that are stacked linewise.
 These blocks are typically offset from one another by an empty line.
 (While these empty lines aren't always required, we do recommend using them for readability.)
 
