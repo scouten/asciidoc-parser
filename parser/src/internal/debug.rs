@@ -16,7 +16,7 @@ pub(crate) struct DebugHashMapFrom<'a, K: Debug, V: Debug>(pub(crate) &'a HashMa
 
 impl<'a, K: Debug, V: Debug> Debug for DebugHashMapFrom<'a, K, V> {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        f.write_str("HashMap::from(&")?;
+        f.write_str("HashMap::from(")?;
 
         let mut sorted: Vec<_> = self.0.iter().collect();
         sorted.sort_by_key(|(k, _)| format!("{:?}", k));
