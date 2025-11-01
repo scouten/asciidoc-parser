@@ -1105,8 +1105,8 @@ mod tests {
     warnings: &[],
     source_map: SourceMap(&[]),
     catalog: Catalog {
-        refs: HashMap::from(&[]),
-        reftext_to_id: HashMap::from(&[]),
+        refs: HashMap::from([]),
+        reftext_to_id: HashMap::from([]),
     },
 }"#
         );
