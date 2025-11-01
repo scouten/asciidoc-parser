@@ -109,6 +109,9 @@ impl Parser {
             self.catalog = Some(Catalog::new());
         }
 
+        // Reset section numbering for each new document.
+        self.last_section_number = SectionNumber::default();
+
         Document::parse(&preprocessed_source, source_map, self)
     }
 
