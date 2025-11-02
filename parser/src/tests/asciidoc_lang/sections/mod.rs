@@ -1,5 +1,6 @@
 mod r#abstract;
 mod abstract_block;
+mod appendix;
 mod auto_ids;
 mod chapters;
 mod colophon;
