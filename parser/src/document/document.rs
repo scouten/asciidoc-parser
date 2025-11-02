@@ -967,7 +967,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
-                section_type: SectionType::Normal,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 },
