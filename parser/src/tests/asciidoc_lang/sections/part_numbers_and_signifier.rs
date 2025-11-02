@@ -1,6 +1,6 @@
 use crate::tests::prelude::*;
 
-track_file!("docs/modules/sections/pages/part_numbers_and_signifier.adoc");
+track_file!("docs/modules/sections/pages/part-numbers-and-signifier.adoc");
 
 // Treating the entire file as non-normative because we don't support `doctype`.
 
