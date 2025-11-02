@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.11.0](https://github.com/scouten/asciidoc-parser/compare/v0.10.0...v0.11.0)
 _02 November 2025_
 
+The major theme for this release is support for **[Sections](https://docs.asciidoctor.org/asciidoc/latest/sections/titles-and-levels/).**
+
 ### Added
 
 * Add support for appendix section type ([#435](https://github.com/scouten/asciidoc-parser/pull/435))
