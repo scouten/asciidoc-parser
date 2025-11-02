@@ -379,8 +379,10 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 }
 
 /// Represents the type of a section.
-/// 
-/// This crate currently supports the `appendix` section style, which results in special section numbering. All other sections are treated as `Normal` sections.
+///
+/// This crate currently supports the `appendix` section style, which results in
+/// special section numbering. All other sections are treated as `Normal`
+/// sections.
 #[derive(Clone, Default, Eq, PartialEq)]
 pub enum SectionType {
     /// Most sections are of this type.
@@ -394,8 +396,8 @@ pub enum SectionType {
 impl std::fmt::Debug for SectionType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            SectionType::Normal => write!(f, "ContentModel::Normal"),
-            SectionType::Appendix => write!(f, "ContentModel::Appendix"),
+            SectionType::Normal => write!(f, "SectionType::Normal"),
+            SectionType::Appendix => write!(f, "SectionType::Appendix"),
         }
     }
 }
