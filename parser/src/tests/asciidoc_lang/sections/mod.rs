@@ -1,6 +1,7 @@
 mod r#abstract;
 mod abstract_block;
 mod auto_ids;
+mod chapters;
 mod colophon;
 mod custom_ids;
 mod dedication;
