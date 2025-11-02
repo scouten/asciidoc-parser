@@ -51,17 +51,22 @@ impl<'src> SectionBlock<'src> {
 
         let level = level_and_title.item.0;
 
-        // Assign the section type.
-        let section_type = if let Some(ref attrlist) = metadata.attrlist
-            && let Some(block_style) = attrlist.block_style()
-            && block_style == "appendix"
-        {
-            SectionType::Appendix
+        // Assign the section type. At level 1, we look for an `appendix` section style;
+        // at all other levels, we inherit the section type from parent.
+        let section_type = if level == 1 {
+            let section_type = if let Some(ref attrlist) = metadata.attrlist
+                && let Some(block_style) = attrlist.block_style()
+                && block_style == "appendix"
+            {
+                SectionType::Appendix
+            } else {
+                SectionType::Normal
+            };
+            parser.topmost_section_type = section_type;
+            section_type
         } else {
-            SectionType::Normal
+            parser.topmost_section_type
         };
-
-        // TO DO: Consider section type when assigning section number.
 
         // Assign section number BEFORE parsing child blocks so that sections are
         // numbered in document order (parent before children).
@@ -124,6 +129,11 @@ impl<'src> SectionBlock<'src> {
         } else {
             None
         };
+
+        // Restore "normal" top-level section type if exiting a level 1 appendix.
+        if level == 1 {
+            parser.topmost_section_type = SectionType::Normal;
+        }
 
         warnings.append(&mut maw_blocks.warnings);
 
@@ -430,7 +440,8 @@ impl std::fmt::Debug for SectionType {
 /// [Section Numbers]: https://docs.asciidoctor.org/asciidoc/latest/sections/numbers/
 #[derive(Clone, Default, Eq, PartialEq)]
 pub struct SectionNumber {
-    components: Vec<usize>,
+    pub(crate) section_type: SectionType,
+    pub(crate) components: Vec<usize>,
 }
 
 impl SectionNumber {
@@ -461,7 +472,16 @@ impl fmt::Display for SectionNumber {
             &self
                 .components
                 .iter()
-                .map(|x| x.to_string())
+                .enumerate()
+                .map(|(index, x)| {
+                    if index == 0 && self.section_type == SectionType::Appendix {
+                        char::from_u32(b'A' as u32 + (x - 1) as u32)
+                            .unwrap_or('?')
+                            .to_string()
+                    } else {
+                        x.to_string()
+                    }
+                })
                 .collect::<Vec<String>>()
                 .join("."),
         )
@@ -471,6 +491,7 @@ impl fmt::Display for SectionNumber {
 impl fmt::Debug for SectionNumber {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SectionNumber")
+            .field("section_type", &self.section_type)
             .field("components", &DebugSliceReference(&self.components))
             .finish()
     }
@@ -2885,7 +2906,10 @@ mod tests {
                 let sn = SectionNumber::default();
                 assert_eq!(sn.components(), []);
                 assert_eq!(sn.to_string(), "");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[] }"
+                );
             }
 
             #[test]
@@ -2894,7 +2918,10 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [1]);
                 assert_eq!(sn.to_string(), "1");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[1] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[1] }"
+                );
             }
 
             #[test]
@@ -2905,7 +2932,7 @@ mod tests {
                 assert_eq!(sn.to_string(), "1.1.1");
                 assert_eq!(
                     format!("{sn:?}"),
-                    "SectionNumber { components: &[1, 1, 1] }"
+                    "SectionNumber { section_type: SectionType::Normal, components: &[1, 1, 1] }"
                 );
             }
 
@@ -2916,7 +2943,10 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [2]);
                 assert_eq!(sn.to_string(), "2");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[2] }"
+                );
             }
 
             #[test]
@@ -2927,7 +2957,91 @@ mod tests {
                 sn.assign_next_number(2);
                 assert_eq!(sn.components(), [2, 1]);
                 assert_eq!(sn.to_string(), "2.1");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2, 1] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[2, 1] }"
+                );
+            }
+        }
+
+        mod assign_next_number_appendix {
+            use crate::blocks::{SectionType, section::SectionNumber};
+
+            #[test]
+            fn default() {
+                let sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                assert_eq!(sn.components(), []);
+                assert_eq!(sn.to_string(), "");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[] }"
+                );
+            }
+
+            #[test]
+            fn level_1() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(1);
+                assert_eq!(sn.components(), [1]);
+                assert_eq!(sn.to_string(), "A");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[1] }"
+                );
+            }
+
+            #[test]
+            fn level_3() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(3);
+                assert_eq!(sn.components(), [1, 1, 1]);
+                assert_eq!(sn.to_string(), "A.1.1");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[1, 1, 1] }"
+                );
+            }
+
+            #[test]
+            fn level_3_then_1() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(3);
+                sn.assign_next_number(1);
+                assert_eq!(sn.components(), [2]);
+                assert_eq!(sn.to_string(), "B");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[2] }"
+                );
+            }
+
+            #[test]
+            fn level_3_then_1_then_2() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(3);
+                sn.assign_next_number(1);
+                sn.assign_next_number(2);
+                assert_eq!(sn.components(), [2, 1]);
+                assert_eq!(sn.to_string(), "B.1");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[2, 1] }"
+                );
             }
         }
     }

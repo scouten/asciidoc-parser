@@ -2,7 +2,7 @@ use std::{collections::HashMap, rc::Rc};
 
 use crate::{
     Document, HasSpan,
-    blocks::SectionNumber,
+    blocks::{SectionNumber, SectionType},
     document::{Attribute, Catalog, InterpretedValue},
     parser::{
         AllowableValue, AttributeValue, HtmlSubstitutionRenderer, IncludeFileHandler,
@@ -48,8 +48,15 @@ pub struct Parser {
     /// Most recently-assigned section number.
     pub(crate) last_section_number: SectionNumber,
 
+    /// Most recently-assigned appendix section number.
+    pub(crate) last_appendix_section_number: SectionNumber,
+
     /// Saved copy of sectnumlevels at end of document header.
     pub(crate) sectnumlevels: usize,
+
+    /// Section type of outermost section. (Used to determine whether to number
+    /// child sections as a normal section or appendix.)
+    pub(crate) topmost_section_type: SectionType,
 }
 
 impl Default for Parser {
@@ -63,7 +70,12 @@ impl Default for Parser {
             include_file_handler: None,
             catalog: Some(Catalog::new()),
             last_section_number: SectionNumber::default(),
+            last_appendix_section_number: SectionNumber {
+                section_type: SectionType::Appendix,
+                components: vec![],
+            },
             sectnumlevels: 3,
+            topmost_section_type: SectionType::Normal,
         }
     }
 }
@@ -445,8 +457,16 @@ impl Parser {
 
     /// Assign the next section number for a given level.
     pub(crate) fn assign_section_number(&mut self, level: usize) -> SectionNumber {
-        self.last_section_number.assign_next_number(level);
-        self.last_section_number.clone()
+        match self.topmost_section_type {
+            SectionType::Normal => {
+                self.last_section_number.assign_next_number(level);
+                self.last_section_number.clone()
+            }
+            SectionType::Appendix => {
+                self.last_appendix_section_number.assign_next_number(level);
+                self.last_appendix_section_number.clone()
+            }
+        }
     }
 }
 
