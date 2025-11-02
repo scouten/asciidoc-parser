@@ -399,6 +399,11 @@ impl<'src> Attrlist<'src> {
         let name = name.as_ref();
         options.contains(&name)
     }
+
+    /// Return the block style name from shorthand syntax.
+    pub fn block_style(&'src self) -> Option<&'src str> {
+        self.nth_attribute(1).and_then(|a| a.block_style())
+    }
 }
 
 impl<'src> HasSpan<'src> for Attrlist<'src> {
@@ -479,6 +484,7 @@ mod tests {
 
         assert!(attrlist.id().is_none());
         assert!(attrlist.roles().is_empty());
+        assert!(attrlist.block_style().is_none());
 
         assert_eq!(
             attrlist.span(),
@@ -525,6 +531,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert!(mi.item.block_style().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -594,6 +601,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert!(mi.item.block_style().is_none());
 
         assert_eq!(
             mi.item.nth_attribute(1).unwrap(),
@@ -721,6 +729,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert_eq!(mi.item.block_style().unwrap(), "Sunset");
 
         assert_eq!(
             mi.item.nth_attribute(1).unwrap(),
@@ -848,6 +857,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert_eq!(mi.item.block_style().unwrap(), "Sunset");
 
         assert_eq!(
             mi.item.nth_attribute(1).unwrap(),
@@ -1035,6 +1045,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert!(mi.item.block_style().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -1143,6 +1154,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert!(mi.item.block_style().is_none());
 
         assert_eq!(
             mi.item.span(),
@@ -1350,6 +1362,7 @@ mod tests {
             assert!(mi.item.named_or_positional_attribute("foo", 0).is_none());
             assert_eq!(mi.item.id().unwrap(), "goals");
             assert!(mi.item.roles().is_empty());
+            assert!(mi.item.block_style().is_none());
 
             assert_eq!(
                 mi.item.span(),
@@ -1428,6 +1441,7 @@ mod tests {
 
             assert_eq!(mi.item.id().unwrap(), "goals");
             assert!(mi.item.roles().is_empty());
+            assert!(mi.item.block_style().is_none());
 
             assert_eq!(
                 mi.after,
@@ -1516,7 +1530,7 @@ mod tests {
 
             assert!(mi.item.id().is_none());
             assert!(mi.item.roles().is_empty());
-            assert!(mi.item.roles().is_empty());
+            assert_eq!(mi.item.block_style().unwrap(), "foo");
 
             assert_eq!(
                 mi.after,
@@ -1571,6 +1585,8 @@ mod tests {
             let mut roles = roles.iter();
             assert_eq!(roles.next().unwrap(), &"rolename");
             assert!(roles.next().is_none());
+
+            assert!(mi.item.block_style().is_none());
 
             assert_eq!(
                 mi.item.span(),
@@ -1631,6 +1647,8 @@ mod tests {
             assert_eq!(roles.next().unwrap(), &"rolename");
             assert!(roles.next().is_none());
 
+            assert!(mi.item.block_style().is_none());
+
             assert_eq!(
                 mi.item.span(),
                 Span {
@@ -1689,7 +1707,9 @@ mod tests {
             assert_eq!(roles.next().unwrap(), &"role1");
             assert_eq!(roles.next().unwrap(), &"role2");
             assert_eq!(roles.next().unwrap(), &"role3");
-            assert!(roles.next().is_none(),);
+            assert!(roles.next().is_none());
+
+            assert!(mi.item.block_style().is_none());
 
             assert_eq!(
                 mi.item.span(),
@@ -1749,7 +1769,9 @@ mod tests {
             assert_eq!(roles.next().unwrap(), &"role1");
             assert_eq!(roles.next().unwrap(), &"role2");
             assert_eq!(roles.next().unwrap(), &"role3");
-            assert!(roles.next().is_none(),);
+            assert!(roles.next().is_none());
+
+            assert!(mi.item.block_style().is_none());
 
             assert_eq!(
                 mi.item.span(),
@@ -1831,6 +1853,8 @@ mod tests {
             assert_eq!(roles.next().unwrap(), &"role1");
             assert!(roles.next().is_none());
 
+            assert!(mi.item.block_style().is_none());
+
             assert_eq!(
                 mi.after,
                 Span {
@@ -1903,6 +1927,8 @@ mod tests {
             assert_eq!(roles.next().unwrap(), &"role3");
             assert!(roles.next().is_none());
 
+            assert!(mi.item.block_style().is_none());
+
             assert_eq!(
                 mi.after,
                 Span {
@@ -1970,6 +1996,8 @@ mod tests {
             assert_eq!(roles.next().unwrap(), &"na3");
             assert!(roles.next().is_none());
 
+            assert!(mi.item.block_style().is_none());
+
             assert_eq!(
                 mi.after,
                 Span {
@@ -2019,6 +2047,8 @@ mod tests {
 
             let roles = mi.item.roles();
             assert_eq!(roles.iter().len(), 0);
+
+            assert_eq!(mi.item.block_style().unwrap(), "foo");
 
             assert_eq!(
                 mi.after,
@@ -2516,6 +2546,21 @@ mod tests {
     }
 
     #[test]
+    fn block_style() {
+        let p = Parser::default();
+
+        let mi = crate::attributes::Attrlist::parse(
+            crate::Span::new("blah#goals"),
+            &p,
+            AttrlistContext::Inline,
+        )
+        .unwrap_if_no_warnings();
+
+        let attrlist = mi.item;
+        assert_eq!(attrlist.block_style().unwrap(), "blah");
+    }
+
+    #[test]
     fn err_double_comma() {
         let p = Parser::default();
 
@@ -2632,6 +2677,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert_eq!(mi.item.block_style().unwrap(), "Sunset");
 
         assert_eq!(
             mi.item.nth_attribute(1).unwrap(),
@@ -2758,6 +2804,7 @@ mod tests {
 
         assert!(mi.item.id().is_none());
         assert!(mi.item.roles().is_empty());
+        assert_eq!(mi.item.block_style().unwrap(), "Sunset");
 
         assert_eq!(
             mi.item.nth_attribute(1).unwrap(),
