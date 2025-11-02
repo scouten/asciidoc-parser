@@ -31,6 +31,7 @@ pub struct SectionBlock<'src> {
     anchor: Option<Span<'src>>,
     anchor_reftext: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
+    section_type: SectionType,
     section_id: Option<String>,
     section_number: Option<SectionNumber>,
 }
@@ -49,6 +50,23 @@ impl<'src> SectionBlock<'src> {
         let sectids = parser.is_attribute_set("sectids");
 
         let level = level_and_title.item.0;
+
+        // Assign the section type. At level 1, we look for an `appendix` section style;
+        // at all other levels, we inherit the section type from parent.
+        let section_type = if level == 1 {
+            let section_type = if let Some(ref attrlist) = metadata.attrlist
+                && let Some(block_style) = attrlist.block_style()
+                && block_style == "appendix"
+            {
+                SectionType::Appendix
+            } else {
+                SectionType::Normal
+            };
+            parser.topmost_section_type = section_type;
+            section_type
+        } else {
+            parser.topmost_section_type
+        };
 
         // Assign section number BEFORE parsing child blocks so that sections are
         // numbered in document order (parent before children).
@@ -112,6 +130,11 @@ impl<'src> SectionBlock<'src> {
             None
         };
 
+        // Restore "normal" top-level section type if exiting a level 1 appendix.
+        if level == 1 {
+            parser.topmost_section_type = SectionType::Normal;
+        }
+
         warnings.append(&mut maw_blocks.warnings);
 
         Some(MatchedItem {
@@ -125,6 +148,7 @@ impl<'src> SectionBlock<'src> {
                 anchor: metadata.anchor,
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
+                section_type,
                 section_id,
                 section_number,
             },
@@ -154,6 +178,11 @@ impl<'src> SectionBlock<'src> {
     /// applied.
     pub fn section_title(&'src self) -> &'src str {
         self.section_title.rendered()
+    }
+
+    /// Return the type of this section (normal or appendix).
+    pub fn section_type(&'src self) -> SectionType {
+        self.section_type
     }
 
     /// Accessor intended to be used for testing only. Use the `id()` accessor
@@ -231,6 +260,7 @@ impl std::fmt::Debug for SectionBlock<'_> {
             .field("anchor", &self.anchor)
             .field("anchor_reftext", &self.anchor_reftext)
             .field("attrlist", &self.attrlist)
+            .field("section_type", &self.section_type)
             .field("section_id", &self.section_id)
             .field("section_number", &self.section_number)
             .finish()
@@ -378,6 +408,30 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
     format!("{idprefix}{gen_id}")
 }
 
+/// Represents the type of a section.
+///
+/// This crate currently supports the `appendix` section style, which results in
+/// special section numbering. All other sections are treated as `Normal`
+/// sections.
+#[derive(Clone, Copy, Default, Eq, PartialEq)]
+pub enum SectionType {
+    /// Most sections are of this type.
+    #[default]
+    Normal,
+
+    /// Represents a section with the style `appendix`.
+    Appendix,
+}
+
+impl std::fmt::Debug for SectionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SectionType::Normal => write!(f, "SectionType::Normal"),
+            SectionType::Appendix => write!(f, "SectionType::Appendix"),
+        }
+    }
+}
+
 /// Represents an assigned section number.
 ///
 /// Section numbers aren't assigned by default, but can be enabled using the
@@ -386,7 +440,8 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 /// [Section Numbers]: https://docs.asciidoctor.org/asciidoc/latest/sections/numbers/
 #[derive(Clone, Default, Eq, PartialEq)]
 pub struct SectionNumber {
-    components: Vec<usize>,
+    pub(crate) section_type: SectionType,
+    pub(crate) components: Vec<usize>,
 }
 
 impl SectionNumber {
@@ -417,7 +472,16 @@ impl fmt::Display for SectionNumber {
             &self
                 .components
                 .iter()
-                .map(|x| x.to_string())
+                .enumerate()
+                .map(|(index, x)| {
+                    if index == 0 && self.section_type == SectionType::Appendix {
+                        char::from_u32(b'A' as u32 + (x - 1) as u32)
+                            .unwrap_or('?')
+                            .to_string()
+                    } else {
+                        x.to_string()
+                    }
+                })
                 .collect::<Vec<String>>()
                 .join("."),
         )
@@ -427,6 +491,7 @@ impl fmt::Display for SectionNumber {
 impl fmt::Debug for SectionNumber {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SectionNumber")
+            .field("section_type", &self.section_type)
             .field("components", &DebugSliceReference(&self.components))
             .finish()
     }
@@ -441,7 +506,7 @@ mod tests {
 
     use crate::{
         Parser,
-        blocks::{IsBlock, metadata::BlockMetadata},
+        blocks::{IsBlock, metadata::BlockMetadata, section::SectionType},
         tests::prelude::*,
         warnings::WarningType,
     };
@@ -511,7 +576,9 @@ mod tests {
 
         use crate::{
             Parser,
-            blocks::{ContentModel, IsBlock, MediaType, metadata::BlockMetadata},
+            blocks::{
+                ContentModel, IsBlock, MediaType, metadata::BlockMetadata, section::SectionType,
+            },
             content::SubstitutionGroup,
             tests::prelude::*,
             warnings::WarningType,
@@ -583,6 +650,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -671,6 +739,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -785,6 +854,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -899,6 +969,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1034,6 +1105,7 @@ mod tests {
                             anchor: None,
                             anchor_reftext: None,
                             attrlist: None,
+                            section_type: SectionType::Normal,
                             section_id: Some("_section_2"),
                             section_number: None,
                         })
@@ -1049,6 +1121,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1137,6 +1210,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1225,6 +1299,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1268,6 +1343,7 @@ mod tests {
                 "Section with <strong>bold</strong> text"
             );
 
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
@@ -1371,6 +1447,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
@@ -1388,6 +1465,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.nested_blocks().len(), 1);
             assert_eq!(mi.item.id().unwrap(), "_level_1");
 
@@ -1413,7 +1491,9 @@ mod tests {
 
         use crate::{
             Parser,
-            blocks::{ContentModel, IsBlock, MediaType, metadata::BlockMetadata},
+            blocks::{
+                ContentModel, IsBlock, MediaType, metadata::BlockMetadata, section::SectionType,
+            },
             content::SubstitutionGroup,
             tests::prelude::*,
             warnings::WarningType,
@@ -1485,6 +1565,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1573,6 +1654,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1687,6 +1769,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1801,6 +1884,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1936,6 +2020,7 @@ mod tests {
                             anchor: None,
                             anchor_reftext: None,
                             attrlist: None,
+                            section_type: SectionType::Normal,
                             section_id: Some("_section_2"),
                             section_number: None,
                         })
@@ -1951,6 +2036,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -2039,6 +2125,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -2127,6 +2214,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -2170,6 +2258,7 @@ mod tests {
                 "Section with <strong>bold</strong> text"
             );
 
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
@@ -2199,6 +2288,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with &lt;brackets&gt; &amp; ampersands"
             );
+
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
         }
 
         #[test]
@@ -2271,6 +2362,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
@@ -2288,6 +2380,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.nested_blocks().len(), 1);
             assert_eq!(mi.item.id().unwrap(), "_level_1");
 
@@ -2320,6 +2413,7 @@ mod tests {
 
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
+        assert_eq!(mi.item.section_type(), SectionType::Normal);
         assert_eq!(mi.item.nested_blocks().len(), 1);
         assert_eq!(mi.item.id().unwrap(), "_level_1");
 
@@ -2351,6 +2445,7 @@ mod tests {
 
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
+        assert_eq!(mi.item.section_type(), SectionType::Normal);
         assert_eq!(mi.item.nested_blocks().len(), 1);
         assert_eq!(mi.item.id().unwrap(), "_level_1");
 
@@ -2780,12 +2875,26 @@ mod tests {
     anchor: None,
     anchor_reftext: None,
     attrlist: None,
+    section_type: SectionType::Normal,
     section_id: Some(
         "_section_title",
     ),
     section_number: None,
 }"#
         );
+    }
+
+    mod section_type {
+        use crate::blocks::section::SectionType;
+
+        #[test]
+        fn impl_debug() {
+            let st = SectionType::Normal;
+            assert_eq!(format!("{st:?}"), "SectionType::Normal");
+
+            let st = SectionType::Appendix;
+            assert_eq!(format!("{st:?}"), "SectionType::Appendix");
+        }
     }
 
     mod section_number {
@@ -2797,7 +2906,10 @@ mod tests {
                 let sn = SectionNumber::default();
                 assert_eq!(sn.components(), []);
                 assert_eq!(sn.to_string(), "");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[] }"
+                );
             }
 
             #[test]
@@ -2806,7 +2918,10 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [1]);
                 assert_eq!(sn.to_string(), "1");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[1] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[1] }"
+                );
             }
 
             #[test]
@@ -2817,7 +2932,7 @@ mod tests {
                 assert_eq!(sn.to_string(), "1.1.1");
                 assert_eq!(
                     format!("{sn:?}"),
-                    "SectionNumber { components: &[1, 1, 1] }"
+                    "SectionNumber { section_type: SectionType::Normal, components: &[1, 1, 1] }"
                 );
             }
 
@@ -2828,7 +2943,10 @@ mod tests {
                 sn.assign_next_number(1);
                 assert_eq!(sn.components(), [2]);
                 assert_eq!(sn.to_string(), "2");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[2] }"
+                );
             }
 
             #[test]
@@ -2839,7 +2957,91 @@ mod tests {
                 sn.assign_next_number(2);
                 assert_eq!(sn.components(), [2, 1]);
                 assert_eq!(sn.to_string(), "2.1");
-                assert_eq!(format!("{sn:?}"), "SectionNumber { components: &[2, 1] }");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Normal, components: &[2, 1] }"
+                );
+            }
+        }
+
+        mod assign_next_number_appendix {
+            use crate::blocks::{SectionType, section::SectionNumber};
+
+            #[test]
+            fn default() {
+                let sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                assert_eq!(sn.components(), []);
+                assert_eq!(sn.to_string(), "");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[] }"
+                );
+            }
+
+            #[test]
+            fn level_1() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(1);
+                assert_eq!(sn.components(), [1]);
+                assert_eq!(sn.to_string(), "A");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[1] }"
+                );
+            }
+
+            #[test]
+            fn level_3() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(3);
+                assert_eq!(sn.components(), [1, 1, 1]);
+                assert_eq!(sn.to_string(), "A.1.1");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[1, 1, 1] }"
+                );
+            }
+
+            #[test]
+            fn level_3_then_1() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(3);
+                sn.assign_next_number(1);
+                assert_eq!(sn.components(), [2]);
+                assert_eq!(sn.to_string(), "B");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[2] }"
+                );
+            }
+
+            #[test]
+            fn level_3_then_1_then_2() {
+                let mut sn = SectionNumber {
+                    section_type: SectionType::Appendix,
+                    components: vec![],
+                };
+                sn.assign_next_number(3);
+                sn.assign_next_number(1);
+                sn.assign_next_number(2);
+                assert_eq!(sn.components(), [2, 1]);
+                assert_eq!(sn.to_string(), "B.1");
+                assert_eq!(
+                    format!("{sn:?}"),
+                    "SectionNumber { section_type: SectionType::Appendix, components: &[2, 1] }"
+                );
             }
         }
     }

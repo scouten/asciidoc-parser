@@ -1,15 +1,17 @@
 use std::fmt;
 
-use crate::internal::debug::DebugSliceReference;
+use crate::{blocks::SectionType, internal::debug::DebugSliceReference};
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct SectionNumber {
+    pub section_type: SectionType,
     pub components: &'static [usize],
 }
 
 impl fmt::Debug for SectionNumber {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SectionNumber")
+            .field("section_type", &self.section_type)
             .field("components", &DebugSliceReference(self.components))
             .finish()
     }
@@ -28,5 +30,5 @@ impl PartialEq<SectionNumber> for crate::blocks::SectionNumber {
 }
 
 fn fixture_eq_observed(fixture: &SectionNumber, observed: &crate::blocks::SectionNumber) -> bool {
-    fixture.components == observed.components()
+    fixture.section_type == observed.section_type && fixture.components == observed.components()
 }

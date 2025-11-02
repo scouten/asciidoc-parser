@@ -192,6 +192,7 @@ Here's an example that shows how to set an ID on a section using this shorthand 
                         offset: 1,
                     },
                 },),
+                section_type: SectionType::Normal,
                 section_id: None,
                 section_number: None,
             },)
@@ -260,6 +261,7 @@ Here's an example that shows how to set an ID on an appendix section using this 
                         offset: 1,
                     },
                 },),
+                section_type: SectionType::Appendix,
                 section_id: None,
                 section_number: None,
             },)

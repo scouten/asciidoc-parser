@@ -129,6 +129,7 @@ When `sectnums` is set, level 1 (`==`) through level 3 (`====`) section titles a
                             anchor: None,
                             anchor_reftext: None,
                             attrlist: None,
+                            section_type: SectionType::Normal,
                             section_id: Some("_level_4",),
                             section_number: None,
                         },),],
@@ -143,8 +144,10 @@ When `sectnums` is set, level 1 (`==`) through level 3 (`====`) section titles a
                         anchor: None,
                         anchor_reftext: None,
                         attrlist: None,
+                        section_type: SectionType::Normal,
                         section_id: Some("_level_3",),
                         section_number: Some(SectionNumber {
+                            section_type: SectionType::Normal,
                             components: &[1, 1, 1,],
                         },),
                     },),],
@@ -159,8 +162,10 @@ When `sectnums` is set, level 1 (`==`) through level 3 (`====`) section titles a
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_level_2",),
                     section_number: Some(SectionNumber {
+                        section_type: SectionType::Normal,
                         components: &[1, 1,],
                     },),
                 },),],
@@ -175,8 +180,12 @@ When `sectnums` is set, level 1 (`==`) through level 3 (`====`) section titles a
                 anchor: None,
                 anchor_reftext: None,
                 attrlist: None,
+                section_type: SectionType::Normal,
                 section_id: Some("_level_1",),
-                section_number: Some(SectionNumber { components: &[1,] },),
+                section_number: Some(SectionNumber {
+                    section_type: SectionType::Normal,
+                    components: &[1,]
+                },),
             },),],
             source: Span {
                 data: "= Title\n:sectnums:\n\n== Level 1\n\n=== Level 2\n\n==== Level 3\n\n===== Level 4",
@@ -351,8 +360,12 @@ The section number does not increment in regions of the document where section n
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_numbered_section",),
-                    section_number: Some(SectionNumber { components: &[1,] },),
+                    section_number: Some(SectionNumber {
+                        section_type: SectionType::Normal,
+                        components: &[1,]
+                    },),
                 },),
                 Block::Section(SectionBlock {
                     level: 1,
@@ -377,6 +390,7 @@ The section number does not increment in regions of the document where section n
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_unnumbered_section",),
                     section_number: None,
                 },),
@@ -429,6 +443,7 @@ The section number does not increment in regions of the document where section n
                         anchor: None,
                         anchor_reftext: None,
                         attrlist: None,
+                        section_type: SectionType::Normal,
                         section_id: Some("_unnumbered_section-2",),
                         section_number: None,
                     },),],
@@ -443,6 +458,7 @@ The section number does not increment in regions of the document where section n
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_unnumbered_section-3",),
                     section_number: None,
                 },),
@@ -469,8 +485,12 @@ The section number does not increment in regions of the document where section n
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_numbered_section-2",),
-                    section_number: Some(SectionNumber { components: &[2,] },),
+                    section_number: Some(SectionNumber {
+                        section_type: SectionType::Normal,
+                        components: &[2,]
+                    },),
                 },),
             ],
             source: Span {
@@ -573,7 +593,10 @@ If it is unset (`sectnums!`) on the command line or API, then the numbers are di
     let sb = section_blocks.next().unwrap();
     assert_eq!(
         sb.section_number().unwrap(),
-        &SectionNumber { components: &[1] }
+        &SectionNumber {
+            section_type: SectionType::Normal,
+            components: &[1]
+        }
     );
 
     assert!(section_blocks.next().is_none());
@@ -709,6 +732,7 @@ include::example$section.adoc[tag=sectnuml]
                         anchor: None,
                         anchor_reftext: None,
                         attrlist: None,
+                        section_type: SectionType::Normal,
                         section_id: Some("_level_4",),
                         section_number: None,
                     },),],
@@ -723,8 +747,10 @@ include::example$section.adoc[tag=sectnuml]
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_level_2",),
                     section_number: Some(SectionNumber {
+                        section_type: SectionType::Normal,
                         components: &[1, 1,],
                     },),
                 },),],
@@ -739,8 +765,12 @@ include::example$section.adoc[tag=sectnuml]
                 anchor: None,
                 anchor_reftext: None,
                 attrlist: None,
+                section_type: SectionType::Normal,
                 section_id: Some("_level_1",),
-                section_number: Some(SectionNumber { components: &[1,] },),
+                section_number: Some(SectionNumber {
+                    section_type: SectionType::Normal,
+                    components: &[1,]
+                },),
             },),],
             source: Span {
                 data: "= Title\n:sectnums:\n:sectnumlevels: 2\n\n== Level 1\n\n=== Level 2\n\n==== Level 4",
