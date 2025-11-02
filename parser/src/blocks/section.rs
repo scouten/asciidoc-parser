@@ -250,6 +250,7 @@ impl std::fmt::Debug for SectionBlock<'_> {
             .field("anchor", &self.anchor)
             .field("anchor_reftext", &self.anchor_reftext)
             .field("attrlist", &self.attrlist)
+            .field("section_type", &self.section_type)
             .field("section_id", &self.section_id)
             .field("section_number", &self.section_number)
             .finish()
@@ -628,6 +629,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -716,6 +718,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -830,6 +833,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -944,6 +948,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1079,6 +1084,7 @@ mod tests {
                             anchor: None,
                             anchor_reftext: None,
                             attrlist: None,
+                            section_type: SectionType::Normal,
                             section_id: Some("_section_2"),
                             section_number: None,
                         })
@@ -1094,6 +1100,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1182,6 +1189,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1270,6 +1278,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1535,6 +1544,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1623,6 +1633,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1737,6 +1748,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1851,6 +1863,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -1986,6 +1999,7 @@ mod tests {
                             anchor: None,
                             anchor_reftext: None,
                             attrlist: None,
+                            section_type: SectionType::Normal,
                             section_id: Some("_section_2"),
                             section_number: None,
                         })
@@ -2001,6 +2015,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -2089,6 +2104,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -2177,6 +2193,7 @@ mod tests {
                     anchor: None,
                     anchor_reftext: None,
                     attrlist: None,
+                    section_type: SectionType::Normal,
                     section_id: Some("_section_title"),
                     section_number: None,
                 }
@@ -2837,6 +2854,7 @@ mod tests {
     anchor: None,
     anchor_reftext: None,
     attrlist: None,
+    section_type: SectionType::Normal,
     section_id: Some(
         "_section_title",
     ),

@@ -229,6 +229,7 @@ mod error_cases {
                 anchor: None,
                 anchor_reftext: None,
                 attrlist: None,
+                section_type: SectionType::Normal,
                 section_id: Some("_section_title"),
                 section_number: None,
             }
@@ -423,6 +424,7 @@ mod error_cases {
                         offset: 1,
                     },
                 },),
+                section_type: SectionType::Normal,
                 section_id: Some("_section_title_except_it_isnt"),
                 section_number: None,
             },)

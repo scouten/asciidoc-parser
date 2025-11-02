@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{
     HasSpan,
-    blocks::IsBlock,
+    blocks::{IsBlock, SectionType},
     tests::fixtures::{
         Span,
         attributes::Attrlist,
@@ -22,6 +22,7 @@ pub(crate) struct SectionBlock {
     pub anchor: Option<Span>,
     pub anchor_reftext: Option<Span>,
     pub attrlist: Option<Attrlist>,
+    pub section_type: SectionType,
     pub section_id: Option<&'static str>,
     pub section_number: Option<SectionNumber>,
 }
@@ -38,6 +39,7 @@ impl fmt::Debug for SectionBlock {
             .field("anchor", &self.anchor)
             .field("anchor_reftext", &self.anchor_reftext)
             .field("attrlist", &self.attrlist)
+            .field("section_type", &self.section_type)
             .field("section_id", &self.section_id)
             .field("section_number", &self.section_number)
             .finish()
@@ -156,5 +158,5 @@ fn fixture_eq_observed(fixture: &SectionBlock, observed: &crate::blocks::Section
         return false;
     }
 
-    fixture.source == observed.span()
+    fixture.source == observed.span() && fixture.section_type == observed.section_type()
 }

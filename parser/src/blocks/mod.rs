@@ -44,7 +44,7 @@ mod raw_delimited;
 pub use raw_delimited::RawDelimitedBlock;
 
 mod section;
-pub use section::{SectionBlock, SectionNumber};
+pub use section::{SectionBlock, SectionNumber, SectionType};
 
 mod simple;
 pub use simple::SimpleBlock;
