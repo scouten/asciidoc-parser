@@ -6,6 +6,8 @@ mod custom_ids;
 mod dedication;
 mod id_prefix_and_separator;
 mod numbers;
+mod part_numbers_and_signifier;
+mod parts;
 mod preface;
 mod special_section_numbers;
 mod special_section_titles;
