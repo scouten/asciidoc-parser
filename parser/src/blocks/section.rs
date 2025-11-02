@@ -378,6 +378,28 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
     format!("{idprefix}{gen_id}")
 }
 
+/// Represents the type of a section.
+/// 
+/// This crate currently supports the `appendix` section style, which results in special section numbering. All other sections are treated as `Normal` sections.
+#[derive(Clone, Default, Eq, PartialEq)]
+pub enum SectionType {
+    /// Most sections are of this type.
+    #[default]
+    Normal,
+
+    /// Represents a section with the style `appendix`.
+    Appendix,
+}
+
+impl std::fmt::Debug for SectionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SectionType::Normal => write!(f, "ContentModel::Normal"),
+            SectionType::Appendix => write!(f, "ContentModel::Appendix"),
+        }
+    }
+}
+
 /// Represents an assigned section number.
 ///
 /// Section numbers aren't assigned by default, but can be enabled using the
@@ -2786,6 +2808,19 @@ mod tests {
     section_number: None,
 }"#
         );
+    }
+
+    mod section_type {
+        use crate::blocks::section::SectionType;
+
+        #[test]
+        fn impl_debug() {
+            let st = SectionType::Normal;
+            assert_eq!(format!("{st:?}"), "SectionType::Normal");
+
+            let st = SectionType::Appendix;
+            assert_eq!(format!("{st:?}"), "SectionType::Appendix");
+        }
     }
 
     mod section_number {
