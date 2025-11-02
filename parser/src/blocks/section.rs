@@ -31,6 +31,7 @@ pub struct SectionBlock<'src> {
     anchor: Option<Span<'src>>,
     anchor_reftext: Option<Span<'src>>,
     attrlist: Option<Attrlist<'src>>,
+    section_type: SectionType,
     section_id: Option<String>,
     section_number: Option<SectionNumber>,
 }
@@ -49,6 +50,18 @@ impl<'src> SectionBlock<'src> {
         let sectids = parser.is_attribute_set("sectids");
 
         let level = level_and_title.item.0;
+
+        // Assign the section type.
+        let section_type = if let Some(ref attrlist) = metadata.attrlist
+            && let Some(block_style) = attrlist.block_style()
+            && block_style == "appendix"
+        {
+            SectionType::Appendix
+        } else {
+            SectionType::Normal
+        };
+
+        // TO DO: Consider section type when assigning section number.
 
         // Assign section number BEFORE parsing child blocks so that sections are
         // numbered in document order (parent before children).
@@ -125,6 +138,7 @@ impl<'src> SectionBlock<'src> {
                 anchor: metadata.anchor,
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
+                section_type,
                 section_id,
                 section_number,
             },
@@ -154,6 +168,11 @@ impl<'src> SectionBlock<'src> {
     /// applied.
     pub fn section_title(&'src self) -> &'src str {
         self.section_title.rendered()
+    }
+
+    /// Return the type of this section (normal or appendix).
+    pub fn section_type(&'src self) -> SectionType {
+        self.section_type
     }
 
     /// Accessor intended to be used for testing only. Use the `id()` accessor
@@ -383,7 +402,7 @@ fn generate_section_id(title: &str, parser: &Parser) -> String {
 /// This crate currently supports the `appendix` section style, which results in
 /// special section numbering. All other sections are treated as `Normal`
 /// sections.
-#[derive(Clone, Default, Eq, PartialEq)]
+#[derive(Clone, Copy, Default, Eq, PartialEq)]
 pub enum SectionType {
     /// Most sections are of this type.
     #[default]
@@ -465,7 +484,7 @@ mod tests {
 
     use crate::{
         Parser,
-        blocks::{IsBlock, metadata::BlockMetadata},
+        blocks::{IsBlock, metadata::BlockMetadata, section::SectionType},
         tests::prelude::*,
         warnings::WarningType,
     };
@@ -535,7 +554,9 @@ mod tests {
 
         use crate::{
             Parser,
-            blocks::{ContentModel, IsBlock, MediaType, metadata::BlockMetadata},
+            blocks::{
+                ContentModel, IsBlock, MediaType, metadata::BlockMetadata, section::SectionType,
+            },
             content::SubstitutionGroup,
             tests::prelude::*,
             warnings::WarningType,
@@ -1292,6 +1313,7 @@ mod tests {
                 "Section with <strong>bold</strong> text"
             );
 
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
@@ -1395,6 +1417,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
@@ -1412,6 +1435,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.nested_blocks().len(), 1);
             assert_eq!(mi.item.id().unwrap(), "_level_1");
 
@@ -1437,7 +1461,9 @@ mod tests {
 
         use crate::{
             Parser,
-            blocks::{ContentModel, IsBlock, MediaType, metadata::BlockMetadata},
+            blocks::{
+                ContentModel, IsBlock, MediaType, metadata::BlockMetadata, section::SectionType,
+            },
             content::SubstitutionGroup,
             tests::prelude::*,
             warnings::WarningType,
@@ -2194,6 +2220,7 @@ mod tests {
                 "Section with <strong>bold</strong> text"
             );
 
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_section_with_bold_text");
         }
 
@@ -2223,6 +2250,8 @@ mod tests {
                 mi.item.section_title(),
                 "Section with &lt;brackets&gt; &amp; ampersands"
             );
+
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
         }
 
         #[test]
@@ -2295,6 +2324,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 5);
             assert_eq!(mi.item.section_title(), "Level 5 Section");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.id().unwrap(), "_level_5_section");
         }
 
@@ -2312,6 +2342,7 @@ mod tests {
 
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Level 1");
+            assert_eq!(mi.item.section_type(), SectionType::Normal);
             assert_eq!(mi.item.nested_blocks().len(), 1);
             assert_eq!(mi.item.id().unwrap(), "_level_1");
 
@@ -2344,6 +2375,7 @@ mod tests {
 
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
+        assert_eq!(mi.item.section_type(), SectionType::Normal);
         assert_eq!(mi.item.nested_blocks().len(), 1);
         assert_eq!(mi.item.id().unwrap(), "_level_1");
 
@@ -2375,6 +2407,7 @@ mod tests {
 
         assert_eq!(mi.item.level(), 1);
         assert_eq!(mi.item.section_title(), "Level 1");
+        assert_eq!(mi.item.section_type(), SectionType::Normal);
         assert_eq!(mi.item.nested_blocks().len(), 1);
         assert_eq!(mi.item.id().unwrap(), "_level_1");
 
