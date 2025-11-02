@@ -1,3 +1,4 @@
+mod r#abstract;
 mod auto_ids;
 mod colophon;
 mod custom_ids;
