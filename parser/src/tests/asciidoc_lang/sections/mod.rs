@@ -1,4 +1,5 @@
 mod r#abstract;
+mod abstract_block;
 mod auto_ids;
 mod colophon;
 mod custom_ids;
