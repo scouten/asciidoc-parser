@@ -685,9 +685,9 @@ fn apply_post_replacements(
     parser: &Parser,
     attrlist: Option<&Attrlist<'_>>,
 ) {
-    // TO DO: Handle hardbreak set by document attribute.
-    // if @document.attributes['hardbreaks-option'] ...
-    if attrlist.is_some_and(|attrlist| attrlist.has_option("hardbreaks")) {
+    if parser.is_attribute_set("hardbreaks-option")
+        || attrlist.is_some_and(|attrlist| attrlist.has_option("hardbreaks"))
+    {
         let text = content.rendered.as_ref();
         if !text.contains('\n') {
             return;
