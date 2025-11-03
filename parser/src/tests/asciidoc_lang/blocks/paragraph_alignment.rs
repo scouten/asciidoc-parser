@@ -1,0 +1,26 @@
+use crate::tests::prelude::*;
+
+track_file!("docs/modules/blocks/pages/paragraph-alignment.adoc");
+
+// Treating this entire file as non-normative because we don't specify rendering
+// in this crate.
+non_normative!(
+    r#"
+= Paragraph Alignment
+
+AsciiDoc provides built-in roles to align the text of a paragraph.
+The name of the role follows the pattern `text-<alignment>`, where `<alignment>` is one of left, center, right, or justify (e.g., `text-center`).
+
+In <<ex-center>>, the paragraph is assigned the `text-center` role in an attribute list.
+
+.Assign text-center to a paragraph
+[#ex-center]
+----
+[.text-center]
+This text is centered, so it must be important.
+----
+
+These built-in text alignment roles may not be honored by all converters.
+Though, you can expect them to be supported when the output format is either HTML or PDF.
+"#
+);

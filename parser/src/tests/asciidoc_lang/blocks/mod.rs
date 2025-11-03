@@ -4,5 +4,6 @@ mod build_basic_block;
 mod delimited;
 mod hard_line_breaks;
 mod index;
+mod paragraph_alignment;
 mod paragraphs;
 mod troubleshoot_blocks;
