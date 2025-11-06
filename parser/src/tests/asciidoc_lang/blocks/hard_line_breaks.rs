@@ -434,7 +434,7 @@ line four
 
 Note that `empty` is a built-in document attribute in AsciiDoc.
 
-        "#
+"#
     );
 
     let doc = Parser::default().parse("{empty} +\nline two +\n{empty} +\nline four");
