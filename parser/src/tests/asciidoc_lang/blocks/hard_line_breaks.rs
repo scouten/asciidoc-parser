@@ -495,8 +495,9 @@ Note that `empty` is a built-in document attribute in AsciiDoc.
 }
 
 #[test]
-#[ignore] // TEMPORARY until I can work online again
+#[ignore]
 fn per_line_dialogue_syntax() {
+    // TO DO (https://github.com/scouten/asciidoc-parser/issues/440): Await spec clarity on correct behavior for this example.
     verifies!(
         r#"
 If you're writing a story with dialogue, and you want to prefix the dialogue lines with `--`, the per-line syntax is the most appropriate choice.
