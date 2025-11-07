@@ -4,8 +4,8 @@ use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, RawDelimitedBlock, SectionBlock,
-        SimpleBlock, metadata::BlockMetadata,
+        CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, Preamble, RawDelimitedBlock,
+        SectionBlock, SimpleBlock, metadata::BlockMetadata,
     },
     content::SubstitutionGroup,
     document::{Attribute, RefType},
@@ -50,6 +50,10 @@ pub enum Block<'src> {
     /// A delimited block that can contain other blocks.
     CompoundDelimited(CompoundDelimitedBlock<'src>),
 
+    /// Content between the end of the document header and the first section
+    /// title in the document body is called the preamble.
+    Preamble(Preamble<'src>),
+
     /// When an attribute is defined in the document body using an attribute
     /// entry, that’s simply referred to as a document attribute.
     DocumentAttribute(Attribute<'src>),
@@ -70,6 +74,8 @@ impl<'src> std::fmt::Debug for Block<'src> {
                 .debug_tuple("Block::CompoundDelimited")
                 .field(block)
                 .finish(),
+
+            Block::Preamble(block) => f.debug_tuple("Block::Preamble").field(block).finish(),
 
             Block::DocumentAttribute(block) => f
                 .debug_tuple("Block::DocumentAttribute")
@@ -337,6 +343,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(_) => ContentModel::Compound,
             Self::RawDelimited(b) => b.content_model(),
             Self::CompoundDelimited(b) => b.content_model(),
+            Self::Preamble(b) => b.content_model(),
             Self::DocumentAttribute(b) => b.content_model(),
         }
     }
@@ -348,6 +355,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.raw_context(),
             Self::RawDelimited(b) => b.raw_context(),
             Self::CompoundDelimited(b) => b.raw_context(),
+            Self::Preamble(b) => b.raw_context(),
             Self::DocumentAttribute(b) => b.raw_context(),
         }
     }
@@ -359,6 +367,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.nested_blocks(),
             Self::RawDelimited(b) => b.nested_blocks(),
             Self::CompoundDelimited(b) => b.nested_blocks(),
+            Self::Preamble(b) => b.nested_blocks(),
             Self::DocumentAttribute(b) => b.nested_blocks(),
         }
     }
@@ -370,6 +379,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.title_source(),
             Self::RawDelimited(b) => b.title_source(),
             Self::CompoundDelimited(b) => b.title_source(),
+            Self::Preamble(b) => b.title_source(),
             Self::DocumentAttribute(b) => b.title_source(),
         }
     }
@@ -381,6 +391,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.title(),
             Self::RawDelimited(b) => b.title(),
             Self::CompoundDelimited(b) => b.title(),
+            Self::Preamble(b) => b.title(),
             Self::DocumentAttribute(b) => b.title(),
         }
     }
@@ -392,6 +403,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.anchor(),
             Self::RawDelimited(b) => b.anchor(),
             Self::CompoundDelimited(b) => b.anchor(),
+            Self::Preamble(b) => b.anchor(),
             Self::DocumentAttribute(b) => b.anchor(),
         }
     }
@@ -403,6 +415,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.anchor_reftext(),
             Self::RawDelimited(b) => b.anchor_reftext(),
             Self::CompoundDelimited(b) => b.anchor_reftext(),
+            Self::Preamble(b) => b.anchor_reftext(),
             Self::DocumentAttribute(b) => b.anchor_reftext(),
         }
     }
@@ -414,6 +427,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.attrlist(),
             Self::RawDelimited(b) => b.attrlist(),
             Self::CompoundDelimited(b) => b.attrlist(),
+            Self::Preamble(b) => b.attrlist(),
             Self::DocumentAttribute(b) => b.attrlist(),
         }
     }
@@ -425,6 +439,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Section(b) => b.substitution_group(),
             Self::RawDelimited(b) => b.substitution_group(),
             Self::CompoundDelimited(b) => b.substitution_group(),
+            Self::Preamble(b) => b.substitution_group(),
             Self::DocumentAttribute(b) => b.substitution_group(),
         }
     }
@@ -438,6 +453,7 @@ impl<'src> HasSpan<'src> for Block<'src> {
             Self::Section(b) => b.span(),
             Self::RawDelimited(b) => b.span(),
             Self::CompoundDelimited(b) => b.span(),
+            Self::Preamble(b) => b.span(),
             Self::DocumentAttribute(b) => b.span(),
         }
     }
