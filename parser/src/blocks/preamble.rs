@@ -27,7 +27,17 @@ pub struct Preamble<'src> {
 
 impl<'src> Preamble<'src> {
     pub(crate) fn from_blocks(blocks: Vec<Block<'src>>, source: Span<'src>) -> Self {
-        todo!("Assemble source from blocks");
+        let preamble_source = if let Some(last_block) = blocks.last() {
+            let after_last = last_block.span().discard_all();
+            source.trim_remainder(after_last)
+        } else {
+            source.trim_remainder(source)
+        };
+
+        Self {
+            blocks,
+            source: preamble_source,
+        }
     }
 }
 
