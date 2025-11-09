@@ -92,7 +92,12 @@ mod tests {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock};
+    use crate::{
+        Parser,
+        blocks::{ContentModel, IsBlock},
+        content::SubstitutionGroup,
+        tests::prelude::*,
+    };
 
     fn doc_fixture() -> crate::Document<'static> {
         Parser::default().parse("= Document Title\n\nSome early words go here.\n\n== First Section")
@@ -163,5 +168,89 @@ mod tests {
     },
 }"#
         );
+    }
+
+    #[test]
+    fn impl_is_block() {
+        let doc = doc_fixture();
+        let preamble = fixture_preamble(&doc);
+
+        assert_eq!(
+            preamble,
+            &Block::Preamble(Preamble {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Some early words go here.",
+                            line: 3,
+                            col: 1,
+                            offset: 18,
+                        },
+                        rendered: "Some early words go here.",
+                    },
+                    source: Span {
+                        data: "Some early words go here.",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "Some early words go here.",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+            },)
+        );
+
+        assert_eq!(preamble.content_model(), ContentModel::Compound);
+        assert_eq!(preamble.raw_context().as_ref(), "preamble");
+        assert_eq!(preamble.resolved_context().as_ref(), "preamble");
+        assert!(preamble.declared_style().is_none());
+
+        let mut blocks = preamble.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "Some early words go here.",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                    rendered: "Some early words go here.",
+                },
+                source: Span {
+                    data: "Some early words go here.",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            })
+        );
+
+        assert!(blocks.next().is_none());
+
+        assert!(preamble.id().is_none());
+        assert!(preamble.roles().is_empty());
+        assert!(preamble.options().is_empty());
+        assert!(preamble.title_source().is_none());
+        assert!(preamble.title().is_none());
+        assert!(preamble.anchor().is_none());
+        assert!(preamble.anchor_reftext().is_none());
+        assert!(preamble.attrlist().is_none());
+        assert_eq!(preamble.substitution_group(), SubstitutionGroup::Normal);
     }
 }
