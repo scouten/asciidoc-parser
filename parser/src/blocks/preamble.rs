@@ -89,7 +89,7 @@ mod tests {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser,
+        HasSpan, Parser,
         blocks::{ContentModel, IsBlock},
         content::SubstitutionGroup,
         tests::prelude::*,
@@ -252,6 +252,16 @@ mod tests {
         assert_eq!(
             format!("{preamble:#?}"),
             "Block::Preamble(\n    Preamble {\n        blocks: &[\n            Block::Simple(\n                SimpleBlock {\n                    content: Content {\n                        original: Span {\n                            data: \"Some early words go here.\",\n                            line: 3,\n                            col: 1,\n                            offset: 18,\n                        },\n                        rendered: \"Some early words go here.\",\n                    },\n                    source: Span {\n                        data: \"Some early words go here.\",\n                        line: 3,\n                        col: 1,\n                        offset: 18,\n                    },\n                    title_source: None,\n                    title: None,\n                    anchor: None,\n                    anchor_reftext: None,\n                    attrlist: None,\n                },\n            ),\n        ],\n        source: Span {\n            data: \"Some early words go here.\",\n            line: 3,\n            col: 1,\n            offset: 18,\n        },\n    },\n)"
+        );
+
+        assert_eq!(
+            preamble.span(),
+            Span {
+                data: "Some early words go here.",
+                line: 3,
+                col: 1,
+                offset: 18,
+            }
         );
     }
 }
