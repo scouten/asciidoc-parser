@@ -22,6 +22,9 @@ impl<'src> Preamble<'src> {
             let after_last = last_block.span().discard_all();
             source.trim_remainder(after_last)
         } else {
+            // This clause is here as a fallback, but should not be reachable in practice. A
+            // Preamble should only be constructed if there are content-bearing blocks
+            // before the first section.
             source.trim_remainder(source)
         };
 
