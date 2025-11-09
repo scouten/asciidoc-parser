@@ -64,10 +64,6 @@ impl<'src> IsBlock<'src> for Preamble<'src> {
     fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
         None
     }
-
-    fn id(&'src self) -> Option<&'src str> {
-        None
-    }
 }
 
 impl<'src> HasSpan<'src> for Preamble<'src> {
@@ -252,5 +248,10 @@ mod tests {
         assert!(preamble.anchor_reftext().is_none());
         assert!(preamble.attrlist().is_none());
         assert_eq!(preamble.substitution_group(), SubstitutionGroup::Normal);
+
+        assert_eq!(
+            format!("{preamble:#?}"),
+            "Block::Preamble(\n    Preamble {\n        blocks: &[\n            Block::Simple(\n                SimpleBlock {\n                    content: Content {\n                        original: Span {\n                            data: \"Some early words go here.\",\n                            line: 3,\n                            col: 1,\n                            offset: 18,\n                        },\n                        rendered: \"Some early words go here.\",\n                    },\n                    source: Span {\n                        data: \"Some early words go here.\",\n                        line: 3,\n                        col: 1,\n                        offset: 18,\n                    },\n                    title_source: None,\n                    title: None,\n                    anchor: None,\n                    anchor_reftext: None,\n                    attrlist: None,\n                },\n            ),\n        ],\n        source: Span {\n            data: \"Some early words go here.\",\n            line: 3,\n            col: 1,\n            offset: 18,\n        },\n    },\n)"
+        );
     }
 }
