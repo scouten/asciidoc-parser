@@ -1,20 +1,11 @@
-#![allow(unused)] // TEMPORARY while building
-use std::{fmt, slice::Iter, sync::LazyLock};
-
-use regex::Regex;
+use std::slice::Iter;
 
 use crate::{
-    HasSpan, Parser, Span,
+    HasSpan, Span,
     attributes::Attrlist,
-    blocks::{
-        Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
-    },
-    content::{Content, SubstitutionGroup},
-    document::RefType,
+    blocks::{Block, ContentModel, IsBlock},
     internal::debug::DebugSliceReference,
-    span::MatchedItem,
     strings::CowStr,
-    warnings::{Warning, WarningType},
 };
 
 /// Content between the end of the document header and the first section title
@@ -94,7 +85,6 @@ impl std::fmt::Debug for Preamble<'_> {
     }
 }
 
-/*
 #[cfg(test)]
 mod tests {
     #![allow(clippy::panic)]
@@ -102,75 +92,76 @@ mod tests {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{
-        Parser,
-        blocks::{IsBlock, metadata::BlockMetadata},
-        tests::prelude::*,
-        warnings::WarningType,
-    };
+    use crate::{Parser, blocks::IsBlock};
+
+    fn doc_fixture() -> crate::Document<'static> {
+        Parser::default().parse("= Document Title\n\nSome early words go here.\n\n== First Section")
+    }
+
+    fn fixture_preamble<'src>(
+        doc: &'src crate::Document<'src>,
+    ) -> &'src crate::blocks::Block<'src> {
+        doc.nested_blocks().next().unwrap()
+    }
 
     #[test]
     fn impl_clone() {
         // Silly test to mark the #[derive(...)] line as covered.
-        let mut parser = Parser::default();
-        let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+        let doc = doc_fixture();
 
-        let b1 = crate::blocks::Preamble::parse(
-            &BlockMetadata::new("== Preamble Title"),
-            &mut parser,
-            &mut warnings,
-        )
-        .unwrap();
+        let b1 = fixture_preamble(&doc);
+        let b2 = b1.clone();
 
-        let b2 = b1.item.clone();
-        assert_eq!(b1.item, b2);
+        assert_eq!(b1, &b2);
     }
 
     #[test]
     fn impl_debug() {
-        let mut parser = Parser::default();
-        let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+        let doc = doc_fixture();
+        let preamble = fixture_preamble(&doc);
 
-        let preamble = crate::blocks::Preamble::parse(
-            &BlockMetadata::new("== Preamble Title"),
-            &mut parser,
-            &mut warnings,
-        )
-        .unwrap()
-        .item;
+        let crate::blocks::Block::Preamble(preamble) = preamble else {
+            panic!("Unexpected block: {preamble:#?}");
+        };
+
+        dbg!(&preamble);
 
         assert_eq!(
             format!("{preamble:#?}"),
             r#"Preamble {
-    level: 1,
-    preamble_title: Content {
-        original: Span {
-            data: "Preamble Title",
-            line: 1,
-            col: 4,
-            offset: 3,
-        },
-        rendered: "Preamble Title",
-    },
-    blocks: &[],
+    blocks: &[
+        Block::Simple(
+            SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "Some early words go here.",
+                        line: 3,
+                        col: 1,
+                        offset: 18,
+                    },
+                    rendered: "Some early words go here.",
+                },
+                source: Span {
+                    data: "Some early words go here.",
+                    line: 3,
+                    col: 1,
+                    offset: 18,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            },
+        ),
+    ],
     source: Span {
-        data: "== Preamble Title",
-        line: 1,
+        data: "Some early words go here.",
+        line: 3,
         col: 1,
-        offset: 0,
+        offset: 18,
     },
-    title_source: None,
-    title: None,
-    anchor: None,
-    anchor_reftext: None,
-    attrlist: None,
-    preamble_type: PreambleType::Normal,
-    preamble_id: Some(
-        "_preamble_title",
-    ),
-    preamble_number: None,
 }"#
         );
     }
 }
-*/
