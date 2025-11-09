@@ -7,7 +7,7 @@ use self_cell::self_cell;
 use crate::{
     Parser, Span,
     attributes::Attrlist,
-    blocks::{Block, ContentModel, IsBlock, parse_utils::parse_blocks_until},
+    blocks::{Block, ContentModel, IsBlock, Preamble, parse_utils::parse_blocks_until},
     document::{Catalog, Header},
     internal::debug::DebugSliceReference,
     parser::SourceMap,
@@ -63,7 +63,7 @@ impl<'src> Document<'src> {
             let source = Span::new(owned_src);
 
             let mi = Header::parse(source, parser);
-            let next = mi.item.after;
+            let after_header = mi.item.after;
 
             parser.sectnumlevels = parser
                 .attribute_value("sectnumlevels")
@@ -74,15 +74,43 @@ impl<'src> Document<'src> {
             let header = mi.item.item;
             let mut warnings = mi.warnings;
 
-            let mut maw_blocks = parse_blocks_until(next, |_| false, parser);
+            let mut maw_blocks = parse_blocks_until(after_header, |_| false, parser);
 
             if !maw_blocks.warnings.is_empty() {
                 warnings.append(&mut maw_blocks.warnings);
             }
 
+            let mut blocks = maw_blocks.item.item;
+            let mut has_content_blocks = false;
+            let mut preamble_split_index: Option<usize> = None;
+
+            for (index, block) in blocks.iter().enumerate() {
+                match block {
+                    Block::DocumentAttribute(_) => (),
+                    Block::Section(_) => {
+                        if has_content_blocks {
+                            preamble_split_index = Some(index);
+                        }
+                        break;
+                    }
+                    _ => {
+                        has_content_blocks = true;
+                    }
+                }
+            }
+
+            if let Some(index) = preamble_split_index {
+                let mut section_blocks = blocks.split_off(index);
+
+                let preamble = Preamble::from_blocks(blocks, after_header);
+
+                section_blocks.insert(0, Block::Preamble(preamble));
+                blocks = section_blocks;
+            }
+
             InternalDependent {
                 header,
-                blocks: maw_blocks.item.item,
+                blocks,
                 source: source.trim_trailing_whitespace(),
                 warnings,
                 source_map,
@@ -820,38 +848,36 @@ mod tests {
 
     #[test]
     fn err_bad_header_and_bad_macro() {
+        let doc = Parser::default().parse("= Title\nJane Smith <jane@example.com>\nv1, 2025-09-28\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]");
+
         assert_eq!(
-        Parser::default().parse("= Title\nJane Smith <jane@example.com>\nv1, 2025-09-28\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]"),
-        Document {
-            header: Header {
-                title_source: Some(Span {
-                    data: "Title",
-                    line: 1,
-                    col: 3,
-                    offset: 2,
-                }),
-                title: Some("Title"),
-                attributes: &[],
-                author_line: Some(AuthorLine {
-                    authors: &[Author {
-                        name: "Jane Smith",
-                        firstname: "Jane",
-                        middlename: None,
-                        lastname: Some("Smith"),
-                        email: Some("jane@example.com"),
-                    }],
-                    source: Span {
-                        data: "Jane Smith <jane@example.com>",
-                        line: 2,
-                        col: 1,
-                        offset: 8,
-                    },
-                }),
-                revision_line: Some(
-                    RevisionLine {
-                        revnumber: Some(
-                            "1",
-                        ),
+            Document {
+                header: Header {
+                    title_source: Some(Span {
+                        data: "Title",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    }),
+                    title: Some("Title"),
+                    attributes: &[],
+                    author_line: Some(AuthorLine {
+                        authors: &[Author {
+                            name: "Jane Smith",
+                            firstname: "Jane",
+                            middlename: None,
+                            lastname: Some("Smith"),
+                            email: Some("jane@example.com"),
+                        }],
+                        source: Span {
+                            data: "Jane Smith <jane@example.com>",
+                            line: 2,
+                            col: 1,
+                            offset: 8,
+                        },
+                    }),
+                    revision_line: Some(RevisionLine {
+                        revnumber: Some("1"),
                         revdate: "2025-09-28",
                         revremark: None,
                         source: Span {
@@ -860,161 +886,160 @@ mod tests {
                             col: 1,
                             offset: 38,
                         },
-                    },
-                ),
-                comments: &[],
-                source: Span {
-                    data: "= Title\nJane Smith <jane@example.com>\nv1, 2025-09-28",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            },
-            blocks: &[
-                Block::Simple(SimpleBlock {
-                    content: Content {
-                        original: Span {
+                    },),
+                    comments: &[],
+                    source: Span {
+                        data: "= Title\nJane Smith <jane@example.com>\nv1, 2025-09-28",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    }
+                },
+                blocks: &[
+                    Block::Preamble(Preamble {
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "not an attribute",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 53,
+                                },
+                                rendered: "not an attribute",
+                            },
+                            source: Span {
+                                data: "not an attribute",
+                                line: 4,
+                                col: 1,
+                                offset: 53,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
                             data: "not an attribute",
                             line: 4,
                             col: 1,
                             offset: 53,
                         },
-                        rendered: "not an attribute",
-                    },
-                    source: Span {
-                        data: "not an attribute",
-                        line: 4,
-                        col: 1,
-                        offset: 53,
-                    },
-                    title_source: None,
-                    title: None,
-                    anchor: None,
-                    anchor_reftext: None,
-                    attrlist: None,
-                }
-            ),
-            Block::Section(
-                SectionBlock {
-                    level: 1,
-                    section_title: Content {
-                        original: Span {
-                            data: "Section Title",
-                            line: 6,
-                            col: 4,
-                            offset: 74,
-                        },
-                        rendered: "Section Title",
-                    },
-                    blocks: &[
-                        Block::Media(
-                            MediaBlock {
-                                type_: MediaType::Image,
-                                target: Span {
-                                    data: "bar",
-                                    line: 8,
-                                    col: 8,
-                                    offset: 96,
-                                },
-                                macro_attrlist: Attrlist {
-                                    attributes: &[
-                                        ElementAttribute {
-                                            name: Some("alt"),
-                                            shorthand_items: &[],
-                                            value: "Sunset"
-                                        },
-                                        ElementAttribute {
-                                            name: Some("width"),
-                                            shorthand_items: &[],
-                                            value: "300"
-                                        },
-                                        ElementAttribute {
-                                            name: Some("height"),
-                                            shorthand_items: &[],
-                                            value: "400"
-                                        },
-                                    ],
-                                    anchor: None,
-                                    source: Span {
-                                        data: "alt=Sunset,width=300,,height=400",
-                                        line: 8,
-                                        col: 12,
-                                        offset: 100,
-                                    },
-                                },
-                                source: Span {
-                                    data: "image::bar[alt=Sunset,width=300,,height=400]",
-                                    line: 8,
-                                    col: 1,
-                                    offset: 89,
-                                },
-                                title_source: None,
-                                title: None,
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
+                    },),
+                    Block::Section(SectionBlock {
+                        level: 1,
+                        section_title: Content {
+                            original: Span {
+                                data: "Section Title",
+                                line: 6,
+                                col: 4,
+                                offset: 74,
                             },
-                        ),
-                    ],
-                    source: Span {
-                        data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
-                        line: 6,
-                        col: 1,
-                        offset: 71,
-                    },
-                    title_source: None,
-                    title: None,
-                    anchor: None,
-                    anchor_reftext: None,
-                    attrlist: None,
-                    section_type: SectionType::Normal,
-                    section_id: Some("_section_title"),
-                    section_number: None,
+                            rendered: "Section Title",
+                        },
+                        blocks: &[Block::Media(MediaBlock {
+                            type_: MediaType::Image,
+                            target: Span {
+                                data: "bar",
+                                line: 8,
+                                col: 8,
+                                offset: 96,
+                            },
+                            macro_attrlist: Attrlist {
+                                attributes: &[
+                                    ElementAttribute {
+                                        name: Some("alt"),
+                                        shorthand_items: &[],
+                                        value: "Sunset"
+                                    },
+                                    ElementAttribute {
+                                        name: Some("width"),
+                                        shorthand_items: &[],
+                                        value: "300"
+                                    },
+                                    ElementAttribute {
+                                        name: Some("height"),
+                                        shorthand_items: &[],
+                                        value: "400"
+                                    },
+                                ],
+                                anchor: None,
+                                source: Span {
+                                    data: "alt=Sunset,width=300,,height=400",
+                                    line: 8,
+                                    col: 12,
+                                    offset: 100,
+                                },
+                            },
+                            source: Span {
+                                data: "image::bar[alt=Sunset,width=300,,height=400]",
+                                line: 8,
+                                col: 1,
+                                offset: 89,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
+                            line: 6,
+                            col: 1,
+                            offset: 71,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                        section_type: SectionType::Normal,
+                        section_id: Some("_section_title"),
+                        section_number: None,
+                    },)
+                ],
+                source: Span {
+                    data: "= Title\nJane Smith <jane@example.com>\nv1, 2025-09-28\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
+                    line: 1,
+                    col: 1,
+                    offset: 0
                 },
-            )],
-            source: Span {
-                data: "= Title\nJane Smith <jane@example.com>\nv1, 2025-09-28\nnot an attribute\n\n== Section Title\n\nimage::bar[alt=Sunset,width=300,,height=400]",
-                line: 1,
-                col: 1,
-                offset: 0
+                warnings: &[
+                    Warning {
+                        source: Span {
+                            data: "not an attribute",
+                            line: 4,
+                            col: 1,
+                            offset: 53,
+                        },
+                        warning: WarningType::DocumentHeaderNotTerminated,
+                    },
+                    Warning {
+                        source: Span {
+                            data: "alt=Sunset,width=300,,height=400",
+                            line: 8,
+                            col: 12,
+                            offset: 100,
+                        },
+                        warning: WarningType::EmptyAttributeValue,
+                    },
+                ],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([(
+                        "_section_title",
+                        RefEntry {
+                            id: "_section_title",
+                            reftext: Some("Section Title",),
+                            ref_type: RefType::Section,
+                        }
+                    ),]),
+                    reftext_to_id: HashMap::from([("Section Title", "_section_title"),]),
+                }
             },
-            warnings: &[
-                Warning {
-                    source: Span {
-                        data: "not an attribute",
-                        line: 4,
-                        col: 1,
-                        offset: 53,
-                    },
-                    warning: WarningType::DocumentHeaderNotTerminated,
-                },
-                Warning {
-                    source: Span {
-                        data: "alt=Sunset,width=300,,height=400",
-                        line: 8,
-                        col: 12,
-                        offset: 100,
-                    },
-                    warning: WarningType::EmptyAttributeValue,
-                },
-            ],
-            source_map: SourceMap(&[]),
-            catalog: Catalog {
-                refs: HashMap::from([
-                    ("_section_title", RefEntry {
-                        id: "_section_title",
-                        reftext: Some(
-                            "Section Title",
-                        ),
-                        ref_type: RefType::Section,
-                    }),
-                ]),
-                reftext_to_id: HashMap::from([
-                    ("Section Title", "_section_title"),
-                ]),
-            }
-        }
-    );
+            doc
+        );
     }
 
     #[test]

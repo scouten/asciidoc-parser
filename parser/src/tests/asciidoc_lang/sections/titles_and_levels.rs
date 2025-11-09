@@ -356,7 +356,6 @@ include::example$section.adoc[tag=content]
     let doc = Parser::default().parse("= Document Title\n\n= Illegal Level 0 Section (violates rule #1)\n\n== First Section\n\n==== Illegal Nested Section (violates rule #2)");
 
     assert_eq!(
-        doc,
         Document {
             header: Header {
                 title_source: Some(Span {
@@ -378,27 +377,35 @@ include::example$section.adoc[tag=content]
                 },
             },
             blocks: &[
-                Block::Simple(SimpleBlock {
-                    content: Content {
-                        original: Span {
+                Block::Preamble(Preamble {
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "= Illegal Level 0 Section (violates rule #1)",
+                                line: 3,
+                                col: 1,
+                                offset: 18,
+                            },
+                            rendered: "= Illegal Level 0 Section (violates rule #1)",
+                        },
+                        source: Span {
                             data: "= Illegal Level 0 Section (violates rule #1)",
                             line: 3,
                             col: 1,
                             offset: 18,
                         },
-                        rendered: "= Illegal Level 0 Section (violates rule #1)",
-                    },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
                     source: Span {
                         data: "= Illegal Level 0 Section (violates rule #1)",
                         line: 3,
                         col: 1,
                         offset: 18,
                     },
-                    title_source: None,
-                    title: None,
-                    anchor: None,
-                    anchor_reftext: None,
-                    attrlist: None,
                 },),
                 Block::Section(SectionBlock {
                     level: 1,
@@ -508,7 +515,8 @@ include::example$section.adoc[tag=content]
                     ),
                 ]),
             },
-        }
+        },
+        doc
     );
 }
 

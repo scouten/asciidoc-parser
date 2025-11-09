@@ -6,4 +6,5 @@ mod hard_line_breaks;
 mod index;
 mod paragraph_alignment;
 mod paragraphs;
+mod preamble_and_lead;
 mod troubleshoot_blocks;

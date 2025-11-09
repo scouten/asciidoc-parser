@@ -7,6 +7,9 @@ pub(crate) use compound_delimited::CompoundDelimitedBlock;
 mod media;
 pub(crate) use media::MediaBlock;
 
+mod preamble;
+pub(crate) use preamble::Preamble;
+
 mod raw_delimited;
 pub(crate) use raw_delimited::RawDelimitedBlock;
 

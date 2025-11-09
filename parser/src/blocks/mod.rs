@@ -40,6 +40,9 @@ pub use media::{MediaBlock, MediaType};
 pub(crate) mod metadata;
 pub(crate) mod parse_utils;
 
+mod preamble;
+pub use preamble::Preamble;
+
 mod raw_delimited;
 pub use raw_delimited::RawDelimitedBlock;
 
