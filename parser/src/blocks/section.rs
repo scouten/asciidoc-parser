@@ -46,6 +46,8 @@ impl<'src> SectionBlock<'src> {
             return None;
         }
 
+        let discrete = metadata.is_discrete();
+
         let source = metadata.block_start.discard_empty_lines();
         let level_and_title = parse_title_line(source, warnings)?;
 
@@ -57,7 +59,9 @@ impl<'src> SectionBlock<'src> {
 
         // Assign the section type. At level 1, we look for an `appendix` section style;
         // at all other levels, we inherit the section type from parent.
-        let section_type = if level == 1 {
+        let section_type = if discrete {
+            SectionType::Discrete
+        } else if level == 1 {
             let section_type = if let Some(ref attrlist) = metadata.attrlist
                 && let Some(block_style) = attrlist.block_style()
                 && block_style == "appendix"
@@ -74,18 +78,18 @@ impl<'src> SectionBlock<'src> {
 
         // Assign section number BEFORE parsing child blocks so that sections are
         // numbered in document order (parent before children).
-        let section_number = if parser.is_attribute_set("sectnums") && level <= parser.sectnumlevels
-        {
-            Some(parser.assign_section_number(level))
-        } else {
-            None
-        };
+        let section_number =
+            if parser.is_attribute_set("sectnums") && level <= parser.sectnumlevels && !discrete {
+                Some(parser.assign_section_number(level))
+            } else {
+                None
+            };
 
         let mut most_recent_level = level;
 
         let mut maw_blocks = parse_blocks_until(
             level_and_title.after,
-            |i| peer_or_ancestor_section(*i, level, &mut most_recent_level, warnings),
+            |i| discrete || peer_or_ancestor_section(*i, level, &mut most_recent_level, warnings),
             parser,
         );
 
@@ -109,7 +113,9 @@ impl<'src> SectionBlock<'src> {
             .and_then(|a| a.named_attribute("reftext").map(|a| a.value()))
             .unwrap_or_else(|| section_title.rendered());
 
-        let section_id = if let Some(catalog) = parser.catalog_mut() {
+        let section_id = if let Some(catalog) = parser.catalog_mut()
+            && !discrete
+        {
             if sectids && manual_id.is_none() {
                 Some(catalog.generate_and_register_unique_id(
                     &proposed_base_id,
@@ -135,7 +141,7 @@ impl<'src> SectionBlock<'src> {
         };
 
         // Restore "normal" top-level section type if exiting a level 1 appendix.
-        if level == 1 {
+        if level == 1 && !discrete {
             parser.topmost_section_type = SectionType::Normal;
         }
 
@@ -431,6 +437,10 @@ pub enum SectionType {
 
     /// Represents a section with the style `appendix`.
     Appendix,
+
+    /// Represents a discrete section heading.
+    /// A discrete section heading will have no nested blocks.
+    Discrete,
 }
 
 impl std::fmt::Debug for SectionType {
@@ -438,6 +448,7 @@ impl std::fmt::Debug for SectionType {
         match self {
             SectionType::Normal => write!(f, "SectionType::Normal"),
             SectionType::Appendix => write!(f, "SectionType::Appendix"),
+            SectionType::Discrete => write!(f, "SectionType::Discrete"),
         }
     }
 }
