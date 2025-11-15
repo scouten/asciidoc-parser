@@ -113,3 +113,335 @@ impl<'src> HasSpan<'src> for Break<'src> {
         self.source
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::unwrap_used)]
+
+    use std::ops::Deref;
+
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        Parser,
+        blocks::{BreakType, ContentModel, IsBlock, metadata::BlockMetadata},
+        content::SubstitutionGroup,
+        tests::prelude::*,
+    };
+
+    #[test]
+    fn impl_clone() {
+        // Silly test to mark the #[derive(...)] line as covered.
+        let mut parser = Parser::default();
+
+        let b1 = crate::blocks::Break::parse(&BlockMetadata::new("'''"), &mut parser)
+            .unwrap()
+            .item;
+
+        let b2 = b1.clone();
+        assert_eq!(b1, b2);
+    }
+
+    #[test]
+    fn err_empty_source() {
+        let mut parser = Parser::default();
+        assert!(crate::blocks::Break::parse(&BlockMetadata::new(""), &mut parser).is_none());
+    }
+
+    #[test]
+    fn err_only_spaces() {
+        let mut parser = Parser::default();
+        assert!(crate::blocks::Break::parse(&BlockMetadata::new("    "), &mut parser).is_none());
+    }
+
+    #[test]
+    fn err_unknown_break_pattern() {
+        let mut parser = Parser::default();
+        assert!(crate::blocks::Break::parse(&BlockMetadata::new("=="), &mut parser).is_none());
+        assert!(crate::blocks::Break::parse(&BlockMetadata::new("~~~"), &mut parser).is_none());
+        assert!(crate::blocks::Break::parse(&BlockMetadata::new("****"), &mut parser).is_none());
+        assert!(crate::blocks::Break::parse(&BlockMetadata::new(">>>"), &mut parser).is_none());
+    }
+
+    #[test]
+    fn thematic_break_triple_apostrophe() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("'''"), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Thematic,
+                source: Span {
+                    data: "'''",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            Span {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Empty);
+        assert_eq!(mi.item.raw_context().deref(), "thematic_break");
+        assert_eq!(mi.item.type_(), BreakType::Thematic);
+        assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title_source().is_none());
+        assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
+        assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+    }
+
+    #[test]
+    fn thematic_break_triple_hyphen() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("---"), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Thematic,
+                source: Span {
+                    data: "---",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            Span {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Empty);
+        assert_eq!(mi.item.raw_context().deref(), "thematic_break");
+        assert_eq!(mi.item.type_(), BreakType::Thematic);
+    }
+
+    #[test]
+    fn thematic_break_spaced_hyphen() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("- - -"), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Thematic,
+                source: Span {
+                    data: "- - -",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(mi.item.type_(), BreakType::Thematic);
+    }
+
+    #[test]
+    fn thematic_break_triple_asterisk() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("***"), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Thematic,
+                source: Span {
+                    data: "***",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Empty);
+        assert_eq!(mi.item.raw_context().deref(), "thematic_break");
+        assert_eq!(mi.item.type_(), BreakType::Thematic);
+    }
+
+    #[test]
+    fn thematic_break_spaced_asterisk() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("* * *"), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Thematic,
+                source: Span {
+                    data: "* * *",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(mi.item.type_(), BreakType::Thematic);
+    }
+
+    #[test]
+    fn page_break() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("<<<"), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Page,
+                source: Span {
+                    data: "<<<",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(
+            mi.after,
+            Span {
+                data: "",
+                line: 1,
+                col: 4,
+                offset: 3
+            }
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Empty);
+        assert_eq!(mi.item.raw_context().deref(), "page_break");
+        assert_eq!(mi.item.type_(), BreakType::Page);
+        assert!(mi.item.nested_blocks().next().is_none());
+        assert!(mi.item.title_source().is_none());
+        assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
+        assert!(mi.item.attrlist().is_none());
+        assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+    }
+
+    #[test]
+    fn thematic_break_with_trailing_whitespace() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("'''   "), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Thematic,
+                source: Span {
+                    data: "'''",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(mi.item.type_(), BreakType::Thematic);
+    }
+
+    #[test]
+    fn page_break_with_trailing_whitespace() {
+        let mut parser = Parser::default();
+
+        let mi = crate::blocks::Break::parse(&BlockMetadata::new("<<<   "), &mut parser).unwrap();
+
+        assert_eq!(
+            mi.item,
+            Break {
+                type_: BreakType::Page,
+                source: Span {
+                    data: "<<<",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(mi.item.type_(), BreakType::Page);
+    }
+
+    mod break_type {
+        mod impl_debug {
+            use pretty_assertions_sorted::assert_eq;
+
+            use crate::blocks::BreakType;
+
+            #[test]
+            fn thematic() {
+                let break_type = BreakType::Thematic;
+                let debug_output = format!("{:?}", break_type);
+                assert_eq!(debug_output, "BreakType::Thematic");
+            }
+
+            #[test]
+            fn page() {
+                let break_type = BreakType::Page;
+                let debug_output = format!("{:?}", break_type);
+                assert_eq!(debug_output, "BreakType::Page");
+            }
+        }
+    }
+}
