@@ -184,3 +184,42 @@ include::example$preamble.adoc[]
         }
     );
 }
+
+// Treating the rest of this page as non-normative. Asciidoctor's implementation
+// of lead role is handled entirely by CSS treatment; asciidoc-parser does not
+// generate renderings, so this part of the language description does not apply.
+non_normative!(
+    r#"
+When using the default Asciidoctor stylesheet, if the first paragraph does not have an explicit role, it is styled as if it has the <<lead-role,lead role>>.
+The result of <<ex-preamble>> is displayed below.
+
+image::preamble.png[The preamble of a document,role=screenshot]
+
+[#lead-role]
+== Lead role
+
+Apply the `lead` role to any paragraph, and it will render using a larger font size.
+The lead role is assigned to the xref:attributes:role.adoc[role attribute].
+You can set `role` using the classic or shorthand method.
+
+.Setting role to lead using the shorthand syntax
+[#ex-lead]
+----
+include::example$paragraph.adoc[tag=lead]
+----
+
+The result of <<ex-lead>> is displayed below.
+
+image::lead.png[Paragraph styled with the lead role value,role=screenshot]
+
+When you convert a document to HTML using the default stylesheet, the first paragraph of the <<preamble-style,preamble>> is automatically styled as a lead paragraph.
+To disable this behavior, assign any role to the first paragraph.
+
+.Disabling the automatic lead paragraph styling
+----
+include::example$paragraph.adoc[tag=no-lead]
+----
+
+The presence of the custom role (`normal`) informs the CSS not to style it as a lead paragraph.
+"#
+);
