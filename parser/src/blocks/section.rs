@@ -3068,9 +3068,7 @@ mod tests {
 
         use crate::{
             HasSpan, Parser,
-            blocks::{
-                ContentModel, IsBlock, metadata::BlockMetadata, section::SectionType,
-            },
+            blocks::{ContentModel, IsBlock, metadata::BlockMetadata, section::SectionType},
             content::SubstitutionGroup,
             tests::prelude::*,
         };
@@ -3165,10 +3163,10 @@ mod tests {
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Discrete Heading");
             assert_eq!(mi.item.section_type(), SectionType::Discrete);
-            
+
             // Discrete headings should have no nested blocks.
             assert!(mi.item.nested_blocks().next().is_none());
-            
+
             // The paragraph should be left unparsed.
             assert_eq!(
                 mi.after,
@@ -3190,15 +3188,15 @@ mod tests {
             let document = parser.parse(input);
 
             let mut blocks = document.nested_blocks();
-            
+
             // First should be "Section 1".
             if let Some(crate::blocks::Block::Section(section)) = blocks.next() {
                 assert_eq!(section.section_title(), "Section 1");
                 assert_eq!(section.level(), 1);
                 assert_eq!(section.section_type(), SectionType::Normal);
-                
+
                 let mut children = section.nested_blocks();
-                
+
                 // First child should be the discrete heading.
                 if let Some(crate::blocks::Block::Section(discrete)) = children.next() {
                     assert_eq!(discrete.section_title(), "Discrete");
@@ -3208,7 +3206,7 @@ mod tests {
                 } else {
                     panic!("Expected discrete heading block");
                 }
-                
+
                 // Second child should be "Section 1.1".
                 if let Some(crate::blocks::Block::Section(subsection)) = children.next() {
                     assert_eq!(subsection.section_title(), "Section 1.1");
@@ -3257,13 +3255,13 @@ mod tests {
             let document = parser.parse(input);
 
             let mut blocks = document.nested_blocks();
-            
+
             if let Some(crate::blocks::Block::Section(section)) = blocks.next() {
                 assert_eq!(section.section_title(), "Section 1");
                 assert!(section.section_number().is_some());
-                
+
                 let mut children = section.nested_blocks();
-                
+
                 // Discrete heading should not have a section number.
                 if let Some(crate::blocks::Block::Section(discrete)) = children.next() {
                     assert_eq!(discrete.section_title(), "Discrete");
@@ -3271,7 +3269,7 @@ mod tests {
                 } else {
                     panic!("Expected discrete heading block");
                 }
-                
+
                 // Regular subsection should have a section number.
                 if let Some(crate::blocks::Block::Section(subsection)) = children.next() {
                     assert_eq!(subsection.section_title(), "Section 1.1");
@@ -3402,7 +3400,9 @@ mod tests {
             let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
 
             let mi = crate::blocks::SectionBlock::parse(
-                &BlockMetadata::new("[discrete]\n== Discrete Heading\n\nparagraph\n\n== Next Section"),
+                &BlockMetadata::new(
+                    "[discrete]\n== Discrete Heading\n\nparagraph\n\n== Next Section",
+                ),
                 &mut parser,
                 &mut warnings,
             )
@@ -3411,10 +3411,10 @@ mod tests {
             assert_eq!(mi.item.level(), 1);
             assert_eq!(mi.item.section_title(), "Discrete Heading");
             assert_eq!(mi.item.section_type(), SectionType::Discrete);
-            
+
             // Should have no child blocks.
             assert!(mi.item.nested_blocks().next().is_none());
-            
+
             // The paragraph and next section should be unparsed.
             assert!(mi.after.data().contains("paragraph"));
             assert!(mi.after.data().contains("== Next Section"));

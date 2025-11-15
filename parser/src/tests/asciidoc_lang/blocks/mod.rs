@@ -2,6 +2,7 @@ mod add_title;
 mod assign_id;
 mod build_basic_block;
 mod delimited;
+mod discrete_headings;
 mod hard_line_breaks;
 mod index;
 mod paragraph_alignment;
