@@ -42,6 +42,10 @@ impl<'src> SectionBlock<'src> {
         parser: &mut Parser,
         warnings: &mut Vec<Warning<'src>>,
     ) -> Option<MatchedItem<'src, Self>> {
+        if metadata.is_discrete() {
+            return None;
+        }
+
         let source = metadata.block_start.discard_empty_lines();
         let level_and_title = parse_title_line(source, warnings)?;
 
@@ -328,12 +332,8 @@ fn peer_or_ancestor_section<'src>(
     let block_metadata_maw = BlockMetadata::parse(source, &mut temp_parser);
 
     let block_metadata = block_metadata_maw.item;
-    if let Some(ref attrlist) = block_metadata.attrlist
-        && let Some(block_style) = attrlist.block_style()
-    {
-        if block_style == "discrete" || block_style == "float" {
-            return false;
-        }
+    if block_metadata.is_discrete() {
+        return false;
     }
 
     let source_after_metadata = block_metadata.block_start;
