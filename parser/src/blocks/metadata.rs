@@ -154,6 +154,21 @@ impl<'src> BlockMetadata<'src> {
     pub(crate) fn is_empty(&self) -> bool {
         self.title.is_none() && self.attrlist.is_none()
     }
+
+    /// Return `true` if this block metadata has either the `discrete` or
+    /// `float` block style.
+    ///
+    /// When used in the context of a section heading, this indicates that the
+    /// heading should not mark the start of a new section.
+    pub(crate) fn is_discrete(&self) -> bool {
+        if let Some(ref attrlist) = self.attrlist
+            && let Some(block_style) = attrlist.block_style()
+        {
+            block_style == "discrete" || block_style == "float"
+        } else {
+            false
+        }
+    }
 }
 
 fn parse_maybe_block_anchor(

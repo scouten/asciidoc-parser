@@ -466,6 +466,10 @@ impl Parser {
                 self.last_appendix_section_number.assign_next_number(level);
                 self.last_appendix_section_number.clone()
             }
+            SectionType::Discrete => {
+                // Shouldn't happen, but ignore if it does.
+                self.last_section_number.clone()
+            }
         }
     }
 }

@@ -42,6 +42,8 @@ impl<'src> SectionBlock<'src> {
         parser: &mut Parser,
         warnings: &mut Vec<Warning<'src>>,
     ) -> Option<MatchedItem<'src, Self>> {
+        let discrete = metadata.is_discrete();
+
         let source = metadata.block_start.discard_empty_lines();
         let level_and_title = parse_title_line(source, warnings)?;
 
@@ -53,7 +55,9 @@ impl<'src> SectionBlock<'src> {
 
         // Assign the section type. At level 1, we look for an `appendix` section style;
         // at all other levels, we inherit the section type from parent.
-        let section_type = if level == 1 {
+        let section_type = if discrete {
+            SectionType::Discrete
+        } else if level == 1 {
             let section_type = if let Some(ref attrlist) = metadata.attrlist
                 && let Some(block_style) = attrlist.block_style()
                 && block_style == "appendix"
@@ -70,18 +74,18 @@ impl<'src> SectionBlock<'src> {
 
         // Assign section number BEFORE parsing child blocks so that sections are
         // numbered in document order (parent before children).
-        let section_number = if parser.is_attribute_set("sectnums") && level <= parser.sectnumlevels
-        {
-            Some(parser.assign_section_number(level))
-        } else {
-            None
-        };
+        let section_number =
+            if parser.is_attribute_set("sectnums") && level <= parser.sectnumlevels && !discrete {
+                Some(parser.assign_section_number(level))
+            } else {
+                None
+            };
 
         let mut most_recent_level = level;
 
         let mut maw_blocks = parse_blocks_until(
             level_and_title.after,
-            |i| peer_or_ancestor_section(*i, level, &mut most_recent_level, warnings),
+            |i| discrete || peer_or_ancestor_section(*i, level, &mut most_recent_level, warnings),
             parser,
         );
 
@@ -131,7 +135,7 @@ impl<'src> SectionBlock<'src> {
         };
 
         // Restore "normal" top-level section type if exiting a level 1 appendix.
-        if level == 1 {
+        if level == 1 && !discrete {
             parser.topmost_section_type = SectionType::Normal;
         }
 
@@ -324,9 +328,15 @@ fn peer_or_ancestor_section<'src>(
     // section line. We create a temporary parser to avoid modifying the real
     // parser state.
     let mut temp_parser = Parser::default();
-    let source_after_metadata = BlockMetadata::parse(source, &mut temp_parser)
-        .item
-        .block_start;
+
+    let block_metadata_maw = BlockMetadata::parse(source, &mut temp_parser);
+
+    let block_metadata = block_metadata_maw.item;
+    if block_metadata.is_discrete() {
+        return false;
+    }
+
+    let source_after_metadata = block_metadata.block_start;
 
     if let Some(mi) = parse_title_line(source_after_metadata, warnings) {
         let found_level = mi.item.0;
@@ -421,6 +431,10 @@ pub enum SectionType {
 
     /// Represents a section with the style `appendix`.
     Appendix,
+
+    /// Represents a discrete section heading.
+    /// A discrete section heading will have no nested blocks.
+    Discrete,
 }
 
 impl std::fmt::Debug for SectionType {
@@ -428,6 +442,7 @@ impl std::fmt::Debug for SectionType {
         match self {
             SectionType::Normal => write!(f, "SectionType::Normal"),
             SectionType::Appendix => write!(f, "SectionType::Appendix"),
+            SectionType::Discrete => write!(f, "SectionType::Discrete"),
         }
     }
 }
@@ -2894,6 +2909,9 @@ mod tests {
 
             let st = SectionType::Appendix;
             assert_eq!(format!("{st:?}"), "SectionType::Appendix");
+
+            let st = SectionType::Discrete;
+            assert_eq!(format!("{st:?}"), "SectionType::Discrete");
         }
     }
 
@@ -3043,6 +3061,368 @@ mod tests {
                     "SectionNumber { section_type: SectionType::Appendix, components: &[2, 1] }"
                 );
             }
+        }
+    }
+
+    mod discrete_headings {
+        use std::ops::Deref;
+
+        use pretty_assertions_sorted::assert_eq;
+
+        use crate::{
+            HasSpan, Parser,
+            blocks::{ContentModel, IsBlock, metadata::BlockMetadata, section::SectionType},
+            content::SubstitutionGroup,
+            tests::prelude::*,
+        };
+
+        #[test]
+        fn basic_case() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[discrete]\n== Discrete Heading"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.content_model(), ContentModel::Compound);
+            assert_eq!(mi.item.raw_context().deref(), "section");
+            assert_eq!(mi.item.level(), 1);
+            assert_eq!(mi.item.section_title(), "Discrete Heading");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert!(mi.item.nested_blocks().next().is_none());
+            assert_eq!(mi.item.substitution_group(), SubstitutionGroup::Normal);
+            assert!(mi.item.title().is_none());
+            assert!(mi.item.anchor().is_none());
+            assert!(mi.item.attrlist().is_some());
+            assert_eq!(mi.item.section_number(), None);
+            assert!(warnings.is_empty());
+
+            assert_eq!(
+                mi.item.section_title_source(),
+                Span {
+                    data: "Discrete Heading",
+                    line: 2,
+                    col: 4,
+                    offset: 14,
+                }
+            );
+
+            assert_eq!(
+                mi.item.span(),
+                Span {
+                    data: "[discrete]\n== Discrete Heading",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                }
+            );
+
+            assert_eq!(
+                mi.after,
+                Span {
+                    data: "",
+                    line: 2,
+                    col: 20,
+                    offset: 30,
+                }
+            );
+        }
+
+        #[test]
+        fn float_style() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[float]\n== Floating Heading"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 1);
+            assert_eq!(mi.item.section_title(), "Floating Heading");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert!(mi.item.nested_blocks().next().is_none());
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn has_no_child_blocks() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[discrete]\n== Discrete Heading\n\nThis is a paragraph."),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 1);
+            assert_eq!(mi.item.section_title(), "Discrete Heading");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+
+            // Discrete headings should have no nested blocks.
+            assert!(mi.item.nested_blocks().next().is_none());
+
+            // The paragraph should be left unparsed.
+            assert_eq!(
+                mi.after,
+                Span {
+                    data: "This is a paragraph.",
+                    line: 4,
+                    col: 1,
+                    offset: 32,
+                }
+            );
+
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn not_in_section_hierarchy() {
+            let input = "== Section 1\n\n[discrete]\n=== Discrete\n\n=== Section 1.1";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            let mut blocks = document.nested_blocks();
+
+            // First should be "Section 1".
+            if let Some(crate::blocks::Block::Section(section)) = blocks.next() {
+                assert_eq!(section.section_title(), "Section 1");
+                assert_eq!(section.level(), 1);
+                assert_eq!(section.section_type(), SectionType::Normal);
+
+                let mut children = section.nested_blocks();
+
+                // First child should be the discrete heading.
+                if let Some(crate::blocks::Block::Section(discrete)) = children.next() {
+                    assert_eq!(discrete.section_title(), "Discrete");
+                    assert_eq!(discrete.level(), 2);
+                    assert_eq!(discrete.section_type(), SectionType::Discrete);
+                    assert!(discrete.nested_blocks().next().is_none());
+                } else {
+                    panic!("Expected discrete heading block");
+                }
+
+                // Second child should be "Section 1.1".
+                if let Some(crate::blocks::Block::Section(subsection)) = children.next() {
+                    assert_eq!(subsection.section_title(), "Section 1.1");
+                    assert_eq!(subsection.level(), 2);
+                    assert_eq!(subsection.section_type(), SectionType::Normal);
+                } else {
+                    panic!("Expected subsection block");
+                }
+            } else {
+                panic!("Expected section block");
+            }
+        }
+
+        #[test]
+        fn has_auto_id() {
+            let input = "[discrete]\n== Discrete Heading";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+                // Discrete headings should generate auto IDs.
+                assert_eq!(section.id(), Some("_discrete_heading"));
+            } else {
+                panic!("Expected section block");
+            }
+        }
+
+        #[test]
+        fn with_manual_id() {
+            let input = "[discrete#my-id]\n== Discrete Heading";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
+                // Manual IDs should still work with discrete headings.
+                assert_eq!(section.id(), Some("my-id"));
+            } else {
+                panic!("Expected section block");
+            }
+        }
+
+        #[test]
+        fn no_section_number() {
+            let input = ":sectnums:\n\n== Section 1\n\n[discrete]\n=== Discrete\n\n=== Section 1.1";
+            let mut parser = Parser::default();
+            let document = parser.parse(input);
+
+            let mut blocks = document.nested_blocks();
+
+            if let Some(crate::blocks::Block::Section(section)) = blocks.next() {
+                assert_eq!(section.section_title(), "Section 1");
+                assert!(section.section_number().is_some());
+
+                let mut children = section.nested_blocks();
+
+                // Discrete heading should not have a section number.
+                if let Some(crate::blocks::Block::Section(discrete)) = children.next() {
+                    assert_eq!(discrete.section_title(), "Discrete");
+                    assert_eq!(discrete.section_number(), None);
+                } else {
+                    panic!("Expected discrete heading block");
+                }
+
+                // Regular subsection should have a section number.
+                if let Some(crate::blocks::Block::Section(subsection)) = children.next() {
+                    assert_eq!(subsection.section_title(), "Section 1.1");
+                    assert!(subsection.section_number().is_some());
+                } else {
+                    panic!("Expected subsection block");
+                }
+            } else {
+                panic!("Expected section block");
+            }
+        }
+
+        #[test]
+        fn title_can_have_markup() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[discrete]\n== Discrete with *bold* text"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(
+                mi.item.section_title(),
+                "Discrete with <strong>bold</strong> text"
+            );
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn level_2() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[discrete]\n=== Level 2 Discrete"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 2);
+            assert_eq!(mi.item.section_title(), "Level 2 Discrete");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn level_5() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[discrete]\n====== Level 5 Discrete"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 5);
+            assert_eq!(mi.item.section_title(), "Level 5 Discrete");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn markdown_style() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[discrete]\n## Discrete Heading"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 1);
+            assert_eq!(mi.item.section_title(), "Discrete Heading");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn with_block_title() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new(".Block Title\n[discrete]\n== Discrete Heading"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 1);
+            assert_eq!(mi.item.section_title(), "Discrete Heading");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert_eq!(mi.item.title(), Some("Block Title"));
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn with_anchor() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new("[[my_anchor]]\n[discrete]\n== Discrete Heading"),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 1);
+            assert_eq!(mi.item.section_title(), "Discrete Heading");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+            assert_eq!(mi.item.id(), Some("my_anchor"));
+            assert!(warnings.is_empty());
+        }
+
+        #[test]
+        fn doesnt_include_subsequent_blocks() {
+            let mut parser = Parser::default();
+            let mut warnings: Vec<crate::warnings::Warning<'_>> = vec![];
+
+            let mi = crate::blocks::SectionBlock::parse(
+                &BlockMetadata::new(
+                    "[discrete]\n== Discrete Heading\n\nparagraph\n\n== Next Section",
+                ),
+                &mut parser,
+                &mut warnings,
+            )
+            .unwrap();
+
+            assert_eq!(mi.item.level(), 1);
+            assert_eq!(mi.item.section_title(), "Discrete Heading");
+            assert_eq!(mi.item.section_type(), SectionType::Discrete);
+
+            // Should have no child blocks.
+            assert!(mi.item.nested_blocks().next().is_none());
+
+            // The paragraph and next section should be unparsed.
+            assert!(mi.after.data().contains("paragraph"));
+            assert!(mi.after.data().contains("== Next Section"));
+
+            assert!(warnings.is_empty());
         }
     }
 }
