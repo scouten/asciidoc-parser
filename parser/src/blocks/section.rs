@@ -324,9 +324,19 @@ fn peer_or_ancestor_section<'src>(
     // section line. We create a temporary parser to avoid modifying the real
     // parser state.
     let mut temp_parser = Parser::default();
-    let source_after_metadata = BlockMetadata::parse(source, &mut temp_parser)
-        .item
-        .block_start;
+
+    let block_metadata_maw = BlockMetadata::parse(source, &mut temp_parser);
+
+    let block_metadata = block_metadata_maw.item;
+    if let Some(ref attrlist) = block_metadata.attrlist
+        && let Some(block_style) = attrlist.block_style()
+    {
+        if block_style == "discrete" || block_style == "float" {
+            return false;
+        }
+    }
+
+    let source_after_metadata = block_metadata.block_start;
 
     if let Some(mi) = parse_title_line(source_after_metadata, warnings) {
         let found_level = mi.item.0;
