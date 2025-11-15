@@ -1,6 +1,9 @@
 mod block;
 pub(crate) use block::Block;
 
+mod r#break;
+pub(crate) use r#break::Break;
+
 mod compound_delimited;
 pub(crate) use compound_delimited::CompoundDelimitedBlock;
 

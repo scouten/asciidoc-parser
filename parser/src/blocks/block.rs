@@ -4,8 +4,8 @@ use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, Preamble, RawDelimitedBlock,
-        SectionBlock, SimpleBlock, metadata::BlockMetadata,
+        Break, CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, Preamble,
+        RawDelimitedBlock, SectionBlock, SimpleBlock, metadata::BlockMetadata,
     },
     content::SubstitutionGroup,
     document::{Attribute, RefType},
@@ -54,6 +54,9 @@ pub enum Block<'src> {
     /// title in the document body is called the preamble.
     Preamble(Preamble<'src>),
 
+    /// A thematic or page break.
+    Break(Break<'src>),
+
     /// When an attribute is defined in the document body using an attribute
     /// entry, that’s simply referred to as a document attribute.
     DocumentAttribute(Attribute<'src>),
@@ -76,6 +79,7 @@ impl<'src> std::fmt::Debug for Block<'src> {
                 .finish(),
 
             Block::Preamble(block) => f.debug_tuple("Block::Preamble").field(block).finish(),
+            Block::Break(break_) => f.debug_tuple("Block::Break").field(break_).finish(),
 
             Block::DocumentAttribute(block) => f
                 .debug_tuple("Block::DocumentAttribute")
@@ -103,7 +107,7 @@ impl<'src> Block<'src> {
         if let Some(first_char) = source.chars().next()
             && !matches!(
                 first_char,
-                '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':'
+                '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':' | '\'' | '<'
             )
             && !first_line.item.contains("::")
             && let Some(MatchedItem {
@@ -259,6 +263,23 @@ impl<'src> Block<'src> {
             };
         }
 
+        if (line.item.starts_with('\'')
+            || line.item.starts_with('-')
+            || line.item.starts_with('*')
+            || line.item.starts_with('<'))
+            && let Some(mi_break) = Break::parse(&metadata, parser)
+        {
+            // Continue quietly if `Break` parser rejects this block.
+
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::Break(mi_break.item),
+                    after: mi_break.after,
+                }),
+                warnings,
+            };
+        }
+
         // First, let's look for a fun edge case. Perhaps the text contains block
         // metadata but no block immediately following. If we're not careful, we could
         // spin in a loop (for example, `parse_blocks_until`) thinking there will be
@@ -344,6 +365,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.content_model(),
             Self::CompoundDelimited(b) => b.content_model(),
             Self::Preamble(b) => b.content_model(),
+            Self::Break(b) => b.content_model(),
             Self::DocumentAttribute(b) => b.content_model(),
         }
     }
@@ -356,6 +378,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.raw_context(),
             Self::CompoundDelimited(b) => b.raw_context(),
             Self::Preamble(b) => b.raw_context(),
+            Self::Break(b) => b.raw_context(),
             Self::DocumentAttribute(b) => b.raw_context(),
         }
     }
@@ -368,6 +391,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.nested_blocks(),
             Self::CompoundDelimited(b) => b.nested_blocks(),
             Self::Preamble(b) => b.nested_blocks(),
+            Self::Break(b) => b.nested_blocks(),
             Self::DocumentAttribute(b) => b.nested_blocks(),
         }
     }
@@ -380,6 +404,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.title_source(),
             Self::CompoundDelimited(b) => b.title_source(),
             Self::Preamble(b) => b.title_source(),
+            Self::Break(b) => b.title_source(),
             Self::DocumentAttribute(b) => b.title_source(),
         }
     }
@@ -392,6 +417,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.title(),
             Self::CompoundDelimited(b) => b.title(),
             Self::Preamble(b) => b.title(),
+            Self::Break(b) => b.title(),
             Self::DocumentAttribute(b) => b.title(),
         }
     }
@@ -404,6 +430,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.anchor(),
             Self::CompoundDelimited(b) => b.anchor(),
             Self::Preamble(b) => b.anchor(),
+            Self::Break(b) => b.anchor(),
             Self::DocumentAttribute(b) => b.anchor(),
         }
     }
@@ -416,6 +443,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.anchor_reftext(),
             Self::CompoundDelimited(b) => b.anchor_reftext(),
             Self::Preamble(b) => b.anchor_reftext(),
+            Self::Break(b) => b.anchor_reftext(),
             Self::DocumentAttribute(b) => b.anchor_reftext(),
         }
     }
@@ -428,6 +456,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.attrlist(),
             Self::CompoundDelimited(b) => b.attrlist(),
             Self::Preamble(b) => b.attrlist(),
+            Self::Break(b) => b.attrlist(),
             Self::DocumentAttribute(b) => b.attrlist(),
         }
     }
@@ -440,6 +469,7 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::RawDelimited(b) => b.substitution_group(),
             Self::CompoundDelimited(b) => b.substitution_group(),
             Self::Preamble(b) => b.substitution_group(),
+            Self::Break(b) => b.substitution_group(),
             Self::DocumentAttribute(b) => b.substitution_group(),
         }
     }
@@ -454,6 +484,7 @@ impl<'src> HasSpan<'src> for Block<'src> {
             Self::RawDelimited(b) => b.span(),
             Self::CompoundDelimited(b) => b.span(),
             Self::Preamble(b) => b.span(),
+            Self::Break(b) => b.span(),
             Self::DocumentAttribute(b) => b.span(),
         }
     }
