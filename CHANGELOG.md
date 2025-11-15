@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0](https://github.com/scouten/asciidoc-parser/compare/v0.11.0...v0.12.0)
+_15 November 2025_
+
+### Added
+
+* Recognize preamble when relevant ([#441](https://github.com/scouten/asciidoc-parser/pull/441))
+* Implement `hardbreaks-option` document attribute ([#437](https://github.com/scouten/asciidoc-parser/pull/437))
+
 ## [0.11.0](https://github.com/scouten/asciidoc-parser/compare/v0.10.0...v0.11.0)
 _02 November 2025_
 
