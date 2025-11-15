@@ -2909,6 +2909,9 @@ mod tests {
 
             let st = SectionType::Appendix;
             assert_eq!(format!("{st:?}"), "SectionType::Appendix");
+
+            let st = SectionType::Discrete;
+            assert_eq!(format!("{st:?}"), "SectionType::Discrete");
         }
     }
 
