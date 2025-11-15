@@ -768,7 +768,7 @@ mod open {
 
     use crate::{
         HasSpan, Parser,
-        blocks::{ContentModel, IsBlock},
+        blocks::{BreakType, ContentModel, IsBlock},
         tests::prelude::*,
     };
 
@@ -1008,18 +1008,10 @@ mod open {
                         anchor_reftext: None,
                         attrlist: None,
                     },),
-                    Block::Simple(SimpleBlock {
-                        content: Content {
-                            original: Span {
-                                data: "---\nblock2\n---",
-                                line: 4,
-                                col: 1,
-                                offset: 11,
-                            },
-                            rendered: "---\nblock2\n---",
-                        },
+                    Block::Break(Break {
+                        type_: BreakType::Thematic,
                         source: Span {
-                            data: "---\nblock2\n---",
+                            data: "---",
                             line: 4,
                             col: 1,
                             offset: 11,
@@ -1027,9 +1019,30 @@ mod open {
                         title_source: None,
                         title: None,
                         anchor: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "block2\n---",
+                                line: 5,
+                                col: 1,
+                                offset: 15,
+                            },
+                            rendered: "block2\n---",
+                        },
+                        source: Span {
+                            data: "block2\n---",
+                            line: 5,
+                            col: 1,
+                            offset: 15,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
                         anchor_reftext: None,
                         attrlist: None,
-                    },)
+                    },),
                 ],
                 context: "open",
                 source: Span {
@@ -1087,18 +1100,10 @@ mod open {
 
         assert_eq!(
             blocks.next().unwrap(),
-            &Block::Simple(SimpleBlock {
-                content: Content {
-                    original: Span {
-                        data: "---\nblock2\n---",
-                        line: 4,
-                        col: 1,
-                        offset: 11,
-                    },
-                    rendered: "---\nblock2\n---",
-                },
+            &Block::Break(Break {
+                type_: BreakType::Thematic,
                 source: Span {
-                    data: "---\nblock2\n---",
+                    data: "---",
                     line: 4,
                     col: 1,
                     offset: 11,
@@ -1106,9 +1111,34 @@ mod open {
                 title_source: None,
                 title: None,
                 anchor: None,
+                attrlist: None,
+            },),
+        );
+
+        assert_eq!(
+            blocks.next().unwrap(),
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "block2\n---",
+                        line: 5,
+                        col: 1,
+                        offset: 15,
+                    },
+                    rendered: "block2\n---",
+                },
+                source: Span {
+                    data: "block2\n---",
+                    line: 5,
+                    col: 1,
+                    offset: 15,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
                 anchor_reftext: None,
                 attrlist: None,
-            })
+            },)
         );
 
         assert!(blocks.next().is_none());
