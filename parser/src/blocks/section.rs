@@ -109,9 +109,7 @@ impl<'src> SectionBlock<'src> {
             .and_then(|a| a.named_attribute("reftext").map(|a| a.value()))
             .unwrap_or_else(|| section_title.rendered());
 
-        let section_id = if let Some(catalog) = parser.catalog_mut()
-            && !discrete
-        {
+        let section_id = if let Some(catalog) = parser.catalog_mut() {
             if sectids && manual_id.is_none() {
                 Some(catalog.generate_and_register_unique_id(
                     &proposed_base_id,
@@ -3225,15 +3223,14 @@ mod tests {
         }
 
         #[test]
-        fn no_auto_id() {
-            // TO DO BEORE MERGE: Is this correct?
+        fn has_auto_id() {
             let input = "[discrete]\n== Discrete Heading";
             let mut parser = Parser::default();
             let document = parser.parse(input);
 
             if let Some(crate::blocks::Block::Section(section)) = document.nested_blocks().next() {
-                // Discrete headings should not generate auto IDs.
-                assert_eq!(section.id(), None);
+                // Discrete headings should generate auto IDs.
+                assert_eq!(section.id(), Some("_discrete_heading"));
             } else {
                 panic!("Expected section block");
             }
