@@ -25,6 +25,9 @@
 mod block;
 pub use block::Block;
 
+mod r#break;
+pub use r#break::{Break, BreakType};
+
 mod compound_delimited;
 pub use compound_delimited::CompoundDelimitedBlock;
 
