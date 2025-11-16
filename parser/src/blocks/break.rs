@@ -68,7 +68,7 @@ impl<'src> Break<'src> {
         })
     }
 
-    /// Return a [`Span`] describing the macro name.
+    /// Return the type of break detected.
     pub fn type_(&self) -> BreakType {
         self.type_
     }
