@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0](https://github.com/scouten/asciidoc-parser/compare/v0.12.0...v0.13.0)
+_16 November 2025_
+
+### Added
+
+* Parse thematic and page breaks ([#445](https://github.com/scouten/asciidoc-parser/pull/445))
+* Implement discrete headings ([#443](https://github.com/scouten/asciidoc-parser/pull/443))
+
 ## [0.12.0](https://github.com/scouten/asciidoc-parser/compare/v0.11.0...v0.12.0)
 _15 November 2025_
 
