@@ -4,6 +4,7 @@
 
 #![allow(clippy::unwrap_used)]
 
+mod r#break;
 mod compound_delimited;
 mod media;
 mod raw_delimited;
@@ -91,6 +92,17 @@ mod impl_debug {
 
         let debug_output = format!("{:?}", mi.item);
         assert!(debug_output.starts_with("Block::DocumentAttribute"));
+    }
+
+    #[test]
+    fn r#break() {
+        let mut parser = Parser::default();
+        let mi = Block::parse(Span::new("'''"), &mut parser)
+            .unwrap_if_no_warnings()
+            .unwrap();
+
+        let debug_output = format!("{:?}", mi.item);
+        assert!(debug_output.starts_with("Block::Break"));
     }
 }
 
