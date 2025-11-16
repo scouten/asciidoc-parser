@@ -16,6 +16,7 @@ Consider the following questions:
 . Is there a letter, number, or underscore directly outside the opening or closing formatting marks?
 . Is there a colon, semicolon, or closing curly bracket directly before the opening formatting mark?
 . Is there a space directly inside of a formatting mark?
+. Are you writing in a CJK langauge such as Chinese?
 
 If you answered "`yes`" to any of these questions, you need to use an unconstrained pair.
 
@@ -45,6 +46,11 @@ To help you determine whether a particular syntax pattern requires an unconstrai
 |** bold **
 |Unconstrained
 |There are spaces directly inside the formatting marks.
+
+|`+我喜欢**大**狗+`
+|我喜欢**大**狗
+|Unconstrained
+|There are CJK characters directly outside the formatting marks.
 
 |`+*2016*&ndash;+`
 |*2016*&#8211;
