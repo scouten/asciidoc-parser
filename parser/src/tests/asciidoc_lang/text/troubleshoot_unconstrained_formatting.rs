@@ -1,4 +1,4 @@
-use crate::tests::prelude::*;
+use crate::{blocks::IsBlock, tests::prelude::*};
 
 track_file!("docs/modules/text/pages/troubleshoot-unconstrained-formatting.adoc");
 
@@ -8,6 +8,14 @@ non_normative!(
 
 An xref:index.adoc#unconstrained[unconstrained formatting pair] is often used to format just one or a few characters in a word.
 
+"#
+);
+
+mod use_unconstrained {
+    use crate::{Parser, tests::prelude::*};
+
+    non_normative!(
+        r#"
 [#use-unconstrained]
 == When should I use unconstrained formatting?
 
@@ -16,6 +24,7 @@ Consider the following questions:
 . Is there a letter, number, or underscore directly outside the opening or closing formatting marks?
 . Is there a colon, semicolon, or closing curly bracket directly before the opening formatting mark?
 . Is there a space directly inside of a formatting mark?
+. Are you writing in a CJK langauge such as Chinese?
 
 If you answered "`yes`" to any of these questions, you need to use an unconstrained pair.
 
@@ -26,39 +35,137 @@ To help you determine whether a particular syntax pattern requires an unconstrai
 |===
 |AsciiDoc |Result |Formatting Pair |Reason
 
+"#
+    );
+
+    #[test]
+    fn sarah() {
+        verifies!(
+            r#"
 |`+Sara__h__+`
 |Sara__h__
 |Unconstrained
 |The letter `a` is directly adjacent to the opening mark.
 
+"#
+        );
+
+        let doc = Parser::default().parse(r#"Sara__h__"#);
+        let sb = super::first_simple_block(&doc);
+        assert_eq!(sb.content().rendered(), "Sara<em>h</em>");
+    }
+
+    #[test]
+    fn bold() {
+        verifies!(
+            r#"
 |`+**B**old+`
 |**B**old
 |Unconstrained
 |The `o` is directly adjacent to the closing mark.
 
+"#
+        );
+
+        let doc = Parser::default().parse(r#"**B**old"#);
+        let sb = super::first_simple_block(&doc);
+        assert_eq!(sb.content().rendered(), "<strong>B</strong>old");
+    }
+
+    #[test]
+    fn endash_2016() {
+        verifies!(
+            r#"
 |`+&ndash;**2016**+`
 |&#8211;**2016**
 |Unconstrained
 |The `;` is directly adjacent to the opening mark.
 
+"#
+        );
+
+        let doc = Parser::default().parse(r#"&ndash;**2016**"#);
+        let sb = super::first_simple_block(&doc);
+        assert_eq!(sb.content().rendered(), "&ndash;<strong>2016</strong>");
+    }
+
+    #[test]
+    fn space_bold() {
+        verifies!(
+            r#"
 |`+** bold **+`
 |** bold **
 |Unconstrained
 |There are spaces directly inside the formatting marks.
 
+"#
+        );
+
+        let doc = Parser::default().parse(r#"** bold **"#);
+        let sb = super::first_simple_block(&doc);
+        assert_eq!(sb.content().rendered(), "<strong> bold </strong>");
+    }
+
+    #[test]
+    fn bold_cjk() {
+        verifies!(
+            r#"
+|`+我喜欢**大**狗+`
+|我喜欢**大**狗
+|Unconstrained
+|There are CJK characters directly outside the formatting marks.
+
+"#
+        );
+
+        let doc = Parser::default().parse(r#"我喜欢**大**狗"#);
+        let sb = super::first_simple_block(&doc);
+        assert_eq!(sb.content().rendered(), "我喜欢<strong>大</strong>狗");
+    }
+
+    #[test]
+    fn constrained_2016() {
+        verifies!(
+            r#"
 |`+*2016*&ndash;+`
 |*2016*&#8211;
 |Constrained
 |The adjacent `&` is not a letter, number, underscore, colon, or semicolon.
 
+"#
+        );
+
+        let doc = Parser::default().parse(r#"*2016*&ndash;"#);
+        let sb = super::first_simple_block(&doc);
+        assert_eq!(sb.content().rendered(), "<strong>2016</strong>&ndash;");
+    }
+
+    #[test]
+    fn nine_to_five() {
+        verifies!(
+            r#"
 |`+*9*-to-*5*+`
 |*9*-to-*5*
 |Constrained
 |The adjacent hyphen is not a letter, number, underscore, colon, or semicolon.
+"#
+        );
+
+        let doc = Parser::default().parse(r#"*9*-to-*5*"#);
+        let sb = super::first_simple_block(&doc);
+        assert_eq!(
+            sb.content().rendered(),
+            "<strong>9</strong>-to-<strong>5</strong>"
+        );
+    }
+
+    non_normative!(
+        r#"
 |===
 
 "#
-);
+    );
+}
 
 mod unconstrained_pair_edge_cases {
     use pretty_assertions_sorted::assert_eq;
@@ -465,4 +572,15 @@ It's roughly equivalent to Markdown's backticks.
 Since AsciiDoc offers more advanced formatting, the double enclosure is necessary.
 "#
     );
+}
+
+fn first_simple_block<'src>(
+    doc: &'src crate::Document<'src>,
+) -> &'src crate::blocks::SimpleBlock<'src> {
+    let block = doc.nested_blocks().next().unwrap();
+    let crate::blocks::Block::Simple(sb) = block else {
+        panic!("Wrong block type found: {block:#?}");
+    };
+
+    sb
 }
