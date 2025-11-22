@@ -92,7 +92,7 @@ mod tests {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{span::MatchedItem, tests::prelude::*};
+    use crate::{HasSpan, span::MatchedItem, tests::prelude::*};
 
     fn lim_parse<'a>(
         source: &'a str,
@@ -126,6 +126,16 @@ mod tests {
                 offset: 2,
             }
         );
+
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: "-",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
     }
 
     #[test]
@@ -155,6 +165,16 @@ mod tests {
             }
         );
 
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: "*",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
         let lim = lim_parse("***** blah").unwrap();
 
         assert_eq!(
@@ -174,6 +194,16 @@ mod tests {
                 line: 1,
                 col: 7,
                 offset: 6,
+            }
+        );
+
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: "*****",
+                line: 1,
+                col: 1,
+                offset: 0,
             }
         );
     }
