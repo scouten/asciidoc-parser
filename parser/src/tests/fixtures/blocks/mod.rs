@@ -7,6 +7,9 @@ pub(crate) use r#break::Break;
 mod compound_delimited;
 pub(crate) use compound_delimited::CompoundDelimitedBlock;
 
+mod list_item_marker;
+pub(crate) use list_item_marker::ListItemMarker;
+
 mod media;
 pub(crate) use media::MediaBlock;
 
