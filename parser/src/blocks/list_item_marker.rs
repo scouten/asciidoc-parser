@@ -79,7 +79,7 @@ static LIST_ITEM_MARKER: LazyLock<Regex> = LazyLock::new(|| {
                 |[a-zA-Z]\.             # Letter followed by dot (alpha list)
                 |[IVXivx]+\)            # Roman numerals followed by ) (Roman list)
             )
-            [\ \t]                   # Required whitespace after marker
+            [\ \t]                  # Required whitespace after marker
         "#,
     )
     .unwrap()
