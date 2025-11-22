@@ -30,10 +30,7 @@ impl<'src> ListItemMarker<'src> {
     pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_whitespace();
 
-        let Some(captures) = LIST_ITEM_MARKER.captures(source.data()) else {
-            return None;
-        };
-
+        let captures = LIST_ITEM_MARKER.captures(source.data())?;
         let marker = source.slice(0..captures[1].len());
         let marker_str = marker.data();
         let after = source.slice_from(captures[1].len()..).discard_whitespace();
