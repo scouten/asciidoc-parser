@@ -136,6 +136,11 @@ mod tests {
                 offset: 0,
             }
         );
+
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::Hyphen(\n    Span {\n        data: \"-\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
     }
 
     #[test]
@@ -175,6 +180,11 @@ mod tests {
             }
         );
 
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::Asterisks(\n    Span {\n        data: \"*\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
+
         let lim = lim_parse("***** blah").unwrap();
 
         assert_eq!(
@@ -205,6 +215,11 @@ mod tests {
                 col: 1,
                 offset: 0,
             }
+        );
+
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::Asterisks(\n    Span {\n        data: \"*****\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
         );
     }
 }
