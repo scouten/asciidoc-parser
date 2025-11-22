@@ -1,0 +1,49 @@
+use std::fmt;
+
+use crate::tests::fixtures::span::Span;
+
+#[derive(Eq, PartialEq)]
+pub(crate) enum ListItemMarker {
+    Hyphen(Span),
+    Asterisks(Span),
+}
+
+impl fmt::Debug for ListItemMarker {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Hyphen(x) => f.debug_tuple("ListItemMarker::Hyphen").field(x).finish(),
+            Self::Asterisks(x) => f.debug_tuple("ListItemMarker::Asterisks").field(x).finish(),
+        }
+    }
+}
+
+impl PartialEq<crate::blocks::ListItemMarker<'_>> for ListItemMarker {
+    fn eq(&self, other: &crate::blocks::ListItemMarker) -> bool {
+        fixture_eq_observed(self, other)
+    }
+}
+
+impl PartialEq<ListItemMarker> for crate::blocks::ListItemMarker<'_> {
+    fn eq(&self, other: &ListItemMarker) -> bool {
+        fixture_eq_observed(other, self)
+    }
+}
+
+fn fixture_eq_observed(
+    fixture: &ListItemMarker,
+    observed: &crate::blocks::ListItemMarker<'_>,
+) -> bool {
+    match fixture {
+        ListItemMarker::Hyphen(fixture_span) => match observed {
+            crate::blocks::ListItemMarker::Hyphen(observed_span) => fixture_span == observed_span,
+            _ => false,
+        },
+
+        ListItemMarker::Asterisks(fixture_span) => match observed {
+            crate::blocks::ListItemMarker::Asterisks(observed_span) => {
+                fixture_span == observed_span
+            }
+            _ => false,
+        },
+    }
+}
