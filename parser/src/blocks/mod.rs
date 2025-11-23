@@ -37,6 +37,9 @@ pub(crate) use context::is_built_in_context;
 mod is_block;
 pub use is_block::{ContentModel, IsBlock};
 
+mod list_item;
+pub use list_item::ListItem;
+
 mod list_item_marker;
 pub use list_item_marker::ListItemMarker;
 
