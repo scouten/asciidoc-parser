@@ -84,7 +84,7 @@ impl<'src> IsBlock<'src> for ListItem<'src> {
     }
 
     fn raw_context(&self) -> CowStr<'src> {
-        "section".into()
+        "list_item".into()
     }
 
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
@@ -139,7 +139,11 @@ mod tests {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        blocks::metadata::BlockMetadata, span::MatchedItem, tests::prelude::*, warnings::Warning,
+        HasSpan,
+        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+        span::MatchedItem,
+        tests::prelude::*,
+        warnings::Warning,
     };
 
     fn li_parse<'a>(source: &'a str) -> Option<MatchedItem<'a, crate::blocks::ListItem<'a>>> {
@@ -206,6 +210,54 @@ mod tests {
             }
         );
 
+        assert_eq!(li.item.content_model(), ContentModel::Compound);
+        assert_eq!(li.item.raw_context().as_ref(), "list_item");
+
+        let mut li_blocks = li.item.nested_blocks();
+
+        assert_eq!(
+            li_blocks.next().unwrap(),
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "blah",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },
+                    rendered: "blah",
+                },
+                source: Span {
+                    data: "blah",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            })
+        );
+        assert!(li_blocks.next().is_none());
+
+        assert!(li.item.title_source().is_none());
+        assert!(li.item.title().is_none());
+        assert!(li.item.anchor().is_none());
+        assert!(li.item.anchor_reftext().is_none());
+        assert!(li.item.attrlist().is_none());
+
+        assert_eq!(
+            li.item.span(),
+            Span {
+                data: "- blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
         assert_eq!(
             li.after,
             Span {
@@ -265,6 +317,16 @@ mod tests {
                 anchor: None,
                 anchor_reftext: None,
                 attrlist: None,
+            }
+        );
+
+        assert_eq!(
+            li.item.span(),
+            Span {
+                data: "* blah",
+                line: 1,
+                col: 1,
+                offset: 0,
             }
         );
 
