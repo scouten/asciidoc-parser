@@ -83,7 +83,7 @@ impl<'src> IsBlock<'src> for ListBlock<'src> {
     }
 
     fn raw_context(&self) -> CowStr<'src> {
-        "section".into()
+        "list".into()
     }
 
     fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
@@ -181,7 +181,7 @@ mod tests {
     }
 
     #[test]
-    fn hyphen() {
+    fn basic_case() {
         assert!(list_parse("-xyz").is_none());
         assert!(list_parse("-- x").is_none());
 
@@ -241,6 +241,66 @@ mod tests {
                 anchor_reftext: None,
                 attrlist: None,
             }
+        );
+
+        assert_eq!(list.item.content_model(), ContentModel::Compound);
+        assert_eq!(list.item.raw_context().as_ref(), "list");
+
+        let mut list_blocks = list.item.nested_blocks();
+
+        assert_eq!(
+            list_blocks.next().unwrap(),
+            &Block::ListItem(ListItem {
+                marker: ListItemMarker::Hyphen(Span {
+                    data: "-",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },),
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "blah",
+                            line: 1,
+                            col: 3,
+                            offset: 2,
+                        },
+                        rendered: "blah",
+                    },
+                    source: Span {
+                        data: "blah",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "- blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            })
+        );
+        assert!(list_blocks.next().is_none());
+
+        assert!(list.item.title_source().is_none());
+        assert!(list.item.title().is_none());
+        assert!(list.item.anchor().is_none());
+        assert!(list.item.anchor_reftext().is_none());
+        assert!(list.item.attrlist().is_none());
+
+        assert_eq!(
+            format!("{:#?}", list.item),
+            "ListBlock {\n    items: &[\n        Block::ListItem(\n            ListItem {\n                marker: ListItemMarker::Hyphen(\n                    Span {\n                        data: \"-\",\n                        line: 1,\n                        col: 1,\n                        offset: 0,\n                    },\n                ),\n                blocks: &[\n                    Block::Simple(\n                        SimpleBlock {\n                            content: Content {\n                                original: Span {\n                                    data: \"blah\",\n                                    line: 1,\n                                    col: 3,\n                                    offset: 2,\n                                },\n                                rendered: \"blah\",\n                            },\n                            source: Span {\n                                data: \"blah\",\n                                line: 1,\n                                col: 3,\n                                offset: 2,\n                            },\n                            title_source: None,\n                            title: None,\n                            anchor: None,\n                            anchor_reftext: None,\n                            attrlist: None,\n                        },\n                    ),\n                ],\n                source: Span {\n                    data: \"- blah\",\n                    line: 1,\n                    col: 1,\n                    offset: 0,\n                },\n                anchor: None,\n                anchor_reftext: None,\n                attrlist: None,\n            },\n        ),\n    ],\n    source: Span {\n        data: \"- blah\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n    title_source: None,\n    title: None,\n    anchor: None,\n    anchor_reftext: None,\n    attrlist: None,\n}"
         );
 
         assert_eq!(
