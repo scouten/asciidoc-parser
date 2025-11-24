@@ -1,7 +1,7 @@
 use crate::tests::fixtures::{
     blocks::{
-        Break, CompoundDelimitedBlock, MediaBlock, Preamble, RawDelimitedBlock, SectionBlock,
-        SimpleBlock,
+        Break, CompoundDelimitedBlock, ListItem, MediaBlock, Preamble, RawDelimitedBlock,
+        SectionBlock, SimpleBlock,
     },
     document::Attribute,
 };
@@ -11,6 +11,7 @@ pub(crate) enum Block {
     Simple(SimpleBlock),
     Media(MediaBlock),
     Section(SectionBlock),
+    ListItem(ListItem),
     RawDelimited(RawDelimitedBlock),
     CompoundDelimited(CompoundDelimitedBlock),
     Preamble(Preamble),
@@ -44,6 +45,13 @@ fn fixture_eq_observed(fixture: &Block, observed: &crate::blocks::Block) -> bool
 
         Block::Section(section_fixture) => match observed {
             crate::blocks::Block::Section(section_observed) => section_fixture == section_observed,
+            _ => false,
+        },
+
+        Block::ListItem(list_item_fixture) => match observed {
+            crate::blocks::Block::ListItem(list_item_observed) => {
+                list_item_fixture == list_item_observed
+            }
             _ => false,
         },
 
