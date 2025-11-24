@@ -1,0 +1,256 @@
+#![allow(unused)] // TEMPORARY while building
+
+use std::{fmt, slice::Iter, sync::LazyLock};
+
+use regex::Regex;
+
+use crate::{
+    HasSpan, Parser, Span,
+    attributes::Attrlist,
+    blocks::{
+        Block, ContentModel, IsBlock, ListItem, metadata::BlockMetadata,
+        parse_utils::parse_blocks_until,
+    },
+    content::{Content, SubstitutionGroup},
+    document::RefType,
+    internal::debug::DebugSliceReference,
+    span::MatchedItem,
+    strings::CowStr,
+    warnings::{Warning, WarningType},
+};
+
+/// A list contains a sequence of items prefixed with symbol, such as a disc
+/// (aka bullet). Each individual item in the list is represented by a
+/// [`ListItem`].
+///
+/// [`ListItem`]: crate::blocks::ListItem
+#[derive(Clone, Eq, PartialEq)]
+pub struct ListBlock<'src> {
+    items: Vec<Block<'src>>,
+    source: Span<'src>,
+    title_source: Option<Span<'src>>,
+    title: Option<String>,
+    anchor: Option<Span<'src>>,
+    anchor_reftext: Option<Span<'src>>,
+    attrlist: Option<Attrlist<'src>>,
+}
+
+impl<'src> ListBlock<'src> {
+    pub(crate) fn parse(
+        metadata: &BlockMetadata<'src>,
+        parser: &mut Parser,
+        warnings: &mut Vec<Warning<'src>>,
+    ) -> Option<MatchedItem<'src, Self>> {
+        let source = metadata.block_start.discard_empty_lines();
+
+        let mut items: Vec<Block<'src>> = vec![];
+
+        // TEMPORARY Q&D just parse one list item to bootstrap.
+
+        let hack_no_metadata = BlockMetadata {
+            title_source: None,
+            title: None,
+            anchor: None,
+            anchor_reftext: None,
+            attrlist: None,
+            source,
+            block_start: source,
+        };
+
+        let temp_item = ListItem::parse(metadata, parser, warnings)?;
+        let temp_item_source = temp_item.item.span();
+
+        items.push(Block::ListItem(temp_item.item));
+
+        Some(MatchedItem {
+            item: Self {
+                items,
+                source: temp_item_source,
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                anchor_reftext: metadata.anchor_reftext,
+                attrlist: metadata.attrlist.clone(),
+            },
+            after: temp_item.after,
+        })
+    }
+}
+
+impl<'src> IsBlock<'src> for ListBlock<'src> {
+    fn content_model(&self) -> ContentModel {
+        ContentModel::Compound
+    }
+
+    fn raw_context(&self) -> CowStr<'src> {
+        "section".into()
+    }
+
+    fn nested_blocks(&'src self) -> Iter<'src, Block<'src>> {
+        self.items.iter()
+    }
+
+    fn title_source(&'src self) -> Option<Span<'src>> {
+        self.title_source
+    }
+
+    fn title(&self) -> Option<&str> {
+        self.title.as_deref()
+    }
+
+    fn anchor(&'src self) -> Option<Span<'src>> {
+        self.anchor
+    }
+
+    fn anchor_reftext(&'src self) -> Option<Span<'src>> {
+        self.anchor_reftext
+    }
+
+    fn attrlist(&'src self) -> Option<&'src Attrlist<'src>> {
+        self.attrlist.as_ref()
+    }
+}
+
+impl<'src> HasSpan<'src> for ListBlock<'src> {
+    fn span(&self) -> Span<'src> {
+        self.source
+    }
+}
+
+impl std::fmt::Debug for ListBlock<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ListBlock")
+            .field("items", &DebugSliceReference(&self.items))
+            .field("source", &self.source)
+            .field("title_source", &self.title_source)
+            .field("title", &self.title)
+            .field("anchor", &self.anchor)
+            .field("anchor_reftext", &self.anchor_reftext)
+            .field("attrlist", &self.attrlist)
+            .finish()
+    }
+}
+
+/// Represents the type of a list.
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub enum ListType {
+    /// An unordered list is a list with items prefixed with symbol, such as a
+    /// disc (aka bullet).
+    Unordered,
+
+    /// An ordered list is a list with items prefixed with a number or other
+    /// sequential mark.
+    Ordered,
+}
+
+impl std::fmt::Debug for ListType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ListType::Unordered => write!(f, "ListType::Unordered"),
+            ListType::Ordered => write!(f, "ListType::Ordered"),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::panic)]
+    #![allow(clippy::unwrap_used)]
+
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{
+        HasSpan,
+        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+        span::MatchedItem,
+        tests::prelude::*,
+        warnings::Warning,
+    };
+
+    fn list_parse<'a>(source: &'a str) -> Option<MatchedItem<'a, crate::blocks::ListBlock<'a>>> {
+        let mut parser = crate::Parser::default();
+        let mut warnings: Vec<Warning<'a>> = vec![];
+
+        let metadata = BlockMetadata::parse(crate::Span::new(source), &mut parser).item;
+
+        let result = crate::blocks::list::ListBlock::parse(&metadata, &mut parser, &mut warnings);
+
+        assert!(warnings.is_empty());
+
+        result
+    }
+
+    #[test]
+    fn hyphen() {
+        assert!(list_parse("-xyz").is_none());
+        assert!(list_parse("-- x").is_none());
+
+        let list = list_parse("- blah").unwrap();
+
+        assert_eq!(
+            list.item,
+            ListBlock {
+                items: &[Block::ListItem(ListItem {
+                    marker: ListItemMarker::Hyphen(Span {
+                        data: "-",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },),
+                    blocks: &[Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "blah",
+                                line: 1,
+                                col: 3,
+                                offset: 2,
+                            },
+                            rendered: "blah",
+                        },
+                        source: Span {
+                            data: "blah",
+                            line: 1,
+                            col: 3,
+                            offset: 2,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- blah",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "- blah",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(
+            list.after,
+            Span {
+                data: "",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }
+        );
+    }
+}
