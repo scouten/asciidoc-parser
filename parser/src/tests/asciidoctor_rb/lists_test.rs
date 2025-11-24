@@ -9,20 +9,18 @@ mod bulleted_lists {
             todo!(
                 "Port this: {}",
                 r###"
-  context 'Simple lists' do
-    test 'dash elements with no blank lines' do
-      input = <<~'EOS'
-      List
-      ====
+        use crate::{Parser, blocks::IsBlock};
 
-      - Foo
-      - Boo
-      - Blech
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 3
-    end
+        #[test]
+        fn dash_elements_with_no_blank_lines() {
+            let doc = Parser::default().parse("== List\n\n- Foo\n- Boo\n- Blech\n\n\n");
+            let list = doc.nested_blocks().next().unwrap();
+
+            dbg!(list);
+            todo!();
+            // assert_xpath '//ul', output, 1
+            // assert_xpath '//ul/li', output, 3
+        }
 
     test 'indented dash elements using spaces' do
       input = <<~EOS
@@ -753,7 +751,6 @@ mod bulleted_lists {
       assert_css 'li', output, 3
       assert_xpath %((//li)[2]/p[text()="b#{decode_char 8232}b"]), output, 1
     end
-  end
   "###
             );
         }
