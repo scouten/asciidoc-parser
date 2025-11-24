@@ -162,6 +162,7 @@ mod tests {
     use crate::{
         HasSpan,
         blocks::{ContentModel, IsBlock, ListType, metadata::BlockMetadata},
+        content::SubstitutionGroup,
         span::MatchedItem,
         tests::prelude::*,
         warnings::Warning,
@@ -248,8 +249,10 @@ mod tests {
 
         let mut list_blocks = list.item.nested_blocks();
 
+        let list_item = list_blocks.next().unwrap();
+
         assert_eq!(
-            list_blocks.next().unwrap(),
+            list_item,
             &Block::ListItem(ListItem {
                 marker: ListItemMarker::Hyphen(Span {
                     data: "-",
@@ -290,6 +293,55 @@ mod tests {
                 attrlist: None,
             })
         );
+
+        assert_eq!(list_item.content_model(), ContentModel::Compound);
+        assert_eq!(list_item.raw_context().as_ref(), "list_item");
+
+        let mut li_blocks = list_item.nested_blocks();
+
+        assert_eq!(
+            li_blocks.next().unwrap(),
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "blah",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },
+                    rendered: "blah",
+                },
+                source: Span {
+                    data: "blah",
+                    line: 1,
+                    col: 3,
+                    offset: 2,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            })
+        );
+        assert!(li_blocks.next().is_none());
+
+        assert!(list_item.title_source().is_none());
+        assert!(list_item.title().is_none());
+        assert!(list_item.anchor().is_none());
+        assert!(list_item.anchor_reftext().is_none());
+        assert!(list_item.attrlist().is_none());
+        assert_eq!(list_item.substitution_group(), SubstitutionGroup::Normal);
+        assert_eq!(
+            list_item.span(),
+            Span {
+                data: "- blah",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
         assert!(list_blocks.next().is_none());
 
         assert!(list.item.title_source().is_none());
