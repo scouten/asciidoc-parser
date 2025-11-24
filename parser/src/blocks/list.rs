@@ -161,7 +161,7 @@ mod tests {
 
     use crate::{
         HasSpan,
-        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, ListType, metadata::BlockMetadata},
         span::MatchedItem,
         tests::prelude::*,
         warnings::Warning,
@@ -312,5 +312,11 @@ mod tests {
                 offset: 6,
             }
         );
+    }
+
+    #[test]
+    fn list_type_impl_debug() {
+        assert_eq!(format!("{:#?}", ListType::Unordered), "ListType::Unordered");
+        assert_eq!(format!("{:#?}", ListType::Ordered), "ListType::Ordered");
     }
 }
