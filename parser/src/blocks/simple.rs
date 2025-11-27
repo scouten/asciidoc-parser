@@ -1,7 +1,7 @@
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+    blocks::{ContentModel, IsBlock, ListItemMarker, metadata::BlockMetadata},
     content::{Content, SubstitutionGroup},
     span::MatchedItem,
     strings::CowStr,
@@ -47,6 +47,45 @@ impl<'src> SimpleBlock<'src> {
                 attrlist: metadata.attrlist.clone(),
             },
             after: source.after.discard_empty_lines(),
+        })
+    }
+
+    pub(crate) fn parse_for_list_item(
+        metadata: &BlockMetadata<'src>,
+        parser: &mut Parser,
+    ) -> Option<MatchedItem<'src, Self>> {
+        let source = metadata.block_start.take_non_empty_lines()?;
+
+        let mut next = source.item;
+
+        while let Some(inline) = next.take_non_empty_line() {
+            if let Some(_marker) = ListItemMarker::parse(inline.item) {
+                eprintln!("Found new marker!");
+                break;
+            }
+
+            next = inline.after;
+        }
+
+        let item_source = source.item.trim_remainder(next).trim_trailing_whitespace();
+
+        let mut content: Content<'src> = item_source.into();
+
+        SubstitutionGroup::Normal
+            .override_via_attrlist(metadata.attrlist.as_ref())
+            .apply(&mut content, parser, metadata.attrlist.as_ref());
+
+        Some(MatchedItem {
+            item: Self {
+                content,
+                source: item_source,
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                anchor_reftext: metadata.anchor_reftext,
+                attrlist: metadata.attrlist.clone(),
+            },
+            after: next.discard_empty_lines(),
         })
     }
 
