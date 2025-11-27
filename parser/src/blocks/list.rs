@@ -1,22 +1,13 @@
-#![allow(unused)] // TEMPORARY while building
-
-use std::{fmt, slice::Iter, sync::LazyLock};
-
-use regex::Regex;
+use std::slice::Iter;
 
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{
-        Block, ContentModel, IsBlock, ListItem, metadata::BlockMetadata,
-        parse_utils::parse_blocks_until,
-    },
-    content::{Content, SubstitutionGroup},
-    document::RefType,
+    blocks::{Block, ContentModel, IsBlock, ListItem, metadata::BlockMetadata},
     internal::debug::DebugSliceReference,
     span::MatchedItem,
     strings::CowStr,
-    warnings::{Warning, WarningType},
+    warnings::Warning,
 };
 
 /// A list contains a sequence of items prefixed with symbol, such as a disc
