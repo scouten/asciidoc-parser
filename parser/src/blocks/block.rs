@@ -291,6 +291,19 @@ impl<'src> Block<'src> {
             };
         }
 
+        let line_after_whitespace = line.item.discard_whitespace();
+        if line_after_whitespace.starts_with('-')
+            && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
+        {
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::List(mi_list.item),
+                    after: mi_list.after,
+                }),
+                warnings,
+            };
+        }
+
         // First, let's look for a fun edge case. Perhaps the text contains block
         // metadata but no block immediately following. If we're not careful, we could
         // spin in a loop (for example, `parse_blocks_until`) thinking there will be
