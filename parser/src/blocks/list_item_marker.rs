@@ -4,7 +4,7 @@ use regex::Regex;
 
 use crate::{HasSpan, Span, span::MatchedItem};
 
-/// A list item is signaled by one of several designeted marker sequences.
+/// A list item is signaled by one of several designated marker sequences.
 #[derive(Clone, Eq, PartialEq)]
 pub enum ListItemMarker<'src> {
     /// Unordered list (hyphen).
