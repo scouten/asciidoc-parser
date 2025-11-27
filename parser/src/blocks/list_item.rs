@@ -28,7 +28,6 @@ pub struct ListItem<'src> {
 }
 
 impl<'src> ListItem<'src> {
-    #[allow(unused)] // TEMPORARY while building
     pub(crate) fn parse(
         metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
