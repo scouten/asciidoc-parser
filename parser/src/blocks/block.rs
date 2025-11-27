@@ -111,16 +111,16 @@ impl<'src> Block<'src> {
         // Optimization: If the first line doesn't match any of the early indications
         // for delimited blocks, titles, or attrlists, we can skip directly to treating
         // this as a simple block. That saves quite a bit of parsing time.
-        let first_line = source.take_line();
+        let first_line = source.take_line().item.discard_whitespace();
 
         // If it does contain any of those markers, we fall through to the more costly
         // tests below which can more accurately classify the upcoming block.
-        if let Some(first_char) = source.chars().next()
+        if let Some(first_char) = first_line.chars().next()
             && !matches!(
                 first_char,
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':' | '\'' | '<'
             )
-            && !first_line.item.contains("::")
+            && !first_line.contains("::")
             && let Some(MatchedItem {
                 item: simple_block,
                 after,
@@ -144,8 +144,8 @@ impl<'src> Block<'src> {
         }
 
         // Look for document attributes first since these don't support block metadata.
-        if first_line.item.starts_with(':')
-            && (first_line.item.ends_with(':') || first_line.item.contains(": "))
+        if first_line.starts_with(':')
+            && (first_line.ends_with(':') || first_line.contains(": "))
             && let Some(attr) = Attribute::parse(source, parser)
         {
             let mut warnings: Vec<Warning<'src>> = vec![];
@@ -291,8 +291,7 @@ impl<'src> Block<'src> {
             };
         }
 
-        let line_after_whitespace = line.item.discard_whitespace();
-        if line_after_whitespace.starts_with('-')
+        if first_line.starts_with('-')
             && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
         {
             return MatchAndWarnings {
