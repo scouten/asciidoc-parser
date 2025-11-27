@@ -56,7 +56,7 @@ impl<'src> SimpleBlock<'src> {
     ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.take_non_empty_lines()?;
 
-        let mut next = source.item;
+        let mut next = metadata.block_start;
 
         while let Some(inline) = next.take_non_empty_line() {
             if let Some(_marker) = ListItemMarker::parse(inline.item) {

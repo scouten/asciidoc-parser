@@ -54,7 +54,7 @@ impl<'src> ListBlock<'src> {
             };
 
             items.push(Block::ListItem(list_item_mi.item));
-            next_item_source = list_item_mi.after;
+            next_item_source = list_item_mi.after.discard_empty_lines();
         }
 
         if items.is_empty() {
