@@ -3,7 +3,6 @@
 
 mod bulleted_lists {
     mod simple_lists {
-
         use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
         #[test]
@@ -175,22 +174,153 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn indented_dash_elements_using_spaces() {
+            let doc = Parser::default().parse(" - Foo\n - Boo\n - Blech");
+            let list = doc.nested_blocks().next().unwrap();
+
+            assert_eq!(
+                *list,
+                Block::List(ListBlock {
+                    items: &[
+                        Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },),
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "Foo",
+                                        line: 1,
+                                        col: 4,
+                                        offset: 3,
+                                    },
+                                    rendered: "Foo",
+                                },
+                                source: Span {
+                                    data: "Foo",
+                                    line: 1,
+                                    col: 4,
+                                    offset: 3,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: " - Foo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                        Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 2,
+                                col: 2,
+                                offset: 8,
+                            },),
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "Boo",
+                                        line: 2,
+                                        col: 4,
+                                        offset: 10,
+                                    },
+                                    rendered: "Boo",
+                                },
+                                source: Span {
+                                    data: "Boo",
+                                    line: 2,
+                                    col: 4,
+                                    offset: 10,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: " - Boo",
+                                line: 2,
+                                col: 1,
+                                offset: 7,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                        Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 3,
+                                col: 2,
+                                offset: 15,
+                            },),
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "Blech",
+                                        line: 3,
+                                        col: 4,
+                                        offset: 17,
+                                    },
+                                    rendered: "Blech",
+                                },
+                                source: Span {
+                                    data: "Blech",
+                                    line: 3,
+                                    col: 4,
+                                    offset: 17,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: " - Blech",
+                                line: 3,
+                                col: 1,
+                                offset: 14,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    source: Span {
+                        data: " - Foo\n - Boo\n - Blech",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },)
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'indented dash elements using spaces' do
-      input = <<~EOS
-      \x20- Foo
-      \x20- Boo
-      \x20- Blech
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 3
-    end
-
     test 'indented dash elements using tabs' do
       input = <<~EOS
       \t-\tFoo
