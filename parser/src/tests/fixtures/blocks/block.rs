@@ -11,7 +11,6 @@ pub(crate) enum Block {
     Simple(SimpleBlock),
     Media(MediaBlock),
     Section(SectionBlock),
-    #[allow(unused)] // TEMPORARY
     List(ListBlock),
     ListItem(ListItem),
     RawDelimited(RawDelimitedBlock),
