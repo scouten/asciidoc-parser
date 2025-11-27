@@ -53,7 +53,7 @@ impl<'src> ListItem<'src> {
             block_start: marker_mi.after,
         };
 
-        let simple_block_mi = SimpleBlock::parse(&hack_no_metadata, parser)?;
+        let simple_block_mi = SimpleBlock::parse_for_list_item(&hack_no_metadata, parser)?;
         blocks.push(Block::Simple(simple_block_mi.item));
 
         let after = simple_block_mi.after;

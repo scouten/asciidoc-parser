@@ -44,35 +44,46 @@ impl<'src> ListBlock<'src> {
         let source = metadata.block_start.discard_empty_lines();
 
         let mut items: Vec<Block<'src>> = vec![];
+        let mut next_item_source = source;
 
-        // TEMPORARY Q&D just parse one list item to bootstrap.
+        loop {
+            // TEMPORARY: Ignore block metadata for list items.
+            let list_item_metadata = BlockMetadata {
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+                source: next_item_source,
+                block_start: next_item_source,
+            };
 
-        let hack_no_metadata = BlockMetadata {
-            title_source: None,
-            title: None,
-            anchor: None,
-            anchor_reftext: None,
-            attrlist: None,
-            source,
-            block_start: source,
-        };
+            let Some(list_item_mi) = ListItem::parse(&list_item_metadata, parser, warnings) else {
+                break;
+            };
 
-        let temp_item = ListItem::parse(metadata, parser, warnings)?;
-        let temp_item_source = temp_item.item.span();
+            items.push(Block::ListItem(list_item_mi.item));
+            next_item_source = list_item_mi.after;
+        }
 
-        items.push(Block::ListItem(temp_item.item));
+        if items.is_empty() {
+            return None;
+        }
 
         Some(MatchedItem {
             item: Self {
                 items,
-                source: temp_item_source,
+                source: source
+                    .trim_remainder(next_item_source)
+                    .trim_trailing_line_end()
+                    .trim_trailing_whitespace(),
                 title_source: metadata.title_source,
                 title: metadata.title.clone(),
                 anchor: metadata.anchor,
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
             },
-            after: temp_item.after,
+            after: next_item_source,
         })
     }
 }
