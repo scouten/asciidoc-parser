@@ -1,20 +1,8 @@
-#![allow(unused)] // TEMPORARY while building
-
-use std::{slice::Iter, sync::LazyLock};
+use std::sync::LazyLock;
 
 use regex::Regex;
 
-use crate::{
-    HasSpan, Parser, Span,
-    attributes::Attrlist,
-    blocks::{
-        Block, ContentModel, IsBlock, metadata::BlockMetadata, parse_utils::parse_blocks_until,
-    },
-    internal::debug::DebugSliceReference,
-    span::MatchedItem,
-    strings::CowStr,
-    warnings::Warning,
-};
+use crate::{HasSpan, Span, span::MatchedItem};
 
 /// A list item is signaled by one of several designeted marker sequences.
 #[derive(Clone, Eq, PartialEq)]
