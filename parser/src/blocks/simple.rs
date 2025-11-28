@@ -57,11 +57,15 @@ impl<'src> SimpleBlock<'src> {
         let source = metadata.block_start.take_non_empty_lines()?;
 
         let mut next = metadata.block_start;
+        let mut filtered_lines: Vec<&'src str> = vec![];
 
         while let Some(inline) = next.take_non_empty_line() {
             if let Some(_marker) = ListItemMarker::parse(inline.item) {
-                eprintln!("Found new marker!");
                 break;
+            }
+
+            if !(inline.item.starts_with("//") && !inline.item.starts_with("///")) {
+                filtered_lines.push(inline.item.trim_trailing_whitespace().data());
             }
 
             next = inline.after;
@@ -69,7 +73,8 @@ impl<'src> SimpleBlock<'src> {
 
         let item_source = source.item.trim_remainder(next).trim_trailing_whitespace();
 
-        let mut content: Content<'src> = item_source.into();
+        let filtered_lines = filtered_lines.join("\n");
+        let mut content: Content<'src> = Content::from_filtered(item_source, filtered_lines);
 
         SubstitutionGroup::Normal
             .override_via_attrlist(metadata.attrlist.as_ref())
