@@ -4,8 +4,8 @@ use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        Break, CompoundDelimitedBlock, ContentModel, IsBlock, MediaBlock, Preamble,
-        RawDelimitedBlock, SectionBlock, SimpleBlock, metadata::BlockMetadata,
+        Break, CompoundDelimitedBlock, ContentModel, IsBlock, ListBlock, ListItem, MediaBlock,
+        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, metadata::BlockMetadata,
     },
     content::SubstitutionGroup,
     document::{Attribute, RefType},
@@ -42,6 +42,15 @@ pub enum Block<'src> {
     /// May also be a part, chapter, or special section.
     Section(SectionBlock<'src>),
 
+    /// A list contains a sequence of items prefixed with symbol, such as a disc
+    /// (aka bullet). Each individual item in the list is represented by a
+    /// [`ListItem`].
+    List(ListBlock<'src>),
+
+    /// A list item is a special kind of block that is a member of a [`List`]
+    /// and contains one or more blocks attached to it.
+    ListItem(ListItem<'src>),
+
     /// A delimited block that contains verbatim, raw, or comment text. The
     /// content between the matching delimiters is not parsed for block
     /// syntax.
@@ -68,6 +77,8 @@ impl<'src> std::fmt::Debug for Block<'src> {
             Block::Simple(block) => f.debug_tuple("Block::Simple").field(block).finish(),
             Block::Media(block) => f.debug_tuple("Block::Media").field(block).finish(),
             Block::Section(block) => f.debug_tuple("Block::Section").field(block).finish(),
+            Block::List(block) => f.debug_tuple("Block::List").field(block).finish(),
+            Block::ListItem(block) => f.debug_tuple("Block::ListItem").field(block).finish(),
 
             Block::RawDelimited(block) => {
                 f.debug_tuple("Block::RawDelimited").field(block).finish()
@@ -100,16 +111,16 @@ impl<'src> Block<'src> {
         // Optimization: If the first line doesn't match any of the early indications
         // for delimited blocks, titles, or attrlists, we can skip directly to treating
         // this as a simple block. That saves quite a bit of parsing time.
-        let first_line = source.take_line();
+        let first_line = source.take_line().item.discard_whitespace();
 
         // If it does contain any of those markers, we fall through to the more costly
         // tests below which can more accurately classify the upcoming block.
-        if let Some(first_char) = source.chars().next()
+        if let Some(first_char) = first_line.chars().next()
             && !matches!(
                 first_char,
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':' | '\'' | '<'
             )
-            && !first_line.item.contains("::")
+            && !first_line.contains("::")
             && let Some(MatchedItem {
                 item: simple_block,
                 after,
@@ -133,8 +144,8 @@ impl<'src> Block<'src> {
         }
 
         // Look for document attributes first since these don't support block metadata.
-        if first_line.item.starts_with(':')
-            && (first_line.item.ends_with(':') || first_line.item.contains(": "))
+        if first_line.starts_with(':')
+            && (first_line.ends_with(':') || first_line.contains(": "))
             && let Some(attr) = Attribute::parse(source, parser)
         {
             let mut warnings: Vec<Warning<'src>> = vec![];
@@ -280,6 +291,19 @@ impl<'src> Block<'src> {
             };
         }
 
+        let first_line = line.item.discard_whitespace();
+        if first_line.starts_with('-')
+            && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
+        {
+            return MatchAndWarnings {
+                item: Some(MatchedItem {
+                    item: Self::List(mi_list.item),
+                    after: mi_list.after,
+                }),
+                warnings,
+            };
+        }
+
         // First, let's look for a fun edge case. Perhaps the text contains block
         // metadata but no block immediately following. If we're not careful, we could
         // spin in a loop (for example, `parse_blocks_until`) thinking there will be
@@ -362,6 +386,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(_) => ContentModel::Simple,
             Self::Media(b) => b.content_model(),
             Self::Section(_) => ContentModel::Compound,
+            Self::List(b) => b.content_model(),
+            Self::ListItem(b) => b.content_model(),
             Self::RawDelimited(b) => b.content_model(),
             Self::CompoundDelimited(b) => b.content_model(),
             Self::Preamble(b) => b.content_model(),
@@ -375,6 +401,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.raw_context(),
             Self::Media(b) => b.raw_context(),
             Self::Section(b) => b.raw_context(),
+            Self::List(b) => b.raw_context(),
+            Self::ListItem(b) => b.raw_context(),
             Self::RawDelimited(b) => b.raw_context(),
             Self::CompoundDelimited(b) => b.raw_context(),
             Self::Preamble(b) => b.raw_context(),
@@ -388,6 +416,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.nested_blocks(),
             Self::Media(b) => b.nested_blocks(),
             Self::Section(b) => b.nested_blocks(),
+            Self::List(b) => b.nested_blocks(),
+            Self::ListItem(b) => b.nested_blocks(),
             Self::RawDelimited(b) => b.nested_blocks(),
             Self::CompoundDelimited(b) => b.nested_blocks(),
             Self::Preamble(b) => b.nested_blocks(),
@@ -401,6 +431,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.title_source(),
             Self::Media(b) => b.title_source(),
             Self::Section(b) => b.title_source(),
+            Self::List(b) => b.title_source(),
+            Self::ListItem(b) => b.title_source(),
             Self::RawDelimited(b) => b.title_source(),
             Self::CompoundDelimited(b) => b.title_source(),
             Self::Preamble(b) => b.title_source(),
@@ -414,6 +446,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.title(),
             Self::Media(b) => b.title(),
             Self::Section(b) => b.title(),
+            Self::List(b) => b.title(),
+            Self::ListItem(b) => b.title(),
             Self::RawDelimited(b) => b.title(),
             Self::CompoundDelimited(b) => b.title(),
             Self::Preamble(b) => b.title(),
@@ -427,6 +461,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.anchor(),
             Self::Media(b) => b.anchor(),
             Self::Section(b) => b.anchor(),
+            Self::List(b) => b.anchor(),
+            Self::ListItem(b) => b.anchor(),
             Self::RawDelimited(b) => b.anchor(),
             Self::CompoundDelimited(b) => b.anchor(),
             Self::Preamble(b) => b.anchor(),
@@ -440,6 +476,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.anchor_reftext(),
             Self::Media(b) => b.anchor_reftext(),
             Self::Section(b) => b.anchor_reftext(),
+            Self::List(b) => b.anchor_reftext(),
+            Self::ListItem(b) => b.anchor_reftext(),
             Self::RawDelimited(b) => b.anchor_reftext(),
             Self::CompoundDelimited(b) => b.anchor_reftext(),
             Self::Preamble(b) => b.anchor_reftext(),
@@ -453,6 +491,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.attrlist(),
             Self::Media(b) => b.attrlist(),
             Self::Section(b) => b.attrlist(),
+            Self::List(b) => b.attrlist(),
+            Self::ListItem(b) => b.attrlist(),
             Self::RawDelimited(b) => b.attrlist(),
             Self::CompoundDelimited(b) => b.attrlist(),
             Self::Preamble(b) => b.attrlist(),
@@ -466,6 +506,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.substitution_group(),
             Self::Media(b) => b.substitution_group(),
             Self::Section(b) => b.substitution_group(),
+            Self::List(b) => b.substitution_group(),
+            Self::ListItem(b) => b.substitution_group(),
             Self::RawDelimited(b) => b.substitution_group(),
             Self::CompoundDelimited(b) => b.substitution_group(),
             Self::Preamble(b) => b.substitution_group(),
@@ -481,6 +523,8 @@ impl<'src> HasSpan<'src> for Block<'src> {
             Self::Simple(b) => b.span(),
             Self::Media(b) => b.span(),
             Self::Section(b) => b.span(),
+            Self::List(b) => b.span(),
+            Self::ListItem(b) => b.span(),
             Self::RawDelimited(b) => b.span(),
             Self::CompoundDelimited(b) => b.span(),
             Self::Preamble(b) => b.span(),
