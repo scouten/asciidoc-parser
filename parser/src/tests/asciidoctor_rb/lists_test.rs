@@ -3,6 +3,8 @@
 
 mod bulleted_lists {
     mod simple_lists {
+        use std::collections::HashMap;
+
         use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
         #[test]
@@ -768,29 +770,218 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn dash_elements_separated_by_a_line_comment_offset_by_blank_lines_should_not_merge_lists()
+        {
+            let doc = Parser::default().parse("- Foo\n- Boo\n\n//\n\n- Blech\n");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[
+                        Block::List(ListBlock {
+                            items: &[
+                                Block::ListItem(ListItem {
+                                    marker: ListItemMarker::Hyphen(Span {
+                                        data: "-",
+                                        line: 1,
+                                        col: 1,
+                                        offset: 0,
+                                    },),
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Foo",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "Foo",
+                                        },
+                                        source: Span {
+                                            data: "Foo",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "- Foo",
+                                        line: 1,
+                                        col: 1,
+                                        offset: 0,
+                                    },
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                                Block::ListItem(ListItem {
+                                    marker: ListItemMarker::Hyphen(Span {
+                                        data: "-",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 6,
+                                    },),
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Boo",
+                                                line: 2,
+                                                col: 3,
+                                                offset: 8,
+                                            },
+                                            rendered: "Boo",
+                                        },
+                                        source: Span {
+                                            data: "Boo",
+                                            line: 2,
+                                            col: 3,
+                                            offset: 8,
+                                        },
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "- Boo",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 6,
+                                    },
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                            ],
+                            source: Span {
+                                data: "- Foo\n- Boo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "//",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 13,
+                                },
+                                rendered: "",
+                            },
+                            source: Span {
+                                data: "//",
+                                line: 4,
+                                col: 1,
+                                offset: 13,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                        Block::List(ListBlock {
+                            items: &[Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 17,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Blech",
+                                            line: 6,
+                                            col: 3,
+                                            offset: 19,
+                                        },
+                                        rendered: "Blech",
+                                    },
+                                    source: Span {
+                                        data: "Blech",
+                                        line: 6,
+                                        col: 3,
+                                        offset: 19,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Blech",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 17,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: "- Blech",
+                                line: 6,
+                                col: 1,
+                                offset: 17,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    source: Span {
+                        data: "- Foo\n- Boo\n\n//\n\n- Blech",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'dash elements separated by a line comment offset by blank lines should not merge lists' do
-      input = <<~'EOS'
-      List
-      ====
-
-      - Foo
-      - Boo
-
-      //
-
-      - Blech
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 2
-      assert_xpath '(//ul)[1]/li', output, 2
-      assert_xpath '(//ul)[2]/li', output, 1
-    end
-
     test 'dash elements separated by a block title offset by a blank line should not merge lists' do
       input = <<~'EOS'
       List
