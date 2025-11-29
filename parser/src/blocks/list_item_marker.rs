@@ -12,6 +12,9 @@ pub enum ListItemMarker<'src> {
 
     /// Unordered list (asterisks).
     Asterisks(Span<'src>),
+
+    /// Ordered list (dots).
+    Dots(Span<'src>),
 }
 
 impl<'src> ListItemMarker<'src> {
@@ -27,6 +30,8 @@ impl<'src> ListItemMarker<'src> {
             Self::Hyphen(marker)
         } else if marker_str.starts_with('*') {
             Self::Asterisks(marker)
+        } else if marker_str.starts_with('.') {
+            Self::Dots(marker)
         } else {
             todo!("Not handled yet");
         };
@@ -46,6 +51,11 @@ impl<'src> ListItemMarker<'src> {
                 Self::Asterisks(other_span) => self_span.data() == other_span.data(),
                 _ => false,
             },
+
+            Self::Dots(self_span) => match other {
+                Self::Dots(other_span) => self_span.data() == other_span.data(),
+                _ => false,
+            },
         }
     }
 }
@@ -55,6 +65,7 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
         match self {
             Self::Hyphen(x) => *x,
             Self::Asterisks(x) => *x,
+            Self::Dots(x) => *x,
         }
     }
 }
@@ -63,8 +74,8 @@ impl std::fmt::Debug for ListItemMarker<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Hyphen(x) => f.debug_tuple("ListItemMarker::Hyphen").field(x).finish(),
-
             Self::Asterisks(x) => f.debug_tuple("ListItemMarker::Asterisks").field(x).finish(),
+            Self::Dots(x) => f.debug_tuple("ListItemMarker::Dots").field(x).finish(),
         }
     }
 }
@@ -223,6 +234,86 @@ mod tests {
         assert_eq!(
             format!("{lim:#?}", lim = lim.item),
             "ListItemMarker::Asterisks(\n    Span {\n        data: \"*****\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
+    }
+
+    #[test]
+    fn dots() {
+        assert!(lim_parse(".").is_none());
+        assert!(lim_parse(".- x").is_none());
+
+        let lim = lim_parse(". blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::Dots(Span {
+                data: ".",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: ".",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::Dots(\n    Span {\n        data: \".\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
+
+        let lim = lim_parse("..... blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::Dots(Span {
+                data: ".....",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }
+        );
+
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: ".....",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::Dots(\n    Span {\n        data: \".....\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
         );
     }
 }

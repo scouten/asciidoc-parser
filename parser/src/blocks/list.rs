@@ -17,6 +17,7 @@ use crate::{
 /// [`ListItem`]: crate::blocks::ListItem
 #[derive(Clone, Eq, PartialEq)]
 pub struct ListBlock<'src> {
+    type_: ListType,
     items: Vec<Block<'src>>,
     source: Span<'src>,
     title_source: Option<Span<'src>>,
@@ -84,8 +85,19 @@ impl<'src> ListBlock<'src> {
             return None;
         }
 
+        let Some(first_marker) = first_marker else {
+            return None;
+        };
+
+        let type_ = match first_marker {
+            ListItemMarker::Asterisks(_) => ListType::Unordered,
+            ListItemMarker::Hyphen(_) => ListType::Unordered,
+            ListItemMarker::Dots(_) => ListType::Ordered,
+        };
+
         Some(MatchedItem {
             item: Self {
+                type_,
                 items,
                 source: source
                     .trim_remainder(next_item_source)
@@ -99,6 +111,11 @@ impl<'src> ListBlock<'src> {
             },
             after: next_item_source,
         })
+    }
+
+    /// Returns the type of this list.
+    pub fn type_(&self) -> ListType {
+        self.type_
     }
 }
 
@@ -145,6 +162,7 @@ impl<'src> HasSpan<'src> for ListBlock<'src> {
 impl std::fmt::Debug for ListBlock<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("ListBlock")
+            .field("type_", &self.type_)
             .field("items", &DebugSliceReference(&self.items))
             .field("source", &self.source)
             .field("title_source", &self.title_source)
@@ -216,6 +234,7 @@ mod tests {
         assert_eq!(
             list.item,
             ListBlock {
+                type_: ListType::Unordered,
                 items: &[Block::ListItem(ListItem {
                     marker: ListItemMarker::Hyphen(Span {
                         data: "-",
@@ -269,6 +288,7 @@ mod tests {
             }
         );
 
+        assert_eq!(list.item.type_(), ListType::Unordered);
         assert_eq!(list.item.content_model(), ContentModel::Compound);
         assert_eq!(list.item.raw_context().as_ref(), "list");
 
@@ -377,7 +397,7 @@ mod tests {
 
         assert_eq!(
             format!("{:#?}", list.item),
-            "ListBlock {\n    items: &[\n        Block::ListItem(\n            ListItem {\n                marker: ListItemMarker::Hyphen(\n                    Span {\n                        data: \"-\",\n                        line: 1,\n                        col: 1,\n                        offset: 0,\n                    },\n                ),\n                blocks: &[\n                    Block::Simple(\n                        SimpleBlock {\n                            content: Content {\n                                original: Span {\n                                    data: \"blah\",\n                                    line: 1,\n                                    col: 3,\n                                    offset: 2,\n                                },\n                                rendered: \"blah\",\n                            },\n                            source: Span {\n                                data: \"blah\",\n                                line: 1,\n                                col: 3,\n                                offset: 2,\n                            },\n                            title_source: None,\n                            title: None,\n                            anchor: None,\n                            anchor_reftext: None,\n                            attrlist: None,\n                        },\n                    ),\n                ],\n                source: Span {\n                    data: \"- blah\",\n                    line: 1,\n                    col: 1,\n                    offset: 0,\n                },\n                anchor: None,\n                anchor_reftext: None,\n                attrlist: None,\n            },\n        ),\n    ],\n    source: Span {\n        data: \"- blah\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n    title_source: None,\n    title: None,\n    anchor: None,\n    anchor_reftext: None,\n    attrlist: None,\n}"
+            "ListBlock {\n    type_: ListType::Unordered,\n    items: &[\n        Block::ListItem(\n            ListItem {\n                marker: ListItemMarker::Hyphen(\n                    Span {\n                        data: \"-\",\n                        line: 1,\n                        col: 1,\n                        offset: 0,\n                    },\n                ),\n                blocks: &[\n                    Block::Simple(\n                        SimpleBlock {\n                            content: Content {\n                                original: Span {\n                                    data: \"blah\",\n                                    line: 1,\n                                    col: 3,\n                                    offset: 2,\n                                },\n                                rendered: \"blah\",\n                            },\n                            source: Span {\n                                data: \"blah\",\n                                line: 1,\n                                col: 3,\n                                offset: 2,\n                            },\n                            title_source: None,\n                            title: None,\n                            anchor: None,\n                            anchor_reftext: None,\n                            attrlist: None,\n                        },\n                    ),\n                ],\n                source: Span {\n                    data: \"- blah\",\n                    line: 1,\n                    col: 1,\n                    offset: 0,\n                },\n                anchor: None,\n                anchor_reftext: None,\n                attrlist: None,\n            },\n        ),\n    ],\n    source: Span {\n        data: \"- blah\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n    title_source: None,\n    title: None,\n    anchor: None,\n    anchor_reftext: None,\n    attrlist: None,\n}"
         );
 
         assert_eq!(
