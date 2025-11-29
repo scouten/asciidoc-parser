@@ -78,7 +78,7 @@ impl<'src> ListItem<'src> {
         list: MatchedItem<'src, ListBlock<'src>>,
         wrapping_marker: ListItemMarker<'src>,
     ) -> MatchedItem<'src, Self> {
-        let span = list.item.span().clone();
+        let span = list.item.span();
 
         MatchedItem {
             item: Self {

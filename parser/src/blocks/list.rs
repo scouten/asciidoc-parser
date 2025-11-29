@@ -85,10 +85,7 @@ impl<'src> ListBlock<'src> {
             return None;
         }
 
-        let Some(first_marker) = first_marker else {
-            return None;
-        };
-
+        let first_marker = first_marker?;
         let type_ = match first_marker {
             ListItemMarker::Asterisks(_) => ListType::Unordered,
             ListItemMarker::Hyphen(_) => ListType::Unordered,
