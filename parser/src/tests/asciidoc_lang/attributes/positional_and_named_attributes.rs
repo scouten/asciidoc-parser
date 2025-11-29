@@ -16,7 +16,7 @@ mod positional_attribute {
 
     use crate::{
         Parser,
-        blocks::{IsBlock, metadata::BlockMetadata},
+        blocks::{IsBlock, ListType, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::prelude::*,
     };
@@ -298,24 +298,134 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
         .unwrap()
         .item;
 
-        // TO DO: This will change when we understand lists.
         assert_eq!(
             block,
-            Block::Simple(SimpleBlock {
-                content: Content {
-                    original: Span {
-                        data: "* Work hard\n* Play hard\n* Be happy",
-                        line: 2,
-                        col: 1,
-                        offset: 31,
-                    },
-                    rendered: "* Work hard\n* Play hard\n* Be happy",
-                },
+            Block::List(ListBlock {
+                type_: ListType::Unordered,
+                items: &[
+                    Block::ListItem(ListItem {
+                        marker: ListItemMarker::Asterisks(Span {
+                            data: "*",
+                            line: 2,
+                            col: 1,
+                            offset: 31,
+                        },),
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "Work hard",
+                                    line: 2,
+                                    col: 3,
+                                    offset: 33,
+                                },
+                                rendered: "Work hard",
+                            },
+                            source: Span {
+                                data: "Work hard",
+                                line: 2,
+                                col: 3,
+                                offset: 33,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "* Work hard",
+                            line: 2,
+                            col: 1,
+                            offset: 31,
+                        },
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::ListItem(ListItem {
+                        marker: ListItemMarker::Asterisks(Span {
+                            data: "*",
+                            line: 3,
+                            col: 1,
+                            offset: 43,
+                        },),
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "Play hard",
+                                    line: 3,
+                                    col: 3,
+                                    offset: 45,
+                                },
+                                rendered: "Play hard",
+                            },
+                            source: Span {
+                                data: "Play hard",
+                                line: 3,
+                                col: 3,
+                                offset: 45,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "* Play hard",
+                            line: 3,
+                            col: 1,
+                            offset: 43,
+                        },
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::ListItem(ListItem {
+                        marker: ListItemMarker::Asterisks(Span {
+                            data: "*",
+                            line: 4,
+                            col: 1,
+                            offset: 55,
+                        },),
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "Be happy",
+                                    line: 4,
+                                    col: 3,
+                                    offset: 57,
+                                },
+                                rendered: "Be happy",
+                            },
+                            source: Span {
+                                data: "Be happy",
+                                line: 4,
+                                col: 3,
+                                offset: 57,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "* Be happy",
+                            line: 4,
+                            col: 1,
+                            offset: 55,
+                        },
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
                 source: Span {
-                    data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy",
-                    line: 1,
+                    data: "* Work hard\n* Play hard\n* Be happy",
+                    line: 2,
                     col: 1,
-                    offset: 0,
+                    offset: 31,
                 },
                 title_source: None,
                 title: None,
@@ -324,8 +434,8 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                 attrlist: Some(Attrlist {
                     attributes: &[ElementAttribute {
                         name: None,
-                        shorthand_items: &["#rules", ".prominent", "%incremental"],
-                        value: "#rules.prominent%incremental"
+                        value: "#rules.prominent%incremental",
+                        shorthand_items: &["#rules", ".prominent", "%incremental",],
                     },],
                     anchor: None,
                     source: Span {

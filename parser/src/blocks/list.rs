@@ -90,6 +90,12 @@ impl<'src> ListBlock<'src> {
             ListItemMarker::Asterisks(_) => ListType::Unordered,
             ListItemMarker::Hyphen(_) => ListType::Unordered,
             ListItemMarker::Dots(_) => ListType::Ordered,
+
+            ListItemMarker::DefinedTerm {
+                term: _,
+                marker: _,
+                source: _,
+            } => ListType::Description,
         };
 
         Some(MatchedItem {
@@ -181,6 +187,10 @@ pub enum ListType {
     /// An ordered list is a list with items prefixed with a number or other
     /// sequential mark.
     Ordered,
+
+    /// A description list is an association list that consists of one or more
+    /// terms (or sets of terms) that each have a description.
+    Description,
 }
 
 impl std::fmt::Debug for ListType {
@@ -188,6 +198,7 @@ impl std::fmt::Debug for ListType {
         match self {
             ListType::Unordered => write!(f, "ListType::Unordered"),
             ListType::Ordered => write!(f, "ListType::Ordered"),
+            ListType::Description => write!(f, "ListType::Description"),
         }
     }
 }
