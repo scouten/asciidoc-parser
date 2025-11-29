@@ -27,7 +27,21 @@ impl<'src> SimpleBlock<'src> {
     ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.take_non_empty_lines()?;
 
-        let mut content: Content<'src> = source.item.into();
+        let mut next = metadata.block_start;
+        let mut filtered_lines: Vec<&'src str> = vec![];
+
+        while let Some(inline) = next.take_non_empty_line() {
+            if !(inline.item.starts_with("//") && !inline.item.starts_with("///")) {
+                filtered_lines.push(inline.item.trim_trailing_whitespace().data());
+            }
+
+            next = inline.after;
+        }
+
+        let item_source = source.item.trim_remainder(next).trim_trailing_whitespace();
+
+        let filtered_lines = filtered_lines.join("\n");
+        let mut content: Content<'src> = Content::from_filtered(item_source, filtered_lines);
 
         SubstitutionGroup::Normal
             .override_via_attrlist(metadata.attrlist.as_ref())
@@ -38,7 +52,7 @@ impl<'src> SimpleBlock<'src> {
                 content,
                 source: metadata
                     .source
-                    .trim_remainder(source.after)
+                    .trim_remainder(next)
                     .trim_trailing_whitespace(),
                 title_source: metadata.title_source,
                 title: metadata.title.clone(),
@@ -46,7 +60,7 @@ impl<'src> SimpleBlock<'src> {
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
             },
-            after: source.after.discard_empty_lines(),
+            after: next.discard_empty_lines(),
         })
     }
 
