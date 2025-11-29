@@ -31,7 +31,7 @@ impl<'src> SimpleBlock<'src> {
         let mut filtered_lines: Vec<&'src str> = vec![];
 
         while let Some(inline) = next.take_non_empty_line() {
-            if !(inline.item.starts_with("//") && !inline.item.starts_with("///")) {
+            if !inline.item.starts_with("//") || inline.item.starts_with("///") {
                 filtered_lines.push(inline.item.trim_trailing_whitespace().data());
             }
 
@@ -78,7 +78,7 @@ impl<'src> SimpleBlock<'src> {
                 break;
             }
 
-            if !(inline.item.starts_with("//") && !inline.item.starts_with("///")) {
+            if !inline.item.starts_with("//") || inline.item.starts_with("///") {
                 filtered_lines.push(inline.item.trim_trailing_whitespace().data());
             }
 
