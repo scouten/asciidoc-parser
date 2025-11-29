@@ -47,8 +47,8 @@ pub enum Block<'src> {
     /// [`ListItem`].
     List(ListBlock<'src>),
 
-    /// A list item is a special kind of block that is a member of a [`List`]
-    /// and contains one or more blocks attached to it.
+    /// A list item is a special kind of block that is a member of a
+    /// [`ListBlock`] and contains one or more blocks attached to it.
     ListItem(ListItem<'src>),
 
     /// A delimited block that contains verbatim, raw, or comment text. The
