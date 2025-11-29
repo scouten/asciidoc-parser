@@ -3,7 +3,10 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{Block, ContentModel, IsBlock, ListItemMarker, SimpleBlock, metadata::BlockMetadata},
+    blocks::{
+        Block, ContentModel, IsBlock, ListBlock, ListItemMarker, SimpleBlock,
+        metadata::BlockMetadata,
+    },
     internal::debug::DebugSliceReference,
     span::MatchedItem,
     strings::CowStr,
@@ -71,9 +74,27 @@ impl<'src> ListItem<'src> {
         })
     }
 
-    #[allow(unused)] // TEMPORARY while building
-    pub(crate) fn list_item_marker(&'src self) -> &'src ListItemMarker<'src> {
-        &self.marker
+    pub(crate) fn from_nested_list(
+        list: MatchedItem<'src, ListBlock<'src>>,
+        wrapping_marker: ListItemMarker<'src>,
+    ) -> MatchedItem<'src, Self> {
+        let span = list.item.span().clone();
+
+        MatchedItem {
+            item: Self {
+                marker: wrapping_marker,
+                blocks: vec![Block::List(list.item)],
+                source: span,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            },
+            after: list.after,
+        }
+    }
+
+    pub(crate) fn list_item_marker(&self) -> ListItemMarker<'src> {
+        self.marker.clone()
     }
 }
 

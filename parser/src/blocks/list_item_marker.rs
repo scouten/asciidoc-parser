@@ -33,6 +33,21 @@ impl<'src> ListItemMarker<'src> {
 
         Some(MatchedItem { item, after })
     }
+
+    /// Test for equality, disregarding span offsets.
+    pub(crate) fn is_match_for(&self, other: &Self) -> bool {
+        match self {
+            Self::Hyphen(self_span) => match other {
+                Self::Hyphen(other_span) => self_span.data() == other_span.data(),
+                _ => false,
+            },
+
+            Self::Asterisks(self_span) => match other {
+                Self::Asterisks(other_span) => self_span.data() == other_span.data(),
+                _ => false,
+            },
+        }
+    }
 }
 
 impl<'src> HasSpan<'src> for ListItemMarker<'src> {

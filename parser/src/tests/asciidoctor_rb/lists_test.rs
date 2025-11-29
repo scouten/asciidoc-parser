@@ -5,6 +5,8 @@ mod bulleted_lists {
     mod simple_lists {
         use std::collections::HashMap;
 
+        use pretty_assertions_sorted::assert_eq;
+
         use crate::{Parser, blocks::IsBlock, tests::prelude::*};
 
         #[test]
@@ -1882,23 +1884,172 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_list_item_with_a_nested_marker_terminates_non_indented_paragraph_for_text_of_list_item()
+         {
+            let doc = Parser::default().parse("- Foo\nBar\n* Foo");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Foo\nBar",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "Foo\nBar",
+                                    },
+                                    source: Span {
+                                        data: "Foo\nBar",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Foo\nBar",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::List(ListBlock {
+                                    items: &[Block::ListItem(ListItem {
+                                        marker: ListItemMarker::Asterisks(Span {
+                                            data: "*",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 10,
+                                        },),
+                                        blocks: &[Block::Simple(SimpleBlock {
+                                            content: Content {
+                                                original: Span {
+                                                    data: "Foo",
+                                                    line: 3,
+                                                    col: 3,
+                                                    offset: 12,
+                                                },
+                                                rendered: "Foo",
+                                            },
+                                            source: Span {
+                                                data: "Foo",
+                                                line: 3,
+                                                col: 3,
+                                                offset: 12,
+                                            },
+                                            title_source: None,
+                                            title: None,
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: "* Foo",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 10,
+                                        },
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "* Foo",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 10,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* Foo",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 10,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- Foo\nBar\n* Foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- Foo\nBar\n* Foo",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'a list item with a nested marker terminates non-indented paragraph for text of list item' do
-      input = <<~'EOS'
-      - Foo
-      Bar
-      * Foo
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'ul ul', output, 1
-      refute_includes output, '* Foo'
-    end
-
     test 'a list item for a different list terminates non-indented paragraph for text of list item' do
       input = <<~'EOS'
       == Example 1
