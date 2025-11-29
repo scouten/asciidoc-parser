@@ -7,7 +7,11 @@ mod bulleted_lists {
 
         use pretty_assertions_sorted::assert_eq;
 
-        use crate::{Parser, blocks::IsBlock, tests::prelude::*};
+        use crate::{
+            Parser,
+            blocks::{IsBlock, ListType},
+            tests::prelude::*,
+        };
 
         #[test]
         fn dash_elements_with_no_blank_lines() {
@@ -28,6 +32,7 @@ mod bulleted_lists {
                         rendered: "List",
                     },
                     blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
                         items: &[
                             Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
@@ -185,6 +190,7 @@ mod bulleted_lists {
             assert_eq!(
                 *list,
                 Block::List(ListBlock {
+                    type_: ListType::Unordered,
                     items: &[
                         Block::ListItem(ListItem {
                             marker: ListItemMarker::Hyphen(Span {
@@ -327,6 +333,7 @@ mod bulleted_lists {
             assert_eq!(
                 *list,
                 Block::List(ListBlock {
+                    type_: ListType::Unordered,
                     items: &[
                         Block::ListItem(ListItem {
                             marker: ListItemMarker::Hyphen(Span {
@@ -480,6 +487,7 @@ mod bulleted_lists {
                         rendered: "List",
                     },
                     blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
                         items: &[
                             Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
@@ -637,6 +645,7 @@ mod bulleted_lists {
             assert_eq!(
                 list,
                 &Block::List(ListBlock {
+                    type_: ListType::Unordered,
                     items: &[
                         Block::ListItem(ListItem {
                             marker: ListItemMarker::Hyphen(Span {
@@ -795,6 +804,7 @@ mod bulleted_lists {
                     },
                     blocks: &[
                         Block::List(ListBlock {
+                            type_: ListType::Unordered,
                             items: &[
                                 Block::ListItem(ListItem {
                                     marker: ListItemMarker::Hyphen(Span {
@@ -910,6 +920,7 @@ mod bulleted_lists {
                             attrlist: None,
                         },),
                         Block::List(ListBlock {
+                            type_: ListType::Unordered,
                             items: &[Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
                                     data: "-",
@@ -1002,6 +1013,7 @@ mod bulleted_lists {
                     },
                     blocks: &[
                         Block::List(ListBlock {
+                            type_: ListType::Unordered,
                             items: &[
                                 Block::ListItem(ListItem {
                                     marker: ListItemMarker::Hyphen(Span {
@@ -1095,6 +1107,7 @@ mod bulleted_lists {
                             attrlist: None,
                         },),
                         Block::List(ListBlock {
+                            type_: ListType::Unordered,
                             items: &[Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
                                     data: "-",
@@ -1192,6 +1205,7 @@ mod bulleted_lists {
                     },
                     blocks: &[
                         Block::List(ListBlock {
+                            type_: ListType::Unordered,
                             items: &[
                                 Block::ListItem(ListItem {
                                     marker: ListItemMarker::Hyphen(Span {
@@ -1306,6 +1320,7 @@ mod bulleted_lists {
                             },
                         },),
                         Block::List(ListBlock {
+                            type_: ListType::Unordered,
                             items: &[Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
                                     data: "-",
@@ -1396,6 +1411,7 @@ mod bulleted_lists {
                         },
                     },
                     blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
                         items: &[
                             Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
@@ -1566,6 +1582,7 @@ mod bulleted_lists {
                         },
                     },
                     blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
                         items: &[
                             Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
@@ -1736,6 +1753,7 @@ mod bulleted_lists {
                         },
                     },
                     blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
                         items: &[
                             Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
@@ -1906,6 +1924,7 @@ mod bulleted_lists {
                         },
                     },
                     blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
                         items: &[
                             Block::ListItem(ListItem {
                                 marker: ListItemMarker::Hyphen(Span {
@@ -1954,6 +1973,7 @@ mod bulleted_lists {
                                     offset: 0,
                                 },),
                                 blocks: &[Block::List(ListBlock {
+                                    type_: ListType::Unordered,
                                     items: &[Block::ListItem(ListItem {
                                         marker: ListItemMarker::Asterisks(Span {
                                             data: "*",
@@ -2045,6 +2065,169 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_list_item_for_a_different_list_terminates_non_indented_paragraph_for_text_of_list_item_example_1()
+         {
+            let doc = Parser::default().parse("- Foo\nBar\n. Foo");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Foo\nBar",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "Foo\nBar",
+                                    },
+                                    source: Span {
+                                        data: "Foo\nBar",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Foo\nBar",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::List(ListBlock {
+                                    type_: ListType::Ordered,
+                                    items: &[Block::ListItem(ListItem {
+                                        marker: ListItemMarker::Dots(Span {
+                                            data: ".",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 10,
+                                        },),
+                                        blocks: &[Block::Simple(SimpleBlock {
+                                            content: Content {
+                                                original: Span {
+                                                    data: "Foo",
+                                                    line: 3,
+                                                    col: 3,
+                                                    offset: 12,
+                                                },
+                                                rendered: "Foo",
+                                            },
+                                            source: Span {
+                                                data: "Foo",
+                                                line: 3,
+                                                col: 3,
+                                                offset: 12,
+                                            },
+                                            title_source: None,
+                                            title: None,
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: ". Foo",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 10,
+                                        },
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: ". Foo",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 10,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: ". Foo",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 10,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- Foo\nBar\n. Foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- Foo\nBar\n. Foo",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
@@ -2052,12 +2235,6 @@ mod bulleted_lists {
                 r###"
     test 'a list item for a different list terminates non-indented paragraph for text of list item' do
       input = <<~'EOS'
-      == Example 1
-
-      - Foo
-      Bar
-      . Foo
-
       == Example 2
 
       * Item

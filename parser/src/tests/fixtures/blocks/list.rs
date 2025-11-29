@@ -8,6 +8,7 @@ use crate::{
 
 #[derive(Eq, PartialEq)]
 pub(crate) struct ListBlock {
+    pub type_: crate::blocks::ListType,
     pub items: &'static [Block],
     pub source: Span,
     pub title_source: Option<Span>,
@@ -20,6 +21,7 @@ pub(crate) struct ListBlock {
 impl fmt::Debug for ListBlock {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("ListBlock")
+            .field("type_", &self.type_)
             .field("items", &self.items)
             .field("source", &self.source)
             .field("title_source", &self.title_source)
@@ -44,6 +46,10 @@ impl PartialEq<ListBlock> for crate::blocks::ListBlock<'_> {
 }
 
 fn fixture_eq_observed(fixture: &ListBlock, observed: &crate::blocks::ListBlock) -> bool {
+    if fixture.type_ != observed.type_() {
+        return false;
+    }
+
     if fixture.items.len() != observed.nested_blocks().len() {
         return false;
     }
