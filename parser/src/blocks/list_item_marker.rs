@@ -2,7 +2,7 @@ use std::sync::LazyLock;
 
 use regex::Regex;
 
-use crate::{HasSpan, Span, span::MatchedItem};
+use crate::{HasSpan, Span, content::Content, span::MatchedItem};
 
 /// A list item is signaled by one of several designated marker sequences.
 #[derive(Clone, Eq, PartialEq)]
@@ -15,28 +15,64 @@ pub enum ListItemMarker<'src> {
 
     /// Ordered list (dots).
     Dots(Span<'src>),
+
+    /// A term to be defined.
+    DefinedTerm {
+        /// The name of the term being defined.
+        term: Content<'src>,
+
+        /// The marker (`::`, etc.) used to call out the definition.
+        marker: Span<'src>,
+
+        /// The source span for the entire term assembly.
+        source: Span<'src>,
+    },
 }
 
 impl<'src> ListItemMarker<'src> {
     pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_whitespace();
 
-        let captures = LIST_ITEM_MARKER.captures(source.data())?;
-        let marker = source.slice(0..captures[1].len());
-        let marker_str = marker.data();
-        let after = source.slice_from(captures[1].len()..).discard_whitespace();
+        if let Some(captures) = LIST_ITEM_MARKER.captures(source.data()) {
+            let marker = source.slice(0..captures[1].len());
+            let marker_str = marker.data();
+            let after = source.slice_from(captures[1].len()..).discard_whitespace();
 
-        let item = if marker_str == "-" {
-            Self::Hyphen(marker)
-        } else if marker_str.starts_with('*') {
-            Self::Asterisks(marker)
-        } else if marker_str.starts_with('.') {
-            Self::Dots(marker)
+            let item = if marker_str == "-" {
+                Self::Hyphen(marker)
+            } else if marker_str.starts_with('*') {
+                Self::Asterisks(marker)
+            } else if marker_str.starts_with('.') {
+                Self::Dots(marker)
+            } else {
+                todo!("Not handled yet");
+            };
+
+            Some(MatchedItem { item, after })
         } else {
-            todo!("Not handled yet");
-        };
+            let captures = DESCRIPTION_LIST_MARKER.captures(source.data())?;
 
-        Some(MatchedItem { item, after })
+            let after = source.slice_from(captures[0].len()..).discard_whitespace();
+
+            let source = source
+                .slice_to(..captures[0].len())
+                .trim_trailing_whitespace();
+
+            let term_len = captures[1].len();
+            let term = source.slice(0..term_len);
+            let term: Content<'src> = term.into();
+
+            let marker = source.slice_from(term_len..);
+
+            Some(MatchedItem {
+                item: Self::DefinedTerm {
+                    term,
+                    marker,
+                    source,
+                },
+                after,
+            })
+        }
     }
 
     /// Test for equality, disregarding span offsets.
@@ -56,6 +92,19 @@ impl<'src> ListItemMarker<'src> {
                 Self::Dots(other_span) => self_span.data() == other_span.data(),
                 _ => false,
             },
+
+            Self::DefinedTerm {
+                term: _,
+                marker: self_marker,
+                source: _,
+            } => match other {
+                Self::DefinedTerm {
+                    term: _,
+                    marker: other_marker,
+                    source: _,
+                } => self_marker.data() == other_marker.data(),
+                _ => false,
+            },
         }
     }
 }
@@ -66,6 +115,12 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
             Self::Hyphen(x) => *x,
             Self::Asterisks(x) => *x,
             Self::Dots(x) => *x,
+
+            Self::DefinedTerm {
+                term: _,
+                marker: _,
+                source,
+            } => *source,
         }
     }
 }
@@ -76,6 +131,17 @@ impl std::fmt::Debug for ListItemMarker<'_> {
             Self::Hyphen(x) => f.debug_tuple("ListItemMarker::Hyphen").field(x).finish(),
             Self::Asterisks(x) => f.debug_tuple("ListItemMarker::Asterisks").field(x).finish(),
             Self::Dots(x) => f.debug_tuple("ListItemMarker::Dots").field(x).finish(),
+
+            Self::DefinedTerm {
+                term,
+                marker,
+                source,
+            } => f
+                .debug_struct("ListItemMarker::DefinedTerm")
+                .field("term", term)
+                .field("marker", marker)
+                .field("source", source)
+                .finish(),
         }
     }
 }
@@ -94,6 +160,22 @@ static LIST_ITEM_MARKER: LazyLock<Regex> = LazyLock::new(|| {
                 |[IVXivx]+\)            # Roman numerals followed by ) (Roman list)
             )
             [\ \t]                  # Required whitespace after marker
+        "#,
+    )
+    .unwrap()
+});
+
+static DESCRIPTION_LIST_MARKER: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(
+        r#"(?x)
+            ^                       # Start of line
+            (                       # Capture group 1: Term being defined
+                [^\ \t]                 # At least one non-whitespace character (start of term)
+                .*?                     # Any characters (rest of term, non-greedy)
+            )
+            (?::::?:?|;;)           # Delimiter: ::, :::, ::::, or ;;
+            (?:$|[\ \t])            # End of line or whitespace after marker
         "#,
     )
     .unwrap()
