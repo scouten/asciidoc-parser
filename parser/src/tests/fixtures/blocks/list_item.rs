@@ -46,7 +46,7 @@ impl PartialEq<ListItem> for crate::blocks::ListItem<'_> {
 }
 
 fn fixture_eq_observed(fixture: &ListItem, observed: &crate::blocks::ListItem) -> bool {
-    if &fixture.marker != observed.list_item_marker() {
+    if fixture.marker != observed.list_item_marker() {
         return false;
     }
 

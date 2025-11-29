@@ -3,7 +3,7 @@ use std::slice::Iter;
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{Block, ContentModel, IsBlock, ListItem, metadata::BlockMetadata},
+    blocks::{Block, ContentModel, IsBlock, ListItem, ListItemMarker, metadata::BlockMetadata},
     internal::debug::DebugSliceReference,
     span::MatchedItem,
     strings::CowStr,
@@ -36,6 +36,7 @@ impl<'src> ListBlock<'src> {
 
         let mut items: Vec<Block<'src>> = vec![];
         let mut next_item_source = source;
+        let mut first_marker: Option<ListItemMarker<'src>> = None;
 
         loop {
             // TEMPORARY: Ignore block metadata for list items.
@@ -49,9 +50,31 @@ impl<'src> ListBlock<'src> {
                 block_start: next_item_source,
             };
 
-            let Some(list_item_mi) = ListItem::parse(&list_item_metadata, parser, warnings) else {
+            let Some(mut list_item_mi) = ListItem::parse(&list_item_metadata, parser, warnings)
+            else {
                 break;
             };
+
+            let marker = list_item_mi.item.list_item_marker();
+
+            // If this item's marker doesn't match the existing list marker, we are changing
+            // levels in the list hierarchy.
+            if let Some(ref first_marker) = first_marker {
+                if !first_marker.is_match_for(&marker) {
+                    // TEMPORARY assume we're adding a new nesting level. Unimplemented to see if we
+                    // need to unwind.
+                    if let Some(nested_list) =
+                        ListBlock::parse(&list_item_metadata, parser, warnings)
+                    {
+                        list_item_mi =
+                            ListItem::from_nested_list(nested_list, first_marker.clone());
+                    } else {
+                        panic!("I was expecting this list to parse");
+                    }
+                }
+            } else {
+                first_marker = Some(marker);
+            }
 
             items.push(Block::ListItem(list_item_mi.item));
             next_item_source = list_item_mi.after.discard_empty_lines();
