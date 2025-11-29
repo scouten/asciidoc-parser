@@ -1712,26 +1712,181 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_non_indented_wrapped_line_that_resembles_an_attribute_entry_is_folded_into_text_of_list_item()
+         {
+            let doc = Parser::default().parse("- Foo\n:foo: bar\n- Boo\n- Blech");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Foo\n:foo: bar",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "Foo\n:foo: bar",
+                                    },
+                                    source: Span {
+                                        data: "Foo\n:foo: bar",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Foo\n:foo: bar",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 16,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Boo",
+                                            line: 3,
+                                            col: 3,
+                                            offset: 18,
+                                        },
+                                        rendered: "Boo",
+                                    },
+                                    source: Span {
+                                        data: "Boo",
+                                        line: 3,
+                                        col: 3,
+                                        offset: 18,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Boo",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 16,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 22,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Blech",
+                                            line: 4,
+                                            col: 3,
+                                            offset: 24,
+                                        },
+                                        rendered: "Blech",
+                                    },
+                                    source: Span {
+                                        data: "Blech",
+                                        line: 4,
+                                        col: 3,
+                                        offset: 24,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Blech",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 22,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- Foo\n:foo: bar\n- Boo\n- Blech",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- Foo\n:foo: bar\n- Boo\n- Blech",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'a non-indented wrapped line that resembles an attribute entry is folded into text of list item' do
-      input = <<~'EOS'
-      == List
-
-      - Foo
-      :foo: bar
-      - Boo
-      - Blech
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li[1]/*', output, 1
-      assert_xpath %(//ul/li[1]/p[text() = 'Foo\n:foo: bar']), output, 1
-    end
-
     test 'a list item with a nested marker terminates non-indented paragraph for text of list item' do
       input = <<~'EOS'
       - Foo
