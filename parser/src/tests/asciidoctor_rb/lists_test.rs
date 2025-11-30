@@ -2967,6 +2967,169 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_list_item_for_a_different_list_terminates_indented_paragraph_for_text_of_list_item_example_1()
+         {
+            let doc = Parser::default().parse("- Foo\n  Bar\n. Foo");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Foo\n  Bar",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "Foo\nBar",
+                                    },
+                                    source: Span {
+                                        data: "Foo\n  Bar",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Foo\n  Bar",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::List(ListBlock {
+                                    type_: ListType::Ordered,
+                                    items: &[Block::ListItem(ListItem {
+                                        marker: ListItemMarker::Dots(Span {
+                                            data: ".",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 12,
+                                        },),
+                                        blocks: &[Block::Simple(SimpleBlock {
+                                            content: Content {
+                                                original: Span {
+                                                    data: "Foo",
+                                                    line: 3,
+                                                    col: 3,
+                                                    offset: 14,
+                                                },
+                                                rendered: "Foo",
+                                            },
+                                            source: Span {
+                                                data: "Foo",
+                                                line: 3,
+                                                col: 3,
+                                                offset: 14,
+                                            },
+                                            title_source: None,
+                                            title: None,
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: ". Foo",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 12,
+                                        },
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: ". Foo",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 12,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: ". Foo",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 12,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- Foo\n  Bar\n. Foo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- Foo\n  Bar\n. Foo",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
@@ -2974,12 +3137,6 @@ mod bulleted_lists {
                 r###"
     test 'a list item for a different list terminates indented paragraph for text of list item' do
       input = <<~'EOS'
-      == Example 1
-
-      - Foo
-        Bar
-      . Foo
-
       == Example 2
 
       * Item
