@@ -3130,27 +3130,191 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_list_item_for_a_different_list_terminates_indented_paragraph_for_text_of_list_item_example_2()
+         {
+            let doc = Parser::default().parse("* Item\n  text\nterm:: def");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Item\n  text",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "Item\ntext",
+                                    },
+                                    source: Span {
+                                        data: "Item\n  text",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* Item\n  text",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::List(ListBlock {
+                                    type_: ListType::Description,
+                                    items: &[Block::ListItem(ListItem {
+                                        marker: ListItemMarker::DefinedTerm {
+                                            term: Content {
+                                                original: Span {
+                                                    data: "term",
+                                                    line: 3,
+                                                    col: 1,
+                                                    offset: 14,
+                                                },
+                                                rendered: "term",
+                                            },
+                                            marker: Span {
+                                                data: "::",
+                                                line: 3,
+                                                col: 5,
+                                                offset: 18,
+                                            },
+                                            source: Span {
+                                                data: "term::",
+                                                line: 3,
+                                                col: 1,
+                                                offset: 14,
+                                            },
+                                        },
+                                        blocks: &[Block::Simple(SimpleBlock {
+                                            content: Content {
+                                                original: Span {
+                                                    data: "def",
+                                                    line: 3,
+                                                    col: 8,
+                                                    offset: 21,
+                                                },
+                                                rendered: "def",
+                                            },
+                                            source: Span {
+                                                data: "def",
+                                                line: 3,
+                                                col: 8,
+                                                offset: 21,
+                                            },
+                                            title_source: None,
+                                            title: None,
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: "term:: def",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 14,
+                                        },
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "term:: def",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 14,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "term:: def",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 14,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* Item\n  text\nterm:: def",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* Item\n  text\nterm:: def",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'a list item for a different list terminates indented paragraph for text of list item' do
-      input = <<~'EOS'
-      == Example 2
-
-      * Item
-        text
-      term:: def
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'ul ol', output, 1
-      refute_includes output, '* Foo'
-      assert_css 'ul dl', output, 1
-      refute_includes output, 'term:: def'
-    end
-
     test 'a literal paragraph offset by blank lines in list content is appended as a literal block' do
       input = <<~'EOS'
       List
