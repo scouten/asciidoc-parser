@@ -5,24 +5,102 @@
 // limitation of `asciidoc-parser` crate) and alternate (non-HTML) back ends.
 
 mod normal {
+    use std::collections::HashMap;
+
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, tests::prelude::*};
+
+    #[test]
+    fn should_treat_plain_text_separated_by_blank_lines_as_paragraphs() {
+        let doc =
+            Parser::default().parse("Plain text for the win!\n\nYep. Text. Plain and simple.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "Plain text for the win!",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            rendered: "Plain text for the win!",
+                        },
+                        source: Span {
+                            data: "Plain text for the win!",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "Yep. Text. Plain and simple.",
+                                line: 3,
+                                col: 1,
+                                offset: 25,
+                            },
+                            rendered: "Yep. Text. Plain and simple.",
+                        },
+                        source: Span {
+                            data: "Yep. Text. Plain and simple.",
+                            line: 3,
+                            col: 1,
+                            offset: 25,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: "Plain text for the win!\n\nYep. Text. Plain and simple.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'should treat plain text separated by blank lines as paragraphs' do
-      input = <<~'EOS'
-      Plain text for the win!
-
-      Yep. Text. Plain and simple.
-      EOS
-      output = convert_string_to_embedded input
-      assert_css 'p', output, 2
-      assert_xpath '(//p)[1][text() = "Plain text for the win!"]', output, 1
-      assert_xpath '(//p)[2][text() = "Yep. Text. Plain and simple."]', output, 1
-    end
-
     test 'should associate block title with paragraph' do
       input = <<~'EOS'
       .Titled
