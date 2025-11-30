@@ -2876,23 +2876,102 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_list_item_that_starts_with_a_sequence_of_list_markers_characters_should_not_match_a_nested_list()
+         {
+            let doc = Parser::default().parse(" * first item\n *. normal text");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Asterisks(Span {
+                                data: "*",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },),
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "first item\n *. normal text",
+                                        line: 1,
+                                        col: 4,
+                                        offset: 3,
+                                    },
+                                    rendered: "first item\n*. normal text",
+                                },
+                                source: Span {
+                                    data: "first item\n *. normal text",
+                                    line: 1,
+                                    col: 4,
+                                    offset: 3,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: " * first item\n *. normal text",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: " * first item\n *. normal text",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: " * first item\n *. normal text",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'a list item that starts with a sequence of list markers characters should not match a nested list' do
-      input = <<~EOS
-      \x20* first item
-      \x20*. normal text
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'ul', output, 1
-      assert_css 'ul li', output, 1
-      assert_xpath %(//ul/li/p[text()='first item\n*. normal text']), output, 1
-    end
-
     test 'a list item for a different list terminates indented paragraph for text of list item' do
       input = <<~'EOS'
       == Example 1
