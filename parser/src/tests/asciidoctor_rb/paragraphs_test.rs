@@ -95,27 +95,100 @@ mod normal {
         );
     }
 
+    #[test]
+    fn should_associate_block_title_with_paragraph() {
+        let doc = Parser::default().parse(".Titled\nParagraph.\n\nWinning.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "Paragraph.",
+                                line: 2,
+                                col: 1,
+                                offset: 8,
+                            },
+                            rendered: "Paragraph.",
+                        },
+                        source: Span {
+                            data: ".Titled\nParagraph.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: Some(Span {
+                            data: "Titled",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },),
+                        title: Some("Titled",),
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "Winning.",
+                                line: 4,
+                                col: 1,
+                                offset: 20,
+                            },
+                            rendered: "Winning.",
+                        },
+                        source: Span {
+                            data: "Winning.",
+                            line: 4,
+                            col: 1,
+                            offset: 20,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: ".Titled\nParagraph.\n\nWinning.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'should associate block title with paragraph' do
-      input = <<~'EOS'
-      .Titled
-      Paragraph.
-
-      Winning.
-      EOS
-      output = convert_string_to_embedded input
-
-      assert_css 'p', output, 2
-      assert_xpath '(//p)[1]/preceding-sibling::*[@class = "title"]', output, 1
-      assert_xpath '(//p)[1]/preceding-sibling::*[@class = "title"][text() = "Titled"]', output, 1
-      assert_xpath '(//p)[2]/preceding-sibling::*[@class = "title"]', output, 0
-    end
-
     test 'no duplicate block before next section' do
       input = <<~'EOS'
       = Title
