@@ -515,23 +515,84 @@ mod normal {
         );
     }
 
+    #[test]
+    fn interprets_normal_paragraph_style_as_normal_paragraph() {
+        let doc = Parser::default().parse("[normal]\nNormal paragraph.\nNothing special.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "Normal paragraph.\nNothing special.",
+                            line: 2,
+                            col: 1,
+                            offset: 9,
+                        },
+                        rendered: "Normal paragraph.\nNothing special.",
+                    },
+                    source: Span {
+                        data: "[normal]\nNormal paragraph.\nNothing special.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "normal",
+                            shorthand_items: &["normal",],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "normal",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[normal]\nNormal paragraph.\nNothing special.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'interprets normal paragraph style as normal paragraph' do
-      input = <<~'EOS'
-      [normal]
-      Normal paragraph.
-      Nothing special.
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'p', output, 1
-    end
-
     test 'removes indentation from literal paragraph marked as normal' do
       input = <<~'EOS'
       [normal]
