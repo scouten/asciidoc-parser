@@ -116,6 +116,10 @@ fn parse_lines<'src>(
         // `SimpleBlock::parse` in these conditions), but in case it is, we simply
         // ignore them on the first line.
         if !filtered_lines.is_empty() {
+            if line.data() == "+" {
+                break;
+            }
+
             if line.starts_with('[') && line.ends_with(']') {
                 break;
             }
