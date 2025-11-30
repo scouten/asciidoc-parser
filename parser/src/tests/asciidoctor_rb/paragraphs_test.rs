@@ -1009,79 +1009,20 @@ mod normal {
         );
     }
 
+    // No planned support for DocBook output, so these tests were not ported from
+    // asciidoctor_rb:
+    //
+    // * test 'automatically promotes index terms in DocBook output if
+    //   indexterm-promotion-option is set'
+    // * test 'does not automatically promote index terms in DocBook output if
+    //   indexterm-promotion-option is not set'
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'automatically promotes index terms in DocBook output if indexterm-promotion-option is set' do
-      input = <<~'EOS'
-      Here is an index entry for ((tigers)).
-      indexterm:[Big cats,Tigers,Siberian Tiger]
-      Here is an index entry for indexterm2:[Linux].
-      (((Operating Systems,Linux)))
-      Note that multi-entry terms generate separate index entries.
-      EOS
-
-      output = convert_string_to_embedded input, backend: 'docbook', attributes: { 'indexterm-promotion-option' => '' }
-      assert_xpath '/simpara', output, 1
-      term1 = xmlnodes_at_xpath '(//indexterm)[1]', output, 1
-      assert_equal %(<indexterm>\n<primary>tigers</primary>\n</indexterm>), term1.to_s
-      assert term1.next.content.start_with?('tigers')
-
-      term2 = xmlnodes_at_xpath '(//indexterm)[2]', output, 1
-      term2_elements = term2.elements
-      assert_equal 3, term2_elements.size
-      assert_equal '<primary>Big cats</primary>', term2_elements[0].to_s
-      assert_equal '<secondary>Tigers</secondary>', term2_elements[1].to_s
-      assert_equal '<tertiary>Siberian Tiger</tertiary>', term2_elements[2].to_s
-
-      term3 = xmlnodes_at_xpath '(//indexterm)[3]', output, 1
-      term3_elements = term3.elements
-      assert_equal 2, term3_elements.size
-      assert_equal '<primary>Tigers</primary>', term3_elements[0].to_s
-      assert_equal '<secondary>Siberian Tiger</secondary>', term3_elements[1].to_s
-
-      term4 = xmlnodes_at_xpath '(//indexterm)[4]', output, 1
-      term4_elements = term4.elements
-      assert_equal 1, term4_elements.size
-      assert_equal '<primary>Siberian Tiger</primary>', term4_elements[0].to_s
-
-      term5 = xmlnodes_at_xpath '(//indexterm)[5]', output, 1
-      assert_equal %(<indexterm>\n<primary>Linux</primary>\n</indexterm>), term5.to_s
-      assert term5.next.content.start_with?('Linux')
-
-      assert_xpath '(//indexterm)[6]/*', output, 2
-      assert_xpath '(//indexterm)[7]/*', output, 1
-    end
-
-    test 'does not automatically promote index terms in DocBook output if indexterm-promotion-option is not set' do
-      input = <<~'EOS'
-      The Siberian Tiger is one of the biggest living cats.
-      indexterm:[Big cats,Tigers,Siberian Tiger]
-      Note that multi-entry terms generate separate index entries.
-      (((Operating Systems,Linux)))
-      EOS
-
-      output = convert_string_to_embedded input, backend: 'docbook'
-
-      assert_css 'indexterm', output, 2
-
-      terms = xmlnodes_at_css 'indexterm', output, 2
-      term1 = terms[0]
-      term1_elements = term1.elements
-      assert_equal 3, term1_elements.size
-      assert_equal '<primary>Big cats</primary>', term1_elements[0].to_s
-      assert_equal '<secondary>Tigers</secondary>', term1_elements[1].to_s
-      assert_equal '<tertiary>Siberian Tiger</tertiary>', term1_elements[2].to_s
-      term2 = terms[1]
-      term2_elements = term2.elements
-      assert_equal 2, term2_elements.size
-      assert_equal '<primary>Operating Systems</primary>', term2_elements[0].to_s
-      assert_equal '<secondary>Linux</secondary>', term2_elements[1].to_s
-    end
-
     test 'normal paragraph should honor explicit subs list' do
       input = <<~'EOS'
       [subs="specialcharacters"]
