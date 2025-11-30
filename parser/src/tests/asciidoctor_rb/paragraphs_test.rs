@@ -397,23 +397,71 @@ mod normal {
         );
     }
 
+    #[test]
+    fn does_not_treat_wrapped_line_as_a_list_item() {
+        let doc = Parser::default().parse("paragraph\n. wrapped line");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "paragraph\n. wrapped line",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "paragraph\n. wrapped line",
+                    },
+                    source: Span {
+                        data: "paragraph\n. wrapped line",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "paragraph\n. wrapped line",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'does not treat wrapped line as a list item' do
-      input = <<~'EOS'
-      paragraph
-      . wrapped line
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'p', output, 1
-      assert_xpath %(//p[text()="paragraph\n. wrapped line"]), output, 1
-    end
-
     test 'does not treat wrapped line as a block title' do
       input = <<~'EOS'
       paragraph
