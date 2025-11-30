@@ -587,25 +587,85 @@ mod normal {
         );
     }
 
+    #[test]
+    fn removes_indentation_from_literal_paragraph_marked_as_normal() {
+        let doc = Parser::default()
+            .parse("[normal]\n Normal paragraph.\n  Nothing special.\n Last line.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: " Normal paragraph.\n  Nothing special.\n Last line.",
+                            line: 2,
+                            col: 1,
+                            offset: 9,
+                        },
+                        rendered: "Normal paragraph.\n Nothing special.\nLast line.",
+                    },
+                    source: Span {
+                        data: "[normal]\n Normal paragraph.\n  Nothing special.\n Last line.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "normal",
+                            shorthand_items: &["normal"],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "normal",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[normal]\n Normal paragraph.\n  Nothing special.\n Last line.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'removes indentation from literal paragraph marked as normal' do
-      input = <<~'EOS'
-      [normal]
-        Normal paragraph.
-          Nothing special.
-        Last line.
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'p', output, 1
-      assert_xpath %(//p[text()="Normal paragraph.\n  Nothing special.\nLast line."]), output, 1
-    end
-
     test 'normal paragraph terminates at block attribute list' do
       input = <<~'EOS'
       normal text

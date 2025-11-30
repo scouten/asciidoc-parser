@@ -25,20 +25,17 @@ impl<'src> SimpleBlock<'src> {
         metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchedItem<'src, Self>> {
-        let source = metadata.block_start.take_non_empty_lines()?;
-
-        let mut content: Content<'src> = source.item.into();
-
-        SubstitutionGroup::Normal
-            .override_via_attrlist(metadata.attrlist.as_ref())
-            .apply(&mut content, parser, metadata.attrlist.as_ref());
+        let MatchedItem {
+            item: content,
+            after,
+        } = parse_lines(metadata.block_start, &metadata.attrlist, parser)?;
 
         Some(MatchedItem {
             item: Self {
                 content,
                 source: metadata
                     .source
-                    .trim_remainder(source.after)
+                    .trim_remainder(after)
                     .trim_trailing_whitespace(),
                 title_source: metadata.title_source,
                 title: metadata.title.clone(),
@@ -46,30 +43,32 @@ impl<'src> SimpleBlock<'src> {
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
             },
-            after: source.after.discard_empty_lines(),
+            after: after.discard_empty_lines(),
         })
     }
 
     pub(crate) fn parse_fast(
         source: Span<'src>,
-        parser: &mut Parser,
+        parser: &Parser,
     ) -> Option<MatchedItem<'src, Self>> {
-        let source = source.take_non_empty_lines()?;
+        let MatchedItem {
+            item: content,
+            after,
+        } = parse_lines(source, &None, parser)?;
 
-        let mut content: Content<'src> = source.item.into();
-        SubstitutionGroup::Normal.apply(&mut content, parser, None);
+        let source = content.original().clone();
 
         Some(MatchedItem {
             item: Self {
                 content,
-                source: source.item,
+                source,
                 title_source: None,
                 title: None,
                 anchor: None,
                 anchor_reftext: None,
                 attrlist: None,
             },
-            after: source.after.discard_empty_lines(),
+            after: after.discard_empty_lines(),
         })
     }
 
@@ -77,6 +76,72 @@ impl<'src> SimpleBlock<'src> {
     pub fn content(&self) -> &Content<'src> {
         &self.content
     }
+}
+
+/// Parse the content-bearing lines for this block.
+#[allow(unused)] // TEMPORARY while building
+fn parse_lines<'src>(
+    source: Span<'src>,
+    attrlist: &Option<Attrlist<'src>>,
+    parser: &Parser,
+) -> Option<MatchedItem<'src, Content<'src>>> {
+    let source_after_whitespace = source.discard_whitespace();
+    let strip_indent = source_after_whitespace.col() - 1;
+    let mut is_literal = source_after_whitespace.col() != source.col();
+
+    // Block style can override the interpretation of literal from reading
+    // indentation.
+    if let Some(attrlist) = attrlist {
+        match attrlist.block_style() {
+            Some("normal") => {
+                is_literal = false;
+            }
+            Some("literal") => {
+                is_literal = true;
+            }
+            _ => {}
+        }
+    }
+
+    let mut next = source;
+    let mut filtered_lines: Vec<&'src str> = vec![];
+
+    while let Some(line_mi) = next.take_non_empty_line() {
+        next = line_mi.after;
+
+        let mut line = line_mi.item;
+        if line.starts_with("//") && !line.starts_with("///") {
+            continue;
+        }
+
+        // Strip at most the number of leading whitespace characters found on the first
+        // line.
+        match line.position(|c| c != ' ' && c != '\t') {
+            Some(n) => {
+                line = line.into_parse_result(n.min(strip_indent)).after;
+            }
+            None => {}
+        };
+
+        filtered_lines.push(line.trim_trailing_whitespace().data());
+    }
+
+    let source = source.trim_remainder(next).trim_trailing_whitespace();
+    if source.is_empty() {
+        return None;
+    }
+
+    let filtered_lines = filtered_lines.join("\n");
+    let mut content: Content<'src> = Content::from_filtered(source, filtered_lines);
+
+    SubstitutionGroup::Normal
+        .override_via_attrlist(attrlist.as_ref())
+        .apply(&mut content, parser, attrlist.as_ref());
+
+    Some(MatchedItem {
+        item: content,
+        after: next.discard_empty_lines(),
+    })
 }
 
 impl<'src> IsBlock<'src> for SimpleBlock<'src> {
