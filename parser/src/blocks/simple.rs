@@ -79,6 +79,9 @@ impl<'src> SimpleBlock<'src> {
             }
 
             if !inline.item.starts_with("//") || inline.item.starts_with("///") {
+                // NOTE: We behave slightly differently from Asciidoctor here. We strip leading
+                // whitespace from _all_ lines in this simple block without regard to whether
+                // _some_ lines are indented and others are not.
                 filtered_lines.push(
                     inline
                         .item

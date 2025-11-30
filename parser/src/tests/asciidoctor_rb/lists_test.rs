@@ -2578,31 +2578,147 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn wrapped_list_item_with_hanging_indent_followed_by_non_indented_line() {
+            let doc = Parser::default()
+                .parse("- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2");
+
+            // NOTE: We behave slightly differently from Asciidoctor here. We strip leading
+            // whitespace from _all_ lines in this simple block without regard to whether
+            // _some_ lines are indented and others are not.
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "list item 1\n  // not line comment\nsecond wrapped line",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "list item 1\n// not line comment\nsecond wrapped line",
+                                    },
+                                    source: Span {
+                                        data: "list item 1\n  // not line comment\nsecond wrapped line",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- list item 1\n  // not line comment\nsecond wrapped line",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 56,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "list item 2",
+                                            line: 4,
+                                            col: 3,
+                                            offset: 58,
+                                        },
+                                        rendered: "list item 2",
+                                    },
+                                    source: Span {
+                                        data: "list item 2",
+                                        line: 4,
+                                        col: 3,
+                                        offset: 58,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- list item 2",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 56,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'wrapped list item with hanging indent followed by non-indented line' do
-      input = <<~'EOS'
-      == Lists
-
-      - list item 1
-        // not line comment
-      second wrapped line
-      - list item 2
-      EOS
-      output = convert_string_to_embedded input
-      assert_css 'ul', output, 1
-      assert_css 'ul li', output, 2
-      # NOTE for some reason, we're getting an extra line after the indented line
-      lines = xmlnodes_at_xpath('(//ul/li)[1]/p', output, 1).text.gsub(/\n[[:space:]]*\n/, ?\n).lines
-      assert_equal 3, lines.size
-      assert_equal 'list item 1', lines[0].chomp
-      assert_equal '  // not line comment', lines[1].chomp
-      assert_equal 'second wrapped line', lines[2].chomp
-    end
-
     test 'a list item with a nested marker terminates indented paragraph for text of list item' do
       input = <<~'EOS'
       - Foo
