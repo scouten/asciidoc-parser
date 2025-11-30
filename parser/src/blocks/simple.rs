@@ -79,7 +79,13 @@ impl<'src> SimpleBlock<'src> {
             }
 
             if !inline.item.starts_with("//") || inline.item.starts_with("///") {
-                filtered_lines.push(inline.item.trim_trailing_whitespace().data());
+                filtered_lines.push(
+                    &inline
+                        .item
+                        .discard_whitespace()
+                        .trim_trailing_whitespace()
+                        .data(),
+                );
             }
 
             next = inline.after;
