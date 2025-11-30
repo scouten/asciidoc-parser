@@ -9,7 +9,7 @@ mod normal {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, document::RefType, tests::prelude::*};
 
     #[test]
     fn should_treat_plain_text_separated_by_blank_lines_as_paragraphs() {
@@ -183,33 +183,226 @@ mod normal {
         );
     }
 
+    #[test]
+    fn no_duplicate_block_before_next_section() {
+        let doc = Parser::default().parse("= Title\n\nPreamble\n\n== First Section\n\nParagraph 1\n\nParagraph 2\n\n== Second Section\n\nLast words");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: Some(Span {
+                        data: "Title",
+                        line: 1,
+                        col: 3,
+                        offset: 2,
+                    },),
+                    title: Some("Title",),
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "= Title",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Preamble(Preamble {
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "Preamble",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 9,
+                                },
+                                rendered: "Preamble",
+                            },
+                            source: Span {
+                                data: "Preamble",
+                                line: 3,
+                                col: 1,
+                                offset: 9,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "Preamble",
+                            line: 3,
+                            col: 1,
+                            offset: 9,
+                        },
+                    },),
+                    Block::Section(SectionBlock {
+                        level: 1,
+                        section_title: Content {
+                            original: Span {
+                                data: "First Section",
+                                line: 5,
+                                col: 4,
+                                offset: 22,
+                            },
+                            rendered: "First Section",
+                        },
+                        blocks: &[
+                            Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "Paragraph 1",
+                                        line: 7,
+                                        col: 1,
+                                        offset: 37,
+                                    },
+                                    rendered: "Paragraph 1",
+                                },
+                                source: Span {
+                                    data: "Paragraph 1",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 37,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "Paragraph 2",
+                                        line: 9,
+                                        col: 1,
+                                        offset: 50,
+                                    },
+                                    rendered: "Paragraph 2",
+                                },
+                                source: Span {
+                                    data: "Paragraph 2",
+                                    line: 9,
+                                    col: 1,
+                                    offset: 50,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "== First Section\n\nParagraph 1\n\nParagraph 2",
+                            line: 5,
+                            col: 1,
+                            offset: 19,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                        section_type: SectionType::Normal,
+                        section_id: Some("_first_section",),
+                        section_number: None,
+                    },),
+                    Block::Section(SectionBlock {
+                        level: 1,
+                        section_title: Content {
+                            original: Span {
+                                data: "Second Section",
+                                line: 11,
+                                col: 4,
+                                offset: 66,
+                            },
+                            rendered: "Second Section",
+                        },
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "Last words",
+                                    line: 13,
+                                    col: 1,
+                                    offset: 82,
+                                },
+                                rendered: "Last words",
+                            },
+                            source: Span {
+                                data: "Last words",
+                                line: 13,
+                                col: 1,
+                                offset: 82,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "== Second Section\n\nLast words",
+                            line: 11,
+                            col: 1,
+                            offset: 63,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                        section_type: SectionType::Normal,
+                        section_id: Some("_second_section",),
+                        section_number: None,
+                    },),
+                ],
+                source: Span {
+                    data: "= Title\n\nPreamble\n\n== First Section\n\nParagraph 1\n\nParagraph 2\n\n== Second Section\n\nLast words",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([
+                        (
+                            "_first_section",
+                            RefEntry {
+                                id: "_first_section",
+                                reftext: Some("First Section",),
+                                ref_type: RefType::Section,
+                            },
+                        ),
+                        (
+                            "_second_section",
+                            RefEntry {
+                                id: "_second_section",
+                                reftext: Some("Second Section",),
+                                ref_type: RefType::Section,
+                            },
+                        ),
+                    ]),
+                    reftext_to_id: HashMap::from([
+                        ("First Section", "_first_section",),
+                        ("Second Section", "_second_section",),
+                    ]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'no duplicate block before next section' do
-      input = <<~'EOS'
-      = Title
-
-      Preamble
-
-      == First Section
-
-      Paragraph 1
-
-      Paragraph 2
-
-      == Second Section
-
-      Last words
-      EOS
-
-      output = convert_string input
-      assert_xpath '//p[text() = "Paragraph 2"]', output, 1
-    end
-
     test 'does not treat wrapped line as a list item' do
       input = <<~'EOS'
       paragraph
