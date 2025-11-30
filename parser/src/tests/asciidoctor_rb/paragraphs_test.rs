@@ -936,23 +936,85 @@ mod normal {
         );
     }
 
+    #[test]
+    fn normal_style_turns_literal_paragraph_into_normal_paragraph() {
+        let doc =
+            Parser::default().parse("[normal]\n normal paragraph,\n despite the leading indent");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: " normal paragraph,\n despite the leading indent",
+                            line: 2,
+                            col: 1,
+                            offset: 9,
+                        },
+                        rendered: "normal paragraph,\ndespite the leading indent",
+                    },
+                    source: Span {
+                        data: "[normal]\n normal paragraph,\n despite the leading indent",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "normal",
+                            shorthand_items: &["normal"],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "normal",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[normal]\n normal paragraph,\n despite the leading indent",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'normal style turns literal paragraph into normal paragraph' do
-      input = <<~'EOS'
-      [normal]
-       normal paragraph,
-       despite the leading indent
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css '.paragraph:root > p', output, 1
-    end
-
     test 'automatically promotes index terms in DocBook output if indexterm-promotion-option is set' do
       input = <<~'EOS'
       Here is an index entry for ((tigers)).
