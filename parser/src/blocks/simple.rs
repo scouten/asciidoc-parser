@@ -120,12 +120,14 @@ fn parse_lines<'src>(
 
         // Strip at most the number of leading whitespace characters found on the first
         // line.
-        match line.position(|c| c != ' ' && c != '\t') {
-            Some(n) => {
-                line = line.into_parse_result(n.min(strip_indent)).after;
-            }
-            None => {}
-        };
+        if strip_indent > 0 {
+            match line.position(|c| c != ' ' && c != '\t') {
+                Some(n) => {
+                    line = line.into_parse_result(n.min(strip_indent)).after;
+                }
+                None => {}
+            };
+        }
 
         filtered_lines.push(line.trim_trailing_whitespace().data());
     }
