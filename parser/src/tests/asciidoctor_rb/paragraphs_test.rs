@@ -1089,22 +1089,84 @@ mod normal {
         );
     }
 
+    #[test]
+    fn normal_paragraph_should_honor_specialchars_shorthand() {
+        let doc = Parser::default().parse("[subs=\"specialchars\"]\n*<Hey Jude>*");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "*<Hey Jude>*",
+                            line: 2,
+                            col: 1,
+                            offset: 22,
+                        },
+                        rendered: "*&lt;Hey Jude&gt;*",
+                    },
+                    source: Span {
+                        data: "[subs=\"specialchars\"]\n*<Hey Jude>*",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: Some("subs",),
+                            value: "specialchars",
+                            shorthand_items: &[],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "subs=\"specialchars\"",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[subs=\"specialchars\"]\n*<Hey Jude>*",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'normal paragraph should honor specialchars shorthand' do
-      input = <<~'EOS'
-      [subs="specialchars"]
-      *<Hey Jude>*
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_includes output, '*&lt;Hey Jude&gt;*'
-    end
-
     test 'should add a hardbreak at end of each line when hardbreaks option is set' do
       input = <<~'EOS'
       [%hardbreaks]
