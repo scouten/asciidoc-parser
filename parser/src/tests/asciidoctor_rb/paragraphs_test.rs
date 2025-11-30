@@ -756,24 +756,109 @@ mod normal {
         );
     }
 
+    #[test]
+    fn normal_paragraph_terminates_at_block_delimiter() {
+        let doc = Parser::default().parse("normal text\n--\ntext in open block\n--");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "normal text",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            rendered: "normal text",
+                        },
+                        source: Span {
+                            data: "normal text",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "text in open block",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 15,
+                                },
+                                rendered: "text in open block",
+                            },
+                            source: Span {
+                                data: "text in open block",
+                                line: 3,
+                                col: 1,
+                                offset: 15,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        context: "open",
+                        source: Span {
+                            data: "--\ntext in open block\n--",
+                            line: 2,
+                            col: 1,
+                            offset: 12,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: "normal text\n--\ntext in open block\n--",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'normal paragraph terminates at block delimiter' do
-      input = <<~'EOS'
-      normal text
-      --
-      text in open block
-      --
-      EOS
-      output = convert_string_to_embedded input
-      assert_css '.paragraph:root', output, 1
-      assert_css '.openblock:root', output, 1
-    end
-
     test 'normal paragraph terminates at list continuation' do
       input = <<~'EOS'
       normal text

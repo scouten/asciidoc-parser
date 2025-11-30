@@ -1,7 +1,9 @@
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+    blocks::{
+        CompoundDelimitedBlock, ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata,
+    },
     content::{Content, SubstitutionGroup},
     span::MatchedItem,
     strings::CowStr,
@@ -108,8 +110,30 @@ fn parse_lines<'src>(
 
     while let Some(line_mi) = next.take_non_empty_line() {
         let mut line = line_mi.item;
-        if line.starts_with('[') && line.ends_with(']') && !filtered_lines.is_empty() {
-            break;
+
+        // There are several stop conditions for simple paragraph blocks. These
+        // "shouldn't" be encountered on the first line (we shouldn't be calling
+        // `SimpleBlock::parse` in these conditions), but in case it is, we simply
+        // ignore them on the first line.
+        if !filtered_lines.is_empty() {
+            if line.starts_with('[') && line.ends_with(']') {
+                break;
+            }
+
+            if line.starts_with('/')
+                || line.starts_with('-')
+                || line.starts_with('.')
+                || line.starts_with('+')
+                || line.starts_with('=')
+                || line.starts_with('*')
+                || line.starts_with('_')
+            {
+                if RawDelimitedBlock::is_valid_delimiter(&line)
+                    || CompoundDelimitedBlock::is_valid_delimiter(&line)
+                {
+                    break;
+                }
+            }
         }
 
         next = line_mi.after;
