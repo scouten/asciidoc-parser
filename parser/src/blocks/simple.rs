@@ -107,9 +107,13 @@ fn parse_lines<'src>(
     let mut filtered_lines: Vec<&'src str> = vec![];
 
     while let Some(line_mi) = next.take_non_empty_line() {
+        let mut line = line_mi.item;
+        if line.starts_with('[') && line.ends_with(']') && !filtered_lines.is_empty() {
+            break;
+        }
+
         next = line_mi.after;
 
-        let mut line = line_mi.item;
         if line.starts_with("//") && !line.starts_with("///") {
             continue;
         }
