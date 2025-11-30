@@ -64,14 +64,13 @@ impl<'src> ListBlock<'src> {
                 if !first_marker.is_match_for(&marker) {
                     // TEMPORARY assume we're adding a new nesting level. Unimplemented to see if we
                     // need to unwind.
-                    if let Some(nested_list) =
-                        ListBlock::parse(&list_item_metadata, parser, warnings)
-                    {
-                        list_item_mi =
-                            ListItem::from_nested_list(nested_list, first_marker.clone());
-                    } else {
-                        panic!("I was expecting this list to parse");
-                    }
+
+                    // NOTE: The call to `ListBlock::parse` *should* succeed (as in I can't think of
+                    // a test case where it would fail). We use the `?` to provide a safe escape in
+                    // case it doesn't.
+                    let nested_list = ListBlock::parse(&list_item_metadata, parser, warnings)?;
+
+                    list_item_mi = ListItem::from_nested_list(nested_list, first_marker.clone());
                 }
             } else {
                 first_marker = Some(marker);
