@@ -1161,26 +1161,84 @@ mod normal {
         );
     }
 
+    #[test]
+    fn should_add_a_hardbreak_at_end_of_each_line_when_hardbreaks_option_is_set() {
+        let doc = Parser::default().parse("[%hardbreaks]\nread\nmy\nlips");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "read\nmy\nlips",
+                            line: 2,
+                            col: 1,
+                            offset: 14,
+                        },
+                        rendered: "read<br>\nmy<br>\nlips",
+                    },
+                    source: Span {
+                        data: "[%hardbreaks]\nread\nmy\nlips",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "%hardbreaks",
+                            shorthand_items: &["%hardbreaks"],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "%hardbreaks",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[%hardbreaks]\nread\nmy\nlips",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'should add a hardbreak at end of each line when hardbreaks option is set' do
-      input = <<~'EOS'
-      [%hardbreaks]
-      read
-      my
-      lips
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'br', output, 2
-      assert_xpath '//p', output, 1
-      assert_includes output, "<p>read<br>\nmy<br>\nlips</p>"
-    end
-
     test 'should be able to toggle hardbreaks by setting hardbreaks-option on document' do
       input = <<~'EOS'
       :hardbreaks-option:
