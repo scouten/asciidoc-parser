@@ -1352,14 +1352,20 @@ mod normal {
     }
 }
 
-#[ignore]
-#[test]
-fn port_from_ruby() {
-    todo!(
-        "Port this: {}",
-        r###"
+#[allow(unused)] // TEMPORARY for a moment ...
+mod literal {
+    use std::collections::HashMap;
 
-  context 'Literal' do
+    use pretty_assertions_sorted::assert_eq;
+
+    use crate::{Parser, document::RefType, tests::prelude::*};
+
+    #[ignore]
+    #[test]
+    fn port_from_ruby() {
+        todo!(
+            "Port this: {}",
+            r###"
     test 'single-line literal paragraphs' do
       input = <<~'EOS'
       you know what?
@@ -1479,8 +1485,17 @@ fn port_from_ruby() {
       assert_xpath %(/*[@class="paragraph"]), output, 1
       assert_xpath %(/*[@class="paragraph"]/p[text() = "+"]), output, 1
     end
-  end
+"###
+        );
+    }
+}
 
+#[ignore]
+#[test]
+fn port_from_ruby() {
+    todo!(
+        "Port this: {}",
+        r###"
   context 'Quote' do
     test 'single-line quote paragraph' do
       input = <<~'EOS'
