@@ -1233,30 +1233,121 @@ mod normal {
         );
     }
 
-    #[ignore]
     #[test]
-    fn port_from_ruby() {
-        todo!(
-            "Port this: {}",
-            r###"
-    test 'should be able to toggle hardbreaks by setting hardbreaks-option on document' do
-      input = <<~'EOS'
-      :hardbreaks-option:
+    fn should_be_able_to_toggle_hardbreaks_by_setting_hardbreaks_option_on_document() {
+        // NOTE: I substituted different test material in this test.
+        // See https://github.com/asciidoctor/asciidoctor/issues/4818 for why.
 
-      make
-      it
-      so
+        let doc = Parser::default()
+            .parse(":hardbreaks-option:\n\nmake\nit\nso\n\n:!hardbreaks:\n\nroll\nit\nback");
 
-      :!hardbreaks:
-
-      roll it back
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_xpath '(//p)[1]/br', output, 2
-      assert_xpath '(//p)[2]/br', output, 0
-    end
-"###
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[Attribute {
+                        name: Span {
+                            data: "hardbreaks-option",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                        value_source: None,
+                        value: InterpretedValue::Set,
+                        source: Span {
+                            data: ":hardbreaks-option:",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: ":hardbreaks-option:",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "make\nit\nso",
+                                line: 3,
+                                col: 1,
+                                offset: 21,
+                            },
+                            rendered: "make<br>\nit<br>\nso",
+                        },
+                        source: Span {
+                            data: "make\nit\nso",
+                            line: 3,
+                            col: 1,
+                            offset: 21,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::DocumentAttribute(Attribute {
+                        name: Span {
+                            data: "hardbreaks",
+                            line: 7,
+                            col: 3,
+                            offset: 35,
+                        },
+                        value_source: None,
+                        value: InterpretedValue::Unset,
+                        source: Span {
+                            data: ":!hardbreaks:",
+                            line: 7,
+                            col: 1,
+                            offset: 33,
+                        },
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "roll\nit\nback",
+                                line: 9,
+                                col: 1,
+                                offset: 48,
+                            },
+                            rendered: "roll\nit\nback",
+                        },
+                        source: Span {
+                            data: "roll\nit\nback",
+                            line: 9,
+                            col: 1,
+                            offset: 48,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: ":hardbreaks-option:\n\nmake\nit\nso\n\n:!hardbreaks:\n\nroll\nit\nback",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
         );
     }
 }
