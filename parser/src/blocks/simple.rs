@@ -58,7 +58,7 @@ impl<'src> SimpleBlock<'src> {
             after,
         } = parse_lines(source, &None, parser)?;
 
-        let source = content.original().clone();
+        let source = content.original();
 
         Some(MatchedItem {
             item: Self {
@@ -124,19 +124,17 @@ fn parse_lines<'src>(
                 break;
             }
 
-            if line.starts_with('/')
+            if (line.starts_with('/')
                 || line.starts_with('-')
                 || line.starts_with('.')
                 || line.starts_with('+')
                 || line.starts_with('=')
                 || line.starts_with('*')
-                || line.starts_with('_')
+                || line.starts_with('_'))
+                && (RawDelimitedBlock::is_valid_delimiter(&line)
+                    || CompoundDelimitedBlock::is_valid_delimiter(&line))
             {
-                if RawDelimitedBlock::is_valid_delimiter(&line)
-                    || CompoundDelimitedBlock::is_valid_delimiter(&line)
-                {
-                    break;
-                }
+                break;
             }
         }
 
@@ -148,14 +146,11 @@ fn parse_lines<'src>(
 
         // Strip at most the number of leading whitespace characters found on the first
         // line.
-        if strip_indent > 0 {
-            match line.position(|c| c != ' ' && c != '\t') {
-                Some(n) => {
-                    line = line.into_parse_result(n.min(strip_indent)).after;
-                }
-                None => {}
-            };
-        }
+        if strip_indent > 0
+            && let Some(n) = line.position(|c| c != ' ' && c != '\t')
+        {
+            line = line.into_parse_result(n.min(strip_indent)).after;
+        };
 
         filtered_lines.push(line.trim_trailing_whitespace().data());
     }
