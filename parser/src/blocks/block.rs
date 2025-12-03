@@ -156,10 +156,8 @@ impl<'src> Block<'src> {
             mut warnings,
         } = BlockMetadata::parse(source, parser);
 
-        let is_literal = metadata
-            .attrlist
-            .as_ref()
-            .and_then(|a| a.block_style()) == Some("literal");
+        let is_literal =
+            metadata.attrlist.as_ref().and_then(|a| a.block_style()) == Some("literal");
 
         if !is_literal {
             if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&metadata, parser)
