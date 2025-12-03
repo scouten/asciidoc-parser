@@ -22,7 +22,7 @@ mod from_url_to_macro {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -90,6 +90,7 @@ With the exception of the xref:mailto-macro.adoc[mailto macro], all the URL macr
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -160,6 +161,7 @@ Type "https://asciidoctor.org[]" into the location bar of your browser.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -232,6 +234,7 @@ A more common reason is to specify custom link text.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -258,7 +261,7 @@ A more common reason is to specify custom link text.
 mod custom_link_text {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -320,6 +323,7 @@ include::example$url.adoc[tag=irc]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -389,6 +393,7 @@ include::example$url.adoc[tag=text]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -412,7 +417,7 @@ include::example$url.adoc[tag=text]
 mod link_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -470,6 +475,7 @@ include::example$url.adoc[tag=css]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

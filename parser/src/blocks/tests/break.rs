@@ -4,7 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     HasSpan, Parser,
-    blocks::{BreakType, ContentModel, IsBlock},
+    blocks::{BreakType, ContentModel, IsBlock, SimpleBlockStyle},
     content::SubstitutionGroup,
     tests::prelude::*,
 };
@@ -36,6 +36,7 @@ fn err_unknown_break_pattern() {
                 col: 1,
                 offset: 0,
             },
+            style: SimpleBlockStyle::Paragraph,
             title_source: None,
             title: None,
             anchor: None,

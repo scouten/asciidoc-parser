@@ -231,7 +231,7 @@ mod tests {
 
     use crate::{
         HasSpan, Parser,
-        blocks::{ContentModel, IsBlock},
+        blocks::{ContentModel, IsBlock, SimpleBlockStyle},
         content::SubstitutionGroup,
         parser::ModificationContext,
         tests::prelude::*,
@@ -691,6 +691,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -721,6 +722,7 @@ mod tests {
                     col: 1,
                     offset: 38,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -766,6 +768,7 @@ mod tests {
                     col: 1,
                     offset: 20,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,

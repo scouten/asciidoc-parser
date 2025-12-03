@@ -1,6 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/attribute-entries.adoc");
 
@@ -146,6 +146,7 @@ At the end of the value, press kbd:[Enter].
                     col: 1,
                     offset: 57,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -241,6 +242,7 @@ That means you don't need to escape special characters such in an HTML tag.
                     col: 1,
                     offset: 28,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -437,7 +439,12 @@ If you set a built-in attribute and leave its value empty, the AsciiDoc processo
 mod where_declared {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{IsBlock, SimpleBlockStyle},
+        parser::ModificationContext,
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -486,6 +493,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -516,6 +524,7 @@ For attributes that allow it (which includes general purpose attributes), the at
                     col: 1,
                     offset: 38,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -553,7 +562,12 @@ See the xref:document-attributes-ref.adoc[] for where in a document each attribu
 mod defining_without_attribute_entry {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock, parser::ModificationContext, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{IsBlock, SimpleBlockStyle},
+        parser::ModificationContext,
+        tests::prelude::*,
+    };
 
     // Non-normative because we have a different API and no CLI.
     non_normative!(
@@ -619,6 +633,7 @@ pass:a,q[{attribute-with-formatted-text}]
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -647,6 +662,7 @@ pass:a,q[{attribute-with-formatted-text}]
                     col: 1,
                     offset: 63,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,

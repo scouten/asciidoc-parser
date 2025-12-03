@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, document::RefType, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
 
 track_file!("docs/modules/blocks/pages/preamble-and-lead.adoc");
 
@@ -77,6 +77,7 @@ include::example$preamble.adoc[]
                                 col: 1,
                                 offset: 27,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,
@@ -99,6 +100,7 @@ include::example$preamble.adoc[]
                                 col: 1,
                                 offset: 370,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,
@@ -140,6 +142,7 @@ include::example$preamble.adoc[]
                             col: 1,
                             offset: 414,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,

@@ -24,6 +24,15 @@ pub struct Content<'src> {
 }
 
 impl<'src> Content<'src> {
+    /// Constructs a `Content` from a source `Span` and a potentially-filtered
+    /// view of that source text.
+    pub(crate) fn from_filtered<T: AsRef<str>>(span: Span<'src>, filtered: T) -> Self {
+        Self {
+            original: span,
+            rendered: filtered.as_ref().to_string().into(),
+        }
+    }
+
     /// Returns the original span from which this [`Content`] was derived.
     ///
     /// This is the source text before any substitions have been applied.

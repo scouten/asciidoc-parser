@@ -1,7 +1,7 @@
 use std::fmt;
 
 use crate::{
-    blocks::IsBlock,
+    blocks::{IsBlock, SimpleBlockStyle},
     span::HasSpan,
     tests::fixtures::{Span, attributes::Attrlist, content::Content},
 };
@@ -10,6 +10,7 @@ use crate::{
 pub(crate) struct SimpleBlock {
     pub content: Content,
     pub source: Span,
+    pub style: SimpleBlockStyle,
     pub title_source: Option<Span>,
     pub title: Option<&'static str>,
     pub anchor: Option<Span>,
@@ -22,6 +23,7 @@ impl fmt::Debug for SimpleBlock {
         f.debug_struct("SimpleBlock")
             .field("content", &self.content)
             .field("source", &self.source)
+            .field("style", &self.style)
             .field("title_source", &self.title_source)
             .field("title", &self.title)
             .field("anchor", &self.anchor)
@@ -44,6 +46,10 @@ impl PartialEq<SimpleBlock> for crate::blocks::SimpleBlock<'_> {
 }
 
 fn fixture_eq_observed(fixture: &SimpleBlock, observed: &crate::blocks::SimpleBlock) -> bool {
+    if fixture.style != observed.style() {
+        return false;
+    }
+
     if fixture.title_source.is_some() != observed.title_source().is_some() {
         return false;
     }

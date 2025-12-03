@@ -15,7 +15,7 @@ This page documents the recognized URL schemes and how to disable this behavior 
 mod url_schemes_for_autolinks {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -70,6 +70,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -132,6 +133,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -194,6 +196,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -256,6 +259,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -319,6 +323,7 @@ AsciiDoc recognizes the following common URL schemes without the help of any mar
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -392,6 +397,7 @@ If you want to use xref:url-macro.adoc#link-text[custom link text], you must use
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -463,6 +469,7 @@ To accommodate this convention, the AsciiDoc processor will still recognize the 
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -540,6 +547,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -563,7 +571,7 @@ This allows the theming system (e.g., CSS) to recognize autolinks (and other bar
 mod email_autolinks {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     #[test]
     fn example() {
@@ -619,6 +627,7 @@ For email address which do not conform to these restriction, you can use the xre
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -642,7 +651,7 @@ For email address which do not conform to these restriction, you can use the xre
 mod escaping_urls_and_email_addresses {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     #[test]
     fn url_and_email_examples() {
@@ -701,6 +710,7 @@ The URL and email address will both be shown in plain text.
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -723,6 +733,7 @@ The URL and email address will both be shown in plain text.
                             col: 1,
                             offset: 68,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -796,6 +807,7 @@ The `subs` attribute is only recognized on a leaf block, such as a paragraph.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

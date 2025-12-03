@@ -14,7 +14,11 @@ You can turn an image into a link by using the `link` attribute.
 mod link_attribute {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::MediaType, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{MediaType, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -258,6 +262,7 @@ image:apply.jpg[Apply,link=https://apply.example.org] today!
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

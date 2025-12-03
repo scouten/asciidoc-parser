@@ -2,7 +2,10 @@ mod parse {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, blocks::ContentModel, content::SubstitutionGroup, tests::prelude::*,
+        Parser,
+        blocks::{ContentModel, SimpleBlockStyle},
+        content::SubstitutionGroup,
+        tests::prelude::*,
         warnings::WarningType,
     };
 
@@ -40,6 +43,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -72,6 +76,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -104,6 +109,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -136,6 +142,7 @@ mod parse {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,

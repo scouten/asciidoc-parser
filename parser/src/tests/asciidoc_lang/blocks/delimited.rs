@@ -2,7 +2,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock},
+    blocks::{ContentModel, IsBlock, SimpleBlockStyle},
     content::SubstitutionGroup,
     tests::prelude::*,
     warnings::WarningType,
@@ -225,6 +225,7 @@ That's so meta.
                     col: 1,
                     offset: 5,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -492,7 +493,12 @@ The structural container provides a default context and expected content model, 
 mod nesting_blocks {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::ContentModel, content::SubstitutionGroup, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{ContentModel, SimpleBlockStyle},
+        content::SubstitutionGroup,
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -563,6 +569,7 @@ The document header is useful, but not required.
                             col: 1,
                             offset: 5,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -610,6 +617,7 @@ The document header is useful, but not required.
                             col: 1,
                             offset: 101,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -690,6 +698,7 @@ Live within the simulated reality without want or fear.
                             col: 1,
                             offset: 5,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -713,6 +722,7 @@ Live within the simulated reality without want or fear.
                                 col: 1,
                                 offset: 61,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,
@@ -767,6 +777,7 @@ Live within the simulated reality without want or fear.
                                 col: 1,
                                 offset: 130,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,

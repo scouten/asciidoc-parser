@@ -44,7 +44,7 @@ When linking to an email address, you can use the specialized xref:mailto-macro.
 mod encode_reserved_characters {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -121,6 +121,7 @@ Depending on the capabilities of the web application, the space character can be
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -144,7 +145,7 @@ Depending on the capabilities of the web application, the space character can be
 mod hide_uri_scheme {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -241,6 +242,7 @@ The prefix will still be present in the link target.
                         col: 1,
                         offset: 36,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

@@ -16,7 +16,7 @@ mod positional_attribute {
 
     use crate::{
         Parser,
-        blocks::{IsBlock, metadata::BlockMetadata},
+        blocks::{IsBlock, SimpleBlockStyle, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::prelude::*,
     };
@@ -317,6 +317,7 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -390,6 +391,7 @@ Specifically, this syntax sets the `header`, `footer`, and `autowidth` options.
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -463,6 +465,7 @@ Formatted text does not support a style, so the first and only positional attrib
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -486,7 +489,7 @@ Formatted text does not support a style, so the first and only positional attrib
 mod named_attribute {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -543,6 +546,7 @@ A named attribute consists of a name and a value separated by an `=` character (
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -622,6 +626,7 @@ In all other cases, the surrounding quotes are optional.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -702,6 +707,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -784,6 +790,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -820,7 +827,7 @@ If enclosing quotes are used, they are dropped from the parsed value and the pre
 mod attribute_list_parsing {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*, warnings::WarningType};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*, warnings::WarningType};
 
     non_normative!(
         r#"
@@ -881,6 +888,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -986,6 +994,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                         col: 1,
                         offset: 27,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1072,6 +1081,7 @@ In these rules, `name` consists of a word character (letter or numeral) followed
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1136,6 +1146,7 @@ For subsequent attributes, any leading space or tab characters are skipped.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1222,6 +1233,7 @@ Space and tab characters around the equals sign (=) and at the end of the value 
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1307,6 +1319,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1397,6 +1410,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1486,6 +1500,7 @@ Any space or tab characters at the boundaries of the value are ignored.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1583,6 +1598,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1672,6 +1688,7 @@ If there is a closing double quote, the enclosing double quote characters are re
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1769,6 +1786,7 @@ If there is a closing single quote, the enclosing single quote characters are re
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1860,6 +1878,7 @@ If there is a closing single quote, and the first character is not an escaped si
                             col: 1,
                             offset: 47,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1965,6 +1984,7 @@ That's because the parser already knows to look for the closing square bracket a
                             col: 1,
                             offset: 41,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -2065,6 +2085,7 @@ There are some exceptions to this rule, such as a link macro in a footnote, whic
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

@@ -1,6 +1,10 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, blocks::IsBlock, tests::prelude::*};
+use crate::{
+    Parser,
+    blocks::{IsBlock, SimpleBlockStyle},
+    tests::prelude::*,
+};
 
 track_file!("docs/modules/attributes/pages/attribute-entry-substitutions.adoc");
 
@@ -270,7 +274,11 @@ If the macro is absent, the value is processed with the header substitution grou
 mod attributes_defined_outside_document {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{IsBlock, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     // Non-normative because we have a different API and no CLI.
     non_normative!(
@@ -336,6 +344,7 @@ To play, you'll need {equipment}.
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -390,6 +399,7 @@ That's because, in contrast, substitutions are applied to the value of an attrib
                     col: 1,
                     offset: 27,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -454,6 +464,7 @@ This strategy is akin to post-processing the attribute value.
                 col: 1,
                 offset: 21,
             },
+            style: SimpleBlockStyle::Paragraph,
             title_source: None,
             title: None,
             anchor: None,

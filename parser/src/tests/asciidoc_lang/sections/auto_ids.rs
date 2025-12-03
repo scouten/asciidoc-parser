@@ -21,7 +21,10 @@ mod how_a_section_id_is_computed {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        Parser, blocks::metadata::BlockMetadata, document::RefType, parser::ModificationContext,
+        Parser,
+        blocks::{SimpleBlockStyle, metadata::BlockMetadata},
+        document::RefType,
+        parser::ModificationContext,
         tests::prelude::*,
     };
 
@@ -308,6 +311,7 @@ The AsciiDoc processor builds an ID from the title using the following order of 
                                 col: 1,
                                 offset: 20,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,
@@ -356,6 +360,7 @@ The AsciiDoc processor builds an ID from the title using the following order of 
                                 col: 1,
                                 offset: 45,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,

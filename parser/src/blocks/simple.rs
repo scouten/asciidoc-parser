@@ -1,11 +1,48 @@
 use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
-    blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+    blocks::{
+        CompoundDelimitedBlock, ContentModel, IsBlock, RawDelimitedBlock, metadata::BlockMetadata,
+    },
     content::{Content, SubstitutionGroup},
     span::MatchedItem,
     strings::CowStr,
 };
+
+/// The style of a simple block.
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub enum SimpleBlockStyle {
+    /// A paragraph block with normal substitutions.
+    Paragraph,
+
+    /// A literal block with no substitutions.
+    Literal,
+
+    /// Blocks and paragraphs assigned the listing style display their rendered
+    /// content exactly as you see it in the source. Listing content is
+    /// converted to preformatted text (i.e., `<pre>`). The content is presented
+    /// in a fixed-width font and endlines are preserved. Only [special
+    /// characters] and callouts are replaced when the document is converted.
+    ///
+    /// [special characters]: https://docs.asciidoctor.org/asciidoc/latest/subs/special-characters/
+    Listing,
+
+    /// A source block is a specialization of a listing block. Developers are
+    /// accustomed to seeing source code colorized to emphasize the code’s
+    /// structure (i.e., keywords, types, delimiters, etc.).
+    Source,
+}
+
+impl std::fmt::Debug for SimpleBlockStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SimpleBlockStyle::Paragraph => write!(f, "SimpleBlockStyle::Paragraph"),
+            SimpleBlockStyle::Literal => write!(f, "SimpleBlockStyle::Literal"),
+            SimpleBlockStyle::Listing => write!(f, "SimpleBlockStyle::Listing"),
+            SimpleBlockStyle::Source => write!(f, "SimpleBlockStyle::Source"),
+        }
+    }
+}
 
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
@@ -13,6 +50,7 @@ use crate::{
 pub struct SimpleBlock<'src> {
     content: Content<'src>,
     source: Span<'src>,
+    style: SimpleBlockStyle,
     title_source: Option<Span<'src>>,
     title: Option<String>,
     anchor: Option<Span<'src>>,
@@ -25,51 +63,52 @@ impl<'src> SimpleBlock<'src> {
         metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchedItem<'src, Self>> {
-        let source = metadata.block_start.take_non_empty_lines()?;
-
-        let mut content: Content<'src> = source.item.into();
-
-        SubstitutionGroup::Normal
-            .override_via_attrlist(metadata.attrlist.as_ref())
-            .apply(&mut content, parser, metadata.attrlist.as_ref());
+        let MatchedItem {
+            item: (content, style),
+            after,
+        } = parse_lines(metadata.block_start, &metadata.attrlist, parser)?;
 
         Some(MatchedItem {
             item: Self {
                 content,
                 source: metadata
                     .source
-                    .trim_remainder(source.after)
+                    .trim_remainder(after)
                     .trim_trailing_whitespace(),
+                style,
                 title_source: metadata.title_source,
                 title: metadata.title.clone(),
                 anchor: metadata.anchor,
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
             },
-            after: source.after.discard_empty_lines(),
+            after: after.discard_empty_lines(),
         })
     }
 
     pub(crate) fn parse_fast(
         source: Span<'src>,
-        parser: &mut Parser,
+        parser: &Parser,
     ) -> Option<MatchedItem<'src, Self>> {
-        let source = source.take_non_empty_lines()?;
+        let MatchedItem {
+            item: (content, style),
+            after,
+        } = parse_lines(source, &None, parser)?;
 
-        let mut content: Content<'src> = source.item.into();
-        SubstitutionGroup::Normal.apply(&mut content, parser, None);
+        let source = content.original();
 
         Some(MatchedItem {
             item: Self {
                 content,
-                source: source.item,
+                source,
+                style,
                 title_source: None,
                 title: None,
                 anchor: None,
                 anchor_reftext: None,
                 attrlist: None,
             },
-            after: source.after.discard_empty_lines(),
+            after: after.discard_empty_lines(),
         })
     }
 
@@ -77,6 +116,118 @@ impl<'src> SimpleBlock<'src> {
     pub fn content(&self) -> &Content<'src> {
         &self.content
     }
+
+    /// Return the style of this block.
+    pub fn style(&self) -> SimpleBlockStyle {
+        self.style
+    }
+}
+
+/// Parse the content-bearing lines for this block.
+fn parse_lines<'src>(
+    source: Span<'src>,
+    attrlist: &Option<Attrlist<'src>>,
+    parser: &Parser,
+) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
+    let source_after_whitespace = source.discard_whitespace();
+    let strip_indent = source_after_whitespace.col() - 1;
+
+    let mut style = if source_after_whitespace.col() == source.col() {
+        SimpleBlockStyle::Paragraph
+    } else {
+        SimpleBlockStyle::Literal
+    };
+
+    // Block style can override the interpretation of literal from reading
+    // indentation.
+    if let Some(attrlist) = attrlist {
+        match attrlist.block_style() {
+            Some("normal") => {
+                style = SimpleBlockStyle::Paragraph;
+            }
+
+            Some("literal") => {
+                style = SimpleBlockStyle::Literal;
+            }
+
+            Some("listing") => {
+                style = SimpleBlockStyle::Listing;
+            }
+
+            Some("source") => {
+                style = SimpleBlockStyle::Source;
+            }
+
+            _ => {}
+        }
+    }
+
+    let mut next = source;
+    let mut filtered_lines: Vec<&'src str> = vec![];
+
+    while let Some(line_mi) = next.take_non_empty_line() {
+        let mut line = line_mi.item;
+
+        // There are several stop conditions for simple paragraph blocks. These
+        // "shouldn't" be encountered on the first line (we shouldn't be calling
+        // `SimpleBlock::parse` in these conditions), but in case it is, we simply
+        // ignore them on the first line.
+        if !filtered_lines.is_empty() {
+            if line.data() == "+" {
+                break;
+            }
+
+            if line.starts_with('[') && line.ends_with(']') {
+                break;
+            }
+
+            if (line.starts_with('/')
+                || line.starts_with('-')
+                || line.starts_with('.')
+                || line.starts_with('+')
+                || line.starts_with('=')
+                || line.starts_with('*')
+                || line.starts_with('_'))
+                && (RawDelimitedBlock::is_valid_delimiter(&line)
+                    || CompoundDelimitedBlock::is_valid_delimiter(&line))
+            {
+                break;
+            }
+        }
+
+        next = line_mi.after;
+
+        if line.starts_with("//") && !line.starts_with("///") {
+            continue;
+        }
+
+        // Strip at most the number of leading whitespace characters found on the first
+        // line.
+        if strip_indent > 0
+            && let Some(n) = line.position(|c| c != ' ' && c != '\t')
+        {
+            line = line.into_parse_result(n.min(strip_indent)).after;
+        };
+
+        filtered_lines.push(line.trim_trailing_whitespace().data());
+    }
+
+    let source = source.trim_remainder(next).trim_trailing_whitespace();
+    if source.is_empty() {
+        return None;
+    }
+
+    let filtered_lines = filtered_lines.join("\n");
+    let mut content: Content<'src> = Content::from_filtered(source, filtered_lines);
+
+    SubstitutionGroup::Normal
+        .override_via_attrlist(attrlist.as_ref())
+        .apply(&mut content, parser, attrlist.as_ref());
+
+    Some(MatchedItem {
+        item: (content, style),
+        after: next.discard_empty_lines(),
+    })
 }
 
 impl<'src> IsBlock<'src> for SimpleBlock<'src> {
@@ -125,7 +276,7 @@ mod tests {
 
     use crate::{
         Parser,
-        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, SimpleBlockStyle, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::prelude::*,
     };
@@ -180,6 +331,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -237,6 +389,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -280,6 +433,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -326,6 +480,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,

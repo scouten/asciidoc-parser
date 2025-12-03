@@ -16,7 +16,7 @@ This page covers the anatomy of the link macro, when it's required, and how to u
 mod anatomy {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -77,6 +77,7 @@ the `<attrlist>` is the link text unless a named attribute is detected.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -109,7 +110,7 @@ Like all inline macros, the link macro can be escaped using a leading backslash 
 mod link_to_relative_file {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -173,6 +174,7 @@ The AsciiDoc processor will create a link to _report.pdf_ with the text "Get Rep
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -243,6 +245,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -266,7 +269,7 @@ Note that when linking to a relative file, even if it's an HTML file, the link t
 mod when_to_use {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -334,6 +337,7 @@ link:report.pdf[Get Report]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -413,6 +417,7 @@ link:pass:[My Documents/report.pdf][Get Report]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -480,6 +485,7 @@ link:My&#32;Documents/report.pdf[Get Report]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -547,6 +553,7 @@ link:My%20Documents/report.pdf[Get Report]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -626,6 +633,7 @@ link:Avengers%3A%20Endgame.html[]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -697,6 +705,7 @@ link:++https://example.org/now_this__link_works.html++[]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -766,6 +775,7 @@ In this case, the link macro prefix is required to increase the precedence so th
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -835,6 +845,7 @@ link:file:///home/username[Your files]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

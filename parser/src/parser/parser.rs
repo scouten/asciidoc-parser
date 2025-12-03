@@ -370,7 +370,7 @@ impl Parser {
         attr: &Attribute<'src>,
         warnings: &mut Vec<Warning<'src>>,
     ) {
-        let attr_name = attr.name().data().to_lowercase();
+        let attr_name = remap_attr_name(attr.name().data());
 
         let existing_attr = self.attribute_values.get(&attr_name);
 
@@ -412,7 +412,7 @@ impl Parser {
         name: N,
         value: V,
     ) {
-        let attr_name = name.as_ref().to_lowercase();
+        let attr_name = remap_attr_name(name);
 
         let attribute_value = AttributeValue {
             allowable_value: AllowableValue::Any,
@@ -432,7 +432,7 @@ impl Parser {
         attr: &Attribute<'src>,
         warnings: &mut Vec<Warning<'src>>,
     ) {
-        let attr_name = attr.name().data().to_lowercase();
+        let attr_name = remap_attr_name(attr.name().data());
 
         // Verify that we have permission to overwrite any existing attribute value.
         if let Some(existing_attr) = self.attribute_values.get(&attr_name)
@@ -471,6 +471,16 @@ impl Parser {
                 self.last_section_number.clone()
             }
         }
+    }
+}
+
+fn remap_attr_name<N: AsRef<str>>(raw_attr_name: N) -> String {
+    let attr_name = raw_attr_name.as_ref().to_lowercase();
+
+    // Some attribute names have aliases. Remap to the primary name.
+    match attr_name.as_str() {
+        "hardbreaks" => "hardbreaks-option".to_string(),
+        _ => attr_name,
     }
 }
 

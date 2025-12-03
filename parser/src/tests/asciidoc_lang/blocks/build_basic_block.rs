@@ -2,7 +2,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{ContentModel, IsBlock, MediaType},
+    blocks::{ContentModel, IsBlock, MediaType, SimpleBlockStyle},
     tests::prelude::*,
 };
 
@@ -109,6 +109,7 @@ This is more content in the sidebar block.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -133,6 +134,7 @@ This is more content in the sidebar block.
                                 col: 1,
                                 offset: 29,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,
@@ -185,6 +187,7 @@ This is more content in the sidebar block.
                                 col: 1,
                                 offset: 85,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,
@@ -273,6 +276,7 @@ include::example$block.adoc[tag=opt-listing]
                 col: 1,
                 offset: 0,
             },
+            style: SimpleBlockStyle::Listing,
             title_source: None,
             title: None,
             anchor: None,
@@ -341,6 +345,7 @@ However, note that the lines of a styled paragraph are first parsed like a parag
                 col: 1,
                 offset: 0,
             },
+            style: SimpleBlockStyle::Paragraph,
             title_source: None,
             title: None,
             anchor: None,

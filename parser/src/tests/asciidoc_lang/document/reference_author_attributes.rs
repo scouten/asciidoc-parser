@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, document::RefType, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
 
 track_file!("docs/modules/document/pages/reference-author-attributes.adoc");
 
@@ -167,6 +167,7 @@ image::reference-author.png[Reference the built-in attributes for an author,role
                             col: 1,
                             offset: 100,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -189,6 +190,7 @@ image::reference-author.png[Reference the built-in attributes for an author,role
                             col: 1,
                             offset: 141,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -423,6 +425,7 @@ image::reference-multiple-authors.png[Reference the built-in attributes for mult
                         col: 1,
                         offset: 116,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: Some(Span {
                         data: "About {author_2}",
                         line: 4,
@@ -450,6 +453,7 @@ image::reference-multiple-authors.png[Reference the built-in attributes for mult
                         col: 1,
                         offset: 182,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: Some(Span {
                         data: "About {author_3}",
                         line: 7,
@@ -477,6 +481,7 @@ image::reference-multiple-authors.png[Reference the built-in attributes for mult
                         col: 1,
                         offset: 265,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: Some(Span {
                         data: "About {author}",
                         line: 10,

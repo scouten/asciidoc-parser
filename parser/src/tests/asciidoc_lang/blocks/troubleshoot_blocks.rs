@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*, warnings::WarningType};
+use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*, warnings::WarningType};
 
 track_file!("docs/modules/blocks/pages/troubleshoot-blocks.adoc");
 
@@ -72,6 +74,7 @@ It will be styled as a sidebar.
                         col: 1,
                         offset: 5,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -146,28 +149,46 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 },
             },
             blocks: &[Block::CompoundDelimited(CompoundDelimitedBlock {
-                blocks: &[Block::Simple(SimpleBlock {
-                    content: Content {
-                        original: Span {
-                            data: "This is an invalid sidebar block because the delimiter lines are different lengths.\n****",
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "This is an invalid sidebar block because the delimiter lines are different lengths.",
+                                line: 2,
+                                col: 1,
+                                offset: 9,
+                            },
+                            rendered: "This is an invalid sidebar block because the delimiter lines are different lengths.",
+                        },
+                        source: Span {
+                            data: "This is an invalid sidebar block because the delimiter lines are different lengths.",
                             line: 2,
                             col: 1,
                             offset: 9,
                         },
-                        rendered: "This is an invalid sidebar block because the delimiter lines are different lengths.\n<strong>*</strong>*",
-                    },
-                    source: Span {
-                        data: "This is an invalid sidebar block because the delimiter lines are different lengths.\n****",
-                        line: 2,
-                        col: 1,
-                        offset: 9,
-                    },
-                    title_source: None,
-                    title: None,
-                    anchor: None,
-                    anchor_reftext: None,
-                    attrlist: None,
-                },),],
+                        style: SimpleBlockStyle::Paragraph,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
+                        blocks: &[],
+                        context: "sidebar",
+                        source: Span {
+                            data: "****",
+                            line: 3,
+                            col: 1,
+                            offset: 93,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
                 context: "sidebar",
                 source: Span {
                     data: "********\nThis is an invalid sidebar block because the delimiter lines are different lengths.\n****",
@@ -187,17 +208,31 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                 col: 1,
                 offset: 0,
             },
-            warnings: &[Warning {
-                source: Span {
-                    data: "********",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
+            warnings: &[
+                Warning {
+                    source: Span {
+                        data: "********",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warning: WarningType::UnterminatedDelimitedBlock,
                 },
-                warning: WarningType::UnterminatedDelimitedBlock,
-            },],
+                Warning {
+                    source: Span {
+                        data: "****",
+                        line: 3,
+                        col: 1,
+                        offset: 93,
+                    },
+                    warning: WarningType::UnterminatedDelimitedBlock,
+                },
+            ],
             source_map: SourceMap(&[]),
-            catalog: Catalog::default(),
+            catalog: Catalog {
+                refs: HashMap::from([]),
+                reftext_to_id: HashMap::from([]),
+            },
         }
     );
 }

@@ -4,6 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
+    blocks::SimpleBlockStyle,
     document::RefType,
     tests::prelude::{inline_file_handler::InlineFileHandler, *},
 };
@@ -156,6 +157,7 @@ The single quotes around the variable name in the assignment are required to for
                                     col: 1,
                                     offset: 81,
                                 },
+                                style: SimpleBlockStyle::Paragraph,
                                 title_source: None,
                                 title: None,
                                 anchor: None,
@@ -265,6 +267,7 @@ The single quotes around the variable name in the assignment are required to for
                                 col: 1,
                                 offset: 180,
                             },
+                            style: SimpleBlockStyle::Paragraph,
                             title_source: None,
                             title: None,
                             anchor: None,

@@ -28,7 +28,7 @@ Likewise, you can assign an ID to a list item by using an anchor (`[[]]`) at the
 mod valid_id_characters {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*, warnings::WarningType};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*, warnings::WarningType};
 
     non_normative!(
         r#"
@@ -86,6 +86,7 @@ All the language requires in this case is that the value be non-empty.
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -181,6 +182,7 @@ install the gem
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -205,7 +207,11 @@ NOTE: Section pending
 mod block_assignment {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{IsBlock, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -262,6 +268,7 @@ In the shorthand syntax, you prefix the name with a hash (`#`) in the first posi
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -329,6 +336,7 @@ In the longhand syntax, you use a standard named attribute.
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -396,6 +404,7 @@ In the block anchor syntax, you surround the name with double square brackets:
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: Some(Span {
@@ -453,6 +462,7 @@ ____
                         col: 1,
                         offset: 42,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -531,7 +541,7 @@ This is necessary since the `.` character in the shorthand syntax is the delimit
 mod inline_assignment {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -593,6 +603,7 @@ The id (`#`) shorthand can be used on inline quoted text.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -662,6 +673,7 @@ The id (`#`) shorthand can be used on inline quoted text.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -687,7 +699,7 @@ mod anchor {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, document::RefType, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -747,6 +759,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -802,6 +815,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -857,6 +871,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -912,6 +927,7 @@ According to the https://www.w3.org/TR/REC-xml/#NT-Name[XML Name] rules, a porta
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -976,6 +992,7 @@ The shorthand form in an attribute list does not impose this restriction.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1050,6 +1067,7 @@ include::example$id.adoc[tag=block-id-shorthand]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1144,6 +1162,7 @@ include::example$id.adoc[tag=block-id-brackets]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: Some(Span {
@@ -1234,6 +1253,7 @@ include::example$id.adoc[tag=anchor-brackets]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1306,6 +1326,7 @@ include::example$id.adoc[tag=anchor-shorthand]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

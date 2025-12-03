@@ -18,7 +18,12 @@ mod block_image_macro {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::MediaType, document::RefType, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{MediaType, SimpleBlockStyle},
+        document::RefType,
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -92,6 +97,7 @@ include::example$image.adoc[tag=base]
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -144,6 +150,7 @@ include::example$image.adoc[tag=base]
                             col: 1,
                             offset: 43,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,

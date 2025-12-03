@@ -27,7 +27,11 @@ You can assign one or more options to a block using the shorthand or formal synt
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{IsBlock, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     #[test]
     fn shorthand_syntax_single() {
@@ -77,6 +81,7 @@ This is a sidebar with an option assigned to it, named option.
                         col: 1,
                         offset: 15,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -167,6 +172,7 @@ This is a sidebar with two options assigned to it, named option1 and option2.
                         col: 1,
                         offset: 24,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -266,6 +272,7 @@ For instance, consider a table with the three built-in option values, `header`, 
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -358,6 +365,7 @@ This is a sidebar with an option assigned to it, named option.
                         col: 1,
                         offset: 19,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -447,6 +455,7 @@ This is a sidebar with two options assigned to it, option1 and option2.
                         col: 1,
                         offset: 30,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -546,6 +555,7 @@ Instead of using the shorthand notation, <<ex-table-formal>> shows how the value
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -603,7 +613,12 @@ Let's consider `options` when combined with other attributes.
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock, content::SubstitutionGroup, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{IsBlock, SimpleBlockStyle},
+        content::SubstitutionGroup,
+        tests::prelude::*,
+    };
 
     #[test]
     fn style_role_and_options() {
@@ -655,6 +670,7 @@ The role and options attributes can be set in either order, i.e., `[horizontal%s
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -743,6 +759,7 @@ property 2:: does different stuff
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,

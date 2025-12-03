@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, document::RefType, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
 
 track_file!("docs/modules/blocks/pages/discrete-headings.adoc");
 
@@ -96,6 +96,7 @@ Discrete headings can be used where sections are not permitted.
                             col: 1,
                             offset: 5,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -158,6 +159,7 @@ Discrete headings can be used where sections are not permitted.
                             col: 1,
                             offset: 130,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -251,6 +253,7 @@ DocBook refers to a discrete heading as a bridgehead, or free-floating heading.
                             col: 1,
                             offset: 5,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -313,6 +316,7 @@ DocBook refers to a discrete heading as a bridgehead, or free-floating heading.
                             col: 1,
                             offset: 124,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,

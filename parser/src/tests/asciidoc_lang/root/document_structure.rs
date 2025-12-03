@@ -20,7 +20,7 @@ mod documents {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -85,6 +85,7 @@ This is a basic AsciiDoc document.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -162,6 +163,7 @@ This document contains two paragraphs.
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -184,6 +186,7 @@ This document contains two paragraphs.
                             col: 1,
                             offset: 36,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -292,6 +295,7 @@ It also has a header that specifies the document title and some attibutes.
                             col: 1,
                             offset: 45,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -314,6 +318,7 @@ It also has a header that specifies the document title and some attibutes.
                             col: 1,
                             offset: 93,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -349,7 +354,7 @@ Documents can range from a single sentence to a multi-part book.
 mod lines {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     #[test]
     fn section_title() {
@@ -581,6 +586,7 @@ For example, a single empty line separates the header from the body.
                         col: 1,
                         offset: 22,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

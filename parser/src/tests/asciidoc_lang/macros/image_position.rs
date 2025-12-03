@@ -26,7 +26,11 @@ There are two approaches you can take when positioning your images:
 mod positioning_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::MediaType, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{MediaType, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -198,6 +202,7 @@ include::example$image.adoc[tag=in-float]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -230,7 +235,11 @@ It's far better to use CSS classes for these sorts of things, which map to roles
 mod positioning_roles {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::MediaType, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{MediaType, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -394,6 +403,7 @@ include::example$image.adoc[tag=in-role]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

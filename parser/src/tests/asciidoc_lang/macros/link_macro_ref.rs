@@ -1,6 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
 track_file!("docs/modules/macros/pages/link-macro-ref.adoc");
 
@@ -64,6 +64,7 @@ fn id() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -130,6 +131,7 @@ fn role() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -196,6 +198,7 @@ fn title() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -262,6 +265,7 @@ fn window() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -330,6 +334,7 @@ fn window_shorthand() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -395,6 +400,7 @@ fn opts() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
