@@ -4,7 +4,7 @@ use pretty_assertions_sorted::assert_eq;
 
 use crate::{
     Parser,
-    blocks::{BreakType, IsBlock},
+    blocks::{BreakType, IsBlock, SimpleBlockStyle},
     tests::prelude::*,
 };
 
@@ -219,6 +219,7 @@ include::partial$page-breaks.adoc[]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -267,6 +268,7 @@ include::partial$page-breaks.adoc[]
                         col: 1,
                         offset: 28,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

@@ -1,6 +1,11 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, blocks::ContentModel, content::SubstitutionGroup, tests::prelude::*};
+use crate::{
+    Parser,
+    blocks::{ContentModel, SimpleBlockStyle},
+    content::SubstitutionGroup,
+    tests::prelude::*,
+};
 
 track_file!("docs/modules/blocks/pages/add-title.adoc");
 
@@ -63,6 +68,7 @@ This is the content of the sidebar block.
                     col: 1,
                     offset: 43,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -337,6 +343,7 @@ If you don't plant it in a container, it will take over your garden.
                 col: 1,
                 offset: 0,
             },
+            style: SimpleBlockStyle::Paragraph,
             title_source: Some(Span {
                 data: "Mint",
                 line: 1,

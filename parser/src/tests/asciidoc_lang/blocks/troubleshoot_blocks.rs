@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*, warnings::WarningType};
+use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*, warnings::WarningType};
 
 track_file!("docs/modules/blocks/pages/troubleshoot-blocks.adoc");
 
@@ -74,6 +74,7 @@ It will be styled as a sidebar.
                         col: 1,
                         offset: 5,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -165,6 +166,7 @@ If you want the processor to recognize a closing delimiter, it must be the same 
                             col: 1,
                             offset: 9,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,

@@ -772,7 +772,7 @@ mod tests {
     mod inline_link {
         use pretty_assertions_sorted::assert_eq;
 
-        use crate::{Parser, tests::prelude::*};
+        use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
         #[test]
         fn escape_angle_bracket_autolink_before_lt() {
@@ -812,6 +812,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -869,6 +870,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -925,6 +927,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1001,6 +1004,7 @@ mod tests {
                             col: 1,
                             offset: 31,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1059,6 +1063,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1117,6 +1122,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1194,6 +1200,7 @@ mod tests {
                             col: 1,
                             offset: 26,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1217,7 +1224,7 @@ mod tests {
     mod link_macro {
         use pretty_assertions_sorted::assert_eq;
 
-        use crate::{Parser, tests::prelude::*};
+        use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
         #[test]
         fn escape_link_macro() {
@@ -1257,6 +1264,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1313,6 +1321,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1390,6 +1399,7 @@ mod tests {
                             col: 1,
                             offset: 35,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1467,6 +1477,7 @@ mod tests {
                             col: 1,
                             offset: 35,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1490,7 +1501,7 @@ mod tests {
     mod inline_anchor {
         use pretty_assertions_sorted::assert_eq;
 
-        use crate::{Parser, tests::prelude::*};
+        use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
         #[test]
         fn inline_ref_double_brackets() {
@@ -1529,6 +1540,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1585,6 +1597,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1641,6 +1654,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1698,6 +1712,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1755,6 +1770,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1811,6 +1827,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1867,6 +1884,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1923,6 +1941,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -1979,6 +1998,7 @@ mod tests {
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,

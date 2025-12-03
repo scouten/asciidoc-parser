@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, document::RefType, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
 
 track_file!("docs/modules/document/pages/compound-author-name.adoc");
 
@@ -294,6 +294,7 @@ image::reference-compound-names.png[Compound author names displayed in the docum
                         col: 1,
                         offset: 69,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -316,6 +317,7 @@ image::reference-compound-names.png[Compound author names displayed in the docum
                         col: 1,
                         offset: 116,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -445,6 +447,7 @@ image::author-attribute-with-compound-name.png[Compound author name displayed in
                         col: 1,
                         offset: 66,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

@@ -9,12 +9,32 @@ use crate::{
     strings::CowStr,
 };
 
+/// The style of a simple block.
+#[derive(Clone, Copy, Eq, PartialEq)]
+pub enum SimpleBlockStyle {
+    /// A paragraph block with normal substitutions.
+    Paragraph,
+
+    /// A literal block with no substitutions.
+    Literal,
+}
+
+impl std::fmt::Debug for SimpleBlockStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SimpleBlockStyle::Paragraph => write!(f, "SimpleBlockStyle::Paragraph"),
+            SimpleBlockStyle::Literal => write!(f, "SimpleBlockStyle::Literal"),
+        }
+    }
+}
+
 /// A block that's treated as contiguous lines of paragraph text (and subject to
 /// normal substitutions) (e.g., a paragraph block).
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SimpleBlock<'src> {
     content: Content<'src>,
     source: Span<'src>,
+    style: SimpleBlockStyle,
     title_source: Option<Span<'src>>,
     title: Option<String>,
     anchor: Option<Span<'src>>,
@@ -28,7 +48,7 @@ impl<'src> SimpleBlock<'src> {
         parser: &mut Parser,
     ) -> Option<MatchedItem<'src, Self>> {
         let MatchedItem {
-            item: content,
+            item: (content, style),
             after,
         } = parse_lines(metadata.block_start, &metadata.attrlist, parser)?;
 
@@ -39,6 +59,7 @@ impl<'src> SimpleBlock<'src> {
                     .source
                     .trim_remainder(after)
                     .trim_trailing_whitespace(),
+                style,
                 title_source: metadata.title_source,
                 title: metadata.title.clone(),
                 anchor: metadata.anchor,
@@ -54,7 +75,7 @@ impl<'src> SimpleBlock<'src> {
         parser: &Parser,
     ) -> Option<MatchedItem<'src, Self>> {
         let MatchedItem {
-            item: content,
+            item: (content, style),
             after,
         } = parse_lines(source, &None, parser)?;
 
@@ -64,6 +85,7 @@ impl<'src> SimpleBlock<'src> {
             item: Self {
                 content,
                 source,
+                style,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -78,15 +100,19 @@ impl<'src> SimpleBlock<'src> {
     pub fn content(&self) -> &Content<'src> {
         &self.content
     }
+
+    /// Return the style of this block.
+    pub fn style(&self) -> SimpleBlockStyle {
+        self.style
+    }
 }
 
 /// Parse the content-bearing lines for this block.
-#[allow(unused)] // TEMPORARY while building
 fn parse_lines<'src>(
     source: Span<'src>,
     attrlist: &Option<Attrlist<'src>>,
     parser: &Parser,
-) -> Option<MatchedItem<'src, Content<'src>>> {
+) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
     let source_after_whitespace = source.discard_whitespace();
     let strip_indent = source_after_whitespace.col() - 1;
     let mut is_literal = source_after_whitespace.col() != source.col();
@@ -167,8 +193,14 @@ fn parse_lines<'src>(
         .override_via_attrlist(attrlist.as_ref())
         .apply(&mut content, parser, attrlist.as_ref());
 
+    let style = if is_literal {
+        SimpleBlockStyle::Literal
+    } else {
+        SimpleBlockStyle::Paragraph
+    };
+
     Some(MatchedItem {
-        item: content,
+        item: (content, style),
         after: next.discard_empty_lines(),
     })
 }
@@ -219,7 +251,7 @@ mod tests {
 
     use crate::{
         Parser,
-        blocks::{ContentModel, IsBlock, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, SimpleBlockStyle, metadata::BlockMetadata},
         content::SubstitutionGroup,
         tests::prelude::*,
     };
@@ -274,6 +306,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -331,6 +364,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -374,6 +408,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -420,6 +455,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,

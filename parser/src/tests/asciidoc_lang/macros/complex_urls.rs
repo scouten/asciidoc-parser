@@ -1,6 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
 track_file!("docs/modules/macros/pages/complex-urls.adoc");
 
@@ -85,6 +85,7 @@ include::partial$ts-url-format.adoc[tag=sb]
                     col: 1,
                     offset: 92,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -141,6 +142,7 @@ fn pass_macro() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -198,6 +200,7 @@ fn double_plus_inline_macro() {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
