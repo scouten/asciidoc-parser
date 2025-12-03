@@ -1697,22 +1697,85 @@ mod literal {
         );
     }
 
+    #[test]
+    fn should_read_content_below_literal_style_verbatim() {
+        let doc = Parser::default().parse("[literal]\nimage::not-an-image-block[]");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "image::not-an-image-block[]",
+                            line: 2,
+                            col: 1,
+                            offset: 10,
+                        },
+                        rendered: "image::not-an-image-block[]",
+                    },
+                    source: Span {
+                        data: "[literal]\nimage::not-an-image-block[]",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    style: SimpleBlockStyle::Literal,
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "literal",
+                            shorthand_items: &["literal"],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "literal",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[literal]\nimage::not-an-image-block[]",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'should read content below literal style verbatim' do
-      input = <<~'EOS'
-      [literal]
-      image::not-an-image-block[]
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath %(/*[@class="literalblock"]//pre[text()="image::not-an-image-block[]"]), output, 1
-      assert_css 'img', output, 0
-    end
-
     test 'listing paragraph' do
       input = <<~'EOS'
       [listing]
