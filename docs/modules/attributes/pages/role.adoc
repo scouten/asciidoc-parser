@@ -112,7 +112,7 @@ The role is often used on a phrase to represent semantics you might have express
 If you need to assign multiple roles, you must join them together in a series:
 
 .Formatted text with multiple roles
-[source#ex-role-dot]
+[source#ex-roles]
 ----
 This [.rolename1.rolename2]#formatted text# has two roles.
 ----
