@@ -26,6 +26,11 @@ pub enum SimpleBlockStyle {
     ///
     /// [special characters]: https://docs.asciidoctor.org/asciidoc/latest/subs/special-characters/
     Listing,
+
+    /// A source block is a specialization of a listing block. Developers are
+    /// accustomed to seeing source code colorized to emphasize the code’s
+    /// structure (i.e., keywords, types, delimiters, etc.).
+    Source,
 }
 
 impl std::fmt::Debug for SimpleBlockStyle {
@@ -34,6 +39,7 @@ impl std::fmt::Debug for SimpleBlockStyle {
             SimpleBlockStyle::Paragraph => write!(f, "SimpleBlockStyle::Paragraph"),
             SimpleBlockStyle::Literal => write!(f, "SimpleBlockStyle::Literal"),
             SimpleBlockStyle::Listing => write!(f, "SimpleBlockStyle::Listing"),
+            SimpleBlockStyle::Source => write!(f, "SimpleBlockStyle::Source"),
         }
     }
 }
@@ -146,6 +152,10 @@ fn parse_lines<'src>(
 
             Some("listing") => {
                 style = SimpleBlockStyle::Listing;
+            }
+
+            Some("source") => {
+                style = SimpleBlockStyle::Source;
             }
 
             _ => {}
