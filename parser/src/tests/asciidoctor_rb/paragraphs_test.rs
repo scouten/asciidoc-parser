@@ -1376,13 +1376,12 @@ mod normal {
     }
 }
 
-#[allow(unused)] // TEMPORARY for a moment ...
 mod literal {
     use std::collections::HashMap;
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     #[test]
     fn single_line_literal_paragraphs() {
@@ -1516,27 +1515,121 @@ mod literal {
         );
     }
 
+    #[test]
+    fn multi_line_literal_paragraphs() {
+        let doc =
+            Parser::default().parse("Install instructions:\n\n yum install ruby rubygems\n gem install asciidoctor\n\nYou're good to go!");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "Install instructions:",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            rendered: "Install instructions:",
+                        },
+                        source: Span {
+                            data: "Install instructions:",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        style: SimpleBlockStyle::Paragraph,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: " yum install ruby rubygems\n gem install asciidoctor",
+                                line: 3,
+                                col: 1,
+                                offset: 23,
+                            },
+                            rendered: "yum install ruby rubygems\ngem install asciidoctor",
+                        },
+                        source: Span {
+                            data: " yum install ruby rubygems\n gem install asciidoctor",
+                            line: 3,
+                            col: 1,
+                            offset: 23,
+                        },
+                        style: SimpleBlockStyle::Literal,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "You're good to go!",
+                                line: 6,
+                                col: 1,
+                                offset: 76,
+                            },
+                            rendered: "You&#8217;re good to go!",
+                        },
+                        source: Span {
+                            data: "You're good to go!",
+                            line: 6,
+                            col: 1,
+                            offset: 76,
+                        },
+                        style: SimpleBlockStyle::Paragraph,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: "Install instructions:\n\n yum install ruby rubygems\n gem install asciidoctor\n\nYou're good to go!",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'multi-line literal paragraph' do
-      input = <<~'EOS'
-      Install instructions:
-
-       yum install ruby rubygems
-       gem install asciidoctor
-
-      You're good to go!
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath '//pre', output, 1
-      # indentation should be trimmed from literal block
-      assert_xpath %(//pre[text() = "yum install ruby rubygems\ngem install asciidoctor"]), output, 1
-    end
-
     test 'literal paragraph' do
       input = <<~'EOS'
       [literal]
