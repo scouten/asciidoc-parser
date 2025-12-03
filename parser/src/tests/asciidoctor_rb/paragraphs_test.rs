@@ -1624,21 +1624,85 @@ mod literal {
         );
     }
 
+    #[test]
+    fn literal_paragraph() {
+        let doc = Parser::default().parse("[literal]\nthis text is literally literal");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "this text is literally literal",
+                            line: 2,
+                            col: 1,
+                            offset: 10,
+                        },
+                        rendered: "this text is literally literal",
+                    },
+                    source: Span {
+                        data: "[literal]\nthis text is literally literal",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    style: SimpleBlockStyle::Literal,
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "literal",
+                            shorthand_items: &["literal"],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "literal",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[literal]\nthis text is literally literal",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'literal paragraph' do
-      input = <<~'EOS'
-      [literal]
-      this text is literally literal
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath %(/*[@class="literalblock"]//pre[text()="this text is literally literal"]), output, 1
-    end
-
     test 'should read content below literal style verbatim' do
       input = <<~'EOS'
       [literal]
