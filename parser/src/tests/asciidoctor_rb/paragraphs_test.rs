@@ -1382,7 +1382,139 @@ mod literal {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, document::RefType, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
+
+    #[test]
+    fn single_line_literal_paragraphs() {
+        let doc =
+            Parser::default().parse("you know what?\n\n LITERALS\n\n ARE LITERALLY\n\n AWESOME!");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: "you know what?",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            rendered: "you know what?",
+                        },
+                        source: Span {
+                            data: "you know what?",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        style: SimpleBlockStyle::Paragraph,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: " LITERALS",
+                                line: 3,
+                                col: 1,
+                                offset: 16,
+                            },
+                            rendered: "LITERALS",
+                        },
+                        source: Span {
+                            data: " LITERALS",
+                            line: 3,
+                            col: 1,
+                            offset: 16,
+                        },
+                        style: SimpleBlockStyle::Literal,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: " ARE LITERALLY",
+                                line: 5,
+                                col: 1,
+                                offset: 27,
+                            },
+                            rendered: "ARE LITERALLY",
+                        },
+                        source: Span {
+                            data: " ARE LITERALLY",
+                            line: 5,
+                            col: 1,
+                            offset: 27,
+                        },
+                        style: SimpleBlockStyle::Literal,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: " AWESOME!",
+                                line: 7,
+                                col: 1,
+                                offset: 43,
+                            },
+                            rendered: "AWESOME!",
+                        },
+                        source: Span {
+                            data: " AWESOME!",
+                            line: 7,
+                            col: 1,
+                            offset: 43,
+                        },
+                        style: SimpleBlockStyle::Literal,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: "you know what?\n\n LITERALS\n\n ARE LITERALLY\n\n AWESOME!",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
 
     #[ignore]
     #[test]
@@ -1390,20 +1522,6 @@ mod literal {
         todo!(
             "Port this: {}",
             r###"
-    test 'single-line literal paragraphs' do
-      input = <<~'EOS'
-      you know what?
-
-       LITERALS
-
-       ARE LITERALLY
-
-       AWESOME!
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath '//pre', output, 3
-    end
-
     test 'multi-line literal paragraph' do
       input = <<~'EOS'
       Install instructions:
