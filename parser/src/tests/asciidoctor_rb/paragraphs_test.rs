@@ -1770,21 +1770,85 @@ mod literal {
         );
     }
 
+    #[test]
+    fn listing_paragraph() {
+        let doc = Parser::default().parse("[listing]\nthis text is a listing");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "this text is a listing",
+                            line: 2,
+                            col: 1,
+                            offset: 10,
+                        },
+                        rendered: "this text is a listing",
+                    },
+                    source: Span {
+                        data: "[listing]\nthis text is a listing",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    style: SimpleBlockStyle::Listing,
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[ElementAttribute {
+                            name: None,
+                            value: "listing",
+                            shorthand_items: &["listing"],
+                        },],
+                        anchor: None,
+                        source: Span {
+                            data: "listing",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[listing]\nthis text is a listing",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'listing paragraph' do
-      input = <<~'EOS'
-      [listing]
-      this text is a listing
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath %(/*[@class="listingblock"]//pre[text()="this text is a listing"]), output, 1
-    end
-
     test 'source paragraph' do
       input = <<~'EOS'
       [source]

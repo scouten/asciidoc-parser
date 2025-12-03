@@ -17,6 +17,15 @@ pub enum SimpleBlockStyle {
 
     /// A literal block with no substitutions.
     Literal,
+
+    /// Blocks and paragraphs assigned the listing style display their rendered
+    /// content exactly as you see it in the source. Listing content is
+    /// converted to preformatted text (i.e., `<pre>`). The content is presented
+    /// in a fixed-width font and endlines are preserved. Only [special
+    /// characters] and callouts are replaced when the document is converted.
+    ///
+    /// [special characters]: https://docs.asciidoctor.org/asciidoc/latest/subs/special-characters/
+    Listing,
 }
 
 impl std::fmt::Debug for SimpleBlockStyle {
@@ -24,6 +33,7 @@ impl std::fmt::Debug for SimpleBlockStyle {
         match self {
             SimpleBlockStyle::Paragraph => write!(f, "SimpleBlockStyle::Paragraph"),
             SimpleBlockStyle::Literal => write!(f, "SimpleBlockStyle::Literal"),
+            SimpleBlockStyle::Listing => write!(f, "SimpleBlockStyle::Listing"),
         }
     }
 }
@@ -115,18 +125,29 @@ fn parse_lines<'src>(
 ) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
     let source_after_whitespace = source.discard_whitespace();
     let strip_indent = source_after_whitespace.col() - 1;
-    let mut is_literal = source_after_whitespace.col() != source.col();
+
+    let mut style = if source_after_whitespace.col() == source.col() {
+        SimpleBlockStyle::Paragraph
+    } else {
+        SimpleBlockStyle::Literal
+    };
 
     // Block style can override the interpretation of literal from reading
     // indentation.
     if let Some(attrlist) = attrlist {
         match attrlist.block_style() {
             Some("normal") => {
-                is_literal = false;
+                style = SimpleBlockStyle::Paragraph;
             }
+
             Some("literal") => {
-                is_literal = true;
+                style = SimpleBlockStyle::Literal;
             }
+
+            Some("listing") => {
+                style = SimpleBlockStyle::Listing;
+            }
+
             _ => {}
         }
     }
@@ -192,12 +213,6 @@ fn parse_lines<'src>(
     SubstitutionGroup::Normal
         .override_via_attrlist(attrlist.as_ref())
         .apply(&mut content, parser, attrlist.as_ref());
-
-    let style = if is_literal {
-        SimpleBlockStyle::Literal
-    } else {
-        SimpleBlockStyle::Paragraph
-    };
 
     Some(MatchedItem {
         item: (content, style),

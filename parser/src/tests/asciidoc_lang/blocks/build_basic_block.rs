@@ -276,7 +276,7 @@ include::example$block.adoc[tag=opt-listing]
                 col: 1,
                 offset: 0,
             },
-            style: SimpleBlockStyle::Paragraph,
+            style: SimpleBlockStyle::Listing,
             title_source: None,
             title: None,
             anchor: None,
