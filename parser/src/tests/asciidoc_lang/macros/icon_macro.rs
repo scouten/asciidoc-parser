@@ -15,7 +15,7 @@ This page covers the anatomy of the icon macro, how the target is resolved, and 
 mod anatomy {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -84,6 +84,7 @@ icon:heart[2x,role=red]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

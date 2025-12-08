@@ -2,7 +2,9 @@ use std::collections::HashMap;
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, document::RefType, tests::prelude::*, warnings::WarningType};
+use crate::{
+    Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*, warnings::WarningType,
+};
 
 track_file!("docs/modules/sections/pages/titles-and-levels.adoc");
 
@@ -394,6 +396,7 @@ include::example$section.adoc[tag=content]
                             col: 1,
                             offset: 18,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,

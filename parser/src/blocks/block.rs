@@ -156,76 +156,18 @@ impl<'src> Block<'src> {
             mut warnings,
         } = BlockMetadata::parse(source, parser);
 
-        if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&metadata, parser)
-            && let Some(rdb) = rdb_maw.item
-        {
-            if !rdb_maw.warnings.is_empty() {
-                warnings.append(&mut rdb_maw.warnings);
-            }
+        let is_literal =
+            metadata.attrlist.as_ref().and_then(|a| a.block_style()) == Some("literal");
 
-            let block = Self::RawDelimited(rdb.item);
-
-            Self::register_block_id(
-                block.id(),
-                block.title(),
-                block.span(),
-                parser,
-                &mut warnings,
-            );
-
-            return MatchAndWarnings {
-                item: Some(MatchedItem {
-                    item: block,
-                    after: rdb.after,
-                }),
-                warnings,
-            };
-        }
-
-        if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&metadata, parser)
-            && let Some(cdb) = cdb_maw.item
-        {
-            if !cdb_maw.warnings.is_empty() {
-                warnings.append(&mut cdb_maw.warnings);
-            }
-
-            let block = Self::CompoundDelimited(cdb.item);
-
-            Self::register_block_id(
-                block.id(),
-                block.title(),
-                block.span(),
-                parser,
-                &mut warnings,
-            );
-
-            return MatchAndWarnings {
-                item: Some(MatchedItem {
-                    item: block,
-                    after: cdb.after,
-                }),
-                warnings,
-            };
-        }
-
-        // Try to discern the block type by scanning the first line.
-        let line = metadata.block_start.take_normalized_line();
-
-        if line.item.starts_with("image::")
-            || line.item.starts_with("video::")
-            || line.item.starts_with("video::")
-        {
-            let mut media_block_maw = MediaBlock::parse(&metadata, parser);
-
-            if let Some(media_block) = media_block_maw.item {
-                // Only propagate warnings from media block parsing if we think this
-                // *is* a media block. Otherwise, there would likely be too many false
-                // positives.
-                if !media_block_maw.warnings.is_empty() {
-                    warnings.append(&mut media_block_maw.warnings);
+        if !is_literal {
+            if let Some(mut rdb_maw) = RawDelimitedBlock::parse(&metadata, parser)
+                && let Some(rdb) = rdb_maw.item
+            {
+                if !rdb_maw.warnings.is_empty() {
+                    warnings.append(&mut rdb_maw.warnings);
                 }
 
-                let block = Self::Media(media_block.item);
+                let block = Self::RawDelimited(rdb.item);
 
                 Self::register_block_id(
                     block.id(),
@@ -238,72 +180,136 @@ impl<'src> Block<'src> {
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
                         item: block,
-                        after: media_block.after,
+                        after: rdb.after,
                     }),
                     warnings,
                 };
             }
 
-            // This might be some other kind of block, so we don't automatically
-            // error out on a parse failure.
-        }
+            if let Some(mut cdb_maw) = CompoundDelimitedBlock::parse(&metadata, parser)
+                && let Some(cdb) = cdb_maw.item
+            {
+                if !cdb_maw.warnings.is_empty() {
+                    warnings.append(&mut cdb_maw.warnings);
+                }
 
-        if (line.item.starts_with('=') || line.item.starts_with('#'))
-            && let Some(mi_section_block) = SectionBlock::parse(&metadata, parser, &mut warnings)
-        {
-            // A line starting with `=` or `#` might be some other kind of block, so we
-            // continue quietly if `SectionBlock` parser rejects this block.
+                let block = Self::CompoundDelimited(cdb.item);
 
-            return MatchAndWarnings {
-                item: Some(MatchedItem {
-                    item: Self::Section(mi_section_block.item),
-                    after: mi_section_block.after,
-                }),
-                warnings,
-            };
-        }
+                Self::register_block_id(
+                    block.id(),
+                    block.title(),
+                    block.span(),
+                    parser,
+                    &mut warnings,
+                );
 
-        if (line.item.starts_with('\'')
-            || line.item.starts_with('-')
-            || line.item.starts_with('*')
-            || line.item.starts_with('<'))
-            && let Some(mi_break) = Break::parse(&metadata, parser)
-        {
-            // Continue quietly if `Break` parser rejects this block.
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: block,
+                        after: cdb.after,
+                    }),
+                    warnings,
+                };
+            }
 
-            return MatchAndWarnings {
-                item: Some(MatchedItem {
-                    item: Self::Break(mi_break.item),
-                    after: mi_break.after,
-                }),
-                warnings,
-            };
-        }
+            // Try to discern the block type by scanning the first line.
+            let line = metadata.block_start.take_normalized_line();
 
-        // First, let's look for a fun edge case. Perhaps the text contains block
-        // metadata but no block immediately following. If we're not careful, we could
-        // spin in a loop (for example, `parse_blocks_until`) thinking there will be
-        // another block, but there isn't.
+            if line.item.starts_with("image::")
+                || line.item.starts_with("video::")
+                || line.item.starts_with("video::")
+            {
+                let mut media_block_maw = MediaBlock::parse(&metadata, parser);
 
-        // The following check disables that spin loop.
-        let simple_block_mi = SimpleBlock::parse(&metadata, parser);
+                if let Some(media_block) = media_block_maw.item {
+                    // Only propagate warnings from media block parsing if we think this
+                    // *is* a media block. Otherwise, there would likely be too many false
+                    // positives.
+                    if !media_block_maw.warnings.is_empty() {
+                        warnings.append(&mut media_block_maw.warnings);
+                    }
 
-        if simple_block_mi.is_none() && !metadata.is_empty() {
-            // We have a metadata with no block. Treat it as a simple block but issue a
-            // warning.
+                    let block = Self::Media(media_block.item);
 
-            warnings.push(Warning {
-                source: metadata.source,
-                warning: WarningType::MissingBlockAfterTitleOrAttributeList,
-            });
+                    Self::register_block_id(
+                        block.id(),
+                        block.title(),
+                        block.span(),
+                        parser,
+                        &mut warnings,
+                    );
 
-            // Remove the metadata content so that SimpleBlock will read the title/attrlist
-            // line(s) as regular content.
-            metadata.title_source = None;
-            metadata.title = None;
-            metadata.anchor = None;
-            metadata.attrlist = None;
-            metadata.block_start = metadata.source;
+                    return MatchAndWarnings {
+                        item: Some(MatchedItem {
+                            item: block,
+                            after: media_block.after,
+                        }),
+                        warnings,
+                    };
+                }
+
+                // This might be some other kind of block, so we don't
+                // automatically error out on a parse failure.
+            }
+
+            if (line.item.starts_with('=') || line.item.starts_with('#'))
+                && let Some(mi_section_block) =
+                    SectionBlock::parse(&metadata, parser, &mut warnings)
+            {
+                // A line starting with `=` or `#` might be some other kind of block, so we
+                // continue quietly if `SectionBlock` parser rejects this block.
+
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::Section(mi_section_block.item),
+                        after: mi_section_block.after,
+                    }),
+                    warnings,
+                };
+            }
+
+            if (line.item.starts_with('\'')
+                || line.item.starts_with('-')
+                || line.item.starts_with('*')
+                || line.item.starts_with('<'))
+                && let Some(mi_break) = Break::parse(&metadata, parser)
+            {
+                // Continue quietly if `Break` parser rejects this block.
+
+                return MatchAndWarnings {
+                    item: Some(MatchedItem {
+                        item: Self::Break(mi_break.item),
+                        after: mi_break.after,
+                    }),
+                    warnings,
+                };
+            }
+
+            // First, let's look for a fun edge case. Perhaps the text contains block
+            // metadata but no block immediately following. If we're not careful, we could
+            // spin in a loop (for example, `parse_blocks_until`) thinking there will be
+            // another block, but there isn't.
+
+            // The following check disables that spin loop.
+            let simple_block_mi = SimpleBlock::parse(&metadata, parser);
+
+            if simple_block_mi.is_none() && !metadata.is_empty() {
+                // We have a metadata with no block. Treat it as a simple block but issue a
+                // warning.
+
+                warnings.push(Warning {
+                    source: metadata.source,
+                    warning: WarningType::MissingBlockAfterTitleOrAttributeList,
+                });
+
+                // Remove the metadata content so that SimpleBlock will read the title/attrlist
+                // line(s) as regular content.
+                metadata.title_source = None;
+                metadata.title = None;
+                metadata.anchor = None;
+                metadata.attrlist = None;
+                metadata.block_start = metadata.source;
+            }
         }
 
         // If no other block kind matches, we can always use SimpleBlock.

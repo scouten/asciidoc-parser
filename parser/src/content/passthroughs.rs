@@ -494,6 +494,7 @@ mod tests {
 
     use crate::{
         Parser,
+        blocks::SimpleBlockStyle,
         content::{Passthroughs, SubstitutionGroup, SubstitutionStep, passthroughs::Passthrough},
         parser::ModificationContext,
         tests::prelude::*,
@@ -524,6 +525,7 @@ mod tests {
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,

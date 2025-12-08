@@ -1,6 +1,10 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, blocks::IsBlock, tests::prelude::*};
+use crate::{
+    Parser,
+    blocks::{IsBlock, SimpleBlockStyle},
+    tests::prelude::*,
+};
 
 track_file!("docs/modules/blocks/pages/assign-id.adoc");
 
@@ -61,6 +65,7 @@ Content of delimited example block
                     col: 1,
                     offset: 29,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -160,6 +165,7 @@ Roads? Where we're going, we don't need roads.
                 col: 1,
                 offset: 0,
             },
+            style: SimpleBlockStyle::Paragraph,
             title_source: None,
             title: None,
             anchor: None,
@@ -228,6 +234,7 @@ Roads? Where we're going, we don't need roads.
                 col: 1,
                 offset: 0,
             },
+            style: SimpleBlockStyle::Paragraph,
             title_source: None,
             title: None,
             anchor: None,

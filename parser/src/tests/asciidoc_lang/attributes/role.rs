@@ -34,7 +34,11 @@ mod assign_roles_to_blocks {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::IsBlock, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{IsBlock, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -94,6 +98,7 @@ This is a sidebar with a role assigned to it, rolename.
                         col: 1,
                         offset: 17,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -176,6 +181,7 @@ The role values are turned into a space-separated list of values, `role1 role2`.
                         col: 1,
                         offset: 20,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -259,6 +265,7 @@ This is a sidebar with one role assigned to it, rolename.
                         col: 1,
                         offset: 21,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -347,6 +354,7 @@ This is a sidebar with two roles assigned to it, role1 and role2.
                         col: 1,
                         offset: 26,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

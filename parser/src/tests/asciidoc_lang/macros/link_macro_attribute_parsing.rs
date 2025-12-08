@@ -15,7 +15,7 @@ This page explains the conditions when this occurs and how to write the link tex
 mod link_text_alongside_named_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -73,6 +73,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -154,6 +155,7 @@ https://chat.asciidoc.org[Discuss AsciiDoc,role=resource,window=_blank]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -224,6 +226,7 @@ https://example.org["Google, DuckDuckGo, Ecosia",role=teal]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -293,6 +296,7 @@ https://example.org["1=2 posits the problem of inequality"]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -363,6 +367,7 @@ https://example.org["href=\"#top\" attribute"] creates link to top of page
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -442,6 +447,7 @@ https://chat.asciidoc.org[role=button,window=_blank,opts=nofollow]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -473,7 +479,7 @@ It also recognizes a handful of attributes that are specific to the link macro.
 mod target_separate_window {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -536,6 +542,7 @@ In the HTML output, the value of the `window` attribute is assigned to the `targ
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -611,6 +618,7 @@ If the target is `_blank`, the processor will automatically add the <<noopener a
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -694,6 +702,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -763,6 +772,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts=noopener]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -833,6 +843,7 @@ https://asciidoctor.org[Asciidoctor,window=_blank,opts=nofollow]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -903,6 +914,7 @@ https://asciidoctor.org[Asciidoctor,window=read-later,opts="noopener,nofollow"]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -971,6 +983,7 @@ link:post.html[My Post,opts=nofollow]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1045,6 +1058,7 @@ include::example$url.adoc[tag=linkattrs-s]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1122,6 +1136,7 @@ https://example.org["Google, DuckDuckGo, Ecosia^",role=btn]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -1189,6 +1204,7 @@ https://example.org[Google, DuckDuckGo, Ecosia^]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

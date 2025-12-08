@@ -41,29 +41,6 @@ impl<'src> Span<'src> {
             None => self.into_parse_result(self.data.len()),
         }
     }
-
-    /// If there is at least one non-empty line, split the span at the first
-    /// empty line found or end of span.
-    ///
-    /// Returns `None` if there is not at least one non-empty line at
-    /// beginning of input.
-    pub(crate) fn take_non_empty_lines(self) -> Option<MatchedItem<'src, Self>> {
-        let mut next = self;
-
-        while let Some(inline) = next.take_non_empty_line() {
-            next = inline.after;
-        }
-
-        let result = self.trim_remainder(next);
-        if result.is_empty() {
-            None
-        } else {
-            Some(MatchedItem {
-                item: result.trim_trailing_whitespace(),
-                after: next,
-            })
-        }
-    }
 }
 
 #[cfg(test)]
@@ -593,76 +570,6 @@ mod tests {
                     line: 1,
                     col: 5,
                     offset: 4,
-                }
-            );
-        }
-    }
-
-    mod take_non_empty_lines {
-        use pretty_assertions_sorted::assert_eq;
-
-        use crate::tests::prelude::*;
-
-        #[test]
-        fn empty_source() {
-            let span = crate::Span::default();
-            assert!(span.take_non_empty_lines().is_none());
-        }
-
-        #[test]
-        fn immediate_false() {
-            let span = crate::Span::new("\nabc");
-            assert!(span.take_non_empty_lines().is_none());
-        }
-
-        #[test]
-        fn match_after_first() {
-            let span = crate::Span::new("abc\n\ndef");
-            let mi = span.take_non_empty_lines().unwrap();
-
-            assert_eq!(
-                mi.item,
-                Span {
-                    data: "abc",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            );
-
-            assert_eq!(
-                mi.after,
-                Span {
-                    data: "\ndef",
-                    line: 2,
-                    col: 1,
-                    offset: 4,
-                }
-            );
-        }
-
-        #[test]
-        fn several_lines() {
-            let span = crate::Span::new("abc\ndef\nline3\nline4\n\ndef");
-            let mi = span.take_non_empty_lines().unwrap();
-
-            assert_eq!(
-                mi.item,
-                Span {
-                    data: "abc\ndef\nline3\nline4",
-                    line: 1,
-                    col: 1,
-                    offset: 0,
-                }
-            );
-
-            assert_eq!(
-                mi.after,
-                Span {
-                    data: "\ndef",
-                    line: 5,
-                    col: 1,
-                    offset: 20,
                 }
             );
         }

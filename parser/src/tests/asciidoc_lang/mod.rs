@@ -33,3 +33,4 @@ mod root;
 mod sections;
 mod subs;
 mod text;
+mod verbatim;
