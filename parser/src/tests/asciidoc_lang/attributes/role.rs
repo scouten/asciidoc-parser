@@ -411,11 +411,13 @@ This longhand syntax can also be used on inline macros, but it cannot be used wi
 }
 
 mod assign_roles_to_formatted_inline_elements {
+    use std::collections::HashMap;
+
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
         Parser,
-        blocks::{Block, IsBlock},
+        blocks::{IsBlock, SimpleBlockStyle},
         tests::prelude::*,
     };
 
@@ -431,7 +433,7 @@ mod assign_roles_to_formatted_inline_elements {
         verifies!(
             r#"
 You can assign roles to inline elements that are enclosed in formatting syntax, such as bold (`+*+`), italic (`+_+`), and monospace (`++`++`).
-To assign a role to an inline element that's enclosed in formatting syntax block, prefix the value with a dot (`.`) in an attribute list.
+To assign a role to an inline element that's enclosed in formatting syntax block, prefix the value with a dot (`.`) inside the boxed attrlist.
 
 .Inline role assignments using shorthand syntax
 [source#ex-role-dot]
@@ -440,6 +442,9 @@ This sentence contains [.application]*bold inline content* that's assigned a rol
 
 This sentence contains [.varname]`monospace text` that's assigned a role.
 ----
+
+IMPORTANT: The boxed attrlist on formatted text only supports the attribute shorthand syntax.
+It does not support named attributes (e.g. `name=value`).
 
 The HTML source code that is output from <<ex-role-dot>> is shown below.
 
@@ -465,7 +470,7 @@ Thus, roles are an ideal way to annotated elements in your document so you can u
         let mut blocks = doc.nested_blocks();
 
         let block1 = blocks.next().unwrap();
-        let Block::Simple(sb1) = block1 else {
+        let crate::blocks::Block::Simple(sb1) = block1 else {
             panic!("Unexpected block type: {block1:?}");
         };
 
@@ -475,7 +480,7 @@ Thus, roles are an ideal way to annotated elements in your document so you can u
         );
 
         let block2 = blocks.next().unwrap();
-        let Block::Simple(sb2) = block2 else {
+        let crate::blocks::Block::Simple(sb2) = block2 else {
             panic!("Unexpected block type: {block2:?}");
         };
 
@@ -491,21 +496,81 @@ Thus, roles are an ideal way to annotated elements in your document so you can u
         r#"
 The role is often used on a phrase to represent semantics you might have expressed using a dedicated element in DocBook or DITA.
 
-////
-Using the shorthand notation, an id can also be specified:
-
-[source]
-----
-[#idname.rolename]`monospace text`
-----
-
-which produces:
-
-[source,html]
-----
-<a id="idname"></a><code class="rolename">monospace text</code>
-----
-////
-        "#
+"#
     );
+
+    #[test]
+    fn assign_multiple_roles() {
+        verifies!(
+            r#"
+If you need to assign multiple roles, you must join them together in a series:
+
+.Formatted text with multiple roles
+[source#ex-roles]
+----
+This [.rolename1.rolename2]#formatted text# has two roles.
+----
+
+The roles can also be accompanied by an ID assignment.
+"#
+        );
+
+        let doc =
+            Parser::default().parse("This [.rolename1.rolename2]#formatted text# has two roles.");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "This [.rolename1.rolename2]#formatted text# has two roles.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        rendered: "This <span class=\"rolename1 rolename2\">formatted text</span> has two roles.",
+                    },
+                    source: Span {
+                        data: "This [.rolename1.rolename2]#formatted text# has two roles.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    style: SimpleBlockStyle::Paragraph,
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },),],
+                source: Span {
+                    data: "This [.rolename1.rolename2]#formatted text# has two roles.",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
 }

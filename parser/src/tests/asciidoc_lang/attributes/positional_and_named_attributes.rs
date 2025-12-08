@@ -128,7 +128,15 @@ The markers are mapped as follows:
 
 Each shorthand entry is placed directly adjacent to previous one, starting immediately after the optional block style.
 The order of the entries does not matter, except for the style, which must come first.
-        
+The typical order is style, ID, role(s), option(s).
+
+All of these are valid:
+
+* `#idname.rolename`
+* `.rolename1.rolename2`
+* `.rolename#idname`
+* `#idname.rolename%optionname`
+
 "#
         );
 
