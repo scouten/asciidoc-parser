@@ -5,7 +5,7 @@ track_file!("docs/modules/verbatim/pages/source-highlighter.adoc");
 // Marked non-normative since asciidoc-parser doesn't involve itself in content
 // rendering.
 non_normative!(
-    r###"
+    r##"
 = Source Highlighting
 :table-caption: Table
 
@@ -216,5 +216,5 @@ You can override the global source language on an individual block by specifying
 ....
 include::example$source.adoc[tag=override]
 ....
-"###
+"##
 );

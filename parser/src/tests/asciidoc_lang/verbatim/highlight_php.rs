@@ -5,7 +5,7 @@ track_file!("docs/modules/verbatim/pages/highlight-php.adoc");
 // Marked non-normative since asciidoc-parser doesn't involve itself in content
 // rendering.
 non_normative!(
-    r###"
+    r##"
 = Highlight PHP Source Code
 
 The PHP language has two modes.
@@ -49,5 +49,5 @@ Or you should use the language tag `php` and set the `mixed` option on the sourc
 
 Under the covers, the syntax highlighter is configured to assume an implicit start PHP tag is present when the language tag is `php`.
 Both the `mixed` option and the language tag `html+php` disable this setting.
-"###
+"##
 );

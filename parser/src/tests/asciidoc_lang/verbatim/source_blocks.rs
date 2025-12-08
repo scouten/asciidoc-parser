@@ -7,7 +7,7 @@ use crate::{Parser, blocks::ContentModel, content::SubstitutionGroup, tests::pre
 track_file!("docs/modules/verbatim/pages/source-blocks.adoc");
 
 non_normative!(
-    r###"
+    r##"
 = Source Code Blocks
 :table-caption: Table
 :url-coderay: http://coderay.rubychan.de/
@@ -27,13 +27,13 @@ This technique is known as [.term]*syntax highlighting*.
 Since this technique is so prevalent, AsciiDoc processors will integrate at least one library to syntax highlight the source code blocks in your document.
 For example, Asciidoctor provides integration with Rouge, CodeRay, Pygments, and highlight.js, as well as an adapter API to add support for additional libraries.
 
-"###
+"##
 );
 
 #[test]
 fn ex_source() {
     verifies!(
-        r###"
+        r##"
 <<ex-source>> shows a listing block with the `source` style and language `ruby` applied to its content, hence a source block.
 
 .Source block syntax
@@ -46,7 +46,7 @@ The result of <<ex-source>> is rendered below.
 
 include::example$source.adoc[tag=src-base]
 
-"###
+"##
     );
 
     let doc = Parser::default().parse(
@@ -134,7 +134,7 @@ include::example$source.adoc[tag=src-base]
 #[test]
 fn ex_implied_source() {
     verifies!(
-        r###"
+        r##"
 Since a `source` block is most often used to designate a block with source code of a particular language, the `source` style itself is optional.
 The mere presence of the language on a listing block automatically promotes it to a source block.
 
@@ -146,7 +146,7 @@ The mere presence of the language on a listing block automatically promotes it t
 include::example$source.adoc[tag=src-implied]
 ....
 
-"###
+"##
     );
 
     let doc = Parser::default()
@@ -231,19 +231,19 @@ include::example$source.adoc[tag=src-implied]
 }
 
 non_normative!(
-    r###"
+    r##"
 This shorthand also works if the `source-language` attribute is set on the document, which serves as the default language for source blocks.
 If the `source-language` attribute is set on the document and you want to make a regular listing block, add the `listing` style to the block.
 
 == Using include directives in source blocks
 
-"###
+"##
 );
 
 #[test]
 fn ex_include() {
     verifies!(
-        r###"
+        r##"
 You can use an xref:directives:include.adoc[include directive] to insert source code into an AsciiDoc document directly from a file.
 
 .Code inserted from another file
@@ -252,7 +252,7 @@ You can use an xref:directives:include.adoc[include directive] to insert source 
 include::example$source.adoc[tag=src-inc]
 ....
 
-"###
+"##
     );
 
     let doc = Parser::default().parse("[,ruby]\n----\ninclude::app.rb[]\n----");
@@ -336,12 +336,12 @@ include::example$source.adoc[tag=src-inc]
 }
 
 non_normative!(
-    r###"
+    r##"
 //TODO mention the use of AsciiDoc tags to include code snippets and the indent flag to reset indentation
 
 TIP: If you specify custom substitutions on the source block using the `subs` attribute, make sure to include the `specialcharacters` substitution if you want to preserve syntax highlighting.
 However, if you do plan to modify the substitutions, we recommend using xref:subs:apply-subs-to-blocks.adoc#incremental[incremental substitutions] instead.
 
 // Highlight PHP sidebar was taken from end of page and made its own page
-"###
+"##
 );

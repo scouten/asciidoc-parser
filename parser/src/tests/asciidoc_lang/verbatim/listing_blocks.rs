@@ -13,7 +13,7 @@ use crate::{
 track_file!("docs/modules/verbatim/pages/listing-blocks.adoc");
 
 non_normative!(
-    r###"
+    r##"
 = Listing Blocks
 :replace-me: I've been replaced!
 
@@ -27,13 +27,13 @@ The listing style can be applied to content using one of the following methods:
 * setting the `listing` style on a block or paragraph using an attribute list, or
 * enclosing the content within a pair of listing block delimiters (`----`).
 
-"###
+"##
 );
 
 #[test]
 fn listing_style_syntax() {
     verifies!(
-        r###"
+        r##"
 == Listing style syntax
 
 The block style `listing` can be applied to a block or paragraph, by setting the attribute `listing` using an attribute list.
@@ -48,7 +48,7 @@ The result of <<ex-style>> is rendered below.
 
 include::example$listing.adoc[tag=style]
 
-"###
+"##
     );
 
     let doc = Parser::default().parse("[listing]\nThis is an example of a paragraph assigned\nthe `listing` style in an attribute list.\nNotice that the monospace marks are\npreserved in the output.");
@@ -125,7 +125,7 @@ include::example$listing.adoc[tag=style]
 #[test]
 fn delimited_listing_block() {
     verifies!(
-        r###"
+        r##"
 == Delimited listing block
 
 A delimited listing block is surrounded by lines composed of four hyphens (`----`).
@@ -152,7 +152,7 @@ You should notice a few things about how the content is processed.
 Listing blocks are good for displaying snippets of raw source code, especially when used in tandem with the `source` style and `source-highlighter` attribute.
 See xref:source-blocks.adoc[] to learn more about `source` and `source-highlighter`.
 
-"###
+"##
     );
 
     let doc = Parser::default().parse("----\nThis is a _delimited listing block_.\n\nThe content inside is displayed as <pre> text.\n----");
@@ -218,7 +218,7 @@ See xref:source-blocks.adoc[] to learn more about `source` and `source-highlight
 #[test]
 fn listing_substitutions() {
     verifies!(
-        r###"
+        r##"
 == Listing substitutions
 
 Content that is assigned the `listing` style, either via the explicit block style or the listing delimiters is subject to the xref:subs:index.adoc#verbatim-group[verbatim substitution group].
@@ -260,7 +260,7 @@ value when rendered.
 ----
 
 See xref:subs:apply-subs-to-blocks.adoc[] to learn more about the `subs` attribute and how to apply incremental substitutions to listing content.
-"###
+"##
     );
 
     let sg = vec![

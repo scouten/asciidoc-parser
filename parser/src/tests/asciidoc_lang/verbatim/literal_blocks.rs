@@ -12,7 +12,7 @@ use crate::{
 track_file!("docs/modules/verbatim/pages/literal-blocks.adoc");
 
 non_normative!(
-    r###"
+    r##"
 = Literal Blocks
 
 Literal blocks display the text you write exactly as you see it in the source.
@@ -26,13 +26,13 @@ The literal style can be applied to content using any of the following methods:
 * setting the `literal` style on a block using an attribute list, or
 * enclosing the content within a pair of literal block delimiters (`\....` ).
 
-"###
+"##
 );
 
 #[test]
 fn indent_method() {
     verifies!(
-        r###"
+        r##"
 == Indent method
 
 When a line begins with one or more spaces it is displayed as a literal block.
@@ -48,7 +48,7 @@ The result of <<ex-indent>> is rendered below.
 
 include::example$literal.adoc[tag=indent]
 
-"###
+"##
     );
 
     let doc = Parser::default().parse(" ~/secure/vault/defops");
@@ -112,7 +112,7 @@ include::example$literal.adoc[tag=indent]
 #[test]
 fn literal_style_syntax() {
     verifies!(
-        r###"
+        r##"
 === literal style syntax
 
 The literal style can be applied to a block, such as a paragraph, by setting the style attribute `literal` on the block using an attribute list.
@@ -127,7 +127,7 @@ The result of <<ex-style>> is rendered below.
 
 include::example$literal.adoc[tag=style]
 
-"###
+"##
     );
 
     let doc = Parser::default().parse("[literal]\nerror: 1954 Forbidden search\nabsolutely fatal: operation lost in the dodecahedron of doom\nWould you like to try again? y/n");
@@ -204,7 +204,7 @@ include::example$literal.adoc[tag=style]
 #[test]
 fn delimited_literal_block() {
     verifies!(
-        r###"
+        r##"
 === Delimited literal block
 
 Finally, you can surround the content you want rendered as literal by enclosing it in a pair of literal block delimiters (`\....`).
@@ -221,7 +221,7 @@ The result of <<ex-block>> is rendered below.
 include::example$literal.adoc[tag=block]
 
 Notice in the output that the bold text formatting is not applied to the text nor are the three consecutive periods replaced by the ellipsis Unicode character.
-"###
+"##
     );
 
     let doc = Parser::default().parse("....\nKismet: Where is the *defensive operations manual*?\n\nComputer: Calculating ...\nCan not locate object.\nYou are not authorized to know it exists.\n\nKismet: Did the werewolves tell you to say that?\n\nComputer: Calculating ...\n....");

@@ -5,7 +5,7 @@ track_file!("docs/modules/verbatim/pages/highlight-lines.adoc");
 // Marked non-normative since asciidoc-parser doesn't involve itself in content
 // rendering.
 non_normative!(
-    r###"
+    r##"
 = Highlight Select Lines
 
 Not to be confused with xref:source-highlighter.adoc[source highlighting], you can highlight (i.e., emphasize) specific lines in a source block in order to call attention to them.
@@ -142,5 +142,5 @@ ORDERED_LIST_KEYWORDS = {
 }
 ----
 ....
-"###
+"##
 );
