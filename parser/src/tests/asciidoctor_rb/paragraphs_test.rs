@@ -1916,26 +1916,92 @@ mod literal {
         );
     }
 
+    #[test]
+    fn source_code_paragraph_with_language() {
+        let doc = Parser::default().parse("[source, perl]\ndie 'zomg perl is tough';");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "die 'zomg perl is tough';",
+                            line: 2,
+                            col: 1,
+                            offset: 15,
+                        },
+                        rendered: "die 'zomg perl is tough';",
+                    },
+                    source: Span {
+                        data: "[source, perl]\ndie 'zomg perl is tough';",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    style: SimpleBlockStyle::Source,
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: Some(Attrlist {
+                        attributes: &[
+                            ElementAttribute {
+                                name: None,
+                                value: "source",
+                                shorthand_items: &["source"],
+                            },
+                            ElementAttribute {
+                                name: None,
+                                value: "perl",
+                                shorthand_items: &[],
+                            },
+                        ],
+                        anchor: None,
+                        source: Span {
+                            data: "source, perl",
+                            line: 1,
+                            col: 2,
+                            offset: 1,
+                        },
+                    },),
+                },),],
+                source: Span {
+                    data: "[source, perl]\ndie 'zomg perl is tough';",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'source code paragraph with language' do
-      input = <<~'EOS'
-      [source, perl]
-      die 'zomg perl is tough';
-      EOS
-      block = block_from_string input
-      assert_equal :listing, block.context
-      assert_equal 'source', (block.attr 'style')
-      assert_equal :paragraph, (block.attr 'cloaked-context')
-      assert_equal 'perl', (block.attr 'language')
-      output = convert_string_to_embedded input
-      assert_xpath %(/*[@class="listingblock"]//pre[@class="highlight"]/code[@class="language-perl"][@data-lang="perl"][text()="die 'zomg perl is tough';"]), output, 1
-    end
-
     test 'literal paragraph terminates at block attribute list' do
       input = <<~'EOS'
        literal text
