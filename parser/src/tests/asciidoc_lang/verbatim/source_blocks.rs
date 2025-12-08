@@ -8,7 +8,7 @@ track_file!("docs/modules/verbatim/pages/source-blocks.adoc");
 
 non_normative!(
     r###"
-    = Source Code Blocks
+= Source Code Blocks
 :table-caption: Table
 :url-coderay: http://coderay.rubychan.de/
 :url-highlightjs: https://highlightjs.org/
