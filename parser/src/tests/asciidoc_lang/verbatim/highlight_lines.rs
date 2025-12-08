@@ -1,0 +1,146 @@
+use crate::tests::prelude::*;
+
+track_file!("docs/modules/verbatim/pages/source-highlighting.adoc");
+
+// Marked non-normative since asciidoc-parser doesn't involve itself in content
+// rendering.
+non_normative!(
+    r###"
+= Highlight Select Lines
+
+Not to be confused with xref:source-highlighter.adoc[source highlighting], you can highlight (i.e., emphasize) specific lines in a source block in order to call attention to them.
+
+== Usage criteria
+
+Line highlighting can be applied to a source block if certain criteria are met.
+
+[%autowidth]
+|===
+|`source-highlighter` |Criteria to use the `highlight` attribute on a source block
+
+|`coderay`
+a|
+* The `linenums` option is enabled on the block.
+* The `highlight` attribute is defined on the block.
+
+*Line highlighting will only emphasize the line number itself.*
+
+|`rouge`
+a|
+* The `highlight` attribute is defined on the block.
+* The CSS to support line highlighting is supplied by docinfo.
+(Needed even if `rouge-css=style`).
+
+|`pygments`
+a|* The `highlight` attribute is defined on the block.
+
+|`highlight.js`
+|Not applicable.
+
+*Line highlighting isn't available when using highlight.js.*
+|===
+
+== highlight attribute
+
+Line highlighting is activated on a source block if the highlight attribute is defined and at least one of the line numbers falls in this range.
+
+IMPORTANT: Keep in mind that some syntax highlighter libraries require additional options (e.g., CodeRay and Rouge), and some don't support line highlighting at all (e.g., highlight.js).
+
+The `highlight` attribute accepts a comma or semicolon delimited list of line ranges.
+The numbers correspond to the line numbers of the source block.
+If the `start` attribute is not specified, line numbers of the source block start at 1.
+
+Here are some examples:
+
+* 1
+* 2,4,6
+* 3..5
+* 2,7..9
+
+A line range is represented by two numbers separated by a double period (e.g., `2..5`).
+The range is inclusive.
+
+=== CodeRay
+
+.Highlight select lines when source-highlighter=coderay
+[source#ex-coderay]
+....
+= Document Title
+:source-highlighter: coderay
+
+[%linenums,ruby,highlight=2..5]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' => 'a',
+  'lowerroman' => 'i',
+  'upperalpha' => 'A',
+  'upperroman' => 'I',
+}
+----
+....
+
+When using CodeRay as the source highlighter, the `linenums` option is required to use line highlighting.
+That's because line highlighting is only applied to the line number, which is emphasized using bold text.
+CodeRay does not shade the line of code itself.
+
+=== Rouge
+
+.Highlight select lines when source-highlighter=rouge
+[source#ex-rouge]
+....
+= Document Title
+:source-highlighter: rouge
+:docinfo: shared
+
+[,ruby,highlight=2..5]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' => 'a',
+  'lowerroman' => 'i',
+  'upperalpha' => 'A',
+  'upperroman' => 'I',
+}
+----
+....
+
+When using Rouge as the source highlighter, you must supply CSS to support line highlighting.
+You can do so by storing the required line highlighting CSS in a docinfo file, then including it in the output document by setting the `docinfo` document attribute.
+
+.Docinfo file (docinfo.html) to support line highlighting with Rouge
+[,html]
+----
+<style>
+pre.rouge .hll {
+  background-color: #ffc;
+  display: block;
+}
+pre.rouge .hll * {
+  background-color: initial;
+}
+</style>
+----
+
+Note that this supplemental CSS is needed even when `rouge-css=style`.
+The Rouge integration does not embed the CSS for highlighting lines into the style attribute of the tag for each line.
+Instead, it sets the `hll` class on the tag (e.g., `<span class="hll">`).
+
+=== Pygments
+
+.Highlight select lines when source-highlighter=pygments
+[source#ex-pygments]
+....
+= Document Title
+:source-highlighter: pygments
+
+[,ruby,highlight=2..5]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' => 'a',
+  'lowerroman' => 'i',
+  'upperalpha' => 'A',
+  'upperroman' => 'I',
+}
+----
+....
+"###
+);
