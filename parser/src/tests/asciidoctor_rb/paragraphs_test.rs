@@ -2094,24 +2094,111 @@ mod literal {
         );
     }
 
+    #[test]
+    fn literal_paragraph_terminates_at_block_delimiter() {
+        let doc = Parser::default().parse(" literal text\n--\nnormal text\n--");
+
+        assert_eq!(
+            doc,
+            Document {
+                header: Header {
+                    title_source: None,
+                    title: None,
+                    attributes: &[],
+                    author_line: None,
+                    revision_line: None,
+                    comments: &[],
+                    source: Span {
+                        data: "",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                },
+                blocks: &[
+                    Block::Simple(SimpleBlock {
+                        content: Content {
+                            original: Span {
+                                data: " literal text",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            rendered: "literal text",
+                        },
+                        source: Span {
+                            data: " literal text",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        style: SimpleBlockStyle::Literal,
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::CompoundDelimited(CompoundDelimitedBlock {
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "normal text",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 17,
+                                },
+                                rendered: "normal text",
+                            },
+                            source: Span {
+                                data: "normal text",
+                                line: 3,
+                                col: 1,
+                                offset: 17,
+                            },
+                            style: SimpleBlockStyle::Paragraph,
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        context: "open",
+                        source: Span {
+                            data: "--\nnormal text\n--",
+                            line: 2,
+                            col: 1,
+                            offset: 14,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: " literal text\n--\nnormal text\n--",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                warnings: &[],
+                source_map: SourceMap(&[]),
+                catalog: Catalog {
+                    refs: HashMap::from([]),
+                    reftext_to_id: HashMap::from([]),
+                },
+            }
+        );
+    }
+
     #[ignore]
     #[test]
     fn port_from_ruby() {
         todo!(
             "Port this: {}",
             r###"
-    test 'literal paragraph terminates at block delimiter' do
-      input = <<~'EOS'
-       literal text
-      --
-      normal text
-      --
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath %(/*[@class="literalblock"]), output, 1
-      assert_xpath %(/*[@class="openblock"]), output, 1
-    end
-
     test 'literal paragraph terminates at list continuation' do
       input = <<~'EOS'
        literal text
