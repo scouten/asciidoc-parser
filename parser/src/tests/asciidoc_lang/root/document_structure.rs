@@ -619,6 +619,8 @@ Keep these points in mind as you're learning about the AsciiDoc syntax.
     );
 }
 
+// Skipping because this is well-covered in other parts of the language
+// description.
 non_normative!(
     r#"
 == Blocks
