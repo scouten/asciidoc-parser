@@ -62,7 +62,7 @@ mod section;
 pub use section::{SectionBlock, SectionNumber, SectionType};
 
 mod simple;
-pub use simple::SimpleBlock;
+pub use simple::{SimpleBlock, SimpleBlockStyle};
 
 #[cfg(test)]
 mod tests;

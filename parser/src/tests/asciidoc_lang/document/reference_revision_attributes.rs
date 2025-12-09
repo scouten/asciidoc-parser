@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, document::RefType, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, document::RefType, tests::prelude::*};
 
 track_file!("docs/modules/document/pages/reference-revision-attributes.adoc");
 
@@ -113,6 +113,7 @@ image::reference-revision-line.png["Revision line and rendered revision referenc
                         col: 1,
                         offset: 84,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -320,6 +321,7 @@ If you don't want the default version label to be displayed in the byline, xref:
                         col: 1,
                         offset: 116,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

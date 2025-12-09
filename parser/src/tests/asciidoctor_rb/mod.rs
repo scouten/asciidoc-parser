@@ -25,4 +25,5 @@
 // THE SOFTWARE.
 
 mod lists_test;
+mod paragraphs_test;
 mod substitutions_test;

@@ -15,7 +15,7 @@ Like all elements of the document header, the document title is optional.
 mod title_syntax {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -85,6 +85,7 @@ image::document-title.png[Title of document]
                         col: 1,
                         offset: 27,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -143,7 +144,7 @@ The author and revision information isn't shown below the document title in the 
 mod reference_doctitle {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -215,6 +216,7 @@ The `doctitle` attribute can also be explicitly set and assigned a value using a
                         col: 1,
                         offset: 27,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

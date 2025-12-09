@@ -20,7 +20,7 @@ mod documents {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -85,6 +85,7 @@ This is a basic AsciiDoc document.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -105,7 +106,7 @@ This is a basic AsciiDoc document.
 Of course, you can have more content than a single sentence!
 What we want to emphasize here is that it's simple to get started.
 
-An AsciiDoc document is a series of blocks stacked are stacked linewise.
+An AsciiDoc document is a series of blocks that are stacked linewise.
 These blocks are typically offset from one another by an empty line.
 (While these empty lines aren't always required, we do recommend using them for readability.)
 
@@ -162,6 +163,7 @@ This document contains two paragraphs.
                             col: 1,
                             offset: 0,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -184,6 +186,7 @@ This document contains two paragraphs.
                             col: 1,
                             offset: 36,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -292,6 +295,7 @@ It also has a header that specifies the document title and some attibutes.
                             col: 1,
                             offset: 45,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -314,6 +318,7 @@ It also has a header that specifies the document title and some attibutes.
                             col: 1,
                             offset: 93,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -349,7 +354,7 @@ Documents can range from a single sentence to a multi-part book.
 mod lines {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     #[test]
     fn section_title() {
@@ -358,7 +363,7 @@ mod lines {
 == Lines
 
 The line is a significant building block in AsciiDoc.
-A line is defined as text that's separated on either side by either a newline character or the boundary of the document.
+A line is defined as text that's separated on either side by a newline character or the boundary of the document.
 Many aspects of the syntax must occupy a whole line.
 That's why we say AsciiDoc is a line-oriented language.
 
@@ -463,6 +468,8 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 :name: value \
 more value
 -----
+
+Notice that the attribute entry must be explicitly continued to extend onto another line.
 
 "#
         );
@@ -581,6 +588,7 @@ For example, a single empty line separates the header from the body.
                         col: 1,
                         offset: 22,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -611,6 +619,8 @@ Keep these points in mind as you're learning about the AsciiDoc syntax.
     );
 }
 
+// Skipping because this is well-covered in other parts of the language
+// description.
 non_normative!(
     r#"
 == Blocks

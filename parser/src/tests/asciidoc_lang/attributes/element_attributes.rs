@@ -43,7 +43,10 @@ mod attrlist {
     use pretty_assertions_sorted::assert_eq;
 
     use crate::{
-        HasSpan, Parser, attributes::AttrlistContext, blocks::MediaType, tests::prelude::*,
+        HasSpan, Parser,
+        attributes::AttrlistContext,
+        blocks::{MediaType, SimpleBlockStyle},
+        tests::prelude::*,
     };
 
     non_normative!(
@@ -214,6 +217,7 @@ If the text cannot be parsed, an error message will be emitted to the log.
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -295,6 +299,7 @@ If this happens, append `+{empty}+` to the end of the line to disrupt the syntax
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -448,6 +453,7 @@ Specifically, it does not support named attributes, only the attribute shorthand
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

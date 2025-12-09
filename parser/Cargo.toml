@@ -1,6 +1,6 @@
 [package]
 name = "asciidoc-parser"
-version = "0.13.1"
+version = "0.14.0"
 description = "Parser for AsciiDoc format"
 authors = ["Eric Scouten <git@scouten.me>"]
 license = "MIT OR Apache-2.0"
@@ -22,7 +22,7 @@ thiserror = "2.0.1"
 
 [dev-dependencies]
 codspeed-criterion-compat = "4.0.2"
-criterion = "0.7.0"
+criterion = "0.8.0"
 pretty_assertions_sorted = "1.2.3"
 
 [[bench]]

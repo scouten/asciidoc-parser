@@ -15,7 +15,7 @@ The document header encapsulates the document title, author and revision informa
 mod structure {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -167,6 +167,7 @@ These implicit content lines are used to assign xref:author-information.adoc[] a
                         col: 1,
                         offset: 80,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -353,6 +354,7 @@ Since the document title is optional, it's possible for the header to only consi
                         col: 1,
                         offset: 180,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -376,7 +378,7 @@ Since the document title is optional, it's possible for the header to only consi
 mod header_end {
     // use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -484,6 +486,7 @@ Any attributes defined below the first empty line are not part of the document h
                         col: 1,
                         offset: 92,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
