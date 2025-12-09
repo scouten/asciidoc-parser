@@ -11,10 +11,10 @@ The AsciiDoc syntax is intuitive because it builds on well-established, plain te
 Someone unfamiliar with AsciiDoc can probably guess the purpose of many of its syntax elements just by looking at them.
 That's because the elements of the syntax were carefully chosen to look like what they mean (a practice long employed by the tech industry).
 
-The AsciiDoc language isn't coupled to the output format it produces.
 An AsciiDoc processor can parse and comprehend an AsciiDoc source document and convert the parsed document structure into one or more output formats, such as HTML, PDF, EPUB3, man(ual) page, or DocBook.
+The AsciiDoc language isn't coupled to the output produced from it.
 The ability to produce multiple output formats is one of the main advantages of AsciiDoc.
-This capability enables it to be used in static site generators, IDEs, git tools and services, CI/CD systems, and other software.
+This capability enables it to be used in static site generators, help text, book publishing, IDEs, git tools and services, CI/CD systems, and other novel uses.
 
 AsciiDoc bridges the gap between ease of writing and the rigorous requirements of technical authoring and publishing.
 AsciiDoc only requires a text editor to read or write, thereby offering a low bar to getting started.
