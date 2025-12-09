@@ -14,6 +14,7 @@ Added::
 * Document equation numbering and referencing for LaTeX stem blocks
 * Document cxx attribute as preferred alternative to cpp
 * Add warning stating that AsciiDoc processing can allow inline elements to be interleaved, leading to invalid or illogical output, but that it is being addressed by the specification
+* Add example of multiple roles assigned to formatted text
 
 Changed::
 * Document that the toclevels value ranges from 0-5 rather than 1-5 and that 0 is only relevant for a multipart book
@@ -23,6 +24,7 @@ Changed::
 * Document the additional requirement in Firefox to view an embedded YouTube video
 * Clarify that auto-generated section IDs can be expected to be safe to use in HTML, but not necessarily XML; document workarounds
 * Clarify that using explicit numbering to alter start value of ordered list was introduced in Asciidoctor 2.1.0
+* Clarify the typical order for shorthand attributes in a boxed attrlist
 
 == Published Q2 2025
 

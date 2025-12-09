@@ -106,7 +106,7 @@ This is a basic AsciiDoc document.
 Of course, you can have more content than a single sentence!
 What we want to emphasize here is that it's simple to get started.
 
-An AsciiDoc document is a series of blocks stacked are stacked linewise.
+An AsciiDoc document is a series of blocks that are stacked linewise.
 These blocks are typically offset from one another by an empty line.
 (While these empty lines aren't always required, we do recommend using them for readability.)
 
@@ -363,7 +363,7 @@ mod lines {
 == Lines
 
 The line is a significant building block in AsciiDoc.
-A line is defined as text that's separated on either side by either a newline character or the boundary of the document.
+A line is defined as text that's separated on either side by a newline character or the boundary of the document.
 Many aspects of the syntax must occupy a whole line.
 That's why we say AsciiDoc is a line-oriented language.
 
@@ -468,6 +468,8 @@ The same is true for an attribute entry, a block title, a block attribute list, 
 :name: value \
 more value
 -----
+
+Notice that the attribute entry must be explicitly continued to extend onto another line.
 
 "#
         );
@@ -617,6 +619,8 @@ Keep these points in mind as you're learning about the AsciiDoc syntax.
     );
 }
 
+// Skipping because this is well-covered in other parts of the language
+// description.
 non_normative!(
     r#"
 == Blocks
