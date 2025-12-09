@@ -67,7 +67,7 @@ impl<'src> SimpleBlock<'src> {
         let MatchedItem {
             item: (content, style),
             after,
-        } = parse_lines(metadata.block_start, &metadata.attrlist, parser)?;
+        } = parse_lines(metadata.block_start, &metadata.attrlist, false, parser)?;
 
         Some(MatchedItem {
             item: Self {
@@ -91,52 +91,26 @@ impl<'src> SimpleBlock<'src> {
         metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
     ) -> Option<MatchedItem<'src, Self>> {
-        let source = metadata.block_start.take_non_empty_lines()?;
-
-        let mut next = metadata.block_start;
-        let mut filtered_lines: Vec<&'src str> = vec![];
-
-        while let Some(inline) = next.take_non_empty_line() {
-            if let Some(_marker) = ListItemMarker::parse(inline.item) {
-                break;
-            }
-
-            if !inline.item.starts_with("//") || inline.item.starts_with("///") {
-                // NOTE: We behave slightly differently from Asciidoctor here. We strip leading
-                // whitespace from _all_ lines in this simple block without regard to whether
-                // _some_ lines are indented and others are not.
-                filtered_lines.push(
-                    inline
-                        .item
-                        .discard_whitespace()
-                        .trim_trailing_whitespace()
-                        .data(),
-                );
-            }
-
-            next = inline.after;
-        }
-
-        let item_source = source.item.trim_remainder(next).trim_trailing_whitespace();
-
-        let filtered_lines = filtered_lines.join("\n");
-        let mut content: Content<'src> = Content::from_filtered(item_source, filtered_lines);
-
-        SubstitutionGroup::Normal
-            .override_via_attrlist(metadata.attrlist.as_ref())
-            .apply(&mut content, parser, metadata.attrlist.as_ref());
+        let MatchedItem {
+            item: (content, style),
+            after,
+        } = parse_lines(metadata.block_start, &metadata.attrlist, true, parser)?;
 
         Some(MatchedItem {
             item: Self {
                 content,
-                source: item_source,
+                source: metadata
+                    .source
+                    .trim_remainder(after)
+                    .trim_trailing_whitespace(),
+                style,
                 title_source: metadata.title_source,
                 title: metadata.title.clone(),
                 anchor: metadata.anchor,
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
             },
-            after: next.discard_empty_lines(),
+            after: after.discard_empty_lines(),
         })
     }
 
@@ -147,7 +121,7 @@ impl<'src> SimpleBlock<'src> {
         let MatchedItem {
             item: (content, style),
             after,
-        } = parse_lines(source, &None, parser)?;
+        } = parse_lines(source, &None, false, parser)?;
 
         let source = content.original();
 
@@ -181,6 +155,7 @@ impl<'src> SimpleBlock<'src> {
 fn parse_lines<'src>(
     source: Span<'src>,
     attrlist: &Option<Attrlist<'src>>,
+    stop_for_list_items: bool,
     parser: &Parser,
 ) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
     let source_after_whitespace = source.discard_whitespace();
@@ -227,6 +202,10 @@ fn parse_lines<'src>(
         // `SimpleBlock::parse` in these conditions), but in case it is, we simply
         // ignore them on the first line.
         if !filtered_lines.is_empty() {
+            if stop_for_list_items && let Some(_marker) = ListItemMarker::parse(line) {
+                break;
+            }
+
             if line.data() == "+" {
                 break;
             }
