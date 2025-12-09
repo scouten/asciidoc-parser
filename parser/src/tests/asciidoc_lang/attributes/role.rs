@@ -425,7 +425,7 @@ mod assign_roles_to_formatted_inline_elements {
         r#"
 == Assign roles to formatted inline elements
 
-        "#
+"#
     );
 
     #[test]
