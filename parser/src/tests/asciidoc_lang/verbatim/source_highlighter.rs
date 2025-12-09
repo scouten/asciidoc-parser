@@ -1,0 +1,220 @@
+use crate::tests::prelude::*;
+
+track_file!("docs/modules/verbatim/pages/source-highlighter.adoc");
+
+// Marked non-normative since asciidoc-parser doesn't involve itself in content
+// rendering.
+non_normative!(
+    r##"
+= Source Highlighting
+:table-caption: Table
+
+Source highlighting is applied to text that's assigned the `source` block style (either explicitly or implicitly) and a source language.
+The source language is defined either on the block or inherited from the `source-language` document attribute.
+
+[#source-highlighter]
+== source-highlighter attribute
+
+Source highlighting isn't enabled by default.
+To enable source highlighting, you must set the `source-highlighter` attribute in the document header using an attribute entry.
+
+----
+= Document Title
+:source-highlighter: <value>
+----
+
+For example, here's how to enable syntax highlighting using Rouge:
+
+----
+= Document Title
+:source-highlighter: rouge
+----
+
+You can also declare this attribute using the CLI or API.
+
+[#available-source-highlighters]
+== Available source highlighters
+
+<<built-in-values>> lists the recognized values for the `source-highlighter` attribute and the toolchains that support the usage of the syntax highlighting libraries.
+
+.Built-in source-highlighter values and the supporting toolchains
+[#built-in-values%autowidth]
+|===
+|Library |Value |Toolchain
+
+|CodeRay
+|`coderay`
+|Asciidoctor, AsciidoctorJ, Asciidoctor PDF
+
+|highlight.js
+|`highlight.js`
+|Asciidoctor, AsciidoctorJ, Asciidoctor.js
+
+|Pygments
+|`pygments`
+|Asciidoctor, Asciidoctor PDF
+
+|Rouge
+|`rouge`
+|Asciidoctor, AsciidoctorJ, Asciidoctor PDF
+|===
+
+To use Rouge, CodeRay, or Pygments, you must have the appropriate library installed on your system.
+See xref:asciidoctor:syntax-highlighting:rouge.adoc[], xref:asciidoctor:syntax-highlighting:coderay.adoc[], or xref:asciidoctor:syntax-highlighting:pygments.adoc[] for installation instructions.
+
+If you're using the client-side library xref:asciidoctor:syntax-highlighting:highlightjs.adoc[], there's no need to install additional libraries.
+The generated HTML will load the required source files from a CDN, custom URL, or file path.
+
+.Source Highlighter vs. Syntax Highlighter
+****
+You might notice that the `source-highlighter` attribute uses the term "`source highlighter`", whereas the library that performs the highlighting is referred to as a "`syntax highlighter`".
+What's the difference?
+
+* The generally accepted term for a syntax (aka code) highlighter is "`syntax highlighter`".
+* The syntax highlighter is applied to source blocks in AsciiDoc, hence why we say "`source highlighter`".
+
+In other words, the `source-highlighter` attribute means "`use this syntax highlighter to colorize source blocks`".
+****
+
+== Apply source highlighting
+
+To apply highlighting to a block of source code, you must specify a source language.
+If the block is a literal block or paragraph, you must also specify the `source` style.
+
+The AsciiDoc language does not specify the list of valid source language values.
+Instead, the available source language values are defined by the syntax highlighter library.
+
+TIP: You can find the list of available languages supported by Rouge in the https://github.com/rouge-ruby/rouge/blob/master/docs/Languages.md[Rouge documentation].
+You can print a list of available languages supported by Pygments by running `pygmentize -L formatters`.
+The available languages supported by highlight.js depends on which bundle of highlight.js you are using.
+
+Typically, the source language value is the proper name of the language in lowercase (e.g., `ruby`, `java`).
+Most syntax highlighters also accept using the source file extension (e.g., `js`, `rb`), though it's important to be consistent.
+If the syntax highlighter doesn't recognize or support the source language, the block will not be highlighted.
+
+.Source block with ID and source highlighting
+[source#ex-code,line-comment=]
+....
+include::example$source.adoc[tag=src-base-co]
+....
+<.> The block style `source` is implied since a source language is specified.
+<.> An optional ID can be added to the block by appending it to style using the shorthand syntax (`#`) for `id`.
+<.> Assign a source language to the second position.
+<.> An implicit source block uses the listing structural container.
+
+The result of <<ex-code>> is displayed below.
+
+include::example$source.adoc[tag=src-base-co-res]
+
+.Source paragraph
+[source#ex-style]
+----
+include::example$source.adoc[tag=src-para-co]
+----
+<.> Place the attribute list directly above the paragraph.
+In this case, the `source` style is always required.
+<.> Once an empty line is encountered the source block ends.
+
+The result of <<ex-style>> is displayed below.
+
+include::example$source.adoc[tag=src-para]
+
+=== shell vs console
+
+The source language for shell and console are often mixed up.
+The language `shell` is intended for the contents of a shell script, often indicated by a shebang for the generic shell.
+If the shell script is written for a particular shell, you might use that language instead (e.g., `bash` or `zsh`).
+The language `console` is intended to represent text that's typed into a console (i.e., a terminal application).
+
+Here's an example of when you would use `shell`:
+
+[source]
+....
+[,shell]
+----
+#!/bin/sh
+
+fail () {
+    echo
+    echo "$*"
+    echo
+    exit 1
+} >&2
+
+JAVACMD=java
+which java >/dev/null 2>&1 || fail "ERROR: no 'java' command could be found in your PATH.
+
+exec "$JAVACMD" "$@"
+----
+....
+
+Here's an example of when you would use `console`:
+
+[source]
+....
+[source,console]
+$ asciidoctor -v
+....
+
+Typically, the syntax highlighter will parse the prompt (e.g., `$`) at the start of each line, then handle the remaining text using the shell language.
+
+Often times, a basic console command is represented using a literal paragraph since there isn't much to be gained from syntax highlighting in this case.
+
+== Enable line numbering
+
+Provided the feature is supported by the source highlighter, you can enable line numbering on a source block by setting the `linenums` option on the block.
+
+IMPORTANT: Line numbering is added by the syntax highlighter, not the AsciiDoc converter.
+Therefore, to get line numbering on a source block, you must have the `source-highlighter` attribute set and the library to which it refers must support line numbering.
+When using Asciidoctor, the only syntax highlighter that does not support line numbering is highlight.js.
+
+The `linenums` option can either be specified as a normal block option named `linenums`, or as the third positional attribute on the block.
+The value of the positional attribute doesn't matter, though it's customary to use `linenums`.
+
+.Enable line numbering using the `linenums` option
+[source#ex-linenums-option]
+....
+include::example$source.adoc[tag=linenums-option]
+....
+
+.Enable line numbering using the third positional attribute
+[source#ex-linenums-posattr]
+....
+include::example$source.adoc[tag=linenums-posattr]
+....
+
+// We can't show the output since the source highlighter used for the site (highlight.js) isn't configure to support line numbering.
+////
+The result of both <<ex-linenums-option>> and <<ex-linenums-posattr>> is displayed below:
+
+include::example$source.adoc[tag=linenums-option]
+////
+
+== Disable source highlighting
+
+To disable source highlighting for a given source block, specify the language as `text` or remove the `source` style.
+
+[#source-language]
+== source-language attribute
+
+If the majority of your source blocks use the same source language, you can set the `source-language` attribute in the document header and assign a language to it.
+Setting the `source-language` document attribute implicitly promotes listing blocks to source blocks.
+
+.Set source-language attribute
+[source#ex-language]
+....
+include::example$source.adoc[tag=src-lang]
+....
+
+Notice that it's not necessary to specify the `source` style or source language on the block.
+To make a listing block in this situation, you must set the `listing` style on the block.
+
+You can override the global source language on an individual block by specifying a source language directly on the block.
+
+.Override source-language attribute
+[source#ex-override]
+....
+include::example$source.adoc[tag=override]
+....
+"##
+);

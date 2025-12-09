@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0](https://github.com/scouten/asciidoc-parser/compare/v0.13.1...v0.14.0)
+_08 December 2025_
+
+### Added
+
+* Improve handling of paragraph, listing, and literal blocks ([#451](https://github.com/scouten/asciidoc-parser/pull/451))
+
+### Updated dependencies
+
+* Update criterion requirement from 0.7.0 to 0.8.0 in /parser ([#452](https://github.com/scouten/asciidoc-parser/pull/452))
+
 ## [0.13.1](https://github.com/scouten/asciidoc-parser/compare/v0.13.0...v0.13.1)
 _17 November 2025_
 

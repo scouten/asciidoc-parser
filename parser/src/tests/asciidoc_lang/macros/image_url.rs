@@ -15,7 +15,11 @@ You can reference images served from any URL (e.g., your blog, an image hosting 
 mod image_url_targets {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::MediaType, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{MediaType, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -178,6 +182,7 @@ include::example$image.adoc[tag=in-url]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

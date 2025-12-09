@@ -15,7 +15,7 @@ The mailto macro is a specialization of the xref:url-macro.adoc[URL macro] that 
 mod link_text_and_named_attributes {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -75,6 +75,7 @@ mailto:join@discuss.example.org[Subscribe]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -142,6 +143,7 @@ mailto:join@discuss.example.org[Subscribe,role=email]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -211,6 +213,7 @@ mailto:join@discuss.example.org["Click, subscribe, and participate!"]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -241,7 +244,7 @@ To learn more about how the attributes are parsed, refer to xref:link-macro-attr
 mod subject_and_body {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -304,6 +307,7 @@ When the reader clicks the link, a conforming email client will fill in the subj
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -375,6 +379,7 @@ When the reader clicks the link, a conforming email client will fill in the body
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -443,6 +448,7 @@ mailto:join@discuss.example.org[,Subscribe me,I want to participate.]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -510,6 +516,7 @@ mailto:join@discuss.example.org[,Subscribe me]
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -577,6 +584,7 @@ mailto:join@discuss.example.org[Subscribe,"I want to participate, so please subs
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

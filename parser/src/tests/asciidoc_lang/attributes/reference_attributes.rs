@@ -1,6 +1,6 @@
 use pretty_assertions_sorted::assert_eq;
 
-use crate::{Parser, tests::prelude::*};
+use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
 track_file!("docs/modules/attributes/pages/reference-attributes.adoc");
 
@@ -160,6 +160,7 @@ Actually, please don't.
                         col: 1,
                         offset: 189,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -182,6 +183,7 @@ Actually, please don't.
                         col: 1,
                         offset: 230,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -265,6 +267,7 @@ Our servers don't like them either.
                     col: 1,
                     offset: 0,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -287,7 +290,7 @@ Our servers don't like them either.
 mod escape_attribute_reference {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, tests::prelude::*};
+    use crate::{Parser, blocks::SimpleBlockStyle, tests::prelude::*};
 
     non_normative!(
         r#"
@@ -385,6 +388,7 @@ In the path /items/\{id}, id is a path parameter.
                         col: 1,
                         offset: 10,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -451,6 +455,7 @@ If the syntax that follows the backslash does not match an attribute reference, 
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -553,6 +558,7 @@ In the path +/items/{id}+, id is a path parameter.
                         col: 1,
                         offset: 10,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -619,6 +625,7 @@ All the text between the passthrough enclosure will get passed through to the ou
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,

@@ -80,7 +80,7 @@ fn main() {
         // (unwrap: Should have been filtered out above.)
 
         // if !path.contains("/revision-line.adoc") {
-        //     return;
+        //     continue;
         // }
         println!("        {path:?}: {{");
 

@@ -75,7 +75,11 @@ An element attribute is defined using an attribute list on an element, or an ava
 mod macros {
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{Parser, blocks::MediaType, tests::prelude::*};
+    use crate::{
+        Parser,
+        blocks::{MediaType, SimpleBlockStyle},
+        tests::prelude::*,
+    };
 
     non_normative!(
         r#"
@@ -214,6 +218,7 @@ Click the button with the image:star.png[Star] to favorite the project.
                         col: 1,
                         offset: 0,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
