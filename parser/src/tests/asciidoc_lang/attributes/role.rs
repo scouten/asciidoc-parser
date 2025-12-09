@@ -65,6 +65,11 @@ This is a sidebar with a role assigned to it, rolename.
 ****
 ----
 
+In this form, the value of the role attribute is already in the right form to be passed through to the output.
+No additional processing is done on it.
+
+This longhand syntax can also be used on inline macros, but it cannot be used with formatted (aka quoted) text.
+
 "#
         );
 
