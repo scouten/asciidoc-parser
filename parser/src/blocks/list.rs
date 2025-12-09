@@ -211,7 +211,7 @@ mod tests {
 
     use crate::{
         HasSpan,
-        blocks::{ContentModel, IsBlock, ListType, metadata::BlockMetadata},
+        blocks::{ContentModel, IsBlock, ListType, SimpleBlockStyle, metadata::BlockMetadata},
         content::SubstitutionGroup,
         span::MatchedItem,
         tests::prelude::*,
@@ -265,6 +265,7 @@ mod tests {
                             col: 3,
                             offset: 2,
                         },
+                        style: SimpleBlockStyle::Paragraph,
                         title_source: None,
                         title: None,
                         anchor: None,
@@ -328,6 +329,7 @@ mod tests {
                         col: 3,
                         offset: 2,
                     },
+                    style: SimpleBlockStyle::Paragraph,
                     title_source: None,
                     title: None,
                     anchor: None,
@@ -369,6 +371,7 @@ mod tests {
                     col: 3,
                     offset: 2,
                 },
+                style: SimpleBlockStyle::Paragraph,
                 title_source: None,
                 title: None,
                 anchor: None,
@@ -404,7 +407,7 @@ mod tests {
 
         assert_eq!(
             format!("{:#?}", list.item),
-            "ListBlock {\n    type_: ListType::Unordered,\n    items: &[\n        Block::ListItem(\n            ListItem {\n                marker: ListItemMarker::Hyphen(\n                    Span {\n                        data: \"-\",\n                        line: 1,\n                        col: 1,\n                        offset: 0,\n                    },\n                ),\n                blocks: &[\n                    Block::Simple(\n                        SimpleBlock {\n                            content: Content {\n                                original: Span {\n                                    data: \"blah\",\n                                    line: 1,\n                                    col: 3,\n                                    offset: 2,\n                                },\n                                rendered: \"blah\",\n                            },\n                            source: Span {\n                                data: \"blah\",\n                                line: 1,\n                                col: 3,\n                                offset: 2,\n                            },\n                            title_source: None,\n                            title: None,\n                            anchor: None,\n                            anchor_reftext: None,\n                            attrlist: None,\n                        },\n                    ),\n                ],\n                source: Span {\n                    data: \"- blah\",\n                    line: 1,\n                    col: 1,\n                    offset: 0,\n                },\n                anchor: None,\n                anchor_reftext: None,\n                attrlist: None,\n            },\n        ),\n    ],\n    source: Span {\n        data: \"- blah\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n    title_source: None,\n    title: None,\n    anchor: None,\n    anchor_reftext: None,\n    attrlist: None,\n}"
+            "ListBlock {\n    type_: ListType::Unordered,\n    items: &[\n        Block::ListItem(\n            ListItem {\n                marker: ListItemMarker::Hyphen(\n                    Span {\n                        data: \"-\",\n                        line: 1,\n                        col: 1,\n                        offset: 0,\n                    },\n                ),\n                blocks: &[\n                    Block::Simple(\n                        SimpleBlock {\n                            content: Content {\n                                original: Span {\n                                    data: \"blah\",\n                                    line: 1,\n                                    col: 3,\n                                    offset: 2,\n                                },\n                                rendered: \"blah\",\n                            },\n                            source: Span {\n                                data: \"blah\",\n                                line: 1,\n                                col: 3,\n                                offset: 2,\n                            },\n                            style: SimpleBlockStyle::Paragraph,\n                            title_source: None,\n                            title: None,\n                            anchor: None,\n                            anchor_reftext: None,\n                            attrlist: None,\n                        },\n                    ),\n                ],\n                source: Span {\n                    data: \"- blah\",\n                    line: 1,\n                    col: 1,\n                    offset: 0,\n                },\n                anchor: None,\n                anchor_reftext: None,\n                attrlist: None,\n            },\n        ),\n    ],\n    source: Span {\n        data: \"- blah\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n    title_source: None,\n    title: None,\n    anchor: None,\n    anchor_reftext: None,\n    attrlist: None,\n}"
         );
 
         assert_eq!(
