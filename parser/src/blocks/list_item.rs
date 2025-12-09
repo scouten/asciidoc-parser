@@ -58,8 +58,44 @@ impl<'src> ListItem<'src> {
         let simple_block_mi = SimpleBlock::parse_for_list_item(&hack_no_metadata, parser)?;
         blocks.push(Block::Simple(simple_block_mi.item));
 
-        let after = simple_block_mi.after;
-        let source = source.trim_remainder(after).trim_trailing_whitespace();
+        let mut next = simple_block_mi.after;
+
+        loop {
+            let is_indented = next.starts_with(' ') || next.starts_with('\t');
+            let indented_line = next.discard_whitespace();
+
+            let hack_no_metadata = BlockMetadata {
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+                source: next,
+                block_start: next,
+            };
+
+            if ListItemMarker::parse(indented_line).is_some() {
+                break;
+            }
+
+            if !is_indented {
+                break;
+            }
+
+            // A list item does not terminate if subsequent blocks are indented (i.e. use
+            // literal syntax).
+            if let Some(indented_block_mi) =
+                SimpleBlock::parse_for_list_item(&hack_no_metadata, parser)
+            {
+                blocks.push(Block::Simple(indented_block_mi.item));
+                next = indented_block_mi.after;
+                continue;
+            }
+
+            break;
+        }
+
+        let source = source.trim_remainder(next).trim_trailing_whitespace();
 
         Some(MatchedItem {
             item: Self {
@@ -70,7 +106,7 @@ impl<'src> ListItem<'src> {
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
             },
-            after,
+            after: next,
         })
     }
 
