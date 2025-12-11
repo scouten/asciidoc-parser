@@ -3561,31 +3561,194 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn should_escape_special_characters_in_all_literal_paragraphs_attached_to_list_item() {
+            let doc = Parser::default().parse(
+                "* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item",
+            );
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "first item",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "first item",
+                                        },
+                                        source: Span {
+                                            data: "first item",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "  <code>text</code>",
+                                                line: 3,
+                                                col: 1,
+                                                offset: 14,
+                                            },
+                                            rendered: "&lt;code&gt;text&lt;/code&gt;",
+                                        },
+                                        source: Span {
+                                            data: "  <code>text</code>",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 14,
+                                        },
+                                        style: SimpleBlockStyle::Literal,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "  more <code>text</code>",
+                                                line: 5,
+                                                col: 1,
+                                                offset: 35,
+                                            },
+                                            rendered: "more &lt;code&gt;text&lt;/code&gt;",
+                                        },
+                                        source: Span {
+                                            data: "  more <code>text</code>",
+                                            line: 5,
+                                            col: 1,
+                                            offset: 35,
+                                        },
+                                        style: SimpleBlockStyle::Literal,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "* first item\n\n  <code>text</code>\n\n  more <code>text</code>",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 61,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "second item",
+                                            line: 7,
+                                            col: 3,
+                                            offset: 63,
+                                        },
+                                        rendered: "second item",
+                                    },
+                                    source: Span {
+                                        data: "second item",
+                                        line: 7,
+                                        col: 3,
+                                        offset: 63,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* second item",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 61,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'should escape special characters in all literal paragraphs attached to list item' do
-      input = <<~'EOS'
-      * first item
-
-        <code>text</code>
-
-        more <code>text</code>
-
-      * second item
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'li', output, 2
-      assert_css 'code', output, 0
-      assert_css 'li:first-of-type > *', output, 3
-      assert_css 'li:first-of-type pre', output, 2
-      assert_xpath '((//li)[1]//pre)[1][text()="<code>text</code>"]', output, 1
-      assert_xpath '((//li)[1]//pre)[2][text()="more <code>text</code>"]', output, 1
-    end
-
     test 'a literal paragraph offset by a blank line in list content followed by line with continuation is appended as two blocks' do
       input = <<~'EOS'
       List
