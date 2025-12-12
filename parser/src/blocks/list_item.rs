@@ -43,9 +43,8 @@ impl<'src> ListItem<'src> {
 
         let mut blocks: Vec<Block<'src>> = vec![];
 
-        // TEMPORARY Q&D simple block parse to bootstrap.
-
-        let hack_no_metadata = BlockMetadata {
+        // Text after list item marker is always a simple block with no metadata.
+        let no_metadata = BlockMetadata {
             title_source: None,
             title: None,
             anchor: None,
@@ -55,40 +54,42 @@ impl<'src> ListItem<'src> {
             block_start: marker_mi.after,
         };
 
-        let simple_block_mi = SimpleBlock::parse_for_list_item(&hack_no_metadata, parser)?;
+        let simple_block_mi = SimpleBlock::parse_for_list_item(&no_metadata, parser)?;
         blocks.push(Block::Simple(simple_block_mi.item));
 
         let mut next = simple_block_mi.after;
+        let mut next_block_must_be_indented = false;
 
         loop {
             let is_indented = next.starts_with(' ') || next.starts_with('\t');
-            let indented_line = next.discard_whitespace();
+            let indented_next = next.discard_whitespace();
 
-            let hack_no_metadata = BlockMetadata {
-                title_source: None,
-                title: None,
-                anchor: None,
-                anchor_reftext: None,
-                attrlist: None,
-                source: next,
-                block_start: next,
-            };
+            let indented_line_mi = indented_next.take_normalized_line();
 
-            if ListItemMarker::parse(indented_line).is_some() {
+            if indented_line_mi.item.data() == "+" {
+                next = indented_line_mi.after;
+                next_block_must_be_indented = false;
+                continue;
+            }
+
+            if ListItemMarker::parse(indented_next).is_some() {
                 break;
             }
 
-            if !is_indented {
+            if next_block_must_be_indented && !is_indented {
                 break;
             }
 
             // A list item does not terminate if subsequent blocks are indented (i.e. use
             // literal syntax).
-            if let Some(indented_block_mi) =
-                SimpleBlock::parse_for_list_item(&hack_no_metadata, parser)
-            {
-                blocks.push(Block::Simple(indented_block_mi.item));
+            let indented_block_maw = Block::parse_for_list_item(next, parser);
+            // TO DO: Transfer warnings.
+
+            if let Some(indented_block_mi) = indented_block_maw.item {
+                blocks.push(indented_block_mi.item);
                 next = indented_block_mi.after;
+                next_block_must_be_indented = true;
+
                 continue;
             }
 

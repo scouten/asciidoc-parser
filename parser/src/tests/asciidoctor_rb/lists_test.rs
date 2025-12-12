@@ -3744,36 +3744,233 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_literal_paragraph_offset_by_a_blank_line_in_list_content_followed_by_line_with_continuation_is_appended_as_two_blocks()
+         {
+            let doc = Parser::default().parse("- Foo\n\n  literal\n+\npara\n\n- Boo\n- Blech");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Foo",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "Foo",
+                                        },
+                                        source: Span {
+                                            data: "Foo",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "  literal",
+                                                line: 3,
+                                                col: 1,
+                                                offset: 7,
+                                            },
+                                            rendered: "literal",
+                                        },
+                                        source: Span {
+                                            data: "  literal",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 7,
+                                        },
+                                        style: SimpleBlockStyle::Literal,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "para",
+                                                line: 5,
+                                                col: 1,
+                                                offset: 19,
+                                            },
+                                            rendered: "para",
+                                        },
+                                        source: Span {
+                                            data: "para",
+                                            line: 5,
+                                            col: 1,
+                                            offset: 19,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "- Foo\n\n  literal\n+\npara",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 25,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Boo",
+                                            line: 7,
+                                            col: 3,
+                                            offset: 27,
+                                        },
+                                        rendered: "Boo",
+                                    },
+                                    source: Span {
+                                        data: "Boo",
+                                        line: 7,
+                                        col: 3,
+                                        offset: 27,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Boo",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 25,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 31,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Blech",
+                                            line: 8,
+                                            col: 3,
+                                            offset: 33,
+                                        },
+                                        rendered: "Blech",
+                                    },
+                                    source: Span {
+                                        data: "Blech",
+                                        line: 8,
+                                        col: 3,
+                                        offset: 33,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Blech",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 31,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- Foo\n\n  literal\n+\npara\n\n- Boo\n- Blech",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- Foo\n\n  literal\n+\npara\n\n- Boo\n- Blech",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'a literal paragraph offset by a blank line in list content followed by line with continuation is appended as two blocks' do
-      input = <<~'EOS'
-      List
-      ====
-
-      - Foo
-
-        literal
-      +
-      para
-
-      - Boo
-      - Blech
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 3
-      assert_xpath '(//ul/li)[1]/p[text() = "Foo"]', output, 1
-      assert_xpath '(//ul/li)[1]/*[@class="literalblock"]', output, 1
-      assert_xpath '(//ul/li)[1]/p/following-sibling::*[@class="literalblock"]', output, 1
-      assert_xpath '((//ul/li)[1]/*[@class="literalblock"])[1]//pre[text() = "literal"]', output, 1
-      assert_xpath '(//ul/li)[1]/*[@class="literalblock"]/following-sibling::*[@class="paragraph"]', output, 1
-      assert_xpath '(//ul/li)[1]/*[@class="literalblock"]/following-sibling::*[@class="paragraph"]/p[text()="para"]', output, 1
-    end
-
     test 'an admonition paragraph attached by a line continuation to a list item with wrapped text should produce admonition' do
       input = <<~'EOS'
       - first-line text

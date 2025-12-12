@@ -108,6 +108,28 @@ impl<'src> Block<'src> {
         source: Span<'src>,
         parser: &mut Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
+        Self::parse_internal(source, parser, false)
+    }
+
+    /// Parse a block of any type and return a `Block` that describes it.
+    ///
+    /// Will terminate early when parsing certain block types within a list
+    /// context.
+    ///
+    /// Consumes any blank lines before and after the block.
+    pub(crate) fn parse_for_list_item(
+        source: Span<'src>,
+        parser: &mut Parser,
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
+        Self::parse_internal(source, parser, true)
+    }
+
+    /// Shared parser for [`Block::parse`] and [`Block::parse_for_list_item`].
+    fn parse_internal(
+        source: Span<'src>,
+        parser: &mut Parser,
+        is_for_list_item: bool,
+    ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         // Optimization: If the first line doesn't match any of the early indications
         // for delimited blocks, titles, or attrlists, we can skip directly to treating
         // this as a simple block. That saves quite a bit of parsing time.
@@ -148,6 +170,13 @@ impl<'src> Block<'src> {
             && (first_line.ends_with(':') || first_line.contains(": "))
             && let Some(attr) = Attribute::parse(source, parser)
         {
+            if is_for_list_item {
+                return MatchAndWarnings {
+                    item: None,
+                    warnings: vec![],
+                };
+            }
+
             let mut warnings: Vec<Warning<'src>> = vec![];
             parser.set_attribute_from_body(&attr.item, &mut warnings);
 
@@ -300,6 +329,13 @@ impl<'src> Block<'src> {
             if (first_line.starts_with('-') || first_line.starts_with('*'))
                 && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
             {
+                if is_for_list_item {
+                    return MatchAndWarnings {
+                        item: None,
+                        warnings: vec![],
+                    };
+                }
+
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
                         item: Self::List(mi_list.item),
@@ -314,8 +350,24 @@ impl<'src> Block<'src> {
             // spin in a loop (for example, `parse_blocks_until`) thinking there will be
             // another block, but there isn't.
 
+            // TEMPORARY: Don't take a line comment if in list item mode.
+            // We'll need to revisit this when we figure out how to handle line comments.
+            if is_for_list_item
+                && metadata.block_start.starts_with("//")
+                && !metadata.block_start.starts_with("///")
+            {
+                return MatchAndWarnings {
+                    item: None,
+                    warnings: vec![],
+                };
+            }
+
             // The following check disables that spin loop.
-            let simple_block_mi = SimpleBlock::parse(&metadata, parser);
+            let simple_block_mi = if is_for_list_item {
+                SimpleBlock::parse_for_list_item(&metadata, parser)
+            } else {
+                SimpleBlock::parse(&metadata, parser)
+            };
 
             if simple_block_mi.is_none() && !metadata.is_empty() {
                 // We have a metadata with no block. Treat it as a simple block but issue a
@@ -337,8 +389,14 @@ impl<'src> Block<'src> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
+        let simple_block_mi = if is_for_list_item {
+            SimpleBlock::parse_for_list_item(&metadata, parser)
+        } else {
+            SimpleBlock::parse(&metadata, parser)
+        };
+
         let mut result = MatchAndWarnings {
-            item: SimpleBlock::parse(&metadata, parser).map(|mi| MatchedItem {
+            item: simple_block_mi.map(|mi| MatchedItem {
                 item: Self::Simple(mi.item),
                 after: mi.after,
             }),
