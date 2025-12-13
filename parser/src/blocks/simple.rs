@@ -110,7 +110,7 @@ impl<'src> SimpleBlock<'src> {
                 anchor_reftext: metadata.anchor_reftext,
                 attrlist: metadata.attrlist.clone(),
             },
-            after: after.discard_empty_lines(),
+            after,
         })
     }
 
@@ -259,7 +259,7 @@ fn parse_lines<'src>(
 
     Some(MatchedItem {
         item: (content, style),
-        after: next.discard_empty_lines(),
+        after: next,
     })
 }
 

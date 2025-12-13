@@ -1959,15 +1959,15 @@ mod bulleted_lists {
                     },
                     blocks: &[Block::List(ListBlock {
                         type_: ListType::Unordered,
-                        items: &[
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },),
-                                blocks: &[Block::Simple(SimpleBlock {
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
                                     content: Content {
                                         original: Span {
                                             data: "Foo\nBar",
@@ -1989,25 +1989,8 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "- Foo\nBar",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
                                 },),
-                                blocks: &[Block::List(ListBlock {
+                                Block::List(ListBlock {
                                     type_: ListType::Unordered,
                                     items: &[Block::ListItem(ListItem {
                                         marker: ListItemMarker::Asterisks(Span {
@@ -2060,18 +2043,18 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "* Foo",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 10,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                        ],
+                                },),
+                            ],
+                            source: Span {
+                                data: "- Foo\nBar\n* Foo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
                         source: Span {
                             data: "- Foo\nBar\n* Foo",
                             line: 1,
@@ -2124,15 +2107,15 @@ mod bulleted_lists {
                     },
                     blocks: &[Block::List(ListBlock {
                         type_: ListType::Unordered,
-                        items: &[
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },),
-                                blocks: &[Block::Simple(SimpleBlock {
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
                                     content: Content {
                                         original: Span {
                                             data: "Foo\nBar",
@@ -2154,25 +2137,8 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "- Foo\nBar",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
                                 },),
-                                blocks: &[Block::List(ListBlock {
+                                Block::List(ListBlock {
                                     type_: ListType::Ordered,
                                     items: &[Block::ListItem(ListItem {
                                         marker: ListItemMarker::Dots(Span {
@@ -2225,18 +2191,18 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: ". Foo",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 10,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                        ],
+                                },),
+                            ],
+                            source: Span {
+                                data: "- Foo\nBar\n. Foo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
                         source: Span {
                             data: "- Foo\nBar\n. Foo",
                             line: 1,
@@ -2289,15 +2255,15 @@ mod bulleted_lists {
                     },
                     blocks: &[Block::List(ListBlock {
                         type_: ListType::Unordered,
-                        items: &[
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Asterisks(Span {
-                                    data: "*",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },),
-                                blocks: &[Block::Simple(SimpleBlock {
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Asterisks(Span {
+                                data: "*",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
                                     content: Content {
                                         original: Span {
                                             data: "Item\ntext",
@@ -2319,25 +2285,8 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "* Item\ntext",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Asterisks(Span {
-                                    data: "*",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
                                 },),
-                                blocks: &[Block::List(ListBlock {
+                                Block::List(ListBlock {
                                     type_: ListType::Description,
                                     items: &[Block::ListItem(ListItem {
                                         marker: ListItemMarker::DefinedTerm {
@@ -2407,18 +2356,18 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "term:: def",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 12,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                        ],
+                                },),
+                            ],
+                            source: Span {
+                                data: "* Item\ntext\nterm:: def",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
                         source: Span {
                             data: "* Item\ntext\nterm:: def",
                             line: 1,
@@ -2781,15 +2730,15 @@ mod bulleted_lists {
                     },
                     blocks: &[Block::List(ListBlock {
                         type_: ListType::Unordered,
-                        items: &[
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },),
-                                blocks: &[Block::Simple(SimpleBlock {
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
                                     content: Content {
                                         original: Span {
                                             data: "Foo\n  Bar",
@@ -2811,25 +2760,8 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "- Foo\n  Bar",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
                                 },),
-                                blocks: &[Block::List(ListBlock {
+                                Block::List(ListBlock {
                                     type_: ListType::Unordered,
                                     items: &[Block::ListItem(ListItem {
                                         marker: ListItemMarker::Asterisks(Span {
@@ -2882,18 +2814,18 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "* Foo",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 12,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                        ],
+                                },),
+                            ],
+                            source: Span {
+                                data: "- Foo\n  Bar\n* Foo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
                         source: Span {
                             data: "- Foo\n  Bar\n* Foo",
                             line: 1,
@@ -3038,15 +2970,15 @@ mod bulleted_lists {
                     },
                     blocks: &[Block::List(ListBlock {
                         type_: ListType::Unordered,
-                        items: &[
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },),
-                                blocks: &[Block::Simple(SimpleBlock {
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
                                     content: Content {
                                         original: Span {
                                             data: "Foo\n  Bar",
@@ -3068,25 +3000,8 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "- Foo\n  Bar",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Hyphen(Span {
-                                    data: "-",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
                                 },),
-                                blocks: &[Block::List(ListBlock {
+                                Block::List(ListBlock {
                                     type_: ListType::Ordered,
                                     items: &[Block::ListItem(ListItem {
                                         marker: ListItemMarker::Dots(Span {
@@ -3139,18 +3054,18 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: ". Foo",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 12,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                        ],
+                                },),
+                            ],
+                            source: Span {
+                                data: "- Foo\n  Bar\n. Foo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
                         source: Span {
                             data: "- Foo\n  Bar\n. Foo",
                             line: 1,
@@ -3203,15 +3118,15 @@ mod bulleted_lists {
                     },
                     blocks: &[Block::List(ListBlock {
                         type_: ListType::Unordered,
-                        items: &[
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Asterisks(Span {
-                                    data: "*",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },),
-                                blocks: &[Block::Simple(SimpleBlock {
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Asterisks(Span {
+                                data: "*",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
                                     content: Content {
                                         original: Span {
                                             data: "Item\n  text",
@@ -3233,25 +3148,8 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "* Item\n  text",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                            Block::ListItem(ListItem {
-                                marker: ListItemMarker::Asterisks(Span {
-                                    data: "*",
-                                    line: 1,
-                                    col: 1,
-                                    offset: 0,
                                 },),
-                                blocks: &[Block::List(ListBlock {
+                                Block::List(ListBlock {
                                     type_: ListType::Description,
                                     items: &[Block::ListItem(ListItem {
                                         marker: ListItemMarker::DefinedTerm {
@@ -3321,18 +3219,18 @@ mod bulleted_lists {
                                     anchor: None,
                                     anchor_reftext: None,
                                     attrlist: None,
-                                },),],
-                                source: Span {
-                                    data: "term:: def",
-                                    line: 3,
-                                    col: 1,
-                                    offset: 14,
-                                },
-                                anchor: None,
-                                anchor_reftext: None,
-                                attrlist: None,
-                            },),
-                        ],
+                                },),
+                            ],
+                            source: Span {
+                                data: "* Item\n  text\nterm:: def",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
                         source: Span {
                             data: "* Item\n  text\nterm:: def",
                             line: 1,
@@ -3565,6 +3463,8 @@ mod bulleted_lists {
             let doc = Parser::default().parse(
                 "* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item",
             );
+
+            dbg!(&doc);
 
             assert_eq!(
                 doc,
@@ -4087,33 +3987,284 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn paragraph_like_blocks_attached_to_an_ancestor_list_item_by_a_list_continuation_should_produce_blocks()
+         {
+            let doc = Parser::default()
+                .parse("* parent\n ** child\n\n+\nNOTE: This is a note.\n\n* another parent\n ** another child\n\n+");
+
+            // TODO: Update when admonition parsing is implemented.
+            // See https://github.com/scouten/asciidoc-parser/issues/456.
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "parent",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "parent",
+                                        },
+                                        source: Span {
+                                            data: "parent",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::List(ListBlock {
+                                        type_: ListType::Unordered,
+                                        items: &[Block::ListItem(ListItem {
+                                            marker: ListItemMarker::Asterisks(Span {
+                                                data: "**",
+                                                line: 2,
+                                                col: 2,
+                                                offset: 10,
+                                            },),
+                                            blocks: &[Block::Simple(SimpleBlock {
+                                                content: Content {
+                                                    original: Span {
+                                                        data: "child",
+                                                        line: 2,
+                                                        col: 5,
+                                                        offset: 13,
+                                                    },
+                                                    rendered: "child",
+                                                },
+                                                source: Span {
+                                                    data: "child",
+                                                    line: 2,
+                                                    col: 5,
+                                                    offset: 13,
+                                                },
+                                                style: SimpleBlockStyle::Paragraph,
+                                                title_source: None,
+                                                title: None,
+                                                anchor: None,
+                                                anchor_reftext: None,
+                                                attrlist: None,
+                                            },),],
+                                            source: Span {
+                                                data: " ** child",
+                                                line: 2,
+                                                col: 1,
+                                                offset: 9,
+                                            },
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: " ** child",
+                                            line: 2,
+                                            col: 1,
+                                            offset: 9,
+                                        },
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "NOTE: This is a note.",
+                                                line: 5,
+                                                col: 1,
+                                                offset: 22,
+                                            },
+                                            rendered: "NOTE: This is a note.",
+                                        },
+                                        source: Span {
+                                            data: "NOTE: This is a note.",
+                                            line: 5,
+                                            col: 1,
+                                            offset: 22,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "* parent\n ** child\n\n+\nNOTE: This is a note.",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 45,
+                                },),
+                                blocks: &[
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "another parent",
+                                                line: 7,
+                                                col: 3,
+                                                offset: 47,
+                                            },
+                                            rendered: "another parent",
+                                        },
+                                        source: Span {
+                                            data: "another parent",
+                                            line: 7,
+                                            col: 3,
+                                            offset: 47,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::List(ListBlock {
+                                        type_: ListType::Unordered,
+                                        items: &[Block::ListItem(ListItem {
+                                            marker: ListItemMarker::Asterisks(Span {
+                                                data: "**",
+                                                line: 8,
+                                                col: 2,
+                                                offset: 63,
+                                            },),
+                                            blocks: &[Block::Simple(SimpleBlock {
+                                                content: Content {
+                                                    original: Span {
+                                                        data: "another child",
+                                                        line: 8,
+                                                        col: 5,
+                                                        offset: 66,
+                                                    },
+                                                    rendered: "another child",
+                                                },
+                                                source: Span {
+                                                    data: "another child",
+                                                    line: 8,
+                                                    col: 5,
+                                                    offset: 66,
+                                                },
+                                                style: SimpleBlockStyle::Paragraph,
+                                                title_source: None,
+                                                title: None,
+                                                anchor: None,
+                                                anchor_reftext: None,
+                                                attrlist: None,
+                                            },),],
+                                            source: Span {
+                                                data: " ** another child",
+                                                line: 8,
+                                                col: 1,
+                                                offset: 62,
+                                            },
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: " ** another child",
+                                            line: 8,
+                                            col: 1,
+                                            offset: 62,
+                                        },
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "* another parent\n ** another child\n\n+",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 45,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* parent\n ** child\n\n+\nNOTE: This is a note.\n\n* another parent\n ** another child\n\n+",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* parent\n ** child\n\n+\nNOTE: This is a note.\n\n* another parent\n ** another child\n\n+",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'paragraph-like blocks attached to an ancestor list item by a list continuation should produce blocks' do
-      input = <<~'EOS'
-      * parent
-       ** child
-
-      +
-      NOTE: This is a note.
-
-      * another parent
-       ** another child
-
-      +
-      '''
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'ul ul .admonitionblock.note', output, 0
-      assert_xpath '(//ul)[1]/li/*[@class="admonitionblock note"]', output, 1
-      assert_css 'ul ul hr', output, 0
-      assert_xpath '(//ul)[1]/li/hr', output, 1
-    end
-
     test 'should not inherit block attributes from previous block when block is attached using a list continuation' do
       input = <<~'EOS'
       * complex list item
