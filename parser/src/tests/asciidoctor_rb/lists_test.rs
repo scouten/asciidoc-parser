@@ -4780,33 +4780,194 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn a_literal_paragraph_with_a_line_that_appears_as_a_list_item_that_is_followed_by_a_continuation_should_create_two_blocks()
+         {
+            let doc =
+                Parser::default().parse("* Foo\n+\n  literal\n. still literal\n+\npara\n\n* Bar");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Foo",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "Foo",
+                                        },
+                                        source: Span {
+                                            data: "Foo",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "  literal\n. still literal",
+                                                line: 3,
+                                                col: 1,
+                                                offset: 8,
+                                            },
+                                            rendered: "literal\n. still literal",
+                                        },
+                                        source: Span {
+                                            data: "  literal\n. still literal",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 8,
+                                        },
+                                        style: SimpleBlockStyle::Literal,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "para",
+                                                line: 6,
+                                                col: 1,
+                                                offset: 36,
+                                            },
+                                            rendered: "para",
+                                        },
+                                        source: Span {
+                                            data: "para",
+                                            line: 6,
+                                            col: 1,
+                                            offset: 36,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "* Foo\n+\n  literal\n. still literal\n+\npara",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 42,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Bar",
+                                            line: 8,
+                                            col: 3,
+                                            offset: 44,
+                                        },
+                                        rendered: "Bar",
+                                    },
+                                    source: Span {
+                                        data: "Bar",
+                                        line: 8,
+                                        col: 3,
+                                        offset: 44,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* Bar",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 42,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* Foo\n+\n  literal\n. still literal\n+\npara\n\n* Bar",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* Foo\n+\n  literal\n. still literal\n+\npara\n\n* Bar",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'a literal paragraph with a line that appears as a list item that is followed by a continuation should create two blocks' do
-      input = <<~'EOS'
-      * Foo
-      +
-        literal
-      . still literal
-      +
-      para
-
-      * Bar
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 2
-      assert_xpath '(//ul/li)[1]/p[text() = "Foo"]', output, 1
-      assert_xpath '(//ul/li)[1]/*[@class="literalblock"]', output, 1
-      assert_xpath '(//ul/li)[1]/p/following-sibling::*[@class="literalblock"]', output, 1
-      assert_xpath %(((//ul/li)[1]/*[@class="literalblock"])[1]//pre[text() = "  literal\n. still literal"]), output, 1
-      assert_xpath '(//ul/li)[1]/*[@class="literalblock"]/following-sibling::*[@class="paragraph"]', output, 1
-      assert_xpath '(//ul/li)[1]/*[@class="literalblock"]/following-sibling::*[@class="paragraph"]/p[text()="para"]', output, 1
-    end
-
     test 'consecutive literal paragraph offset by blank lines in list content are appended as a literal blocks' do
       input = <<~'EOS'
       List
