@@ -4427,31 +4427,204 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn should_continue_to_parse_blocks_attached_by_a_list_continuation_after_block_is_dropped()
+        {
+            let doc = Parser::default()
+                .parse("* item\n+\nparagraph\n+\n[comment]\ncomment\n+\n====\nexample\n====");
+
+            // NOTE: This may change if we ascribe special handling to the "comment" block
+            // style.
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Asterisks(Span {
+                                data: "*",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "item",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "item",
+                                    },
+                                    source: Span {
+                                        data: "item",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                                Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "paragraph",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 9,
+                                        },
+                                        rendered: "paragraph",
+                                    },
+                                    source: Span {
+                                        data: "paragraph",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 9,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                                Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "comment",
+                                            line: 6,
+                                            col: 1,
+                                            offset: 31,
+                                        },
+                                        rendered: "comment",
+                                    },
+                                    source: Span {
+                                        data: "[comment]\ncomment",
+                                        line: 5,
+                                        col: 1,
+                                        offset: 21,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: Some(Attrlist {
+                                        attributes: &[ElementAttribute {
+                                            name: None,
+                                            value: "comment",
+                                            shorthand_items: &["comment"],
+                                        },],
+                                        anchor: None,
+                                        source: Span {
+                                            data: "comment",
+                                            line: 5,
+                                            col: 2,
+                                            offset: 22,
+                                        },
+                                    },),
+                                },),
+                                Block::CompoundDelimited(CompoundDelimitedBlock {
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "example",
+                                                line: 9,
+                                                col: 1,
+                                                offset: 46,
+                                            },
+                                            rendered: "example",
+                                        },
+                                        source: Span {
+                                            data: "example",
+                                            line: 9,
+                                            col: 1,
+                                            offset: 46,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    context: "example",
+                                    source: Span {
+                                        data: "====\nexample\n====",
+                                        line: 8,
+                                        col: 1,
+                                        offset: 41,
+                                    },
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                            ],
+                            source: Span {
+                                data: "* item\n+\nparagraph\n+\n[comment]\ncomment\n+\n====\nexample\n====",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "* item\n+\nparagraph\n+\n[comment]\ncomment\n+\n====\nexample\n====",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* item\n+\nparagraph\n+\n[comment]\ncomment\n+\n====\nexample\n====",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'should continue to parse blocks attached by a list continuation after block is dropped' do
-      input = <<~'EOS'
-      * item
-      +
-      paragraph
-      +
-      [comment]
-      comment
-      +
-      ====
-      example
-      ====
-      '''
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'ul > li > .paragraph', output, 1
-      assert_css 'ul > li > .exampleblock', output, 1
-    end
-
     test 'appends line as paragraph if attached by continuation following line comment' do
       input = <<~'EOS'
       - list item 1
