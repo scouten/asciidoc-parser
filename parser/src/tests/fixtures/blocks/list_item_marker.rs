@@ -6,6 +6,7 @@ use crate::tests::fixtures::{content::Content, span::Span};
 pub(crate) enum ListItemMarker {
     Hyphen(Span),
     Asterisks(Span),
+    Bullet(Span),
     Dots(Span),
 
     #[allow(unused)] // TEMPORARY while building
@@ -21,6 +22,7 @@ impl fmt::Debug for ListItemMarker {
         match self {
             Self::Hyphen(x) => f.debug_tuple("ListItemMarker::Hyphen").field(x).finish(),
             Self::Asterisks(x) => f.debug_tuple("ListItemMarker::Asterisks").field(x).finish(),
+            Self::Bullet(x) => f.debug_tuple("ListItemMarker::Bullet").field(x).finish(),
             Self::Dots(x) => f.debug_tuple("ListItemMarker::Dots").field(x).finish(),
 
             Self::DefinedTerm {
@@ -63,6 +65,11 @@ fn fixture_eq_observed(
             crate::blocks::ListItemMarker::Asterisks(observed_span) => {
                 fixture_span == observed_span
             }
+            _ => false,
+        },
+
+        ListItemMarker::Bullet(fixture_span) => match observed {
+            crate::blocks::ListItemMarker::Bullet(observed_span) => fixture_span == observed_span,
             _ => false,
         },
 

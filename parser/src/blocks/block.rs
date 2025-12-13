@@ -140,7 +140,7 @@ impl<'src> Block<'src> {
         if let Some(first_char) = first_line.chars().next()
             && !matches!(
                 first_char,
-                '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':' | '\'' | '<'
+                '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':' | '\'' | '<' | '•'
             )
             && !first_line.contains("::")
             && let Some(MatchedItem {
@@ -326,7 +326,9 @@ impl<'src> Block<'src> {
             }
 
             let first_line = line.item.discard_whitespace();
-            if (first_line.starts_with('-') || first_line.starts_with('*'))
+            if (first_line.starts_with('-')
+                || first_line.starts_with('*')
+                || first_line.starts_with('•'))
                 && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
             {
                 if is_for_list_item {
