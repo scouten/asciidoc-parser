@@ -33,8 +33,9 @@ pub struct ListItem<'src> {
 impl<'src> ListItem<'src> {
     pub(crate) fn parse(
         metadata: &BlockMetadata<'src>,
+        parent_list_markers: &[ListItemMarker<'src>],
         parser: &mut Parser,
-        _warnings: &mut Vec<Warning<'src>>,
+        warnings: &mut Vec<Warning<'src>>,
     ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.discard_empty_lines();
 
@@ -61,19 +62,82 @@ impl<'src> ListItem<'src> {
         let mut next_block_must_be_indented = false;
 
         loop {
-            let is_indented = next.starts_with(' ') || next.starts_with('\t');
-            let indented_next = next.discard_whitespace();
+            if next.is_empty() {
+                break;
+            }
 
-            let indented_line_mi = indented_next.take_normalized_line();
+            let next_line_mi: MatchedItem<'_, Span<'_>> = next.take_normalized_line();
 
-            if indented_line_mi.item.data() == "+" {
-                next = indented_line_mi.after;
+            if next_line_mi.item.data() == "+" {
+                next = next_line_mi.after;
                 next_block_must_be_indented = false;
                 continue;
             }
 
-            if ListItemMarker::parse(indented_next).is_some() {
-                break;
+            if next_line_mi.item.data().is_empty() {
+                if parent_list_markers.is_empty() {
+                    next = next.discard_empty_lines();
+                    continue;
+                } else {
+                    next = next_line_mi.after;
+                    break;
+                }
+            }
+
+            let is_indented = next.starts_with(' ') || next.starts_with('\t');
+            let indented_next = next.discard_whitespace();
+
+            // TEMPORARY: Ignore block metadata for potential peer list items.
+            let list_item_metadata = BlockMetadata {
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+                source: next,
+                block_start: next,
+            };
+
+            if let Some(list_item_marker_mi) = ListItemMarker::parse(indented_next) {
+                // We've found a new list item. How does it compare with the existing item in
+                // the hierarchy?
+                let new_item_marker = list_item_marker_mi.item;
+
+                if marker.is_match_for(&new_item_marker) {
+                    // New item is a peer to this item; nothing further for the current item.
+                    break;
+                }
+
+                if parent_list_markers
+                    .iter()
+                    .any(|parent| parent.is_match_for(&new_item_marker))
+                {
+                    // We matched a parent marker type. This list is complete; roll up the
+                    // hierarchy.
+                    break;
+                }
+
+                // We haven't encountered this marker before. Add a new nesting level. The new
+                // list will be a child block of this list item.
+
+                let mut nested_list_markers = parent_list_markers.to_owned();
+                nested_list_markers.push(marker.clone());
+
+                // NOTE: The call to `ListBlock::parse` *should* succeed (as in I can't think of
+                // a test case where it would fail). We use the `?` to provide a safe escape in
+                // case it doesn't.
+                let nested_list_mi = ListBlock::parse_inside_list(
+                    &list_item_metadata,
+                    &nested_list_markers,
+                    parser,
+                    warnings,
+                )?;
+
+                blocks.push(Block::List(nested_list_mi.item));
+
+                next = nested_list_mi.after;
+                next_block_must_be_indented = true;
+                continue;
             }
 
             if next_block_must_be_indented && !is_indented {
@@ -85,15 +149,13 @@ impl<'src> ListItem<'src> {
             let indented_block_maw = Block::parse_for_list_item(next, parser);
             // TO DO: Transfer warnings.
 
-            if let Some(indented_block_mi) = indented_block_maw.item {
-                blocks.push(indented_block_mi.item);
-                next = indented_block_mi.after;
-                next_block_must_be_indented = true;
+            let Some(indented_block_mi) = indented_block_maw.item else {
+                break;
+            };
 
-                continue;
-            }
-
-            break;
+            blocks.push(indented_block_mi.item);
+            next = indented_block_mi.after;
+            next_block_must_be_indented = true;
         }
 
         let source = source.trim_remainder(next).trim_trailing_whitespace();
@@ -111,26 +173,8 @@ impl<'src> ListItem<'src> {
         })
     }
 
-    pub(crate) fn from_nested_list(
-        list: MatchedItem<'src, ListBlock<'src>>,
-        wrapping_marker: ListItemMarker<'src>,
-    ) -> MatchedItem<'src, Self> {
-        let span = list.item.span();
-
-        MatchedItem {
-            item: Self {
-                marker: wrapping_marker,
-                blocks: vec![Block::List(list.item)],
-                source: span,
-                anchor: None,
-                anchor_reftext: None,
-                attrlist: None,
-            },
-            after: list.after,
-        }
-    }
-
-    pub(crate) fn list_item_marker(&self) -> ListItemMarker<'src> {
+    /// Returns the list item marker that was used for this item.
+    pub fn list_item_marker(&self) -> ListItemMarker<'src> {
         self.marker.clone()
     }
 }
@@ -210,7 +254,7 @@ mod tests {
         let metadata = BlockMetadata::parse(crate::Span::new(source), &mut parser).item;
 
         let result =
-            crate::blocks::list_item::ListItem::parse(&metadata, &mut parser, &mut warnings);
+            crate::blocks::list_item::ListItem::parse(&metadata, &[], &mut parser, &mut warnings);
 
         assert!(warnings.is_empty());
 

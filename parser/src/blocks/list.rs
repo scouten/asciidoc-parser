@@ -33,6 +33,15 @@ impl<'src> ListBlock<'src> {
         parser: &mut Parser,
         warnings: &mut Vec<Warning<'src>>,
     ) -> Option<MatchedItem<'src, Self>> {
+        Self::parse_inside_list(metadata, &[], parser, warnings)
+    }
+
+    pub(crate) fn parse_inside_list(
+        metadata: &BlockMetadata<'src>,
+        parent_list_markers: &[ListItemMarker<'src>],
+        parser: &mut Parser,
+        warnings: &mut Vec<Warning<'src>>,
+    ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.discard_empty_lines();
 
         let mut items: Vec<Block<'src>> = vec![];
@@ -40,6 +49,16 @@ impl<'src> ListBlock<'src> {
         let mut first_marker: Option<ListItemMarker<'src>> = None;
 
         loop {
+            let next_line_mi = next_item_source.take_normalized_line();
+            if next_line_mi.item.data().is_empty() || next_line_mi.item.data() == "+" {
+                if next_item_source.is_empty() || !parent_list_markers.is_empty() {
+                    break;
+                } else {
+                    next_item_source = next_line_mi.after;
+                    continue;
+                }
+            }
+
             // TEMPORARY: Ignore block metadata for list items.
             let list_item_metadata = BlockMetadata {
                 title_source: None,
@@ -51,33 +70,38 @@ impl<'src> ListBlock<'src> {
                 block_start: next_item_source,
             };
 
-            let Some(mut list_item_mi) = ListItem::parse(&list_item_metadata, parser, warnings)
+            let Some(list_item_marker_mi) = ListItemMarker::parse(list_item_metadata.block_start)
             else {
                 break;
             };
 
-            let marker = list_item_mi.item.list_item_marker();
+            let this_item_marker = list_item_marker_mi.item;
 
             // If this item's marker doesn't match the existing list marker, we are changing
             // levels in the list hierarchy.
             if let Some(ref first_marker) = first_marker {
-                if !first_marker.is_match_for(&marker) {
-                    // TEMPORARY assume we're adding a new nesting level. Unimplemented to see if we
-                    // need to unwind.
-
-                    // NOTE: The call to `ListBlock::parse` *should* succeed (as in I can't think of
-                    // a test case where it would fail). We use the `?` to provide a safe escape in
-                    // case it doesn't.
-                    let nested_list = ListBlock::parse(&list_item_metadata, parser, warnings)?;
-
-                    list_item_mi = ListItem::from_nested_list(nested_list, first_marker.clone());
+                if !first_marker.is_match_for(&this_item_marker) {
+                    if parent_list_markers
+                        .iter()
+                        .any(|parent| parent.is_match_for(&this_item_marker))
+                    {
+                        // We matched a parent marker type. This list is complete; roll up the
+                        // hierarchy.
+                        break;
+                    }
                 }
             } else {
-                first_marker = Some(marker);
+                first_marker = Some(this_item_marker);
             }
 
+            let Some(list_item_mi) =
+                ListItem::parse(&list_item_metadata, parent_list_markers, parser, warnings)
+            else {
+                break;
+            };
+
             items.push(Block::ListItem(list_item_mi.item));
-            next_item_source = list_item_mi.after.discard_empty_lines();
+            next_item_source = list_item_mi.after;
         }
 
         if items.is_empty() {
