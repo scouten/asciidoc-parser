@@ -3966,28 +3966,132 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn an_admonition_paragraph_attached_by_a_line_continuation_to_a_list_item_with_wrapped_text_should_produce_admonition()
+         {
+            let doc = Parser::default()
+                .parse("- first-line text\n  wrapped text\n+\nNOTE: This is a note.");
+
+            // TODO: Update when admonition parsing is implemented.
+            // See https://github.com/scouten/asciidoc-parser/issues/456.
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::Hyphen(Span {
+                                data: "-",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },),
+                            blocks: &[
+                                Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "first-line text\n  wrapped text",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "first-line text\nwrapped text",
+                                    },
+                                    source: Span {
+                                        data: "first-line text\n  wrapped text",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                                Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "NOTE: This is a note.",
+                                            line: 4,
+                                            col: 1,
+                                            offset: 35,
+                                        },
+                                        rendered: "NOTE: This is a note.",
+                                    },
+                                    source: Span {
+                                        data: "NOTE: This is a note.",
+                                        line: 4,
+                                        col: 1,
+                                        offset: 35,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                            ],
+                            source: Span {
+                                data: "- first-line text\n  wrapped text\n+\nNOTE: This is a note.",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "- first-line text\n  wrapped text\n+\nNOTE: This is a note.",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- first-line text\n  wrapped text\n+\nNOTE: This is a note.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'an admonition paragraph attached by a line continuation to a list item with wrapped text should produce admonition' do
-      input = <<~'EOS'
-      - first-line text
-        wrapped text
-      +
-      NOTE: This is a note.
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'ul', output, 1
-      assert_css 'ul > li', output, 1
-      assert_css 'ul > li > p', output, 1
-      assert_xpath %(//ul/li/p[text()="first-line text\nwrapped text"]), output, 1
-      assert_css 'ul > li > p + .admonitionblock.note', output, 1
-      assert_xpath '//ul/li/*[@class="admonitionblock note"]//td[@class="content"][normalize-space(text())="This is a note."]', output, 1
-    end
-
     test 'paragraph-like blocks attached to an ancestor list item by a list continuation should produce blocks' do
       input = <<~'EOS'
       * parent
