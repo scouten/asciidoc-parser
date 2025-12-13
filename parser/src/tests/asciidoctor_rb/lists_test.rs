@@ -5648,22 +5648,184 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn indented_unicode_bullet_elements_using_spaces() {
+            let doc = Parser::default().parse(" • Foo\n • Boo\n • Blech");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Bullet(Span {
+                                    data: "•",
+                                    line: 1,
+                                    col: 2,
+                                    offset: 1,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Foo",
+                                            line: 1,
+                                            col: 4,
+                                            offset: 5,
+                                        },
+                                        rendered: "Foo",
+                                    },
+                                    source: Span {
+                                        data: "Foo",
+                                        line: 1,
+                                        col: 4,
+                                        offset: 5,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: " • Foo",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Bullet(Span {
+                                    data: "•",
+                                    line: 2,
+                                    col: 2,
+                                    offset: 10,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Boo",
+                                            line: 2,
+                                            col: 4,
+                                            offset: 14,
+                                        },
+                                        rendered: "Boo",
+                                    },
+                                    source: Span {
+                                        data: "Boo",
+                                        line: 2,
+                                        col: 4,
+                                        offset: 14,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: " • Boo",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 9,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Bullet(Span {
+                                    data: "•",
+                                    line: 3,
+                                    col: 2,
+                                    offset: 19,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Blech",
+                                            line: 3,
+                                            col: 4,
+                                            offset: 23,
+                                        },
+                                        rendered: "Blech",
+                                    },
+                                    source: Span {
+                                        data: "Blech",
+                                        line: 3,
+                                        col: 4,
+                                        offset: 23,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: " • Blech",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 18,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: " • Foo\n • Boo\n • Blech",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: " • Foo\n • Boo\n • Blech",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'indented unicode bullet elements using spaces' do
-      input = <<~EOS
-      \x20• Foo
-      \x20• Boo
-      \x20• Blech
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 3
-    end
-
     test 'indented asterisk elements using tabs' do
       input = <<~EOS
       \t*\tFoo

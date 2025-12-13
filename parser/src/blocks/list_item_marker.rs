@@ -13,6 +13,9 @@ pub enum ListItemMarker<'src> {
     /// Unordered list (asterisks).
     Asterisks(Span<'src>),
 
+    /// Unordered list (Unicode bullet).
+    Bullet(Span<'src>),
+
     /// Ordered list (dots).
     Dots(Span<'src>),
 
@@ -42,6 +45,8 @@ impl<'src> ListItemMarker<'src> {
                 Self::Hyphen(marker)
             } else if marker_str.starts_with('*') {
                 Self::Asterisks(marker)
+            } else if marker_str == "•" {
+                Self::Bullet(marker)
             } else if marker_str.starts_with('.') {
                 Self::Dots(marker)
             } else {
@@ -88,6 +93,11 @@ impl<'src> ListItemMarker<'src> {
                 _ => false,
             },
 
+            Self::Bullet(self_span) => match other {
+                Self::Bullet(other_span) => self_span.data() == other_span.data(),
+                _ => false,
+            },
+
             Self::Dots(self_span) => match other {
                 Self::Dots(other_span) => self_span.data() == other_span.data(),
                 _ => false,
@@ -114,6 +124,7 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
         match self {
             Self::Hyphen(x) => *x,
             Self::Asterisks(x) => *x,
+            Self::Bullet(x) => *x,
             Self::Dots(x) => *x,
 
             Self::DefinedTerm {
@@ -130,6 +141,7 @@ impl std::fmt::Debug for ListItemMarker<'_> {
         match self {
             Self::Hyphen(x) => f.debug_tuple("ListItemMarker::Hyphen").field(x).finish(),
             Self::Asterisks(x) => f.debug_tuple("ListItemMarker::Asterisks").field(x).finish(),
+            Self::Bullet(x) => f.debug_tuple("ListItemMarker::Bullet").field(x).finish(),
             Self::Dots(x) => f.debug_tuple("ListItemMarker::Dots").field(x).finish(),
 
             Self::DefinedTerm {

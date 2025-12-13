@@ -111,6 +111,7 @@ impl<'src> ListBlock<'src> {
         let type_ = match first_marker {
             ListItemMarker::Asterisks(_) => ListType::Unordered,
             ListItemMarker::Hyphen(_) => ListType::Unordered,
+            ListItemMarker::Bullet(_) => ListType::Unordered,
             ListItemMarker::Dots(_) => ListType::Ordered,
 
             ListItemMarker::DefinedTerm {
