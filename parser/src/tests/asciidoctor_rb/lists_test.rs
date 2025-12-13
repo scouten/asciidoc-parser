@@ -4620,29 +4620,171 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn appends_line_as_paragraph_if_attached_by_continuation_following_line_comment() {
+            let doc = Parser::default().parse(
+                "- list item 1\n// line comment\n+\nparagraph in list item 1\n\n- list item 2",
+            );
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "list item 1\n// line comment",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "list item 1",
+                                        },
+                                        source: Span {
+                                            data: "list item 1\n// line comment",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "paragraph in list item 1",
+                                                line: 4,
+                                                col: 1,
+                                                offset: 32,
+                                            },
+                                            rendered: "paragraph in list item 1",
+                                        },
+                                        source: Span {
+                                            data: "paragraph in list item 1",
+                                            line: 4,
+                                            col: 1,
+                                            offset: 32,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "- list item 1\n// line comment\n+\nparagraph in list item 1",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 58,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "list item 2",
+                                            line: 6,
+                                            col: 3,
+                                            offset: 60,
+                                        },
+                                        rendered: "list item 2",
+                                    },
+                                    source: Span {
+                                        data: "list item 2",
+                                        line: 6,
+                                        col: 3,
+                                        offset: 60,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- list item 2",
+                                    line: 6,
+                                    col: 1,
+                                    offset: 58,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- list item 1\n// line comment\n+\nparagraph in list item 1\n\n- list item 2",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "- list item 1\n// line comment\n+\nparagraph in list item 1\n\n- list item 2",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'appends line as paragraph if attached by continuation following line comment' do
-      input = <<~'EOS'
-      - list item 1
-      // line comment
-      +
-      paragraph in list item 1
-
-      - list item 2
-      EOS
-      output = convert_string_to_embedded input
-      assert_css 'ul', output, 1
-      assert_css 'ul li', output, 2
-      assert_xpath '(//ul/li)[1]/p[text()="list item 1"]', output, 1
-      assert_xpath '(//ul/li)[1]/p/following-sibling::*[@class="paragraph"]', output, 1
-      assert_xpath '(//ul/li)[1]/p/following-sibling::*[@class="paragraph"]/p[text()="paragraph in list item 1"]', output, 1
-      assert_xpath '(//ul/li)[2]/p[text()="list item 2"]', output, 1
-    end
-
     test 'a literal paragraph with a line that appears as a list item that is followed by a continuation should create two blocks' do
       input = <<~'EOS'
       * Foo
