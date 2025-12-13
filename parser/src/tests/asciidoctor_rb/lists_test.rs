@@ -1,6 +1,15 @@
 // Adapted from Asciidoctor's tests for lists, found in
 // https://github.com/asciidoctor/asciidoctor/blob/main/test/lists_test.rb.
 
+// About the size of this file: Mark Twain is alleged to have said, "I apologize
+// for such a long letter. I didn't have the time to write a short one."
+//
+// It's like that for this file. It turns out to be very efficient for me to
+// inspect the output of each of these tests and write a single assert_eq! macro
+// than to individually port the specific assertions that were present in the
+// corresponding Ruby test. With over 300 tests in this suite, every little bit
+// helps.
+
 mod bulleted_lists {
     mod simple_lists {
         use std::collections::HashMap;
