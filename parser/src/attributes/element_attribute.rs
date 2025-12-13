@@ -137,8 +137,7 @@ impl<'src> ElementAttribute<'src> {
 
         let mut iter = self.shorthand_item_indices.iter().peekable();
 
-        loop {
-            let Some(curr) = iter.next() else { break };
+        while let Some(curr) = iter.next() {
             let mut next_item = if let Some(next) = iter.peek() {
                 &value[*curr..**next]
             } else {
