@@ -7476,26 +7476,144 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn should_not_find_section_title_immediately_below_last_list_item() {
+            let doc = Parser::default().parse("* first\n* second\n== Not a section");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "first",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "first",
+                                    },
+                                    source: Span {
+                                        data: "first",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* first",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 8,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "second\n== Not a section",
+                                            line: 2,
+                                            col: 3,
+                                            offset: 10,
+                                        },
+                                        rendered: "second\n== Not a section",
+                                    },
+                                    source: Span {
+                                        data: "second\n== Not a section",
+                                        line: 2,
+                                        col: 3,
+                                        offset: 10,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* second\n== Not a section",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 8,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* first\n* second\n== Not a section",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* first\n* second\n== Not a section",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'should not find section title immediately below last list item' do
-      input = <<~'EOS'
-      * first
-      * second
-      == Not a section
-      EOS
-
-      output = convert_string_to_embedded input
-      assert_css 'ul', output, 1
-      assert_css 'ul > li', output, 2
-      assert_css 'h2', output, 0
-      assert_includes output, '== Not a section'
-      assert_xpath %((//li)[2]/p[text() = "second\n== Not a section"]), output, 1
-    end
-
     test 'should match trailing line separator in text of list item' do
       input = <<~EOS.chop
       * a
